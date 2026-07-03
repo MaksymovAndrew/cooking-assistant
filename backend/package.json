@@ -19,10 +19,7 @@
     "migrate:up": "tsx src/scripts/migrate.ts up",
     "migrate:down": "tsx src/scripts/migrate.ts down",
     "migrate:create": "node-pg-migrate create -j sql -m migrations",
-    "seed": "tsx src/scripts/seed.ts",
-    "patch": "npm version patch --no-git-tag-version",
-    "minor": "npm version minor --no-git-tag-version",
-    "major": "npm version major --no-git-tag-version"
+    "seed": "tsx src/scripts/seed.ts"
   },
   "overrides": {
     "tsup": {

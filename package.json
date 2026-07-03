@@ -10,7 +10,6 @@
     "postinstall": "npm --prefix backend install && npm --prefix frontend install",
     "start": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
     "dev": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
-    "dev:lan": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev:lan\"",
     "start:backend": "npm --prefix backend run dev",
     "start:frontend": "npm --prefix frontend run dev",
     "migrate": "npm --prefix backend run migrate",
@@ -28,9 +27,7 @@
     "build": "npm --prefix frontend run build",
     "build:backend": "npm --prefix backend run build",
     "verify": "npm run format:check && npm run lint && npm run lint:sonarjs && npm run stylelint && npm run typecheck && npm run test && npm run build",
-    "patch": "npm version patch --no-git-tag-version",
-    "minor": "npm version minor --no-git-tag-version",
-    "major": "npm version major --no-git-tag-version"
+    "bump": "node scripts/release-version.mjs bump"
   },
   "overrides": {
     "shell-quote": "^1.8.4"

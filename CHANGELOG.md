@@ -63,8 +63,10 @@ changelogs and the tags and now track everything here against one shared version
 - Added: Stricter style linting - theme colors may only be defined in the design tokens file, no `!important` in component styles, plus nesting and specificity limits; ESLint additionally forbids stray `console` calls on the frontend and enforces exhaustive `switch` statements on both sides.
 - Fixed: `npm run verify` now also runs the frontend stylelint, so the local gate matches CI exactly.
 - Added: Every per-app npm command now also runs from the repository root (`lint:fix`, `stylelint:fix`, `test:coverage`, `build:backend`), and all scripts work identically on Windows, macOS and Linux.
-- Added: `npm run dev:lan` starts the dev servers reachable from other devices on the same network, for testing the app on a phone.
+- Added: `npm start` / `npm run dev` now serve the app on both localhost and the local network at once, so it can be opened on a phone with no extra command.
 - Added: ESLint now blocks hardcoded API paths, hardcoded route paths, and magic numbers outside the constants files, on both sides.
+- Changed: The backend now compiles with TypeScript's modern NodeNext module resolution, dropping two deprecated compiler flags and a manual type shim (no behavior change).
+- Added: the release version now bumps itself - committing on a release branch automatically sets the version from the branch name (root always, plus only the sides that actually changed) and includes it in the same commit; `npm run bump` does the same by hand.
 - Changed: A broader code-quality pass removed duplicated logic (recipe/menu search queries, list-pagination footer, validation helpers) and unused leftovers (orphaned translation keys, dead styles) across the whole codebase, with no change in behavior.
 
 ## 3.2 - 2026-06-27

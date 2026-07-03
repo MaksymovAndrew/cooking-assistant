@@ -19,7 +19,6 @@ module.exports = {
         "^test/(.*)$": "<rootDir>/src/test/$1",
         "^app$": "<rootDir>/src/app",
         "^composition-root$": "<rootDir>/src/composition-root",
-        "^db$": "<rootDir>/src/db",
     },
     collectCoverageFrom: [
         "src/application/use-cases/**/*.ts",

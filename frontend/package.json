@@ -8,8 +8,7 @@
   },
   "scripts": {
     "start": "npm run dev",
-    "dev": "vite",
-    "dev:lan": "vite --host",
+    "dev": "vite --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -19,10 +18,7 @@
     "typecheck": "tsc -b",
     "preview": "vite preview",
     "test": "jest",
-    "test:coverage": "jest --coverage",
-    "patch": "npm version patch --no-git-tag-version",
-    "minor": "npm version minor --no-git-tag-version",
-    "major": "npm version major --no-git-tag-version"
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",

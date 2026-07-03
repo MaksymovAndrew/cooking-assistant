@@ -1,0 +1,29 @@
+@use "styles/abstracts" as *;
+
+.scroll-to-top-button {
+    position: fixed;
+    right: var(--s-4);
+    bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+    z-index: var(--z-dropdown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--e-2);
+    cursor: pointer;
+    transition:
+        background var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out);
+
+    @include focus-ring;
+
+    @include on-hover {
+        background: var(--surface-2);
+        border-color: var(--brand);
+    }
+}

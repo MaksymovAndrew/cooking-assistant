@@ -25,9 +25,6 @@
         "title": "Purchase History: {{name}}",
         "loading": "Loading...",
         "noHistory": "No purchase history available.",
-        "closeButton": "Close",
-        "errorLoading": "Error loading purchase history.",
-        "errorSaving": "Error saving changes.",
-        "errorNoToken": "Token not found."
+        "closeButton": "Close"
     }
 }

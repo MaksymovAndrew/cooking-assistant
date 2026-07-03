@@ -22,3 +22,13 @@
         @content;
     }
 }
+
+// hover styles only on devices that can actually hover; on touch screens a
+// tap would otherwise leave the style stuck until the next tap elsewhere
+@mixin on-hover {
+    @media (hover: hover) {
+        &:hover {
+            @content;
+        }
+    }
+}

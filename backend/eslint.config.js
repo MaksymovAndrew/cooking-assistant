@@ -39,6 +39,7 @@ module.exports = tseslint.config(
             "prefer-const": "error",
             "no-console": "error",
             "no-throw-literal": "error",
+            "@typescript-eslint/switch-exhaustiveness-check": "error",
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 { argsIgnorePattern: "^_", ignoreRestSiblings: true },
@@ -145,6 +146,37 @@ module.exports = tseslint.config(
                         "**/*.config.{js,ts}",
                         "src/scripts/**",
                     ],
+                },
+            ],
+        },
+    },
+    {
+        // magic numbers belong in named constants (constants/ and config/ are the
+        // sanctioned homes); HTTP status codes are self-documenting and allowed;
+        // scripts/ holds seed data where inline numbers are the content itself
+        files: ["src/**/*.ts"],
+        ignores: [
+            "src/constants/**",
+            "src/config/**",
+            "src/scripts/**",
+            "**/__tests__/**",
+            "src/test/**",
+        ],
+        rules: {
+            "@typescript-eslint/no-magic-numbers": [
+                "error",
+                {
+                    ignore: [
+                        -1, 0, 1, 2, 200, 201, 204, 400, 401, 403, 404, 409,
+                        429, 500,
+                    ],
+                    ignoreDefaultValues: true,
+                    ignoreClassFieldInitialValues: true,
+                    ignoreEnums: true,
+                    ignoreNumericLiteralTypes: true,
+                    ignoreReadonlyClassProperties: true,
+                    ignoreTypeIndexes: true,
+                    detectObjects: false,
                 },
             ],
         },

@@ -1,8 +1,9 @@
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-swc";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import type { Plugin } from "vite";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 // dev-proxy target is overridable via env; defaults to the local backend port
 const proxyTarget =
@@ -17,16 +18,56 @@ const nodeModulesDir = path.resolve(
     "node_modules",
 );
 
-// https://vitejs.dev/config/
-export default defineConfig(({ command }) => ({
-    plugins: [react(), tsconfigPaths()],
-    // strip console/debugger from the production build only; dev keeps them
-    esbuild: command === "build" ? { drop: ["console", "debugger"] } : {},
+const themeColorsFromTokens = (): Plugin => ({
+    name: "theme-colors-from-tokens",
+    transformIndexHtml(html) {
+        const tokens = fs.readFileSync(
+            path.resolve(srcDir, "styles/_tokens.scss"),
+            "utf8",
+        );
+        const [dark, light] = [
+            ...tokens.matchAll(/--bg:\s*(#[0-9a-fA-F]+)/g),
+        ].map((match) => match[1]);
+
+        if (!dark || !light) {
+            throw new Error(
+                "theme-colors-from-tokens: --bg values not found in _tokens.scss",
+            );
+        }
+
+        return html
+            .replaceAll("%THEME_COLOR_DARK%", dark)
+            .replaceAll("%THEME_COLOR_LIGHT%", light);
+    },
+});
+
+// https://vite.dev/config/
+export default defineConfig({
+    plugins: [react(), themeColorsFromTokens()],
+    resolve: {
+        // native tsconfig paths support (replaces the vite-tsconfig-paths plugin)
+        tsconfigPaths: true,
+    },
+    build: {
+        rolldownOptions: {
+            output: {
+                // strip console/debugger from the production build only; dev keeps them
+                minify: {
+                    mangle: true,
+                    codegen: true,
+                    compress: {
+                        dropConsole: true,
+                        dropDebugger: true,
+                    },
+                },
+            },
+        },
+    },
     css: {
         // lets SCSS modules `@use "styles/..."` the same way TS uses the bare alias
         preprocessorOptions: {
             scss: {
-                includePaths: [srcDir, nodeModulesDir],
+                loadPaths: [srcDir, nodeModulesDir],
             },
         },
     },
@@ -41,4 +82,4 @@ export default defineConfig(({ command }) => ({
             },
         },
     },
-}));
+});

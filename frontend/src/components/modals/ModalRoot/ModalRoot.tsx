@@ -7,6 +7,7 @@ import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
+import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
 
 export const ModalRoot = () => {
     const modal = useAppSelector(selectActiveModal);
@@ -49,6 +50,15 @@ export const ModalRoot = () => {
 
     if (modal?.type === MODAL_TYPE.logout) {
         return <LogoutConfirmModal modalId={modal.id} />;
+    }
+
+    if (modal?.type === MODAL_TYPE.themeChange) {
+        return (
+            <ThemeChangeConfirmModal
+                modalId={modal.id}
+                nextMode={modal.nextMode}
+            />
+        );
     }
 
     return null;

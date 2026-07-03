@@ -1,0 +1,46 @@
+import { useTranslation } from "react-i18next";
+
+import { THEME_STORAGE_KEY } from "constants/theme";
+
+import { useAppDispatch } from "redux/hooks";
+import type { ThemeMode } from "redux/slices/themeSlice";
+import { closeModal } from "redux/slices/uiSlice";
+
+import { ConfirmModal } from "components/modals/ConfirmModal";
+
+import { reloadPage } from "utils/reloadPage";
+
+interface ThemeChangeConfirmModalProps {
+    modalId: string;
+    nextMode: ThemeMode;
+}
+
+// a theme switch is applied via a full page reload rather than a live CSS
+// repaint: iOS Safari's browser chrome (status/address bars) only ever picks
+// up the correct color on a fresh load, never on an in-place toggle, so a
+// live switch reliably left the bars in the old theme's color. writing the
+// choice to storage before reloading means the very first paint (theme-init.js)
+// already renders in the new theme
+export const ThemeChangeConfirmModal = ({
+    modalId,
+    nextMode,
+}: ThemeChangeConfirmModalProps) => {
+    const { t } = useTranslation();
+    const dispatch = useAppDispatch();
+
+    const handleConfirm = () => {
+        localStorage.setItem(THEME_STORAGE_KEY, nextMode);
+        reloadPage();
+    };
+
+    return (
+        <ConfirmModal
+            title={t("themeModal.title")}
+            message={t("themeModal.message")}
+            confirmLabel={t("themeModal.confirm")}
+            confirmVariant="primary"
+            onClose={() => dispatch(closeModal(modalId))}
+            onConfirm={handleConfirm}
+        />
+    );
+};

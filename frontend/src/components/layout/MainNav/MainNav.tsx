@@ -6,28 +6,17 @@ import { NAV_ITEMS } from "constants/navigation";
 
 import styles from "./MainNav.module.scss";
 
-interface MainNavProps {
-    variant?: "bar" | "drawer";
-    onNavigate?: () => void;
-}
+const ICON_SIZE = 17;
 
-const BAR_ICON_SIZE = 17;
-const DRAWER_ICON_SIZE = 19;
-
-export const MainNav: React.FC<MainNavProps> = ({
-    variant = "bar",
-    onNavigate,
-}) => {
+export const MainNav: React.FC = () => {
     const { t } = useTranslation();
-    const iconSize = variant === "drawer" ? DRAWER_ICON_SIZE : BAR_ICON_SIZE;
 
     return (
-        <nav className={styles[`main-nav--${variant}`]}>
+        <nav className={styles["main-nav"]}>
             {NAV_ITEMS.map(({ to, labelKey, Icon }) => (
                 <NavLink
                     key={to}
                     to={to}
-                    onClick={onNavigate}
                     className={({ isActive }) =>
                         [
                             styles["main-nav__item"],
@@ -37,7 +26,7 @@ export const MainNav: React.FC<MainNavProps> = ({
                             .join(" ")
                     }
                 >
-                    <Icon size={iconSize} aria-hidden="true" />
+                    <Icon size={ICON_SIZE} aria-hidden="true" />
                     <span>{t(labelKey)}</span>
                 </NavLink>
             ))}

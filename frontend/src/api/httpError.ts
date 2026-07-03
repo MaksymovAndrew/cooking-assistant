@@ -1,4 +1,5 @@
 import axios from "axios";
+import i18next from "i18next";
 
 interface ApiErrorBody {
     error?: string;
@@ -19,7 +20,7 @@ export function getApiErrorMessage(error: unknown): string {
         return error.message;
     }
 
-    return "Unknown error";
+    return i18next.t("errors.unknown");
 }
 
 // HTTP status for the axios baseQuery; non-axios errors have no status

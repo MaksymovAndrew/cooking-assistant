@@ -10,16 +10,19 @@
         "message": "Are you sure you want to log out of your account?",
         "confirm": "Log out"
     },
+    "themeModal": {
+        "title": "Switch theme?",
+        "message": "The page will reload to apply the new theme. Make sure any unsaved changes are saved first.",
+        "confirm": "Switch theme"
+    },
     "nav": {
         "recipes": "Recipes",
         "menus": "Menus",
         "myMenus": "My Menus",
         "ingredients": "Ingredients",
         "stats": "Stats",
-        "openMenu": "Open menu",
-        "closeMenu": "Close menu",
         "logout": "Logout",
-        "accountPlaceholder": "My account"
+        "scrollToTop": "Scroll to top"
     },
     "theme": {
         "dark": "Dark",
@@ -44,6 +47,9 @@
         "subtitle": "It looks like you got lost",
         "description": "The page you are looking for does not exist or has been moved. We suggest you return to the homepage.",
         "goHome": "GO TO HOMEPAGE"
+    },
+    "errors": {
+        "unknown": "Unknown error"
     },
     "notifications": {
         "somethingWentWrong": "Something went wrong",

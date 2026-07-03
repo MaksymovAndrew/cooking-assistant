@@ -1,7 +1,8 @@
+import { THEME_STORAGE_KEY } from "constants/theme";
+
 import {
     getInitialThemeMode,
     setTheme,
-    THEME_STORAGE_KEY,
     themeReducer,
     toggleTheme,
 } from "redux/slices/themeSlice";

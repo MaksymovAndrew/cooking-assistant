@@ -1,5 +1,5 @@
 # ── Stage 1: builder ────────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ RUN npm ci
 
 COPY . .
 
-# tsc -b + vite build; esbuild drops console/debugger in production mode.
+# tsc -b + vite build; the oxc minifier drops console/debugger in production mode.
 RUN npm run build
 
 # ── Stage 2: runner ─────────────────────────────────────────────────────────

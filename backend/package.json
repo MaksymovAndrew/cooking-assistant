@@ -3,7 +3,7 @@
   "version": "3.3.0",
   "main": "src/index.ts",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "start": "tsx src/index.ts",
@@ -23,6 +23,11 @@
     "patch": "npm version patch --no-git-tag-version",
     "minor": "npm version minor --no-git-tag-version",
     "major": "npm version major --no-git-tag-version"
+  },
+  "overrides": {
+    "tsup": {
+      "esbuild": "^0.28.1"
+    }
   },
   "keywords": [],
   "author": "",

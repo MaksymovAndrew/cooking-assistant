@@ -4,11 +4,13 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "constants/errorMessages";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
+const USER_INGREDIENTS_PATH = "/api/user-ingredients";
+
 describe("user ingredient routes", () => {
     it("should return 401 without a token", async () => {
         const { app } = buildTestApp();
 
-        const res = await request(app).get("/api/user-ingredients");
+        const res = await request(app).get(USER_INGREDIENTS_PATH);
 
         expect(res.status).toBe(401);
     });
@@ -20,7 +22,7 @@ describe("user ingredient routes", () => {
         deps.pantryRepository.findByUser.mockResolvedValue(ingredients);
 
         const res = await request(app)
-            .get("/api/user-ingredients")
+            .get(USER_INGREDIENTS_PATH)
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
@@ -34,7 +36,7 @@ describe("user ingredient routes", () => {
         deps.pantryRepository.addIngredients.mockResolvedValue(undefined);
 
         const res = await request(app)
-            .put("/api/user-ingredients")
+            .put(USER_INGREDIENTS_PATH)
             .set("Cookie", authCookie(7))
             .send({ ingredients: [{ id: 3, quantity_person_ingradient: 2 }] });
 

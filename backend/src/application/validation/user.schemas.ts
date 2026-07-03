@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { nonEmptyStringSchema } from "./common.schemas";
 
+const PASSWORD_MIN_LENGTH = 6;
+
 export const registerUserSchema = z.object({
     name: nonEmptyStringSchema("Name"),
     surname: nonEmptyStringSchema("Surname"),
@@ -11,7 +13,7 @@ export const registerUserSchema = z.object({
             required_error: "Password is required",
             invalid_type_error: "Password must be a string",
         })
-        .min(6, "Password must be at least 6 characters"),
+        .min(PASSWORD_MIN_LENGTH, "Password must be at least 6 characters"),
 });
 
 export const loginUserSchema = z.object({

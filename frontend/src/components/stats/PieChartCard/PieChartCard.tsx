@@ -12,13 +12,14 @@ import {
     PIE_CURSOR,
     PIE_DATA_KEY,
     PIE_NAME_KEY,
+    PIE_SIZE,
     PIE_WRAPPER_STYLE,
     RECHARTS_SVG_STYLE,
     TOOLTIP_CONTENT_STYLE,
     TOOLTIP_WRAPPER_STYLE,
 } from "./chartStyles";
 
-interface PieChartDatum {
+export interface PieChartDatum {
     name: string;
     value: number;
 }
@@ -42,8 +43,8 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                 }}
             >
                 <RechartsPieChart
-                    width={240}
-                    height={240}
+                    width={PIE_SIZE}
+                    height={PIE_SIZE}
                     style={RECHARTS_SVG_STYLE}
                 >
                     <Pie

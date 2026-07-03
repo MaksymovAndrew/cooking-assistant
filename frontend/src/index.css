@@ -18,6 +18,76 @@
             format("truetype");
 }
 
+@font-face {
+    font-family: Fraunces;
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src:
+        local("Fraunces SemiBold"),
+        url("./assets/fonts/Fraunces/Fraunces-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src:
+        local("Inter"),
+        url("./assets/fonts/Inter/Inter-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src:
+        local("Inter Medium"),
+        url("./assets/fonts/Inter/Inter-Medium.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src:
+        local("Inter SemiBold"),
+        url("./assets/fonts/Inter/Inter-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src:
+        local("Inter Bold"),
+        url("./assets/fonts/Inter/Inter-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Geist Mono";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src:
+        local("Geist Mono Medium"),
+        url("./assets/fonts/GeistMono/GeistMono-Medium.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Geist Mono";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src:
+        local("Geist Mono Bold"),
+        url("./assets/fonts/GeistMono/GeistMono-Bold.ttf") format("truetype");
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -36,7 +106,7 @@ svg {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #afafaf;
+    background-color: var(--text-muted);
     border-radius: 6px;
     opacity: 0;
 }

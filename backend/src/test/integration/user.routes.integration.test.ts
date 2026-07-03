@@ -5,6 +5,8 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "constants/errorMessages";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
+const LOGIN_PATH = "/api/login";
+
 describe("user routes", () => {
     it("should return 401 without a token", async () => {
         const { app } = buildTestApp();
@@ -54,7 +56,7 @@ describe("user routes", () => {
         deps.passwordHasher.compare.mockResolvedValue(true);
         deps.tokenService.generate.mockReturnValue("token-value");
 
-        const res = await request(app).post("/api/login").send({
+        const res = await request(app).post(LOGIN_PATH).send({
             login: "bob",
             password: "secret",
         });
@@ -145,7 +147,7 @@ describe("user routes", () => {
 
         deps.userRepository.findByLogin.mockResolvedValue(null);
 
-        const res = await request(app).post("/api/login").send({
+        const res = await request(app).post(LOGIN_PATH).send({
             login: "missing",
             password: "secret",
         });
@@ -160,7 +162,7 @@ describe("user routes", () => {
         const { app } = buildTestApp();
 
         const res = await request(app)
-            .post("/api/login")
+            .post(LOGIN_PATH)
             .set("Content-Type", "application/json")
             .send('{"login": "bob",');
 

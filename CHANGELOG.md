@@ -30,14 +30,23 @@ changelogs and the tags and now track everything here against one shared version
 - Removed: PDF export has been removed from the statistics page; statistics are viewed on screen only.
 - Added: A brand-new Home dashboard - now the default page after signing in - showing your recipe, menu and pantry counts, ingredients expiring soon, and your most recent recipes at a glance, plus quick actions for a new recipe or menu and a "What's new" popup.
 - Added: A dark/light theme toggle, available from every page, that remembers your choice and otherwise follows your system preference.
-- Added: A redesigned navigation bar (with a mobile menu on small screens) now appears consistently across every page.
+- Added: A redesigned navigation bar now appears consistently across every page.
 - Added: The sign-in and sign-up pages now link directly to each other.
 - Added: The Home dashboard now greets you by name, and the avatar in the navigation bar shows your initials instead of a generic icon.
-- Added: "My Menus" is back in the main navigation bar and mobile menu.
+- Added: "My Menus" is back in the main navigation bar.
 - Changed: The homepage now opens directly at the site's root address; "All recipes" moved to its own page reachable from the navigation bar, alongside "Menus", "Ingredients" and "Stats".
 - Fixed: The "Expiring soon" panel and count on the Home dashboard now only include ingredients that are actually expiring soon or already expired, instead of sometimes showing fresh items or an inaccurate count.
 - Fixed: Ingredient expiry dates on the Home dashboard are now calculated consistently regardless of your timezone.
 - Fixed: A routing-library warning no longer appears in the browser console.
+- Security: The build toolchain moved from Vite 5 to Vite 8, removing a vulnerable development-server dependency (esbuild) and making production builds several times faster.
+- Fixed: The page scrollbar now follows the light/dark theme instead of staying a fixed gray.
+- Changed: The "Unknown error" fallback message now goes through the translation system like every other user-facing text.
+- Fixed: When several requests fail at once (for example the server becomes unreachable), the app now shows one error toast instead of stacking identical copies.
+- Added: On phones the browser bars (status bar, address bar) now match the app theme - dark purple in the dark theme, light in the light theme - instead of staying white. Switching themes now shows a confirmation (the page reloads to apply it) so the bars are always painted correctly.
+- Fixed: Tapping a card or button on a touch screen no longer leaves its hover highlight stuck (the "half-disappeared border" effect on iPhone); hover effects now apply only on devices with a real pointer.
+- Changed: The top navigation bar now scrolls away with the page instead of staying pinned, so more of the screen is available for content. A "scroll to top" button appears once you've scrolled down, bringing the navigation bar back into view.
+- Removed: The mobile menu (hamburger icon) has been removed while it's redesigned; on small screens, navigation and sign-out are temporarily only reachable once the screen is wide enough to show the full navigation bar.
+- Changed: Custom fonts (Fraunces, Inter, Geist Mono) are now bundled with the app instead of loaded from Google's CDN - faster first load, no external font requests, and only the font weights actually used are included.
 
 ### Backend
 
@@ -45,6 +54,18 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: The statistics page's menu totals now always reflect every menu, not just the most recent 30.
 - Changed: Internal lint configuration cleanup (no behavior change).
 - Added: The session check now returns your name alongside your account id, so the frontend can greet you by name.
+- Security: Updated vulnerable third-party libraries (a CRLF-injection fix in form-data, a DoS fix in js-yaml, and a file-read fix in the build tool's esbuild).
+
+### Project
+
+- Changed: The app now builds, tests and deploys on Node 22 LTS everywhere (CI, Docker images, engines) - Node 20 reached end of life.
+- Added: Weekly automated dependency-update PRs (Dependabot) for both apps and the GitHub Actions workflows.
+- Added: Stricter style linting - theme colors may only be defined in the design tokens file, no `!important` in component styles, plus nesting and specificity limits; ESLint additionally forbids stray `console` calls on the frontend and enforces exhaustive `switch` statements on both sides.
+- Fixed: `npm run verify` now also runs the frontend stylelint, so the local gate matches CI exactly.
+- Added: Every per-app npm command now also runs from the repository root (`lint:fix`, `stylelint:fix`, `test:coverage`, `build:backend`), and all scripts work identically on Windows, macOS and Linux.
+- Added: `npm run dev:lan` starts the dev servers reachable from other devices on the same network, for testing the app on a phone.
+- Added: ESLint now blocks hardcoded API paths, hardcoded route paths, and magic numbers outside the constants files, on both sides.
+- Changed: A broader code-quality pass removed duplicated logic (recipe/menu search queries, list-pagination footer, validation helpers) and unused leftovers (orphaned translation keys, dead styles) across the whole codebase, with no change in behavior.
 
 ## 3.2 - 2026-06-27
 

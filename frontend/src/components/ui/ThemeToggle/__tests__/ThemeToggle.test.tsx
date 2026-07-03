@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { MODAL_TYPE } from "redux/slices/uiSlice";
+
 import { ThemeToggle } from "components/ui/ThemeToggle";
 
 import { renderWithProviders } from "test/router";
@@ -23,7 +25,7 @@ describe("ThemeToggle", () => {
         expect(screen.getByText("Light")).toBeInTheDocument();
     });
 
-    it("should toggle the theme when clicked", async () => {
+    it("should open the theme-change confirmation modal with the opposite mode when clicked", async () => {
         const store = makeTestStore({ theme: { mode: "dark" } });
 
         renderWithProviders(<ThemeToggle />, { store });
@@ -32,6 +34,12 @@ describe("ThemeToggle", () => {
             screen.getByRole("button", { name: "Toggle theme" }),
         );
 
-        expect(store.getState().theme.mode).toBe("light");
+        expect(store.getState().ui.modal).toMatchObject({
+            type: MODAL_TYPE.themeChange,
+            nextMode: "light",
+        });
+        // clicking the toggle must not switch the theme by itself - only
+        // confirming the modal does, since a switch reloads the page
+        expect(store.getState().theme.mode).toBe("dark");
     });
 });

@@ -1,15 +1,9 @@
 @use "styles/abstracts" as *;
 
-.main-nav--bar {
+.main-nav {
     display: flex;
     align-items: center;
     gap: var(--s-1);
-}
-
-.main-nav--drawer {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
 }
 
 .main-nav__item {
@@ -30,14 +24,8 @@
 
     @include focus-ring;
 
-    &:hover {
+    @include on-hover {
         background: var(--surface-2);
-        color: var(--text);
-    }
-
-    .main-nav--drawer & {
-        height: 46px;
-        border-radius: var(--r-md);
         color: var(--text);
     }
 }
@@ -46,7 +34,7 @@
     background: var(--brand-subtle);
     color: var(--brand);
 
-    &:hover {
+    @include on-hover {
         background: var(--brand-subtle);
         color: var(--brand);
     }

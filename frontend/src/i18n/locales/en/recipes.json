@@ -15,7 +15,6 @@
         "recipesBy": "Recipes: {{types}}",
         "noSuchRecipes": "No such recipes created.",
         "createFirst": "Create your first recipe!",
-        "error": "Error: {{message}}",
         "searchPlaceholder": "ingredient",
         "minCookingTime": "Min cooking time:",
         "maxCookingTime": "Max cooking time:",
@@ -31,7 +30,6 @@
         "noRecipesType": "No recipes of this type found.",
         "createFirst": "Create your first recipe!",
         "addRecipe": "Add Recipe",
-        "error": "Error: {{message}}",
         "searchPlaceholder": "ingredient"
     },
     "createRecipePage": {
@@ -69,8 +67,7 @@
         "updateButton": "Update Recipe",
         "errorServings": "Servings cannot be empty.",
         "errorCookingTimeFormat": "Enter time in format hh:mm",
-        "errorCookingTimeInvalid": "Enter valid time in format hh:mm",
-        "errorUpdate": "Error updating recipe."
+        "errorCookingTimeInvalid": "Enter valid time in format hh:mm"
     },
     "recipeDetailsPage": {
         "recipeType": "Recipe type:",
@@ -84,7 +81,6 @@
         "editButton": "Edit recipe",
         "loading": "Loading...",
         "errorFetch": "Error fetching recipe details",
-        "errorDelete": "Error deleting recipe",
         "deleteTitle": "Delete confirmation",
         "deleteMessage": "Are you sure you want to delete this recipe?",
         "error": "Error: {{message}}",

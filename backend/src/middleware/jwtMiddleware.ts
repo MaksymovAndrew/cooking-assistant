@@ -23,8 +23,7 @@ function isUserPayload(
 
 const authenticateToken: RequestHandler = (req, res, next) => {
     const cookies = req.cookies as
-        | Record<string, string | undefined>
-        | undefined;
+        Record<string, string | undefined> | undefined;
     const token = cookies?.[AUTH_COOKIE_NAME]?.trim() ?? "";
 
     if (!token) {

@@ -4,9 +4,12 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "constants/errorMessages";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
+const MENU_TITLE = "Weekly menu";
+const MENU_9_PATH = "/api/menu/9";
+
 function makeMenuBody() {
     return {
-        menuTitle: "Weekly menu",
+        menuTitle: MENU_TITLE,
         menuContent: "Simple dinners",
         categoryId: 2,
         recipeIds: [3, 5],
@@ -25,7 +28,7 @@ describe("menu routes", () => {
     it("should return menus", async () => {
         const { app, deps } = buildTestApp();
         const paginated = {
-            items: [{ id: 9, title: "Weekly menu" }],
+            items: [{ id: 9, title: MENU_TITLE }],
             total: 1,
         };
 
@@ -72,7 +75,7 @@ describe("menu routes", () => {
     it("should return every menu unpaginated", async () => {
         const { app, deps } = buildTestApp();
         const menus = [
-            { id: 9, title: "Weekly menu" },
+            { id: 9, title: MENU_TITLE },
             { id: 10, title: "Holiday menu" },
         ];
 
@@ -103,7 +106,7 @@ describe("menu routes", () => {
             menuId: 9,
         });
         expect(deps.menuRepository.create.mock.calls[0][0]).toMatchObject({
-            menuTitle: "Weekly menu",
+            menuTitle: MENU_TITLE,
             personId: 7,
         });
         expect(deps.recipeRepository.findExistingIds).toHaveBeenCalledWith([
@@ -135,7 +138,7 @@ describe("menu routes", () => {
         deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
 
         const res = await request(app)
-            .get("/api/menu/9")
+            .get(MENU_9_PATH)
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
@@ -156,7 +159,7 @@ describe("menu routes", () => {
         deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
 
         const res = await request(app)
-            .get("/api/menu/9")
+            .get(MENU_9_PATH)
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
@@ -176,7 +179,7 @@ describe("menu routes", () => {
         deps.menuRepository.update.mockResolvedValue(true);
 
         const res = await request(app)
-            .put("/api/menu/9")
+            .put(MENU_9_PATH)
             .set("Cookie", authCookie(7))
             .send(makeMenuBody());
 
@@ -193,7 +196,7 @@ describe("menu routes", () => {
         deps.menuRepository.update.mockResolvedValue(false);
 
         const res = await request(app)
-            .put("/api/menu/9")
+            .put(MENU_9_PATH)
             .set("Cookie", authCookie(7))
             .send(makeMenuBody());
 
@@ -207,7 +210,7 @@ describe("menu routes", () => {
         deps.menuRepository.deleteById.mockResolvedValue(true);
 
         const res = await request(app)
-            .delete("/api/menu/9")
+            .delete(MENU_9_PATH)
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
@@ -218,7 +221,7 @@ describe("menu routes", () => {
     it("should search person menus by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
         const paginated = {
-            items: [{ id: 9, title: "Weekly menu" }],
+            items: [{ id: 9, title: MENU_TITLE }],
             total: 1,
         };
 

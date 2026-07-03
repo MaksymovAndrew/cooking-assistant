@@ -1,4 +1,4 @@
-import { LogOut, Menu } from "lucide-react";
+import { LogOut } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,14 +17,9 @@ import { getInitials } from "utils/getInitials";
 
 import styles from "./AppHeader.module.scss";
 
-interface AppHeaderProps {
-    onOpenDrawer: () => void;
-}
-
-const MENU_ICON_SIZE = 22;
 const LOGOUT_ICON_SIZE = 18;
 
-export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenDrawer }) => {
+export const AppHeader: React.FC = () => {
     const { t } = useTranslation();
     const openLogoutModal = useLogoutModal();
     const { data: currentUser } = useGetMeQuery(null);
@@ -35,19 +30,10 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenDrawer }) => {
 
     return (
         <header className={styles["app-header"]}>
-            <button
-                type="button"
-                onClick={onOpenDrawer}
-                aria-label={t("nav.openMenu")}
-                className={styles["app-header__menu-button"]}
-            >
-                <Menu size={MENU_ICON_SIZE} aria-hidden="true" />
-            </button>
-
             <Logo to={ROUTES.home} />
 
             <div className={styles["app-header__nav"]}>
-                <MainNav variant="bar" />
+                <MainNav />
             </div>
 
             <div className={styles["app-header__actions"]}>

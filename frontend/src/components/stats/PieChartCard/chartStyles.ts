@@ -3,12 +3,26 @@ import type React from "react";
 export const PIE_DATA_KEY = "value" as const;
 export const PIE_NAME_KEY = "name" as const;
 export const PIE_CURSOR = "default" as const;
+export const PIE_SIZE = 240;
 
 export const PIE_WRAPPER_STYLE: React.CSSProperties = {
     position: "relative",
-    width: 240,
-    height: 240,
+    width: PIE_SIZE,
+    height: PIE_SIZE,
     cursor: "default",
+};
+
+// reserves the donut's footprint while the chart chunk loads, so the page
+// does not jump when it arrives
+export const CHART_FALLBACK_STYLE: React.CSSProperties = {
+    width: PIE_SIZE,
+    height: PIE_SIZE,
+    margin: "0 auto",
+};
+
+export const CHART_CENTERING_STYLE: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "center",
 };
 
 export const CENTER_STYLE: React.CSSProperties = {
@@ -45,7 +59,7 @@ export const TOOLTIP_WRAPPER_STYLE: React.CSSProperties = {
 
 export const LEGEND_WRAPPER_STYLE: React.CSSProperties = {
     marginTop: 8,
-    width: 240,
+    width: PIE_SIZE,
 };
 
 export const LEGEND_ITEM_STYLE: React.CSSProperties = {

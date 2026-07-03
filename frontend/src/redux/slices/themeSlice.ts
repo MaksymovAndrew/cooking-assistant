@@ -1,9 +1,9 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-export type ThemeMode = "dark" | "light";
+import { THEME_STORAGE_KEY } from "constants/theme";
 
-export const THEME_STORAGE_KEY = "theme";
+export type ThemeMode = "dark" | "light";
 
 const prefersLightScheme = (): boolean =>
     typeof window.matchMedia === "function" &&

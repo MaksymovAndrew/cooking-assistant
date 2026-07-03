@@ -1,13 +1,11 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
-import { PAGE_SIZE } from "constants/pagination";
 import type { Menu, MenuCategory } from "types/menu";
 
 import { ListPageLayout } from "components/layout/ListPageLayout";
 import { MenuCard } from "components/menu/MenuCard";
 import { MenuCategoryFilter } from "components/menu/MenuCategoryFilter";
-import { LoadMore } from "components/ui/LoadMore";
+import { ListLoadMoreFooter } from "components/ui/LoadMore";
 import { SearchComponent } from "components/ui/SearchComponent";
 
 interface MenuListViewProps {
@@ -47,8 +45,6 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
     fetchNextPage,
     loadMoreError,
 }) => {
-    const { t } = useTranslation();
-
     return (
         <ListPageLayout
             filterSlot={
@@ -69,21 +65,13 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
             emptyMessage={emptyMessage}
             error={error}
             footerSlot={
-                <LoadMore
-                    hasMore={hasNextPage}
-                    isLoading={isFetchingNextPage}
-                    onLoadMore={fetchNextPage}
-                    loadMoreLabel={t("loadMore.button")}
-                    loadingLabel={t("loadMore.loading")}
-                    countLabel={
-                        total > PAGE_SIZE
-                            ? t("loadMore.showing", {
-                                  loaded: loadedCount,
-                                  total,
-                              })
-                            : undefined
-                    }
-                    errorMessage={loadMoreError ?? undefined}
+                <ListLoadMoreFooter
+                    total={total}
+                    loadedCount={loadedCount}
+                    hasNextPage={hasNextPage}
+                    isFetchingNextPage={isFetchingNextPage}
+                    fetchNextPage={fetchNextPage}
+                    loadMoreError={loadMoreError}
                 />
             }
         >

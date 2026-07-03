@@ -1,5 +1,5 @@
 name: Setup Node and install deps
-description: Set up Node 20 with npm caching and install dependencies
+description: Set up Node 22 with npm caching and install dependencies
 
 inputs:
   cache-dependency-path:
@@ -14,7 +14,7 @@ runs:
   steps:
     - uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version-file: .nvmrc
         cache: npm
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
     - run: ${{ inputs.install }}

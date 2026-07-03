@@ -3,6 +3,8 @@ import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 import type { PantryIngredient } from "types/userIngredient";
 
+import type { ThemeMode } from "redux/slices/themeSlice";
+
 // global modal manager: the active modal is a discriminated union keyed by
 // `type`, so ModalRoot renders the matching modal and reads a typed payload.
 // Modal types live here as a single source of truth, with no magic strings.
@@ -12,6 +14,7 @@ export const MODAL_TYPE = {
     deleteMenu: "deleteMenu",
     deleteIngredient: "deleteIngredient",
     logout: "logout",
+    themeChange: "themeChange",
 } as const;
 
 export interface IngredientHistoryModalInput {
@@ -59,18 +62,29 @@ export interface LogoutModal extends LogoutModalInput {
     id: string;
 }
 
+export interface ThemeChangeModalInput {
+    type: typeof MODAL_TYPE.themeChange;
+    nextMode: ThemeMode;
+}
+
+export interface ThemeChangeModal extends ThemeChangeModalInput {
+    id: string;
+}
+
 export type ModalInput =
     | IngredientHistoryModalInput
     | DeleteRecipeModalInput
     | DeleteMenuModalInput
     | DeleteIngredientModalInput
-    | LogoutModalInput;
+    | LogoutModalInput
+    | ThemeChangeModalInput;
 export type ActiveModal =
     | IngredientHistoryModal
     | DeleteRecipeModal
     | DeleteMenuModal
     | DeleteIngredientModal
-    | LogoutModal;
+    | LogoutModal
+    | ThemeChangeModal;
 
 interface UiState {
     modal: ActiveModal | null;

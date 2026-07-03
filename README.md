@@ -121,7 +121,7 @@ configuration - never in the repo.
 
 ## Tech stack
 
-- Frontend: React 18, TypeScript, Vite 5, React Router v6, Tailwind CSS, axios, i18next + react-i18next, ApexCharts, @react-pdf/renderer, jsPDF; served by nginx in production
+- Frontend: React 18, TypeScript, Vite 8, React Router v6, Redux Toolkit + RTK Query, Tailwind CSS + SCSS modules, axios, i18next + react-i18next, Recharts; served by nginx in production
 - Backend: Node.js, TypeScript, Express 5, `pg`, `node-pg-migrate`, `jsonwebtoken`, `bcryptjs`, `cookie-parser`, `zod`, `helmet`, `pino`, `tsx` (dev) / `tsup` + `node` (prod)
 - Database: PostgreSQL 16 (Neon managed, free tier)
 - Infra: Docker multi-stage builds, GHCR, GitHub Actions, Azure Container Apps, Azure managed SSL

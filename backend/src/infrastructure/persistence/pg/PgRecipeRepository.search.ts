@@ -98,16 +98,19 @@ function buildRecipeOrderBy(sortOrder?: "asc" | "desc"): string {
     return ` ORDER BY r.creation_date DESC, r.id DESC`;
 }
 
-export async function searchRecipes(
+// shared tail of both searches: filters, grouping, ordering, and pagination
+// applied on top of the caller's WHERE seed
+async function runRecipeSearch(
     pool: Pool,
-    filters: unknown,
+    whereSeed: string,
+    params: QueryParam[],
+    startIndex: number,
+    parsed: RecipeFilters,
 ): Promise<PaginatedResult<unknown>> {
-    const parsed: RecipeFilters = filters ?? {};
-    const params: QueryParam[] = [];
     let query = applyRecipeFilters(
-        `${BASE_RECIPE_SELECT} WHERE 1=1`,
+        `${BASE_RECIPE_SELECT} ${whereSeed}`,
         params,
-        1,
+        startIndex,
         parsed,
     );
 
@@ -124,29 +127,27 @@ export async function searchRecipes(
     return extractPaginatedRows(result.rows);
 }
 
+export async function searchRecipes(
+    pool: Pool,
+    filters: unknown,
+): Promise<PaginatedResult<unknown>> {
+    const parsed: RecipeFilters = filters ?? {};
+
+    return runRecipeSearch(pool, `WHERE 1=1`, [], 1, parsed);
+}
+
 export async function searchPersonRecipes(
     pool: Pool,
     personId: number,
     filters: unknown,
 ): Promise<PaginatedResult<unknown>> {
     const parsed: RecipeFilters = filters ?? {};
-    const params: QueryParam[] = [personId];
-    let query = applyRecipeFilters(
-        `${BASE_RECIPE_SELECT} WHERE r.person_id = $1`,
-        params,
+
+    return runRecipeSearch(
+        pool,
+        `WHERE r.person_id = $1`,
+        [personId],
         2,
         parsed,
     );
-
-    query += ` GROUP BY r.id, rt.type_name`;
-    query += buildRecipeOrderBy(parsed.sort_order);
-    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-    params.push(
-        parsed.limit ?? PAGINATION.DEFAULT_LIMIT,
-        parsed.offset ?? PAGINATION.DEFAULT_OFFSET,
-    );
-
-    const result = await pool.query<RecipeSearchRow>(query, params);
-
-    return extractPaginatedRows(result.rows);
 }

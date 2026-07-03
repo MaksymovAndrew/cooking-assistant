@@ -1,9 +1,8 @@
 @use "styles/abstracts" as *;
 
+// no longer sticky - scrolls away with the page; ScrollToTopButton is the way
+// back to it
 .app-header {
-    position: sticky;
-    top: 0;
-    z-index: var(--z-header);
     display: flex;
     align-items: center;
     gap: var(--s-4);
@@ -12,25 +11,6 @@
     background: color-mix(in srgb, var(--bg) 78%, transparent);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
-
-    &__menu-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        border: none;
-        border-radius: var(--r-sm);
-        background: none;
-        color: var(--text);
-        cursor: pointer;
-
-        @include focus-ring;
-
-        @include respond-to(desktop) {
-            display: none;
-        }
-    }
 
     &__nav {
         display: none;
@@ -66,13 +46,12 @@
 
         @include focus-ring;
 
-        &:hover {
+        @include on-hover {
             background: var(--surface-2);
             border-color: var(--danger);
             color: var(--danger);
         }
 
-        // mobile/tablet already expose logout in the drawer footer
         @include respond-to(desktop) {
             display: flex;
         }

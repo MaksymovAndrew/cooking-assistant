@@ -11,6 +11,7 @@ import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
+import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
 
 import { renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
@@ -30,12 +31,16 @@ jest.mock("components/modals/DeleteIngredientModal", () => ({
 jest.mock("components/modals/LogoutConfirmModal", () => ({
     LogoutConfirmModal: jest.fn(() => null),
 }));
+jest.mock("components/modals/ThemeChangeConfirmModal", () => ({
+    ThemeChangeConfirmModal: jest.fn(() => null),
+}));
 
 const mockedModal = jest.mocked(PurchaseHistoryModal);
 const mockedDeleteRecipe = jest.mocked(DeleteRecipeModal);
 const mockedDeleteMenu = jest.mocked(DeleteMenuModal);
 const mockedDeleteIngredient = jest.mocked(DeleteIngredientModal);
 const mockedLogout = jest.mocked(LogoutConfirmModal);
+const mockedThemeChange = jest.mocked(ThemeChangeConfirmModal);
 
 const INGREDIENT: PantryIngredient = {
     id: 9,
@@ -155,5 +160,24 @@ describe("ModalRoot", () => {
         const props = mockedLogout.mock.calls[0][0];
 
         expect(props.modalId).toBe("modal-5");
+    });
+
+    it("should render the theme-change modal with its id and next mode", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: {
+                    modal: {
+                        id: "modal-6",
+                        type: MODAL_TYPE.themeChange,
+                        nextMode: "dark",
+                    },
+                },
+            }),
+        });
+
+        const props = mockedThemeChange.mock.calls[0][0];
+
+        expect(props.modalId).toBe("modal-6");
+        expect(props.nextMode).toBe("dark");
     });
 });

@@ -1,7 +1,7 @@
+import { MS_PER_DAY } from "constants/time";
 import type { ExpiryStatus } from "types/expiry";
 
 const WARNING_THRESHOLD_DAYS = 4;
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 // purchase_date arrives as a UTC-midnight timestamp, so every getter here is
 // UTC - local getters would shift the calendar day for some timezones

@@ -4,11 +4,13 @@ import { ValidationError } from "domain/errors/AppError";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
+const MENU_CATEGORIES_PATH = "/api/menu-categories";
+
 describe("menu category routes", () => {
     it("should return 401 without a token", async () => {
         const { app } = buildTestApp();
 
-        const res = await request(app).get("/api/menu-categories");
+        const res = await request(app).get(MENU_CATEGORIES_PATH);
 
         expect(res.status).toBe(401);
     });
@@ -20,7 +22,7 @@ describe("menu category routes", () => {
         deps.menuCategoryRepository.findAll.mockResolvedValue(categories);
 
         const res = await request(app)
-            .get("/api/menu-categories")
+            .get(MENU_CATEGORIES_PATH)
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
@@ -35,7 +37,7 @@ describe("menu category routes", () => {
         );
 
         const res = await request(app)
-            .get("/api/menu-categories")
+            .get(MENU_CATEGORIES_PATH)
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(400);

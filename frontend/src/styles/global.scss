@@ -1,5 +1,12 @@
 @use "styles/tokens";
 
+// the page background must live on <html>/<body> so the browser chrome
+// (overscroll rubber-band, Safari's translucent bottom bar) picks up the theme
+html,
+body {
+    background-color: var(--bg);
+}
+
 // respects the OS "reduce motion" accessibility setting
 @media (prefers-reduced-motion: reduce) {
     *,

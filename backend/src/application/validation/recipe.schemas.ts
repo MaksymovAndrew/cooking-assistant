@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+    hasUniqueItems,
     idListStringSchema,
     idSchema,
     limitSchema,
@@ -38,11 +39,9 @@ export const createRecipeSchema = z.object({
             required_error: "Ingredients are required",
             invalid_type_error: "Ingredients must be an array",
         })
-        .refine(
-            (items) =>
-                new Set(items.map((item) => item.id)).size === items.length,
-            { message: "Ingredient IDs must be unique" },
-        ),
+        .refine((items) => hasUniqueItems(items, (item) => item.id), {
+            message: "Ingredient IDs must be unique",
+        }),
     type_id: positiveIntegerSchema("Recipe type ID").optional(),
     cooking_time: positiveIntegerSchema("Cooking time").optional(),
     servings: z.preprocess(

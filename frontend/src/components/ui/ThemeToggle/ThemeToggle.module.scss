@@ -20,7 +20,7 @@
 
     @include focus-ring;
 
-    &:hover {
+    @include on-hover {
         background: var(--surface-2);
         border-color: var(--brand);
     }

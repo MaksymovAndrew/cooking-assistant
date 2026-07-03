@@ -25,6 +25,7 @@ export const ERROR_MESSAGES = {
 
     // generic
     NOT_FOUND: "Not found",
+    SERVER_ERROR: "Server error",
 } as const;
 
 export const SUCCESS_MESSAGES = {

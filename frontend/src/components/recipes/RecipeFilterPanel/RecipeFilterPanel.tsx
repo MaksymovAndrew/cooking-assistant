@@ -10,7 +10,7 @@ import { RecipeTypeFilter } from "components/recipes/RecipeTypeFilter";
 import { DateFilterDropdown } from "components/ui/DateFilterDropdown";
 import { SearchComponent } from "components/ui/SearchComponent";
 
-interface RecipeFilterPanelProps {
+export interface RecipeFilterPanelProps {
     filters: RecipeFilterState;
     setSelectedTypes: (types: number[]) => void;
     setStartDate: (date: string) => void;

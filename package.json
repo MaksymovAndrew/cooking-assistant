@@ -2,11 +2,15 @@
   "name": "cooking-assistant",
   "version": "3.3.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "prepare": "husky && node scripts/setup-skip-alias.mjs",
     "postinstall": "npm --prefix backend install && npm --prefix frontend install",
     "start": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
     "dev": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "dev:lan": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev:lan\"",
     "start:backend": "npm --prefix backend run dev",
     "start:frontend": "npm --prefix frontend run dev",
     "migrate": "npm --prefix backend run migrate",
@@ -14,11 +18,16 @@
     "format": "prettier --write \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\"",
     "format:check": "prettier --check \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\"",
     "lint": "npm --prefix backend run lint && npm --prefix frontend run lint",
+    "lint:fix": "npm --prefix backend run lint:fix && npm --prefix frontend run lint:fix",
     "lint:sonarjs": "npm --prefix backend run lint:sonarjs && npm --prefix frontend run lint:sonarjs",
+    "stylelint": "npm --prefix frontend run stylelint",
+    "stylelint:fix": "npm --prefix frontend run stylelint:fix",
     "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck",
     "test": "npm --prefix backend run test && npm --prefix frontend run test",
+    "test:coverage": "npm --prefix backend run test:coverage && npm --prefix frontend run test:coverage",
     "build": "npm --prefix frontend run build",
-    "verify": "npm run format:check && npm run lint && npm run lint:sonarjs && npm run typecheck && npm run test && npm run build",
+    "build:backend": "npm --prefix backend run build",
+    "verify": "npm run format:check && npm run lint && npm run lint:sonarjs && npm run stylelint && npm run typecheck && npm run test && npm run build",
     "patch": "npm version patch --no-git-tag-version",
     "minor": "npm version minor --no-git-tag-version",
     "major": "npm version major --no-git-tag-version"

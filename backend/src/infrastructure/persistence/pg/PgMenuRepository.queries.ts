@@ -20,6 +20,28 @@ interface MenuListRow {
 // menu_id is the primary key, so ordering by it is already a deterministic tie-breaker
 const MENU_ORDER_BY = ` ORDER BY m.menu_id DESC`;
 
+// shared tail of both menu list queries: ordering and pagination appended to
+// the caller-assembled WHERE, then the paginated rows unwrapped
+async function runPaginatedMenuQuery(
+    pool: Pool,
+    baseQuery: string,
+    queryParams: QueryParam[],
+    limit: number | undefined,
+    offset: number | undefined,
+): Promise<PaginatedResult<unknown>> {
+    let query = baseQuery + MENU_ORDER_BY;
+
+    query += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
+    queryParams.push(
+        limit ?? PAGINATION.DEFAULT_LIMIT,
+        offset ?? PAGINATION.DEFAULT_OFFSET,
+    );
+
+    const result = await pool.query<MenuListRow>(query, queryParams);
+
+    return extractPaginatedRows(result.rows);
+}
+
 export async function findAllMenus(
     pool: Pool,
     filters: unknown,
@@ -56,16 +78,7 @@ export async function findAllMenus(
         queryParams.push(categoryArray);
     }
 
-    query += MENU_ORDER_BY;
-    query += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
-    queryParams.push(
-        limit ?? PAGINATION.DEFAULT_LIMIT,
-        offset ?? PAGINATION.DEFAULT_OFFSET,
-    );
-
-    const result = await pool.query<MenuListRow>(query, queryParams);
-
-    return extractPaginatedRows(result.rows);
+    return runPaginatedMenuQuery(pool, query, queryParams, limit, offset);
 }
 
 export async function searchPersonMenus(
@@ -102,16 +115,7 @@ export async function searchPersonMenus(
         queryParams.push(categoryArray);
     }
 
-    query += MENU_ORDER_BY;
-    query += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
-    queryParams.push(
-        limit ?? PAGINATION.DEFAULT_LIMIT,
-        offset ?? PAGINATION.DEFAULT_OFFSET,
-    );
-
-    const result = await pool.query<MenuListRow>(query, queryParams);
-
-    return extractPaginatedRows(result.rows);
+    return runPaginatedMenuQuery(pool, query, queryParams, limit, offset);
 }
 
 interface MenuRow {

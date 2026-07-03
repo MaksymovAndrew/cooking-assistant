@@ -14,6 +14,26 @@
         "property-no-vendor-prefix": [
             true,
             { "ignoreProperties": ["-webkit-font-smoothing", "-moz-osx-font-smoothing"] }
-        ]
-    }
+        ],
+        "color-no-hex": true,
+        "color-named": "never",
+        "selector-max-id": 0,
+        "max-nesting-depth": [3, { "ignore": ["blockless-at-rules", "pseudo-classes"] }],
+        "declaration-block-single-line-max-declarations": 1,
+        "font-weight-notation": "numeric"
+    },
+    "overrides": [
+        {
+            "files": ["src/styles/_tokens.scss"],
+            "rules": {
+                "color-no-hex": null
+            }
+        },
+        {
+            "files": ["src/components/**/*.scss", "src/pages/**/*.scss"],
+            "rules": {
+                "declaration-no-important": true
+            }
+        }
+    ]
 }

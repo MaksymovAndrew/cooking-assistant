@@ -1,6 +1,10 @@
-// switching [data-theme] on <html> repaints every var(--...) consumer instantly
+// switching [data-theme] on <html> repaints every var(--...) consumer instantly.
+// the --bg values are mirrored by the theme-color meta + pre-paint script in
+// index.html - keep them in sync when changing the palette
 :root,
 [data-theme="dark"] {
+    color-scheme: dark;
+
     --bg: #15131a;
     --surface: #1e1b26;
     --surface-2: #2a2533;
@@ -12,6 +16,7 @@
     --text: #f4f1f8;
     --text-2: #b4adc2;
     --text-muted: #7c7689;
+    --on-brand: #fff;
     --success: #46c988;
     --danger: #f06d6d;
     --warning: #e0a33e;
@@ -23,6 +28,8 @@
 }
 
 [data-theme="light"] {
+    color-scheme: light;
+
     --bg: #f7f5fb;
     --surface: #fff;
     --surface-2: #f1edf8;
@@ -34,6 +41,7 @@
     --text: #1b1726;
     --text-2: #5a5468;
     --text-muted: #8b8499;
+    --on-brand: #fff;
     --success: #2e9e68;
     --danger: #d64545;
     --warning: #b9791f;

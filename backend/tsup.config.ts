@@ -11,7 +11,7 @@ export default defineConfig({
         "scripts/deploy-db": "src/scripts/deploy-db.ts",
     },
     format: ["cjs"],
-    target: "node20",
+    target: "node22",
     platform: "node",
     bundle: true,
     sourcemap: false,

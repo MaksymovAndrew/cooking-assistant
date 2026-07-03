@@ -1,8 +1,16 @@
-// escalating client-side login lockout, layered on top of the server's 429.
-// every ATTEMPTS_PER_LOCK failures trigger a lock; the lock duration climbs
-// one step up the ladder each time, holding at the last step once reached.
-export const ATTEMPTS_PER_LOCK = 5;
-export const LOCKOUT_LADDER_MINUTES = [1, 5, 10, 30, 60];
+import {
+    ATTEMPTS_PER_LOCK,
+    LOCKOUT_LADDER_MINUTES,
+} from "constants/loginLockout";
+import {
+    MS_PER_MINUTE,
+    MS_PER_SECOND,
+    SECONDS_PER_MINUTE,
+} from "constants/time";
+
+// the ladder values live in constants/loginLockout.ts; re-exported so the
+// form/hook consumers keep one import site for the whole lockout API
+export { ATTEMPTS_PER_LOCK, LOCKOUT_LADDER_MINUTES };
 
 const STORAGE_KEY = "cooking.loginLockout";
 
@@ -60,7 +68,7 @@ export const registerFailure = (state: LockoutState): LockoutState => {
         LOCKOUT_LADDER_MINUTES.length - 1,
     );
     const lockedUntil =
-        Date.now() + LOCKOUT_LADDER_MINUTES[stageIndex] * 60_000;
+        Date.now() + LOCKOUT_LADDER_MINUTES[stageIndex] * MS_PER_MINUTE;
 
     return { failures, lockedUntil };
 };
@@ -71,16 +79,16 @@ export const mergeServerRetryAfter = (
     state: LockoutState,
     seconds: number,
 ): LockoutState => {
-    const serverLockedUntil = Date.now() + seconds * 1000;
+    const serverLockedUntil = Date.now() + seconds * MS_PER_SECOND;
     const lockedUntil = Math.max(state.lockedUntil ?? 0, serverLockedUntil);
 
     return { ...state, lockedUntil };
 };
 
 export const formatCountdown = (remainingMs: number): string => {
-    const totalSeconds = Math.max(0, Math.ceil(remainingMs / 1000));
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+    const totalSeconds = Math.max(0, Math.ceil(remainingMs / MS_PER_SECOND));
+    const minutes = Math.floor(totalSeconds / SECONDS_PER_MINUTE);
+    const seconds = totalSeconds % SECONDS_PER_MINUTE;
 
     return `${minutes}:${String(seconds).padStart(2, "0")}`;
 };

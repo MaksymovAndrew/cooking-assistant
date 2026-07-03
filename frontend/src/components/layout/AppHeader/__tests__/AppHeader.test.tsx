@@ -13,25 +13,10 @@ import { renderWithProviders } from "test/router";
 jest.mock("api/client");
 
 describe("AppHeader", () => {
-    it("should call onOpenDrawer when the menu button is clicked", async () => {
-        mockGetByUrl({ [API_ROUTES.auth.me]: null });
-        const onOpenDrawer = jest.fn();
-
-        renderWithProviders(<AppHeader onOpenDrawer={onOpenDrawer} />);
-
-        await userEvent.click(
-            screen.getByRole("button", { name: "Open menu" }),
-        );
-
-        expect(onOpenDrawer).toHaveBeenCalledTimes(1);
-    });
-
     it("should open the logout confirmation modal when the logout button is clicked", async () => {
         mockGetByUrl({ [API_ROUTES.auth.me]: null });
 
-        const { store } = renderWithProviders(
-            <AppHeader onOpenDrawer={jest.fn()} />,
-        );
+        const { store } = renderWithProviders(<AppHeader />);
 
         await userEvent.click(screen.getByRole("button", { name: "Logout" }));
 
@@ -50,7 +35,7 @@ describe("AppHeader", () => {
             },
         });
 
-        renderWithProviders(<AppHeader onOpenDrawer={jest.fn()} />);
+        renderWithProviders(<AppHeader />);
 
         expect(await screen.findByText("CC")).toBeInTheDocument();
     });

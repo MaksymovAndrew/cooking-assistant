@@ -53,10 +53,19 @@ export function numberSchema(field: string) {
     });
 }
 
+export function integerSchema(field: string) {
+    return numberSchema(field).int(`${field} must be an integer`);
+}
+
 export function positiveIntegerSchema(field: string) {
-    return numberSchema(field)
-        .int(`${field} must be an integer`)
-        .positive(`${field} must be positive`);
+    return integerSchema(field).positive(`${field} must be positive`);
+}
+
+export function hasUniqueItems<T>(
+    items: T[],
+    getKey: (item: T) => unknown = (item) => item,
+): boolean {
+    return new Set(items.map(getKey)).size === items.length;
 }
 
 export function idListStringSchema(field: string) {

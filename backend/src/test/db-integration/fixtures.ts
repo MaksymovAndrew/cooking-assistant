@@ -1,12 +1,10 @@
+import { randomUUID } from "node:crypto";
 import type { Pool } from "pg";
 
-// unique names per call so tests never need to truncate shared tables between each other
-let sequence = 0;
-
+// unique names per call so tests never need to truncate shared tables between each
+// other; a UUID stays collision-free across parallel Jest workers sharing one database
 function unique(prefix: string): string {
-    sequence += 1;
-
-    return `${prefix}-${Date.now()}-${sequence}`;
+    return `${prefix}-${randomUUID()}`;
 }
 
 export async function createPerson(pool: Pool): Promise<number> {

@@ -15,7 +15,7 @@ const NAME = "Playwright";
 test.beforeAll(async ({ browser }) => {
     const runId = Date.now().toString(36);
     login = `e2e-${runId}`;
-    // generated per run: a throwaway account's password, never a stored credential
+    // throwaway per-run account, so the login doubles as its password
     password = login;
     recipeTitle = `Smoke recipe ${runId}`;
     menuTitle = `Smoke menu ${runId}`;

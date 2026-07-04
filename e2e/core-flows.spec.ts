@@ -30,7 +30,7 @@ async function register(page: Page, login: string) {
 test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
     login = `e2e-core-${runId}`;
-    // generated per run: a throwaway account's password, never a stored credential
+    // throwaway per-run account, so the login doubles as its password
     password = login;
     page = await browser.newPage();
     await register(page, login);

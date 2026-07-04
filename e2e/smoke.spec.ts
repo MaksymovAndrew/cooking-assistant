@@ -6,15 +6,17 @@ test.describe.configure({ mode: "serial" });
 
 let page: Page;
 let login: string;
+let password: string;
 let recipeTitle: string;
 let menuTitle: string;
 
 const NAME = "Playwright";
-const PASSWORD = login;
 
 test.beforeAll(async ({ browser }) => {
     const runId = Date.now().toString(36);
     login = `e2e-${runId}`;
+    // generated per run: a throwaway account's password, never a stored credential
+    password = login;
     recipeTitle = `Smoke recipe ${runId}`;
     menuTitle = `Smoke menu ${runId}`;
     page = await browser.newPage();
@@ -29,14 +31,14 @@ test("should register a new account", async () => {
     await page.getByLabel("Name:", { exact: true }).fill(NAME);
     await page.getByLabel("Surname:", { exact: true }).fill("Smoke");
     await page.getByLabel("Username:", { exact: true }).fill(login);
-    await page.getByLabel("Password:", { exact: true }).fill(PASSWORD);
+    await page.getByLabel("Password:", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Register" }).click();
     await expect(page).toHaveURL(/\/login$/);
 });
 
 test("should log in and land on the dashboard", async () => {
     await page.getByLabel("Username:", { exact: true }).fill(login);
-    await page.getByLabel("Password:", { exact: true }).fill(PASSWORD);
+    await page.getByLabel("Password:", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Log In" }).click();
     await expect(page).toHaveURL("/");
     await expect(page.getByText(`Welcome back, ${NAME}`)).toBeVisible();

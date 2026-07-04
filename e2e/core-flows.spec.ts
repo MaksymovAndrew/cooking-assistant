@@ -7,23 +7,22 @@ test.describe.configure({ mode: "serial" });
 
 let page: Page;
 let login: string;
+let password: string;
 let runId: string;
 let recipeId: string;
 let menuId: string;
-
-const PASSWORD = login;
 
 async function register(page: Page, login: string) {
     await page.goto("/registration");
     await page.getByLabel("Name:", { exact: true }).fill("Core");
     await page.getByLabel("Surname:", { exact: true }).fill("Flows");
     await page.getByLabel("Username:", { exact: true }).fill(login);
-    await page.getByLabel("Password:", { exact: true }).fill(PASSWORD);
+    await page.getByLabel("Password:", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Register" }).click();
     await expect(page).toHaveURL(/\/login$/);
 
     await page.getByLabel("Username:", { exact: true }).fill(login);
-    await page.getByLabel("Password:", { exact: true }).fill(PASSWORD);
+    await page.getByLabel("Password:", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Log In" }).click();
     await expect(page).toHaveURL("/");
 }
@@ -31,6 +30,8 @@ async function register(page: Page, login: string) {
 test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
     login = `e2e-core-${runId}`;
+    // generated per run: a throwaway account's password, never a stored credential
+    password = login;
     page = await browser.newPage();
     await register(page, login);
 });

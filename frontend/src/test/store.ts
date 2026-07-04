@@ -10,9 +10,7 @@ import { setupStore } from "redux/store";
 export const makeTestStore = (preloadedState?: Partial<RootState>) =>
     setupStore(preloadedState);
 
-// renders a hook behind a real Redux Provider and returns the store alongside
-// the render result, so a test can assert dispatched/derived state (cache,
-// notifications, ...) without each hook test re-declaring its own wrapper
+// renders a hook behind a real Redux Provider and returns the store alongside the render result
 export const renderHookWithStore = <T>(
     callback: () => T,
     store: AppStore = makeTestStore(),

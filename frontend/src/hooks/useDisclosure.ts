@@ -7,9 +7,7 @@ interface Disclosure {
     toggle: () => void;
 }
 
-// open/close/toggle are useCallback-stable so a consumer forwarding them into
-// another hook's dependency array (e.g. useEscapeKey) doesn't re-subscribe on
-// every unrelated re-render
+// stable via useCallback so consumers can forward these into another hook's deps array safely
 export const useDisclosure = (initialOpen = false): Disclosure => {
     const [isOpen, setIsOpen] = useState(initialOpen);
 

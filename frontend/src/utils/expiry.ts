@@ -8,9 +8,8 @@ const WARNING_THRESHOLD_DAYS = 4;
 const startOfDayUTC = (date: Date): number =>
     Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 
-// null when the ingredient has no usable expiry data. Deliberately not the
-// same rule as isExpired() in ingredientExpirationUtils.ts (that one treats
-// the expiry day itself as already expired; this one treats it as day 0).
+// null when there's no usable expiry data; deliberately a different rule from
+// isExpired() in ingredientExpirationUtils.ts (that one expires on the expiry day itself)
 export const getExpiryStatus = (
     daysToExpire: number | null | undefined,
     purchaseDate: string | undefined,

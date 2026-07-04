@@ -68,7 +68,7 @@ describe("CreateRecipePage", () => {
                 title: TITLE,
                 content: DESCRIPTION,
                 type_id: TYPE_ID,
-                servings: Number(SERVINGS),
+                servings: SERVINGS,
                 ingredients: [{ id: INGREDIENT_ID, quantity: 1 }],
             }),
         );

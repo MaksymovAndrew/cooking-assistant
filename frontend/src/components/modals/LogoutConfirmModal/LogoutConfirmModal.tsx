@@ -29,7 +29,7 @@ export const LogoutConfirmModal = ({ modalId }: LogoutConfirmModalProps) => {
             // drop every cached query so the next user starts clean
             dispatch(baseApi.util.resetApiState());
             dispatch(closeModal(modalId));
-            navigate(ROUTES.login);
+            void navigate(ROUTES.login);
         }
     };
 

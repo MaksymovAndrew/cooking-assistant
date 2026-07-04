@@ -5,9 +5,7 @@ import "i18n/index";
 
 import { configure } from "@testing-library/react";
 
-// under full-suite parallelism a worker can be starved past Testing Library's default
-// 1000ms findBy timeout and Jest's default 5000ms per-test timeout; widen both so a
-// slow-but-correct test never flakes on a busy machine
+// widened so a slow-but-correct test never flakes on a busy machine under full-suite parallelism
 const ASYNC_UTIL_TIMEOUT_MS = 2500;
 // room for a few sequential async waits within one test before the test itself times out
 const TEST_TIMEOUT_MS = ASYNC_UTIL_TIMEOUT_MS * 4;

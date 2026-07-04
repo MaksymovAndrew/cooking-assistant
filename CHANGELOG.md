@@ -47,6 +47,7 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: The top navigation bar now scrolls away with the page instead of staying pinned, so more of the screen is available for content. A "scroll to top" button appears once you've scrolled down, bringing the navigation bar back into view.
 - Removed: The mobile menu (hamburger icon) has been removed while it's redesigned; on small screens, navigation and sign-out are temporarily only reachable once the screen is wide enough to show the full navigation bar.
 - Changed: Custom fonts (Fraunces, Inter, Geist Mono) are now bundled with the app instead of loaded from Google's CDN - faster first load, no external font requests, and only the font weights actually used are included.
+- Changed: Upgraded to React 19 and React Router 7 (no visible change in behavior).
 
 ### Backend
 
@@ -55,6 +56,7 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: Internal lint configuration cleanup (no behavior change).
 - Added: The session check now returns your name alongside your account id, so the frontend can greet you by name.
 - Security: Updated vulnerable third-party libraries (a CRLF-injection fix in form-data, a DoS fix in js-yaml, and a file-read fix in the build tool's esbuild).
+- Fixed: The "Servings" field on a recipe now correctly saves whatever was typed (e.g. "a full pot"), instead of silently discarding non-numeric answers.
 
 ### Project
 
@@ -67,7 +69,10 @@ changelogs and the tags and now track everything here against one shared version
 - Added: ESLint now blocks hardcoded API paths, hardcoded route paths, and magic numbers outside the constants files, on both sides.
 - Changed: The backend now compiles with TypeScript's modern NodeNext module resolution, dropping two deprecated compiler flags and a manual type shim (no behavior change).
 - Added: the release version now bumps itself - committing on a release branch automatically sets the version from the branch name (root always, plus only the sides that actually changed) and includes it in the same commit; `npm run bump` does the same by hand.
-- Changed: A broader code-quality pass removed duplicated logic (recipe/menu search queries, list-pagination footer, validation helpers) and unused leftovers (orphaned translation keys, dead styles) across the whole codebase, with no change in behavior.
+- Changed: A broader code-quality pass removed duplicated logic (recipe/menu search queries, list-pagination footer, validation helpers) and unused leftovers (orphaned translation keys, dead styles, an unused lint dependency) across the whole codebase, with no change in behavior.
+- Added: The end-to-end test suite and its config are now covered by formatting and linting too (previously untouched by either), catching one real issue on the spot.
+- Added: An end-to-end test suite (Playwright) now drives real login, recipe/menu/pantry, and theme-toggle flows through a browser on every PR, catching visual/integration regressions that unit tests can't see.
+- Added: The recipe and menu repositories are now also tested against a real PostgreSQL database (Testcontainers) on every PR, catching SQL mistakes that mocked tests can't see.
 
 ## 3.2 - 2026-06-27
 

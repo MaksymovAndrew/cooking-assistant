@@ -74,7 +74,7 @@ const App: React.FC = () => (
 );
 
 const AppWrapper: React.FC = () => (
-    <Router future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+    <Router>
         <ThemeManager />
         <Suspense fallback={<PageSpinner />}>
             <App />

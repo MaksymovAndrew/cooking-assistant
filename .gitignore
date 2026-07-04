@@ -15,6 +15,13 @@ dist-ssr
 *.local
 *.tsbuildinfo
 
+# Playwright artifacts
+test-results/
+playwright-report/
+
+# Testcontainers db-integration connection handoff file
+backend/src/test/db-integration/.connection.json
+
 # Local secrets - keep .env out of git, commit .env.example instead
 .env
 

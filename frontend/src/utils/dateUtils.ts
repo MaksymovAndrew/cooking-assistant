@@ -1,9 +1,6 @@
 import { dateLocaleFor, DEFAULT_LANGUAGE } from "constants/languages";
 
-// locale-aware date formatting. Pass the active i18n language (component code uses
-// `i18n.language`); non-React callers fall back to the default language. Centralizing
-// this kills the scattered hardcoded locales ("uk-UA", "en-GB") and makes Cyrillic
-// dates work as soon as ru/uk are enabled.
+// pass the active i18n language (component code uses `i18n.language`); non-React callers fall back to the default
 
 // short calendar date, e.g. "31/12/2024"
 export const formatDate = (

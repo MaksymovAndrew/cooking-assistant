@@ -20,3 +20,5 @@ npm --prefix frontend run lint
 npm --prefix frontend run lint:sonarjs
 npm --prefix frontend run stylelint
 npm --prefix frontend run test
+npx eslint .
+npm run typecheck:e2e

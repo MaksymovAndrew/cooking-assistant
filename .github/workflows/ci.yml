@@ -106,6 +106,19 @@ jobs:
       - name: Test backend with coverage
         run: npm --prefix backend run test:coverage
 
+  test-backend-db:
+    needs: gate
+    if: ${{ needs.gate.outputs.skip != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          cache-dependency-path: backend/package-lock.json
+          install: npm --prefix backend ci
+      - name: Test repositories against a real Postgres (Testcontainers)
+        run: npm --prefix backend run test:db
+
   lint-frontend:
     needs: gate
     if: ${{ needs.gate.outputs.skip != 'true' }}
@@ -184,10 +197,58 @@ jobs:
       - name: Test frontend with coverage
         run: npm --prefix frontend run test:coverage
 
+  e2e:
+    needs: gate
+    if: ${{ needs.gate.outputs.skip != 'true' }}
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: "12345678"
+          POSTGRES_DB: cooking_helper
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DB_USER: postgres
+      DB_PASSWORD: "12345678"
+      DB_HOST: localhost
+      DB_PORT: "5432"
+      DB_NAME: cooking_helper
+      JWT_SECRET_KEY: e2e-ci-only-secret-key-0123456789abcdef
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
+          install: npm ci --ignore-scripts && npm --prefix backend ci && npm --prefix frontend ci
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Prepare database
+        run: npm --prefix backend run migrate && npm --prefix backend run seed
+      - name: Run e2e smoke suite
+        run: npx playwright test
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
+
   ci-success:
     name: ci-success
     if: always()
-    needs: [gate, format, lint-backend, lint-frontend, typecheck-backend, typecheck-frontend, sonarjs-backend, sonarjs-frontend, test-backend, build-frontend, stylelint-frontend, test-frontend]
+    needs: [gate, format, lint-backend, lint-frontend, typecheck-backend, typecheck-frontend, sonarjs-backend, sonarjs-frontend, test-backend, test-backend-db, build-frontend, stylelint-frontend, test-frontend, e2e]
     runs-on: ubuntu-latest
     steps:
       - name: Fail if any needed job failed

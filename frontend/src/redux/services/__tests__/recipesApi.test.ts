@@ -3,7 +3,7 @@ import type {
     CreateRecipeRequest,
     RecipeDetails,
     RecipeFilterParams,
-    RecipeListItem,
+    RecipeSearchResultItem,
     UpdateRecipeRequest,
 } from "types/recipe";
 
@@ -21,13 +21,14 @@ import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
 
-const LIST: RecipeListItem[] = [
+const LIST: RecipeSearchResultItem[] = [
     {
         id: 1,
         title: "Soup",
         type_name: "Hot",
         creation_date: "2024-01-01",
         cooking_time: 30,
+        ingredients: [{ id: 1, name: "Tomato" }],
     },
 ];
 const PAGE = { items: LIST, total: LIST.length };
@@ -38,14 +39,14 @@ const CREATE: CreateRecipeRequest = {
     ingredients: [{ id: 1, quantity: 2 }],
     type_id: 1,
     cooking_time: 30,
-    servings: 2,
+    servings: "2",
 };
 const UPDATE: UpdateRecipeRequest = {
     title: "Soup",
     content: "boil",
     type_id: 1,
     cooking_time: 30,
-    servings: 2,
+    servings: "2",
     ingredients: [{ id: 1, quantity_recipe_ingredients: 2 }],
 };
 const DETAIL: RecipeDetails = {
@@ -57,7 +58,7 @@ const DETAIL: RecipeDetails = {
     type_name: "Hot",
     cooking_time: 30,
     creation_date: "2024-01-01",
-    servings: 2,
+    servings: "2",
     person_id: 1,
     isOwner: true,
 };

@@ -20,9 +20,7 @@ const EMPTY_FORM: RegisterRequest = {
     password: "",
 };
 
-// register form logic: validation, navigation and i18n messages live here so
-// RegisterPage stays thin. validate() is pure and RETURNS the next errors, so
-// the submit decision uses that value (state updates are async and would be stale).
+// validate() returns the next errors instead of relying on state, which would still be stale here
 export const useRegisterForm = () => {
     const { t } = useTranslation("auth");
     const navigate = useNavigate();
@@ -86,7 +84,7 @@ export const useRegisterForm = () => {
         const result = await registerUser(values);
 
         if ("data" in result) {
-            navigate(ROUTES.login);
+            void navigate(ROUTES.login);
         } else {
             setError(t("errors.userExists"));
         }

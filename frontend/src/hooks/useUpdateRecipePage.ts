@@ -45,7 +45,7 @@ export const useUpdateRecipePage = () => {
             title: recipe.title,
             content: recipe.content,
             cookingTime: formatCookingTimeInput(recipe.cooking_time),
-            servings: recipe.servings !== null ? String(recipe.servings) : "",
+            servings: recipe.servings ?? "",
             selectedTypeId: recipe.type_id,
             selectedIngredients: recipe.ingredients.map((i) => ({
                 id: i.id,
@@ -83,8 +83,7 @@ export const useUpdateRecipePage = () => {
                 content: form.content,
                 type_id: form.selectedTypeId,
                 cooking_time: parseCookingTime(form.cookingTime) ?? 0,
-                servings:
-                    form.servings !== "" ? Number(form.servings) : undefined,
+                servings: form.servings !== "" ? form.servings : undefined,
                 ingredients: form.selectedIngredients.map(
                     ({ id: recipeId, quantity }) => ({
                         id: recipeId,
@@ -95,7 +94,7 @@ export const useUpdateRecipePage = () => {
         });
 
         if ("data" in result) {
-            navigate(ROUTES.allRecipes);
+            void navigate(ROUTES.allRecipes);
         }
     };
 

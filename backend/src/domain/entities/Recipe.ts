@@ -20,7 +20,8 @@ export interface RecipeCreationInput {
     ingredients: RecipeIngredientInput[];
     type_id?: number;
     cooking_time?: number;
-    servings?: number;
+    // free-form text (e.g. "4" or "a full pot") - the column is VARCHAR, not numeric
+    servings?: string;
 }
 
 export type RecipeUpdateInput = Omit<RecipeCreationInput, "person_id">;
@@ -50,7 +51,7 @@ export class Recipe {
     declare ingredients: RecipeIngredient[];
     declare type_id?: number;
     declare cooking_time?: number;
-    declare servings?: number;
+    declare servings?: string;
 
     static forCreation({
         title,

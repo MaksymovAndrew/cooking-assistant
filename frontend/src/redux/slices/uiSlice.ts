@@ -5,9 +5,7 @@ import type { PantryIngredient } from "types/userIngredient";
 
 import type { ThemeMode } from "redux/slices/themeSlice";
 
-// global modal manager: the active modal is a discriminated union keyed by
-// `type`, so ModalRoot renders the matching modal and reads a typed payload.
-// Modal types live here as a single source of truth, with no magic strings.
+// discriminated union keyed by `type` so ModalRoot renders the matching modal with a typed payload
 export const MODAL_TYPE = {
     ingredientHistory: "ingredientHistory",
     deleteRecipe: "deleteRecipe",

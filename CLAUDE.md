@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Two-app monorepo (no workspaces - each side has its own `package.json`):
 
 - [backend/](backend/) - Node.js + Express 5 + TypeScript + PostgreSQL (`pg`) API on port `3000`; helmet, express-rate-limit, pino, and zod provide operational hardening and input validation; source lives under [backend/src/](backend/src/)
-- [frontend/](frontend/) - React 18 + TypeScript + Vite on port `8080` (Tailwind CSS, React Router v6)
+- [frontend/](frontend/) - React 19 + TypeScript + Vite on port `8080` (Tailwind CSS, React Router v7)
 - Database schema is managed by `node-pg-migrate`: SQL migrations live in [backend/migrations/](backend/migrations/) (the initial one captures the full current schema) and reference/sample data is loaded by [backend/src/scripts/seed.ts](backend/src/scripts/seed.ts).
 - Root [package.json](package.json) is an orchestration shim: it pulls in `concurrently` and exposes scripts that drive both sub-packages. It also holds the single shared project version (see [Versioning](#versioning) below).
 - [CHANGELOG.md](CHANGELOG.md) at the root is the single changelog for the whole project.
@@ -23,7 +23,7 @@ npm run start:backend    # backend only (tsx watch)
 npm run start:frontend   # frontend only (vite)
 ```
 
-Every per-app quality command has a root aggregate too - `lint`, `lint:fix`, `lint:sonarjs`, `stylelint`, `stylelint:fix`, `typecheck`, `test`, `test:coverage`, `build` (frontend), `build:backend`, `verify` - and all scripts are cross-platform (plain node CLIs, no shell-specific syntax), so they behave identically on Windows, macOS and Linux.
+Every per-app quality command has a root aggregate too - `lint`, `lint:fix`, `lint:sonarjs`, `stylelint`, `stylelint:fix`, `typecheck`, `test`, `test:coverage`, `build` (frontend), `build:backend`, `verify` - and all scripts are cross-platform (plain node CLIs, no shell-specific syntax), so they behave identically on Windows, macOS and Linux. Two more root scripts cover the slower suites, deliberately kept out of `test`/`verify`/the pre-commit hook: `test:e2e` (Playwright smoke suite against a live dev stack, see [e2e/](e2e/)) and `test:db` (Testcontainers real-Postgres repository suite, see [backend/src/test/db-integration/](backend/src/test/db-integration/)) - both need Docker.
 
 The root `postinstall` hook (`npm --prefix backend install && npm --prefix frontend install`) means a single `npm i` at the root populates all three `node_modules`. Don't add a separate `install:all` script.
 
@@ -57,7 +57,7 @@ Backend test conventions (match these when adding tests):
 - Business-logic unit tests stay no DB, no Express. Use cases and domain entities are tested with fake repositories/ports built from `jest.fn()`; mock only what is necessary.
 - Middleware unit tests call the middleware directly with mocked `req`/`res`/`next`.
 - Supertest integration tests use `buildTestApp` with fake repositories/ports. They exercise real routes, auth middleware, controllers, use cases, and `errorHandler` without a database.
-- Pg-repository tests are deferred until a future real-DB suite with Testcontainers; do not add mock-pool SQL-string tests as a substitute.
+- Pg-repository tests run against a real Postgres via Testcontainers, in a separate suite: [backend/src/test/db-integration/](backend/src/test/db-integration/), run with `npm run test:db` (its own `jest.db.config.js`, a `globalSetup`/`globalTeardown` pair that starts one shared container and applies migrations, and a `testPool.ts` helper each test file's worker process reads the connection info from). Not part of `npm test`/the pre-commit hook (needs Docker, slower) - it has its own CI job instead. Do not add mock-pool SQL-string tests as a substitute for this suite.
 - Unit tests are co-located in `__tests__/` next to the unit, named `<Unit>.test.ts`; HTTP integration tests live in `backend/src/test/integration/`.
 - Test names start with "should": `it("should ...")`.
 - Assert domain errors with the custom matcher `expect(err).toBeAppError(Class, message, status)` ([backend/src/test/jest.setup.ts](backend/src/test/jest.setup.ts)); capture thrown errors with `catchError` / `catchSyncError` ([backend/src/test/helpers/assertions.ts](backend/src/test/helpers/assertions.ts)).
@@ -68,6 +68,8 @@ Frontend test conventions (read [frontend/src/test/jest.setup.ts](frontend/src/t
 - API-layer tests `jest.mock("../client")` and assert against the typed mocks in [frontend/src/test/apiClientMock.ts](frontend/src/test/apiClientMock.ts). Component/page/hook tests mock the higher-level api wrapper (`jest.mock("api/recipesApi")`), never the axios client.
 - Render with `renderWithRouter` from [frontend/src/test/router.tsx](frontend/src/test/router.tsx) (defaults to a non-root route; asserts navigation via the shared `mockNavigate`). `config/env` and `config/logger` are mocked globally via `moduleNameMapper`.
 - No `as any`; real domain types from `types/*` for fixtures.
+
+End-to-end smoke tests live at the repo root in [e2e/](e2e/) (Playwright, [playwright.config.ts](playwright.config.ts)), run with `npm run test:e2e`. They boot both dev servers (reusing an already-running `npm start` locally; fresh servers in CI) and drive real login/CRUD flows through a Chromium browser - `smoke.spec.ts` is the golden path, `core-flows.spec.ts` covers edit/delete/pantry/theme-toggle flows expected to survive the upcoming page redesign. Not part of `npm test`/the pre-commit hook - it has its own CI job instead.
 
 ## Versioning
 
@@ -140,7 +142,7 @@ PR title = the commit title (`<version>: <description>`). One bullet per change,
 
 ### Quality gates (CI + hooks)
 
-CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and on push to `main`: a root `format` (Prettier check), then per side `lint` (ESLint), `typecheck`, `sonarjs` (SonarJS lint), and `test:coverage` (Jest, 80% gate); the frontend additionally runs `build` (`tsc -b && vite build`) and `stylelint`. A `ci-success` job aggregates them all and is the single required check - all must be green to merge. The same suite runs locally before a commit via the Husky `pre-commit` hook (lint-staged + both sides' typecheck/lint/sonarjs/tests, plus frontend stylelint), and `pre-push` both blocks pushing straight to `main` and runs the frontend build. `npm run verify` reproduces the CI gates locally in one command. Hosted SonarCloud is not wired up (no `SONAR_TOKEN`); the local `sonarjs` lint covers the static-analysis role for now.
+CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and on push to `main`: a root `format` (Prettier check), then per side `lint` (ESLint), `typecheck`, `sonarjs` (SonarJS lint), and `test:coverage` (Jest, 80% gate); the frontend additionally runs `build` (`tsc -b && vite build`) and `stylelint`. Two more jobs run the slower suites: `e2e` (Playwright smoke suite, starts both dev servers + a Postgres service + runs migrate/seed) and `test-backend-db` (Testcontainers real-Postgres repository suite - no `services:` needed, it manages its own container via the runner's Docker daemon). A `ci-success` job aggregates all of them and is the single required check - all must be green to merge. The same quick suite runs locally before a commit via the Husky `pre-commit` hook (lint-staged + both sides' typecheck/lint/sonarjs/tests, plus frontend stylelint); `pre-push` both blocks pushing straight to `main` and runs the frontend build. `npm run verify` reproduces the CI gates locally in one command (e2e/db-integration are deliberately excluded - run `test:e2e`/`test:db` separately when Docker is available). Hosted SonarCloud is not wired up (no `SONAR_TOKEN`); the local `sonarjs` lint covers the static-analysis role for now.
 
 **Escape hatches (ops-only commits - never use when touching `backend/src` or `frontend/src`):**
 
@@ -183,6 +185,12 @@ CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and o
 **OIDC auth** (GitHub → Azure, no stored password): federated credential scoped to `refs/tags/v*`.
 GitHub repo secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`.
 GitHub repo variables: `AZURE_RG`, `BACKEND_APP`, `FRONTEND_APP`, `MIGRATION_JOB`, `API_DOMAIN`.
+
+**Uptime monitoring (not wired up yet - manual step, no code involved):** point any free uptime
+checker (e.g. UptimeRobot, Better Uptime, Freshping) at `GET https://api.cooking-assistant.app/api/health`
+on a 1-5 minute interval, alerting on a non-200 response. It is the same public, unauthenticated
+liveness endpoint `docker-compose`/Container Apps already probe - no new backend code needed, just
+external configuration once an account exists on whichever provider is chosen.
 
 **Cookie in prod**: `httpOnly`, `secure` (auto when `NODE_ENV=production`), `sameSite: Lax`,
 `domain: .cooking-assistant.app` (leading dot so the app and api subdomains share the session).

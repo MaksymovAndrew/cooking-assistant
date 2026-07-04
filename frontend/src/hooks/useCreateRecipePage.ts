@@ -55,11 +55,11 @@ export const useCreateRecipePage = () => {
             })),
             type_id: form.selectedTypeId,
             cooking_time: parseCookingTime(form.cookingTime) ?? 0,
-            servings: form.servings !== "" ? Number(form.servings) : undefined,
+            servings: form.servings !== "" ? form.servings : undefined,
         });
 
         if ("data" in result) {
-            navigate(ROUTES.allRecipes);
+            void navigate(ROUTES.allRecipes);
         }
     };
 

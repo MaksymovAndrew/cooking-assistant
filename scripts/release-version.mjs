@@ -1,13 +1,4 @@
-// manages the shared release version (see CLAUDE.md "Versioning"):
-//   node scripts/release-version.mjs bump [X.Y] - sets the root package.json to
-//     the release version (taken from the release/X.Y branch name unless passed
-//     explicitly) and raises each side (backend/frontend) that has changes vs
-//     main; an untouched side keeps its old number. lockfile version fields are
-//     synced too, so the next npm install stays diff-free.
-//   node scripts/release-version.mjs precommit - pre-commit hook mode: same as
-//     bump, but silent when nothing is needed, and the files it rewrites are
-//     git-added so the bump rides along in the commit being made. no-op on
-//     non-release branches.
+// manages the shared release version (see CLAUDE.md "Versioning")
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";

@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 
-// module-level so simultaneous locks (e.g. the mobile nav drawer and the News
-// modal both open at once) compose correctly - only the first lock captures
-// the prior overflow, and only the last unlock restores it
+// module-level so overlapping locks compose: only the first captures the prior overflow, only the last restores it
 let lockCount = 0;
 let previousOverflow = "";
 

@@ -14,16 +14,19 @@
     "start:frontend": "npm --prefix frontend run dev",
     "migrate": "npm --prefix backend run migrate",
     "seed": "npm --prefix backend run seed",
-    "format": "prettier --write \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\"",
-    "format:check": "prettier --check \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\"",
-    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint",
-    "lint:fix": "npm --prefix backend run lint:fix && npm --prefix frontend run lint:fix",
+    "format": "prettier --write \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" \"playwright.config.ts\"",
+    "format:check": "prettier --check \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" \"playwright.config.ts\"",
+    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint && eslint .",
+    "lint:fix": "npm --prefix backend run lint:fix && npm --prefix frontend run lint:fix && eslint . --fix",
     "lint:sonarjs": "npm --prefix backend run lint:sonarjs && npm --prefix frontend run lint:sonarjs",
     "stylelint": "npm --prefix frontend run stylelint",
     "stylelint:fix": "npm --prefix frontend run stylelint:fix",
-    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck",
+    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck && npm run typecheck:e2e",
+    "typecheck:e2e": "tsc --noEmit -p tsconfig.json",
     "test": "npm --prefix backend run test && npm --prefix frontend run test",
     "test:coverage": "npm --prefix backend run test:coverage && npm --prefix frontend run test:coverage",
+    "test:e2e": "playwright test",
+    "test:db": "npm --prefix backend run test:db",
     "build": "npm --prefix frontend run build",
     "build:backend": "npm --prefix backend run build",
     "verify": "npm run format:check && npm run lint && npm run lint:sonarjs && npm run stylelint && npm run typecheck && npm run test && npm run build",
@@ -33,10 +36,17 @@
     "shell-quote": "^1.8.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^26.1.0",
     "concurrently": "^9.0.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.10.4",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
     "prettier": "^3.8.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.62.1"
   }
 }

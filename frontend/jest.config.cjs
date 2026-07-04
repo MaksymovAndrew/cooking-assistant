@@ -3,6 +3,7 @@ module.exports = {
     testEnvironment: "jsdom",
     roots: ["<rootDir>/src"],
     testMatch: ["**/__tests__/**/*.test.ts", "**/__tests__/**/*.test.tsx"],
+    setupFiles: ["<rootDir>/src/test/jest.polyfills.ts"],
     setupFilesAfterEnv: ["<rootDir>/src/test/jest.setup.ts"],
     clearMocks: true,
     restoreMocks: true,

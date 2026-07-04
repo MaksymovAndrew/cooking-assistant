@@ -10,9 +10,7 @@ interface SessionState {
 
 const initialState: SessionState = { status: "checking" };
 
-// session status is derived from the authApi endpoints: a getMe check drives
-// checking/authed/error, logout (and the explicit loggedOut action) -> unauthed.
-// "error" is reserved for failed checks (network/401); unauthed is explicit only
+// "error" is only for failed getMe checks (network/401); unauthed is set explicitly on logout
 const sessionSlice = createSlice({
     name: "session",
     initialState,

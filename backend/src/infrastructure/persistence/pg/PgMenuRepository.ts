@@ -137,9 +137,7 @@ export default class PgMenuRepository implements MenuRepository {
     }
 
     async deleteById(id: string | number, personId: number): Promise<unknown> {
-        // menu_recipe is deleted explicitly: databases adopted from the legacy
-        // database.sql carry a second menu_id FK without ON DELETE CASCADE,
-        // so relying on the cascade would fail there
+        // explicit delete: legacy database.sql adopters carry a second menu_id FK without CASCADE
         const client = await this.pool.connect();
 
         try {

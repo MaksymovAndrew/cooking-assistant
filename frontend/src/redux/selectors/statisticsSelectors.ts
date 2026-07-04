@@ -14,9 +14,7 @@ import { recipesApi } from "redux/services/recipesApi";
 
 import { formatCookingTimeInput } from "utils/cookingTimeUtils";
 
-// statistics derive from the same RTK Query caches the lists use, so the stats
-// page needs no dedicated request - the average cooking time per type that used
-// to come from a backend endpoint is the same arithmetic mean computed here
+// derives from the same RTK Query caches the lists use - no dedicated stats request needed
 const computeRecipeStatistics = (
     recipes: RecipeWithIngredientNames[],
 ): RecipeStatistics => {

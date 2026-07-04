@@ -4,7 +4,7 @@ import type {
     CreateRecipeRequest,
     RecipeDetails,
     RecipeFilterParams,
-    RecipeListItem,
+    RecipeSearchResultItem,
     RecipeWithIngredientNames,
     UpdateRecipeRequest,
 } from "types/recipe";
@@ -25,7 +25,7 @@ const RECIPE_LIST = listTag(RECIPE);
 export const recipesApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getRecipesByFilters: build.infiniteQuery<
-            PaginatedResult<RecipeListItem>,
+            PaginatedResult<RecipeSearchResultItem>,
             RecipeFilterParams,
             number
         >({
@@ -40,7 +40,7 @@ export const recipesApi = baseApi.injectEndpoints({
             providesTags: (result) => infiniteListProvidesTags(RECIPE, result),
         }),
         getRecipesByPerson: build.infiniteQuery<
-            PaginatedResult<RecipeListItem>,
+            PaginatedResult<RecipeSearchResultItem>,
             RecipeFilterParams,
             number
         >({

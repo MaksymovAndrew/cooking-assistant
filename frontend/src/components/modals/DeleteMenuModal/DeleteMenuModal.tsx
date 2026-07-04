@@ -26,7 +26,7 @@ export const DeleteMenuModal = ({ modalId, menuId }: DeleteMenuModalProps) => {
 
         if ("data" in result) {
             dispatch(closeModal(modalId));
-            navigate(ROUTES.menus);
+            void navigate(ROUTES.menus);
         }
     };
 

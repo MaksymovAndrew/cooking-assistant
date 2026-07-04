@@ -29,7 +29,7 @@ export const DeleteRecipeModal = ({
 
         if ("data" in result) {
             dispatch(closeModal(modalId));
-            navigate(ROUTES.allRecipes);
+            void navigate(ROUTES.allRecipes);
         }
     };
 

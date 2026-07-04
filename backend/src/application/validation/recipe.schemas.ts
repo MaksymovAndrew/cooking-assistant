@@ -44,10 +44,8 @@ export const createRecipeSchema = z.object({
         }),
     type_id: positiveIntegerSchema("Recipe type ID").optional(),
     cooking_time: positiveIntegerSchema("Cooking time").optional(),
-    servings: z.preprocess(
-        toNumber,
-        positiveIntegerSchema("Servings").optional(),
-    ),
+    // free-form text (e.g. "4" or "a full pot") - matches the VARCHAR column, not a count
+    servings: nonEmptyStringSchema("Servings").optional(),
 });
 
 export const updateRecipeSchema = createRecipeSchema.omit({

@@ -3,7 +3,7 @@
   // runtime (no type-check), so no separate CommonJS tsconfig is needed anymore
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
-    "types": ["jest", "@testing-library/jest-dom"],
+    "types": ["jest", "@testing-library/jest-dom", "node"],
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },

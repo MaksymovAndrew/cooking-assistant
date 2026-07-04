@@ -4,11 +4,7 @@ import { THEME_STORAGE_KEY } from "constants/theme";
 
 import { useTheme } from "hooks/useTheme";
 
-// mirrors the active theme's --bg into every <meta name="theme-color"> so the
-// browser chrome (status bar, address bar) follows the theme on Android and
-// older iOS; reads the computed value - _tokens.scss stays the single source.
-// the theme itself only ever changes via a full reload (see ThemeToggle +
-// ThemeChangeConfirmModal), so this is a load-time sync, not a live one
+// mirrors --bg into <meta name="theme-color"> so Android/older iOS browser chrome follows the theme
 const syncThemeColorMeta = () => {
     const background = getComputedStyle(document.documentElement)
         .getPropertyValue("--bg")
@@ -23,8 +19,6 @@ const syncThemeColorMeta = () => {
     });
 };
 
-// renders nothing; syncs <html data-theme>, localStorage and the browser
-// chrome color with the theme slice
 export const ThemeManager = () => {
     const { mode } = useTheme();
 

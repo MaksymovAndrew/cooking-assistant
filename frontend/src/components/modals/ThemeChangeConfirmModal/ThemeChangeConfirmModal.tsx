@@ -15,12 +15,8 @@ interface ThemeChangeConfirmModalProps {
     nextMode: ThemeMode;
 }
 
-// a theme switch is applied via a full page reload rather than a live CSS
-// repaint: iOS Safari's browser chrome (status/address bars) only ever picks
-// up the correct color on a fresh load, never on an in-place toggle, so a
-// live switch reliably left the bars in the old theme's color. writing the
-// choice to storage before reloading means the very first paint (theme-init.js)
-// already renders in the new theme
+// a full reload, not a live repaint: iOS Safari only recolors its status/address
+// bars on a fresh load, never on an in-place theme toggle
 export const ThemeChangeConfirmModal = ({
     modalId,
     nextMode,

@@ -1,71 +1,41 @@
-import type { Page } from "@playwright/test";
+import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
+
+import { createMenuViaForm, createRecipeViaForm } from "./forms";
+import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
 // ids come from the create-response bodies, not card/list markup, so these
 // survive the upcoming page redesign
 test.describe.configure({ mode: "serial" });
 
+let context: BrowserContext;
 let page: Page;
-let login: string;
-let password: string;
 let runId: string;
 let recipeId: string;
 let menuId: string;
 
-async function register(page: Page, login: string) {
-    await page.goto("/registration");
-    await page.getByLabel("Name:", { exact: true }).fill("Core");
-    await page.getByLabel("Surname:", { exact: true }).fill("Flows");
-    await page.getByLabel("Username:", { exact: true }).fill(login);
-    await page.getByLabel("Password:", { exact: true }).fill(password);
-    await page.getByRole("button", { name: "Register" }).click();
-    await expect(page).toHaveURL(/\/login$/);
-
-    await page.getByLabel("Username:", { exact: true }).fill(login);
-    await page.getByLabel("Password:", { exact: true }).fill(password);
-    await page.getByRole("button", { name: "Log In" }).click();
-    await expect(page).toHaveURL("/");
-}
-
 test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
-    login = `e2e-core-${runId}`;
-    // throwaway per-run account, so the login doubles as its password
-    password = login;
-    page = await browser.newPage();
-    await register(page, login);
+    // reuses the shared primary account (registered once in global-setup) instead of
+    // registering a fresh one here - keeps the suite's total auth calls low
+    context = await browser.newContext({ storageState: PRIMARY_STORAGE_STATE });
+    page = await context.newPage();
 });
 
 test.afterAll(async () => {
-    await page.close();
+    await context.close();
 });
 
 test("should create a recipe and capture its id from the API response", async () => {
-    const [response] = await Promise.all([
-        page.waitForResponse(
-            (res) =>
-                res.url().includes("/api/recipe") &&
-                res.request().method() === "POST",
-        ),
-        (async () => {
-            await page.goto("/add-recipe");
-            await page
-                .getByLabel("Title")
-                .fill(`Original recipe title ${runId}`);
-            await page
-                .getByLabel("Description")
-                .fill("Created by core-flows e2e.");
-            await page.getByLabel("Cooking Time").fill("0:20");
-            await page.getByLabel("Recipe Type").selectOption({ index: 1 });
-            await page
-                .getByRole("button", { name: "Potato", exact: true })
-                .click();
-            await page.getByLabel("Servings").fill("a full pot");
-            await page.getByRole("button", { name: "Create Recipe" }).click();
-        })(),
-    ]);
-    const body = (await response.json()) as { id: number };
-    recipeId = String(body.id);
+    const created = await createRecipeViaForm(page, {
+        title: `Original recipe title ${runId}`,
+        description: "Created by core-flows e2e.",
+        ingredient: "Potato",
+        cookingTime: "0:20",
+        servings: "a full pot",
+    });
+
+    recipeId = created.recipeId;
     expect(recipeId).toBeTruthy();
 });
 
@@ -84,32 +54,13 @@ test("should edit the recipe and see the new title on its details page", async (
 });
 
 test("should create a menu from the recipe and capture its id", async () => {
-    const [response] = await Promise.all([
-        page.waitForResponse(
-            (res) =>
-                res.url().includes("/api/create-menu") &&
-                res.request().method() === "POST",
-        ),
-        (async () => {
-            await page.goto("/add-menu");
-            await page
-                .getByLabel("Menu title")
-                .fill(`Original menu title ${runId}`);
-            await page
-                .getByLabel("Menu description")
-                .fill("Created by core-flows e2e.");
-            await page.getByLabel("Menu category").selectOption({ index: 1 });
-            await page
-                .getByRole("button", {
-                    name: `Updated recipe title ${runId}`,
-                    exact: true,
-                })
-                .click();
-            await page.getByRole("button", { name: "Create Menu" }).click();
-        })(),
-    ]);
-    const body = (await response.json()) as { menuId: number };
-    menuId = String(body.menuId);
+    const created = await createMenuViaForm(page, {
+        title: `Original menu title ${runId}`,
+        description: "Created by core-flows e2e.",
+        recipeTitle: `Updated recipe title ${runId}`,
+    });
+
+    menuId = created.menuId;
     expect(menuId).toBeTruthy();
 });
 

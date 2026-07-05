@@ -25,7 +25,8 @@ interface RecipeSearchRow {
 const BASE_RECIPE_SELECT = `
         SELECT r.id, r.title, r.content, r.person_id, r.type_id, r.creation_date, r.cooking_time,
                rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name)) AS ingredients,
-               COUNT(*) OVER() AS total_count
+               -- cast: COUNT() is bigint, which pg returns as a string, not a number
+               COUNT(*) OVER()::int AS total_count
         FROM recipes r
                LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
                LEFT JOIN ingredients i ON ri.ingredient_id = i.id

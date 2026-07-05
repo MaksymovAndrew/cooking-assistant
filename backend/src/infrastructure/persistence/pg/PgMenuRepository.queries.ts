@@ -55,7 +55,8 @@ export async function findAllMenus(
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
-        COUNT(*) OVER() AS total_count
+        -- cast: COUNT() is bigint, which pg returns as a string, not a number
+        COUNT(*) OVER()::int AS total_count
       FROM menu m
              LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
     `;
@@ -95,7 +96,8 @@ export async function searchPersonMenus(
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
-        COUNT(*) OVER() AS total_count
+        -- cast: COUNT() is bigint, which pg returns as a string, not a number
+        COUNT(*) OVER()::int AS total_count
       FROM menu m
       LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
       WHERE m.person_id = $1

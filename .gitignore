@@ -18,6 +18,7 @@ dist-ssr
 # Playwright artifacts
 test-results/
 playwright-report/
+e2e/.auth/
 
 # Testcontainers db-integration connection handoff file
 backend/src/test/db-integration/.connection.json

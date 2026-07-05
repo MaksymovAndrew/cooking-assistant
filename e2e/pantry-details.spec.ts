@@ -1,0 +1,62 @@
+import type { BrowserContext, Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+
+import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
+
+// purchase history and full ingredient removal - neither is touched by
+// core-flows.spec.ts (quantity edit, different ingredient) or smoke.spec.ts (add only)
+test.describe.configure({ mode: "serial" });
+
+let context: BrowserContext;
+let page: Page;
+
+test.beforeAll(async ({ browser }) => {
+    // reuses the shared primary account (registered once in global-setup) instead of
+    // registering a fresh one here - keeps the suite's total auth calls low
+    context = await browser.newContext({ storageState: PRIMARY_STORAGE_STATE });
+    page = await context.newPage();
+
+    await page.goto("/ingredients");
+    await page.getByRole("button", { name: "Edit ingredients" }).click();
+    await page.getByRole("button", { name: "Tomato", exact: true }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByText("Ingredients saved")).toBeVisible();
+});
+
+test.afterAll(async () => {
+    await context.close();
+});
+
+test("should open the purchase history modal and show the recorded purchase", async () => {
+    await page.goto("/ingredients");
+    // the shared account's pantry may hold other ingredients from other specs -
+    // scope to the Tomato row so its Details/Delete buttons aren't ambiguous
+    const tomatoRow = page.getByRole("listitem").filter({ hasText: "Tomato" });
+    await tomatoRow.getByRole("button", { name: "Details" }).click();
+
+    await expect(
+        page.getByRole("heading", { name: "Purchase History: Tomato" }),
+    ).toBeVisible();
+    await expect(page.getByText("No purchase history available.")).toBeHidden();
+
+    await page.getByRole("button", { name: "Close" }).click();
+    await expect(
+        page.getByRole("heading", { name: "Purchase History: Tomato" }),
+    ).toBeHidden();
+});
+
+test("should delete the ingredient from the pantry entirely", async () => {
+    await page.goto("/ingredients");
+    const tomatoRow = page.getByRole("listitem").filter({ hasText: "Tomato" });
+    await tomatoRow
+        .getByRole("button", { name: "Delete", exact: true })
+        .click();
+
+    await expect(
+        page.getByText(/delete the ingredient "Tomato"/),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Confirm" }).click();
+
+    await expect(page.getByText("Ingredient deleted")).toBeVisible();
+    await expect(page.getByText("Tomato")).toBeHidden();
+});

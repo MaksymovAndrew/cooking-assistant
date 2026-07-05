@@ -71,8 +71,9 @@ changelogs and the tags and now track everything here against one shared version
 - Added: the release version now bumps itself - committing on a release branch automatically sets the version from the branch name (root always, plus only the sides that actually changed) and includes it in the same commit; `npm run bump` does the same by hand.
 - Changed: A broader code-quality pass removed duplicated logic (recipe/menu search queries, list-pagination footer, validation helpers) and unused leftovers (orphaned translation keys, dead styles, an unused lint dependency) across the whole codebase, with no change in behavior.
 - Added: The end-to-end test suite and its config are now covered by formatting and linting too (previously untouched by either), catching one real issue on the spot.
-- Added: An end-to-end test suite (Playwright) now drives real login, recipe/menu/pantry, and theme-toggle flows through a browser on every PR, catching visual/integration regressions that unit tests can't see.
-- Added: The recipe and menu repositories are now also tested against a real PostgreSQL database (Testcontainers) on every PR, catching SQL mistakes that mocked tests can't see.
+- Added: An end-to-end test suite (Playwright) now drives real login, recipe/menu/pantry, and theme-toggle flows through a browser on every PR, and separately visits every page of the app, exercises search/filter/sort on recipes and menus, checks that only a recipe or menu's owner can edit or delete it, and covers pantry purchase history and full ingredient removal.
+- Added: Every repository (recipes, menus, users, pantry, recipe types, menu categories), including recipe/menu search, filtering and pagination, is now also tested against a real PostgreSQL database (Testcontainers) on every PR, catching SQL mistakes that mocked tests can't see.
+- Fixed: Recipe and menu list pages now always report the correct total count for pagination, instead of occasionally showing it as text rather than a number internally.
 
 ## 3.2 - 2026-06-27
 

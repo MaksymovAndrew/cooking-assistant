@@ -1,0 +1,1 @@
+export { HighlightedMatch } from "./HighlightedMatch";

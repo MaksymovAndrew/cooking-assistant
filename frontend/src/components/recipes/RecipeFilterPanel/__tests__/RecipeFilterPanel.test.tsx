@@ -7,6 +7,9 @@ import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
 
 import { renderWithRouter } from "test/router";
 
+const SOUP_TYPE = { id: 1, type_name: "Soup", description: "" };
+const DESSERT_TYPE = { id: 2, type_name: "Dessert", description: "" };
+
 const BASE_FILTERS: RecipeFilterState = {
     selectedTypes: [],
     startDate: "",
@@ -18,23 +21,33 @@ const BASE_FILTERS: RecipeFilterState = {
 };
 
 const setup = (overrides: Partial<RecipeFilterState> = {}) => {
+    const setSelectedTypes = jest.fn();
+    const setMinCookingTime = jest.fn();
+    const setMaxCookingTime = jest.fn();
     const setSortOrder = jest.fn();
 
     renderWithRouter(
         <RecipeFilterPanel
             filters={{ ...BASE_FILTERS, ...overrides }}
-            setSelectedTypes={jest.fn()}
-            setStartDate={jest.fn()}
-            setEndDate={jest.fn()}
-            setMinCookingTime={jest.fn()}
-            setMaxCookingTime={jest.fn()}
+            setSelectedTypes={setSelectedTypes}
+            setMinCookingTime={setMinCookingTime}
+            setMaxCookingTime={setMaxCookingTime}
             setSortOrder={setSortOrder}
-            types={[]}
+            types={[SOUP_TYPE, DESSERT_TYPE]}
             searchPlaceholder="Search recipes"
         />,
     );
 
-    return { setSortOrder };
+    return {
+        setSelectedTypes,
+        setMinCookingTime,
+        setMaxCookingTime,
+        setSortOrder,
+    };
+};
+
+const openPanel = async () => {
+    await userEvent.click(screen.getByRole("button", { name: /Filters/ }));
 };
 
 describe("RecipeFilterPanel", () => {
@@ -46,30 +59,108 @@ describe("RecipeFilterPanel", () => {
         ).toBeInTheDocument();
     });
 
-    it("should reflect the current sortOrder in the select", () => {
-        setup({ sortOrder: "desc" });
+    it("should not show the popover by default", () => {
+        setup();
 
-        expect(screen.getByRole("combobox")).toHaveValue("desc");
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
 
-    it("should call setSortOrder when the sort select changes", async () => {
-        const { setSortOrder } = setup({ sortOrder: "asc" });
+    it("should open the popover when the Filters trigger is clicked", async () => {
+        setup();
 
-        await userEvent.selectOptions(screen.getByRole("combobox"), "desc");
+        await openPanel();
+
+        expect(screen.getByRole("dialog")).toBeInTheDocument();
+    });
+
+    it("should show a badge with the active filter count", () => {
+        setup({ selectedTypes: [1], maxCookingTime: "90" });
+
+        expect(screen.getByText("2")).toBeInTheDocument();
+    });
+
+    it("should call setMinCookingTime and setMaxCookingTime when the time inputs change", async () => {
+        const { setMinCookingTime, setMaxCookingTime } = setup();
+
+        await openPanel();
+        await userEvent.type(screen.getByLabelText("Min"), "5");
+        await userEvent.type(screen.getByLabelText("Max"), "9");
+
+        expect(setMinCookingTime).toHaveBeenCalled();
+        expect(setMaxCookingTime).toHaveBeenCalled();
+    });
+
+    it("should call setSortOrder when a sort segment is clicked", async () => {
+        const { setSortOrder } = setup();
+
+        await openPanel();
+        await userEvent.click(
+            screen.getByRole("radio", { name: "Long → fast" }),
+        );
 
         expect(setSortOrder).toHaveBeenCalledWith("desc");
     });
 
-    it("should render both sort options", () => {
+    it("should toggle a type when its chip is clicked", async () => {
+        const { setSelectedTypes } = setup();
+
+        await openPanel();
+        await userEvent.click(screen.getByRole("checkbox", { name: "Soup" }));
+
+        expect(setSelectedTypes).toHaveBeenCalledWith([1]);
+    });
+
+    it("should reset every filter when Reset filters is clicked", async () => {
+        const {
+            setSelectedTypes,
+            setMinCookingTime,
+            setMaxCookingTime,
+            setSortOrder,
+        } = setup({
+            selectedTypes: [1],
+            minCookingTime: "5",
+            maxCookingTime: "90",
+        });
+
+        await openPanel();
+        await userEvent.click(
+            screen.getByRole("button", { name: "Reset filters" }),
+        );
+
+        expect(setSelectedTypes).toHaveBeenCalledWith([]);
+        expect(setMinCookingTime).toHaveBeenCalledWith("");
+        expect(setMaxCookingTime).toHaveBeenCalledWith("");
+        expect(setSortOrder).toHaveBeenCalledWith("asc");
+    });
+
+    it("should close the popover when Apply is clicked", async () => {
         setup();
 
-        const select = screen.getByRole("combobox");
+        await openPanel();
+        await userEvent.click(screen.getByRole("button", { name: "Apply" }));
 
-        expect(select).toContainElement(
-            screen.getByRole("option", { name: /fast to long/i }),
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    it("should close the popover when clicking outside of it", async () => {
+        renderWithRouter(
+            <div>
+                <RecipeFilterPanel
+                    filters={BASE_FILTERS}
+                    setSelectedTypes={jest.fn()}
+                    setMinCookingTime={jest.fn()}
+                    setMaxCookingTime={jest.fn()}
+                    setSortOrder={jest.fn()}
+                    types={[]}
+                    searchPlaceholder="Search recipes"
+                />
+                <button type="button">Outside</button>
+            </div>,
         );
-        expect(select).toContainElement(
-            screen.getByRole("option", { name: /long to fast/i }),
-        );
+
+        await openPanel();
+        await userEvent.click(screen.getByRole("button", { name: "Outside" }));
+
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
 });

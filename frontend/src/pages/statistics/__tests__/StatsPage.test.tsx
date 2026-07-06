@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 
+import type { Menu } from "types/menu";
 import type { RecipeWithIngredientNames } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
@@ -16,16 +17,9 @@ jest.mock("components/stats/PieChartCard/PieChartCard", () => ({
     default: () => null,
 }));
 
-jest.mock("components/stats/MenuStatsSummary", () => ({
-    MenuStatsSummary: () => <div data-testid="menu-stats" />,
-}));
-
-jest.mock("components/stats/MenuCategoryChart", () => ({
-    MenuCategoryChart: () => <div data-testid="menu-category-chart" />,
-}));
-
 const TYPE_NAME = "Soup";
-const SAMPLE: RecipeWithIngredientNames[] = [
+const CATEGORY_NAME = "Lunch";
+const SAMPLE_RECIPES: RecipeWithIngredientNames[] = [
     {
         id: 1,
         title: "Borscht",
@@ -35,52 +29,51 @@ const SAMPLE: RecipeWithIngredientNames[] = [
         ingredients: ["beet"],
     },
 ];
+const SAMPLE_MENUS: Menu[] = [
+    {
+        id: 1,
+        title: "Weekday menu",
+        categoryname: CATEGORY_NAME,
+        menucontent: "",
+    },
+];
 
 const stubData = () => {
     mockGetByUrl({
-        [API_ROUTES.recipes.list]: SAMPLE,
-        [API_ROUTES.menu.allUnpaginated]: [],
+        [API_ROUTES.recipes.list]: SAMPLE_RECIPES,
+        [API_ROUTES.menu.allUnpaginated]: SAMPLE_MENUS,
     });
 };
 
 describe("StatsPage", () => {
-    it("should render the recipe statistics heading", () => {
+    it("should render both section headings", () => {
         stubData();
 
         renderWithRouter(<StatsPage />);
 
         expect(screen.getByText("Recipe Statistics")).toBeInTheDocument();
+        expect(screen.getByText("Menu Statistics")).toBeInTheDocument();
     });
 
-    it("should render the recipe type chart", async () => {
+    it("should render the recipe quick-stat tiles", async () => {
         stubData();
 
         renderWithRouter(<StatsPage />);
 
-        expect(await screen.findByText(TYPE_NAME)).toBeInTheDocument();
+        expect((await screen.findAllByText(TYPE_NAME)).length).toBeGreaterThan(
+            0,
+        );
+        expect(screen.getByText("Total recipes")).toBeInTheDocument();
     });
 
-    it("should render the recipe types summary", () => {
+    it("should render the menu quick-stat tiles", async () => {
         stubData();
 
         renderWithRouter(<StatsPage />);
 
-        expect(screen.getByText("Recipe Types Summary")).toBeInTheDocument();
-    });
-
-    it("should render the menu stats section", () => {
-        stubData();
-
-        renderWithRouter(<StatsPage />);
-
-        expect(screen.getByTestId("menu-stats")).toBeInTheDocument();
-    });
-
-    it("should render the menu category chart", () => {
-        stubData();
-
-        renderWithRouter(<StatsPage />);
-
-        expect(screen.getByTestId("menu-category-chart")).toBeInTheDocument();
+        expect(
+            (await screen.findAllByText(CATEGORY_NAME)).length,
+        ).toBeGreaterThan(0);
+        expect(screen.getByText("Total menus")).toBeInTheDocument();
     });
 });

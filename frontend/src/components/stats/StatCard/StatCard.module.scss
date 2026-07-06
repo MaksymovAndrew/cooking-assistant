@@ -1,0 +1,8 @@
+@use "styles/abstracts" as *;
+
+.stat-card {
+    padding: var(--s-5);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+}

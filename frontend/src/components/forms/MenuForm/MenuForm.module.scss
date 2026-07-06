@@ -1,0 +1,52 @@
+@use "styles/abstracts" as *;
+
+.menu-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+    max-width: 640px;
+
+    &__selected-heading {
+        margin: 0 0 var(--s-3);
+        color: var(--text-2);
+        font:
+            600 13px Inter,
+            sans-serif;
+    }
+
+    &__selected-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-2);
+    }
+
+    &__save-panel {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--s-3);
+        padding-top: var(--s-4);
+        border-top: 1px solid var(--border);
+    }
+
+    &__cancel {
+        display: inline-flex;
+        height: 44px;
+        align-items: center;
+        padding: 0 var(--s-5);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        color: var(--text);
+        text-decoration: none;
+        font:
+            600 15px Inter,
+            sans-serif;
+
+        @include focus-ring;
+
+        @include on-hover {
+            border-color: var(--brand);
+            background: var(--brand-subtle);
+        }
+    }
+}

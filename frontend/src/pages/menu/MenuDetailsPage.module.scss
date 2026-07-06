@@ -1,0 +1,47 @@
+@use "styles/abstracts" as *;
+
+.menu-details-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--s-6) var(--s-4);
+
+    &__breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        margin-bottom: var(--s-5);
+        color: var(--text-muted);
+        font:
+            500 13px Inter,
+            sans-serif;
+
+        a {
+            color: var(--text-muted);
+            text-decoration: none;
+
+            @include focus-ring;
+
+            @include on-hover {
+                color: var(--brand);
+            }
+        }
+
+        span {
+            color: var(--text-2);
+
+            @include truncate;
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: start;
+        gap: var(--s-6);
+        margin-top: var(--s-5);
+
+        @include respond-to(desktop) {
+            grid-template-columns: 1fr 300px;
+        }
+    }
+}

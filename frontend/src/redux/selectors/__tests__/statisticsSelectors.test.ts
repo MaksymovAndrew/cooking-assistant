@@ -69,6 +69,12 @@ describe("statisticsSelectors", () => {
             { typeName: "Soup", count: 2 },
             { typeName: "Salad", count: 1 },
         ]);
+        expect(result.mostUsedType).toEqual({ typeName: "Soup", count: 2 });
+        expect(result.averageCookingTimeOverall).toBe("00:20");
+        expect(result.averageCookingTimesByType).toEqual([
+            { typeName: "Soup", averageCookingTime: "00:20" },
+            { typeName: "Salad", averageCookingTime: "00:20" },
+        ]);
         expect(result.fastestRecipes).toEqual([RECIPES[0]]);
         expect(result.slowestRecipes).toEqual([RECIPES[1]]);
         expect(result.mostIngredientsRecipes).toEqual([RECIPES[2]]);
@@ -81,6 +87,9 @@ describe("statisticsSelectors", () => {
         expect(result).toEqual({
             stats: [],
             recipesCount: 0,
+            averageCookingTimeOverall: null,
+            averageCookingTimesByType: [],
+            mostUsedType: null,
             fastestRecipes: [],
             slowestRecipes: [],
             mostIngredientsRecipes: [],
@@ -91,21 +100,19 @@ describe("statisticsSelectors", () => {
     it("should aggregate menu statistics from the cache", async () => {
         const store = makeTestStore();
 
-        await loadRecipes(store);
         await loadMenus(store);
 
         const result = selectMenuStatistics(store.getState());
 
         expect(result.menusCount).toBe(3);
-        expect(result.recipesCount).toBe(3);
         expect(result.menuCountByCategory).toEqual([
             { categoryname: "Lunch", menuCount: 2 },
             { categoryname: "Dinner", menuCount: 1 },
         ]);
-        expect(result.averageCookingTimes).toEqual([
-            { typeName: "Soup", averageCookingTime: "00:20" },
-            { typeName: "Salad", averageCookingTime: "00:20" },
-        ]);
+        expect(result.mostUsedCategory).toEqual({
+            categoryname: "Lunch",
+            menuCount: 2,
+        });
     });
 
     it("should return empty menu statistics when the cache is empty", () => {
@@ -113,9 +120,8 @@ describe("statisticsSelectors", () => {
 
         expect(result).toEqual({
             menusCount: 0,
-            recipesCount: 0,
-            averageCookingTimes: [],
             menuCountByCategory: [],
+            mostUsedCategory: null,
         });
     });
 });

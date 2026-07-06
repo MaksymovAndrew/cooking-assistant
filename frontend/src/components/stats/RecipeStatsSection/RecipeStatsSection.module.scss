@@ -1,0 +1,40 @@
+@use "styles/abstracts" as *;
+
+.recipe-stats-section {
+    &__heading {
+        margin: 0 0 var(--s-5);
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(24px, 4vw, 28px) Fraunces,
+            serif;
+    }
+
+    &__tiles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-6);
+        margin-bottom: var(--s-5);
+        padding-bottom: var(--s-5);
+        border-bottom: 1px solid var(--border);
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-5);
+        margin-bottom: var(--s-5);
+
+        @include respond-to(desktop) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    &__card-title {
+        margin: 0 0 var(--s-4);
+        color: var(--text);
+        font:
+            600 15px Fraunces,
+            serif;
+    }
+}

@@ -1,0 +1,36 @@
+@use "styles/abstracts" as *;
+
+.profile-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: var(--s-5);
+
+    &__tab {
+        display: inline-flex;
+        align-items: center;
+        height: 40px;
+        padding: 0 14px;
+        border: none;
+        border-radius: var(--r-sm);
+        background: none;
+        color: var(--text-2);
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+        font:
+            600 13px Inter,
+            sans-serif;
+
+        @include focus-ring;
+
+        @include on-hover {
+            background: var(--surface-2);
+        }
+
+        &--on {
+            background: var(--brand-subtle);
+            color: var(--brand);
+        }
+    }
+}

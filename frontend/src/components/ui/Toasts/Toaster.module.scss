@@ -1,0 +1,10 @@
+.toaster {
+    position: fixed;
+    top: var(--s-4);
+    right: var(--s-4);
+    z-index: var(--z-toast);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    pointer-events: none;
+}

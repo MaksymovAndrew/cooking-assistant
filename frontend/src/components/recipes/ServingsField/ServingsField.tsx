@@ -1,5 +1,8 @@
 import React from "react";
 
+import { FormField } from "components/ui/FormField";
+import { TextInput } from "components/ui/TextInput";
+
 interface ServingsFieldProps {
     id: string;
     label: string;
@@ -15,11 +18,8 @@ export const ServingsField: React.FC<ServingsFieldProps> = ({
     value,
     onChange,
 }) => (
-    <div>
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-            {label}
-        </label>
-        <input
+    <FormField htmlFor={id} label={label}>
+        <TextInput
             id={id}
             type="text"
             value={value}
@@ -27,7 +27,6 @@ export const ServingsField: React.FC<ServingsFieldProps> = ({
             onChange={(e) => {
                 onChange(e.target.value);
             }}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
         />
-    </div>
+    </FormField>
 );

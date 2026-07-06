@@ -54,11 +54,11 @@ describe("DeleteIngredientModal", () => {
         ).toBeInTheDocument();
     });
 
-    it("should use the normalized gray Cancel button (same as other delete dialogs)", () => {
+    it("should use the normalized secondary Cancel button (same as other delete dialogs)", () => {
         renderOpen();
 
         expect(screen.getByRole("button", { name: "Cancel" })).toHaveClass(
-            "bg-gray-400",
+            "button--secondary",
         );
     });
 

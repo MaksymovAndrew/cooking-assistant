@@ -1,0 +1,28 @@
+@use "styles/abstracts" as *;
+
+.menu-active-filters {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-5);
+
+    &__count {
+        color: var(--text-muted);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__clear {
+        padding: 0 4px;
+        border: none;
+        background: none;
+        color: var(--brand);
+        cursor: pointer;
+        font:
+            600 13px Inter,
+            sans-serif;
+
+        @include focus-ring;
+    }
+}

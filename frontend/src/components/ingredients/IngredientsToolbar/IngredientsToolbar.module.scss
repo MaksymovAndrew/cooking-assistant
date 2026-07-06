@@ -1,0 +1,68 @@
+@use "styles/abstracts" as *;
+
+.ingredients-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-5);
+
+    &__search {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 10px;
+        height: 44px;
+        min-width: 220px;
+        padding: 0 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--surface);
+        color: var(--text-muted);
+
+        &:focus-within {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px var(--brand-subtle);
+        }
+    }
+
+    &__search-input {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        background: none;
+        color: var(--text);
+        font:
+            400 14px Inter,
+            sans-serif;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__filter-pill {
+        flex: none;
+        height: 44px;
+        padding: 0 16px;
+        border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--warning) 8%, var(--surface));
+        color: var(--warning);
+        cursor: pointer;
+        font:
+            600 13px Inter,
+            sans-serif;
+
+        @include focus-ring;
+
+        &--active {
+            background: var(--warning);
+            color: var(--on-brand);
+        }
+    }
+}

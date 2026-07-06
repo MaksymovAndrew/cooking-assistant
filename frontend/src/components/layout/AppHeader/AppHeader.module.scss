@@ -6,11 +6,20 @@
     display: flex;
     align-items: center;
     gap: var(--s-4);
-    height: 64px;
-    padding: 0 var(--s-5);
+    height: 56px;
+    padding: 0 var(--s-4);
     background: color-mix(in srgb, var(--bg) 78%, transparent);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
+
+    @include respond-to(tablet) {
+        height: 60px;
+        padding: 0 var(--s-5);
+    }
+
+    @include respond-to(desktop) {
+        height: 64px;
+    }
 
     &__nav {
         display: none;
@@ -28,32 +37,12 @@
         margin-left: auto;
     }
 
-    &__logout-button {
+    // theme lives in Settings on mobile; the header toggle returns from tablet up
+    &__theme-toggle {
         display: none;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border: 1px solid var(--border);
-        border-radius: var(--r-pill);
-        background: var(--surface);
-        color: var(--text-muted);
-        cursor: pointer;
-        transition:
-            background var(--dur-fast) var(--ease-out),
-            border-color var(--dur-fast) var(--ease-out),
-            color var(--dur-fast) var(--ease-out);
 
-        @include focus-ring;
-
-        @include on-hover {
-            background: var(--surface-2);
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        @include respond-to(desktop) {
-            display: flex;
+        @include respond-to(tablet) {
+            display: block;
         }
     }
 }

@@ -1,8 +1,5 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { ROUTES } from "constants/routes";
 
 import { RECIPE_SOURCE, useRecipeListView } from "hooks/useRecipeListView";
 
@@ -23,22 +20,16 @@ const UserRecipesPage: React.FC = () => {
             ? t("userRecipesPage.noRecipesType")
             : t("userRecipesPage.createFirst");
 
-    const addRecipeLink = (
-        <Link
-            to={ROUTES.addRecipe}
-            className="flex items-center justify-center font-montserratRegular-normal text-almost-white bg-purple-700 p-4 w-15 m-7 rounded-3xl"
-        >
-            {t("userRecipesPage.addRecipe")}
-        </Link>
-    );
-
     return (
         <RecipeListView
             {...list}
             heading={heading}
             emptyMessage={emptyMessage}
             searchPlaceholder={t("userRecipesPage.searchPlaceholder")}
-            actionSlot={addRecipeLink}
+            onRetry={() => {
+                list.refetch().catch(() => undefined);
+            }}
+            mine
         />
     );
 };

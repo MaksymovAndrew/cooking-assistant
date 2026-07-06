@@ -38,10 +38,7 @@ describe("CreateRecipePage", () => {
 
         renderWithRouter(<CreateRecipePage />);
 
-        const ingredientButton = await screen.findByRole("button", {
-            name: INGREDIENT_NAME,
-        });
-
+        await screen.findByPlaceholderText("Search ingredients...");
         await screen.findByRole("option", { name: TYPE_NAME });
 
         await userEvent.type(screen.getByLabelText("Title"), TITLE);
@@ -57,7 +54,15 @@ describe("CreateRecipePage", () => {
             screen.getByLabelText("Recipe Type"),
             String(TYPE_ID),
         );
-        await userEvent.click(ingredientButton);
+        await userEvent.type(
+            screen.getByPlaceholderText("Search ingredients..."),
+            INGREDIENT_NAME,
+        );
+        await userEvent.click(
+            screen.getByRole("button", {
+                name: new RegExp(INGREDIENT_NAME, "i"),
+            }),
+        );
         await userEvent.click(
             screen.getByRole("button", { name: "Create Recipe" }),
         );

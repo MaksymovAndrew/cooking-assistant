@@ -68,7 +68,7 @@ describe("DeleteMenuModal", () => {
             }),
         ]);
         expect(store.getState().ui.modal).toBeNull();
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTES.menus);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTES.allMenus);
     });
 
     it("should close the modal without deleting on cancel", async () => {

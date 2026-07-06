@@ -82,11 +82,14 @@ test("should render /my-recipes with the created recipe listed", async () => {
     await expect(page.getByText(`Routes recipe ${runId}`)).toBeVisible();
 });
 
-test("should render /types", async () => {
-    await page.goto("/types");
-    await expect(
-        page.getByRole("heading", { name: "Recipe Types" }),
-    ).toBeVisible();
+test("should render /profile", async () => {
+    await page.goto("/profile");
+    await expect(page.getByRole("heading", { name: "Profile" })).toBeVisible();
+});
+
+test("should render /settings", async () => {
+    await page.goto("/settings");
+    await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
 });
 
 test("should render /ingredients", async () => {
@@ -103,8 +106,8 @@ test("should render /stats", async () => {
     ).toBeVisible();
 });
 
-test("should render /menus", async () => {
-    await page.goto("/menus");
+test("should render /all-menus", async () => {
+    await page.goto("/all-menus");
     await expect(
         page.getByRole("heading", { name: "All menus", exact: true }),
     ).toBeVisible();
@@ -113,7 +116,7 @@ test("should render /menus", async () => {
 test("should render /my-menus with the created menu listed", async () => {
     await page.goto("/my-menus");
     await expect(
-        page.getByRole("heading", { name: "All Menus", exact: true }),
+        page.getByRole("heading", { name: "My Menus", exact: true }),
     ).toBeVisible();
     await expect(page.getByText(`Routes menu ${runId}`)).toBeVisible();
 });
@@ -148,5 +151,7 @@ test("should render /change-menu/:id", async () => {
 
 test("should render the not-found page for an unknown route", async () => {
     await page.goto("/this-route-does-not-exist");
-    await expect(page.getByText("Oops....")).toBeVisible();
+    await expect(
+        page.getByRole("heading", { name: "Page not found" }),
+    ).toBeVisible();
 });

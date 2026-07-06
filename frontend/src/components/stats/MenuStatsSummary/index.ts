@@ -1,1 +1,0 @@
-export { MenuStatsSummary } from "./MenuStatsSummary";

@@ -10,8 +10,11 @@ import {
 
 import { PurchaseItem } from "components/ingredients/PurchaseItem";
 import { BaseModal } from "components/modals/BaseModal";
+import { Button } from "components/ui/Button";
 
 import { getQueryErrorMessage } from "utils/queryError";
+
+import styles from "./PurchaseHistoryModal.module.scss";
 
 interface PurchaseHistoryModalProps {
     ingredientId: number;
@@ -74,11 +77,13 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
         >
             {isLoading && <p>{t("purchaseModal.loading")}</p>}
             {isError && (
-                <p className="text-red-500">{getQueryErrorMessage(error)}</p>
+                <p className={styles["purchase-history-modal__error"]}>
+                    {getQueryErrorMessage(error)}
+                </p>
             )}
             {isEmpty && <p>{t("purchaseModal.noHistory")}</p>}
             {hasHistory && (
-                <ul className="space-y-2">
+                <ul className={styles["purchase-history-modal__list"]}>
                     {items.map((purchase) => (
                         <PurchaseItem
                             key={purchase.id}
@@ -90,12 +95,11 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
                     ))}
                 </ul>
             )}
-            <button
-                onClick={onClose}
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-full"
-            >
-                {t("purchaseModal.closeButton")}
-            </button>
+            <div className={styles["purchase-history-modal__footer"]}>
+                <Button type="button" onClick={onClose}>
+                    {t("purchaseModal.closeButton")}
+                </Button>
+            </div>
         </BaseModal>
     );
 };

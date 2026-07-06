@@ -1,81 +1,82 @@
 import { skipToken } from "@reduxjs/toolkit/query";
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+
+import { changeRecipePath, ROUTES } from "constants/routes";
 
 import { useAppDispatch } from "redux/hooks";
 import { useGetRecipeByIdQuery } from "redux/services/recipesApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
-import { AppShell } from "components/layout/AppShell";
-import { RecipeIngredientsList } from "components/recipes/RecipeIngredientsList";
-import { RecipeMetaInfo } from "components/recipes/RecipeMetaInfo";
-import { RecipeOwnerActions } from "components/recipes/RecipeOwnerActions";
+import { useIngredientAvailability } from "hooks/useIngredientAvailability";
+import { useServingsScaling } from "hooks/useServingsScaling";
 
-import { splitCookingTime } from "utils/cookingTimeUtils";
-import { formatDate } from "utils/dateUtils";
+import { AppShell } from "components/layout/AppShell";
+import { RecipeHero } from "components/recipes/RecipeHero";
+import { RecipeIngredientsPanel } from "components/recipes/RecipeIngredientsPanel";
+import { ErrorState } from "components/ui/ErrorState";
+
+import styles from "./RecipeDetailsPage.module.scss";
 
 const RecipeDetailsPage: React.FC = () => {
-    const { t, i18n } = useTranslation("recipes");
+    const { t } = useTranslation("recipes");
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
-    const { data: recipe, isError } = useGetRecipeByIdQuery(id ?? skipToken);
+    const {
+        data: recipe,
+        isError,
+        refetch,
+    } = useGetRecipeByIdQuery(id ?? skipToken);
 
-    const renderContent = () => {
-        if (isError) {
-            return (
-                <div className="text-red-500">
-                    {t("recipeDetailsPage.error", {
+    const servings = useServingsScaling(recipe?.servings ?? null);
+    const { availability, haveCount, missingCount } = useIngredientAvailability(
+        recipe?.ingredients ?? [],
+    );
+
+    if (isError) {
+        return (
+            <AppShell>
+                <ErrorState
+                    title={t("recipeDetailsPage.error", {
                         message: t("recipeDetailsPage.errorFetch"),
                     })}
-                </div>
-            );
-        }
-
-        if (!recipe) {
-            return <div>{t("recipeDetailsPage.loading")}</div>;
-        }
-
-        const isOwner = recipe.isOwner;
-        const formattedDate = formatDate(recipe.creation_date, i18n.language);
-        const { hours, minutes } = splitCookingTime(recipe.cooking_time);
-        const formattedCookingTime =
-            hours > 0
-                ? t("recipeDetailsPage.cookingTimeHoursMinutes", {
-                      hours,
-                      minutes,
-                  })
-                : t("recipeDetailsPage.cookingTimeMinutes", { minutes });
-
-        return (
-            <div className="mx-[15vw]">
-                <h1 className="text-relative-h3 my-[7vh] font-kharkiv font-bold mb-4">
-                    {recipe.title}
-                </h1>
-
-                <RecipeMetaInfo recipe={recipe} />
-
-                <RecipeIngredientsList
-                    ingredients={recipe.ingredients}
-                    heading={t("recipeDetailsPage.ingredients")}
+                    onRetry={() => {
+                        refetch().catch(() => undefined);
+                    }}
+                    retryLabel={t("common:errorState.retry")}
                 />
+            </AppShell>
+        );
+    }
 
-                <p className="text-relative-ps mt-4 font-montserratRegular">
-                    <strong>{t("recipeDetailsPage.cookingTime")}</strong>{" "}
-                    {formattedCookingTime}
-                </p>
-                <p className="text-relative-ps mt-4 font-montserratRegular">
-                    <strong>{t("recipeDetailsPage.creationDate")}</strong>{" "}
-                    {formattedDate}
-                </p>
-                <p className="text-relative-ps mt-4 font-montserratRegular">
-                    <strong>{t("recipeDetailsPage.servings")}</strong>{" "}
-                    {recipe.servings}
-                </p>
+    if (!recipe) {
+        return (
+            <AppShell>
+                <p>{t("recipeDetailsPage.loading")}</p>
+            </AppShell>
+        );
+    }
 
-                {isOwner && (
-                    <RecipeOwnerActions
-                        recipeId={recipe.id}
+    return (
+        <AppShell>
+            <div className={styles["recipe-details-page"]}>
+                <nav
+                    aria-label={t("recipeDetailsPage.breadcrumb")}
+                    className={styles["recipe-details-page__breadcrumb"]}
+                >
+                    <Link to={ROUTES.allRecipes}>
+                        {t("recipeDetailsPage.breadcrumbRecipes")}
+                    </Link>
+                    <ChevronRight size={14} aria-hidden="true" />
+                    <span>{recipe.title}</span>
+                </nav>
+                <div className={styles["recipe-details-page__grid"]}>
+                    <RecipeHero
+                        recipe={recipe}
+                        servingsDisplay={servings.displayValue}
+                        editTo={changeRecipePath(recipe.id)}
                         onDelete={() => {
                             dispatch(
                                 openModal({
@@ -85,12 +86,20 @@ const RecipeDetailsPage: React.FC = () => {
                             );
                         }}
                     />
-                )}
+                    <RecipeIngredientsPanel
+                        availability={availability}
+                        haveCount={haveCount}
+                        missingCount={missingCount}
+                        canScale={servings.canScale}
+                        servingsCount={servings.current}
+                        scaleFactor={servings.scaleFactor}
+                        onIncrement={servings.increment}
+                        onDecrement={servings.decrement}
+                    />
+                </div>
             </div>
-        );
-    };
-
-    return <AppShell>{renderContent()}</AppShell>;
+        </AppShell>
+    );
 };
 
 export default RecipeDetailsPage;

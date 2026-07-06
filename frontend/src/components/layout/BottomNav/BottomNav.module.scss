@@ -1,0 +1,40 @@
+@use "styles/abstracts" as *;
+
+.bottom-nav {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: var(--z-header);
+    display: flex;
+    align-items: stretch;
+    height: 64px;
+    padding-bottom: env(safe-area-inset-bottom);
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+
+    @include respond-to(desktop) {
+        display: none;
+    }
+
+    &__item {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font:
+            600 10px Inter,
+            sans-serif;
+
+        @include focus-ring;
+    }
+
+    &__item--active {
+        color: var(--brand);
+        font-weight: 700;
+    }
+}

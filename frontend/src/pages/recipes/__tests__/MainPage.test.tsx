@@ -63,7 +63,7 @@ describe("MainPage", () => {
         });
 
         await userEvent.click(
-            await screen.findByRole("button", { name: "Filter" }),
+            await screen.findByRole("button", { name: "Filters" }),
         );
         await userEvent.click(screen.getByRole("checkbox"));
 

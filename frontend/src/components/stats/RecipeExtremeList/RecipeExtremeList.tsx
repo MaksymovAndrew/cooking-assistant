@@ -2,6 +2,8 @@ import React from "react";
 
 import type { RecipeWithIngredientNames } from "types/recipe";
 
+import styles from "./RecipeExtremeList.module.scss";
+
 interface RecipeExtremeListProps {
     label: string;
     recipes: RecipeWithIngredientNames[];
@@ -15,16 +17,16 @@ export const RecipeExtremeList: React.FC<RecipeExtremeListProps> = ({
     unit,
     getValue,
 }) => (
-    <div className="mb-4 last:mb-0">
-        <p className="text-sm font-semibold text-gray-700 mb-1.5">{label}</p>
-        <ul className="space-y-1.5">
+    <div className={styles["recipe-extreme-list"]}>
+        <p className={styles["recipe-extreme-list__label"]}>{label}</p>
+        <ul className={styles["recipe-extreme-list__items"]}>
             {recipes.map((recipe) => (
                 <li
                     key={recipe.id}
-                    className="flex justify-between bg-gray-100 rounded-lg px-3 py-1.5 text-sm"
+                    className={styles["recipe-extreme-list__row"]}
                 >
                     <span>{recipe.title}</span>
-                    <span className="text-gray-600">
+                    <span className={styles["recipe-extreme-list__value"]}>
                         {getValue(recipe)}
                         {unit}
                     </span>

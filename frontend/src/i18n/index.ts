@@ -8,8 +8,9 @@ import common from "i18n/locales/en/common.json";
 import home from "i18n/locales/en/home.json";
 import ingredients from "i18n/locales/en/ingredients.json";
 import menu from "i18n/locales/en/menu.json";
+import profile from "i18n/locales/en/profile.json";
 import recipes from "i18n/locales/en/recipes.json";
-import recipeTypes from "i18n/locales/en/recipeTypes.json";
+import settings from "i18n/locales/en/settings.json";
 import stats from "i18n/locales/en/stats.json";
 
 // synchronous init (resources are inlined, no backend) so t() returns real strings
@@ -20,12 +21,13 @@ i18n.use(initReactI18next)
             en: {
                 common,
                 recipes,
-                recipeTypes,
                 menu,
                 ingredients,
                 stats,
                 auth,
                 home,
+                profile,
+                settings,
             },
         },
         lng: "en",

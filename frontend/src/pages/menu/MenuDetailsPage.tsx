@@ -1,86 +1,105 @@
 import { skipToken } from "@reduxjs/toolkit/query";
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+
+import { changeMenuPath, ROUTES } from "constants/routes";
 
 import { useAppDispatch } from "redux/hooks";
 import { useGetMenuByIdQuery } from "redux/services/menusApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { AppShell } from "components/layout/AppShell";
-import { GroupedRecipesList } from "components/menu/GroupedRecipesList";
-import { MenuMetaInfo } from "components/menu/MenuMetaInfo";
-import { MenuOwnerActions } from "components/menu/MenuOwnerActions";
-import { MissingIngredientsList } from "components/menu/MissingIngredientsList";
+import { MenuHero } from "components/menu/MenuHero";
+import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
+import { MenuRecipesPanel } from "components/menu/MenuRecipesPanel";
+import { ErrorState } from "components/ui/ErrorState";
 
-import {
-    aggregateMissingIngredients,
-    groupRecipesByType,
-} from "utils/menuUtils";
-import { getQueryErrorMessage } from "utils/queryError";
+import { aggregateMissingIngredients } from "utils/menuUtils";
+
+import styles from "./MenuDetailsPage.module.scss";
 
 const MenuDetailsPage: React.FC = () => {
     const { t } = useTranslation("menu");
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
-    const { data: menu, isError, error } = useGetMenuByIdQuery(id ?? skipToken);
+    const {
+        data: menu,
+        isError,
+        refetch,
+    } = useGetMenuByIdQuery(id ?? skipToken);
 
-    const renderContent = () => {
-        if (isError) {
-            return (
-                <div className="text-red-500">
-                    {t("menuDetailsPage.error", {
-                        message: getQueryErrorMessage(error),
-                    })}
-                </div>
-            );
-        }
-
-        if (!menu) {
-            return <div>{t("menuDetailsPage.loading")}</div>;
-        }
-
-        const isOwner = menu.menu.isOwner;
-        const groupedRecipes = groupRecipesByType(menu.recipes);
-        const missingIngredients = aggregateMissingIngredients(menu.recipes);
-
+    if (isError) {
         return (
-            <div className="mx-[15vw] mb-[5vh]">
-                <h1 className="text-relative-h3 my-[7vh] font-kharkiv font-bold mb-4">
-                    {menu.menu.title}
-                </h1>
-
-                <MenuMetaInfo
-                    categoryName={menu.menu.categoryname}
-                    content={menu.menu.menucontent}
+            <AppShell>
+                <ErrorState
+                    title={t("menuDetailsPage.error", {
+                        message: t("menuDetailsPage.errorFetch"),
+                    })}
+                    onRetry={() => {
+                        refetch().catch(() => undefined);
+                    }}
+                    retryLabel={t("common:errorState.retry")}
                 />
-
-                <p className="text-relative-ps mt-[3vh] mb-[1vh] font-montserratMedium font-semibold">
-                    <strong>{t("menuDetailsPage.recipes")}</strong>
-                </p>
-
-                <GroupedRecipesList groupedRecipes={groupedRecipes} />
-
-                <MissingIngredientsList ingredients={missingIngredients} />
-
-                {isOwner && (
-                    <MenuOwnerActions
-                        menuId={menu.menu.id}
-                        onDelete={() => {
-                            dispatch(
-                                openModal({
-                                    type: MODAL_TYPE.deleteMenu,
-                                    menuId: menu.menu.id,
-                                }),
-                            );
-                        }}
-                    />
-                )}
-            </div>
+            </AppShell>
         );
-    };
+    }
 
-    return <AppShell>{renderContent()}</AppShell>;
+    if (!menu) {
+        return (
+            <AppShell>
+                <p>{t("menuDetailsPage.loading")}</p>
+            </AppShell>
+        );
+    }
+
+    const totalCookingTime = menu.recipes.reduce(
+        (total, recipe) => total + recipe.cooking_time,
+        0,
+    );
+    const missingIngredients = aggregateMissingIngredients(menu.recipes);
+
+    return (
+        <AppShell>
+            <div className={styles["menu-details-page"]}>
+                <nav
+                    aria-label={t("menuDetailsPage.breadcrumb")}
+                    className={styles["menu-details-page__breadcrumb"]}
+                >
+                    <Link to={ROUTES.allMenus}>
+                        {t("menuDetailsPage.breadcrumbMenus")}
+                    </Link>
+                    <ChevronRight size={14} aria-hidden="true" />
+                    <span>{menu.menu.title}</span>
+                </nav>
+                <MenuHero
+                    menu={menu.menu}
+                    totalCookingTime={totalCookingTime}
+                    recipeCount={menu.recipes.length}
+                    editTo={changeMenuPath(menu.menu.id)}
+                    onDelete={() => {
+                        dispatch(
+                            openModal({
+                                type: MODAL_TYPE.deleteMenu,
+                                menuId: menu.menu.id,
+                            }),
+                        );
+                    }}
+                />
+                <div className={styles["menu-details-page__grid"]}>
+                    <MenuRecipesPanel
+                        recipes={menu.recipes}
+                        isOwner={menu.menu.isOwner}
+                        addRecipesTo={changeMenuPath(menu.menu.id)}
+                    />
+                    <MenuMissingIngredientsPanel
+                        ingredients={missingIngredients}
+                    />
+                </div>
+            </div>
+        </AppShell>
+    );
 };
 
 export default MenuDetailsPage;

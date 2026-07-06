@@ -12,6 +12,7 @@ describe("SelectedIngredientsList", () => {
                 ingredients={INGREDIENTS}
                 heading="Selected Ingredients"
                 onQuantityChange={jest.fn()}
+                onRemove={jest.fn()}
             />,
         );
 
@@ -29,6 +30,7 @@ describe("SelectedIngredientsList", () => {
                 ingredients={INGREDIENTS}
                 heading="Selected Ingredients"
                 onQuantityChange={onQuantityChange}
+                onRemove={jest.fn()}
             />,
         );
 
@@ -45,11 +47,29 @@ describe("SelectedIngredientsList", () => {
                 ingredients={INGREDIENTS}
                 heading="Selected Ingredients"
                 onQuantityChange={onQuantityChange}
+                onRemove={jest.fn()}
             />,
         );
 
         await userEvent.clear(screen.getByRole("spinbutton"));
 
         expect(onQuantityChange).not.toHaveBeenCalled();
+    });
+
+    it("should call onRemove with the ingredient when the remove button is clicked", async () => {
+        const onRemove = jest.fn();
+
+        render(
+            <SelectedIngredientsList
+                ingredients={INGREDIENTS}
+                heading="Selected Ingredients"
+                onQuantityChange={jest.fn()}
+                onRemove={onRemove}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Remove" }));
+
+        expect(onRemove).toHaveBeenCalledWith(INGREDIENTS[0]);
     });
 });

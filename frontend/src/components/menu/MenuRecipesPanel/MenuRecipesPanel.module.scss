@@ -1,0 +1,79 @@
+@use "styles/abstracts" as *;
+
+.menu-recipes-panel {
+    min-width: 0;
+
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--s-3);
+        margin-bottom: var(--s-4);
+    }
+
+    &__heading {
+        flex: none;
+        color: var(--text);
+        font:
+            600 15px Fraunces,
+            serif;
+    }
+
+    &__count {
+        color: var(--text-muted);
+        font:
+            500 13px "Geist Mono",
+            monospace;
+    }
+
+    &__search {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 10px;
+        height: 42px;
+        min-width: 180px;
+        padding: 0 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--surface);
+        color: var(--text-muted);
+
+        &:focus-within {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px var(--brand-subtle);
+        }
+    }
+
+    &__search-input {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        background: none;
+        color: var(--text);
+        font:
+            400 13px Inter,
+            sans-serif;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__no-results {
+        color: var(--text-muted);
+        font:
+            400 14px Inter,
+            sans-serif;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: var(--s-4);
+    }
+}

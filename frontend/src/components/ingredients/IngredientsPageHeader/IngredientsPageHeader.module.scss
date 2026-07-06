@@ -1,0 +1,32 @@
+@use "styles/abstracts" as *;
+
+.ingredients-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-bottom: var(--s-5);
+
+    &__heading {
+        margin: 0 0 4px;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(26px, 4vw, 34px) Fraunces,
+            serif;
+    }
+
+    &__count {
+        margin: 0;
+        color: var(--text-muted);
+        font:
+            400 14px Inter,
+            sans-serif;
+    }
+
+    &__actions {
+        display: flex;
+        gap: var(--s-3);
+    }
+}

@@ -6,7 +6,7 @@ import { BTN_DELETE_RECIPE, BTN_EDIT_RECIPE } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 describe("RecipeOwnerActions", () => {
-    it("should render delete and edit buttons", () => {
+    it("should render delete and edit actions", () => {
         renderWithRouter(
             <RecipeOwnerActions recipeId={1} onDelete={jest.fn()} />,
         );
@@ -15,7 +15,7 @@ describe("RecipeOwnerActions", () => {
             screen.getByRole("button", { name: BTN_DELETE_RECIPE }),
         ).toBeInTheDocument();
         expect(
-            screen.getByRole("button", { name: BTN_EDIT_RECIPE }),
+            screen.getByRole("link", { name: BTN_EDIT_RECIPE }),
         ).toBeInTheDocument();
     });
 

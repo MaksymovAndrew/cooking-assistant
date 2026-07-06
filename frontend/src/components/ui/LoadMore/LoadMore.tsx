@@ -1,5 +1,7 @@
 import React from "react";
 
+import styles from "./LoadMore.module.scss";
+
 interface LoadMoreProps {
     hasMore: boolean;
     isLoading: boolean;
@@ -20,10 +22,10 @@ export const LoadMore: React.FC<LoadMoreProps> = ({
     countLabel,
     errorMessage,
 }) => (
-    <div className="text-center mt-4 mb-8">
-        <div className="flex items-center justify-center gap-3">
+    <div className={styles["load-more"]}>
+        <div className={styles["load-more__row"]}>
             {countLabel && (
-                <p aria-live="polite" className="text-sm text-gray-600">
+                <p aria-live="polite" className={styles["load-more__count"]}>
                     {countLabel}
                 </p>
             )}
@@ -32,13 +34,13 @@ export const LoadMore: React.FC<LoadMoreProps> = ({
                     type="button"
                     onClick={onLoadMore}
                     disabled={isLoading}
-                    className="bg-dark-purple text-white py-2 px-4 rounded-full disabled:opacity-50"
+                    className={styles["load-more__button"]}
                 >
                     {isLoading && (
                         <span
                             role="status"
                             aria-label={loadingLabel}
-                            className="inline-block w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin align-middle"
+                            className={styles["load-more__spinner"]}
                         />
                     )}
                     {loadMoreLabel}
@@ -46,7 +48,7 @@ export const LoadMore: React.FC<LoadMoreProps> = ({
             )}
         </div>
         {errorMessage && (
-            <div className="text-red-500 text-sm mt-1">{errorMessage}</div>
+            <div className={styles["load-more__error"]}>{errorMessage}</div>
         )}
     </div>
 );

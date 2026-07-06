@@ -9,16 +9,17 @@ export const ROUTES = {
     recipeDetails: "/recipe/:id",
     changeRecipe: "/change-recipe/:id",
 
-    recipeTypes: "/types",
-
     ingredients: "/ingredients",
     stats: "/stats",
 
-    menus: "/menus",
+    allMenus: "/all-menus",
     myMenus: "/my-menus",
     addMenu: "/add-menu",
     menuDetails: "/menu/:id",
     changeMenu: "/change-menu/:id",
+
+    profile: "/profile",
+    settings: "/settings",
 
     notFound: "*",
 } as const;

@@ -25,6 +25,9 @@ const MainPage: React.FC = () => {
             heading={heading}
             emptyMessage={emptyMessage}
             searchPlaceholder={t("mainPage.searchPlaceholder")}
+            onRetry={() => {
+                list.refetch().catch(() => undefined);
+            }}
         />
     );
 };

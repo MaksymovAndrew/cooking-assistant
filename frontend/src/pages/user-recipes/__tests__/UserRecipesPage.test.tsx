@@ -56,7 +56,7 @@ describe("UserRecipesPage", () => {
             initialEntries: ["/my-recipes"],
         });
 
-        await userEvent.click(screen.getByRole("button", { name: "Filter" }));
+        await userEvent.click(screen.getByRole("button", { name: "Filters" }));
         await userEvent.click(screen.getByRole("checkbox"));
 
         expect(await screen.findByText("Recipes: Soup")).toBeInTheDocument();

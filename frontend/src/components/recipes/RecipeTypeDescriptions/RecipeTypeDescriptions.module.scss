@@ -1,0 +1,15 @@
+.recipe-type-descriptions {
+    margin-bottom: var(--s-4);
+
+    p {
+        margin: 0 0 var(--s-1);
+        color: var(--text-2);
+        font:
+            400 14px Inter,
+            sans-serif;
+    }
+
+    strong {
+        color: var(--text);
+    }
+}

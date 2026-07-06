@@ -26,6 +26,8 @@ backend/src/test/db-integration/.connection.json
 # Local secrets - keep .env out of git, commit .env.example instead
 .env
 
+/orc/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

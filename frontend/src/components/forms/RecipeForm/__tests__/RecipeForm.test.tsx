@@ -102,12 +102,16 @@ describe("RecipeForm", () => {
         expect(form.setContent).toHaveBeenCalledWith("B");
     });
 
-    it("should render the ingredient options and toggle one on click", async () => {
+    it("should search and toggle an ingredient on click", async () => {
         const form = makeForm();
 
         renderForm(form);
 
-        await userEvent.click(screen.getByRole("button", { name: "Egg" }));
+        await userEvent.type(
+            screen.getByPlaceholderText("Search ingredients..."),
+            "egg",
+        );
+        await userEvent.click(screen.getByRole("button", { name: /egg/i }));
 
         expect(form.toggleIngredientSelection).toHaveBeenCalledWith(
             INGREDIENTS[0],

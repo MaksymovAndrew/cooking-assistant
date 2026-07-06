@@ -77,5 +77,6 @@ export const useMenuListView = (source: MenuSource) => {
         isFetchingNextPage: active.isFetchingNextPage,
         fetchNextPage: active.fetchNextPage,
         loadMoreError: hasLoadedMenus ? errorMessage : null,
+        refetch: active.refetch,
     };
 };

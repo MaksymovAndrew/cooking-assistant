@@ -22,6 +22,9 @@ const MenuPage: React.FC = () => {
             heading={heading}
             emptyMessage={t("menuPage.noMenus")}
             searchPlaceholder={t("menuPage.searchPlaceholder")}
+            onRetry={() => {
+                list.refetch().catch(() => undefined);
+            }}
         />
     );
 };

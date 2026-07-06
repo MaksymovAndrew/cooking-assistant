@@ -22,6 +22,9 @@ export interface RecipeTypeStat {
 export interface RecipeStatistics {
     stats: RecipeTypeStat[];
     recipesCount: number;
+    averageCookingTimeOverall: string | null;
+    averageCookingTimesByType: AverageCookingTime[];
+    mostUsedType: RecipeTypeStat | null;
     fastestRecipes: RecipeWithIngredientNames[];
     slowestRecipes: RecipeWithIngredientNames[];
     mostIngredientsRecipes: RecipeWithIngredientNames[];
@@ -30,7 +33,6 @@ export interface RecipeStatistics {
 
 export interface MenuStatistics {
     menusCount: number;
-    recipesCount: number;
-    averageCookingTimes: AverageCookingTime[];
     menuCountByCategory: MenuCategoryStat[];
+    mostUsedCategory: MenuCategoryStat | null;
 }

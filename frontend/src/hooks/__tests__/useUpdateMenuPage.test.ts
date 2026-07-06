@@ -12,7 +12,7 @@ import { recipesApi } from "redux/services/recipesApi";
 import { useUpdateMenuPage } from "hooks/useUpdateMenuPage";
 
 import { mockedPut, mockGetByUrl } from "test/apiClientMock";
-import { ROUTE_MENUS } from "test/constants";
+import { ROUTE_ALL_MENUS } from "test/constants";
 import { mockNavigate } from "test/router";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
@@ -97,7 +97,7 @@ describe("useUpdateMenuPage", () => {
                 recipeIds: [MENU_RECIPE.recipe_id],
             }),
         );
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_MENUS);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_MENUS);
     });
 
     it("should not call the mutation when no recipes are selected", async () => {

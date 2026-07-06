@@ -1,4 +1,3 @@
-import "./index.css";
 import "styles/global.scss";
 
 import { StrictMode } from "react";

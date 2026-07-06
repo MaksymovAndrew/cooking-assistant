@@ -28,15 +28,13 @@ const FILTERS: RecipeFilterState = {
     endDate: "",
     minCookingTime: "",
     maxCookingTime: "",
-    sortOrder: "",
+    sortOrder: "asc",
     ingredientName: null,
 };
 
 const baseProps = {
     filters: FILTERS,
     setSelectedTypes: jest.fn(),
-    setStartDate: jest.fn(),
-    setEndDate: jest.fn(),
     setMinCookingTime: jest.fn(),
     setMaxCookingTime: jest.fn(),
     setSortOrder: jest.fn(),
@@ -45,6 +43,7 @@ const baseProps = {
     heading: "All recipes",
     emptyMessage: "No recipes found",
     searchPlaceholder: "ingredient name",
+    onRetry: jest.fn(),
     total: RECIPES.length,
     loadedCount: RECIPES.length,
     hasNextPage: false,
@@ -68,6 +67,21 @@ describe("RecipeListView", () => {
         expect(screen.getByText(RECIPE_TITLE)).toBeInTheDocument();
     });
 
+    it("should render the translated New recipe button, not a raw i18n key", () => {
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={RECIPES}
+                noRecipes={false}
+                error={null}
+            />,
+        );
+
+        expect(
+            screen.getByRole("link", { name: "New recipe" }),
+        ).toBeInTheDocument();
+    });
+
     it("should render the empty message instead of cards when there are no recipes", () => {
         renderWithRouter(
             <RecipeListView
@@ -82,17 +96,26 @@ describe("RecipeListView", () => {
         expect(screen.queryByText(RECIPE_TITLE)).not.toBeInTheDocument();
     });
 
-    it("should render the error message when present", () => {
+    it("should render the error state and call onRetry when Try again is clicked", async () => {
+        const onRetry = jest.fn();
+
         renderWithRouter(
             <RecipeListView
                 {...baseProps}
                 recipes={[]}
                 noRecipes={false}
                 error="Boom"
+                onRetry={onRetry}
             />,
         );
 
         expect(screen.getByText("Boom")).toBeInTheDocument();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Try again" }),
+        );
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
     });
 
     it("should show the load more button and counter once total exceeds a page", () => {
@@ -150,5 +173,21 @@ describe("RecipeListView", () => {
 
         expect(screen.getByText(RECIPE_TITLE)).toBeInTheDocument();
         expect(screen.getByText("Couldn't load more")).toBeInTheDocument();
+    });
+
+    it("should mark cards as mine when the mine prop is set", () => {
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={RECIPES}
+                noRecipes={false}
+                error={null}
+                mine
+            />,
+        );
+
+        expect(screen.getByRole("link", { name: /Borscht/ })).toHaveClass(
+            "content-card--mine",
+        );
     });
 });

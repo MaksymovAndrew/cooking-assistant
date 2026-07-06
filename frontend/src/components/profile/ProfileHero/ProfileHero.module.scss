@@ -1,0 +1,54 @@
+@use "styles/abstracts" as *;
+
+.profile-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-5);
+    margin-bottom: var(--s-6);
+    padding-bottom: var(--s-6);
+    border-bottom: 1px solid var(--border);
+
+    &__name {
+        margin: 0;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(24px, 4vw, 28px) Fraunces,
+            serif;
+    }
+
+    &__spacer {
+        flex: 1;
+    }
+
+    &__stats {
+        display: flex;
+        gap: var(--s-6);
+    }
+
+    &__stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__stat-value {
+        color: var(--text);
+        font:
+            700 24px "Geist Mono",
+            monospace;
+    }
+
+    &__stat-label {
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+
+    &__actions {
+        display: flex;
+        gap: var(--s-2);
+    }
+}

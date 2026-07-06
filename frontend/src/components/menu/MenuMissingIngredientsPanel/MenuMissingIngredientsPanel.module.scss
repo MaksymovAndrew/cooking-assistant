@@ -1,0 +1,88 @@
+@use "styles/abstracts" as *;
+
+.menu-missing-ingredients-panel {
+    position: sticky;
+    top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    max-height: 660px;
+    padding: var(--s-4);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__title {
+        color: var(--text);
+        font:
+            600 15px Fraunces,
+            serif;
+    }
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 7px;
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--danger) 16%, transparent);
+        color: var(--danger);
+        font:
+            700 11px "Geist Mono",
+            monospace;
+    }
+
+    &__empty {
+        color: var(--text-2);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
+        margin: 0;
+        overflow-y: auto;
+        list-style: none;
+        padding-inline-start: 0;
+    }
+
+    &__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-2);
+        padding: 10px 13px;
+        border: 1px solid color-mix(in srgb, var(--danger) 25%, var(--border));
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--danger) 7%, var(--surface-2));
+    }
+
+    &__name {
+        @include truncate;
+
+        min-width: 0;
+        color: var(--text);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__qty {
+        flex: none;
+        color: var(--danger);
+        font:
+            600 11px "Geist Mono",
+            monospace;
+    }
+}

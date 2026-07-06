@@ -6,7 +6,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import CreateMenuPage from "pages/menu/CreateMenuPage";
 import { mockedPost, mockGetByUrl } from "test/apiClientMock";
-import { ROUTE_MENUS } from "test/constants";
+import { ROUTE_ALL_MENUS } from "test/constants";
 import { mockNavigate, renderWithRouter } from "test/router";
 
 jest.mock("react-router-dom", () => ({
@@ -46,9 +46,7 @@ describe("CreateMenuPage", () => {
 
         renderWithRouter(<CreateMenuPage />);
 
-        const recipeButton = await screen.findByRole("button", {
-            name: RECIPE_TITLE,
-        });
+        await screen.findByPlaceholderText("Search recipes...");
 
         await userEvent.type(screen.getByLabelText("Menu title"), MENU_TITLE);
         await userEvent.type(
@@ -59,7 +57,13 @@ describe("CreateMenuPage", () => {
             screen.getByLabelText("Menu category"),
             String(CATEGORY_ID),
         );
-        await userEvent.click(recipeButton);
+        await userEvent.type(
+            screen.getByPlaceholderText("Search recipes..."),
+            RECIPE_TITLE,
+        );
+        await userEvent.click(
+            screen.getByRole("button", { name: new RegExp(RECIPE_TITLE, "i") }),
+        );
         await userEvent.click(
             screen.getByRole("button", { name: "Create Menu" }),
         );
@@ -70,6 +74,6 @@ describe("CreateMenuPage", () => {
             categoryId: CATEGORY_ID,
             recipeIds: [RECIPE_ID],
         });
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_MENUS);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_MENUS);
     });
 });

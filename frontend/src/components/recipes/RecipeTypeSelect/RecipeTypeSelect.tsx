@@ -2,6 +2,9 @@ import React from "react";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
+import { FormField } from "components/ui/FormField";
+import { Select } from "components/ui/Select";
+
 interface RecipeTypeSelectProps {
     id: string;
     label: string;
@@ -21,17 +24,14 @@ export const RecipeTypeSelect: React.FC<RecipeTypeSelectProps> = ({
     error,
     onChange,
 }) => (
-    <div>
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-            {label}
-        </label>
-        <select
+    <FormField htmlFor={id} label={label} error={error}>
+        <Select
             id={id}
             value={value ?? ""}
+            hasError={Boolean(error)}
             onChange={(e) => {
                 onChange(e.target.value === "" ? null : Number(e.target.value));
             }}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-white"
             required
         >
             <option value="" disabled>
@@ -42,7 +42,6 @@ export const RecipeTypeSelect: React.FC<RecipeTypeSelectProps> = ({
                     {type.type_name}
                 </option>
             ))}
-        </select>
-        {error && <div className="text-red-500">{error}</div>}
-    </div>
+        </Select>
+    </FormField>
 );

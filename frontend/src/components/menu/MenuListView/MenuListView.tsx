@@ -1,12 +1,21 @@
+import { Plus } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
+import { ROUTES } from "constants/routes";
 import type { Menu, MenuCategory } from "types/menu";
 
-import { ListPageLayout } from "components/layout/ListPageLayout";
+import { NotebookMark } from "components/icons";
+import { AppShell } from "components/layout/AppShell";
+import { MenuActiveFilters } from "components/menu/MenuActiveFilters";
 import { MenuCard } from "components/menu/MenuCard";
-import { MenuCategoryFilter } from "components/menu/MenuCategoryFilter";
+import { MenuFilterPanel } from "components/menu/MenuFilterPanel";
+import { EmptyState } from "components/ui/EmptyState";
+import { ErrorState } from "components/ui/ErrorState";
+import { LinkButton } from "components/ui/LinkButton";
 import { ListLoadMoreFooter } from "components/ui/LoadMore";
-import { SearchComponent } from "components/ui/SearchComponent";
+
+import styles from "./MenuListView.module.scss";
 
 interface MenuListViewProps {
     selectedCategories: number[];
@@ -15,10 +24,11 @@ interface MenuListViewProps {
     menus: Menu[];
     noMenus: boolean;
     error: string | null;
+    onRetry: () => void;
     heading: string;
     emptyMessage: string;
     searchPlaceholder: string;
-    actionSlot?: React.ReactNode;
+    mine?: boolean;
     total: number;
     loadedCount: number;
     hasNextPage: boolean;
@@ -27,6 +37,8 @@ interface MenuListViewProps {
     loadMoreError: string | null;
 }
 
+const NEW_MENU_ICON_SIZE = 18;
+
 export const MenuListView: React.FC<MenuListViewProps> = ({
     selectedCategories,
     setSelectedCategories,
@@ -34,10 +46,11 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
     menus,
     noMenus,
     error,
+    onRetry,
     heading,
     emptyMessage,
     searchPlaceholder,
-    actionSlot,
+    mine = false,
     total,
     loadedCount,
     hasNextPage,
@@ -45,45 +58,78 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
     fetchNextPage,
     loadMoreError,
 }) => {
+    const { t } = useTranslation();
+
     return (
-        <ListPageLayout
-            filterSlot={
-                <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
-                    <SearchComponent placeholder={searchPlaceholder} />
-                    <div className="ml-4 mt-4 sm:mt-0">
-                        <MenuCategoryFilter
-                            categories={categories}
-                            selectedCategories={selectedCategories}
-                            onChange={setSelectedCategories}
-                        />
-                    </div>
+        <AppShell>
+            <div className={styles["menu-list-view"]}>
+                <div className={styles["menu-list-view__header"]}>
+                    <h1 className={styles["menu-list-view__heading"]}>
+                        {heading}
+                    </h1>
+                    <LinkButton to={ROUTES.addMenu}>
+                        <Plus size={NEW_MENU_ICON_SIZE} aria-hidden="true" />
+                        {t("menu:menuListView.newMenu")}
+                    </LinkButton>
                 </div>
-            }
-            actionSlot={actionSlot}
-            heading={heading}
-            isEmpty={noMenus}
-            emptyMessage={emptyMessage}
-            error={error}
-            footerSlot={
-                <ListLoadMoreFooter
+                <MenuFilterPanel
+                    categories={categories}
+                    selectedCategories={selectedCategories}
+                    setSelectedCategories={setSelectedCategories}
+                    searchPlaceholder={searchPlaceholder}
+                />
+                <MenuActiveFilters
                     total={total}
-                    loadedCount={loadedCount}
-                    hasNextPage={hasNextPage}
-                    isFetchingNextPage={isFetchingNextPage}
-                    fetchNextPage={fetchNextPage}
-                    loadMoreError={loadMoreError}
+                    selectedCategories={selectedCategories}
+                    setSelectedCategories={setSelectedCategories}
                 />
-            }
-        >
-            {menus.map((menu) => (
-                <MenuCard
-                    key={menu.id}
-                    id={menu.id}
-                    title={menu.title}
-                    categoryName={menu.categoryname}
-                    content={menu.menucontent}
-                />
-            ))}
-        </ListPageLayout>
+                {error && (
+                    <ErrorState
+                        title={t("errorState.title")}
+                        description={error}
+                        onRetry={onRetry}
+                        retryLabel={t("errorState.retry")}
+                    />
+                )}
+                {!error && noMenus && (
+                    <EmptyState
+                        icon={NotebookMark}
+                        title={emptyMessage}
+                        action={
+                            <LinkButton to={ROUTES.addMenu} size="lg">
+                                <Plus
+                                    size={NEW_MENU_ICON_SIZE}
+                                    aria-hidden="true"
+                                />
+                                {t("menu:menuListView.newMenu")}
+                            </LinkButton>
+                        }
+                    />
+                )}
+                {!error && !noMenus && (
+                    <div className={styles["menu-list-view__grid"]}>
+                        {menus.map((menu) => (
+                            <MenuCard
+                                key={menu.id}
+                                id={menu.id}
+                                title={menu.title}
+                                categoryName={menu.categoryname}
+                                mine={mine}
+                            />
+                        ))}
+                    </div>
+                )}
+                {!error && !noMenus && (
+                    <ListLoadMoreFooter
+                        total={total}
+                        loadedCount={loadedCount}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
+                        fetchNextPage={fetchNextPage}
+                        loadMoreError={loadMoreError}
+                    />
+                )}
+            </div>
+        </AppShell>
     );
 };

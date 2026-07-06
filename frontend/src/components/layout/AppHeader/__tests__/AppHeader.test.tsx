@@ -13,12 +13,15 @@ import { renderWithProviders } from "test/router";
 jest.mock("api/client");
 
 describe("AppHeader", () => {
-    it("should open the logout confirmation modal when the logout button is clicked", async () => {
+    it("should open the logout confirmation modal when the logout menu item is clicked", async () => {
         mockGetByUrl({ [API_ROUTES.auth.me]: null });
 
         const { store } = renderWithProviders(<AppHeader />);
 
-        await userEvent.click(screen.getByRole("button", { name: "Logout" }));
+        await userEvent.click(
+            screen.getByRole("button", { name: "Account menu" }),
+        );
+        await userEvent.click(screen.getByRole("menuitem", { name: "Logout" }));
 
         expect(store.getState().ui.modal).toEqual(
             expect.objectContaining({ type: MODAL_TYPE.logout }),

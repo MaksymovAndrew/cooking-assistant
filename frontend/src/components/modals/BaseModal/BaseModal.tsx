@@ -1,24 +1,28 @@
 import React, { useEffect, useId, useRef } from "react";
 
-const SIZE_CLASSNAMES = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
-} as const;
+import styles from "./BaseModal.module.scss";
+
+export type BaseModalSize = "sm" | "md" | "lg";
 
 interface BaseModalProps {
     onClose: () => void;
-    size?: keyof typeof SIZE_CLASSNAMES;
-    title?: string;
+    size?: BaseModalSize;
+    title?: React.ReactNode;
     children: React.ReactNode;
     closeOnOverlay?: boolean;
     closeOnEscape?: boolean;
 }
 
+const SIZE_CLASS: Record<BaseModalSize, string> = {
+    sm: styles["base-modal--sm"],
+    md: styles["base-modal--md"],
+    lg: styles["base-modal--lg"],
+};
+
 // no isOpen prop - visibility is owned by the caller (mounted = open)
 export const BaseModal: React.FC<BaseModalProps> = ({
     onClose,
-    size = "sm",
+    size = "md",
     title,
     children,
     closeOnOverlay = true,
@@ -68,7 +72,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
     return (
         <div
             role="presentation"
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+            className={styles["base-modal-overlay"]}
             onClick={handleOverlayClick}
         >
             <div
@@ -77,13 +81,14 @@ export const BaseModal: React.FC<BaseModalProps> = ({
                 aria-modal="true"
                 aria-labelledby={title ? titleId : undefined}
                 tabIndex={-1}
-                className={`bg-white p-6 rounded-lg shadow-lg w-full ${SIZE_CLASSNAMES[size]}`}
+                className={`${styles["base-modal"]} ${SIZE_CLASS[size]}`}
             >
+                <span
+                    className={styles["base-modal__handle"]}
+                    aria-hidden="true"
+                />
                 {title && (
-                    <h2
-                        id={titleId}
-                        className="text-lg font-semibold font-montserratRegular mb-4 text-center"
-                    >
+                    <h2 id={titleId} className={styles["base-modal__title"]}>
                         {title}
                     </h2>
                 )}

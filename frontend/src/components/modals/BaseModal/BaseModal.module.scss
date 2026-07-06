@@ -1,0 +1,95 @@
+@use "styles/abstracts" as *;
+
+@keyframes base-modal-overlay-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes base-modal-fade-up {
+    from {
+        opacity: 0;
+        transform: scale(0.985) translateY(10px);
+    }
+}
+
+@keyframes base-modal-sheet-in {
+    from {
+        transform: translateY(100%);
+    }
+}
+
+.base-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgb(0 0 0 / 55%);
+    backdrop-filter: blur(4px);
+    animation: base-modal-overlay-in 200ms ease;
+
+    @include respond-to(tablet) {
+        align-items: center;
+        padding: var(--s-4);
+    }
+}
+
+.base-modal {
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: var(--s-5) var(--s-5)
+        calc(var(--s-5) + env(safe-area-inset-bottom));
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    background: var(--surface);
+    box-shadow: var(--e-3);
+    animation: base-modal-sheet-in 250ms var(--ease-out);
+
+    &:focus {
+        outline: none;
+    }
+
+    @include respond-to(tablet) {
+        max-width: 420px;
+        padding: 26px;
+        border-radius: var(--r-lg);
+        animation: base-modal-fade-up 250ms var(--ease-out);
+    }
+
+    &__handle {
+        display: block;
+        width: 38px;
+        height: 4px;
+        margin: 0 auto var(--s-4);
+        border-radius: var(--r-pill);
+        background: var(--border);
+
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
+    &__title {
+        margin: 0 0 var(--s-4);
+        color: var(--text);
+        text-align: center;
+        font:
+            600 20px Fraunces,
+            serif;
+    }
+}
+
+.base-modal--sm {
+    @include respond-to(tablet) {
+        max-width: 360px;
+    }
+}
+
+.base-modal--lg {
+    @include respond-to(tablet) {
+        max-width: 520px;
+    }
+}

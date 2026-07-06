@@ -98,7 +98,7 @@ describe("ConfirmModal", () => {
         );
 
         expect(screen.getByRole("button", { name: "Log out" })).toHaveClass(
-            "bg-dark-purple",
+            "button--primary",
         );
     });
 

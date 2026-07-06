@@ -84,8 +84,9 @@ describe("LoginForm", () => {
         );
 
         expect(
-            screen.getByText("Too many attempts. Try again in 1:05."),
+            screen.getByText("Too many attempts - account locked."),
         ).toBeInTheDocument();
+        expect(screen.getByText("1:05")).toBeInTheDocument();
         expect(
             screen.queryByText("Incorrect username or password."),
         ).not.toBeInTheDocument();

@@ -58,6 +58,7 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                         paddingAngle={2}
                         strokeWidth={0}
                         cursor={PIE_CURSOR}
+                        isAnimationActive={false}
                     >
                         {data.map((entry, index) => (
                             <Cell

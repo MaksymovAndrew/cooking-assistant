@@ -1,11 +1,17 @@
 {
-    "menuCard": {
-        "category": "Category: ",
-        "learnMore": "Learn more"
+    "menuListView": {
+        "newMenu": "New menu"
     },
     "categoryFilter": {
         "filter": "Filter",
-        "reset": "Reset filters"
+        "reset": "Reset filters",
+        "menuCount_one": "{{count}} menu",
+        "menuCount_other": "{{count}} menus"
+    },
+    "recipePicker": {
+        "searchPlaceholder": "Search recipes...",
+        "clear": "Clear",
+        "noMatches": "No recipes found"
     },
     "menuPage": {
         "allMenus": "All menus",
@@ -14,7 +20,7 @@
         "searchPlaceholder": "menu title"
     },
     "userMenuPage": {
-        "allMenus": "All Menus",
+        "myMenus": "My Menus",
         "menusByCategories": "Menus by categories: {{names}}",
         "noMenus": "No menus found for the selected filters.",
         "addMenu": "Add Menu",
@@ -27,6 +33,7 @@
         "categoryLabel": "Menu category",
         "categoryPlaceholder": "Select a menu category",
         "recipesLabel": "Recipes",
+        "selectedRecipes": "Selected recipes",
         "createButton": "Create Menu",
         "errorTitle": "Menu title cannot be empty.",
         "errorDescription": "Menu description cannot be empty.",
@@ -40,6 +47,7 @@
         "categoryLabel": "Menu category",
         "categoryPlaceholder": "Select a menu category",
         "recipesLabel": "Recipes",
+        "selectedRecipes": "Selected recipes",
         "updateButton": "Update Menu",
         "loading": "Loading data...",
         "errorTitle": "Menu title cannot be empty.",
@@ -47,16 +55,34 @@
         "errorCategory": "Please select a menu category.",
         "errorRecipes": "Please select at least one recipe."
     },
+    "menuForm": {
+        "cancel": "Cancel"
+    },
     "menuDetailsPage": {
-        "menuCategory": "Menu category:",
-        "menuDescription": "Menu description:",
-        "recipes": "Recipes:",
-        "missingIngredients": "Missing ingredients:",
+        "breadcrumb": "Breadcrumb",
+        "breadcrumbMenus": "Menus",
+        "totalTime": "Total time",
+        "totalTimeHoursMinutes": "{{hours}} hours {{minutes}} minutes",
+        "totalTimeMinutes": "{{minutes}} minutes",
+        "rating": "Rating",
+        "recipes": "Recipes",
+        "recipesCaption_one": "{{count}} recipe",
+        "recipesCaption_other": "{{count}} recipes",
+        "searchPlaceholder": "Search in this menu…",
+        "noSearchResults": "No recipes match your search.",
+        "noRecipesYet": "No recipes yet",
+        "noRecipesYetDescription": "Add recipes to this menu to start planning what to cook.",
+        "addRecipes": "Add recipes",
+        "missingIngredients": "Missing ingredients",
+        "noMissingIngredients": "You have everything this menu needs.",
+        "favourite": "Favourite",
+        "visitorBanner": "Viewing someone else's menu — Edit & Delete not available",
         "editButton": "Edit menu",
         "deleteButton": "Delete menu",
         "loading": "Loading...",
         "deleteTitle": "Confirm Deletion",
         "deleteMessage": "Are you sure you want to delete this menu?",
-        "error": "Error: {{message}}"
+        "error": "Error: {{message}}",
+        "errorFetch": "Error fetching menu details"
     }
 }

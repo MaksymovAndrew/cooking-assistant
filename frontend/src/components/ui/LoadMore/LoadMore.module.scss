@@ -1,0 +1,69 @@
+@use "styles/abstracts" as *;
+
+@keyframes load-more-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.load-more {
+    margin: var(--s-5) 0 var(--s-7);
+    text-align: center;
+
+    &__row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--s-3);
+    }
+
+    &__count {
+        margin: 0;
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    &__button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 42px;
+        padding: 0 20px;
+        border: none;
+        border-radius: var(--r-pill);
+        background: var(--brand-strong);
+        color: var(--on-brand);
+        cursor: pointer;
+        font:
+            600 14px Inter,
+            sans-serif;
+
+        @include focus-ring;
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+    }
+
+    &__spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        flex: none;
+        border: 2px solid color-mix(in srgb, var(--on-brand) 35%, transparent);
+        border-top-color: var(--on-brand);
+        border-radius: var(--r-pill);
+        animation: load-more-spin 0.7s linear infinite;
+    }
+
+    &__error {
+        margin-top: var(--s-2);
+        color: var(--danger);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+}

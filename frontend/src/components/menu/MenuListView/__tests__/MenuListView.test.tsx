@@ -26,6 +26,7 @@ const baseProps = {
     heading: "All menus",
     emptyMessage: "No menus found",
     searchPlaceholder: "menu title",
+    onRetry: jest.fn(),
     total: MENUS.length,
     loadedCount: MENUS.length,
     hasNextPage: false,
@@ -49,6 +50,21 @@ describe("MenuListView", () => {
         expect(screen.getByText(MENU_TITLE)).toBeInTheDocument();
     });
 
+    it("should render the translated New menu button, not a raw i18n key", () => {
+        renderWithRouter(
+            <MenuListView
+                {...baseProps}
+                menus={MENUS}
+                noMenus={false}
+                error={null}
+            />,
+        );
+
+        expect(
+            screen.getByRole("link", { name: "New menu" }),
+        ).toBeInTheDocument();
+    });
+
     it("should render the empty message instead of cards when there are no menus", () => {
         renderWithRouter(
             <MenuListView
@@ -63,17 +79,26 @@ describe("MenuListView", () => {
         expect(screen.queryByText(MENU_TITLE)).not.toBeInTheDocument();
     });
 
-    it("should render the error message when present", () => {
+    it("should render the error state and call onRetry when Try again is clicked", async () => {
+        const onRetry = jest.fn();
+
         renderWithRouter(
             <MenuListView
                 {...baseProps}
                 menus={[]}
                 noMenus={false}
                 error="Boom"
+                onRetry={onRetry}
             />,
         );
 
         expect(screen.getByText("Boom")).toBeInTheDocument();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Try again" }),
+        );
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
     });
 
     it("should show the load more button and counter once total exceeds a page", () => {
@@ -131,5 +156,21 @@ describe("MenuListView", () => {
 
         expect(screen.getByText(MENU_TITLE)).toBeInTheDocument();
         expect(screen.getByText("Couldn't load more")).toBeInTheDocument();
+    });
+
+    it("should mark cards as mine when the mine prop is set", () => {
+        renderWithRouter(
+            <MenuListView
+                {...baseProps}
+                menus={MENUS}
+                noMenus={false}
+                error={null}
+                mine
+            />,
+        );
+
+        expect(
+            screen.getByRole("link", { name: new RegExp(MENU_TITLE) }),
+        ).toHaveClass("content-card--mine");
     });
 });

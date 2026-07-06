@@ -1,5 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+
+import { EditMark, TrashMark } from "components/icons";
+import { LinkButton } from "components/ui/LinkButton";
+
+import styles from "./OwnerActions.module.scss";
 
 interface OwnerActionsProps {
     editTo: string;
@@ -8,23 +12,27 @@ interface OwnerActionsProps {
     deleteLabel: string;
 }
 
+const ICON_SIZE = 16;
+
 export const OwnerActions: React.FC<OwnerActionsProps> = ({
     editTo,
     onDelete,
     editLabel,
     deleteLabel,
 }) => (
-    <>
-        <Link to={editTo}>
-            <button className="mt-6 mr-[1vw] bg-yellow-500 text-white py-2 px-4 rounded-full">
-                {editLabel}
-            </button>
-        </Link>
+    <div className={styles["owner-actions"]}>
+        <LinkButton to={editTo}>
+            <EditMark size={ICON_SIZE} />
+            {editLabel}
+        </LinkButton>
         <button
+            type="button"
             onClick={onDelete}
-            className="mt-6 bg-red-500 text-white py-2 px-4 rounded-full"
+            aria-label={deleteLabel}
+            className={styles["owner-actions__delete"]}
         >
+            <TrashMark size={ICON_SIZE} />
             {deleteLabel}
         </button>
-    </>
+    </div>
 );

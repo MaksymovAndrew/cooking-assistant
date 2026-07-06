@@ -1,0 +1,18 @@
+{
+    "profilePage": {
+        "recipesStat": "Recipes",
+        "menusStat": "Menus",
+        "editProfileButton": "Edit profile",
+        "logoutButton": "Logout",
+        "recipesTab": "My recipes",
+        "menusTab": "My menus",
+        "favouritesTab": "Favourites",
+        "dietaryTab": "Dietary",
+        "settingsTab": "Settings",
+        "noRecipes": "You haven't created any recipes yet.",
+        "noMenus": "You haven't created any menus yet.",
+        "comingSoonDescription": "Coming in a future release.",
+        "favouritesTitle": "Favourites",
+        "dietaryTitle": "Dietary preferences"
+    }
+}

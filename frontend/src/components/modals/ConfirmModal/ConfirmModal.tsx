@@ -1,12 +1,14 @@
+import { AlertCircle } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { TrashMark } from "components/icons";
 import { BaseModal } from "components/modals/BaseModal";
+import { Button } from "components/ui/Button";
 
-const VARIANT_CLASSNAMES = {
-    danger: "bg-red-500 text-white",
-    primary: "bg-dark-purple text-white",
-} as const;
+import styles from "./ConfirmModal.module.scss";
+
+export type ConfirmVariant = "danger" | "primary";
 
 interface ConfirmModalProps {
     title: string;
@@ -16,9 +18,23 @@ interface ConfirmModalProps {
     confirmLabel?: string;
     cancelLabel?: string;
     isConfirmDisabled?: boolean;
-    confirmVariant?: keyof typeof VARIANT_CLASSNAMES;
+    confirmVariant?: ConfirmVariant;
     error?: string | null;
 }
+
+// accepts both lucide-react icons and hand-authored components/icons/* glyphs
+type ConfirmModalIcon = React.ComponentType<{
+    size?: number;
+    className?: string;
+    "aria-hidden"?: boolean | "true" | "false";
+}>;
+
+const ICON_BY_VARIANT: Record<ConfirmVariant, ConfirmModalIcon> = {
+    danger: TrashMark,
+    primary: AlertCircle,
+};
+
+const ICON_SIZE = 22;
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     title,
@@ -32,27 +48,37 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     error,
 }) => {
     const { t } = useTranslation();
+    const Icon = ICON_BY_VARIANT[confirmVariant];
+
+    const heading = (
+        <span className={styles["confirm-modal__heading"]}>
+            <span
+                className={[
+                    styles["confirm-modal__icon"],
+                    styles[`confirm-modal__icon--${confirmVariant}`],
+                ].join(" ")}
+            >
+                <Icon size={ICON_SIZE} aria-hidden="true" />
+            </span>
+            {title}
+        </span>
+    );
 
     return (
-        <BaseModal title={title} onClose={onClose}>
-            <p className="mb-6 text-center">{message}</p>
-            {error && (
-                <p className="text-red-500 text-sm text-center mb-4">{error}</p>
-            )}
-            <div className="flex justify-center space-x-4">
-                <button
-                    onClick={onClose}
-                    className="bg-gray-400 text-white px-4 py-2 rounded-full"
-                >
+        <BaseModal onClose={onClose} title={heading}>
+            <p className={styles["confirm-modal__message"]}>{message}</p>
+            {error && <p className={styles["confirm-modal__error"]}>{error}</p>}
+            <div className={styles["confirm-modal__actions"]}>
+                <Button variant="secondary" onClick={onClose}>
                     {cancelLabel ?? t("modal.cancel")}
-                </button>
-                <button
+                </Button>
+                <Button
+                    variant={confirmVariant}
                     onClick={onConfirm}
                     disabled={isConfirmDisabled}
-                    className={`px-4 py-2 rounded-full disabled:opacity-50 ${VARIANT_CLASSNAMES[confirmVariant]}`}
                 >
                     {confirmLabel ?? t("modal.confirm")}
-                </button>
+                </Button>
             </div>
         </BaseModal>
     );

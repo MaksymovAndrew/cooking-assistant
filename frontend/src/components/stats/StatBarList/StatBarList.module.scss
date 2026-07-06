@@ -1,0 +1,49 @@
+@use "styles/abstracts" as *;
+
+.stat-bar-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    margin: 0;
+    list-style: none;
+    padding-inline-start: 0;
+
+    &__row {
+        display: grid;
+        grid-template-columns: 90px 1fr 56px;
+        align-items: center;
+        gap: var(--s-3);
+    }
+
+    &__label {
+        @include truncate;
+
+        color: var(--text-2);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__track {
+        display: block;
+        height: 8px;
+        border-radius: var(--r-pill);
+        background: var(--surface-2);
+        overflow: hidden;
+    }
+
+    &__fill {
+        display: block;
+        height: 100%;
+        border-radius: var(--r-pill);
+        background: var(--brand);
+    }
+
+    &__value {
+        text-align: right;
+        color: var(--text-muted);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+    }
+}

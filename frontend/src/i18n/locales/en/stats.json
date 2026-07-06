@@ -1,8 +1,15 @@
 {
     "statsPage": {
-        "heading": "Recipe Statistics",
-        "recipeTypesSummary": "Recipe Types Summary",
-        "recipeDetails": "Recipe Details",
+        "recipeSectionHeading": "Recipe Statistics",
+        "menuSectionHeading": "Menu Statistics",
+        "totalRecipesTile": "Total recipes",
+        "avgCookingTimeTile": "Avg cooking time",
+        "mostUsedTypeTile": "Most used type",
+        "mostUsedCaption": "{{count}} of {{total}} recipes",
+        "totalMenusTile": "Total menus",
+        "mostUsedCategoryTile": "Most used category",
+        "mostUsedCategoryCaption": "{{count}} of {{total}} menus",
+        "avgTimeByTypeHeading": "Average cooking time by type",
         "fastestRecipes": "Fastest Recipes:",
         "slowestRecipes": "Slowest Recipes:",
         "mostIngredients": "Recipes with Most Ingredients:",
@@ -11,10 +18,6 @@
         "menusLabel": "menus",
         "legendEntry": "{{name}}: {{count}}",
         "cookingTimeUnit": " min",
-        "ingredientsUnit": " ingredients",
-        "totalMenus": "Total menus: {{count}}",
-        "totalRecipes": "Total recipes in menus: {{count}}",
-        "avgCookingTime": "Average cooking time by type",
-        "timeUnit": " min"
+        "ingredientsUnit": " ingredients"
     }
 }

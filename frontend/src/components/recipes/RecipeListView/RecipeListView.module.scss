@@ -1,0 +1,31 @@
+@use "styles/abstracts" as *;
+
+.recipe-list-view {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--s-6) var(--s-4);
+
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: var(--s-4);
+        margin-bottom: var(--s-5);
+    }
+
+    &__heading {
+        margin: 0;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(26px, 4vw, 34px) Fraunces,
+            serif;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: var(--s-5);
+    }
+}

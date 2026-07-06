@@ -1,0 +1,33 @@
+@use "styles/abstracts" as *;
+
+.owner-actions {
+    display: flex;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+
+    &__delete {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--s-2);
+        height: 46px;
+        padding: 0 var(--s-4);
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--danger);
+        font:
+            600 14px Inter,
+            sans-serif;
+        cursor: pointer;
+        transition:
+            background var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out);
+
+        @include focus-ring;
+
+        @include on-hover {
+            border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+            background: color-mix(in srgb, var(--danger) 9%, var(--surface));
+        }
+    }
+}

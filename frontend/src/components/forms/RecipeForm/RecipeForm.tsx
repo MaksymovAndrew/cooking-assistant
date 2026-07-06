@@ -1,17 +1,25 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
+import { ROUTES } from "constants/routes";
 import type { Ingredient } from "types/ingredient";
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { useRecipeForm } from "hooks/useRecipeForm";
 
-import { FormField, FormTextArea } from "components/forms/fields";
 import { CookingTimeField } from "components/recipes/CookingTimeField";
 import { IngredientPicker } from "components/recipes/IngredientPicker";
 import { RecipeTypeSelect } from "components/recipes/RecipeTypeSelect";
 import { SelectedIngredientsList } from "components/recipes/SelectedIngredientsList";
 import { ServingsField } from "components/recipes/ServingsField";
+import { Button } from "components/ui/Button";
+import { FormErrorBanner } from "components/ui/FormErrorBanner";
+import { FormField } from "components/ui/FormField";
+import { Textarea } from "components/ui/Textarea";
+import { TextInput } from "components/ui/TextInput";
+
+import styles from "./RecipeForm.module.scss";
 
 type RecipePageKey = "createRecipePage" | "changeRecipePage";
 
@@ -43,19 +51,32 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
     const { t } = useTranslation("recipes");
 
     return (
-        <form className="space-y-4">
+        <form className={styles["recipe-form"]}>
             <FormField
-                id={`${idPrefix}-title`}
+                htmlFor={`${idPrefix}-title`}
                 label={t(`${keyPrefix}.titleLabel`)}
-                value={form.title}
-                onChange={form.setTitle}
-            />
-            <FormTextArea
-                id={`${idPrefix}-description`}
+            >
+                <TextInput
+                    id={`${idPrefix}-title`}
+                    value={form.title}
+                    onChange={(e) => {
+                        form.setTitle(e.target.value);
+                    }}
+                />
+            </FormField>
+            <FormField
+                htmlFor={`${idPrefix}-description`}
                 label={t(`${keyPrefix}.descriptionLabel`)}
-                value={form.content}
-                onChange={form.setContent}
-            />
+            >
+                <Textarea
+                    id={`${idPrefix}-description`}
+                    rows={4}
+                    value={form.content}
+                    onChange={(e) => {
+                        form.setContent(e.target.value);
+                    }}
+                />
+            </FormField>
             <CookingTimeField
                 id={`${idPrefix}-cooking-time`}
                 label={t(`${keyPrefix}.cookingTimeLabel`)}
@@ -73,6 +94,13 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
                 error={typeError}
                 onChange={form.setSelectedTypeId}
             />
+            <ServingsField
+                id={`${idPrefix}-servings`}
+                label={t(`${keyPrefix}.servingsLabel`)}
+                placeholder={t(`${keyPrefix}.servingsPlaceholder`)}
+                value={form.servings}
+                onChange={form.setServings}
+            />
             <IngredientPicker
                 allIngredients={allIngredients}
                 selectedIds={form.selectedIngredients.map((i) => i.id)}
@@ -83,22 +111,20 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
                 ingredients={form.selectedIngredients}
                 heading={t(`${keyPrefix}.selectedIngredients`)}
                 onQuantityChange={form.updateIngredientQuantity}
+                onRemove={form.toggleIngredientSelection}
             />
-            <ServingsField
-                id={`${idPrefix}-servings`}
-                label={t(`${keyPrefix}.servingsLabel`)}
-                placeholder={t(`${keyPrefix}.servingsPlaceholder`)}
-                value={form.servings}
-                onChange={form.setServings}
-            />
-            {error && <div className="text-red-500">{error}</div>}
-            <button
-                type="button"
-                onClick={onSubmit}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            >
-                {submitLabel}
-            </button>
+            {error && <FormErrorBanner message={error} />}
+            <div className={styles["recipe-form__save-panel"]}>
+                <Link
+                    to={ROUTES.allRecipes}
+                    className={styles["recipe-form__cancel"]}
+                >
+                    {t("recipeForm.cancel")}
+                </Link>
+                <Button type="button" onClick={onSubmit}>
+                    {submitLabel}
+                </Button>
+            </div>
         </form>
     );
 };

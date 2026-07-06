@@ -1,0 +1,72 @@
+@use "styles/abstracts" as *;
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-1);
+    height: 28px;
+    padding: 0 var(--s-3);
+    border-radius: var(--r-pill);
+    font:
+        600 12px Inter,
+        sans-serif;
+    white-space: nowrap;
+
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    &__remove {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        margin-left: 2px;
+        padding: 0;
+        border: none;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+        opacity: 0.75;
+
+        @include on-hover {
+            opacity: 1;
+        }
+    }
+}
+
+.chip--type {
+    background: var(--brand-subtle);
+    color: var(--brand);
+}
+
+.chip--outline {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+}
+
+.chip--success {
+    background: color-mix(in srgb, var(--success) 16%, transparent);
+    color: var(--success);
+}
+
+.chip--warning {
+    background: color-mix(in srgb, var(--warning) 16%, transparent);
+    color: var(--warning);
+}
+
+.chip--danger {
+    background: color-mix(in srgb, var(--danger) 16%, transparent);
+    color: var(--danger);
+}
+
+.chip--numeric {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font:
+        600 12px "Geist Mono",
+        monospace;
+}

@@ -1,5 +1,6 @@
-import { User } from "lucide-react";
 import React from "react";
+
+import { UserCircleMark } from "components/icons";
 
 import styles from "./Avatar.module.scss";
 
@@ -16,8 +17,6 @@ export const Avatar: React.FC<AvatarProps> = ({
     size = DEFAULT_SIZE,
 }) => (
     <span className={styles.avatar} style={{ width: size, height: size }}>
-        {initials ?? (
-            <User size={Math.round(size * ICON_SCALE)} aria-hidden="true" />
-        )}
+        {initials ?? <UserCircleMark size={Math.round(size * ICON_SCALE)} />}
     </span>
 );

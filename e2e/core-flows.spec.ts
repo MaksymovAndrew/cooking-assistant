@@ -70,7 +70,7 @@ test("should edit the menu and see the new title on its details page", async () 
     await titleInput.fill("");
     await titleInput.fill(`Updated menu title ${runId}`);
     await page.getByRole("button", { name: "Update Menu" }).click();
-    await expect(page).toHaveURL(/\/menus$/);
+    await expect(page).toHaveURL(/\/all-menus$/);
 
     await page.goto(`/menu/${menuId}`);
     await expect(
@@ -82,7 +82,7 @@ test("should delete the menu and redirect away from its details page", async () 
     await page.goto(`/menu/${menuId}`);
     await page.getByRole("button", { name: "Delete menu" }).click();
     await page.getByRole("button", { name: "Delete", exact: true }).click();
-    await expect(page).toHaveURL(/\/menus$/);
+    await expect(page).toHaveURL(/\/all-menus$/);
 });
 
 test("should delete the recipe and redirect away from its details page", async () => {

@@ -33,7 +33,6 @@ changelogs and the tags and now track everything here against one shared version
 - Added: A redesigned navigation bar now appears consistently across every page.
 - Added: The sign-in and sign-up pages now link directly to each other.
 - Added: The Home dashboard now greets you by name, and the avatar in the navigation bar shows your initials instead of a generic icon.
-- Added: "My Menus" is back in the main navigation bar.
 - Changed: The homepage now opens directly at the site's root address; "All recipes" moved to its own page reachable from the navigation bar, alongside "Menus", "Ingredients" and "Stats".
 - Fixed: The "Expiring soon" panel and count on the Home dashboard now only include ingredients that are actually expiring soon or already expired, instead of sometimes showing fresh items or an inaccurate count.
 - Fixed: Ingredient expiry dates on the Home dashboard are now calculated consistently regardless of your timezone.
@@ -45,9 +44,49 @@ changelogs and the tags and now track everything here against one shared version
 - Added: On phones the browser bars (status bar, address bar) now match the app theme - dark purple in the dark theme, light in the light theme - instead of staying white. Switching themes now shows a confirmation (the page reloads to apply it) so the bars are always painted correctly.
 - Fixed: Tapping a card or button on a touch screen no longer leaves its hover highlight stuck (the "half-disappeared border" effect on iPhone); hover effects now apply only on devices with a real pointer.
 - Changed: The top navigation bar now scrolls away with the page instead of staying pinned, so more of the screen is available for content. A "scroll to top" button appears once you've scrolled down, bringing the navigation bar back into view.
-- Removed: The mobile menu (hamburger icon) has been removed while it's redesigned; on small screens, navigation and sign-out are temporarily only reachable once the screen is wide enough to show the full navigation bar.
 - Changed: Custom fonts (Fraunces, Inter, Geist Mono) are now bundled with the app instead of loaded from Google's CDN - faster first load, no external font requests, and only the font weights actually used are included.
 - Changed: Upgraded to React 19 and React Router 7 (no visible change in behavior).
+- Added: A bottom navigation bar on mobile and tablet screens (Stats, Menus, Recipes, Settings, Profile) restores full navigation and sign-out on small screens.
+- Added: A new Profile page, reachable from the account menu and the mobile navigation bar, showing your name, recipe/menu counts, and tabs for My recipes, My menus, Favourites and Dietary (the last two are placeholders for a future release).
+- Added: A new Settings page with sections for Appearance (the existing dark/light theme toggle), Language & region, Notifications and Account; Language, Units, Notifications and the account actions (change password, delete account) are visual previews for a future release.
+- Added: A redesigned "Page not found" screen with a themed illustration and quick links back into the app.
+- Changed: The account avatar now opens a menu with Profile, Settings and Logout, replacing the standalone logout button.
+- Changed: The top navigation bar now shows Recipes, Menus, Ingredients and Stats; "My Menus" will resurface under the new Profile page later this release.
+- Changed: Confirmation dialogs, toasts and the loading screen have a refreshed look as part of the ongoing visual redesign.
+- Removed: The standalone "Recipe Types" page; recipe types remain available as a filter when browsing recipes.
+- Changed: The sign-in and sign-up pages have a redesigned split layout with a themed illustration panel, matching the rest of the visual redesign.
+- Added: A show/hide toggle on password fields on the sign-in and sign-up pages.
+- Changed: Being temporarily locked out after too many failed sign-in attempts now shows a clearer warning with a live countdown, instead of a plain error message.
+- Changed: "All recipes" and "My recipes" have a redesigned layout - a cleaner toolbar, a filters panel (cooking time range, sort, recipe type) that opens from one button instead of separate dropdowns, and removable filter chips showing what's currently applied.
+- Removed: Filtering recipes by a date range has been removed from the recipe list filters.
+- Changed: Recipe cards have a refreshed look shared between grid and compact list layouts.
+- Changed: The recipe detail page has a redesigned two-column layout with a breadcrumb back to the recipe list.
+- Added: The recipe detail page now shows which ingredients you already have in your pantry and how many you still need to buy.
+- Added: A portions stepper on the recipe detail page scales ingredient quantities up or down live, for recipes with a numeric serving size.
+- Changed: Adding ingredients when creating or editing a recipe now uses a searchable field (with the matching part of each name highlighted) instead of scrolling through every ingredient in the catalog.
+- Changed: The recipe creation and edit forms have a refreshed look, matching the rest of the redesign.
+- Changed: "All menus" and "My menus" have a redesigned layout matching the recipe lists - a cleaner toolbar, a category filter panel that opens from one button, and a removable filter summary showing what's currently applied.
+- Changed: Menu cards have a refreshed look shared with recipe cards.
+- Changed: The menu detail page has a redesigned two-column layout with a breadcrumb, a stats row (total cooking time and recipe count), and a search box to filter recipes within the menu.
+- Added: A "Missing ingredients" panel on the menu detail page shows everything still needed to cook every recipe in the menu, combined across all of them.
+- Changed: Adding recipes when creating or editing a menu now uses a searchable field (with the matching part of each title highlighted), showing your picks as removable chips, instead of a long list of toggle buttons.
+- Changed: The menu creation and edit forms have a refreshed look, matching the rest of the redesign.
+- Changed: The Ingredients page has a redesigned card grid - each ingredient shows a fresh/expiring-soon/expired badge, its quantity, allergens, shelf life and purchase date at a glance, plus a search box and an "Expiring soon" filter.
+- Changed: Adding an ingredient to your pantry now uses a searchable field (with the matching part of each name highlighted) instead of a long list of toggle buttons, and quantities are now edited directly on each card instead of a separate screen.
+- Changed: The statistics page has a redesigned layout with quick-glance totals (recipe/menu counts, average cooking time, most-used type and category) alongside the existing charts.
+- Added: The statistics page now shows a bar chart of average cooking time by recipe type.
+- Fixed: The "Menu Statistics" section no longer shows recipe-type cooking-time averages mislabeled as menu data; it now only shows real menu figures (menu count and menu count by category).
+- Changed: The "My recipes" and "My menus" tabs on the Profile page show your own recipe and menu cards directly, with a "Load more" button once you have more than a page's worth.
+- Fixed: The "New recipe"/"New menu" buttons on the recipe and menu list pages, and the "Try again" button on the recipe and menu detail error states, no longer show a raw untranslated key instead of their label.
+- Fixed: The recent-recipe cards on the Home dashboard show the app's mark icon on their placeholder image (previously blank) and use a compact row layout on mobile, matching the rest of the card's design on larger screens.
+- Fixed: Recipe and menu placeholder icons (on cards, the recipe detail page, and empty states across lists and the Profile page) now match the exact icons from the design instead of close-but-different stock icons.
+- Fixed: The "New recipe"/"New menu" buttons no longer show an underline under their text.
+- Fixed: On tablet and desktop, opening the recipe list's Filters panel no longer squeezes the "Max cooking time" field off the edge of the panel.
+- Fixed: The navigation bar's Recipes, Menus, Ingredients and Stats icons, the account avatar's placeholder icon, the recipe/menu Edit and Delete button icons, the pantry's empty-state icon, and the recipe detail page's "Portions" icon now match the exact icons from the design instead of similar-but-different stock icons.
+- Fixed: The Ingredients page no longer crashes when an ingredient has an allergen on record.
+- Fixed: The donut charts on the statistics page no longer briefly appear as an incomplete ring while the page finishes loading.
+- Changed: The "Menus" page now lives at `/all-menus` instead of `/menus`, matching "All recipes"'s `/all-recipes`.
+- Fixed: The "My Menus" page heading now correctly says "My Menus" instead of "All Menus".
 
 ### Backend
 
@@ -71,6 +110,7 @@ changelogs and the tags and now track everything here against one shared version
 - Added: the release version now bumps itself - committing on a release branch automatically sets the version from the branch name (root always, plus only the sides that actually changed) and includes it in the same commit; `npm run bump` does the same by hand.
 - Changed: A broader code-quality pass removed duplicated logic (recipe/menu search queries, list-pagination footer, validation helpers) and unused leftovers (orphaned translation keys, dead styles, an unused lint dependency) across the whole codebase, with no change in behavior.
 - Added: The end-to-end test suite and its config are now covered by formatting and linting too (previously untouched by either), catching one real issue on the spot.
+- Removed: Tailwind CSS has been fully removed from the frontend (config, PostCSS, the stylelint integration, and the dependency itself) now that every page and component has moved to SCSS modules; the base stylesheet and its Tailwind directives are gone too, with the remaining global reset, fonts and scrollbar styling folded into the SCSS entry point.
 - Added: An end-to-end test suite (Playwright) now drives real login, recipe/menu/pantry, and theme-toggle flows through a browser on every PR, and separately visits every page of the app, exercises search/filter/sort on recipes and menus, checks that only a recipe or menu's owner can edit or delete it, and covers pantry purchase history and full ingredient removal.
 - Added: Every repository (recipes, menus, users, pantry, recipe types, menu categories), including recipe/menu search, filtering and pagination, is now also tested against a real PostgreSQL database (Testcontainers) on every PR, catching SQL mistakes that mocked tests can't see.
 - Fixed: Recipe and menu list pages now always report the correct total count for pagination, instead of occasionally showing it as text rather than a number internally.

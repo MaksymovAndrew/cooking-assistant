@@ -1,0 +1,21 @@
+@use "styles/abstracts" as *;
+
+.menu-stats-section {
+    &__heading {
+        margin: 0 0 var(--s-5);
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(24px, 4vw, 28px) Fraunces,
+            serif;
+    }
+
+    &__tiles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-6);
+        margin-bottom: var(--s-5);
+        padding-bottom: var(--s-5);
+        border-bottom: 1px solid var(--border);
+    }
+}

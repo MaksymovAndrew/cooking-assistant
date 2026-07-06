@@ -1,0 +1,109 @@
+@use "styles/abstracts" as *;
+
+.add-ingredient-modal {
+    &__search {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 48px;
+        padding: 0 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-2);
+        color: var(--text-muted);
+
+        &:focus-within {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px var(--brand-subtle);
+        }
+    }
+
+    &__input {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        background: none;
+        color: var(--text);
+        font:
+            400 15px Inter,
+            sans-serif;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__results {
+        max-height: 220px;
+        margin: var(--s-2) 0 0;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        list-style: none;
+        padding-inline-start: 0;
+    }
+
+    &__empty {
+        padding: var(--s-3) var(--s-4);
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    &__result {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+        padding: var(--s-3) var(--s-4);
+        border: none;
+        border-top: 1px solid var(--border);
+        background: none;
+        cursor: pointer;
+        text-align: left;
+
+        &:first-child {
+            border-top: none;
+        }
+
+        @include on-hover {
+            background: var(--brand-subtle);
+        }
+
+        strong {
+            color: var(--brand);
+        }
+    }
+
+    &__result-unit {
+        flex: none;
+        padding: 2px 8px;
+        border-radius: 6px;
+        background: var(--surface-2);
+        color: var(--text-muted);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+    }
+
+    &__selected {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-2);
+        margin-top: var(--s-4);
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--s-3);
+        margin-top: var(--s-5);
+    }
+}

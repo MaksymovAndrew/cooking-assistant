@@ -1,0 +1,45 @@
+@use "styles/abstracts" as *;
+
+.stepper {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+
+    &__button {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: none;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        transition: background var(--dur-fast) var(--ease-out);
+
+        @include focus-ring;
+
+        @include on-hover {
+            background: var(--brand-subtle);
+        }
+
+        &:disabled {
+            color: var(--text-muted);
+            cursor: not-allowed;
+            background: transparent;
+        }
+    }
+
+    &__value {
+        min-width: 40px;
+        text-align: center;
+        color: var(--text);
+        font:
+            500 16px "Geist Mono",
+            monospace;
+    }
+}

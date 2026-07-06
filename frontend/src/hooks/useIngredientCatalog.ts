@@ -87,6 +87,11 @@ export const useIngredientCatalog = () => {
         }
     };
 
+    const handleCancelEdit = () => {
+        setSelectedIngredients(personIngredients.map((item) => item.id));
+        setIsEditing(false);
+    };
+
     const handleToggleQuantityEdit = () => {
         setUpdatedIngredients(personIngredients.map((item) => ({ ...item })));
         setIsEditingQuantity(true);
@@ -149,6 +154,7 @@ export const useIngredientCatalog = () => {
         handleQuantityChange,
         saveUpdatedQuantities,
         handleSaveOrToggleEdit,
+        handleCancelEdit,
         handleToggleQuantityEdit,
     };
 };

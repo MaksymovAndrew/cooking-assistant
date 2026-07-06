@@ -1,0 +1,54 @@
+{
+    "settingsPage": {
+        "heading": "Settings"
+    },
+    "appearanceSection": {
+        "heading": "Appearance",
+        "themeTitle": "Theme",
+        "themeDescription": "Choose how the app looks.",
+        "themeLabel": "Theme",
+        "dark": "Dark",
+        "light": "Light"
+    },
+    "languageSection": {
+        "heading": "Language & region",
+        "languageTitle": "Language",
+        "languageDescription": "English - more languages coming soon.",
+        "unitsTitle": "Units",
+        "unitsDescription": "Measurement system for ingredient amounts.",
+        "unitsLabel": "Units",
+        "metric": "Metric",
+        "imperial": "Imperial"
+    },
+    "notificationsSection": {
+        "heading": "Notifications",
+        "expiryTitle": "Expiry reminders",
+        "expiryDescription": "Get notified before pantry items expire.",
+        "digestTitle": "Weekly digest",
+        "digestDescription": "A weekly summary of your recipes and menus."
+    },
+    "accountSection": {
+        "heading": "Account",
+        "changePasswordTitle": "Change password",
+        "changePasswordDescription": "Update the password for your account.",
+        "changePasswordButton": "Change",
+        "deleteAccountTitle": "Delete account",
+        "deleteAccountDescription": "Permanently removes recipes, menus and pantry data.",
+        "deleteAccountButton": "Delete…"
+    },
+    "changePasswordModal": {
+        "title": "Change password",
+        "notice": "Account changes are coming in a future release - this form is a preview only.",
+        "currentPasswordLabel": "Current password",
+        "newPasswordLabel": "New password",
+        "confirmPasswordLabel": "Confirm new password",
+        "cancelButton": "Cancel",
+        "saveButton": "Save password"
+    },
+    "deleteAccountModal": {
+        "title": "Delete account?",
+        "message": "Account deletion is coming in a future release. Once available, this will permanently remove your recipes, menus and pantry data.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Delete account"
+    }
+}

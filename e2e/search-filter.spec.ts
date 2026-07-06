@@ -80,15 +80,14 @@ test("should filter My Recipes by ingredient name", async () => {
 
 test("should filter My Recipes by recipe type", async () => {
     await page.goto("/my-recipes");
-    await page.getByRole("button", { name: "Filter", exact: true }).click();
+    await page.getByRole("button", { name: "Filters", exact: true }).click();
     await page.getByLabel(recipeAType).check();
 
     await expect(page.getByText(recipeATitle)).toBeVisible();
     await expect(page.getByText(recipeBTitle)).toBeHidden();
 
-    // the dropdown is still open from the earlier click (checking a box doesn't close it)
+    // the panel stays open after Reset filters (only Apply/close/outside-click close it)
     await page.getByRole("button", { name: "Reset filters" }).click();
-    await page.getByRole("button", { name: "Filter", exact: true }).click();
     await page.getByLabel(recipeBType).check();
 
     await expect(page.getByText(recipeBTitle)).toBeVisible();
@@ -99,25 +98,28 @@ test("should filter My Recipes by recipe type", async () => {
 
 test("should sort My Recipes by cooking time", async () => {
     await page.goto("/my-recipes");
+    await page.getByRole("button", { name: "Filters", exact: true }).click();
 
+    // default sort is already "Fast → long" - switch to "Long → fast" first so the
+    // click actually changes state, then back, exercising both directions
     await Promise.all([
         page.waitForResponse(
             (res) =>
                 res.url().includes("/api/recipes-filters-person") &&
-                res.url().includes("sort_order=asc"),
+                res.url().includes("sort_order=desc"),
         ),
-        page.getByLabel("Sort by time:").selectOption("asc"),
+        page.getByRole("radio", { name: "Long → fast" }).click(),
     ]);
 
     // the network response resolving doesn't guarantee React has re-rendered yet -
     // poll the DOM instead of reading it once right after the response
     await expect(async () => {
         const titles = await page
-            .getByRole("heading", { level: 2 })
+            .getByRole("heading", { level: 3 })
             .allTextContents();
 
-        expect(titles.indexOf(recipeATitle)).toBeLessThan(
-            titles.indexOf(recipeBTitle),
+        expect(titles.indexOf(recipeBTitle)).toBeLessThan(
+            titles.indexOf(recipeATitle),
         );
     }).toPass();
 
@@ -125,18 +127,18 @@ test("should sort My Recipes by cooking time", async () => {
         page.waitForResponse(
             (res) =>
                 res.url().includes("/api/recipes-filters-person") &&
-                res.url().includes("sort_order=desc"),
+                res.url().includes("sort_order=asc"),
         ),
-        page.getByLabel("Sort by time:").selectOption("desc"),
+        page.getByRole("radio", { name: "Fast → long" }).click(),
     ]);
 
     await expect(async () => {
         const titles = await page
-            .getByRole("heading", { level: 2 })
+            .getByRole("heading", { level: 3 })
             .allTextContents();
 
-        expect(titles.indexOf(recipeBTitle)).toBeLessThan(
-            titles.indexOf(recipeATitle),
+        expect(titles.indexOf(recipeATitle)).toBeLessThan(
+            titles.indexOf(recipeBTitle),
         );
     }).toPass();
 });

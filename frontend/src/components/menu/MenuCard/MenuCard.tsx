@@ -1,35 +1,31 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 import { menuDetailsPath } from "constants/routes";
 
-import { Card, CardMetaRow } from "components/ui/Card";
+import { ContentCard } from "components/cards/ContentCard";
+import { NotebookMark } from "components/icons";
 
 interface MenuCardProps {
     id: number;
     title: string;
-    content: string;
     categoryName: string;
+    mine?: boolean;
 }
 
 export const MenuCard: React.FC<MenuCardProps> = ({
     id,
     title,
-    content,
     categoryName,
-}) => {
-    const { t } = useTranslation("menu");
-
-    return (
-        <Card
-            title={title}
-            to={menuDetailsPath(id)}
-            actionLabel={t("menuCard.learnMore")}
-        >
-            <CardMetaRow label={t("menuCard.category")} value={categoryName} />
-            <div className="text-sm font-montserratRegular text-gray-700 mt-2">
-                {content}
-            </div>
-        </Card>
-    );
-};
+    mine = false,
+}) => (
+    <ContentCard
+        to={menuDetailsPath(id)}
+        title={title}
+        imageIcon={NotebookMark}
+        chipLabel={categoryName}
+        mine={mine}
+        // the menu list response doesn't include a per-menu recipe count, so
+        // the meta row (present in the design) is omitted rather than faked
+        metaItems={[]}
+    />
+);

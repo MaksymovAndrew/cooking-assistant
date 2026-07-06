@@ -92,7 +92,8 @@ test("should render the statistics page", async () => {
 
 test("should log out and protect private routes again", async () => {
     await page.goto("/");
-    await page.getByRole("button", { name: "Logout" }).click();
+    await page.getByRole("button", { name: "Account menu" }).click();
+    await page.getByRole("menuitem", { name: "Logout" }).click();
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login$/);
 

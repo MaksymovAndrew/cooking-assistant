@@ -82,7 +82,7 @@ test("should list the recipe and menu in the shared public listings", async () =
     await viewerPage.goto("/all-recipes");
     await expect(viewerPage.getByText(recipeTitle)).toBeVisible();
 
-    await viewerPage.goto("/menus");
+    await viewerPage.goto("/all-menus");
     await expect(viewerPage.getByText(menuTitle)).toBeVisible();
 });
 

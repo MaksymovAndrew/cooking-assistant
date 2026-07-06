@@ -11,7 +11,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import ChangeMenuPage from "pages/menu/ChangeMenuPage";
 import { mockedPut, mockGetByUrl } from "test/apiClientMock";
-import { ERROR_RECIPES_REQUIRED, ROUTE_MENUS } from "test/constants";
+import { ERROR_RECIPES_REQUIRED, ROUTE_ALL_MENUS } from "test/constants";
 import { mockNavigate } from "test/router";
 import { makeTestStore } from "test/store";
 
@@ -117,7 +117,7 @@ describe("ChangeMenuPage", () => {
             screen.getByRole("button", { name: UPDATE_MENU }),
         );
 
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_MENUS);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_MENUS);
     });
 
     it("should display a validation error when no recipes are selected", async () => {

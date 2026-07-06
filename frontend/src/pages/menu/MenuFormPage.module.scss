@@ -1,0 +1,16 @@
+@use "styles/abstracts" as *;
+
+.menu-form-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--s-6) var(--s-4);
+
+    &__heading {
+        margin: 0 0 var(--s-5);
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(24px, 4vw, 30px) Fraunces,
+            serif;
+    }
+}

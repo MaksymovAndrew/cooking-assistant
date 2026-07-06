@@ -1,0 +1,102 @@
+@use "styles/abstracts" as *;
+
+.menu-hero {
+    &__title-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--s-3);
+        margin-bottom: var(--s-3);
+    }
+
+    &__title {
+        margin: 0;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(26px, 4vw, 30px) Fraunces,
+            serif;
+    }
+
+    &__description {
+        max-width: 60ch;
+        margin: 0 0 var(--s-5);
+        color: var(--text-2);
+        font:
+            400 14px/1.55 Inter,
+            sans-serif;
+    }
+
+    &__actions {
+        margin-bottom: var(--s-5);
+    }
+
+    &__visitor-banner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--s-3);
+        margin-bottom: var(--s-5);
+        padding: 13px 14px;
+        border: 1px solid var(--brand-subtle);
+        border-radius: var(--r-md);
+        background: var(--brand-subtle);
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    &__favourite {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 40px;
+        padding: 0 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--surface);
+        color: var(--text);
+        cursor: default;
+        font:
+            600 13px Inter,
+            sans-serif;
+
+        svg {
+            color: var(--brand);
+        }
+    }
+
+    &__stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-6);
+        padding-bottom: var(--s-5);
+        border-bottom: 1px solid var(--border);
+    }
+
+    &__stat-label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font:
+            500 11px "Geist Mono",
+            monospace;
+    }
+
+    &__stat-value {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--text);
+        font:
+            500 15px "Geist Mono",
+            monospace;
+
+        svg {
+            color: var(--brand);
+        }
+    }
+}

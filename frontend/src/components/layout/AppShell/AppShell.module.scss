@@ -1,3 +1,5 @@
+@use "styles/abstracts" as *;
+
 .app-shell {
     min-height: 100vh;
     min-height: 100svh;
@@ -8,4 +10,9 @@
 .app-shell__main {
     max-width: 1280px;
     margin: 0 auto;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+
+    @include respond-to(desktop) {
+        padding-bottom: 0;
+    }
 }

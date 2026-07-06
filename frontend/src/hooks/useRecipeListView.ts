@@ -104,5 +104,6 @@ export const useRecipeListView = (source: RecipeSource) => {
         isFetchingNextPage: active.isFetchingNextPage,
         fetchNextPage: active.fetchNextPage,
         loadMoreError: hasLoadedRecipes ? errorMessage : null,
+        refetch: active.refetch,
     };
 };

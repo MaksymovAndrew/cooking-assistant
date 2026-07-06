@@ -9,7 +9,7 @@ import { recipesApi } from "redux/services/recipesApi";
 import { useCreateMenuPage } from "hooks/useCreateMenuPage";
 
 import { mockedPost, mockGetByUrl } from "test/apiClientMock";
-import { ROUTE_MENUS } from "test/constants";
+import { ROUTE_ALL_MENUS } from "test/constants";
 import { mockNavigate } from "test/router";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
@@ -77,7 +77,7 @@ describe("useCreateMenuPage", () => {
             categoryId: CATEGORY_ID,
             recipeIds: [RECIPE_ID],
         });
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_MENUS);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_MENUS);
     });
 
     it("should not call the mutation when the form is empty", async () => {

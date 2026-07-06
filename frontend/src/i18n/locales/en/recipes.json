@@ -1,4 +1,15 @@
 {
+    "recipeListView": {
+        "newRecipe": "New recipe"
+    },
+    "recipeForm": {
+        "cancel": "Cancel"
+    },
+    "ingredientPicker": {
+        "searchPlaceholder": "Search ingredients...",
+        "clear": "Clear",
+        "noMatches": "No ingredients found"
+    },
     "recipeCard": {
         "recipeType": "Recipe type: ",
         "cookingTime": "Cooking time: ",
@@ -6,30 +17,38 @@
         "learnMore": "Learn more",
         "cookingTimeValue": "{{hours}} hr : {{minutes}} min"
     },
-    "typeFilter": {
-        "filter": "Filter",
-        "reset": "Reset filters"
+    "filterPanel": {
+        "title": "Filters",
+        "close": "Close",
+        "cookingTimeLabel": "Cooking time (min)",
+        "min": "Min",
+        "max": "Max",
+        "sortLabel": "Sort by time",
+        "fastToLong": "Fast → long",
+        "longToFast": "Long → fast",
+        "typeLabel": "Type",
+        "reset": "Reset filters",
+        "apply": "Apply",
+        "recipeCount_one": "{{count}} recipe",
+        "recipeCount_other": "{{count}} recipes",
+        "minChip": "Min time: {{minutes}} min",
+        "maxChip": "Max time: {{minutes}} min",
+        "sortChip": "Sort: {{sort}}",
+        "removeFilter": "Remove",
+        "clearAll": "Clear all"
     },
     "mainPage": {
         "allRecipes": "All Recipes",
         "recipesBy": "Recipes: {{types}}",
         "noSuchRecipes": "No such recipes created.",
         "createFirst": "Create your first recipe!",
-        "searchPlaceholder": "ingredient",
-        "minCookingTime": "Min cooking time:",
-        "maxCookingTime": "Max cooking time:",
-        "minPlaceholder": "min",
-        "maxPlaceholder": "min",
-        "sortByTime": "Sort by time:",
-        "fastToSlow": "From fast to long",
-        "slowToFast": "From long to fast"
+        "searchPlaceholder": "ingredient"
     },
     "userRecipesPage": {
         "myRecipes": "My Recipes",
         "recipesBy": "Recipes: {{types}}",
         "noRecipesType": "No recipes of this type found.",
         "createFirst": "Create your first recipe!",
-        "addRecipe": "Add Recipe",
         "searchPlaceholder": "ingredient"
     },
     "createRecipePage": {
@@ -70,13 +89,22 @@
         "errorCookingTimeInvalid": "Enter valid time in format hh:mm"
     },
     "recipeDetailsPage": {
-        "recipeType": "Recipe type:",
-        "ingredientsCount": "Ingredients count - {{count}} items",
-        "description": "Description:",
-        "ingredients": "Ingredients:",
-        "cookingTime": "Cooking time:",
-        "creationDate": "Creation date:",
-        "servings": "Servings (for which the recipe is calculated):",
+        "breadcrumb": "Breadcrumb",
+        "breadcrumbRecipes": "Recipes",
+        "description": "Description",
+        "ingredients": "Ingredients",
+        "ingredientsCaption_one": "{{count}} item",
+        "ingredientsCaption_other": "{{count}} items",
+        "cookingTime": "Cooking time",
+        "creationDate": "Creation date",
+        "servings": "Portions",
+        "favourite": "Favourite",
+        "fewerPortions": "Fewer portions",
+        "morePortions": "More portions",
+        "haveOfTotal": "You have {{have}} of {{total}}",
+        "toBuy_one": "{{count}} to buy.",
+        "toBuy_other": "{{count}} to buy.",
+        "missingIngredients": "Missing ingredients",
         "deleteButton": "Delete recipe",
         "editButton": "Edit recipe",
         "loading": "Loading...",

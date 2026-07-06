@@ -21,7 +21,8 @@ const NotFoundPage = React.lazy(() => import("pages/not-found/NotFoundPage"));
 const IngredientsPage = React.lazy(
     () => import("pages/person-ingredients/IngredientsPage"),
 );
-const TypesPage = React.lazy(() => import("pages/recipe-types/TypesPage"));
+const ProfilePage = React.lazy(() => import("pages/profile/ProfilePage"));
+const SettingsPage = React.lazy(() => import("pages/settings/SettingsPage"));
 const ChangeRecipePage = React.lazy(
     () => import("pages/recipes/ChangeRecipePage"),
 );
@@ -48,16 +49,17 @@ const PRIVATE_ROUTES: AppRoute[] = [
     { path: ROUTES.allRecipes, element: <MainPage /> },
     { path: ROUTES.myRecipes, element: <UserRecipesPage /> },
     { path: ROUTES.myMenus, element: <UserMenuPage /> },
-    { path: ROUTES.recipeTypes, element: <TypesPage /> },
     { path: ROUTES.addRecipe, element: <CreateRecipePage /> },
     { path: ROUTES.recipeDetails, element: <RecipeDetailsPage /> },
     { path: ROUTES.changeRecipe, element: <ChangeRecipePage /> },
     { path: ROUTES.stats, element: <StatsPage /> },
     { path: ROUTES.ingredients, element: <IngredientsPage /> },
-    { path: ROUTES.menus, element: <MenuPage /> },
+    { path: ROUTES.allMenus, element: <MenuPage /> },
     { path: ROUTES.addMenu, element: <CreateMenuPage /> },
     { path: ROUTES.menuDetails, element: <MenuDetailsPage /> },
     { path: ROUTES.changeMenu, element: <ChangeMenuPage /> },
+    { path: ROUTES.profile, element: <ProfilePage /> },
+    { path: ROUTES.settings, element: <SettingsPage /> },
 ];
 
 const App: React.FC = () => (

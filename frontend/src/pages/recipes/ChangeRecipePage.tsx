@@ -6,6 +6,8 @@ import { useUpdateRecipePage } from "hooks/useUpdateRecipePage";
 import { RecipeForm } from "components/forms/RecipeForm";
 import { AppShell } from "components/layout/AppShell";
 
+import styles from "./RecipeFormPage.module.scss";
+
 const ChangeRecipePage: React.FC = () => {
     const { t } = useTranslation("recipes");
     const { form, allIngredients, allTypes, isLoading, handleSubmit } =
@@ -13,8 +15,8 @@ const ChangeRecipePage: React.FC = () => {
 
     return (
         <AppShell>
-            <div className="mx-[15vw]">
-                <h1 className="text-relative-h3 my-[7vh] font-bold">
+            <div className={styles["recipe-form-page"]}>
+                <h1 className={styles["recipe-form-page__heading"]}>
                     {t("changeRecipePage.heading")}
                 </h1>
                 {isLoading ? (

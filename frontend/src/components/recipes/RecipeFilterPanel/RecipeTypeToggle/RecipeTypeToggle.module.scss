@@ -1,0 +1,26 @@
+@use "styles/abstracts" as *;
+
+.recipe-type-toggle {
+    height: 32px;
+    padding: 0 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: var(--surface-2);
+    color: var(--text-2);
+    font:
+        500 13px Inter,
+        sans-serif;
+    cursor: pointer;
+
+    @include focus-ring;
+
+    @include on-hover {
+        border-color: var(--brand);
+    }
+}
+
+.recipe-type-toggle--selected {
+    border-color: var(--brand);
+    background: var(--brand-subtle);
+    color: var(--brand);
+}

@@ -5,6 +5,30 @@
         "cancel": "Cancel",
         "confirm": "Delete"
     },
+    "button": {
+        "loading": "Saving…"
+    },
+    "chip": {
+        "remove": "Remove"
+    },
+    "passwordInput": {
+        "show": "Show password",
+        "hide": "Hide password"
+    },
+    "contentCard": {
+        "favourite": "Favourite"
+    },
+    "toast": {
+        "dismiss": "Dismiss"
+    },
+    "pageSpinner": {
+        "loading": "Loading your cookbook…"
+    },
+    "accountMenu": {
+        "trigger": "Account menu",
+        "profile": "Profile",
+        "settings": "Settings"
+    },
     "logoutModal": {
         "title": "Log out",
         "message": "Are you sure you want to log out of your account?",
@@ -18,9 +42,10 @@
     "nav": {
         "recipes": "Recipes",
         "menus": "Menus",
-        "myMenus": "My Menus",
         "ingredients": "Ingredients",
         "stats": "Stats",
+        "settings": "Settings",
+        "profile": "Profile",
         "logout": "Logout",
         "scrollToTop": "Scroll to top"
     },
@@ -31,8 +56,7 @@
     },
     "search": {
         "placeholderPrefix": "Search by",
-        "reset": "Reset Search",
-        "iconAlt": "Search icon"
+        "reset": "Reset Search"
     },
     "dateFilter": {
         "sortByDates": "Sort by dates",
@@ -43,13 +67,19 @@
         "invalidRange": "Please select a valid date range."
     },
     "notFound": {
-        "title": "Oops....",
-        "subtitle": "It looks like you got lost",
-        "description": "The page you are looking for does not exist or has been moved. We suggest you return to the homepage.",
-        "goHome": "GO TO HOMEPAGE"
+        "heading": "Page not found",
+        "description": "Looks like this dish isn't on the menu. The page you're looking for doesn't exist or has been moved.",
+        "backToRecipes": "Back to Recipes",
+        "recipes": "Recipes",
+        "pantry": "Pantry",
+        "menus": "Menus"
     },
     "errors": {
         "unknown": "Unknown error"
+    },
+    "errorState": {
+        "title": "Something went wrong",
+        "retry": "Try again"
     },
     "notifications": {
         "somethingWentWrong": "Something went wrong",

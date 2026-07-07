@@ -123,6 +123,7 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: The "What's new" bell and card now actually clear once you've opened the popup, instead of always showing the same "new" count.
 - Fixed: The same rounded-corner scrollbar issue fixed in the "What's new" popup is also fixed everywhere else it could occur - every bottom-sheet/dialog (pantry, purchase history, password/account settings) and every searchable ingredient/recipe dropdown.
 - Changed: The mobile Home dashboard's stat tiles now show in the same order as tablet and desktop, so the order read aloud by a screen reader always matches what's on screen.
+- Fixed: The end-to-end test suite's pantry-details tests now find each ingredient card by its own name instead of a list-item role the redesigned card grid never had, and the sort-order test no longer waits on a specific network response, only on the recipes actually reordering.
 
 ## 3.2 - 2026-06-27
 

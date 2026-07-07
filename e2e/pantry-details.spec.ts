@@ -34,10 +34,13 @@ test.afterAll(async () => {
 
 test("should open the purchase history modal and show the recorded purchase", async () => {
     await page.goto("/ingredients");
-    // the shared account's pantry may hold other ingredients from other specs -
-    // scope to the Tomato row so its Details/Delete buttons aren't ambiguous
-    const tomatoRow = page.getByRole("listitem").filter({ hasText: "Tomato" });
-    await tomatoRow.getByRole("button", { name: "Details" }).click();
+    // ingredient cards are a plain div grid (no list semantics) - scope to
+    // the card via its own heading so Details/Delete aren't ambiguous
+    // between ingredients from other specs sharing this account's pantry
+    const tomatoCard = page
+        .getByRole("heading", { name: "Tomato", level: 3 })
+        .locator("../..");
+    await tomatoCard.getByRole("button", { name: "Details" }).click();
 
     await expect(
         page.getByRole("heading", { name: "Purchase History: Tomato" }),
@@ -52,10 +55,10 @@ test("should open the purchase history modal and show the recorded purchase", as
 
 test("should delete the ingredient from the pantry entirely", async () => {
     await page.goto("/ingredients");
-    const tomatoRow = page.getByRole("listitem").filter({ hasText: "Tomato" });
-    await tomatoRow
-        .getByRole("button", { name: "Delete", exact: true })
-        .click();
+    const tomatoCard = page
+        .getByRole("heading", { name: "Tomato", level: 3 })
+        .locator("../..");
+    await tomatoCard.getByRole("button", { name: "Delete" }).click();
 
     await expect(
         page.getByText(/delete the ingredient "Tomato"/),

@@ -101,18 +101,11 @@ test("should sort My Recipes by cooking time", async () => {
     await page.getByRole("button", { name: "Filters", exact: true }).click();
 
     // default sort is already "Fast → long" - switch to "Long → fast" first so the
-    // click actually changes state, then back, exercising both directions
-    await Promise.all([
-        page.waitForResponse(
-            (res) =>
-                res.url().includes("/api/recipes-filters-person") &&
-                res.url().includes("sort_order=desc"),
-        ),
-        page.getByRole("radio", { name: "Long → fast" }).click(),
-    ]);
+    // click actually changes state, then back, exercising both directions.
+    // polling the DOM (not a specific network response) for the reorder is
+    // the robust check here - the exact request shape can vary
+    await page.getByRole("radio", { name: "Long → fast" }).click();
 
-    // the network response resolving doesn't guarantee React has re-rendered yet -
-    // poll the DOM instead of reading it once right after the response
     await expect(async () => {
         const titles = await page
             .getByRole("heading", { level: 3 })
@@ -123,14 +116,7 @@ test("should sort My Recipes by cooking time", async () => {
         );
     }).toPass();
 
-    await Promise.all([
-        page.waitForResponse(
-            (res) =>
-                res.url().includes("/api/recipes-filters-person") &&
-                res.url().includes("sort_order=asc"),
-        ),
-        page.getByRole("radio", { name: "Fast → long" }).click(),
-    ]);
+    await page.getByRole("radio", { name: "Fast → long" }).click();
 
     await expect(async () => {
         const titles = await page

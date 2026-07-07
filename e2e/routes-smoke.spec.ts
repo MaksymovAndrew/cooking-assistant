@@ -84,7 +84,8 @@ test("should render /my-recipes with the created recipe listed", async () => {
 
 test("should render /profile", async () => {
     await page.goto("/profile");
-    await expect(page.getByRole("heading", { name: "Profile" })).toBeVisible();
+    // no literal "Profile" heading exists - its h1 shows the user's own name
+    await expect(page.getByRole("tab", { name: "My recipes" })).toBeVisible();
 });
 
 test("should render /settings", async () => {

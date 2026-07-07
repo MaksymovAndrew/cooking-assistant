@@ -84,49 +84,51 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
                 )}
             </div>
             {trimmedQuery && (
-                <ul className={styles["ingredient-picker__results"]}>
-                    {matches.length === 0 ? (
-                        <li className={styles["ingredient-picker__empty"]}>
-                            {t("ingredientPicker.noMatches")}
-                        </li>
-                    ) : (
-                        matches.map((ingredient) => (
-                            <li key={ingredient.id}>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        handleSelect(ingredient);
-                                    }}
-                                    className={
-                                        styles["ingredient-picker__result"]
-                                    }
-                                >
-                                    <span
-                                        className={
-                                            styles[
-                                                "ingredient-picker__result-name"
-                                            ]
-                                        }
-                                    >
-                                        <HighlightedMatch
-                                            text={ingredient.name}
-                                            query={trimmedQuery}
-                                        />
-                                    </span>
-                                    <span
-                                        className={
-                                            styles[
-                                                "ingredient-picker__result-unit"
-                                            ]
-                                        }
-                                    >
-                                        {ingredient.unit_name}
-                                    </span>
-                                </button>
+                <div className={styles["ingredient-picker__results-wrapper"]}>
+                    <ul className={styles["ingredient-picker__results"]}>
+                        {matches.length === 0 ? (
+                            <li className={styles["ingredient-picker__empty"]}>
+                                {t("ingredientPicker.noMatches")}
                             </li>
-                        ))
-                    )}
-                </ul>
+                        ) : (
+                            matches.map((ingredient) => (
+                                <li key={ingredient.id}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            handleSelect(ingredient);
+                                        }}
+                                        className={
+                                            styles["ingredient-picker__result"]
+                                        }
+                                    >
+                                        <span
+                                            className={
+                                                styles[
+                                                    "ingredient-picker__result-name"
+                                                ]
+                                            }
+                                        >
+                                            <HighlightedMatch
+                                                text={ingredient.name}
+                                                query={trimmedQuery}
+                                            />
+                                        </span>
+                                        <span
+                                            className={
+                                                styles[
+                                                    "ingredient-picker__result-unit"
+                                                ]
+                                            }
+                                        >
+                                            {ingredient.unit_name}
+                                        </span>
+                                    </button>
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </div>
             )}
         </div>
     );

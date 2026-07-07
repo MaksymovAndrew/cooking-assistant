@@ -35,18 +35,12 @@ export const StatCard: React.FC<StatCardProps> = ({
             </span>
             <span>
                 <span className={styles["stat-card__value"]}>{value}</span>
-                {shortLabel ? (
-                    <>
-                        <span className={styles["stat-card__label--desktop"]}>
-                            {label}
-                        </span>
-                        <span className={styles["stat-card__label--short"]}>
-                            {shortLabel}
-                        </span>
-                    </>
-                ) : (
-                    <span className={styles["stat-card__label"]}>{label}</span>
-                )}
+                <span className={styles["stat-card__label--desktop"]}>
+                    {label}
+                </span>
+                <span className={styles["stat-card__label--short"]}>
+                    {shortLabel ?? label}
+                </span>
             </span>
         </div>
     );

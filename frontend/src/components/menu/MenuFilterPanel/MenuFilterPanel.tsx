@@ -4,8 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import type { MenuCategory } from "types/menu";
 
-import { useClickOutside } from "hooks/useClickOutside";
-import { useEscapeKey } from "hooks/useEscapeKey";
+import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 
 import { SearchComponent } from "components/ui/SearchComponent";
 
@@ -35,8 +34,7 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
         setIsOpen(false);
     };
 
-    useClickOutside(containerRef, closePopover, isOpen);
-    useEscapeKey(closePopover, isOpen);
+    usePopoverDismiss(containerRef, isOpen, closePopover);
 
     const toggleCategory = (id: number) => {
         setSelectedCategories(

@@ -8,6 +8,7 @@ import { useEscapeKey } from "hooks/useEscapeKey";
 import { useScrollLock } from "hooks/useScrollLock";
 
 import { formatNewsDate } from "utils/formatNewsDate";
+import { getNewsItemText } from "utils/newsItemText";
 
 import styles from "./NewsModal.module.scss";
 
@@ -73,35 +74,40 @@ export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
                         <X size={CLOSE_ICON_SIZE} aria-hidden="true" />
                     </button>
                 </div>
-                {/* only this wrapper scrolls, and it has no border-radius of
-                    its own - a scrollbar on a rounded element isn't clipped
-                    to the radius by the browser and pokes out past the
-                    corner, so the radius/overflow:hidden stay on the outer,
-                    non-scrolling box instead */}
+                {/* scrollbar lives here, not on the rounded outer box, so it can't poke past the corner */}
                 <div className={styles["news-modal__scroll"]}>
                     <div className={styles["news-modal__list"]}>
-                        {NEWS_ITEMS.map((entry) => (
-                            <div
-                                key={entry.id}
-                                className={styles["news-modal__item"]}
-                            >
-                                <div className={styles["news-modal__date"]}>
-                                    {formatNewsDate(entry.date)}
-                                </div>
+                        {NEWS_ITEMS.map((entry) => {
+                            const { title, description } = getNewsItemText(
+                                t,
+                                entry,
+                            );
+
+                            return (
                                 <div
-                                    className={styles["news-modal__item-title"]}
+                                    key={entry.id}
+                                    className={styles["news-modal__item"]}
                                 >
-                                    {t(`items.${entry.id}.title`)}
+                                    <div className={styles["news-modal__date"]}>
+                                        {formatNewsDate(entry.date)}
+                                    </div>
+                                    <div
+                                        className={
+                                            styles["news-modal__item-title"]
+                                        }
+                                    >
+                                        {title}
+                                    </div>
+                                    <div
+                                        className={
+                                            styles["news-modal__description"]
+                                        }
+                                    >
+                                        {description}
+                                    </div>
                                 </div>
-                                <div
-                                    className={
-                                        styles["news-modal__description"]
-                                    }
-                                >
-                                    {t(`items.${entry.id}.description`)}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </div>

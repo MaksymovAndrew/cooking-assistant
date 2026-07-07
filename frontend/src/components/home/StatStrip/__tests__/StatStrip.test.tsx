@@ -14,9 +14,9 @@ describe("StatStrip", () => {
         );
 
         expect(screen.getByText("4")).toBeInTheDocument();
-        expect(screen.getByText("Recipes")).toBeInTheDocument();
+        expect(screen.getAllByText("Recipes")).toHaveLength(2);
         expect(screen.getByText("2")).toBeInTheDocument();
-        expect(screen.getByText("Menus")).toBeInTheDocument();
+        expect(screen.getAllByText("Menus")).toHaveLength(2);
         expect(screen.getByText("10")).toBeInTheDocument();
         expect(screen.getByText("Pantry items")).toBeInTheDocument();
         expect(screen.getByText("1")).toBeInTheDocument();

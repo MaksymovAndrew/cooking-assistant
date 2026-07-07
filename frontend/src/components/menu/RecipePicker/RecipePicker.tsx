@@ -84,43 +84,51 @@ export const RecipePicker: React.FC<RecipePickerProps> = ({
                 )}
             </div>
             {trimmedQuery && (
-                <ul className={styles["recipe-picker__results"]}>
-                    {matches.length === 0 ? (
-                        <li className={styles["recipe-picker__empty"]}>
-                            {t("recipePicker.noMatches")}
-                        </li>
-                    ) : (
-                        matches.map((recipe) => (
-                            <li key={recipe.id}>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        handleSelect(recipe);
-                                    }}
-                                    className={styles["recipe-picker__result"]}
-                                >
-                                    <span
-                                        className={
-                                            styles["recipe-picker__result-name"]
-                                        }
-                                    >
-                                        <HighlightedMatch
-                                            text={recipe.title}
-                                            query={trimmedQuery}
-                                        />
-                                    </span>
-                                    <span
-                                        className={
-                                            styles["recipe-picker__result-type"]
-                                        }
-                                    >
-                                        {recipe.type_name}
-                                    </span>
-                                </button>
+                <div className={styles["recipe-picker__results-wrapper"]}>
+                    <ul className={styles["recipe-picker__results"]}>
+                        {matches.length === 0 ? (
+                            <li className={styles["recipe-picker__empty"]}>
+                                {t("recipePicker.noMatches")}
                             </li>
-                        ))
-                    )}
-                </ul>
+                        ) : (
+                            matches.map((recipe) => (
+                                <li key={recipe.id}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            handleSelect(recipe);
+                                        }}
+                                        className={
+                                            styles["recipe-picker__result"]
+                                        }
+                                    >
+                                        <span
+                                            className={
+                                                styles[
+                                                    "recipe-picker__result-name"
+                                                ]
+                                            }
+                                        >
+                                            <HighlightedMatch
+                                                text={recipe.title}
+                                                query={trimmedQuery}
+                                            />
+                                        </span>
+                                        <span
+                                            className={
+                                                styles[
+                                                    "recipe-picker__result-type"
+                                                ]
+                                            }
+                                        >
+                                            {recipe.type_name}
+                                        </span>
+                                    </button>
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </div>
             )}
         </div>
     );

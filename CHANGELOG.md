@@ -119,6 +119,10 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: Recipe and menu list pages now always report the correct total count for pagination, instead of occasionally showing it as text rather than a number internally.
 - Changed: The account menu and the recipe/menu filter panels now share one close-on-outside-click/Escape hook instead of three duplicated copies of the same logic, with no change in behavior.
 - Fixed: The end-to-end test suite's recipe, menu and pantry-ingredient helpers now type into the searchable ingredient/recipe pickers before selecting a result, matching the pickers introduced earlier in this release (they previously assumed the older toggle-button list and timed out selecting nothing).
+- Fixed: The end-to-end test suite's pantry tests now click the real "Add ingredient"/"Add to pantry" buttons instead of a stale "Edit ingredients"/"Save" pair left over from before the Ingredients page redesign, and the "/profile" route check now looks for the page's own tab list instead of a "Profile" heading that was never actually rendered.
+- Fixed: The "What's new" bell and card now actually clear once you've opened the popup, instead of always showing the same "new" count.
+- Fixed: The same rounded-corner scrollbar issue fixed in the "What's new" popup is also fixed everywhere else it could occur - every bottom-sheet/dialog (pantry, purchase history, password/account settings) and every searchable ingredient/recipe dropdown.
+- Changed: The mobile Home dashboard's stat tiles now show in the same order as tablet and desktop, so the order read aloud by a screen reader always matches what's on screen.
 
 ## 3.2 - 2026-06-27
 

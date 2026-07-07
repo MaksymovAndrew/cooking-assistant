@@ -9,7 +9,9 @@ describe("HomeActions", () => {
     it("should call onOpenNews when the news button is clicked", async () => {
         const onOpenNews = jest.fn();
 
-        renderWithRouter(<HomeActions onOpenNews={onOpenNews} />);
+        renderWithRouter(
+            <HomeActions onOpenNews={onOpenNews} hasUnseenNews={false} />,
+        );
 
         await userEvent.click(screen.getByRole("button", { name: "News" }));
 
@@ -17,7 +19,9 @@ describe("HomeActions", () => {
     });
 
     it("should link to the add-menu and add-recipe pages", () => {
-        renderWithRouter(<HomeActions onOpenNews={jest.fn()} />);
+        renderWithRouter(
+            <HomeActions onOpenNews={jest.fn()} hasUnseenNews={false} />,
+        );
 
         expect(screen.getByRole("link", { name: "New menu" })).toHaveAttribute(
             "href",

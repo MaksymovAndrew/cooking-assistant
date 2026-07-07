@@ -75,44 +75,54 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
                 />
             </div>
             {trimmedQuery && (
-                <ul className={styles["add-ingredient-modal__results"]}>
-                    {matches.length === 0 ? (
-                        <li className={styles["add-ingredient-modal__empty"]}>
-                            {t("addIngredientModal.noMatches")}
-                        </li>
-                    ) : (
-                        matches.map((ingredient) => (
-                            <li key={ingredient.id}>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        onToggle(ingredient.id);
-                                        setQuery("");
-                                    }}
-                                    className={
-                                        styles["add-ingredient-modal__result"]
-                                    }
-                                >
-                                    <span>
-                                        <HighlightedMatch
-                                            text={ingredient.name}
-                                            query={trimmedQuery}
-                                        />
-                                    </span>
-                                    <span
+                <div
+                    className={styles["add-ingredient-modal__results-wrapper"]}
+                >
+                    <ul className={styles["add-ingredient-modal__results"]}>
+                        {matches.length === 0 ? (
+                            <li
+                                className={
+                                    styles["add-ingredient-modal__empty"]
+                                }
+                            >
+                                {t("addIngredientModal.noMatches")}
+                            </li>
+                        ) : (
+                            matches.map((ingredient) => (
+                                <li key={ingredient.id}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            onToggle(ingredient.id);
+                                            setQuery("");
+                                        }}
                                         className={
                                             styles[
-                                                "add-ingredient-modal__result-unit"
+                                                "add-ingredient-modal__result"
                                             ]
                                         }
                                     >
-                                        {ingredient.unit_name}
-                                    </span>
-                                </button>
-                            </li>
-                        ))
-                    )}
-                </ul>
+                                        <span>
+                                            <HighlightedMatch
+                                                text={ingredient.name}
+                                                query={trimmedQuery}
+                                            />
+                                        </span>
+                                        <span
+                                            className={
+                                                styles[
+                                                    "add-ingredient-modal__result-unit"
+                                                ]
+                                            }
+                                        >
+                                            {ingredient.unit_name}
+                                        </span>
+                                    </button>
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </div>
             )}
 
             {newlySelected.length > 0 && (

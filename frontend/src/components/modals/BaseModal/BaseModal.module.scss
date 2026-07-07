@@ -36,12 +36,14 @@
     }
 }
 
+// a flex column so only __scroll grows/scrolls, keeping the scrollbar off this rounded box
 .base-modal {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     max-height: 90vh;
-    overflow-y: auto;
-    padding: var(--s-5) var(--s-5)
-        calc(var(--s-5) + env(safe-area-inset-bottom));
+    overflow: hidden;
+    padding: var(--s-5) var(--s-5) 0;
     border: 1px solid var(--border);
     border-radius: var(--r-lg) var(--r-lg) 0 0;
     background: var(--surface);
@@ -54,13 +56,14 @@
 
     @include respond-to(tablet) {
         max-width: 420px;
-        padding: 26px;
+        padding: 26px 26px 0;
         border-radius: var(--r-lg);
         animation: base-modal-fade-up 250ms var(--ease-out);
     }
 
     &__handle {
         display: block;
+        flex: none;
         width: 38px;
         height: 4px;
         margin: 0 auto var(--s-4);
@@ -73,12 +76,24 @@
     }
 
     &__title {
+        flex: none;
         margin: 0 0 var(--s-4);
         color: var(--text);
         text-align: center;
         font:
             600 20px Fraunces,
             serif;
+    }
+
+    &__scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        padding-bottom: calc(var(--s-5) + env(safe-area-inset-bottom));
+
+        @include respond-to(tablet) {
+            padding-bottom: 26px;
+        }
     }
 }
 

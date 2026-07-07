@@ -1,11 +1,12 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
 import { useGetMeQuery } from "redux/services/authApi";
+
+import { LinkButton } from "components/ui/LinkButton";
 
 import { formatDashboardDate } from "utils/formatDashboardDate";
 
@@ -32,20 +33,14 @@ export const GreetingHeader: React.FC = () => {
                 </h1>
             </div>
             <div className={styles["greeting-header__actions"]}>
-                <Link
-                    to={ROUTES.addMenu}
-                    className={styles["greeting-header__secondary"]}
-                >
+                <LinkButton to={ROUTES.addMenu} variant="secondary">
                     <Plus size={ICON_SIZE} aria-hidden="true" />
                     {t("actions.newMenu")}
-                </Link>
-                <Link
-                    to={ROUTES.addRecipe}
-                    className={styles["greeting-header__primary"]}
-                >
+                </LinkButton>
+                <LinkButton to={ROUTES.addRecipe}>
                     <Plus size={ICON_SIZE} aria-hidden="true" />
                     {t("actions.newRecipe")}
-                </Link>
+                </LinkButton>
             </div>
         </div>
     );

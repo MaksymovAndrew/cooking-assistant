@@ -29,8 +29,7 @@
             serif;
     }
 
-    // below desktop the quick actions live in the HomeActions row at the
-    // bottom of the dashboard instead, per the mockup
+    // below desktop the quick actions live in the HomeActions row instead
     &__actions {
         display: none;
 
@@ -38,34 +37,5 @@
             display: flex;
             gap: var(--s-3);
         }
-    }
-
-    &__secondary,
-    &__primary {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--s-2);
-        height: 44px;
-        padding: 0 var(--s-4);
-        border-radius: var(--r-sm);
-        text-decoration: none;
-        cursor: pointer;
-        font:
-            600 14px Inter,
-            sans-serif;
-
-        @include focus-ring;
-    }
-
-    &__secondary {
-        border: 1px solid var(--border);
-        background: var(--surface);
-        color: var(--text);
-    }
-
-    &__primary {
-        border: none;
-        background: var(--brand-strong);
-        color: var(--on-brand);
     }
 }

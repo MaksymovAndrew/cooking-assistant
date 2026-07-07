@@ -1,7 +1,17 @@
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 // shared create-recipe/create-menu form flows - four specs need them, and the
 // returned select-option texts feed the filter assertions in search-filter.spec.ts
+
+// types into a searchable-combobox picker, then clicks the resulting option
+export async function selectFromPicker(
+    page: Page,
+    searchBox: Locator,
+    query: string,
+): Promise<void> {
+    await searchBox.fill(query);
+    await page.getByRole("button", { name: query }).click();
+}
 
 interface RecipeFormInput {
     title: string;
@@ -42,11 +52,11 @@ export async function createRecipeViaForm(
         .getByLabel("Recipe Type")
         .selectOption({ index: input.typeIndex ?? 1 });
     const typeText = await readSelectedOptionText(page, "Recipe Type");
-    // the ingredient picker is a searchable combobox - the button only
-    // appears once the search box has a matching query, and its accessible
-    // name also includes a trailing unit (e.g. "Potato kg"), hence no `exact`
-    await page.getByLabel("Ingredients").fill(input.ingredient);
-    await page.getByRole("button", { name: input.ingredient }).click();
+    await selectFromPicker(
+        page,
+        page.getByLabel("Ingredients"),
+        input.ingredient,
+    );
     await page.getByLabel("Servings").fill(input.servings);
 
     const [response] = await Promise.all([
@@ -73,12 +83,7 @@ export async function createMenuViaForm(
         .getByLabel("Menu category")
         .selectOption({ index: input.categoryIndex ?? 1 });
     const categoryText = await readSelectedOptionText(page, "Menu category");
-    // the recipe picker is a searchable combobox - the button only appears
-    // once the search box has a matching query, and its accessible name also
-    // includes a trailing recipe type (e.g. "Original recipe title First
-    // course"), hence no `exact`
-    await page.getByLabel("Recipes").fill(input.recipeTitle);
-    await page.getByRole("button", { name: input.recipeTitle }).click();
+    await selectFromPicker(page, page.getByLabel("Recipes"), input.recipeTitle);
 
     const [response] = await Promise.all([
         page.waitForResponse(

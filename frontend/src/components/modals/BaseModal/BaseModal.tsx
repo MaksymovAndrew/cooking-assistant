@@ -92,7 +92,8 @@ export const BaseModal: React.FC<BaseModalProps> = ({
                         {title}
                     </h2>
                 )}
-                {children}
+                {/* scrollbar lives here, not on the rounded outer box, so it can't poke past the corner */}
+                <div className={styles["base-modal__scroll"]}>{children}</div>
             </div>
         </div>
     );

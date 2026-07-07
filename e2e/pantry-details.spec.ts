@@ -1,6 +1,7 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { selectFromPicker } from "./forms";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
 // purchase history and full ingredient removal - neither is touched by
@@ -17,12 +18,13 @@ test.beforeAll(async ({ browser }) => {
     page = await context.newPage();
 
     await page.goto("/ingredients");
-    await page.getByRole("button", { name: "Edit ingredients" }).click();
-    // the add-ingredient search is a combobox - the button only appears
-    // once the search box has a matching query
-    await page.getByPlaceholder("Search ingredients...").fill("Tomato");
-    await page.getByRole("button", { name: "Tomato" }).click();
-    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await page.getByRole("button", { name: "Add ingredient" }).click();
+    await selectFromPicker(
+        page,
+        page.getByPlaceholder("Search ingredients..."),
+        "Tomato",
+    );
+    await page.getByRole("button", { name: "Add to pantry" }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
 });
 

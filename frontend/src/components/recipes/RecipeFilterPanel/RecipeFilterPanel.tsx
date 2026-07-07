@@ -4,8 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
-import { useClickOutside } from "hooks/useClickOutside";
-import { useEscapeKey } from "hooks/useEscapeKey";
+import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 import type { RecipeFilterState } from "hooks/useRecipeListView";
 
 import { SearchComponent } from "components/ui/SearchComponent";
@@ -47,8 +46,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
         setIsOpen(false);
     };
 
-    useClickOutside(containerRef, closePopover, isOpen);
-    useEscapeKey(closePopover, isOpen);
+    usePopoverDismiss(containerRef, isOpen, closePopover);
 
     return (
         <div ref={containerRef} className={styles["recipe-filter-panel"]}>

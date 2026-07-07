@@ -2,14 +2,18 @@ import { Bell } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { NEW_NEWS_COUNT, NEWS_ITEMS } from "constants/news";
+import { NEWS_ITEMS } from "constants/news";
 
 import { formatNewsDateShort } from "utils/formatNewsDate";
+import { getNewsItemText } from "utils/newsItemText";
+import { isEntryUnseen } from "utils/newsReadState";
 
 import styles from "./WhatsNewCard.module.scss";
 
 interface WhatsNewCardProps {
     onOpenAll: () => void;
+    unseenCount: number;
+    lastSeenDate: string;
 }
 
 const ICON_SIZE = 17;
@@ -17,7 +21,11 @@ const VISIBLE_ITEMS = 3;
 
 // a compact preview of NEWS_ITEMS - clicking it opens the same NewsModal
 // used by the mobile/tablet bell button, with the full list and descriptions
-export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({ onOpenAll }) => {
+export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({
+    onOpenAll,
+    unseenCount,
+    lastSeenDate,
+}) => {
     const { t } = useTranslation("news");
 
     return (
@@ -31,47 +39,55 @@ export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({ onOpenAll }) => {
                     <Bell size={ICON_SIZE} aria-hidden="true" />
                     {t("title")}
                 </span>
-                {NEW_NEWS_COUNT > 0 && (
+                {unseenCount > 0 && (
                     <span className={styles["whats-new-card__badge"]}>
-                        {t("newCount", { total: NEW_NEWS_COUNT })}
+                        {t("newCount", { total: unseenCount })}
                     </span>
                 )}
             </div>
             <div className={styles["whats-new-card__list"]}>
-                {NEWS_ITEMS.slice(0, VISIBLE_ITEMS).map((entry) => (
-                    <div
-                        key={entry.id}
-                        className={styles["whats-new-card__item"]}
-                    >
-                        <span
-                            className={[
-                                styles["whats-new-card__dot"],
-                                entry.isNew &&
-                                    styles["whats-new-card__dot--new"],
-                            ]
-                                .filter(Boolean)
-                                .join(" ")}
-                            aria-hidden="true"
-                        />
-                        <div className={styles["whats-new-card__item-body"]}>
+                {NEWS_ITEMS.slice(0, VISIBLE_ITEMS).map((entry) => {
+                    const { title, description } = getNewsItemText(t, entry);
+
+                    return (
+                        <div
+                            key={entry.id}
+                            className={styles["whats-new-card__item"]}
+                        >
+                            <span
+                                className={[
+                                    styles["whats-new-card__dot"],
+                                    isEntryUnseen(entry, lastSeenDate) &&
+                                        styles["whats-new-card__dot--new"],
+                                ]
+                                    .filter(Boolean)
+                                    .join(" ")}
+                                aria-hidden="true"
+                            />
                             <div
-                                className={styles["whats-new-card__item-title"]}
+                                className={styles["whats-new-card__item-body"]}
                             >
-                                {t(`items.${entry.id}.title`)}
-                            </div>
-                            <div
-                                className={
-                                    styles["whats-new-card__description"]
-                                }
-                            >
-                                {t(`items.${entry.id}.description`)}
-                            </div>
-                            <div className={styles["whats-new-card__date"]}>
-                                {formatNewsDateShort(entry.date)}
+                                <div
+                                    className={
+                                        styles["whats-new-card__item-title"]
+                                    }
+                                >
+                                    {title}
+                                </div>
+                                <div
+                                    className={
+                                        styles["whats-new-card__description"]
+                                    }
+                                >
+                                    {description}
+                                </div>
+                                <div className={styles["whats-new-card__date"]}>
+                                    {formatNewsDateShort(entry.date)}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </button>
     );

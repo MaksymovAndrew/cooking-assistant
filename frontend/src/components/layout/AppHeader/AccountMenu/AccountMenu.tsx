@@ -5,8 +5,7 @@ import { Link } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
-import { useClickOutside } from "hooks/useClickOutside";
-import { useEscapeKey } from "hooks/useEscapeKey";
+import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 
 import { Avatar } from "components/ui/Avatar";
 
@@ -41,8 +40,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
         setIsOpen(false);
     };
 
-    useClickOutside(containerRef, closeMenu, isOpen);
-    useEscapeKey(closeMenu, isOpen);
+    usePopoverDismiss(containerRef, isOpen, closeMenu);
 
     return (
         <div ref={containerRef} className={styles["account-menu"]}>

@@ -1,6 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export const useEscapeKey = (onEscape: () => void, enabled = true): void => {
+    // read through a ref so a fresh onEscape each render doesn't re-subscribe
+    const onEscapeRef = useRef(onEscape);
+
+    onEscapeRef.current = onEscape;
+
     useEffect(() => {
         if (!enabled) {
             return undefined;
@@ -8,7 +13,7 @@ export const useEscapeKey = (onEscape: () => void, enabled = true): void => {
 
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
-                onEscape();
+                onEscapeRef.current();
             }
         };
 
@@ -17,5 +22,5 @@ export const useEscapeKey = (onEscape: () => void, enabled = true): void => {
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [enabled, onEscape]);
+    }, [enabled]);
 };

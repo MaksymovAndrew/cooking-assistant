@@ -61,19 +61,29 @@
         }
     }
 
-    &__results {
+    // wrapper owns the border/radius/overflow:hidden so the list's
+    // scrollbar (on __results below) can't poke past the rounded corner
+    &__results-wrapper {
         position: absolute;
         top: 100%;
         right: 0;
         left: 0;
         z-index: var(--z-dropdown);
+        display: flex;
+        flex-direction: column;
         max-height: 240px;
         margin: 4px 0 0;
-        overflow-y: auto;
+        overflow: hidden;
         border: 1px solid var(--brand);
         border-radius: 12px;
         background: var(--surface);
         box-shadow: var(--e-3);
+    }
+
+    &__results {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
         list-style: none;
         padding-inline-start: 0;
     }

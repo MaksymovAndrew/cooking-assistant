@@ -30,12 +30,7 @@
     }
 }
 
-// a flex column: __handle/__header are flex:none (always visible), only
-// __scroll (containing __list) grows/shrinks and scrolls. The outer box owns
-// the border/radius/shadow/overflow:hidden - a scrollbar rendered directly on
-// a rounded element isn't clipped to the radius by the browser and pokes out
-// past the corner, so overflow-y:auto lives one level down on __scroll
-// instead, which has no radius of its own to clip against.
+// a flex column so only __scroll grows/scrolls, keeping the scrollbar off this rounded box
 .news-modal {
     display: flex;
     flex-direction: column;

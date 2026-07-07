@@ -1,9 +1,6 @@
 @use "styles/abstracts" as *;
 
-// desktop-only, per the mockup - below desktop the bell in HomeActions
-// opens the same content as a modal instead. Rendered as a <button> so the
-// whole card opens the full NewsModal - card-surface below overrides the
-// native button border/background.
+// desktop-only (mobile/tablet use the HomeActions bell instead); a <button> so the card opens the full NewsModal
 .whats-new-card {
     display: none;
     width: 100%;

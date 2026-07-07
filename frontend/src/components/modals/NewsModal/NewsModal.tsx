@@ -2,8 +2,12 @@ import { Bell, X } from "lucide-react";
 import React, { useId } from "react";
 import { useTranslation } from "react-i18next";
 
+import { NEWS_ITEMS } from "constants/news";
+
 import { useEscapeKey } from "hooks/useEscapeKey";
 import { useScrollLock } from "hooks/useScrollLock";
+
+import { formatNewsDate } from "utils/formatNewsDate";
 
 import styles from "./NewsModal.module.scss";
 
@@ -12,13 +16,11 @@ interface NewsModalProps {
     onClose: () => void;
 }
 
-// static placeholder content - there is no news feed/backend yet (seed only)
-const NEWS_ITEM_KEYS = ["ratings", "expiry", "cards"] as const;
 const ICON_SIZE = 20;
 const CLOSE_ICON_SIZE = 16;
 
 export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
-    const { t } = useTranslation("home");
+    const { t } = useTranslation("news");
     const titleId = useId();
 
     useEscapeKey(onClose, isOpen);
@@ -46,6 +48,10 @@ export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
                 aria-labelledby={titleId}
                 className={styles["news-modal"]}
             >
+                <div
+                    className={styles["news-modal__handle"]}
+                    aria-hidden="true"
+                />
                 <div className={styles["news-modal__header"]}>
                     <div className={styles["news-modal__heading"]}>
                         <span className={styles["news-modal__icon"]}>
@@ -55,32 +61,48 @@ export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
                             id={titleId}
                             className={styles["news-modal__title"]}
                         >
-                            {t("newsModal.title")}
+                            {t("title")}
                         </h3>
                     </div>
                     <button
                         type="button"
                         onClick={onClose}
-                        aria-label={t("newsModal.close")}
+                        aria-label={t("close")}
                         className={styles["news-modal__close"]}
                     >
                         <X size={CLOSE_ICON_SIZE} aria-hidden="true" />
                     </button>
                 </div>
-                <div className={styles["news-modal__list"]}>
-                    {NEWS_ITEM_KEYS.map((key) => (
-                        <div key={key} className={styles["news-modal__item"]}>
-                            <div className={styles["news-modal__date"]}>
-                                {t(`newsModal.items.${key}.date`)}
+                {/* only this wrapper scrolls, and it has no border-radius of
+                    its own - a scrollbar on a rounded element isn't clipped
+                    to the radius by the browser and pokes out past the
+                    corner, so the radius/overflow:hidden stay on the outer,
+                    non-scrolling box instead */}
+                <div className={styles["news-modal__scroll"]}>
+                    <div className={styles["news-modal__list"]}>
+                        {NEWS_ITEMS.map((entry) => (
+                            <div
+                                key={entry.id}
+                                className={styles["news-modal__item"]}
+                            >
+                                <div className={styles["news-modal__date"]}>
+                                    {formatNewsDate(entry.date)}
+                                </div>
+                                <div
+                                    className={styles["news-modal__item-title"]}
+                                >
+                                    {t(`items.${entry.id}.title`)}
+                                </div>
+                                <div
+                                    className={
+                                        styles["news-modal__description"]
+                                    }
+                                >
+                                    {t(`items.${entry.id}.description`)}
+                                </div>
                             </div>
-                            <div className={styles["news-modal__item-title"]}>
-                                {t(`newsModal.items.${key}.title`)}
-                            </div>
-                            <div className={styles["news-modal__description"]}>
-                                {t(`newsModal.items.${key}.description`)}
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

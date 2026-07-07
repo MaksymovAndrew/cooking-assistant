@@ -1,0 +1,71 @@
+@use "styles/abstracts" as *;
+
+.home-actions {
+    display: flex;
+    gap: var(--s-3);
+
+    @include respond-to(desktop) {
+        display: none;
+    }
+
+    &__news,
+    &__menu,
+    &__recipe {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 46px;
+        border-radius: var(--r-sm);
+        text-decoration: none;
+        cursor: pointer;
+        font:
+            600 13px Inter,
+            sans-serif;
+
+        @include focus-ring;
+
+        @include respond-to(tablet) {
+            height: 44px;
+            font-size: 14px;
+        }
+    }
+
+    &__news {
+        position: relative;
+        flex: none;
+        width: 46px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+
+        @include respond-to(tablet) {
+            width: 44px;
+        }
+    }
+
+    &__dot {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 7px;
+        height: 7px;
+        border: 1.5px solid var(--surface);
+        border-radius: 50%;
+        background: var(--danger);
+    }
+
+    &__menu {
+        flex: 1;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+    }
+
+    &__recipe {
+        flex: 1;
+        gap: var(--s-2);
+        border: none;
+        background: var(--brand-strong);
+        color: var(--on-brand);
+    }
+}

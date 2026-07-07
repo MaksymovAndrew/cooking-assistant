@@ -12,13 +12,13 @@ describe("NewsModal", () => {
         expect(container).toBeEmptyDOMElement();
     });
 
-    it("should render the title and the placeholder news items when open", () => {
+    it("should render the title and the news items when open", () => {
         render(<NewsModal isOpen onClose={jest.fn()} />);
 
         expect(screen.getByText("What's new")).toBeInTheDocument();
-        expect(screen.getByText("Ratings are here")).toBeInTheDocument();
-        expect(screen.getByText("Pantry expiry alerts")).toBeInTheDocument();
-        expect(screen.getByText("Redesigned recipe cards")).toBeInTheDocument();
+        expect(screen.getByText("A brand-new look")).toBeInTheDocument();
+        expect(screen.getByText("Pantry-aware recipes")).toBeInTheDocument();
+        expect(screen.getByText("Richer statistics")).toBeInTheDocument();
     });
 
     it("should call onClose when the close button is clicked", async () => {

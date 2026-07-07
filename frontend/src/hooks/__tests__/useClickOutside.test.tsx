@@ -4,10 +4,16 @@ import { useRef } from "react";
 
 import { useClickOutside } from "hooks/useClickOutside";
 
-const Probe = ({ onOutside }: { onOutside: () => void }) => {
+const Probe = ({
+    onOutside,
+    enabled,
+}: {
+    onOutside: () => void;
+    enabled?: boolean;
+}) => {
     const ref = useRef<HTMLDivElement>(null);
 
-    useClickOutside(ref, onOutside);
+    useClickOutside(ref, onOutside, enabled);
 
     return (
         <div>
@@ -36,6 +42,16 @@ describe("useClickOutside", () => {
         render(<Probe onOutside={onOutside} />);
 
         await userEvent.click(screen.getByRole("button", { name: "inside" }));
+
+        expect(onOutside).not.toHaveBeenCalled();
+    });
+
+    it("should not listen when disabled", async () => {
+        const onOutside = jest.fn();
+
+        render(<Probe onOutside={onOutside} enabled={false} />);
+
+        await userEvent.click(screen.getByRole("button", { name: "outside" }));
 
         expect(onOutside).not.toHaveBeenCalled();
     });

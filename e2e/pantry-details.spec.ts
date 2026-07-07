@@ -18,7 +18,10 @@ test.beforeAll(async ({ browser }) => {
 
     await page.goto("/ingredients");
     await page.getByRole("button", { name: "Edit ingredients" }).click();
-    await page.getByRole("button", { name: "Tomato", exact: true }).click();
+    // the add-ingredient search is a combobox - the button only appears
+    // once the search box has a matching query
+    await page.getByPlaceholder("Search ingredients...").fill("Tomato");
+    await page.getByRole("button", { name: "Tomato" }).click();
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
 });

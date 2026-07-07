@@ -1,9 +1,12 @@
 import { ChevronDown, Lock, LogOut, User } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
+
+import { useClickOutside } from "hooks/useClickOutside";
+import { useEscapeKey } from "hooks/useEscapeKey";
 
 import { Avatar } from "components/ui/Avatar";
 
@@ -34,34 +37,12 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
     const initials = name && surname ? getInitials(name, surname) : undefined;
     const displayName = name && surname ? `${name} ${surname}` : login;
 
-    useEffect(() => {
-        if (!isOpen) {
-            return undefined;
-        }
-
-        const handleClickOutside = (e: MouseEvent) => {
-            if (!containerRef.current?.contains(e.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                setIsOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [isOpen]);
-
     const closeMenu = () => {
         setIsOpen(false);
     };
+
+    useClickOutside(containerRef, closeMenu, isOpen);
+    useEscapeKey(closeMenu, isOpen);
 
     return (
         <div ref={containerRef} className={styles["account-menu"]}>

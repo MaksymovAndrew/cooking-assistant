@@ -42,11 +42,13 @@ export const StatStrip: React.FC<StatStripProps> = ({
                 icon={ShoppingBasket}
                 value={pantryCount}
                 label={t("stats.pantryItems")}
+                shortLabel={t("stats.pantryItemsShort")}
             />
             <StatCard
                 icon={TriangleAlert}
                 value={expiringCount}
                 label={t("stats.expiringSoon")}
+                shortLabel={t("stats.expiringSoonShort")}
                 tone="warning"
             />
         </div>

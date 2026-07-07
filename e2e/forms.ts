@@ -42,9 +42,11 @@ export async function createRecipeViaForm(
         .getByLabel("Recipe Type")
         .selectOption({ index: input.typeIndex ?? 1 });
     const typeText = await readSelectedOptionText(page, "Recipe Type");
-    await page
-        .getByRole("button", { name: input.ingredient, exact: true })
-        .click();
+    // the ingredient picker is a searchable combobox - the button only
+    // appears once the search box has a matching query, and its accessible
+    // name also includes a trailing unit (e.g. "Potato kg"), hence no `exact`
+    await page.getByLabel("Ingredients").fill(input.ingredient);
+    await page.getByRole("button", { name: input.ingredient }).click();
     await page.getByLabel("Servings").fill(input.servings);
 
     const [response] = await Promise.all([
@@ -71,9 +73,12 @@ export async function createMenuViaForm(
         .getByLabel("Menu category")
         .selectOption({ index: input.categoryIndex ?? 1 });
     const categoryText = await readSelectedOptionText(page, "Menu category");
-    await page
-        .getByRole("button", { name: input.recipeTitle, exact: true })
-        .click();
+    // the recipe picker is a searchable combobox - the button only appears
+    // once the search box has a matching query, and its accessible name also
+    // includes a trailing recipe type (e.g. "Original recipe title First
+    // course"), hence no `exact`
+    await page.getByLabel("Recipes").fill(input.recipeTitle);
+    await page.getByRole("button", { name: input.recipeTitle }).click();
 
     const [response] = await Promise.all([
         page.waitForResponse(

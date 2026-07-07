@@ -1,5 +1,4 @@
 import { screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
 import { API_ROUTES } from "api/endpoints";
 
@@ -14,7 +13,7 @@ describe("GreetingHeader", () => {
     it("should render the generic welcome message before the current user loads", () => {
         mockGetByUrl({ [API_ROUTES.auth.me]: null });
 
-        renderWithRouter(<GreetingHeader onOpenNews={jest.fn()} />);
+        renderWithRouter(<GreetingHeader />);
 
         expect(screen.getByText("Welcome back 👋")).toBeInTheDocument();
     });
@@ -29,28 +28,17 @@ describe("GreetingHeader", () => {
             },
         });
 
-        renderWithRouter(<GreetingHeader onOpenNews={jest.fn()} />);
+        renderWithRouter(<GreetingHeader />);
 
         expect(
             await screen.findByText("Welcome back, Claude 👋"),
         ).toBeInTheDocument();
     });
 
-    it("should call onOpenNews when the news button is clicked", async () => {
-        mockGetByUrl({ [API_ROUTES.auth.me]: null });
-        const onOpenNews = jest.fn();
-
-        renderWithRouter(<GreetingHeader onOpenNews={onOpenNews} />);
-
-        await userEvent.click(screen.getByRole("button", { name: "News" }));
-
-        expect(onOpenNews).toHaveBeenCalledTimes(1);
-    });
-
     it("should link to the add-menu and add-recipe pages", () => {
         mockGetByUrl({ [API_ROUTES.auth.me]: null });
 
-        renderWithRouter(<GreetingHeader onOpenNews={jest.fn()} />);
+        renderWithRouter(<GreetingHeader />);
 
         expect(screen.getByRole("link", { name: "New menu" })).toHaveAttribute(
             "href",

@@ -1,4 +1,4 @@
-import { Bell, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -11,15 +11,9 @@ import { formatDashboardDate } from "utils/formatDashboardDate";
 
 import styles from "./GreetingHeader.module.scss";
 
-interface GreetingHeaderProps {
-    onOpenNews: () => void;
-}
-
 const ICON_SIZE = 16;
 
-export const GreetingHeader: React.FC<GreetingHeaderProps> = ({
-    onOpenNews,
-}) => {
+export const GreetingHeader: React.FC = () => {
     const { t } = useTranslation("home");
     const { data: currentUser } = useGetMeQuery(null);
 
@@ -38,27 +32,19 @@ export const GreetingHeader: React.FC<GreetingHeaderProps> = ({
                 </h1>
             </div>
             <div className={styles["greeting-header__actions"]}>
-                <button
-                    type="button"
-                    onClick={onOpenNews}
-                    className={styles["greeting-header__news"]}
-                >
-                    <Bell size={ICON_SIZE} aria-hidden="true" />
-                    {t("greeting.news")}
-                </button>
                 <Link
                     to={ROUTES.addMenu}
                     className={styles["greeting-header__secondary"]}
                 >
                     <Plus size={ICON_SIZE} aria-hidden="true" />
-                    {t("greeting.newMenu")}
+                    {t("actions.newMenu")}
                 </Link>
                 <Link
                     to={ROUTES.addRecipe}
                     className={styles["greeting-header__primary"]}
                 >
                     <Plus size={ICON_SIZE} aria-hidden="true" />
-                    {t("greeting.newRecipe")}
+                    {t("actions.newRecipe")}
                 </Link>
             </div>
         </div>

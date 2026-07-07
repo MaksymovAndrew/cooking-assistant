@@ -6,8 +6,10 @@ import { useHomeDashboard } from "hooks/useHomeDashboard";
 
 import { ExpiringSoon } from "components/home/ExpiringSoon";
 import { GreetingHeader } from "components/home/GreetingHeader";
+import { HomeActions } from "components/home/HomeActions";
 import { RecentRecipes } from "components/home/RecentRecipes";
 import { StatStrip } from "components/home/StatStrip";
+import { WhatsNewCard } from "components/home/WhatsNewCard";
 import { PageSpinner } from "components/layout/PageSpinner";
 import { NewsModal } from "components/modals/NewsModal";
 
@@ -32,7 +34,7 @@ export const HomeDashboard: React.FC = () => {
 
     return (
         <div className={styles["home-dashboard"]}>
-            <GreetingHeader onOpenNews={news.open} />
+            <GreetingHeader />
             <StatStrip
                 recipesCount={dashboard.recipesCount}
                 menusCount={dashboard.menusCount}
@@ -41,8 +43,12 @@ export const HomeDashboard: React.FC = () => {
             />
             <div className={styles["home-dashboard__panels"]}>
                 <RecentRecipes recipes={dashboard.recentRecipes} />
-                <ExpiringSoon items={dashboard.expiringSoon} />
+                <div className={styles["home-dashboard__rail"]}>
+                    <ExpiringSoon items={dashboard.expiringSoon} />
+                    <WhatsNewCard onOpenAll={news.open} />
+                </div>
             </div>
+            <HomeActions onOpenNews={news.open} />
             <NewsModal isOpen={news.isOpen} onClose={news.close} />
         </div>
     );

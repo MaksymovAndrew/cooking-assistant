@@ -44,8 +44,9 @@
             sans-serif;
     }
 
+    // desktop-only, per the mockup (the mobile/tablet cards end at the list)
     &__shopping-list {
-        display: flex;
+        display: none;
         align-items: center;
         justify-content: center;
         width: 100%;
@@ -61,5 +62,9 @@
             sans-serif;
 
         @include focus-ring;
+
+        @include respond-to(desktop) {
+            display: flex;
+        }
     }
 }

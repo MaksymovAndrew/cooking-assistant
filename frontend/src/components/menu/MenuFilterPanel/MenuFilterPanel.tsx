@@ -1,8 +1,11 @@
 import { ListFilter } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { MenuCategory } from "types/menu";
+
+import { useClickOutside } from "hooks/useClickOutside";
+import { useEscapeKey } from "hooks/useEscapeKey";
 
 import { SearchComponent } from "components/ui/SearchComponent";
 
@@ -28,30 +31,12 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (!isOpen) {
-            return undefined;
-        }
+    const closePopover = () => {
+        setIsOpen(false);
+    };
 
-        const handleClickOutside = (e: MouseEvent) => {
-            if (!containerRef.current?.contains(e.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                setIsOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [isOpen]);
+    useClickOutside(containerRef, closePopover, isOpen);
+    useEscapeKey(closePopover, isOpen);
 
     const toggleCategory = (id: number) => {
         setSelectedCategories(

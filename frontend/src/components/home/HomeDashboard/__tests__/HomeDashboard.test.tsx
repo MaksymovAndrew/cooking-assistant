@@ -74,10 +74,10 @@ describe("HomeDashboard", () => {
             await screen.findByRole("button", { name: "News" }),
         );
 
-        expect(screen.getByText("What's new")).toBeInTheDocument();
+        expect(screen.getByRole("dialog")).toBeInTheDocument();
 
         await userEvent.click(screen.getByRole("button", { name: "Close" }));
 
-        expect(screen.queryByText("What's new")).not.toBeInTheDocument();
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
 });

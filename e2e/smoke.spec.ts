@@ -52,7 +52,10 @@ test("should create a recipe and list it under My Recipes", async () => {
         .fill("Created by the e2e smoke suite.");
     await page.getByLabel("Cooking Time").fill("0:30");
     await page.getByLabel("Recipe Type").selectOption({ index: 1 });
-    await page.getByRole("button", { name: "Tomato", exact: true }).click();
+    // the ingredient picker is a searchable combobox - the button only
+    // appears once the search box has a matching query
+    await page.getByLabel("Ingredients").fill("Tomato");
+    await page.getByRole("button", { name: "Tomato" }).click();
     await page.getByLabel("Servings").fill("2 servings");
     await page.getByRole("button", { name: "Create Recipe" }).click();
     await expect(page).toHaveURL(/\/all-recipes$/);
@@ -68,6 +71,9 @@ test("should create a menu from that recipe and list it under My Menus", async (
         .getByLabel("Menu description")
         .fill("Created by the e2e smoke suite.");
     await page.getByLabel("Menu category").selectOption({ index: 1 });
+    // the recipe picker is a searchable combobox - the button only appears
+    // once the search box has a matching query
+    await page.getByLabel("Recipes").fill(recipeTitle);
     await page.getByRole("button", { name: recipeTitle }).click();
     await page.getByRole("button", { name: "Create Menu" }).click();
     await page.waitForURL((url) => !url.pathname.includes("add-menu"));
@@ -79,7 +85,10 @@ test("should create a menu from that recipe and list it under My Menus", async (
 test("should add a pantry ingredient", async () => {
     await page.goto("/ingredients");
     await page.getByRole("button", { name: "Edit ingredients" }).click();
-    await page.getByRole("button", { name: "Tomato", exact: true }).click();
+    // the add-ingredient search is a combobox - the button only appears
+    // once the search box has a matching query
+    await page.getByPlaceholder("Search ingredients...").fill("Tomato");
+    await page.getByRole("button", { name: "Tomato" }).click();
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
     await expect(page.getByText("Tomato")).toBeVisible();

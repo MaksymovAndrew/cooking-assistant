@@ -12,37 +12,79 @@
     }
 }
 
+// mobile-first: a bottom sheet per the mobile mockup; tablet+ switches to
+// the centered dialog
 .news-modal__overlay {
     position: fixed;
     inset: 0;
     z-index: var(--z-modal);
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    padding: var(--s-4);
     background: rgb(0 0 0 / 55%);
     backdrop-filter: blur(4px);
+
+    @include respond-to(tablet) {
+        align-items: center;
+        padding: var(--s-4);
+    }
 }
 
+// a flex column: __handle/__header are flex:none (always visible), only
+// __scroll (containing __list) grows/shrinks and scrolls. The outer box owns
+// the border/radius/shadow/overflow:hidden - a scrollbar rendered directly on
+// a rounded element isn't clipped to the radius by the browser and pokes out
+// past the corner, so overflow-y:auto lives one level down on __scroll
+// instead, which has no radius of its own to clip against.
 .news-modal {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    max-width: 420px;
     max-height: 80svh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding: var(--s-6);
+    overflow: hidden;
+    padding: var(--s-3) var(--s-5) 0;
     border: 1px solid var(--border);
-    border-radius: var(--r-lg);
+    border-bottom: none;
+    border-radius: 18px 18px 0 0;
     background: var(--surface);
     box-shadow: var(--e-3);
     animation: newsModalIn var(--dur-base) var(--ease-out);
+
+    @include respond-to(tablet) {
+        max-width: 480px;
+        padding: var(--s-6) var(--s-6) 0;
+        border-bottom: 1px solid var(--border);
+        border-radius: var(--r-lg);
+    }
 
     @include reduced-motion {
         animation: none;
     }
 
+    &__scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-bottom: var(--s-6);
+    }
+
+    &__handle {
+        flex: none;
+        width: 38px;
+        height: 4px;
+        margin: 0 auto var(--s-4);
+        border-radius: var(--r-pill);
+        background: var(--border);
+
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
     &__header {
         display: flex;
+        flex: none;
         align-items: flex-start;
         justify-content: space-between;
         gap: var(--s-3);

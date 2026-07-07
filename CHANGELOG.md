@@ -87,6 +87,9 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: The donut charts on the statistics page no longer briefly appear as an incomplete ring while the page finishes loading.
 - Changed: The "Menus" page now lives at `/all-menus` instead of `/menus`, matching "All recipes"'s `/all-recipes`.
 - Fixed: The "My Menus" page heading now correctly says "My Menus" instead of "All Menus".
+- Changed: The Home dashboard now matches the design across mobile, tablet and desktop - stat tiles are compact icon-free numbers below desktop, the "New menu"/"New recipe" actions and a bell icon for What's new move into one row at the bottom of the page, and a dedicated "What's new" card (opening the same full popup on click) appears next to Expiring soon on desktop.
+- Changed: The "What's new" popup now lists 8 real highlights from past releases (the redesign, pantry-aware recipes, richer statistics, safer sign-in, instant list updates, the public launch, faster page loads, and private menus) instead of placeholder text, and opens as a bottom sheet on mobile instead of a centered dialog.
+- Fixed: The "What's new" popup's scrollbar no longer pokes out past its rounded corner when the list is taller than the popup; the popup is also a bit wider on tablet and desktop.
 
 ### Backend
 
@@ -114,6 +117,8 @@ changelogs and the tags and now track everything here against one shared version
 - Added: An end-to-end test suite (Playwright) now drives real login, recipe/menu/pantry, and theme-toggle flows through a browser on every PR, and separately visits every page of the app, exercises search/filter/sort on recipes and menus, checks that only a recipe or menu's owner can edit or delete it, and covers pantry purchase history and full ingredient removal.
 - Added: Every repository (recipes, menus, users, pantry, recipe types, menu categories), including recipe/menu search, filtering and pagination, is now also tested against a real PostgreSQL database (Testcontainers) on every PR, catching SQL mistakes that mocked tests can't see.
 - Fixed: Recipe and menu list pages now always report the correct total count for pagination, instead of occasionally showing it as text rather than a number internally.
+- Changed: The account menu and the recipe/menu filter panels now share one close-on-outside-click/Escape hook instead of three duplicated copies of the same logic, with no change in behavior.
+- Fixed: The end-to-end test suite's recipe, menu and pantry-ingredient helpers now type into the searchable ingredient/recipe pickers before selecting a result, matching the pickers introduced earlier in this release (they previously assumed the older toggle-button list and timed out selecting nothing).
 
 ## 3.2 - 2026-06-27
 

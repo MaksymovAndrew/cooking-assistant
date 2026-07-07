@@ -8,6 +8,7 @@ import common from "i18n/locales/en/common.json";
 import home from "i18n/locales/en/home.json";
 import ingredients from "i18n/locales/en/ingredients.json";
 import menu from "i18n/locales/en/menu.json";
+import news from "i18n/locales/en/news.json";
 import profile from "i18n/locales/en/profile.json";
 import recipes from "i18n/locales/en/recipes.json";
 import settings from "i18n/locales/en/settings.json";
@@ -26,6 +27,7 @@ i18n.use(initReactI18next)
                 stats,
                 auth,
                 home,
+                news,
                 profile,
                 settings,
             },

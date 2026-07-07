@@ -4,8 +4,13 @@ import { useEffect } from "react";
 export const useClickOutside = <T extends HTMLElement>(
     ref: RefObject<T | null>,
     handler: () => void,
+    enabled = true,
 ): void => {
     useEffect(() => {
+        if (!enabled) {
+            return undefined;
+        }
+
         const handleMouseDown = (event: MouseEvent) => {
             if (ref.current && !ref.current.contains(event.target as Node)) {
                 handler();
@@ -17,5 +22,5 @@ export const useClickOutside = <T extends HTMLElement>(
         return () => {
             document.removeEventListener("mousedown", handleMouseDown);
         };
-    }, [ref, handler]);
+    }, [ref, handler, enabled]);
 };

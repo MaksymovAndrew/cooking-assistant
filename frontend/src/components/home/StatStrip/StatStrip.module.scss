@@ -3,9 +3,27 @@
 .stat-strip {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--s-4);
+    gap: var(--s-3);
 
     @include respond-to(tablet) {
         grid-template-columns: repeat(4, 1fr);
+        gap: var(--s-4);
+    }
+
+    // the mobile 2x2 mockup puts Expiring third and Pantry fourth; DOM order
+    // stays Recipes/Menus/Pantry/Expiring for tablet+ and screen readers
+    > :nth-child(3) {
+        order: 4;
+    }
+
+    > :nth-child(4) {
+        order: 3;
+    }
+
+    @include respond-to(tablet) {
+        > :nth-child(3),
+        > :nth-child(4) {
+            order: 0;
+        }
     }
 }

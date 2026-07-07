@@ -1,9 +1,11 @@
 import { ListFilter } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
+import { useClickOutside } from "hooks/useClickOutside";
+import { useEscapeKey } from "hooks/useEscapeKey";
 import type { RecipeFilterState } from "hooks/useRecipeListView";
 
 import { SearchComponent } from "components/ui/SearchComponent";
@@ -41,30 +43,12 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
         (filters.minCookingTime ? 1 : 0) +
         (filters.maxCookingTime ? 1 : 0);
 
-    useEffect(() => {
-        if (!isOpen) {
-            return undefined;
-        }
+    const closePopover = () => {
+        setIsOpen(false);
+    };
 
-        const handleClickOutside = (e: MouseEvent) => {
-            if (!containerRef.current?.contains(e.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                setIsOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [isOpen]);
+    useClickOutside(containerRef, closePopover, isOpen);
+    useEscapeKey(closePopover, isOpen);
 
     return (
         <div ref={containerRef} className={styles["recipe-filter-panel"]}>

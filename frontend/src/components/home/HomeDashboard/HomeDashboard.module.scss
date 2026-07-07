@@ -20,6 +20,12 @@
         }
     }
 
+    &__rail {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-5);
+    }
+
     &__error {
         color: var(--danger);
         font:

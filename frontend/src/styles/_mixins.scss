@@ -17,6 +17,14 @@
     white-space: nowrap;
 }
 
+// multi-line ellipsis - use for descriptions that must not grow unbounded
+@mixin line-clamp($lines) {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $lines;
+}
+
 @mixin reduced-motion {
     @media (prefers-reduced-motion: reduce) {
         @content;

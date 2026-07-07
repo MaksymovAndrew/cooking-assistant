@@ -7,6 +7,8 @@ interface StatCardProps {
     icon: LucideIcon;
     value: number;
     label: string;
+    // shown instead of label below desktop, per the mockup's compact tiles
+    shortLabel?: string;
     tone?: "default" | "warning";
 }
 
@@ -16,6 +18,7 @@ export const StatCard: React.FC<StatCardProps> = ({
     icon: Icon,
     value,
     label,
+    shortLabel,
     tone = "default",
 }) => {
     const cardClass = [
@@ -32,7 +35,18 @@ export const StatCard: React.FC<StatCardProps> = ({
             </span>
             <span>
                 <span className={styles["stat-card__value"]}>{value}</span>
-                <span className={styles["stat-card__label"]}>{label}</span>
+                {shortLabel ? (
+                    <>
+                        <span className={styles["stat-card__label--desktop"]}>
+                            {label}
+                        </span>
+                        <span className={styles["stat-card__label--short"]}>
+                            {shortLabel}
+                        </span>
+                    </>
+                ) : (
+                    <span className={styles["stat-card__label"]}>{label}</span>
+                )}
             </span>
         </div>
     );

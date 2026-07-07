@@ -95,7 +95,10 @@ test("should delete the recipe and redirect away from its details page", async (
 test("should edit a pantry ingredient's quantity and persist it across reload", async () => {
     await page.goto("/ingredients");
     await page.getByRole("button", { name: "Edit ingredients" }).click();
-    await page.getByRole("button", { name: "Onion", exact: true }).click();
+    // the add-ingredient search is a combobox - the button only appears
+    // once the search box has a matching query
+    await page.getByPlaceholder("Search ingredients...").fill("Onion");
+    await page.getByRole("button", { name: "Onion" }).click();
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
 

@@ -1,30 +1,41 @@
 import { useCallback, useState } from "react";
 
+import { MINUTES_PER_HOUR } from "constants/time";
 import type {
     RecipeFormChangeMessages,
     RecipeFormCreateMessages,
     RecipeFormIngredient,
 } from "types/recipe";
 
-import { parseCookingTime } from "utils/cookingTimeUtils";
+const MAX_HOURS = 99;
 
 const isValidCookingTime = (
-    cookingTime: string,
+    hours: string,
+    minutes: string,
     setCookingTimeError: (e: string | null) => void,
     messages: {
         errorCookingTimeFormat: string;
         errorCookingTimeInvalid: string;
     },
 ): boolean => {
-    if (cookingTime.split(":").length !== 2) {
+    if (hours.trim() === "" || minutes.trim() === "") {
         setCookingTimeError(messages.errorCookingTimeFormat);
 
         return false;
     }
 
-    const parsed = parseCookingTime(cookingTime);
+    const parsedHours = Number(hours);
+    const parsedMinutes = Number(minutes);
+    const isInvalid =
+        !Number.isInteger(parsedHours) ||
+        !Number.isInteger(parsedMinutes) ||
+        parsedHours < 0 ||
+        parsedHours > MAX_HOURS ||
+        parsedMinutes < 0 ||
+        parsedMinutes >= MINUTES_PER_HOUR ||
+        (parsedHours === 0 && parsedMinutes === 0);
 
-    if (parsed === null) {
+    if (isInvalid) {
         setCookingTimeError(messages.errorCookingTimeInvalid);
 
         return false;
@@ -34,7 +45,13 @@ const isValidCookingTime = (
 };
 
 export const useRecipeFormValidation = () => {
-    const [error, setError] = useState<string | null>(null);
+    const [titleError, setTitleError] = useState<string | null>(null);
+    const [descriptionError, setDescriptionError] = useState<string | null>(
+        null,
+    );
+    const [ingredientsError, setIngredientsError] = useState<string | null>(
+        null,
+    );
     const [typeError, setTypeError] = useState<string | null>(null);
     const [cookingTimeError, setCookingTimeError] = useState<string | null>(
         null,
@@ -47,93 +64,72 @@ export const useRecipeFormValidation = () => {
                 content: string;
                 selectedIngredients: RecipeFormIngredient[];
                 selectedTypeId: number | null;
-                cookingTime: string;
-                servings: string;
+                cookingHours: string;
+                cookingMinutes: string;
             },
             messages: RecipeFormCreateMessages,
         ): boolean => {
-            setError(null);
-            setTypeError(null);
-            setCookingTimeError(null);
+            let valid = true;
 
             if (!values.title.trim()) {
-                setError(messages.errorTitle);
-
-                return false;
+                setTitleError(messages.errorTitle);
+                valid = false;
+            } else {
+                setTitleError(null);
             }
 
             if (!values.content.trim()) {
-                setError(messages.errorDescription);
-
-                return false;
+                setDescriptionError(messages.errorDescription);
+                valid = false;
+            } else {
+                setDescriptionError(null);
             }
 
             if (values.selectedIngredients.length === 0) {
-                setError(messages.errorIngredients);
-
-                return false;
+                setIngredientsError(messages.errorIngredients);
+                valid = false;
+            } else {
+                setIngredientsError(null);
             }
 
             if (values.selectedTypeId === null) {
                 setTypeError(messages.errorType);
-
-                return false;
+                valid = false;
+            } else {
+                setTypeError(null);
             }
 
-            if (
-                !isValidCookingTime(
-                    values.cookingTime,
-                    setCookingTimeError,
-                    messages,
-                )
-            ) {
-                return false;
-            }
+            setCookingTimeError(null);
+            const timeValid = isValidCookingTime(
+                values.cookingHours,
+                values.cookingMinutes,
+                setCookingTimeError,
+                messages,
+            );
 
-            if (!values.servings.trim()) {
-                setError(messages.errorServings);
-
-                return false;
-            }
-
-            return true;
+            return valid && timeValid;
         },
         [],
     );
 
     const validateChange = useCallback(
         (
-            values: { cookingTime: string; servings: string },
+            values: { cookingHours: string; cookingMinutes: string },
             messages: RecipeFormChangeMessages,
-        ): boolean => {
-            setError(null);
-            setCookingTimeError(null);
-
-            let valid = true;
-
-            if (!values.servings.trim()) {
-                setError(messages.errorServings);
-                valid = false;
-            }
-
-            if (
-                !isValidCookingTime(
-                    values.cookingTime,
-                    setCookingTimeError,
-                    messages,
-                )
-            ) {
-                valid = false;
-            }
-
-            return valid;
-        },
+        ): boolean =>
+            isValidCookingTime(
+                values.cookingHours,
+                values.cookingMinutes,
+                setCookingTimeError,
+                messages,
+            ),
         [],
     );
 
     return {
-        error,
-        setError,
+        titleError,
+        descriptionError,
+        ingredientsError,
         typeError,
         cookingTimeError,
         validateCreate,

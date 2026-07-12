@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Two-app monorepo (no workspaces - each side has its own `package.json`):
 
 - [backend/](backend/) - Node.js + Express 5 + TypeScript + PostgreSQL (`pg`) API on port `3000`; helmet, express-rate-limit, pino, and zod provide operational hardening and input validation; source lives under [backend/src/](backend/src/)
-- [frontend/](frontend/) - React 18 + TypeScript + Vite on port `8080` (Tailwind CSS, React Router v6)
+- [frontend/](frontend/) - React 19 + TypeScript + Vite on port `8080` (SCSS modules, React Router v7)
 - Database schema is managed by `node-pg-migrate`: SQL migrations live in [backend/migrations/](backend/migrations/) (the initial one captures the full current schema) and reference/sample data is loaded by [backend/src/scripts/seed.ts](backend/src/scripts/seed.ts).
 - Root [package.json](package.json) is an orchestration shim: it pulls in `concurrently` and exposes scripts that drive both sub-packages. It also holds the single shared project version (see [Versioning](#versioning) below).
 - [CHANGELOG.md](CHANGELOG.md) at the root is the single changelog for the whole project.
@@ -22,6 +22,8 @@ npm start                # OR npm run dev - concurrently boots backend (3000) + 
 npm run start:backend    # backend only (tsx watch)
 npm run start:frontend   # frontend only (vite)
 ```
+
+Every per-app quality command has a root aggregate too - `lint`, `lint:fix`, `lint:sonarjs`, `stylelint`, `stylelint:fix`, `typecheck`, `test`, `test:coverage`, `build` (frontend), `build:backend`, `verify` - and all scripts are cross-platform (plain node CLIs, no shell-specific syntax), so they behave identically on Windows, macOS and Linux. Two more root scripts cover the slower suites, deliberately kept out of `test`/`verify`/the pre-commit hook: `test:e2e` (Playwright smoke suite against a live dev stack, see [e2e/](e2e/)) and `test:db` (Testcontainers real-Postgres repository suite, see [backend/src/test/db-integration/](backend/src/test/db-integration/)) - both need Docker.
 
 The root `postinstall` hook (`npm --prefix backend install && npm --prefix frontend install`) means a single `npm i` at the root populates all three `node_modules`. Don't add a separate `install:all` script.
 
@@ -55,7 +57,7 @@ Backend test conventions (match these when adding tests):
 - Business-logic unit tests stay no DB, no Express. Use cases and domain entities are tested with fake repositories/ports built from `jest.fn()`; mock only what is necessary.
 - Middleware unit tests call the middleware directly with mocked `req`/`res`/`next`.
 - Supertest integration tests use `buildTestApp` with fake repositories/ports. They exercise real routes, auth middleware, controllers, use cases, and `errorHandler` without a database.
-- Pg-repository tests are deferred until a future real-DB suite with Testcontainers; do not add mock-pool SQL-string tests as a substitute.
+- Pg-repository tests run against a real Postgres via Testcontainers, in a separate suite: [backend/src/test/db-integration/](backend/src/test/db-integration/), run with `npm run test:db` (its own `jest.db.config.js`, a `globalSetup`/`globalTeardown` pair that starts one shared container and applies migrations, and a `testPool.ts` helper each test file's worker process reads the connection info from). Not part of `npm test`/the pre-commit hook (needs Docker, slower) - it has its own CI job instead. Do not add mock-pool SQL-string tests as a substitute for this suite.
 - Unit tests are co-located in `__tests__/` next to the unit, named `<Unit>.test.ts`; HTTP integration tests live in `backend/src/test/integration/`.
 - Test names start with "should": `it("should ...")`.
 - Assert domain errors with the custom matcher `expect(err).toBeAppError(Class, message, status)` ([backend/src/test/jest.setup.ts](backend/src/test/jest.setup.ts)); capture thrown errors with `catchError` / `catchSyncError` ([backend/src/test/helpers/assertions.ts](backend/src/test/helpers/assertions.ts)).
@@ -66,6 +68,8 @@ Frontend test conventions (read [frontend/src/test/jest.setup.ts](frontend/src/t
 - API-layer tests `jest.mock("../client")` and assert against the typed mocks in [frontend/src/test/apiClientMock.ts](frontend/src/test/apiClientMock.ts). Component/page/hook tests mock the higher-level api wrapper (`jest.mock("api/recipesApi")`), never the axios client.
 - Render with `renderWithRouter` from [frontend/src/test/router.tsx](frontend/src/test/router.tsx) (defaults to a non-root route; asserts navigation via the shared `mockNavigate`). `config/env` and `config/logger` are mocked globally via `moduleNameMapper`.
 - No `as any`; real domain types from `types/*` for fixtures.
+
+End-to-end smoke tests live at the repo root in [e2e/](e2e/) (Playwright, [playwright.config.ts](playwright.config.ts)), run with `npm run test:e2e`. They boot both dev servers (reusing an already-running `npm start` locally; fresh servers in CI) and drive real login/CRUD flows through a Chromium browser - `smoke.spec.ts` is the golden path (the only spec that registers its own account, since registration/login is the feature it exercises), `core-flows.spec.ts` covers edit/delete/pantry/theme-toggle flows expected to survive the upcoming page redesign, `routes-smoke.spec.ts` visits every route in [frontend/src/constants/routes.ts](frontend/src/constants/routes.ts) (list/detail/form pages plus the not-found page) so a redesign that blanks a page fails here even without a dedicated flow test, `search-filter.spec.ts` exercises recipe/menu search, type/category filters and sort order, `ownership.spec.ts` verifies the public-read/owner-only-write contract (view as another user, hidden edit/delete controls, 404 on a non-owner's update), and `pantry-details.spec.ts` covers purchase-history viewing and full ingredient removal. `global-setup.ts` registers two shared accounts (`primary`/`viewer`) once per run and saves their sessions via Playwright `storageState`; every spec besides `smoke.spec.ts` reuses one of these instead of registering its own, keeping the whole suite's login/register traffic well under the auth rate limiter - see [e2e/sharedAccounts.ts](e2e/sharedAccounts.ts). Not part of `npm test`/the pre-commit hook - it has its own CI job instead.
 
 ## Versioning
 
@@ -79,7 +83,7 @@ Worked example:
 - `1.3` changed both: both went to `1.3`.
 - A later `1.5` that changes only the backend takes `backend` straight to `1.5` (skipping `1.4`, which it was not part of); `frontend` stays where it was.
 
-Rule of thumb: bump the version before each push/release. To bump, edit the `version` field in the relevant `package.json` files directly (root always, plus each changed side). Do not use `npm version` (it would also touch the gitignored `package-lock.json`).
+Rule of thumb: the version takes care of itself. The pre-commit hook runs [scripts/release-version.mjs](scripts/release-version.mjs) in `precommit` mode: on a `release/X.Y` branch it reads the target from the branch name, sets the root `package.json`, raises only the side(s) with changes vs `main`, syncs the lockfile `version` fields, and `git add`s whatever it rewrote so the bump rides along in that same commit (silent no-op when everything already matches; skipped by `SKIP_CHECKS=1` like the other checks; a manual mid-release patch like `3.3.1` in the root wins over the branch default). `npm run bump` (optionally `-- 3.4`) runs the same logic manually. Do not use `npm version` or edit version fields by hand.
 
 ## Changelog
 
@@ -138,7 +142,7 @@ PR title = the commit title (`<version>: <description>`). One bullet per change,
 
 ### Quality gates (CI + hooks)
 
-CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and on push to `main`: a root `format` (Prettier check), then per side `lint` (ESLint), `typecheck`, `sonarjs` (SonarJS lint), and `test:coverage` (Jest, 80% gate); the frontend additionally runs `build` (`tsc -b && vite build`) and `stylelint`. A `ci-success` job aggregates them all and is the single required check - all must be green to merge. The same suite runs locally before a commit via the Husky `pre-commit` hook (lint-staged + both sides' typecheck/lint/sonarjs/tests, plus frontend stylelint), and `pre-push` both blocks pushing straight to `main` and runs the frontend build. `npm run verify` reproduces the CI gates locally in one command. Hosted SonarCloud is not wired up (no `SONAR_TOKEN`); the local `sonarjs` lint covers the static-analysis role for now.
+CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and on push to `main`: a root `format` (Prettier check), then per side `lint` (ESLint), `typecheck`, `sonarjs` (SonarJS lint), and `test:coverage` (Jest, 80% gate); the frontend additionally runs `build` (`tsc -b && vite build`) and `stylelint`. Two more jobs run the slower suites: `e2e` (Playwright smoke suite, starts both dev servers + a Postgres service + runs migrate/seed) and `test-backend-db` (Testcontainers real-Postgres repository suite - no `services:` needed, it manages its own container via the runner's Docker daemon). A `ci-success` job aggregates all of them and is the single required check - all must be green to merge. The same quick suite runs locally before a commit via the Husky `pre-commit` hook (lint-staged + both sides' typecheck/lint/sonarjs/tests, plus frontend stylelint); `pre-push` both blocks pushing straight to `main` and runs the frontend build. `npm run verify` reproduces the CI gates locally in one command (e2e/db-integration are deliberately excluded - run `test:e2e`/`test:db` separately when Docker is available). Hosted SonarCloud is not wired up (no `SONAR_TOKEN`); the local `sonarjs` lint covers the static-analysis role for now.
 
 **Escape hatches (ops-only commits - never use when touching `backend/src` or `frontend/src`):**
 
@@ -159,12 +163,14 @@ CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and o
 
 **Trigger:** push a `v*` tag (e.g. `v2.0`) - user does this, never Claude. GitHub Actions
 ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) then:
+
 1. Builds `cooking-backend` Docker image via `tsup` + `node`, pushes to GHCR.
 2. Builds `cooking-frontend` Docker image via Vite + nginx, pushes to GHCR.
 3. Runs DB migrations + seed as an Azure Container Apps Job (`cooking-migration-job`).
 4. Updates both Azure Container Apps with the new images.
 
 **Infrastructure (Germany West Central):**
+
 - Container Apps Environment: `cooking-assistant-env`
 - Backend Container App: `cooking-backend`
 - Frontend Container App: `cooking-frontend`
@@ -179,6 +185,12 @@ CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and o
 **OIDC auth** (GitHub → Azure, no stored password): federated credential scoped to `refs/tags/v*`.
 GitHub repo secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`.
 GitHub repo variables: `AZURE_RG`, `BACKEND_APP`, `FRONTEND_APP`, `MIGRATION_JOB`, `API_DOMAIN`.
+
+**Uptime monitoring (not wired up yet - manual step, no code involved):** point any free uptime
+checker (e.g. UptimeRobot, Better Uptime, Freshping) at `GET https://api.cooking-assistant.app/api/health`
+on a 1-5 minute interval, alerting on a non-200 response. It is the same public, unauthenticated
+liveness endpoint `docker-compose`/Container Apps already probe - no new backend code needed, just
+external configuration once an account exists on whichever provider is chosen.
 
 **Cookie in prod**: `httpOnly`, `secure` (auto when `NODE_ENV=production`), `sameSite: Lax`,
 `domain: .cooking-assistant.app` (leading dot so the app and api subdomains share the session).
@@ -209,7 +221,7 @@ The timestamp prefix on a migration filename only sets apply order (later timest
 
 - Migrations are plain SQL files in [backend/migrations/](backend/migrations/), one file per change, using node-pg-migrate's `-- Up Migration` / `-- Down Migration` markers (the `migrate:create` script scaffolds them; `migration-file-language` is `sql`). node-pg-migrate records applied migrations in a `pgmigrations` table and skips them next run. No `pgm.*` JS DSL - keep migrations as raw SQL.
 - The runner and seed are tsx scripts in [backend/src/scripts/](backend/src/scripts/) (`migrate.ts`, `seed.ts`), placed under `src/` so they are typechecked and linted (they are excluded from coverage by the `collectCoverageFrom` allowlist). `migrate.ts` calls node-pg-migrate's programmatic `runner({ databaseUrl: config.db, ... })` and parses `up`/`down`/`--fake` from `argv`; `seed.ts` opens its own short-lived `new Pool(config.db)`. Both reuse `config.db` from [backend/src/config/env.ts](backend/src/config/env.ts) - the same `DB_*` source as `db.ts`; there is deliberately NO separate `DATABASE_URL`. Both log through the pino `logger` (the global `no-console` rule applies) and set `process.exitCode = 1` on failure.
-- node-pg-migrate exposes its types through an `exports` map that the project's `moduleResolution: "Node"` does not read, so [backend/src/types/node-pg-migrate.d.ts](backend/src/types/node-pg-migrate.d.ts) re-exports them for tsc only (tsx resolves the real module at runtime). Leave that shim in place.
+- The backend compiles with `module`/`moduleResolution: "NodeNext"` (files stay CommonJS because there is no `"type": "module"`), so packages that declare types through an `exports` map (like node-pg-migrate) resolve natively - the old `node-pg-migrate.d.ts` shim was removed in 3.3. Do not reintroduce type shims for `exports`-map packages.
 - `seed.ts` must stay idempotent so re-running it never duplicates or errors: tables with a unique constraint use `INSERT ... ON CONFLICT (...) DO NOTHING` (e.g. `ingredients.name`); reference tables without one (`unit_measurement`, `recipe_types`, `menu_category`) use `INSERT ... SELECT ... WHERE NOT EXISTS`. Seed the sample ingredients with all columns in one statement, looking the unit id up by `unit_name` (a subquery/JOIN) - never id-based `UPDATE`s.
 - The initial migration is the full current schema (not a replay of historical ALTERs). It intentionally cleaned up two bits of cruft from the old `database.sql` while keeping behaviour identical: the duplicate `menu_recipe.menu_id` foreign key became one `ON DELETE CASCADE`, and `ingredient_purchases.quantity` is `NOT NULL DEFAULT 0` directly. Keep the misspelled column name `quantity_person_ingradient` (it is the real column).
 - Two setup paths: a fresh/empty DB runs `npm run migrate` + `npm run seed`; a DB that already had the schema from the old `database.sql` is adopted once with `npm run migrate -- up --fake` (marks the initial migration applied without running it - data untouched). All scripts work from the repo root or `backend/`.
@@ -255,7 +267,7 @@ Routing is centralized in [frontend/src/App.tsx](frontend/src/App.tsx): every pa
 
 State lives in custom hooks under [frontend/src/hooks/](frontend/src/hooks/) (50+, composed) and in a Redux Toolkit store under [frontend/src/redux/](frontend/src/redux/). The store is wired in [frontend/src/redux/store.ts](frontend/src/redux/store.ts) via a `setupStore` factory shared by the app and tests; typed hooks (`useAppDispatch`, `useAppSelector`) live in [frontend/src/redux/hooks.ts](frontend/src/redux/hooks.ts). Server data is cached with **RTK Query**: a single `baseApi` ([frontend/src/redux/services/baseApi.ts](frontend/src/redux/services/baseApi.ts)) built on a custom `axiosBaseQuery` that routes every request through the shared `apiClient` (never `fetch`, so the auth cookie + 401/403 interceptor still apply), with one injected endpoint file per domain under [frontend/src/redux/services/](frontend/src/redux/services/) (`recipesApi`, `menusApi`, `authApi`, ...) exporting `useGet*Query`/`use*Mutation` hooks; cache invalidation runs off `tagTypes` (a mutation invalidates the tags its queries provide, so lists refetch automatically). Data flow: page/hook → RTK Query hook (`redux/services`) → `axiosBaseQuery` → `api/client`. Client/UI state lives in slices under `redux/slices/<domain>Slice.ts` (`session`, the `ui` modal manager, `notifications` toasts); each slice's selectors always live in a separate `redux/selectors/<domain>Selectors.ts` - never inline in the slice or in components. For no-argument endpoints and empty mutation responses use `null`, not `void` (the strict lint config rejects `void` in call type-arguments). User-facing strings go through i18next ([frontend/src/i18n/](frontend/src/i18n/), one namespace per domain, `en` only) via `useTranslation`. Bare path aliases (`api/`, `hooks/`, `components/`, `pages/`, `types/`, `utils/`, `constants/`, `config/`, `i18n/`, `redux/`) - never `../` across folders.
 
-Pages are organized by domain folder under [frontend/src/pages/](frontend/src/pages/) (`auth`, `recipes`, `user-recipes`, `menu`, `user-menu`, `recipe-types`, `person-ingredients`, `statistics`, `not-found`). Reusable UI lives in [frontend/src/components/](frontend/src/components/), grouped by domain plus `layout/` and `ui/`. The stats page uses `apexcharts`/`react-apexcharts` (lazy) and exports PDFs via `@react-pdf/renderer` + `jspdf` (lazy on click).
+Pages are organized by domain folder under [frontend/src/pages/](frontend/src/pages/) (`auth`, `recipes`, `user-recipes`, `menu`, `user-menu`, `recipe-types`, `person-ingredients`, `statistics`, `not-found`). Reusable UI lives in [frontend/src/components/](frontend/src/components/), grouped by domain plus `layout/` and `ui/`. The stats page renders its charts with `recharts` (lazy-loaded page chunk); PDF export was removed in 3.3.
 
 ### Database model highlights
 
@@ -274,6 +286,9 @@ The "missing ingredients for a menu" feature works by joining `menu_recipe` -> `
 
 - **i18n is mandatory for every user-visible string in the frontend.** Never hardcode English (or any other language) text in components, hooks, or Redux middleware. In React components/hooks use `useTranslation("namespace")` → `t("key")`; in non-React code (Redux middleware, utilities) use `import i18next from "i18next"` → `i18next.t("key")`. Add all new strings to the appropriate JSON file under `frontend/src/i18n/locales/en/` (`common.json` for cross-cutting messages like toasts and generic errors; domain namespaces for domain-specific text). i18next is initialized synchronously, so `i18next.t()` is safe to call anywhere, including in module-level constants.
 
+- **Hand-authored SVG icons are always their own React component, never an inline `<svg>` copy-pasted into a page/component.** This is only for custom marks that don't come from `lucide-react` (e.g. the Donburi brand mark) - Lucide icons are already components and are imported directly. Shared hand-authored icons live in `frontend/src/components/icons/`, one component per file, typed with a shared `{ size?: number; className?: string }` props shape, themed via `stroke="currentColor"` so they inherit the surrounding text color. If an icon has size-dependent detail tiers (see `components/icons/DonburiMark*.tsx` for the pattern), give each tier its own component rather than branching SVG path data inside one component.
+- **Every icon must trace the exact `<path>`/`<rect>`/`<circle>` data from the design mockups (`orc/design/cooking-assistant-redesign/project/*.dc.html`), not an approximate stock `lucide-react` equivalent.** Before wiring an icon, find its concrete usage in the mockups (the same concept can appear in more than one screen - a concrete screen's rendering overrides the abstract "04 — Iconography" legend in `Design System.dc.html` if the two ever disagree) and copy its path data verbatim into a new component under `components/icons/`. Only reuse an existing `lucide-react` icon for a design concept when its path data is already an exact (or functionally identical, e.g. only trivial coordinate rounding) match - never because it merely "looks close enough."
+
 - Comments are plain `//` with a single space and a lowercase first letter (acronyms / proper nouns like JWT, SQL, URL, Express keep their case, e.g. `// JWT login`). The old `//?` / `//!` prefixes were removed - don't reintroduce them.
 - Backend source is TypeScript with ESM-style `import`/`export`, executed by `tsx` with CommonJS runtime semantics (`module: "CommonJS"` in [backend/tsconfig.json](backend/tsconfig.json)). Do not add new `require`/`module.exports` in backend source files; root tooling configs such as ESLint and Jest stay CommonJS `.js`.
 - Backend layering rules (keep the style uniform):
@@ -283,6 +298,7 @@ The "missing ingredients for a menu" feature works by joining `menu_recipe` -> `
     - One route path = exactly one handler. Don't register a second router on a path another router already owns - the later one is unreachable dead code (mount order is in `index.ts`).
     - All SQL lives in `infrastructure/persistence/pg/*` repositories that implement an interface from `domain/repositories/`; multi-step transactions (`BEGIN/COMMIT/ROLLBACK`) stay inside a single repository method.
     - Type placement follows the layer: use inline types for one file, co-located `<area>.types.ts` for shared DTO/filter shapes inside a folder, and exported entity/repository types from their own modules. Do not turn `backend/src/types/` into a general type bucket.
-- Backend path aliases are configured in [backend/tsconfig.json](backend/tsconfig.json) with `baseUrl:"./src"` and bare-form paths: `domain/*`, `application/*`, `infrastructure/*`, `controller/*`, `routes/*`, `middleware/*`, `config/*`, `constants/*`, `test/*`. Do not introduce `../` imports under `backend/src/`; cross-folder imports use bare aliases, same-folder neighbors stay relative with `./`. `tsx` resolves aliases via `baseUrl` at runtime, and Jest maps them via an explicit `moduleNameMapper` in [backend/jest.config.js](backend/jest.config.js) (no dynamic tsconfig read).
+- Backend path aliases are configured in [backend/tsconfig.json](backend/tsconfig.json) via `paths` only (no `baseUrl` - it is deprecated in TypeScript 6): bare-form folder aliases `domain/*`, `application/*`, `infrastructure/*`, `controller/*`, `routes/*`, `middleware/*`, `config/*`, `constants/*`, `test/*`, plus singleton aliases `app` and `composition-root` for the two top-level modules. Do not introduce `../` imports under `backend/src/`; cross-folder imports use bare aliases, same-folder neighbors stay relative with `./`. `tsx` resolves `paths` at runtime, tsup/esbuild resolves them at build time, and Jest maps them via an explicit `moduleNameMapper` in [backend/jest.config.js](backend/jest.config.js) (no dynamic tsconfig read).
 - The old frontend `person-ingradients` folder was corrected to `person-ingredients` and the dead `useAuth` hook was removed. The DB column `quantity_person_ingradient` keeps its misspelling on purpose (it is the real column name) and appears verbatim in API responses - do not "fix" it.
+- `backend/package.json` pins tsup's nested esbuild via an `overrides` entry (tsup's own range allowed a vulnerable version - GHSA-g7r4-m6w7-qqqr). When bumping tsup, check whether its esbuild range is fixed and drop the override.
 - Commit lockfiles and tool configs. `package-lock.json` (root/backend/frontend) and `eslint.config.js` are tracked - committing them keeps installs reproducible and lets CI run `npm ci`. (They used to be gitignored; that rule was removed.)

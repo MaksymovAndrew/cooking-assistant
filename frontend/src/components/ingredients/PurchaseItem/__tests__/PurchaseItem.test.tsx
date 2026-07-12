@@ -31,7 +31,6 @@ const setup = (
     render(
         <PurchaseItem
             purchase={purchase}
-            language="en"
             onQuantityChange={onQuantityChange}
             onSave={onSave}
         />,
@@ -48,18 +47,20 @@ describe("PurchaseItem", () => {
         expect(screen.getByText("g")).toBeInTheDocument();
     });
 
-    it("should apply the fresh background when not expired", () => {
+    it("should not apply the expired modifier class when not expired", () => {
         setup(FRESH);
 
-        expect(screen.getByRole("listitem")).toHaveClass("bg-gray-100");
-        expect(screen.getByRole("listitem")).not.toHaveClass("bg-red-100");
+        expect(screen.getByRole("listitem")).not.toHaveClass(
+            "purchase-item--expired",
+        );
     });
 
-    it("should apply the expired background when the purchase has expired", () => {
+    it("should apply the expired modifier class when the purchase has expired", () => {
         setup(EXPIRED);
 
-        expect(screen.getByRole("listitem")).toHaveClass("bg-red-100");
-        expect(screen.getByRole("listitem")).not.toHaveClass("bg-gray-100");
+        expect(screen.getByRole("listitem")).toHaveClass(
+            "purchase-item--expired",
+        );
     });
 
     it("should call onQuantityChange with the purchase id and new value on change", async () => {

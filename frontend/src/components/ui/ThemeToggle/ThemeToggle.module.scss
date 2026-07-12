@@ -1,0 +1,25 @@
+@use "styles/abstracts" as *;
+
+.theme-toggle {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    color: var(--text-2);
+    cursor: pointer;
+    transition:
+        background var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out);
+
+    @include focus-ring;
+
+    @include on-hover {
+        background: var(--surface-2);
+        border-color: var(--brand);
+    }
+}

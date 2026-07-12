@@ -17,33 +17,40 @@ const makeForm = (): Form => ({
     setTitle: jest.fn(),
     content: "",
     setContent: jest.fn(),
-    cookingTime: "",
-    setCookingTime: jest.fn(),
-    servings: "",
-    setServings: jest.fn(),
+    cookingHours: "",
+    setCookingHours: jest.fn(),
+    cookingMinutes: "",
+    setCookingMinutes: jest.fn(),
     selectedIngredients: [],
     selectedTypeId: null,
     setSelectedTypeId: jest.fn(),
-    error: null,
-    setError: jest.fn(),
+    titleError: null,
+    descriptionError: null,
+    ingredientsError: null,
     typeError: null,
     cookingTimeError: null,
     toggleIngredientSelection: jest.fn(),
     updateIngredientQuantity: jest.fn(),
+    removeIngredient: jest.fn(),
+    reorderIngredients: jest.fn(),
     validateCreate: jest.fn(),
     validateChange: jest.fn(),
     setInitialValues: jest.fn(),
+    isDirty: false,
+    isDirtyRef: { current: false },
+    markClean: jest.fn(),
 });
 
+const TITLE_LABEL = "Title *";
+const DISCARD_TITLE = "Discard changes?";
 const TYPES: RecipeTypeSummary[] = [
     { id: 1, type_name: "Soup", description: "" },
 ];
-const INGREDIENTS: Ingredient[] = [{ id: 1, name: "Egg", unit_name: "pcs" }];
+const INGREDIENTS: Ingredient[] = [
+    { id: 1, name: "Egg", unit_name: "pcs", allergens: null },
+];
 
-const renderForm = (
-    form: Form,
-    opts: { error?: string | null; onSubmit?: () => void } = {},
-) =>
+const renderForm = (form: Form, onSubmit: () => void = jest.fn()) =>
     renderWithRouter(
         <RecipeForm
             form={form}
@@ -51,10 +58,8 @@ const renderForm = (
             allTypes={TYPES}
             keyPrefix="createRecipePage"
             idPrefix="create-recipe"
-            typeError={null}
-            error={opts.error ?? null}
-            submitLabel="Create Recipe"
-            onSubmit={opts.onSubmit ?? jest.fn()}
+            submitLabel="Create recipe"
+            onSubmit={onSubmit}
         />,
     );
 
@@ -62,14 +67,13 @@ describe("RecipeForm", () => {
     it("should render every labelled field and the submit button", () => {
         renderForm(makeForm());
 
-        expect(screen.getByText("Title")).toBeInTheDocument();
-        expect(screen.getByText("Description")).toBeInTheDocument();
-        expect(screen.getByText("Cooking Time (hh:mm)")).toBeInTheDocument();
-        expect(screen.getByText("Recipe Type")).toBeInTheDocument();
-        expect(screen.getByText("Ingredients")).toBeInTheDocument();
-        expect(screen.getByText(/Servings/)).toBeInTheDocument();
+        expect(screen.getByText(TITLE_LABEL)).toBeInTheDocument();
+        expect(screen.getByText("Description *")).toBeInTheDocument();
+        expect(screen.getByText("Cooking time *")).toBeInTheDocument();
+        expect(screen.getByText("Recipe type *")).toBeInTheDocument();
+        expect(screen.getAllByText("Ingredients").length).toBeGreaterThan(0);
         expect(
-            screen.getByRole("button", { name: "Create Recipe" }),
+            screen.getByRole("button", { name: "Create recipe" }),
         ).toBeInTheDocument();
     });
 
@@ -79,7 +83,7 @@ describe("RecipeForm", () => {
         form.title = "Borscht";
         renderForm(form);
 
-        expect(screen.getByLabelText("Title")).toHaveValue("Borscht");
+        expect(screen.getByLabelText(TITLE_LABEL)).toHaveValue("Borscht");
     });
 
     it("should call setTitle when the title field is edited", async () => {
@@ -87,7 +91,7 @@ describe("RecipeForm", () => {
 
         renderForm(form);
 
-        await userEvent.type(screen.getByLabelText("Title"), "S");
+        await userEvent.type(screen.getByLabelText(TITLE_LABEL), "S");
 
         expect(form.setTitle).toHaveBeenCalledWith("S");
     });
@@ -97,38 +101,92 @@ describe("RecipeForm", () => {
 
         renderForm(form);
 
-        await userEvent.type(screen.getByLabelText("Description"), "B");
+        await userEvent.type(screen.getByLabelText("Description *"), "B");
 
         expect(form.setContent).toHaveBeenCalledWith("B");
     });
 
-    it("should render the ingredient options and toggle one on click", async () => {
+    it("should search and toggle an ingredient on click", async () => {
         const form = makeForm();
 
         renderForm(form);
 
-        await userEvent.click(screen.getByRole("button", { name: "Egg" }));
+        await userEvent.type(
+            screen.getByPlaceholderText("Search ingredients..."),
+            "egg",
+        );
+        await userEvent.click(screen.getByRole("button", { name: /egg/i }));
 
         expect(form.toggleIngredientSelection).toHaveBeenCalledWith(
             INGREDIENTS[0],
         );
     });
 
-    it("should show the form-level error when provided", () => {
-        renderForm(makeForm(), { error: "Something failed" });
+    it("should show the title error under the title field", () => {
+        const form = makeForm();
 
-        expect(screen.getByText("Something failed")).toBeInTheDocument();
+        form.titleError = "Recipe title cannot be empty.";
+        renderForm(form);
+
+        expect(
+            screen.getByText("Recipe title cannot be empty."),
+        ).toBeInTheDocument();
+    });
+
+    it("should show the ingredients error inside the ingredients card", () => {
+        const form = makeForm();
+
+        form.ingredientsError = "Add at least one ingredient.";
+        renderForm(form);
+
+        expect(
+            screen.getByText("Add at least one ingredient."),
+        ).toBeInTheDocument();
     });
 
     it("should call onSubmit when the submit button is clicked", async () => {
         const onSubmit = jest.fn();
 
-        renderForm(makeForm(), { onSubmit });
+        renderForm(makeForm(), onSubmit);
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Create Recipe" }),
+            screen.getByRole("button", { name: "Create recipe" }),
         );
 
         expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it("should show a discard-changes confirmation when cancelling a dirty form", async () => {
+        const form = makeForm();
+
+        form.isDirtyRef.current = true;
+        renderForm(form);
+
+        await userEvent.click(screen.getByText("Cancel"));
+
+        expect(screen.getByText(DISCARD_TITLE)).toBeInTheDocument();
+    });
+
+    it("should stay on the form when the discard confirmation is cancelled", async () => {
+        const form = makeForm();
+
+        form.isDirtyRef.current = true;
+        renderForm(form);
+
+        await userEvent.click(screen.getByText("Cancel"));
+        await userEvent.click(
+            screen.getByRole("button", { name: "Keep editing" }),
+        );
+
+        expect(screen.queryByText(DISCARD_TITLE)).not.toBeInTheDocument();
+        expect(screen.getByText(TITLE_LABEL)).toBeInTheDocument();
+    });
+
+    it("should navigate away without confirmation when the form is not dirty", async () => {
+        renderForm(makeForm());
+
+        await userEvent.click(screen.getByText("Cancel"));
+
+        expect(screen.queryByText(DISCARD_TITLE)).not.toBeInTheDocument();
     });
 });

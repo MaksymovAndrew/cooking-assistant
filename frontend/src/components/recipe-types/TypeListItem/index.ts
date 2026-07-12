@@ -1,1 +1,0 @@
-export { TypeListItem } from "./TypeListItem";

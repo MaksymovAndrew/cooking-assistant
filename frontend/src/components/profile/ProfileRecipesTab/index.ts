@@ -1,0 +1,1 @@
+export { ProfileRecipesTab } from "./ProfileRecipesTab";

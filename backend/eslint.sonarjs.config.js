@@ -9,5 +9,16 @@ module.exports = [
         languageOptions: {
             parser: tseslint.parser,
         },
+        rules: {
+            "sonarjs/cognitive-complexity": "error",
+            "sonarjs/no-duplicate-string": "error",
+        },
+    },
+    {
+        // test fixtures use fake credentials by design
+        files: ["**/__tests__/**/*.ts", "**/*.test.ts", "src/test/**/*.ts"],
+        rules: {
+            "sonarjs/no-hardcoded-passwords": "off",
+        },
     },
 ];

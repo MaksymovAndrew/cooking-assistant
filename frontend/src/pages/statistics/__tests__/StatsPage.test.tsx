@@ -1,42 +1,25 @@
 import { screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
+import type { MenuWithStats } from "types/menu";
 import type { RecipeWithIngredientNames } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
 
 import StatsPage from "pages/statistics/StatsPage";
 import { mockGetByUrl } from "test/apiClientMock";
-import { flushMacrotasks as flushAsync } from "test/flush";
 import { renderWithRouter } from "test/router";
 
 jest.mock("api/client");
 
-// react-apexcharts cannot render under jsdom (canvas), so it is stubbed out
-jest.mock("react-apexcharts", () => ({
+// recharts cannot fully render under jsdom (SVG/ResizeObserver), so it is stubbed out
+jest.mock("components/stats/PieChartCard/PieChartCard", () => ({
     __esModule: true,
     default: () => null,
 }));
 
-const mockToBlob = jest.fn();
-
-// the page lazily imports the PDF renderer and report documents on download;
-// stub them so no real @react-pdf/renderer document is built under jsdom
-jest.mock("@react-pdf/renderer", () => ({
-    __esModule: true,
-    pdf: () => ({ toBlob: mockToBlob }),
-}));
-jest.mock("../StatsReport", () => ({
-    __esModule: true,
-    StatsReport: () => null,
-}));
-jest.mock("../StatsReportSecond", () => ({
-    __esModule: true,
-    StatsReportSecond: () => null,
-}));
-
 const TYPE_NAME = "Soup";
-const SAMPLE: RecipeWithIngredientNames[] = [
+const CATEGORY_NAME = "Lunch";
+const SAMPLE_RECIPES: RecipeWithIngredientNames[] = [
     {
         id: 1,
         title: "Borscht",
@@ -46,96 +29,53 @@ const SAMPLE: RecipeWithIngredientNames[] = [
         ingredients: ["beet"],
     },
 ];
-
-const REPORT_FAILED = "Failed to generate report. Please try again.";
+const SAMPLE_MENUS: MenuWithStats[] = [
+    {
+        id: 1,
+        title: "Weekday menu",
+        categoryname: CATEGORY_NAME,
+        menucontent: "",
+        recipe_count: 3,
+        total_cooking_time: 120,
+    },
+];
 
 const stubData = () => {
     mockGetByUrl({
-        [API_ROUTES.recipes.list]: SAMPLE,
-        [API_ROUTES.menu.list]: [],
+        [API_ROUTES.recipes.list]: SAMPLE_RECIPES,
+        [API_ROUTES.menu.allUnpaginated]: SAMPLE_MENUS,
     });
 };
 
 describe("StatsPage", () => {
-    it("should render statistics computed from the loaded recipes", async () => {
+    it("should render both section headings", () => {
         stubData();
 
         renderWithRouter(<StatsPage />);
 
         expect(screen.getByText("Recipe Statistics")).toBeInTheDocument();
-        expect(await screen.findByText(TYPE_NAME)).toBeInTheDocument();
+        expect(screen.getByText("Menu Statistics")).toBeInTheDocument();
     });
 
-    it("should download the recipe statistics report as a pdf", async () => {
+    it("should render the recipe quick-stat tiles", async () => {
         stubData();
-        mockToBlob.mockResolvedValue(new Blob(["report"]));
-
-        const createObjectURL = jest.fn(() => "blob:url");
-        const revokeObjectURL = jest.fn();
-
-        URL.createObjectURL = createObjectURL;
-        URL.revokeObjectURL = revokeObjectURL;
-
-        const clickSpy = jest.spyOn(HTMLAnchorElement.prototype, "click");
 
         renderWithRouter(<StatsPage />);
 
-        await userEvent.click(
-            screen.getByRole("button", { name: "Statistics Report PDF" }),
+        expect((await screen.findAllByText(TYPE_NAME)).length).toBeGreaterThan(
+            0,
         );
-        await flushAsync();
-
-        expect(createObjectURL).toHaveBeenCalledTimes(1);
-        expect(clickSpy).toHaveBeenCalledTimes(1);
-        expect(revokeObjectURL).toHaveBeenCalledWith("blob:url");
+        expect(screen.getByText("Total recipes")).toBeInTheDocument();
     });
 
-    it("should download the second statistics report as a pdf", async () => {
+    it("should render the menu quick-stat tiles", async () => {
         stubData();
-        mockToBlob.mockResolvedValue(new Blob(["report"]));
-
-        const createObjectURL = jest.fn(() => "blob:url");
-
-        URL.createObjectURL = createObjectURL;
-        URL.revokeObjectURL = jest.fn();
 
         renderWithRouter(<StatsPage />);
 
-        await userEvent.click(
-            screen.getByRole("button", {
-                name: "Statistics Report PDF - Option 2",
-            }),
-        );
-        await flushAsync();
-
-        expect(createObjectURL).toHaveBeenCalledTimes(1);
-    });
-
-    it("should show an error message when report generation fails", async () => {
-        stubData();
-        mockToBlob.mockRejectedValue(new Error("boom"));
-
-        renderWithRouter(<StatsPage />);
-
-        await userEvent.click(
-            screen.getByRole("button", { name: "Statistics Report PDF" }),
-        );
-
-        expect(await screen.findByText(REPORT_FAILED)).toBeInTheDocument();
-    });
-
-    it("should show an error message when the second report generation fails", async () => {
-        stubData();
-        mockToBlob.mockRejectedValue(new Error("boom"));
-
-        renderWithRouter(<StatsPage />);
-
-        await userEvent.click(
-            screen.getByRole("button", {
-                name: "Statistics Report PDF - Option 2",
-            }),
-        );
-
-        expect(await screen.findByText(REPORT_FAILED)).toBeInTheDocument();
+        expect(
+            (await screen.findAllByText(CATEGORY_NAME)).length,
+        ).toBeGreaterThan(0);
+        expect(screen.getAllByText("Total menus").length).toBeGreaterThan(0);
     });
 });

@@ -1,22 +1,24 @@
-﻿import { render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 import { CookingTimeField } from "components/recipes/CookingTimeField";
 
 import { ERROR_COOKING_TIME_FORMAT, LABEL_COOKING_TIME } from "test/constants";
 
 describe("CookingTimeField", () => {
-    it("should render label, input and no error when error is null", () => {
+    it("should render label, hours/minutes inputs and no error when error is null", () => {
         render(
             <CookingTimeField
                 id="cooking-time"
                 label={LABEL_COOKING_TIME}
-                value="1:30"
+                hours="1"
+                minutes="30"
                 error={null}
-                onChange={jest.fn()}
+                onHoursChange={jest.fn()}
+                onMinutesChange={jest.fn()}
             />,
         );
 
-        expect(screen.getByLabelText(LABEL_COOKING_TIME)).toHaveValue("1:30");
+        expect(screen.getByLabelText(LABEL_COOKING_TIME)).toHaveValue(1);
         expect(screen.queryByText(/error/)).toBeNull();
     });
 
@@ -25,9 +27,11 @@ describe("CookingTimeField", () => {
             <CookingTimeField
                 id="cooking-time"
                 label={LABEL_COOKING_TIME}
-                value=""
+                hours=""
+                minutes=""
                 error={ERROR_COOKING_TIME_FORMAT}
-                onChange={jest.fn()}
+                onHoursChange={jest.fn()}
+                onMinutesChange={jest.fn()}
             />,
         );
 

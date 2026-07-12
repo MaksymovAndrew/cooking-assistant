@@ -1,0 +1,42 @@
+@use "styles/abstracts" as *;
+
+.menu-form-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--s-6) var(--s-4);
+
+    &__breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        margin-bottom: var(--s-5);
+        color: var(--text-muted);
+        font:
+            500 13px Inter,
+            sans-serif;
+
+        a {
+            color: var(--text-muted);
+            text-decoration: none;
+
+            @include focus-ring;
+
+            @include on-hover {
+                color: var(--brand);
+            }
+        }
+
+        span {
+            color: var(--text-2);
+        }
+    }
+
+    &__heading {
+        margin: 0 0 var(--s-6);
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(24px, 4vw, 34px) Fraunces,
+            serif;
+    }
+}

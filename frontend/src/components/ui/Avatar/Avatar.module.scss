@@ -1,0 +1,12 @@
+.avatar {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-pill);
+    background: linear-gradient(135deg, var(--brand), var(--accent));
+    color: var(--on-brand);
+    font:
+        700 12px Inter,
+        sans-serif;
+}

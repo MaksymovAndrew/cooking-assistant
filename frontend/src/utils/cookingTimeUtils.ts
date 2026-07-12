@@ -1,5 +1,7 @@
-// Parses a "h:mm" or "hh:mm" form input to total minutes.
-// Returns null when the format is invalid or values are out of range.
+import { MINUTES_PER_HOUR } from "constants/time";
+
+const MAX_HOURS = 99;
+
 export const parseCookingTime = (value: string): number | null => {
     const parts = value.split(":");
 
@@ -14,15 +16,15 @@ export const parseCookingTime = (value: string): number | null => {
         isNaN(hours) ||
         isNaN(minutes) ||
         hours < 0 ||
-        hours > 99 ||
+        hours > MAX_HOURS ||
         minutes < 0 ||
-        minutes >= 60;
+        minutes >= MINUTES_PER_HOUR;
 
     if (isInvalid) {
         return null;
     }
 
-    return hours * 60 + minutes;
+    return hours * MINUTES_PER_HOUR + minutes;
 };
 
 export interface CookingTimeParts {
@@ -30,11 +32,10 @@ export interface CookingTimeParts {
     minutes: number;
 }
 
-// Splits total minutes into whole hours and remaining minutes - the single source
-// of the "/60" math that display formatters and components build their labels on.
+// the single source of the "/60" math that display formatters and components build their labels on
 export const splitCookingTime = (totalMinutes: number): CookingTimeParts => ({
-    hours: Math.floor(totalMinutes / 60),
-    minutes: totalMinutes % 60,
+    hours: Math.floor(totalMinutes / MINUTES_PER_HOUR),
+    minutes: totalMinutes % MINUTES_PER_HOUR,
 });
 
 export const formatCookingTimeInput = (totalMinutes: number): string => {

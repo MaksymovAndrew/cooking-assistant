@@ -14,7 +14,7 @@ function makeCreationInput(overrides: Record<string, unknown> = {}) {
         ingredients: [{ id: 3, quantity_recipe_ingredients: 2 }],
         type_id: 1,
         cooking_time: 30,
-        servings: 4,
+        servings: "4",
         ...overrides,
     };
 }

@@ -1,0 +1,1 @@
+export { AllergenDot } from "./AllergenDot";

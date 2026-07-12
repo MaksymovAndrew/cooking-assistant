@@ -1,0 +1,15 @@
+.language-section {
+    &__pill {
+        display: inline-flex;
+        align-items: center;
+        height: 32px;
+        padding: 0 13px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-pill);
+        background: var(--surface-2);
+        color: var(--text-muted);
+        font:
+            600 12px "Geist Mono",
+            monospace;
+    }
+}

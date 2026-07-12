@@ -1,8 +1,9 @@
+import { PAGE_SIZE } from "constants/pagination";
 import type {
     CreateRecipeRequest,
     RecipeDetails,
     RecipeFilterParams,
-    RecipeListItem,
+    RecipeSearchResultItem,
     UpdateRecipeRequest,
 } from "types/recipe";
 
@@ -20,15 +21,17 @@ import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
 
-const LIST: RecipeListItem[] = [
+const LIST: RecipeSearchResultItem[] = [
     {
         id: 1,
         title: "Soup",
         type_name: "Hot",
         creation_date: "2024-01-01",
         cooking_time: 30,
+        ingredients: [{ id: 1, name: "Tomato", allergens: null }],
     },
 ];
+const PAGE = { items: LIST, total: LIST.length };
 const FILTERS: RecipeFilterParams = { ingredient_name: "", sort_order: "asc" };
 const CREATE: CreateRecipeRequest = {
     title: "Soup",
@@ -36,14 +39,14 @@ const CREATE: CreateRecipeRequest = {
     ingredients: [{ id: 1, quantity: 2 }],
     type_id: 1,
     cooking_time: 30,
-    servings: 2,
+    servings: "2",
 };
 const UPDATE: UpdateRecipeRequest = {
     title: "Soup",
     content: "boil",
     type_id: 1,
     cooking_time: 30,
-    servings: 2,
+    servings: "2",
     ingredients: [{ id: 1, quantity_recipe_ingredients: 2 }],
 };
 const DETAIL: RecipeDetails = {
@@ -55,14 +58,14 @@ const DETAIL: RecipeDetails = {
     type_name: "Hot",
     cooking_time: 30,
     creation_date: "2024-01-01",
-    servings: 2,
+    servings: "2",
     person_id: 1,
     isOwner: true,
 };
 
 describe("recipesApi", () => {
     it("should fetch recipes by filters", async () => {
-        mockedGet.mockResolvedValue({ data: LIST });
+        mockedGet.mockResolvedValue({ data: PAGE });
         const store = makeTestStore();
 
         const result = await store.dispatch(
@@ -70,13 +73,13 @@ describe("recipesApi", () => {
         );
 
         expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byFilters, {
-            params: FILTERS,
+            params: { ...FILTERS, limit: PAGE_SIZE, offset: 0 },
         });
-        expect(result.data).toEqual(LIST);
+        expect(result.data).toEqual({ pages: [PAGE], pageParams: [0] });
     });
 
     it("should fetch the current user's recipes by filters", async () => {
-        mockedGet.mockResolvedValue({ data: LIST });
+        mockedGet.mockResolvedValue({ data: PAGE });
         const store = makeTestStore();
 
         await store.dispatch(
@@ -84,7 +87,7 @@ describe("recipesApi", () => {
         );
 
         expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byPerson, {
-            params: FILTERS,
+            params: { ...FILTERS, limit: PAGE_SIZE, offset: 0 },
         });
     });
 

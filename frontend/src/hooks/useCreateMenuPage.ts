@@ -38,7 +38,8 @@ export const useCreateMenuPage = () => {
         });
 
         if ("data" in result) {
-            navigate(ROUTES.menu);
+            form.markClean();
+            void navigate(ROUTES.allMenus);
         }
     };
 

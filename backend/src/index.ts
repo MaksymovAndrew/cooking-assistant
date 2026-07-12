@@ -5,6 +5,8 @@ import { createApp } from "./app";
 import controllers from "./composition-root";
 import pool from "./db";
 
+const SHUTDOWN_FORCE_EXIT_MS = 10000;
+
 const app = createApp(controllers);
 
 const server = app.listen(config.port, () => {
@@ -26,7 +28,7 @@ function shutdown(signal: string) {
     });
 
     // force-exit if connections do not drain in time
-    setTimeout(() => process.exit(1), 10000).unref();
+    setTimeout(() => process.exit(1), SHUTDOWN_FORCE_EXIT_MS).unref();
 }
 
 process.on("SIGTERM", () => {

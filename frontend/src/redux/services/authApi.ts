@@ -1,14 +1,13 @@
-import type { LoginRequest, RegisterRequest } from "types/auth";
+import type { CurrentUser, LoginRequest, RegisterRequest } from "types/auth";
 
 import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
 
-// getMe provides the Me tag; login/logout invalidate it so the session check
-// (sessionSlice listens to these endpoints) re-runs after auth changes
+// getMe provides the Me tag; login/logout invalidate it so the session check (sessionSlice listens to these endpoints) re-runs after auth changes
 export const authApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        getMe: build.query<null, null>({
+        getMe: build.query<CurrentUser, null>({
             query: () => ({ url: API_ROUTES.auth.me }),
             providesTags: ["Me"],
         }),

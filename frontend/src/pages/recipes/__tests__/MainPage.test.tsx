@@ -5,6 +5,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import MainPage from "pages/recipes/MainPage";
 import { mockGetByUrl } from "test/apiClientMock";
+import { ROUTE_ALL_RECIPES } from "test/constants";
 import { renderWithProviders } from "test/router";
 
 jest.mock("api/client");
@@ -36,11 +37,16 @@ const SAMPLE_RECIPES = [
 describe("MainPage", () => {
     it("should render recipe titles returned by the api", async () => {
         mockGetByUrl({
-            [API_ROUTES.recipes.byFilters]: SAMPLE_RECIPES,
+            [API_ROUTES.recipes.byFilters]: {
+                items: SAMPLE_RECIPES,
+                total: SAMPLE_RECIPES.length,
+            },
             [API_ROUTES.recipeTypes.list]: [],
         });
 
-        renderWithProviders(<MainPage />, { initialEntries: ["/main"] });
+        renderWithProviders(<MainPage />, {
+            initialEntries: [ROUTE_ALL_RECIPES],
+        });
 
         expect(await screen.findByText(RECIPE_TITLE_1)).toBeInTheDocument();
         expect(screen.getByText(RECIPE_TITLE_2)).toBeInTheDocument();
@@ -48,16 +54,16 @@ describe("MainPage", () => {
 
     it("should record the selected type in the store and show the filtered heading", async () => {
         mockGetByUrl({
-            [API_ROUTES.recipes.byFilters]: [],
+            [API_ROUTES.recipes.byFilters]: { items: [], total: 0 },
             [API_ROUTES.recipeTypes.list]: SAMPLE_TYPES,
         });
 
         const { store } = renderWithProviders(<MainPage />, {
-            initialEntries: ["/main"],
+            initialEntries: [ROUTE_ALL_RECIPES],
         });
 
         await userEvent.click(
-            await screen.findByRole("button", { name: "Filter" }),
+            await screen.findByRole("button", { name: "Filters" }),
         );
         await userEvent.click(screen.getByRole("checkbox"));
 
@@ -65,7 +71,7 @@ describe("MainPage", () => {
             await screen.findByText(`Recipes: ${TYPE_NAME}`),
         ).toBeInTheDocument();
         expect(
-            screen.getByText("No such recipes created."),
+            screen.getByText("No recipes match your search"),
         ).toBeInTheDocument();
         expect(store.getState().filters.recipe.selectedTypes).toEqual([
             TYPE_ID,

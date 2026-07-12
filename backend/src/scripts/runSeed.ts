@@ -9,7 +9,7 @@ const seedUnitMeasurements = `
     SELECT v.unit_name, v.coefficient
     FROM (
         VALUES
-            ('gr', 1::double precision),
+            ('g', 1::double precision),
             ('kg', 1000),
             ('ml', 1),
             ('l', 1000),
@@ -58,26 +58,26 @@ const seedIngredients = `
     FROM (
         VALUES
             ('Potato', 'pcs', 'None', 30, 'All seasons', 'Dry place, room temperature'),
-            ('Carrot', 'gr', 'None', 14, 'All seasons', 'Dry place, room temperature'),
+            ('Carrot', 'g', 'None', 14, 'All seasons', 'Dry place, room temperature'),
             ('Onion', 'pcs', 'None', 30, 'All seasons', 'Dry place, room temperature'),
             ('Tomato', 'pcs', 'None', 7, 'Summer, Autumn', '+4 - +8°C'),
             ('Cucumber', 'pcs', 'None', 7, 'Summer, Autumn', '+4 - +8°C'),
             ('Water', 'ml', 'None', 365, 'All seasons', 'Room temperature'),
-            ('Tea', 'gr', 'None', 730, 'All seasons', 'Dry place, room temperature'),
+            ('Tea', 'g', 'None', 730, 'All seasons', 'Dry place, room temperature'),
             ('Lemon', 'pcs', 'None', 21, 'Winter, Spring', '+4 - +8°C'),
-            ('Basil', 'gr', 'None', 7, 'Summer', '+4 - +8°C'),
+            ('Basil', 'g', 'None', 7, 'Summer', '+4 - +8°C'),
             ('Garlic', 'pcs', 'None', 60, 'All seasons', 'Dry place, room temperature'),
-            ('Mushrooms', 'gr', 'None', 7, 'All seasons', '+4 - +8°C'),
+            ('Mushrooms', 'g', 'None', 7, 'All seasons', '+4 - +8°C'),
             ('Sour cream', 'ml', 'Dairy', 14, 'All seasons', '+4 - +8°C'),
-            ('Chicken fillet', 'gr', 'Poultry', 2, 'All seasons', '+4 - +8°C'),
+            ('Chicken fillet', 'g', 'Poultry', 2, 'All seasons', '+4 - +8°C'),
             ('Milk', 'ml', 'Dairy', 7, 'All seasons', '+4 - +8°C'),
             ('Honey', 'ml', 'None', 1095, 'All seasons', 'Room temperature'),
-            ('Flour', 'gr', 'Gluten', 365, 'All seasons', 'Dry place, room temperature'),
-            ('Sugar', 'gr', 'None', 1825, 'All seasons', 'Dry place, room temperature'),
-            ('Rice', 'gr', 'None', 730, 'All seasons', 'Dry place, room temperature'),
-            ('Cheese', 'gr', 'Dairy', 30, 'All seasons', '+4 - +8°C'),
-            ('Pepper', 'gr', 'None', 1095, 'All seasons', 'Dry place, room temperature'),
-            ('Pasta', 'gr', 'Gluten', 730, 'All seasons', 'Dry place, room temperature'),
+            ('Flour', 'g', 'Gluten', 365, 'All seasons', 'Dry place, room temperature'),
+            ('Sugar', 'g', 'None', 1825, 'All seasons', 'Dry place, room temperature'),
+            ('Rice', 'g', 'None', 730, 'All seasons', 'Dry place, room temperature'),
+            ('Cheese', 'g', 'Dairy', 30, 'All seasons', '+4 - +8°C'),
+            ('Pepper', 'g', 'None', 1095, 'All seasons', 'Dry place, room temperature'),
+            ('Pasta', 'g', 'Gluten', 730, 'All seasons', 'Dry place, room temperature'),
             ('Olive oil', 'ml', 'None', 730, 'All seasons', 'Dark place, room temperature')
     ) AS v (name, unit, allergens, days_to_expire, seasonality, storage_condition)
     JOIN unit_measurement u ON u.unit_name = v.unit

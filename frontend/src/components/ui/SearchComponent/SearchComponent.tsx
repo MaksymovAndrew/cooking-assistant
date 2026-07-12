@@ -1,15 +1,17 @@
+import { Search } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import { SEARCH_PARAM_INGREDIENT_NAME } from "constants/queryParams";
-import { ROUTES } from "constants/routes";
 
-import SearchIcon from "assets/searchIcon.png";
+import styles from "./SearchComponent.module.scss";
 
 interface SearchComponentProps {
     placeholder: string;
 }
+
+const SEARCH_ICON_SIZE = 18;
 
 export const SearchComponent: React.FC<SearchComponentProps> = ({
     placeholder,
@@ -17,7 +19,6 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [searchParams, setSearchParams] = useSearchParams();
     const inputRef = useRef<HTMLInputElement>(null);
-    const location = useLocation();
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -26,13 +27,6 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
 
         setSearchTerm(initialSearchTerm);
     }, [searchParams]);
-
-    useEffect(() => {
-        if (location.pathname === ROUTES.home && location.search !== "") {
-            setSearchTerm("");
-            setSearchParams({});
-        }
-    }, [location, setSearchParams]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
@@ -56,23 +50,26 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
     };
 
     return (
-        <div className="flex items-center w-full bg-perfect-pink my-[3vh] rounded-full p-2 relative">
-            <div className="pr-3">
-                <img src={SearchIcon} alt={t("search.iconAlt")} />
-            </div>
+        <div className={styles["search-component"]}>
+            <Search
+                size={SEARCH_ICON_SIZE}
+                aria-hidden="true"
+                className={styles["search-component__icon"]}
+            />
             <input
                 type="text"
                 value={searchTerm}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyPress}
                 placeholder={`${t("search.placeholderPrefix")} ${placeholder}`}
-                className="w-full bg-transparent text-almost-black text-montserratMedium placeholder-gray-500 focus:outline-none"
+                className={styles["search-component__input"]}
                 ref={inputRef}
             />
             {searchTerm && (
                 <button
+                    type="button"
                     onClick={handleReset}
-                    className="absolute right-4 text-almost-white bg-dark-purple rounded-full p-2 text-montserratMedium"
+                    className={styles["search-component__reset"]}
                 >
                     {t("search.reset")}
                 </button>

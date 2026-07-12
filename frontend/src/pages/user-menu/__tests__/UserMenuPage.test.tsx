@@ -14,16 +14,23 @@ jest.mock("api/client");
 const TITLE = "Weekday menu";
 const CATEGORY_NAME = "Lunch";
 const SAMPLE: Menu[] = [
-    { id: 1, title: TITLE, categoryname: CATEGORY_NAME, menucontent: "quick" },
+    {
+        id: 1,
+        title: TITLE,
+        categoryname: CATEGORY_NAME,
+        menucontent: "quick",
+        recipe_count: 4,
+    },
 ];
 const CATEGORIES: MenuCategory[] = [
     { menu_category_id: 3, category_name: CATEGORY_NAME },
 ];
+const PAGE = { items: SAMPLE, total: SAMPLE.length };
 
 describe("UserMenuPage", () => {
     it("should render the user's menus loaded from the api", async () => {
         mockGetByUrl({
-            [API_ROUTES.menu.byPerson]: SAMPLE,
+            [API_ROUTES.menu.byPerson]: PAGE,
             [API_ROUTES.menuCategories.list]: [],
         });
 
@@ -36,7 +43,7 @@ describe("UserMenuPage", () => {
 
     it("should record the selected category and show the by-categories heading", async () => {
         mockGetByUrl({
-            [API_ROUTES.menu.byPerson]: SAMPLE,
+            [API_ROUTES.menu.byPerson]: PAGE,
             [API_ROUTES.menuCategories.list]: CATEGORIES,
         });
 

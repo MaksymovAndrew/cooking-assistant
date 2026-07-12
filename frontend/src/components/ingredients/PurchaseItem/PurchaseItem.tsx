@@ -2,19 +2,21 @@ import React from "react";
 
 import type { Purchase } from "types/userIngredient";
 
-import { formatDate } from "utils/dateUtils";
+import { NumberInput } from "components/ui/NumberInput";
+
+import { formatShortDate } from "utils/dateUtils";
 import { isExpired } from "utils/ingredientExpirationUtils";
+
+import styles from "./PurchaseItem.module.scss";
 
 interface PurchaseItemProps {
     purchase: Purchase;
-    language: string;
     onQuantityChange: (id: number, quantity: number) => void;
     onSave: (id: number, quantity: number) => Promise<void>;
 }
 
 export const PurchaseItem: React.FC<PurchaseItemProps> = ({
     purchase,
-    language,
     onQuantityChange,
     onSave,
 }) => {
@@ -22,15 +24,17 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
 
     return (
         <li
-            className={`flex justify-between items-center p-2 rounded ${
-                expired ? "bg-red-100" : "bg-gray-100"
-            }`}
+            className={[
+                styles["purchase-item"],
+                expired && styles["purchase-item--expired"],
+            ]
+                .filter(Boolean)
+                .join(" ")}
         >
-            <span>{formatDate(purchase.purchase_date, language)}</span>
-            <input
-                type="number"
+            <span>{formatShortDate(purchase.purchase_date)}</span>
+            <NumberInput
                 min={1}
-                className="w-16 text-center border rounded"
+                className={styles["purchase-item__quantity"]}
                 value={purchase.quantity}
                 onChange={(e) => {
                     const qty = parseInt(e.target.value, 10);
@@ -43,7 +47,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
                     const qty = parseInt(e.target.value, 10);
 
                     if (!isNaN(qty)) {
-                        void onSave(purchase.id, qty);
+                        onSave(purchase.id, qty).catch(() => undefined);
                     }
                 }}
             />

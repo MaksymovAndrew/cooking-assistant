@@ -3,12 +3,15 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
+import { MS_PER_MINUTE } from "constants/time";
 import type { LoginRequest } from "types/auth";
 
 import { useLoginMutation } from "redux/services/authApi";
 
 import {
+    ATTEMPTS_PER_LOCK,
     clearLockout,
+    LOCKOUT_LADDER_MINUTES,
     mergeServerRetryAfter,
     readLockout,
     registerFailure,
@@ -36,8 +39,7 @@ export const useLoginForm = () => {
 
     const { lockedUntil } = lockout;
 
-    // ticks once a second while locked, both to drive a live countdown and to
-    // auto-unlock the moment the lock expires
+    // ticks once a second while locked, both to drive a live countdown and to auto-unlock the moment the lock expires
     useEffect(() => {
         if (lockedUntil === null) {
             return undefined;
@@ -68,6 +70,16 @@ export const useLoginForm = () => {
 
     const isLocked = lockedUntil !== null && now < lockedUntil;
     const lockoutRemainingMs = isLocked ? lockedUntil - now : null;
+    // derived from the same ladder registerFailure climbs, purely for the countdown progress bar
+    const lockoutTotalMs =
+        isLocked && lockout.failures >= ATTEMPTS_PER_LOCK
+            ? LOCKOUT_LADDER_MINUTES[
+                  Math.min(
+                      Math.floor(lockout.failures / ATTEMPTS_PER_LOCK) - 1,
+                      LOCKOUT_LADDER_MINUTES.length - 1,
+                  )
+              ] * MS_PER_MINUTE
+            : null;
 
     const handleSubmit = useCallback(async () => {
         if (isLocked) return;
@@ -85,7 +97,7 @@ export const useLoginForm = () => {
         if ("data" in result) {
             clearLockout();
             setLockout({ failures: 0, lockedUntil: null });
-            navigate(ROUTES.main);
+            void navigate(ROUTES.home);
 
             return;
         }
@@ -119,5 +131,6 @@ export const useLoginForm = () => {
         handleSubmit,
         isLocked,
         lockoutRemainingMs,
+        lockoutTotalMs,
     };
 };

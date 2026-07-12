@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
+import { MINUTES_PER_HOUR } from "constants/time";
 
 import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 import { useCreateRecipeMutation } from "redux/services/recipesApi";
@@ -10,8 +11,10 @@ import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
 
 import { useRecipeForm } from "hooks/useRecipeForm";
 
-import { parseCookingTime } from "utils/cookingTimeUtils";
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
+
+// the form has no servings field (amounts are per portion); every new recipe starts at 1 portion, adjustable later from the recipe detail page
+const DEFAULT_SERVINGS = "1";
 
 export const useCreateRecipePage = () => {
     const { t } = useTranslation("recipes");
@@ -39,7 +42,6 @@ export const useCreateRecipePage = () => {
                 errorCookingTimeInvalid: t(
                     "createRecipePage.errorCookingTimeInvalid",
                 ),
-                errorServings: t("createRecipePage.errorServings"),
             })
         ) {
             return;
@@ -54,12 +56,15 @@ export const useCreateRecipePage = () => {
                 quantity: i.quantity,
             })),
             type_id: form.selectedTypeId,
-            cooking_time: parseCookingTime(form.cookingTime) ?? 0,
-            servings: form.servings !== "" ? Number(form.servings) : undefined,
+            cooking_time:
+                Number(form.cookingHours) * MINUTES_PER_HOUR +
+                Number(form.cookingMinutes),
+            servings: DEFAULT_SERVINGS,
         });
 
         if ("data" in result) {
-            navigate(ROUTES.main);
+            form.markClean();
+            void navigate(ROUTES.allRecipes);
         }
     };
 

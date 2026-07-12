@@ -1,34 +1,43 @@
 {
     "statsPage": {
-        "heading": "Recipe Statistics",
-        "recipeTypesSummary": "Recipe Types Summary",
-        "recipeDetails": "Recipe Details",
-        "fastestRecipes": "Fastest Recipes:",
-        "slowestRecipes": "Slowest Recipes:",
-        "mostIngredients": "Recipes with Most Ingredients:",
-        "leastIngredients": "Recipes with Least Ingredients:",
-        "downloadReport1": "Statistics Report PDF",
-        "downloadReport2": "Statistics Report PDF - Option 2",
-        "reportError": "Failed to generate report. Please try again.",
-        "cookingTimeUnit": " min",
-        "ingredientsUnit": " ingredients"
-    },
-    "statsReport": {
-        "recipeTypes": "Recipe Types:",
-        "fastestRecipes": "Fastest Recipes:",
-        "slowestRecipes": "Slowest Recipes:",
-        "mostIngredients": "Recipes with Most Ingredients:",
-        "leastIngredients": "Recipes with Least Ingredients:",
-        "cookingTimeUnit": " min",
-        "ingredientsUnit": " ingredients"
-    },
-    "statsReportSecond": {
-        "title": "Statistics Report",
-        "totalMenus": "Total number of menus: {{count}}",
-        "totalRecipes": "Total number of recipes: {{count}}",
-        "avgCookingTime": "Average cooking time by recipe types:",
-        "menusByCategory": "Number of menus per category:",
-        "error": "Error: {{message}}",
-        "timeUnit": " min"
+        "recipeSectionHeading": "Recipe Statistics",
+        "menuSectionHeading": "Menu Statistics",
+
+        "totalRecipesTile": "Total recipes",
+        "totalRecipesCaption": "in your cookbook",
+        "totalMenusTile": "Total menus",
+        "totalMenusCaption": "created by you",
+        "avgCookingTimeTile": "Avg cook time",
+        "avgCookingTimeCaption": "across all types",
+        "mostUsedTypeTile": "Most used type",
+        "mostUsedCaption": "{{count}} of {{total}} recipes",
+        "avgTotalTimeTile": "Avg total time",
+        "avgRecipesTile": "Avg recipes",
+        "perMenuCaption": "per menu",
+        "mostUsedCategoryTile": "Most used category",
+        "mostUsedCategoryCaption": "{{count}} of {{total}} menus",
+
+        "recipeTypesHeading": "Recipe Types Summary",
+        "recipeTypesSubtitle": "Distribution across {{count}} recipes",
+        "avgTimeByTypeHeading": "Average cooking time by recipe types",
+        "avgTimeByTypeSubtitle": "In minutes",
+        "menuCategoriesHeading": "Menu Categories Summary",
+        "menuCategoriesSubtitle": "Distribution across {{count}} menus",
+        "avgTimeByCategoryHeading": "Average total time by category",
+        "avgTimeByCategorySubtitle": "Cook time per menu",
+
+        "cookingTimeExtremesHeading": "Cooking time extremes",
+        "totalTimeExtremesHeading": "Total time extremes",
+        "ingredientCountsHeading": "Ingredient counts",
+        "recipeCountsHeading": "Recipe counts",
+        "fastest": "Fastest",
+        "slowest": "Slowest",
+        "most": "Most",
+        "least": "Least",
+
+        "recipesLabel": "recipes",
+        "menusLabel": "menus",
+        "timeCompactHoursMinutes": "{{hours}}h {{minutes}}m",
+        "timeMinutesOnly": "{{minutes}} min"
     }
 }

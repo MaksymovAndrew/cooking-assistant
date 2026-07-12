@@ -20,9 +20,12 @@ describe("SearchRecipes", () => {
             min_cooking_time: "10",
             sort_order: "asc",
         };
-        const recipes = [{ id: 1, title: "Tomato soup" }];
+        const paginated = {
+            items: [{ id: 1, title: "Tomato soup" }],
+            total: 1,
+        };
 
-        recipeRepository.search.mockResolvedValue(recipes);
+        recipeRepository.search.mockResolvedValue(paginated);
 
         const result = await useCase.execute(filters);
 
@@ -32,7 +35,21 @@ describe("SearchRecipes", () => {
             min_cooking_time: 10,
             sort_order: "asc",
         });
-        expect(result).toEqual(recipes);
+        expect(result).toEqual(paginated);
+    });
+
+    it("should pass through valid limit and offset as numbers", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute({ limit: "10", offset: "20" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith({
+            limit: 10,
+            offset: 20,
+        });
     });
 
     it("should throw a 400 ValidationError when type_ids is not an id list", async () => {
@@ -56,6 +73,58 @@ describe("SearchRecipes", () => {
         expect(error).toBeAppError(
             ValidationError,
             "sort_order: Invalid enum value. Expected 'asc' | 'desc', received 'junk'",
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when limit exceeds the maximum", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(useCase.execute({ limit: 101 }));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            "limit: Limit must be at most 100",
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when limit is not positive", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(useCase.execute({ limit: 0 }));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            "limit: Limit must be positive",
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when offset is negative", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(useCase.execute({ offset: -1 }));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            "offset: Offset must be at least 0",
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when offset is not an integer", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(useCase.execute({ offset: 1.5 }));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            "offset: Offset must be an integer",
             400,
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();

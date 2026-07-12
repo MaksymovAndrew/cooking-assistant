@@ -1,0 +1,41 @@
+@use "styles/abstracts" as *;
+
+.greeting-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+
+    @include respond-to(desktop) {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    &__date {
+        margin-bottom: var(--s-1);
+        color: var(--text-muted);
+        letter-spacing: 0.04em;
+        font:
+            500 13px "Geist Mono",
+            monospace;
+    }
+
+    &__title {
+        margin: 0;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(24px, 4vw, 38px) Fraunces,
+            serif;
+    }
+
+    // below desktop the quick actions live in the HomeActions row instead
+    &__actions {
+        display: none;
+
+        @include respond-to(desktop) {
+            display: flex;
+            gap: var(--s-3);
+        }
+    }
+}

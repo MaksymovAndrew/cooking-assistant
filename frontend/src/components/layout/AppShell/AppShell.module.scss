@@ -1,0 +1,26 @@
+@use "styles/abstracts" as *;
+
+.app-shell {
+    min-height: 100vh;
+    min-height: 100svh;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.app-shell__header--desktop-only {
+    display: none;
+
+    @include respond-to(tablet) {
+        display: block;
+    }
+}
+
+.app-shell__main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+
+    @include respond-to(desktop) {
+        padding-bottom: 0;
+    }
+}

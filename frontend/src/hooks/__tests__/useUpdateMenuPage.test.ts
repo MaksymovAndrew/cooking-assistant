@@ -12,6 +12,7 @@ import { recipesApi } from "redux/services/recipesApi";
 import { useUpdateMenuPage } from "hooks/useUpdateMenuPage";
 
 import { mockedPut, mockGetByUrl } from "test/apiClientMock";
+import { ROUTE_ALL_MENUS } from "test/constants";
 import { mockNavigate } from "test/router";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
@@ -24,8 +25,7 @@ jest.mock("api/client");
 
 const TITLE = "Weekday menu";
 const CATEGORY_ID = 2;
-// distinct from recipe_id on purpose: the hook must map menu.recipes through
-// recipe_id, so a test that conflated the two fields could pass for the wrong reason
+// distinct from recipe_id on purpose: the hook must map menu.recipes through recipe_id, so a test that conflated the two fields could pass for the wrong reason
 const MENU_RECIPE = {
     id: 99,
     recipe_id: 10,
@@ -46,11 +46,10 @@ const SAMPLE: MenuDetails = {
         isOwner: true,
     },
     recipes: [MENU_RECIPE],
+    allergens: [],
 };
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts,
-// so useGetMenuByIdQuery/etc. read already-fulfilled data on first render
-// instead of racing a guessed number of promise ticks
+// pre-seed the cache by awaiting the real query thunks before the hook mounts, so useGetMenuByIdQuery/etc. read already-fulfilled data on first render instead of racing a guessed number of promise ticks
 const setup = async (sample: MenuDetails = SAMPLE) => {
     mockGetByUrl({
         [API_ROUTES.menu.byId("1")]: sample,
@@ -80,7 +79,7 @@ describe("useUpdateMenuPage", () => {
         expect(result.current.isLoading).toBe(false);
     });
 
-    it("should update the menu and navigate to /menu on valid submit", async () => {
+    it("should update the menu and navigate to menus on valid submit", async () => {
         mockedPut.mockResolvedValue({ data: null });
         const { result } = await setup();
 
@@ -96,7 +95,7 @@ describe("useUpdateMenuPage", () => {
                 recipeIds: [MENU_RECIPE.recipe_id],
             }),
         );
-        expect(mockNavigate).toHaveBeenCalledWith("/menu");
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_MENUS);
     });
 
     it("should not call the mutation when no recipes are selected", async () => {

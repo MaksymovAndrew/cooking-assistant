@@ -1,0 +1,15 @@
+@use "styles/abstracts" as *;
+
+.form-error-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--border));
+    border-radius: var(--r-sm);
+    background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+    color: var(--danger);
+    font:
+        500 13px Inter,
+        sans-serif;
+}

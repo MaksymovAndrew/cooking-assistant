@@ -1,38 +1,18 @@
-import React, { Suspense } from "react";
-
-const Chart = React.lazy(() => import("./LazyChart"));
+import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeStat } from "types/stats";
+
+import { LazyPieChart } from "components/stats/LazyPieChart";
 
 interface RecipeTypeChartProps {
     stats: RecipeTypeStat[];
 }
 
-export const RecipeTypeChart: React.FC<RecipeTypeChartProps> = ({ stats }) => {
-    const options: ApexCharts.ApexOptions = {
-        chart: { type: "pie" },
-        labels: stats.map((stat) => stat.typeName),
-        responsive: [
-            {
-                breakpoint: 480,
-                options: {
-                    chart: { width: 200 },
-                    legend: { position: "bottom" },
-                },
-            },
-        ],
-    };
-    const series = stats.map((stat) => stat.count);
+export const RecipeTypeChart = ({ stats }: RecipeTypeChartProps) => {
+    const { t } = useTranslation("stats");
+    const data = stats.map((s) => ({ name: s.typeName, value: s.count }));
 
     return (
-        <Suspense fallback={<div style={{ width: 500, height: 300 }} />}>
-            <Chart
-                options={options}
-                series={series}
-                type="pie"
-                width="500"
-                height="auto"
-            />
-        </Suspense>
+        <LazyPieChart data={data} centerLabel={t("statsPage.recipesLabel")} />
     );
 };

@@ -1,0 +1,147 @@
+@use "styles/abstracts" as *;
+
+.ingredient-picker {
+    position: relative;
+
+    &__label {
+        @include sr-only;
+    }
+
+    &__search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 48px;
+        padding: 0 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-2);
+        color: var(--text-muted);
+
+        &:focus-within {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px var(--brand-subtle);
+        }
+
+        button {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+    }
+
+    &__input {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        background: none;
+        color: var(--text);
+        font:
+            400 15px Inter,
+            sans-serif;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    // wrapper owns the border/radius/overflow:hidden so the list's scrollbar (on __results below) can't poke past the rounded corner
+    &__results-wrapper {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        z-index: var(--z-dropdown);
+        display: flex;
+        flex-direction: column;
+        max-height: 240px;
+        margin: 4px 0 0;
+        overflow: hidden;
+        border: 1px solid var(--brand);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: var(--e-3);
+    }
+
+    &__results {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        list-style: none;
+        padding-inline-start: 0;
+    }
+
+    &__empty {
+        padding: var(--s-3) var(--s-4);
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    &__result {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: var(--s-3);
+        padding: var(--s-3) var(--s-4);
+        border: none;
+        border-top: 1px solid var(--border);
+        background: none;
+        cursor: pointer;
+        text-align: left;
+
+        &:first-child {
+            border-top: none;
+        }
+
+        @include on-hover {
+            background: var(--brand-subtle);
+        }
+    }
+
+    &__result--selected {
+        cursor: not-allowed;
+        opacity: 0.5;
+
+        @include on-hover {
+            background: none;
+        }
+    }
+
+    &__result-name {
+        @include truncate;
+
+        flex: 1;
+        color: var(--text);
+        font:
+            500 14px Inter,
+            sans-serif;
+
+        strong {
+            color: var(--brand);
+        }
+    }
+
+    &__result-unit {
+        flex: none;
+        padding: 2px 8px;
+        border-radius: 6px;
+        background: var(--surface-2);
+        color: var(--text-muted);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+    }
+}

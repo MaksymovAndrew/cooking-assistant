@@ -1,0 +1,50 @@
+@use "styles/abstracts" as *;
+
+.theme-change-modal {
+    &__heading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--s-4);
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+
+    &__message {
+        margin: 0;
+        color: var(--text-2);
+        text-align: center;
+        font:
+            400 14px/1.55 Inter,
+            sans-serif;
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: var(--s-3);
+        margin-top: var(--s-5);
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+            justify-content: center;
+        }
+    }
+}
+
+.theme-change-modal__actions > button {
+    width: 100%;
+
+    @include respond-to(tablet) {
+        width: auto;
+    }
+}

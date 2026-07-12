@@ -1,0 +1,54 @@
+@mixin focus-ring {
+    &:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+    }
+}
+
+@mixin card-surface {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+}
+
+// keeps content in the accessibility tree (label text, etc.) without taking visual space
+@mixin sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+@mixin truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// multi-line ellipsis - use for descriptions that must not grow unbounded
+@mixin line-clamp($lines) {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $lines;
+}
+
+@mixin reduced-motion {
+    @media (prefers-reduced-motion: reduce) {
+        @content;
+    }
+}
+
+// hover styles only on devices that can actually hover; on touch screens a tap would otherwise leave the style stuck until the next tap elsewhere
+@mixin on-hover {
+    @media (hover: hover) {
+        &:hover {
+            @content;
+        }
+    }
+}

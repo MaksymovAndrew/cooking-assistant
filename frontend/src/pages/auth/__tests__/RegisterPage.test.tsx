@@ -6,6 +6,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import RegisterPage from "pages/auth/RegisterPage";
 import { mockedPost } from "test/apiClientMock";
+import { ROUTE_LOGIN } from "test/constants";
 import { mockNavigate, renderWithRouter } from "test/router";
 
 jest.mock("react-router-dom", () => ({
@@ -27,8 +28,8 @@ describe("RegisterPage", () => {
 
         await userEvent.type(screen.getByLabelText("Name:"), NAME);
         await userEvent.type(screen.getByLabelText("Surname:"), SURNAME);
-        await userEvent.type(screen.getByLabelText("Username:"), LOGIN);
-        await userEvent.type(screen.getByLabelText("Password:"), PASSWORD);
+        await userEvent.type(screen.getByLabelText("Username"), LOGIN);
+        await userEvent.type(screen.getByLabelText("Password"), PASSWORD);
         await userEvent.click(screen.getByRole("button", { name: "Register" }));
 
         expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.auth.register, {
@@ -37,6 +38,6 @@ describe("RegisterPage", () => {
             login: LOGIN,
             password: PASSWORD,
         });
-        expect(mockNavigate).toHaveBeenCalledWith("/login");
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_LOGIN);
     });
 });

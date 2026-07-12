@@ -1,35 +1,48 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+import { ROUTES } from "constants/routes";
 
 import { useLoginForm } from "hooks/useLoginForm";
 
+import { AuthLayout } from "components/auth/AuthLayout";
 import { LoginForm } from "components/forms/auth/LoginForm";
-import { Header } from "components/layout/Header";
+
+import styles from "./AuthPage.module.scss";
 
 const LoginPage: React.FC = () => {
     const { t } = useTranslation("auth");
     const form = useLoginForm();
 
     return (
-        <div>
-            <Header />
-            <div className="mx-[35vw] flex flex-column items-center justify-center mt-[15vh]">
-                <div className="w-full">
-                    <h1 className="text-relative-h3 items-center my-[7vh] font-kharkiv font-bold mb-4">
-                        {t("loginPage.heading")}
-                    </h1>
-                    <LoginForm
-                        values={form.values}
-                        onFieldChange={form.setField}
-                        onSubmit={form.handleSubmit}
-                        submitLabel={t("loginPage.submit")}
-                        submitError={form.error}
-                        isLocked={form.isLocked}
-                        lockoutRemainingMs={form.lockoutRemainingMs}
-                    />
-                </div>
-            </div>
-        </div>
+        <AuthLayout
+            tagline={t("loginPage.tagline")}
+            description={t("loginPage.taglineDescription")}
+        >
+            <h1 className={styles["auth-page__heading"]}>
+                {t("loginPage.heading")}
+            </h1>
+            <p className={styles["auth-page__subheading"]}>
+                {t("loginPage.subheading")}
+            </p>
+            <LoginForm
+                values={form.values}
+                onFieldChange={form.setField}
+                onSubmit={form.handleSubmit}
+                submitLabel={t("loginPage.submit")}
+                submitError={form.error}
+                isLocked={form.isLocked}
+                lockoutRemainingMs={form.lockoutRemainingMs}
+                lockoutTotalMs={form.lockoutTotalMs}
+            />
+            <p className={styles["auth-page__footer"]}>
+                {t("loginPage.noAccount")}{" "}
+                <Link to={ROUTES.registration}>
+                    {t("loginPage.registerLink")}
+                </Link>
+            </p>
+        </AuthLayout>
     );
 };
 

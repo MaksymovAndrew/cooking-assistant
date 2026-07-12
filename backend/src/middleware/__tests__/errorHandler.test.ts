@@ -38,7 +38,9 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: "Server error" });
+        expect(res.json).toHaveBeenCalledWith({
+            error: ERROR_MESSAGES.SERVER_ERROR,
+        });
         expect(next).not.toHaveBeenCalled();
     });
 
@@ -51,7 +53,9 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: "Server error" });
+        expect(res.json).toHaveBeenCalledWith({
+            error: ERROR_MESSAGES.SERVER_ERROR,
+        });
         expect(next).not.toHaveBeenCalled();
     });
 
@@ -80,7 +84,9 @@ describe("errorHandler", () => {
         errorHandler("broken", req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: "Server error" });
+        expect(res.json).toHaveBeenCalledWith({
+            error: ERROR_MESSAGES.SERVER_ERROR,
+        });
         expect(next).not.toHaveBeenCalled();
     });
 
@@ -93,7 +99,9 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: "Server error" });
+        expect(res.json).toHaveBeenCalledWith({
+            error: ERROR_MESSAGES.SERVER_ERROR,
+        });
     });
 
     it("should return Server error when the Error message is empty with a 4xx status", () => {
@@ -105,7 +113,9 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(422);
-        expect(res.json).toHaveBeenCalledWith({ error: "Server error" });
+        expect(res.json).toHaveBeenCalledWith({
+            error: ERROR_MESSAGES.SERVER_ERROR,
+        });
     });
 
     it("should pass the error to next when headers were sent", () => {

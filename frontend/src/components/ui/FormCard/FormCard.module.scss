@@ -1,0 +1,7 @@
+@use "styles/abstracts" as *;
+
+.form-card {
+    @include card-surface;
+
+    padding: var(--s-5);
+}

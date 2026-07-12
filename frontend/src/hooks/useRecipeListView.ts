@@ -5,13 +5,19 @@ import { SEARCH_PARAM_INGREDIENT_NAME } from "constants/queryParams";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { selectRecipeFilters } from "redux/selectors/filtersSelectors";
+import { useGetMeQuery } from "redux/services/authApi";
 import {
-    useGetRecipesByFiltersQuery,
-    useGetRecipesByPersonQuery,
+    flattenPages,
+    getPaginatedTotal,
+} from "redux/services/infiniteQueryHelpers";
+import {
+    useGetRecipesByFiltersInfiniteQuery,
+    useGetRecipesByPersonInfiniteQuery,
 } from "redux/services/recipesApi";
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
-import type { RecipeFiltersState } from "redux/slices/filtersSlice";
 import {
+    RECIPE_DEFAULT_SORT_ORDER,
+    type RecipeFiltersState,
     setRecipeEndDate,
     setRecipeMaxCookingTime,
     setRecipeMinCookingTime,
@@ -21,8 +27,10 @@ import {
 } from "redux/slices/filtersSlice";
 
 import { getQueryErrorMessage } from "utils/queryError";
-import { buildRecipeFilterParams } from "utils/recipeFilterParams";
-import { sortRecipes } from "utils/sortRecipes";
+import {
+    buildRecipeFilterParams,
+    hasActiveRecipeFilters,
+} from "utils/recipeFilterParams";
 
 export interface RecipeFilterState extends RecipeFiltersState {
     ingredientName: string | null;
@@ -35,13 +43,13 @@ export const RECIPE_SOURCE = {
 
 export type RecipeSource = (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE];
 
-// view model for the two recipe lists: filters come from the store + the URL
-// search, data from RTK Query, and the client-side sort/headers are derived
+// view model for the two recipe lists: filters come from the store + the URL search, pages come from RTK Query's infiniteQuery, sorting is server-side
 export const useRecipeListView = (source: RecipeSource) => {
     const dispatch = useAppDispatch();
     const recipeFilters = useAppSelector(selectRecipeFilters);
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const ingredientName = searchParams.get(SEARCH_PARAM_INGREDIENT_NAME);
+    const filters = { ...recipeFilters, ingredientName };
 
     const params = useMemo(
         () => buildRecipeFilterParams(recipeFilters, ingredientName),
@@ -49,14 +57,22 @@ export const useRecipeListView = (source: RecipeSource) => {
     );
 
     const isPerson = source === RECIPE_SOURCE.person;
-    const byFilters = useGetRecipesByFiltersQuery(params, { skip: isPerson });
-    const byPerson = useGetRecipesByPersonQuery(params, { skip: !isPerson });
+    const byFilters = useGetRecipesByFiltersInfiniteQuery(params, {
+        skip: isPerson,
+    });
+    const byPerson = useGetRecipesByPersonInfiniteQuery(params, {
+        skip: !isPerson,
+    });
     const active = isPerson ? byPerson : byFilters;
 
-    const recipes = useMemo(
-        () => sortRecipes(active.data ?? [], recipeFilters.sortOrder),
-        [active.data, recipeFilters.sortOrder],
-    );
+    // already fetched by PrivateRoute on mount, so this is a cache read, not a new request - used to flag the current user's own recipes in the "all" list
+    const { data: currentUser } = useGetMeQuery(null);
+    const recipes = useMemo(() => flattenPages(active.data), [active.data]);
+    const total = getPaginatedTotal(active.data);
+    const hasLoadedRecipes = recipes.length > 0;
+    const errorMessage = active.isError
+        ? getQueryErrorMessage(active.error)
+        : null;
 
     const { data: allTypes = [] } = useGetRecipeTypesQuery(null);
 
@@ -72,8 +88,16 @@ export const useRecipeListView = (source: RecipeSource) => {
     );
     const typesHeader = descriptions.map((type) => type.type_name).join(", ");
 
+    const clearFilters = () => {
+        setSearchParams({});
+        dispatch(setRecipeSelectedTypes([]));
+        dispatch(setRecipeMinCookingTime(""));
+        dispatch(setRecipeMaxCookingTime(""));
+        dispatch(setRecipeSortOrder(RECIPE_DEFAULT_SORT_ORDER));
+    };
+
     return {
-        filters: { ...recipeFilters, ingredientName },
+        filters,
         setSelectedTypes: (types: number[]) =>
             dispatch(setRecipeSelectedTypes(types)),
         setStartDate: (date: string) => dispatch(setRecipeStartDate(date)),
@@ -83,11 +107,21 @@ export const useRecipeListView = (source: RecipeSource) => {
         setMaxCookingTime: (time: string) =>
             dispatch(setRecipeMaxCookingTime(time)),
         setSortOrder: (order: string) => dispatch(setRecipeSortOrder(order)),
+        clearFilters,
+        hasActiveFilters: hasActiveRecipeFilters(filters),
         types: allTypes,
         recipes,
-        error: active.isError ? getQueryErrorMessage(active.error) : null,
-        noRecipes: active.isSuccess && active.data.length === 0,
+        currentUserId: currentUser?.id ?? null,
+        error: !hasLoadedRecipes ? errorMessage : null,
+        noRecipes: active.isSuccess && !hasLoadedRecipes,
         descriptions,
         typesHeader,
+        total,
+        loadedCount: recipes.length,
+        hasNextPage: active.hasNextPage,
+        isFetchingNextPage: active.isFetchingNextPage,
+        fetchNextPage: active.fetchNextPage,
+        loadMoreError: hasLoadedRecipes ? errorMessage : null,
+        refetch: active.refetch,
     };
 };

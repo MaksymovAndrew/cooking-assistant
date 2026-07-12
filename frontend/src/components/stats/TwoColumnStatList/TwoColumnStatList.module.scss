@@ -1,0 +1,96 @@
+@use "styles/abstracts" as *;
+
+.two-column-stat-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-4);
+    min-width: 0;
+
+    &__column {
+        min-width: 0;
+    }
+
+    &__column-label {
+        margin-bottom: 9px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font:
+            500 11px "Geist Mono",
+            monospace;
+
+        &--success {
+            color: var(--success);
+        }
+
+        &--warning {
+            color: var(--warning);
+        }
+
+        &--brand {
+            color: var(--brand);
+        }
+
+        &--muted {
+            color: var(--text-muted);
+        }
+    }
+
+    &__items {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
+        margin: 0;
+        list-style: none;
+        padding-inline-start: 0;
+    }
+
+    &__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-2);
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: var(--surface-2);
+    }
+
+    &__name {
+        @include truncate;
+
+        min-width: 0;
+        color: var(--text);
+        font:
+            500 14px Inter,
+            sans-serif;
+    }
+
+    &__chip {
+        flex: none;
+        padding: 3px 9px;
+        border-radius: var(--r-pill);
+        font:
+            600 13px "Geist Mono",
+            monospace;
+
+        &--success {
+            color: var(--success);
+            background: color-mix(in srgb, var(--success) 12%, transparent);
+        }
+
+        &--warning {
+            color: var(--warning);
+            background: color-mix(in srgb, var(--warning) 12%, transparent);
+        }
+
+        &--brand {
+            color: var(--brand);
+            background: var(--brand-subtle);
+        }
+
+        &--muted {
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            background: var(--surface-2);
+        }
+    }
+}

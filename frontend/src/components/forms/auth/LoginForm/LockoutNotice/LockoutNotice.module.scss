@@ -1,0 +1,50 @@
+@use "styles/abstracts" as *;
+
+.lockout-notice {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--s-4);
+    border: 1px solid color-mix(in srgb, var(--warning) 30%, var(--border));
+    border-radius: var(--r-sm);
+    background: color-mix(in srgb, var(--warning) 10%, var(--surface));
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        color: var(--warning);
+        font:
+            600 13px Inter,
+            sans-serif;
+    }
+
+    &__countdown {
+        margin: 0;
+        color: var(--text-2);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__countdown-time {
+        color: var(--warning);
+        font:
+            700 13px "Geist Mono",
+            monospace;
+    }
+
+    &__bar {
+        height: 4px;
+        border-radius: var(--r-pill);
+        background: var(--border);
+        overflow: hidden;
+    }
+
+    &__bar-fill {
+        height: 100%;
+        border-radius: var(--r-pill);
+        background: var(--warning);
+        transition: width var(--dur-base) var(--ease-out);
+    }
+}

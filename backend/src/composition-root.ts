@@ -11,6 +11,7 @@ import GetAllMenuCategories from "application/use-cases/menu-categories/GetAllMe
 import CreateMenu from "application/use-cases/menus/CreateMenu";
 import DeleteMenu from "application/use-cases/menus/DeleteMenu";
 import GetAllMenus from "application/use-cases/menus/GetAllMenus";
+import GetAllMenusUnpaginated from "application/use-cases/menus/GetAllMenusUnpaginated";
 import GetMenuById from "application/use-cases/menus/GetMenuById";
 import SearchPersonMenus from "application/use-cases/menus/SearchPersonMenus";
 import UpdateMenu from "application/use-cases/menus/UpdateMenu";
@@ -30,6 +31,7 @@ import GetRecipeStats from "application/use-cases/recipes/GetRecipeStats";
 import SearchPersonRecipes from "application/use-cases/recipes/SearchPersonRecipes";
 import SearchRecipes from "application/use-cases/recipes/SearchRecipes";
 import UpdateRecipe from "application/use-cases/recipes/UpdateRecipe";
+import GetCurrentUser from "application/use-cases/users/GetCurrentUser";
 import GetUsers from "application/use-cases/users/GetUsers";
 import LoginUser from "application/use-cases/users/LoginUser";
 import RegisterUser from "application/use-cases/users/RegisterUser";
@@ -100,6 +102,7 @@ export function buildControllers({
 
     const menuController = new MenuController({
         getAllMenus: new GetAllMenus(menuRepository),
+        getAllMenusUnpaginated: new GetAllMenusUnpaginated(menuRepository),
         createMenu: new CreateMenu(menuRepository, recipeRepository),
         getMenuById: new GetMenuById(menuRepository),
         updateMenu: new UpdateMenu(menuRepository, recipeRepository),
@@ -126,6 +129,7 @@ export function buildControllers({
         registerUser: new RegisterUser(userRepository, passwordHasher),
         loginUser: new LoginUser(userRepository, passwordHasher, tokenService),
         getUsers: new GetUsers(userRepository),
+        getCurrentUser: new GetCurrentUser(userRepository),
     });
 
     return {
@@ -138,25 +142,15 @@ export function buildControllers({
     };
 }
 
-const recipeTypeRepository = new PgRecipeTypeRepository(pool);
-const recipeRepository = new PgRecipeRepository(pool);
-const menuRepository = new PgMenuRepository(pool);
-const menuCategoryRepository = new PgMenuCategoryRepository(pool);
-const pantryRepository = new PgPantryRepository(pool);
-const userRepository = new PgUserRepository(pool);
-
-const passwordHasher = new BcryptPasswordHasher();
-const tokenService = new JwtTokenService();
-
 const controllers = buildControllers({
-    recipeRepository,
-    recipeTypeRepository,
-    menuRepository,
-    menuCategoryRepository,
-    pantryRepository,
-    userRepository,
-    passwordHasher,
-    tokenService,
+    recipeRepository: new PgRecipeRepository(pool),
+    recipeTypeRepository: new PgRecipeTypeRepository(pool),
+    menuRepository: new PgMenuRepository(pool),
+    menuCategoryRepository: new PgMenuCategoryRepository(pool),
+    pantryRepository: new PgPantryRepository(pool),
+    userRepository: new PgUserRepository(pool),
+    passwordHasher: new BcryptPasswordHasher(),
+    tokenService: new JwtTokenService(),
 });
 
 export default controllers;

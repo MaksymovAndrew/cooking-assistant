@@ -1,7 +1,7 @@
 # ── Stage 1: builder ────────────────────────────────────────────────────────
-# node:20-alpine = Linux Alpine (~5 MB) + Node 20; AS builder names this stage
-# so we can copy selectively from it in the next stage.
-FROM node:20-alpine AS builder
+# node:22-alpine = Linux Alpine (~5 MB) + Node 22 LTS; AS builder names this
+# stage so we can copy selectively from it in the next stage.
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -23,7 +23,7 @@ RUN npm run build
 # ── Stage 2: runner ─────────────────────────────────────────────────────────
 # Fresh image — nothing from builder carries over automatically.
 # Only what we explicitly COPY --from=builder lands here.
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 

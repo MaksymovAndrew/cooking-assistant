@@ -12,6 +12,21 @@ import boundaries from "eslint-plugin-boundaries";
 import prettier from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
 
+// shared between the global block and the hardcode-guard block below (a later
+// no-restricted-syntax for the same files would otherwise replace these)
+const preferNullRestrictions = [
+    {
+        selector:
+            "BinaryExpression[operator='==='][right.type='Identifier'][right.name='undefined']",
+        message: "Prefer null. Use === null instead of === undefined.",
+    },
+    {
+        selector:
+            "BinaryExpression[operator='!=='][right.type='Identifier'][right.name='undefined']",
+        message: "Prefer null. Use !== null instead of !== undefined.",
+    },
+];
+
 export default tseslint.config(
     { ignores: ["dist", "coverage"] },
     {
@@ -22,7 +37,6 @@ export default tseslint.config(
         ],
         files: ["**/*.{ts,tsx}"],
         languageOptions: {
-            ecmaVersion: 2020,
             globals: globals.browser,
             parserOptions: {
                 projectService: true,
@@ -41,6 +55,10 @@ export default tseslint.config(
             ],
             "react-hooks/exhaustive-deps": "error",
             eqeqeq: ["error", "always"],
+            "no-var": "error",
+            "prefer-const": "error",
+            "no-console": "error",
+            "@typescript-eslint/switch-exhaustiveness-check": "error",
             "@typescript-eslint/restrict-template-expressions": [
                 "error",
                 { allowNumber: true },
@@ -142,21 +160,7 @@ export default tseslint.config(
                     ],
                 },
             ],
-            "no-restricted-syntax": [
-                "error",
-                {
-                    selector:
-                        "BinaryExpression[operator='==='][right.type='Identifier'][right.name='undefined']",
-                    message:
-                        "Prefer null. Use === null instead of === undefined.",
-                },
-                {
-                    selector:
-                        "BinaryExpression[operator='!=='][right.type='Identifier'][right.name='undefined']",
-                    message:
-                        "Prefer null. Use !== null instead of !== undefined.",
-                },
-            ],
+            "no-restricted-syntax": ["error", ...preferNullRestrictions],
             "import/no-cycle": ["error", { maxDepth: 10 }],
             "import/no-extraneous-dependencies": [
                 "error",
@@ -168,6 +172,71 @@ export default tseslint.config(
                         "**/*.config.{ts,js,cjs}",
                         "vite.config.ts",
                     ],
+                },
+            ],
+        },
+    },
+    {
+        // hardcode guards: API paths live only in api/endpoints.ts, route paths
+        // only in constants/routes.ts - everything else must import them
+        files: ["src/**/*.{ts,tsx}"],
+        ignores: [
+            "src/api/endpoints.ts",
+            "src/constants/routes.ts",
+            "**/__tests__/**",
+            "src/test/**",
+        ],
+        rules: {
+            "no-restricted-syntax": [
+                "error",
+                ...preferNullRestrictions,
+                {
+                    selector: "Literal[value=/^\\u002Fapi\\u002F/]",
+                    message:
+                        "Hardcoded API path. Add it to API_ROUTES in api/endpoints.ts and import it.",
+                },
+                {
+                    selector: "TemplateElement[value.raw=/^\\u002Fapi\\u002F/]",
+                    message:
+                        "Hardcoded API path. Add a builder to API_ROUTES in api/endpoints.ts and import it.",
+                },
+                {
+                    selector: "JSXAttribute[name.name='to'] Literal[value=/^\\u002F/]",
+                    message:
+                        "Hardcoded route path. Use ROUTES from constants/routes.ts.",
+                },
+                {
+                    selector:
+                        "CallExpression[callee.name='navigate'] Literal[value=/^\\u002F/]",
+                    message:
+                        "Hardcoded route path. Use ROUTES from constants/routes.ts.",
+                },
+            ],
+        },
+    },
+    {
+        // magic numbers belong in named constants (constants/ and config/ are the
+        // sanctioned homes); .tsx is exempt - presentational sizes in JSX props are
+        // not logic, and the design system owns them via tokens
+        files: ["src/**/*.ts"],
+        ignores: [
+            "src/constants/**",
+            "src/config/**",
+            "**/__tests__/**",
+            "src/test/**",
+        ],
+        rules: {
+            "@typescript-eslint/no-magic-numbers": [
+                "error",
+                {
+                    ignore: [-1, 0, 1, 2],
+                    ignoreDefaultValues: true,
+                    ignoreClassFieldInitialValues: true,
+                    ignoreEnums: true,
+                    ignoreNumericLiteralTypes: true,
+                    ignoreReadonlyClassProperties: true,
+                    ignoreTypeIndexes: true,
+                    detectObjects: false,
                 },
             ],
         },
@@ -332,6 +401,13 @@ export default tseslint.config(
         ],
         rules: {
             "import/no-default-export": "error",
+        },
+    },
+    {
+        // the logger is the one sanctioned console consumer; everything else logs through it
+        files: ["src/config/logger.ts"],
+        rules: {
+            "no-console": "off",
         },
     },
     {

@@ -4,6 +4,7 @@ import { ERROR_MESSAGES } from "constants/errorMessages";
 import { AppError } from "domain/errors/AppError";
 import type {
     NewUser,
+    PublicUser,
     UserRecord,
     UserRepository,
 } from "domain/repositories/UserRepository";
@@ -32,6 +33,15 @@ export default class PgUserRepository implements UserRepository {
         const result = await this.pool.query<UserRecord>(
             `SELECT * FROM person WHERE login = $1`,
             [login],
+        );
+
+        return result.rows.length > 0 ? result.rows[0] : null;
+    }
+
+    async findById(id: number): Promise<PublicUser | null> {
+        const result = await this.pool.query<PublicUser>(
+            `SELECT id, name, surname, login, created_at FROM person WHERE id = $1`,
+            [id],
         );
 
         return result.rows.length > 0 ? result.rows[0] : null;

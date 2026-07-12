@@ -1,0 +1,92 @@
+// switching [data-theme] on <html> repaints every var(--...) consumer instantly.
+// the --bg values are mirrored by the theme-color meta + pre-paint script in
+// index.html - keep them in sync when changing the palette
+:root,
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #15131a;
+    --surface: #1e1b26;
+    --surface-2: #2a2533;
+    --border: #332e40;
+    --brand: #8e72cc;
+    --brand-strong: #7e60bf;
+    --brand-press: #6b4fa8;
+    --brand-subtle: rgb(126 96 191 / 16%);
+    --text: #f4f1f8;
+    --text-2: #b4adc2;
+    --text-muted: #7c7689;
+    --on-brand: #fff;
+    --success: #46c988;
+    --danger: #f06d6d;
+    --warning: #e0a33e;
+    --info: #7fa8e0;
+    --accent: #b692c2;
+    --e-1: 0 1px 2px rgb(0 0 0 / 40%);
+    --e-2: 0 8px 24px rgb(0 0 0 / 45%);
+    --e-3: 0 24px 64px rgb(0 0 0 / 55%);
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+
+    --bg: #f7f5fb;
+    --surface: #fff;
+    --surface-2: #f1edf8;
+    --border: #e4def0;
+    --brand: #6b4fa8;
+    --brand-strong: #7e60bf;
+    --brand-press: #5a3f94;
+    --brand-subtle: rgb(126 96 191 / 10%);
+    --text: #1b1726;
+    --text-2: #5a5468;
+    --text-muted: #8b8499;
+    --on-brand: #fff;
+    --success: #2e9e68;
+    --danger: #d64545;
+    --warning: #b9791f;
+    --info: #4f7fbf;
+    --accent: #b692c2;
+    --e-1: 0 1px 2px rgb(20 16 30 / 6%);
+    --e-2: 0 8px 24px rgb(20 16 30 / 10%);
+    --e-3: 0 24px 64px rgb(20 16 30 / 16%);
+}
+
+:root {
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+    --r-pill: 999px;
+
+    // spacing scale (4/8/12/16/24/32/48/64 in rem)
+    --s-1: 0.25rem;
+    --s-2: 0.5rem;
+    --s-3: 0.75rem;
+    --s-4: 1rem;
+    --s-5: 1.5rem;
+    --s-6: 2rem;
+    --s-7: 3rem;
+    --s-8: 4rem;
+
+    // hover/press feedback: fast; most transitions: base; drawer/sheet: slow
+    --dur-fast: 150ms;
+    --dur-base: 250ms;
+    --dur-slow: 350ms;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    // z-index scale: header < dropdown < drawer < modal < toast
+    --z-header: 50;
+    --z-dropdown: 60;
+    --z-drawer: 70;
+    --z-modal: 80;
+    --z-toast: 90;
+
+    // chart palette - brand family, same in both themes
+    --chart-1: #7e60bf;
+    --chart-2: #b692c2;
+    --chart-3: #8e72cc;
+    --chart-4: #c9a8da;
+    --chart-5: #6b4fa8;
+    --chart-6: #e0a33e;
+}

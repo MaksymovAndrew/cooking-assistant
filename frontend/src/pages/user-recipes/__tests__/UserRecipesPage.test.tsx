@@ -32,7 +32,10 @@ const SOUP_TYPE: RecipeTypeSummary = {
 describe("UserRecipesPage", () => {
     it("should render the user's recipes loaded from the api", async () => {
         mockGetByUrl({
-            [API_ROUTES.recipes.byPerson]: SAMPLE,
+            [API_ROUTES.recipes.byPerson]: {
+                items: SAMPLE,
+                total: SAMPLE.length,
+            },
             [API_ROUTES.recipeTypes.list]: [],
         });
 
@@ -45,7 +48,7 @@ describe("UserRecipesPage", () => {
 
     it("should record the selected type in the store and show the by-type heading", async () => {
         mockGetByUrl({
-            [API_ROUTES.recipes.byPerson]: [],
+            [API_ROUTES.recipes.byPerson]: { items: [], total: 0 },
             [API_ROUTES.recipeTypes.list]: [SOUP_TYPE],
         });
 
@@ -53,12 +56,12 @@ describe("UserRecipesPage", () => {
             initialEntries: ["/my-recipes"],
         });
 
-        await userEvent.click(screen.getByRole("button", { name: "Filter" }));
+        await userEvent.click(screen.getByRole("button", { name: "Filters" }));
         await userEvent.click(screen.getByRole("checkbox"));
 
         expect(await screen.findByText("Recipes: Soup")).toBeInTheDocument();
         expect(
-            screen.getByText("No recipes of this type found."),
+            screen.getByText("No recipes match your search"),
         ).toBeInTheDocument();
         expect(store.getState().filters.recipe.selectedTypes).toEqual([1]);
     });

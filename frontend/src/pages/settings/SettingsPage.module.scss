@@ -1,0 +1,36 @@
+.settings-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--s-6) var(--s-4);
+
+    &__heading {
+        margin: 0 0 4px;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(26px, 4vw, 34px) Fraunces,
+            serif;
+    }
+
+    &__subtitle {
+        margin: 0 0 var(--s-6);
+        color: var(--text-muted);
+        font:
+            400 14px Inter,
+            sans-serif;
+    }
+
+    &__pill {
+        display: inline-flex;
+        align-items: center;
+        height: 32px;
+        padding: 0 13px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-pill);
+        background: var(--surface-2);
+        color: var(--text-muted);
+        font:
+            600 12px "Geist Mono",
+            monospace;
+    }
+}

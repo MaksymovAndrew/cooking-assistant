@@ -13,6 +13,7 @@ describe("OwnerActions", () => {
                 onDelete={jest.fn()}
                 editLabel="Edit"
                 deleteLabel="Delete"
+                favouriteLabel="Favourite"
             />,
         );
 
@@ -34,6 +35,7 @@ describe("OwnerActions", () => {
                 onDelete={onDelete}
                 editLabel="Edit"
                 deleteLabel="Delete"
+                favouriteLabel="Favourite"
             />,
         );
 

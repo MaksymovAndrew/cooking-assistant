@@ -1,0 +1,84 @@
+@use "styles/abstracts" as *;
+
+// mobile/tablet tiles are compact (number + short label, no icon); desktop adds the icon tile and the full label
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    padding: 13px var(--s-4);
+
+    @include card-surface;
+
+    @include respond-to(desktop) {
+        padding: var(--s-4) var(--s-5);
+    }
+
+    &__icon {
+        display: none;
+
+        @include respond-to(desktop) {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--r-md);
+            background: var(--brand-subtle);
+            color: var(--brand);
+        }
+    }
+
+    &__value {
+        display: block;
+        color: var(--text);
+        font:
+            700 24px/1 "Geist Mono",
+            monospace;
+
+        @include respond-to(tablet) {
+            font-size: 26px;
+        }
+
+        @include respond-to(desktop) {
+            font-size: 30px;
+        }
+    }
+
+    &__label--desktop,
+    &__label--short {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+
+    &__label--desktop {
+        display: none;
+
+        @include respond-to(desktop) {
+            display: block;
+        }
+    }
+
+    &__label--short {
+        @include respond-to(desktop) {
+            display: none;
+        }
+    }
+}
+
+.stat-card--warning {
+    border-color: color-mix(in srgb, var(--warning) 35%, var(--border));
+
+    .stat-card__icon {
+        background: color-mix(in srgb, var(--warning) 14%, transparent);
+        color: var(--warning);
+    }
+
+    .stat-card__value {
+        color: var(--warning);
+    }
+}

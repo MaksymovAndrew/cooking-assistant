@@ -1,0 +1,68 @@
+@use "styles/abstracts" as *;
+
+.confirm-modal {
+    &__heading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--s-4);
+    }
+
+    &__icon {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+    }
+
+    &__icon--danger {
+        background: color-mix(in srgb, var(--danger) 14%, transparent);
+        color: var(--danger);
+    }
+
+    &__icon--primary {
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+
+    &__message {
+        margin: var(--s-4) 0 0;
+        color: var(--text-2);
+        text-align: center;
+        font:
+            400 14px/1.5 Inter,
+            sans-serif;
+    }
+
+    &__error {
+        margin: var(--s-2) 0 0;
+        color: var(--danger);
+        text-align: center;
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: var(--s-3);
+        margin-top: var(--s-5);
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+            justify-content: center;
+        }
+    }
+}
+
+.confirm-modal__actions > button {
+    width: 100%;
+
+    @include respond-to(tablet) {
+        width: auto;
+    }
+}

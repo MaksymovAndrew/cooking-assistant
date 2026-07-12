@@ -1,7 +1,4 @@
-// supported UI languages and the BCP-47 locale used for Intl date/number
-// formatting per language. Only English ships today; ru/uk are added later
-// ("потом когда добавим") - their locale mappings are pre-wired here so dates and
-// PDFs render Cyrillic correctly the moment those resource files are dropped in.
+// ru/uk locale mappings are pre-wired ahead of their translation files landing
 export const LANGUAGES = {
     en: "en",
     ru: "ru",

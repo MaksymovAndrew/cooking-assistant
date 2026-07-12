@@ -1,39 +1,50 @@
+import { Plus } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
+import { ROUTES } from "constants/routes";
 import type { RecipeListItem } from "types/recipe";
 import type { RecipeTypeSummary } from "types/recipeType";
 
-import type { RecipeFilterState } from "hooks/useRecipeListView";
-
-import { ListPageLayout } from "components/layout/ListPageLayout";
-import { RecipeCard } from "components/recipes/RecipeCard";
+import { RecipeCard } from "components/cards/RecipeCard";
+import { AppShell } from "components/layout/AppShell";
+import { RecipeActiveFilters } from "components/recipes/RecipeActiveFilters";
+import type { RecipeFilterPanelProps } from "components/recipes/RecipeFilterPanel";
 import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
 import { RecipeTypeDescriptions } from "components/recipes/RecipeTypeDescriptions";
+import { ErrorState } from "components/ui/ErrorState";
+import { LinkButton } from "components/ui/LinkButton";
+import { ListLoadMoreFooter } from "components/ui/LoadMore";
 
-interface RecipeListViewProps {
-    filters: RecipeFilterState;
-    setSelectedTypes: (types: number[]) => void;
-    setStartDate: (date: string) => void;
-    setEndDate: (date: string) => void;
-    setMinCookingTime: (time: string) => void;
-    setMaxCookingTime: (time: string) => void;
-    setSortOrder: (order: string) => void;
-    types: RecipeTypeSummary[];
+import { RecipeListEmptyState } from "./RecipeListEmptyState";
+import styles from "./RecipeListView.module.scss";
+
+interface RecipeListViewProps extends RecipeFilterPanelProps {
     recipes: RecipeListItem[];
     noRecipes: boolean;
     error: string | null;
+    onRetry: () => void;
     descriptions: RecipeTypeSummary[];
     heading: string;
-    emptyMessage: string;
-    searchPlaceholder: string;
-    actionSlot?: React.ReactNode;
+    subtitle: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    hasActiveFilters: boolean;
+    clearFilters: () => void;
+    mine?: boolean;
+    currentUserId?: number | null;
+    loadedCount: number;
+    hasNextPage: boolean;
+    isFetchingNextPage: boolean;
+    fetchNextPage: () => void;
+    loadMoreError: string | null;
 }
+
+const NEW_RECIPE_ICON_SIZE = 18;
 
 export const RecipeListView: React.FC<RecipeListViewProps> = ({
     filters,
     setSelectedTypes,
-    setStartDate,
-    setEndDate,
     setMinCookingTime,
     setMaxCookingTime,
     setSortOrder,
@@ -41,42 +52,105 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     recipes,
     noRecipes,
     error,
+    onRetry,
     descriptions,
     heading,
-    emptyMessage,
+    subtitle,
+    emptyTitle,
+    emptyDescription,
+    hasActiveFilters,
+    clearFilters,
+    mine = false,
+    currentUserId = null,
     searchPlaceholder,
-    actionSlot,
-}) => (
-    <ListPageLayout
-        filterSlot={
-            <RecipeFilterPanel
-                filters={filters}
-                setSelectedTypes={setSelectedTypes}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                setMinCookingTime={setMinCookingTime}
-                setMaxCookingTime={setMaxCookingTime}
-                setSortOrder={setSortOrder}
-                types={types}
-                searchPlaceholder={searchPlaceholder}
-            />
-        }
-        actionSlot={actionSlot}
-        heading={heading}
-        afterHeading={<RecipeTypeDescriptions descriptions={descriptions} />}
-        isEmpty={noRecipes}
-        emptyMessage={emptyMessage}
-        error={error}
-    >
-        {recipes.map((recipe) => (
-            <RecipeCard
-                key={recipe.id}
-                id={recipe.id}
-                title={recipe.title}
-                typeName={recipe.type_name}
-                creationDate={recipe.creation_date}
-                cookingTime={recipe.cooking_time}
-            />
-        ))}
-    </ListPageLayout>
-);
+    total,
+    loadedCount,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    loadMoreError,
+}) => {
+    const { t } = useTranslation();
+
+    return (
+        <AppShell>
+            <div className={styles["recipe-list-view"]}>
+                <div className={styles["recipe-list-view__header"]}>
+                    <div>
+                        <h1 className={styles["recipe-list-view__heading"]}>
+                            {heading}
+                        </h1>
+                        <p className={styles["recipe-list-view__subtitle"]}>
+                            {subtitle}
+                        </p>
+                    </div>
+                    <LinkButton to={ROUTES.addRecipe}>
+                        <Plus size={NEW_RECIPE_ICON_SIZE} aria-hidden="true" />
+                        {t("recipes:recipeListView.newRecipe")}
+                    </LinkButton>
+                </div>
+                <RecipeTypeDescriptions descriptions={descriptions} />
+                <RecipeFilterPanel
+                    filters={filters}
+                    setSelectedTypes={setSelectedTypes}
+                    setMinCookingTime={setMinCookingTime}
+                    setMaxCookingTime={setMaxCookingTime}
+                    setSortOrder={setSortOrder}
+                    types={types}
+                    searchPlaceholder={searchPlaceholder}
+                    total={total}
+                />
+                <RecipeActiveFilters
+                    total={total}
+                    filters={filters}
+                    setMinCookingTime={setMinCookingTime}
+                    setMaxCookingTime={setMaxCookingTime}
+                    setSortOrder={setSortOrder}
+                    clearFilters={clearFilters}
+                />
+                {error && (
+                    <ErrorState
+                        title={t("errorState.title")}
+                        description={error}
+                        onRetry={onRetry}
+                        retryLabel={t("errorState.retry")}
+                    />
+                )}
+                {!error && noRecipes && (
+                    <RecipeListEmptyState
+                        hasActiveFilters={hasActiveFilters}
+                        emptyTitle={emptyTitle}
+                        emptyDescription={emptyDescription}
+                        searchQuery={filters.ingredientName}
+                        clearFilters={clearFilters}
+                    />
+                )}
+                {!error && !noRecipes && (
+                    <div className={styles["recipe-list-view__grid"]}>
+                        {recipes.map((recipe) => (
+                            <RecipeCard
+                                key={recipe.id}
+                                recipe={recipe}
+                                mine={
+                                    mine ||
+                                    (typeof recipe.person_id === "number" &&
+                                        recipe.person_id === currentUserId)
+                                }
+                            />
+                        ))}
+                    </div>
+                )}
+                {!error && !noRecipes && (
+                    <ListLoadMoreFooter
+                        total={total}
+                        loadedCount={loadedCount}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
+                        fetchNextPage={fetchNextPage}
+                        loadMoreError={loadMoreError}
+                    />
+                )}
+            </div>
+        </AppShell>
+    );
+};

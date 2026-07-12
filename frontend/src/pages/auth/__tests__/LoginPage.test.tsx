@@ -6,7 +6,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import LoginPage from "pages/auth/LoginPage";
 import { mockedPost } from "test/apiClientMock";
-import { ROUTE_MAIN } from "test/constants";
+import { ROUTE_HOME } from "test/constants";
 import { mockNavigate, renderWithRouter } from "test/router";
 
 jest.mock("react-router-dom", () => ({
@@ -19,19 +19,19 @@ const USERNAME = "test-user";
 const PASSWORD = "test-pass";
 
 describe("LoginPage", () => {
-    it("should navigate to main on successful login", async () => {
+    it("should navigate home on successful login", async () => {
         mockedPost.mockResolvedValue({ data: null });
 
         renderWithRouter(<LoginPage />);
 
-        await userEvent.type(screen.getByLabelText("Username:"), USERNAME);
-        await userEvent.type(screen.getByLabelText("Password:"), PASSWORD);
+        await userEvent.type(screen.getByLabelText("Username"), USERNAME);
+        await userEvent.type(screen.getByLabelText("Password"), PASSWORD);
         await userEvent.click(screen.getByRole("button", { name: "Log In" }));
 
         expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.auth.login, {
             login: USERNAME,
             password: PASSWORD,
         });
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_MAIN);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME);
     });
 });

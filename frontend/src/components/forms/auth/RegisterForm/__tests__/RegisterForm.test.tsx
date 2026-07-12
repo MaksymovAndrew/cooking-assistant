@@ -26,8 +26,8 @@ describe("RegisterForm", () => {
 
         expect(screen.getByLabelText("Name:")).toHaveValue("Test");
         expect(screen.getByLabelText("Surname:")).toHaveValue("User");
-        expect(screen.getByLabelText("Username:")).toHaveValue("tester");
-        expect(screen.getByLabelText("Password:")).toHaveValue("secret1");
+        expect(screen.getByLabelText("Username")).toHaveValue("tester");
+        expect(screen.getByLabelText("Password")).toHaveValue("secret1");
     });
 
     it("should call onFieldChange with the field name and value", async () => {

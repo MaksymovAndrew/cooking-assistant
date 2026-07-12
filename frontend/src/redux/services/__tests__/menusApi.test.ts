@@ -1,3 +1,4 @@
+import { PAGE_SIZE } from "constants/pagination";
 import type {
     CreateMenuRequest,
     Menu,
@@ -21,8 +22,15 @@ import { makeTestStore } from "test/store";
 jest.mock("api/client");
 
 const LIST: Menu[] = [
-    { id: 1, title: "Week", categoryname: "Weekly", menucontent: "x" },
+    {
+        id: 1,
+        title: "Week",
+        categoryname: "Weekly",
+        menucontent: "x",
+        recipe_count: 3,
+    },
 ];
+const PAGE = { items: LIST, total: LIST.length };
 const PARAMS: MenuListParams = { menu_name: "Week" };
 const DETAIL: MenuDetails = {
     menu: {
@@ -34,6 +42,7 @@ const DETAIL: MenuDetails = {
         isOwner: true,
     },
     recipes: [],
+    allergens: [],
 };
 const CREATE: CreateMenuRequest = {
     menuTitle: "Week",
@@ -50,7 +59,7 @@ const UPDATE: UpdateMenuRequest = {
 
 describe("menusApi", () => {
     it("should fetch menus by filters", async () => {
-        mockedGet.mockResolvedValue({ data: LIST });
+        mockedGet.mockResolvedValue({ data: PAGE });
         const store = makeTestStore();
 
         const result = await store.dispatch(
@@ -58,13 +67,13 @@ describe("menusApi", () => {
         );
 
         expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.list, {
-            params: PARAMS,
+            params: { ...PARAMS, limit: PAGE_SIZE, offset: 0 },
         });
-        expect(result.data).toEqual(LIST);
+        expect(result.data).toEqual({ pages: [PAGE], pageParams: [0] });
     });
 
     it("should fetch the current user's menus", async () => {
-        mockedGet.mockResolvedValue({ data: LIST });
+        mockedGet.mockResolvedValue({ data: PAGE });
         const store = makeTestStore();
 
         await store.dispatch(
@@ -72,8 +81,22 @@ describe("menusApi", () => {
         );
 
         expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.byPerson, {
-            params: PARAMS,
+            params: { ...PARAMS, limit: PAGE_SIZE, offset: 0 },
         });
+    });
+
+    it("should fetch all menus for statistics", async () => {
+        mockedGet.mockResolvedValue({ data: LIST });
+        const store = makeTestStore();
+
+        const result = await store.dispatch(
+            menusApi.endpoints.getAllMenus.initiate(null),
+        );
+
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.allUnpaginated, {
+            params: undefined,
+        });
+        expect(result.data).toEqual(LIST);
     });
 
     it("should fetch a menu by id", async () => {

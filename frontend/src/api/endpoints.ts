@@ -28,6 +28,7 @@ export const API_ROUTES = {
     },
     menu: {
         list: "/api/menu",
+        allUnpaginated: "/api/menus",
         create: "/api/create-menu",
         byId: (id: string | number) => `/api/menu/${id}`,
         byPerson: "/api/menu-filters-person",

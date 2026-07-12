@@ -1,96 +1,100 @@
-import React from "react";
+import { ListFilter } from "lucide-react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
-import type { RecipeFilterState } from "hooks/useRecipeListView";
+import { RECIPE_DEFAULT_SORT_ORDER } from "redux/slices/filtersSlice";
 
-import { CookingTimeInput } from "components/recipes/CookingTimeInput";
-import { RecipeTypeFilter } from "components/recipes/RecipeTypeFilter";
-import { DateFilterDropdown } from "components/ui/DateFilterDropdown";
+import { usePopoverDismiss } from "hooks/usePopoverDismiss";
+import type { RecipeFilterState } from "hooks/useRecipeListView";
+import { useScrollLock } from "hooks/useScrollLock";
+
 import { SearchComponent } from "components/ui/SearchComponent";
 
-interface RecipeFilterPanelProps {
+import styles from "./RecipeFilterPanel.module.scss";
+import { RecipeFilterPopover } from "./RecipeFilterPopover";
+
+export interface RecipeFilterPanelProps {
     filters: RecipeFilterState;
     setSelectedTypes: (types: number[]) => void;
-    setStartDate: (date: string) => void;
-    setEndDate: (date: string) => void;
     setMinCookingTime: (time: string) => void;
     setMaxCookingTime: (time: string) => void;
     setSortOrder: (order: string) => void;
     types: RecipeTypeSummary[];
     searchPlaceholder: string;
+    total: number;
 }
+
+const FILTER_ICON_SIZE = 17;
 
 export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
     filters,
     setSelectedTypes,
-    setStartDate,
-    setEndDate,
     setMinCookingTime,
     setMaxCookingTime,
     setSortOrder,
     types,
     searchPlaceholder,
+    total,
 }) => {
     const { t } = useTranslation("recipes");
+    const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const activeCount =
+        filters.selectedTypes.length +
+        (filters.minCookingTime ? 1 : 0) +
+        (filters.maxCookingTime ? 1 : 0) +
+        (filters.sortOrder !== RECIPE_DEFAULT_SORT_ORDER ? 1 : 0);
+
+    const closePopover = () => {
+        setIsOpen(false);
+    };
+
+    usePopoverDismiss(containerRef, isOpen, closePopover);
+    useScrollLock(isOpen);
 
     return (
-        <>
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
-                <SearchComponent placeholder={searchPlaceholder} />
-                <div className="ml-4 mt-4 sm:mt-0">
-                    <RecipeTypeFilter
-                        selectedTypes={filters.selectedTypes}
-                        onChange={setSelectedTypes}
-                        types={types}
-                    />
-                </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
-                <DateFilterDropdown
-                    startDate={filters.startDate}
-                    endDate={filters.endDate}
-                    setStartDate={setStartDate}
-                    setEndDate={setEndDate}
+        <div ref={containerRef} className={styles["recipe-filter-panel"]}>
+            <SearchComponent placeholder={searchPlaceholder} />
+            <button
+                type="button"
+                onClick={() => {
+                    setIsOpen((prev) => !prev);
+                }}
+                aria-haspopup="dialog"
+                aria-expanded={isOpen}
+                className={[
+                    styles["recipe-filter-panel__trigger"],
+                    activeCount > 0 &&
+                        styles["recipe-filter-panel__trigger--active"],
+                ]
+                    .filter(Boolean)
+                    .join(" ")}
+            >
+                <ListFilter size={FILTER_ICON_SIZE} aria-hidden="true" />
+                {t("filterPanel.title")}
+                {activeCount > 0 && (
+                    <span className={styles["recipe-filter-panel__badge"]}>
+                        {activeCount}
+                    </span>
+                )}
+            </button>
+            {isOpen && (
+                <RecipeFilterPopover
+                    filters={filters}
+                    setSelectedTypes={setSelectedTypes}
+                    setMinCookingTime={setMinCookingTime}
+                    setMaxCookingTime={setMaxCookingTime}
+                    setSortOrder={setSortOrder}
+                    types={types}
+                    total={total}
+                    onClose={() => {
+                        setIsOpen(false);
+                    }}
                 />
-
-                <CookingTimeInput
-                    id="minCookingTime"
-                    label={t("mainPage.minCookingTime")}
-                    value={filters.minCookingTime}
-                    onChange={setMinCookingTime}
-                    placeholder={t("mainPage.minPlaceholder")}
-                    min="0"
-                />
-
-                <CookingTimeInput
-                    id="maxCookingTime"
-                    label={t("mainPage.maxCookingTime")}
-                    value={filters.maxCookingTime}
-                    onChange={setMaxCookingTime}
-                    placeholder={t("mainPage.maxPlaceholder")}
-                    min="1"
-                />
-
-                <div className="flex items-center mb-2 sm:mb-0">
-                    <label htmlFor="sortOrder" className="mr-2">
-                        {t("mainPage.sortByTime")}
-                    </label>
-                    <select
-                        id="sortOrder"
-                        value={filters.sortOrder}
-                        onChange={(e) => {
-                            setSortOrder(e.target.value);
-                        }}
-                        className="border rounded p-2"
-                    >
-                        <option value="asc">{t("mainPage.fastToSlow")}</option>
-                        <option value="desc">{t("mainPage.slowToFast")}</option>
-                    </select>
-                </div>
-            </div>
-        </>
+            )}
+        </div>
     );
 };

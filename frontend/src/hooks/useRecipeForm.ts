@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import type {
     RecipeFormChangeMessages,
@@ -6,26 +6,41 @@ import type {
     RecipeFormInitialValues,
 } from "types/recipe";
 
+import { useDirtyRef } from "hooks/useDirtyRef";
 import { useRecipeFormValidation } from "hooks/useRecipeFormValidation";
 import { useSelectedIngredients } from "hooks/useSelectedIngredients";
+
+const BLANK_SNAPSHOT: RecipeFormInitialValues = {
+    title: "",
+    content: "",
+    cookingHours: "",
+    cookingMinutes: "",
+    selectedTypeId: null,
+    selectedIngredients: [],
+};
 
 export const useRecipeForm = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const [cookingTime, setCookingTime] = useState("");
-    const [servings, setServings] = useState("");
+    const [cookingHours, setCookingHours] = useState("");
+    const [cookingMinutes, setCookingMinutes] = useState("");
     const [selectedTypeId, setSelectedTypeId] = useState<number | null>(null);
+    const [initialSnapshot, setInitialSnapshot] =
+        useState<RecipeFormInitialValues>(BLANK_SNAPSHOT);
 
     const {
         selectedIngredients,
         setSelectedIngredients,
         toggleIngredientSelection,
         updateIngredientQuantity,
+        removeIngredient,
+        reorderIngredients,
     } = useSelectedIngredients();
 
     const {
-        error,
-        setError,
+        titleError,
+        descriptionError,
+        ingredientsError,
         typeError,
         cookingTimeError,
         validateCreate: _validateCreate,
@@ -40,8 +55,8 @@ export const useRecipeForm = () => {
                     content,
                     selectedIngredients,
                     selectedTypeId,
-                    cookingTime,
-                    servings,
+                    cookingHours,
+                    cookingMinutes,
                 },
                 messages,
             ),
@@ -50,50 +65,80 @@ export const useRecipeForm = () => {
             content,
             selectedIngredients,
             selectedTypeId,
-            cookingTime,
-            servings,
+            cookingHours,
+            cookingMinutes,
             _validateCreate,
         ],
     );
 
     const validateChange = useCallback(
         (messages: RecipeFormChangeMessages) =>
-            _validateChange({ cookingTime, servings }, messages),
-        [cookingTime, servings, _validateChange],
+            _validateChange({ cookingHours, cookingMinutes }, messages),
+        [cookingHours, cookingMinutes, _validateChange],
     );
 
     const setInitialValues = useCallback(
         (values: RecipeFormInitialValues) => {
             setTitle(values.title);
             setContent(values.content);
-            setCookingTime(values.cookingTime);
-            setServings(values.servings);
+            setCookingHours(values.cookingHours);
+            setCookingMinutes(values.cookingMinutes);
             setSelectedTypeId(values.selectedTypeId);
             setSelectedIngredients(values.selectedIngredients);
+            setInitialSnapshot(values);
         },
         [setSelectedIngredients],
     );
+
+    const isDirty = useMemo(() => {
+        const current: RecipeFormInitialValues = {
+            title,
+            content,
+            cookingHours,
+            cookingMinutes,
+            selectedTypeId,
+            selectedIngredients,
+        };
+
+        return JSON.stringify(current) !== JSON.stringify(initialSnapshot);
+    }, [
+        title,
+        content,
+        cookingHours,
+        cookingMinutes,
+        selectedTypeId,
+        selectedIngredients,
+        initialSnapshot,
+    ]);
+
+    const { isDirtyRef, markClean } = useDirtyRef(isDirty);
 
     return {
         title,
         setTitle,
         content,
         setContent,
-        cookingTime,
-        setCookingTime,
-        servings,
-        setServings,
+        cookingHours,
+        setCookingHours,
+        cookingMinutes,
+        setCookingMinutes,
         selectedIngredients,
         selectedTypeId,
         setSelectedTypeId,
-        error,
-        setError,
+        titleError,
+        descriptionError,
+        ingredientsError,
         typeError,
         cookingTimeError,
         toggleIngredientSelection,
         updateIngredientQuantity,
+        removeIngredient,
+        reorderIngredients,
         validateCreate,
         validateChange,
         setInitialValues,
+        isDirty,
+        isDirtyRef,
+        markClean,
     };
 };

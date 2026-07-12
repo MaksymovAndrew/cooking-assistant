@@ -6,6 +6,10 @@ if [ "$SKIP_CHECKS" = "1" ]; then
   exit 0
 fi
 
+# on release/X.Y branches the shared version is bumped automatically and the
+# rewritten package files are staged into this same commit
+node scripts/release-version.mjs precommit
+
 npx lint-staged
 npm --prefix backend run typecheck
 npm --prefix backend run lint
@@ -16,3 +20,5 @@ npm --prefix frontend run lint
 npm --prefix frontend run lint:sonarjs
 npm --prefix frontend run stylelint
 npm --prefix frontend run test
+npx eslint .
+npm run typecheck:e2e

@@ -1,6 +1,11 @@
 import type { Pool } from "pg";
 
+import { PAGINATION } from "constants/pagination";
+import type { PaginatedResult } from "domain/repositories/pagination.types";
+
 import type { RecipeFilters } from "application/use-cases/recipes/recipe.types";
+
+import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
 
 type QueryParam = string | number | number[];
 
@@ -14,11 +19,14 @@ interface RecipeSearchRow {
     cooking_time: number | null;
     type_name: string | null;
     ingredients: unknown;
+    total_count: number;
 }
 
 const BASE_RECIPE_SELECT = `
         SELECT r.id, r.title, r.content, r.person_id, r.type_id, r.creation_date, r.cooking_time,
-               rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name)) AS ingredients
+               rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name, 'allergens', i.allergens)) AS ingredients,
+               -- cast: COUNT() is bigint, which pg returns as a string, not a number
+               COUNT(*) OVER()::int AS total_count
         FROM recipes r
                LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
                LEFT JOIN ingredients i ON ri.ingredient_id = i.id
@@ -82,51 +90,64 @@ function applyRecipeFilters(
     return query;
 }
 
-export async function searchRecipes(
+// every branch ends with the ", id" tie-breaker so OFFSET pagination never duplicates or skips rows
+function buildRecipeOrderBy(sortOrder?: "asc" | "desc"): string {
+    if (sortOrder) {
+        return ` ORDER BY r.cooking_time ${sortOrder === "asc" ? "ASC" : "DESC"}, r.id DESC`;
+    }
+
+    return ` ORDER BY r.creation_date DESC, r.id DESC`;
+}
+
+// shared tail of both searches: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed
+async function runRecipeSearch(
     pool: Pool,
-    filters: unknown,
-): Promise<unknown[]> {
-    const parsed: RecipeFilters = filters ?? {};
-    const params: QueryParam[] = [];
+    whereSeed: string,
+    params: QueryParam[],
+    startIndex: number,
+    parsed: RecipeFilters,
+): Promise<PaginatedResult<unknown>> {
     let query = applyRecipeFilters(
-        `${BASE_RECIPE_SELECT} WHERE 1=1`,
+        `${BASE_RECIPE_SELECT} ${whereSeed}`,
         params,
-        1,
+        startIndex,
         parsed,
     );
 
     query += ` GROUP BY r.id, rt.type_name`;
-
-    if (parsed.sort_order) {
-        query += ` ORDER BY r.cooking_time ${parsed.sort_order === "asc" ? "ASC" : "DESC"}`;
-    }
+    query += buildRecipeOrderBy(parsed.sort_order);
+    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    params.push(
+        parsed.limit ?? PAGINATION.DEFAULT_LIMIT,
+        parsed.offset ?? PAGINATION.DEFAULT_OFFSET,
+    );
 
     const result = await pool.query<RecipeSearchRow>(query, params);
 
-    return result.rows;
+    return extractPaginatedRows(result.rows);
+}
+
+export async function searchRecipes(
+    pool: Pool,
+    filters: unknown,
+): Promise<PaginatedResult<unknown>> {
+    const parsed: RecipeFilters = filters ?? {};
+
+    return runRecipeSearch(pool, `WHERE 1=1`, [], 1, parsed);
 }
 
 export async function searchPersonRecipes(
     pool: Pool,
     personId: number,
     filters: unknown,
-): Promise<unknown[]> {
+): Promise<PaginatedResult<unknown>> {
     const parsed: RecipeFilters = filters ?? {};
-    const params: QueryParam[] = [personId];
-    let query = applyRecipeFilters(
-        `${BASE_RECIPE_SELECT} WHERE r.person_id = $1`,
-        params,
+
+    return runRecipeSearch(
+        pool,
+        `WHERE r.person_id = $1`,
+        [personId],
         2,
         parsed,
     );
-
-    query += ` GROUP BY r.id, rt.type_name`;
-
-    if (parsed.sort_order) {
-        query += ` ORDER BY r.cooking_time ${parsed.sort_order === "asc" ? "ASC" : "DESC"}`;
-    }
-
-    const result = await pool.query<RecipeSearchRow>(query, params);
-
-    return result.rows;
 }

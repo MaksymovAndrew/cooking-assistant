@@ -5,6 +5,8 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "constants/errorMessages";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
+const LOGIN_PATH = "/api/login";
+
 describe("user routes", () => {
     it("should return 401 without a token", async () => {
         const { app } = buildTestApp();
@@ -54,7 +56,7 @@ describe("user routes", () => {
         deps.passwordHasher.compare.mockResolvedValue(true);
         deps.tokenService.generate.mockReturnValue("token-value");
 
-        const res = await request(app).post("/api/login").send({
+        const res = await request(app).post(LOGIN_PATH).send({
             login: "bob",
             password: "secret",
         });
@@ -85,15 +87,25 @@ describe("user routes", () => {
         );
     });
 
-    it("should return the current user id for an authenticated request", async () => {
-        const { app } = buildTestApp();
+    it("should return the current user for an authenticated request", async () => {
+        const { app, deps } = buildTestApp();
+        const currentUser = {
+            id: 1,
+            name: "Bob",
+            surname: "Cook",
+            login: "bob",
+            created_at: "2026-01-15T00:00:00.000Z",
+        };
+
+        deps.userRepository.findById.mockResolvedValue(currentUser);
 
         const res = await request(app)
             .get("/api/me")
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ id: 1 });
+        expect(res.body).toEqual(currentUser);
+        expect(deps.userRepository.findById).toHaveBeenCalledWith(1);
     });
 
     it("should return 401 on GET /api/me without a token", async () => {
@@ -102,6 +114,19 @@ describe("user routes", () => {
         const res = await request(app).get("/api/me");
 
         expect(res.status).toBe(401);
+    });
+
+    it("should return 404 on GET /api/me when the user no longer exists", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.userRepository.findById.mockResolvedValue(null);
+
+        const res = await request(app)
+            .get("/api/me")
+            .set("Cookie", authCookie());
+
+        expect(res.status).toBe(404);
+        expect(res.body).toEqual({ error: ERROR_MESSAGES.USER_NOT_FOUND });
     });
 
     it("should return users for an authenticated request", async () => {
@@ -123,7 +148,7 @@ describe("user routes", () => {
 
         deps.userRepository.findByLogin.mockResolvedValue(null);
 
-        const res = await request(app).post("/api/login").send({
+        const res = await request(app).post(LOGIN_PATH).send({
             login: "missing",
             password: "secret",
         });
@@ -138,7 +163,7 @@ describe("user routes", () => {
         const { app } = buildTestApp();
 
         const res = await request(app)
-            .post("/api/login")
+            .post(LOGIN_PATH)
             .set("Content-Type", "application/json")
             .send('{"login": "bob",');
 

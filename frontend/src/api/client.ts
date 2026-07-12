@@ -3,6 +3,10 @@ import axios from "axios";
 export { isAxiosError } from "axios";
 
 import { API_BASE_URL } from "config/env";
+import {
+    HTTP_STATUS_FORBIDDEN,
+    HTTP_STATUS_UNAUTHORIZED,
+} from "constants/http";
 import { PUBLIC_PATHS } from "constants/routes";
 
 import { API_ROUTES } from "./endpoints";
@@ -13,7 +17,7 @@ export const apiClient: AxiosInstance = axios.create({
     withCredentials: true,
 });
 
-const AUTH_ERROR_STATUSES = [401, 403];
+const AUTH_ERROR_STATUSES = [HTTP_STATUS_UNAUTHORIZED, HTTP_STATUS_FORBIDDEN];
 const SKIP_REDIRECT_URLS = [API_ROUTES.auth.me];
 
 export function handleAuthError(error: AxiosError): Promise<never> {

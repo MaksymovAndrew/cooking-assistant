@@ -6,17 +6,19 @@ import type { UserIngredient } from "types/userIngredient";
 
 import { API_ROUTES } from "api/endpoints";
 
-import { ModalRoot } from "components/ui/Modals";
+import { ModalRoot } from "components/modals";
 
 import IngredientsPage from "pages/person-ingredients/IngredientsPage";
 import { mockedDelete, mockedGet, mockedPut } from "test/apiClientMock";
-import { BTN_EDIT_INGREDIENTS } from "test/constants";
+import { BTN_ADD_INGREDIENT } from "test/constants";
 import { renderWithProviders } from "test/router";
 
 jest.mock("api/client");
 
 const INGREDIENT_NAME = "Potato";
-const SAVE_QUANTITIES = "Save quantities";
+const SEARCH_INGREDIENTS_PLACEHOLDER = "Search ingredients...";
+const SAVE_QUANTITY = "Save";
+const EDIT_QUANTITIES = "Edit quantities";
 const USER_INGREDIENTS: UserIngredient[] = [
     {
         ingredient_id: 5,
@@ -26,8 +28,8 @@ const USER_INGREDIENTS: UserIngredient[] = [
     },
 ];
 const ALL_INGREDIENTS: Ingredient[] = [
-    { id: 5, name: INGREDIENT_NAME, unit_name: "g" },
-    { id: 6, name: "Tomato", unit_name: "kg" },
+    { id: 5, name: INGREDIENT_NAME, unit_name: "g", allergens: null },
+    { id: 6, name: "Tomato", unit_name: "kg", allergens: null },
 ];
 
 let pantry: UserIngredient[];
@@ -63,34 +65,56 @@ describe("IngredientsPage", () => {
         expect(await screen.findByText(INGREDIENT_NAME)).toBeInTheDocument();
     });
 
-    it("should show the ingredient selector after clicking Edit ingredients", async () => {
+    it("should open the add-ingredient modal and search for a new ingredient", async () => {
         setup();
 
         await screen.findByText(INGREDIENT_NAME);
 
         await userEvent.click(
-            screen.getByRole("button", { name: BTN_EDIT_INGREDIENTS }),
+            screen.getByRole("button", { name: BTN_ADD_INGREDIENT }),
+        );
+        await userEvent.type(
+            screen.getByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
+            "tom",
         );
 
         expect(
-            screen.getByRole("button", { name: "Tomato" }),
+            screen.getByRole("button", { name: /tom/i }),
         ).toBeInTheDocument();
     });
 
-    it("should hide the ingredient selector after clicking Save", async () => {
+    it("should close the add-ingredient modal after saving", async () => {
         mockedPut.mockResolvedValue({ data: null });
         setup();
 
         await screen.findByText(INGREDIENT_NAME);
 
         await userEvent.click(
-            screen.getByRole("button", { name: BTN_EDIT_INGREDIENTS }),
+            screen.getByRole("button", { name: BTN_ADD_INGREDIENT }),
         );
-        await userEvent.click(screen.getByRole("button", { name: "Save" }));
+        await userEvent.click(
+            screen.getByRole("button", { name: "Add to pantry" }),
+        );
 
         expect(
-            screen.queryByRole("button", { name: "Tomato" }),
+            screen.queryByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
         ).not.toBeInTheDocument();
+    });
+
+    it("should close the add-ingredient modal without saving on Cancel", async () => {
+        setup();
+
+        await screen.findByText(INGREDIENT_NAME);
+
+        await userEvent.click(
+            screen.getByRole("button", { name: BTN_ADD_INGREDIENT }),
+        );
+        await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+        expect(
+            screen.queryByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
+        ).not.toBeInTheDocument();
+        expect(mockedPut).not.toHaveBeenCalled();
     });
 
     it("should show the delete confirmation modal when Delete is clicked", async () => {
@@ -103,35 +127,57 @@ describe("IngredientsPage", () => {
         expect(screen.getByText(deleteMessage)).toBeInTheDocument();
     });
 
-    it("should show the quantity editor after clicking Edit quantities", async () => {
+    it("should show a per-card quantity input and Save button after clicking Edit quantities", async () => {
         setup();
 
         await screen.findByText(INGREDIENT_NAME);
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Edit quantities" }),
+            screen.getByRole("button", { name: EDIT_QUANTITIES }),
         );
 
         expect(
-            screen.getByRole("button", { name: SAVE_QUANTITIES }),
+            screen.getByRole("button", { name: SAVE_QUANTITY }),
         ).toBeInTheDocument();
+        expect(screen.getByRole("spinbutton")).toBeInTheDocument();
     });
 
-    it("should hide the quantity editor after clicking Save quantities", async () => {
+    it("should persist the edited quantity and keep the edit session open after clicking the card's Save", async () => {
         mockedPut.mockResolvedValue({ data: null });
         setup();
 
         await screen.findByText(INGREDIENT_NAME);
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Edit quantities" }),
+            screen.getByRole("button", { name: EDIT_QUANTITIES }),
         );
+        await userEvent.clear(screen.getByRole("spinbutton"));
+        await userEvent.type(screen.getByRole("spinbutton"), "5");
         await userEvent.click(
-            screen.getByRole("button", { name: SAVE_QUANTITIES }),
+            screen.getByRole("button", { name: SAVE_QUANTITY }),
         );
 
+        expect(mockedPut).toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.updateQuantities,
+            expect.anything(),
+        );
         expect(
-            screen.queryByRole("button", { name: SAVE_QUANTITIES }),
+            screen.getByRole("button", { name: SAVE_QUANTITY }),
+        ).toBeInTheDocument();
+    });
+
+    it("should hide the quantity input after clicking Done", async () => {
+        setup();
+
+        await screen.findByText(INGREDIENT_NAME);
+
+        await userEvent.click(
+            screen.getByRole("button", { name: EDIT_QUANTITIES }),
+        );
+        await userEvent.click(screen.getByRole("button", { name: "Done" }));
+
+        expect(
+            screen.queryByRole("button", { name: SAVE_QUANTITY }),
         ).not.toBeInTheDocument();
     });
 
@@ -159,9 +205,24 @@ describe("IngredientsPage", () => {
         await userEvent.click(screen.getByRole("button", { name: "Delete" }));
         await userEvent.click(screen.getByRole("button", { name: "Confirm" }));
 
-        // RTK Query refetch after Pantry tag invalidation is async; wait for
-        // the empty-state text before asserting the ingredient is gone
+        // RTK Query refetch after Pantry tag invalidation is async; wait for the empty-state text before asserting the ingredient is gone
         await screen.findByText("You currently have no ingredients.");
         expect(screen.queryByText(INGREDIENT_NAME)).not.toBeInTheDocument();
+    });
+
+    it("should filter ingredients by the search box", async () => {
+        setup();
+
+        await screen.findByText(INGREDIENT_NAME);
+
+        await userEvent.type(
+            screen.getByPlaceholderText("Search your pantry..."),
+            "zzz",
+        );
+
+        expect(screen.queryByText(INGREDIENT_NAME)).not.toBeInTheDocument();
+        expect(
+            screen.getByText("No ingredients match your search."),
+        ).toBeInTheDocument();
     });
 });

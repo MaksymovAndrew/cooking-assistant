@@ -1,0 +1,102 @@
+@use "styles/abstracts" as *;
+
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-3);
+    min-height: 60vh;
+    padding: var(--s-7) var(--s-4);
+    text-align: center;
+
+    &__circle {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 104px;
+        height: 104px;
+        margin-bottom: var(--s-2);
+        border-radius: var(--r-pill);
+        background: var(--brand-subtle);
+        color: var(--brand);
+
+        @include respond-to(desktop) {
+            width: 148px;
+            height: 148px;
+        }
+    }
+
+    &__badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-pill);
+        background: var(--surface-2);
+        color: var(--text-muted);
+        font:
+            700 15px "Geist Mono",
+            monospace;
+
+        @include respond-to(desktop) {
+            display: flex;
+        }
+    }
+
+    &__numeral {
+        margin: 0;
+        color: var(--brand-subtle);
+        letter-spacing: -0.03em;
+        font:
+            700 clamp(56px, 12vw, 80px) "Geist Mono",
+            monospace;
+        line-height: 1;
+    }
+
+    &__heading {
+        margin: 0;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(24px, 5vw, 34px) Fraunces,
+            serif;
+    }
+
+    &__description {
+        max-width: 40ch;
+        margin: 0;
+        color: var(--text-2);
+        font:
+            400 15px/1.5 Inter,
+            sans-serif;
+    }
+
+    &__links {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: var(--s-2);
+        color: var(--text-muted);
+        font:
+            500 13px Inter,
+            sans-serif;
+
+        a {
+            color: var(--text-2);
+            text-decoration: none;
+
+            @include focus-ring;
+
+            @include on-hover {
+                color: var(--brand);
+            }
+        }
+    }
+}

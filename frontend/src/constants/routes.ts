@@ -1,24 +1,25 @@
 export const ROUTES = {
     home: "/",
-    main: "/main",
     login: "/login",
     registration: "/registration",
 
+    allRecipes: "/all-recipes",
     myRecipes: "/my-recipes",
     addRecipe: "/add-recipe",
     recipeDetails: "/recipe/:id",
     changeRecipe: "/change-recipe/:id",
 
-    recipeTypes: "/types",
-
     ingredients: "/ingredients",
     stats: "/stats",
 
-    menu: "/menu",
+    allMenus: "/all-menus",
     myMenus: "/my-menus",
     addMenu: "/add-menu",
     menuDetails: "/menu/:id",
     changeMenu: "/change-menu/:id",
+
+    profile: "/profile",
+    settings: "/settings",
 
     notFound: "*",
 } as const;

@@ -1,0 +1,44 @@
+@use "styles/abstracts" as *;
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-8) var(--s-4);
+    text-align: center;
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 104px;
+        height: 104px;
+        margin-bottom: var(--s-2);
+        border-radius: var(--r-pill);
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+
+    &__title {
+        color: var(--text);
+        font:
+            600 22px Fraunces,
+            serif;
+    }
+
+    &__description {
+        max-width: 40ch;
+        margin: 0;
+        color: var(--text-2);
+        font:
+            400 15px/1.5 Inter,
+            sans-serif;
+    }
+
+    &__action {
+        display: flex;
+        gap: var(--s-3);
+        margin-top: var(--s-2);
+    }
+}

@@ -1,10 +1,13 @@
 import { z } from "zod";
 
 import {
+    hasUniqueItems,
     idListStringSchema,
     idSchema,
+    limitSchema,
     nonEmptyStringSchema,
     numberSchema,
+    offsetSchema,
     optionalStringSchema,
     positiveIntegerSchema,
     toNumber,
@@ -36,17 +39,13 @@ export const createRecipeSchema = z.object({
             required_error: "Ingredients are required",
             invalid_type_error: "Ingredients must be an array",
         })
-        .refine(
-            (items) =>
-                new Set(items.map((item) => item.id)).size === items.length,
-            { message: "Ingredient IDs must be unique" },
-        ),
+        .refine((items) => hasUniqueItems(items, (item) => item.id), {
+            message: "Ingredient IDs must be unique",
+        }),
     type_id: positiveIntegerSchema("Recipe type ID").optional(),
     cooking_time: positiveIntegerSchema("Cooking time").optional(),
-    servings: z.preprocess(
-        toNumber,
-        positiveIntegerSchema("Servings").optional(),
-    ),
+    // free-form text (e.g. "4" or "a full pot") - matches the VARCHAR column, not a count
+    servings: nonEmptyStringSchema("Servings").optional(),
 });
 
 export const updateRecipeSchema = createRecipeSchema.omit({
@@ -73,4 +72,6 @@ export const recipeFiltersSchema = z.object({
         positiveIntegerSchema("Max cooking time").optional(),
     ),
     sort_order: z.enum(["asc", "desc"]).optional(),
+    limit: limitSchema,
+    offset: offsetSchema,
 });

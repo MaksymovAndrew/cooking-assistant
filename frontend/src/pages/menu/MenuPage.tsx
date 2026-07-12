@@ -20,8 +20,13 @@ const MenuPage: React.FC = () => {
         <MenuListView
             {...list}
             heading={heading}
-            emptyMessage={t("menuPage.noMenus")}
+            subtitle={t("menuPage.subtitle", { count: list.total })}
+            emptyTitle={t("menuPage.emptyTitle")}
+            emptyDescription={t("menuPage.emptyDescription")}
             searchPlaceholder={t("menuPage.searchPlaceholder")}
+            onRetry={() => {
+                list.refetch().catch(() => undefined);
+            }}
         />
     );
 };

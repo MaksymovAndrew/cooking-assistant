@@ -1,50 +1,56 @@
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+import { ROUTES } from "constants/routes";
 
 import { useUpdateMenuPage } from "hooks/useUpdateMenuPage";
 
-import { MenuFormFields } from "components/forms/MenuFormFields";
-import { Header } from "components/layout/Header";
+import { MenuForm } from "components/forms/MenuForm";
+import { AppShell } from "components/layout/AppShell";
 
-const UpdateMenuPage: React.FC = () => {
+import styles from "./MenuFormPage.module.scss";
+
+const ChangeMenuPage: React.FC = () => {
     const { t } = useTranslation("menu");
     const { form, categories, allRecipes, isLoading, handleSubmit } =
         useUpdateMenuPage();
 
-    if (isLoading) {
-        return <div>{t("changeMenuPage.loading")}</div>;
-    }
-
     return (
-        <div>
-            <Header />
-            <div className="mx-[15vw]">
-                <h1 className="text-relative-h3 my-[7vh] font-kharkiv font-bold mb-4">
+        <AppShell>
+            <div className={styles["menu-form-page"]}>
+                <nav
+                    aria-label={t("changeMenuPage.breadcrumb")}
+                    className={styles["menu-form-page__breadcrumb"]}
+                >
+                    <Link to={ROUTES.allMenus}>
+                        {t("changeMenuPage.breadcrumbMenus")}
+                    </Link>
+                    <ChevronRight size={14} aria-hidden="true" />
+                    <span>{t("changeMenuPage.breadcrumbCurrent")}</span>
+                </nav>
+                <h1 className={styles["menu-form-page__heading"]}>
                     {t("changeMenuPage.heading")}
                 </h1>
-                <form className="space-y-4">
-                    <MenuFormFields
+                {isLoading ? (
+                    <p>{t("changeMenuPage.loading")}</p>
+                ) : (
+                    <MenuForm
                         form={form}
                         categories={categories}
                         allRecipes={allRecipes}
-                        idPrefix="edit-menu"
                         keyPrefix="changeMenuPage"
+                        idPrefix="edit-menu"
+                        submitLabel={t("changeMenuPage.updateButton")}
+                        onSubmit={() => {
+                            void handleSubmit();
+                        }}
                     />
-                    <div>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                void handleSubmit();
-                            }}
-                            className="w-full py-2 px-4 bg-green-500 text-white rounded-full"
-                        >
-                            {t("changeMenuPage.updateButton")}
-                        </button>
-                    </div>
-                </form>
+                )}
             </div>
-        </div>
+        </AppShell>
     );
 };
 
-export default UpdateMenuPage;
+export default ChangeMenuPage;

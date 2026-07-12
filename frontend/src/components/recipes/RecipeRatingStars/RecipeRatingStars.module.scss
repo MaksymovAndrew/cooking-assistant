@@ -1,0 +1,49 @@
+.recipe-rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &__row {
+        display: flex;
+        gap: 3px;
+    }
+
+    &__star {
+        position: relative;
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+    }
+
+    &__outline {
+        color: var(--border);
+        fill: var(--surface-2);
+    }
+
+    &__fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    &__filled {
+        color: var(--warning);
+        fill: var(--warning);
+    }
+
+    &__value {
+        color: var(--text);
+        font:
+            600 14px "Geist Mono",
+            monospace;
+    }
+
+    &__count {
+        color: var(--text-muted);
+        font:
+            400 12px "Geist Mono",
+            monospace;
+    }
+}

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { PAGINATION } from "constants/pagination";
+
 export function toNumber(value: unknown): unknown {
     const isEmptyInput = value == null || value === "";
 
@@ -51,10 +53,19 @@ export function numberSchema(field: string) {
     });
 }
 
+export function integerSchema(field: string) {
+    return numberSchema(field).int(`${field} must be an integer`);
+}
+
 export function positiveIntegerSchema(field: string) {
-    return numberSchema(field)
-        .int(`${field} must be an integer`)
-        .positive(`${field} must be positive`);
+    return integerSchema(field).positive(`${field} must be positive`);
+}
+
+export function hasUniqueItems<T>(
+    items: T[],
+    getKey: (item: T) => unknown = (item) => item,
+): boolean {
+    return new Set(items.map(getKey)).size === items.length;
 }
 
 export function idListStringSchema(field: string) {
@@ -67,3 +78,21 @@ export function idListStringSchema(field: string) {
             `${field} must be a comma-separated list of IDs`,
         );
 }
+
+export const limitSchema = z.preprocess(
+    toNumber,
+    positiveIntegerSchema("Limit")
+        .max(
+            PAGINATION.MAX_LIMIT,
+            `Limit must be at most ${PAGINATION.MAX_LIMIT}`,
+        )
+        .optional(),
+);
+
+export const offsetSchema = z.preprocess(
+    toNumber,
+    numberSchema("Offset")
+        .int("Offset must be an integer")
+        .min(0, "Offset must be at least 0")
+        .optional(),
+);

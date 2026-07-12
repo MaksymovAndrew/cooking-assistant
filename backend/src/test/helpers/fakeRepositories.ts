@@ -39,6 +39,7 @@ function createRecipeRepository(): jest.Mocked<RecipeRepository> {
 function createMenuRepository(): jest.Mocked<MenuRepository> {
     return {
         findAll: jest.fn(),
+        findAllUnpaginated: jest.fn(),
         create: jest.fn(),
         findByIdWithRecipes: jest.fn(),
         update: jest.fn(),
@@ -61,6 +62,7 @@ function createPantryRepository(): jest.Mocked<PantryRepository> {
 function createUserRepository(): jest.Mocked<UserRepository> {
     return {
         findByLogin: jest.fn(),
+        findById: jest.fn(),
         create: jest.fn(),
         findAll: jest.fn(),
     };

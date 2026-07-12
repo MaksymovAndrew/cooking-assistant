@@ -1,0 +1,214 @@
+@use "styles/abstracts" as *;
+
+.recipe-filter-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+
+    &__trigger {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: var(--s-2);
+        height: 46px;
+        padding: 0 18px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-2);
+        color: var(--text);
+        font:
+            600 14px Inter,
+            sans-serif;
+        cursor: pointer;
+
+        @include focus-ring;
+    }
+
+    &__trigger--active {
+        border-color: var(--brand);
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 19px;
+        height: 19px;
+        padding: 0 5px;
+        border-radius: var(--r-pill);
+        background: var(--brand-strong);
+        color: var(--on-brand);
+        font:
+            700 11px "Geist Mono",
+            monospace;
+    }
+
+    &__popover {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: var(--z-dropdown);
+        width: 100%;
+        max-height: 85vh;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: 20px 20px 0 0;
+        background: var(--surface);
+        box-shadow: var(--e-3);
+        padding: var(--s-5);
+
+        @include respond-to(tablet) {
+            position: absolute;
+            top: calc(100% + 8px);
+            bottom: auto;
+            left: auto;
+            width: 340px;
+            border-radius: 14px;
+        }
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--s-4);
+        color: var(--text);
+        font:
+            600 16px Fraunces,
+            serif;
+    }
+
+    &__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border: none;
+        border-radius: 7px;
+        background: var(--surface-2);
+        color: var(--text-2);
+        cursor: pointer;
+
+        @include focus-ring;
+    }
+
+    &__section {
+        margin-bottom: var(--s-4);
+    }
+
+    &__label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font:
+            600 12px "Geist Mono",
+            monospace;
+    }
+
+    &__time-row {
+        display: flex;
+        gap: 10px;
+    }
+
+    &__time-field {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 5px;
+
+        span {
+            color: var(--text-muted);
+            text-align: center;
+            font:
+                400 11px Inter,
+                sans-serif;
+        }
+    }
+
+    &__time-input {
+        width: 100%;
+        height: 42px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        text-align: center;
+        font:
+            500 14px "Geist Mono",
+            monospace;
+
+        &:focus {
+            outline: none;
+            border-color: var(--brand);
+        }
+    }
+
+    &__type-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-2);
+    }
+
+    &__footer {
+        display: flex;
+        gap: 10px;
+        padding-top: var(--s-4);
+        border-top: 1px solid var(--border);
+    }
+
+    &__reset-button {
+        flex: 1;
+        height: 42px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface-2);
+        color: var(--text);
+        font:
+            600 13px Inter,
+            sans-serif;
+        cursor: pointer;
+
+        @include focus-ring;
+    }
+
+    &__apply-button {
+        flex: 2;
+        height: 42px;
+        border: none;
+        border-radius: 8px;
+        background: var(--brand-strong);
+        color: var(--on-brand);
+        font:
+            600 13px Inter,
+            sans-serif;
+        cursor: pointer;
+
+        @include focus-ring;
+
+        @include respond-to(tablet) {
+            flex: 1;
+        }
+    }
+
+    &__apply-mobile {
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
+    &__apply-desktop {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: inline;
+        }
+    }
+}

@@ -1,0 +1,244 @@
+@use "styles/abstracts" as *;
+
+.content-card {
+    position: relative;
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    color: inherit;
+    text-decoration: none;
+    transition:
+        transform 200ms var(--ease-out),
+        box-shadow 200ms var(--ease-out),
+        border-color 200ms var(--ease-out);
+
+    @include focus-ring;
+
+    @include on-hover {
+        transform: translateY(-4px);
+        box-shadow: var(--e-2);
+        border-color: var(--brand);
+    }
+
+    &__image {
+        position: relative;
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface-2);
+        color: var(--brand);
+    }
+
+    &__image-icon {
+        opacity: 0.45;
+    }
+
+    &__chip {
+        position: absolute;
+        top: 11px;
+        left: 11px;
+        padding: 0 11px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        border-radius: var(--r-pill);
+        border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+        background: color-mix(in srgb, var(--surface) 70%, transparent);
+        backdrop-filter: blur(10px);
+        color: var(--text);
+        font:
+            600 11px Inter,
+            sans-serif;
+    }
+
+    &__favourite {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--surface) 70%, transparent);
+        backdrop-filter: blur(10px);
+        color: var(--text-2);
+        cursor: default;
+        opacity: 1;
+        transition: transform var(--dur-fast) var(--ease-out);
+
+        @include on-hover {
+            transform: scale(1.1);
+        }
+    }
+
+    &__favourite--active {
+        color: var(--brand);
+
+        svg {
+            fill: currentcolor;
+        }
+    }
+
+    &__chip--row {
+        position: static;
+        height: 23px;
+        padding: 0 10px;
+        border: none;
+        background: var(--brand-subtle);
+        backdrop-filter: none;
+        color: var(--brand);
+    }
+
+    &__favourite--row {
+        position: static;
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: none;
+        backdrop-filter: none;
+    }
+
+    &__row-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+    }
+
+    &__body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: var(--s-2);
+        min-width: 0;
+    }
+
+    &__title {
+        @include truncate;
+
+        color: var(--text);
+        font:
+            600 17px Fraunces,
+            serif;
+    }
+
+    &__rating {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text);
+        font:
+            600 13px "Geist Mono",
+            monospace;
+    }
+
+    &__rating-star {
+        color: var(--warning);
+        fill: var(--warning);
+    }
+
+    &__rating-count {
+        color: var(--text-muted);
+        font-size: 12px;
+        font-weight: 400;
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: var(--s-4);
+        margin-top: auto;
+    }
+
+    &__meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-2);
+        font:
+            500 13px "Geist Mono",
+            monospace;
+    }
+
+    &__meta-text {
+        margin-top: auto;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+
+    &__allergen-badge {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: 5px;
+        height: 21px;
+        margin-left: auto;
+        padding: 0 9px;
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--warning) 15%, transparent);
+        color: var(--warning);
+        font:
+            600 10px Inter,
+            sans-serif;
+    }
+
+    &__allergen-badge--row {
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        padding: 0;
+        border-radius: 999px;
+    }
+}
+
+.content-card--grid {
+    flex-direction: column;
+
+    .content-card__image {
+        aspect-ratio: 16 / 9;
+    }
+
+    .content-card__body {
+        padding: 14px 15px 15px;
+    }
+}
+
+.content-card--row {
+    flex-direction: row;
+
+    .content-card__image {
+        width: 108px;
+    }
+
+    .content-card__body {
+        padding: 13px 15px;
+    }
+
+    .content-card__title {
+        font-size: 16px;
+    }
+}
+
+.content-card--mine {
+    border-width: 1.5px;
+    border-color: var(--brand);
+}
+
+.content-card--badge {
+    border-color: color-mix(in srgb, var(--warning) 55%, var(--border));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--warning) 12%, transparent);
+
+    // overrides the base hover's brand border-color so allergen cards stay amber
+    @include on-hover {
+        border-color: var(--warning);
+    }
+}

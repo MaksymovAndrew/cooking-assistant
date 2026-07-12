@@ -1,0 +1,41 @@
+@use "styles/abstracts" as *;
+
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-7) var(--s-4);
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border));
+    border-radius: var(--r-lg);
+    background: color-mix(in srgb, var(--danger) 6%, transparent);
+    text-align: center;
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        margin-bottom: var(--s-1);
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--danger) 14%, transparent);
+        color: var(--danger);
+    }
+
+    &__title {
+        color: var(--text);
+        font:
+            600 20px Fraunces,
+            serif;
+    }
+
+    &__description {
+        max-width: 40ch;
+        margin: 0;
+        color: var(--text-2);
+        font:
+            400 14px/1.5 Inter,
+            sans-serif;
+    }
+}

@@ -3,9 +3,17 @@ import { useTranslation } from "react-i18next";
 
 import type { LoginRequest } from "types/auth";
 
-import { FormField, PasswordField } from "components/forms/fields";
+import { Button } from "components/ui/Button";
+import { FormErrorBanner } from "components/ui/FormErrorBanner";
+import { FormField } from "components/ui/FormField";
+import { PasswordInput } from "components/ui/PasswordInput";
+import { TextInput } from "components/ui/TextInput";
 
-import { formatCountdown } from "utils/loginLockout";
+import { LockoutNotice } from "./LockoutNotice";
+import styles from "./LoginForm.module.scss";
+
+const USERNAME_ID = "login-username";
+const PW_FIELD_ID = "login-password";
 
 interface LoginFormProps {
     values: LoginRequest;
@@ -15,6 +23,7 @@ interface LoginFormProps {
     submitError?: string | null;
     isLocked?: boolean;
     lockoutRemainingMs?: number | null;
+    lockoutTotalMs?: number | null;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({
@@ -23,54 +32,70 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     onSubmit,
     submitLabel,
     submitError,
-    isLocked,
+    isLocked = false,
     lockoutRemainingMs = null,
+    lockoutTotalMs = null,
 }) => {
     const { t } = useTranslation("auth");
-
-    const displayedError =
-        isLocked && lockoutRemainingMs !== null
-            ? t("errors.lockoutCountdown", {
-                  time: formatCountdown(lockoutRemainingMs),
-              })
-            : submitError;
+    const hasCredentialError = Boolean(submitError) && !isLocked;
 
     return (
         <form
+            className={styles["login-form"]}
             onSubmit={(e) => {
                 e.preventDefault();
                 onSubmit();
             }}
-            className="space-y-4"
         >
+            <FormField htmlFor={USERNAME_ID} label={t("fields.usernameLabel")}>
+                <TextInput
+                    id={USERNAME_ID}
+                    value={values.login}
+                    hasError={hasCredentialError}
+                    disabled={isLocked}
+                    onChange={(e) => {
+                        onFieldChange("login", e.target.value);
+                    }}
+                />
+            </FormField>
             <FormField
-                id="login-username"
-                label={t("fields.usernameLabel")}
-                value={values.login}
-                onChange={(value) => {
-                    onFieldChange("login", value);
-                }}
-            />
-            <PasswordField
-                id="login-password"
+                htmlFor={PW_FIELD_ID}
                 label={t("fields.passwordLabel")}
-                value={values.password}
-                onChange={(value) => {
-                    onFieldChange("password", value);
-                }}
-                showLabel={t("fields.showPassword")}
-                hideLabel={t("fields.hidePassword")}
-            />
-            {displayedError && (
-                <p className="text-red-500 text-sm">{displayedError}</p>
+                labelRight={
+                    <button
+                        type="button"
+                        disabled
+                        className={styles["login-form__forgot-password"]}
+                    >
+                        {t("fields.forgotPasswordLink")}
+                    </button>
+                }
+            >
+                <PasswordInput
+                    id={PW_FIELD_ID}
+                    value={values.password}
+                    hasError={hasCredentialError}
+                    disabled={isLocked}
+                    onChange={(e) => {
+                        onFieldChange("password", e.target.value);
+                    }}
+                />
+            </FormField>
+            {isLocked && lockoutRemainingMs !== null ? (
+                <LockoutNotice
+                    remainingMs={lockoutRemainingMs}
+                    totalMs={lockoutTotalMs}
+                />
+            ) : (
+                submitError && <FormErrorBanner message={submitError} />
             )}
-            <button
+            <Button
                 type="submit"
                 disabled={isLocked}
-                className="bg-dark-purple w-full font-montserratRegular text-center text-white py-2 px-4 rounded-full disabled:opacity-50"
+                className={styles["login-form__submit"]}
             >
                 {submitLabel}
-            </button>
+            </Button>
         </form>
     );
 };

@@ -1,0 +1,1 @@
+export { NewsModal } from "./NewsModal";

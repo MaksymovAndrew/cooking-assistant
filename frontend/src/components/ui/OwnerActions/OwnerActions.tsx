@@ -1,32 +1,54 @@
+import { Heart } from "lucide-react";
 import React from "react";
-import { Link } from "react-router-dom";
+
+import { EditMark, TrashMark } from "components/icons";
+import { LinkButton } from "components/ui/LinkButton";
+
+import styles from "./OwnerActions.module.scss";
 
 interface OwnerActionsProps {
     editTo: string;
     onDelete: () => void;
     editLabel: string;
     deleteLabel: string;
+    favouriteLabel: string;
 }
 
-// edit (link) + delete (button) action pair shared by the recipe and menu detail
-// pages. Presentational: labels and the edit target are supplied by domain adapters.
+const ICON_SIZE = 16;
+
 export const OwnerActions: React.FC<OwnerActionsProps> = ({
     editTo,
     onDelete,
     editLabel,
     deleteLabel,
+    favouriteLabel,
 }) => (
-    <>
-        <Link to={editTo}>
-            <button className="mt-6 mr-[1vw] bg-yellow-500 text-white py-2 px-4 rounded-full">
-                {editLabel}
-            </button>
-        </Link>
+    <div className={styles["owner-actions"]}>
+        <LinkButton to={editTo} className={styles["owner-actions__edit"]}>
+            <EditMark size={ICON_SIZE} />
+            {editLabel}
+        </LinkButton>
         <button
-            onClick={onDelete}
-            className="mt-6 bg-red-500 text-white py-2 px-4 rounded-full"
+            type="button"
+            disabled
+            aria-label={favouriteLabel}
+            className={styles["owner-actions__favourite"]}
         >
-            {deleteLabel}
+            <Heart size={ICON_SIZE} aria-hidden="true" />
+            <span className={styles["owner-actions__label"]}>
+                {favouriteLabel}
+            </span>
         </button>
-    </>
+        <button
+            type="button"
+            onClick={onDelete}
+            aria-label={deleteLabel}
+            className={styles["owner-actions__delete"]}
+        >
+            <TrashMark size={ICON_SIZE} />
+            <span className={styles["owner-actions__label"]}>
+                {deleteLabel}
+            </span>
+        </button>
+    </div>
 );

@@ -6,8 +6,7 @@ import { logger } from "config/logger";
 
 type MigrationDirection = "up" | "down";
 
-// both the standalone migrate entry and the combined deploy-db entry live in
-// dist/scripts/, so ../../migrations resolves to /app/migrations in either bundle
+// both the standalone migrate entry and the combined deploy-db entry live in dist/scripts/, so ../../migrations resolves to /app/migrations in either bundle
 const migrationsDir = path.resolve(__dirname, "../../migrations");
 
 export async function runMigrations(args: string[]): Promise<void> {

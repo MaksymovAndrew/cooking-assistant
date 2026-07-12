@@ -4,14 +4,17 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "constants/errorMessages";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
+const RECIPE_TITLE = "Tomato soup";
+const RECIPE_12_PATH = "/api/recipe/12";
+
 function makeRecipeBody() {
     return {
-        title: "Tomato soup",
+        title: RECIPE_TITLE,
         content: "Boil tomatoes",
         ingredients: [{ id: 3, quantity: 2, quantity_recipe_ingredients: 2 }],
         type_id: 1,
         cooking_time: 30,
-        servings: 4,
+        servings: "4",
     };
 }
 
@@ -26,7 +29,7 @@ describe("recipe routes", () => {
 
     it("should create a recipe for an authenticated request", async () => {
         const { app, deps } = buildTestApp();
-        const createdRecipe = { id: 12, title: "Tomato soup" };
+        const createdRecipe = { id: 12, title: RECIPE_TITLE };
 
         deps.recipeRepository.create.mockResolvedValue(createdRecipe);
 
@@ -38,14 +41,14 @@ describe("recipe routes", () => {
         expect(res.status).toBe(200);
         expect(res.body).toEqual(createdRecipe);
         expect(deps.recipeRepository.create.mock.calls[0][0]).toMatchObject({
-            title: "Tomato soup",
+            title: RECIPE_TITLE,
             person_id: 7,
         });
     });
 
     it("should return recipes for an authenticated request", async () => {
         const { app, deps } = buildTestApp();
-        const recipes = [{ id: 12, title: "Tomato soup" }];
+        const recipes = [{ id: 12, title: RECIPE_TITLE }];
 
         deps.recipeRepository.findAllWithIngredients.mockResolvedValue(recipes);
 
@@ -59,12 +62,12 @@ describe("recipe routes", () => {
 
     it("should return one recipe with ingredients", async () => {
         const { app, deps } = buildTestApp();
-        const recipe = { id: 12, title: "Tomato soup", ingredients: [] };
+        const recipe = { id: 12, title: RECIPE_TITLE, ingredients: [] };
 
         deps.recipeRepository.findByIdWithIngredients.mockResolvedValue(recipe);
 
         const res = await request(app)
-            .get("/api/recipe/12")
+            .get(RECIPE_12_PATH)
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
@@ -87,12 +90,12 @@ describe("recipe routes", () => {
 
     it("should update a recipe owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
-        const updatedRecipe = { id: 12, title: "Tomato soup" };
+        const updatedRecipe = { id: 12, title: RECIPE_TITLE };
 
         deps.recipeRepository.update.mockResolvedValue(updatedRecipe);
 
         const res = await request(app)
-            .put("/api/recipe/12")
+            .put(RECIPE_12_PATH)
             .set("Cookie", authCookie(7))
             .send(makeRecipeBody());
 
@@ -108,7 +111,7 @@ describe("recipe routes", () => {
         deps.recipeRepository.update.mockResolvedValue(null);
 
         const res = await request(app)
-            .put("/api/recipe/12")
+            .put(RECIPE_12_PATH)
             .set("Cookie", authCookie(7))
             .send(makeRecipeBody());
 
@@ -122,7 +125,7 @@ describe("recipe routes", () => {
         deps.recipeRepository.deleteById.mockResolvedValue(true);
 
         const res = await request(app)
-            .delete("/api/recipe/12")
+            .delete(RECIPE_12_PATH)
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
@@ -132,16 +135,35 @@ describe("recipe routes", () => {
 
     it("should search recipes by filters", async () => {
         const { app, deps } = buildTestApp();
-        const recipes = [{ id: 12, title: "Tomato soup" }];
+        const paginated = {
+            items: [{ id: 12, title: RECIPE_TITLE }],
+            total: 1,
+        };
 
-        deps.recipeRepository.search.mockResolvedValue(recipes);
+        deps.recipeRepository.search.mockResolvedValue(paginated);
 
         const res = await request(app)
             .get("/api/recipes-by-filters?ingredient_name=tomato")
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(recipes);
+        expect(res.body).toEqual(paginated);
+    });
+
+    it("should pass limit and offset through to the repository", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.recipeRepository.search.mockResolvedValue({ items: [], total: 0 });
+
+        const res = await request(app)
+            .get("/api/recipes-by-filters?limit=10&offset=20")
+            .set("Cookie", authCookie());
+
+        expect(res.status).toBe(200);
+        expect(deps.recipeRepository.search).toHaveBeenCalledWith({
+            limit: 10,
+            offset: 20,
+        });
     });
 
     it("should return a 400 error body for an invalid filter", async () => {
@@ -158,18 +180,35 @@ describe("recipe routes", () => {
         expect(deps.recipeRepository.search).not.toHaveBeenCalled();
     });
 
+    it("should return a 400 error body for an out-of-range limit", async () => {
+        const { app, deps } = buildTestApp();
+
+        const res = await request(app)
+            .get("/api/recipes-by-filters?limit=101")
+            .set("Cookie", authCookie());
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({
+            error: "limit: Limit must be at most 100",
+        });
+        expect(deps.recipeRepository.search).not.toHaveBeenCalled();
+    });
+
     it("should search person recipes by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
-        const recipes = [{ id: 12, title: "Tomato soup" }];
+        const paginated = {
+            items: [{ id: 12, title: RECIPE_TITLE }],
+            total: 1,
+        };
 
-        deps.recipeRepository.searchByPerson.mockResolvedValue(recipes);
+        deps.recipeRepository.searchByPerson.mockResolvedValue(paginated);
 
         const res = await request(app)
             .get("/api/recipes-filters-person?ingredient_name=tomato")
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(recipes);
+        expect(res.body).toEqual(paginated);
         expect(deps.recipeRepository.searchByPerson).toHaveBeenCalledWith(7, {
             ingredient_name: "tomato",
         });

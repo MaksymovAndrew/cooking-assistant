@@ -25,6 +25,32 @@ describe("notificationsSlice", () => {
         expect(state.items[0].id.length).toBeGreaterThan(0);
     });
 
+    it("should not add a duplicate of a notification that is still visible", () => {
+        const afterFirst = notificationsReducer(
+            undefined,
+            addNotification({ type: "error", message: "Network Error" }),
+        );
+        const state = notificationsReducer(
+            afterFirst,
+            addNotification({ type: "error", message: "Network Error" }),
+        );
+
+        expect(state.items).toHaveLength(1);
+    });
+
+    it("should add notifications with the same message but different types", () => {
+        const afterFirst = notificationsReducer(
+            undefined,
+            addNotification({ type: "error", message: "Saved" }),
+        );
+        const state = notificationsReducer(
+            afterFirst,
+            addNotification({ type: "success", message: "Saved" }),
+        );
+
+        expect(state.items).toHaveLength(2);
+    });
+
     it("should remove a notification by id", () => {
         const start = {
             items: [

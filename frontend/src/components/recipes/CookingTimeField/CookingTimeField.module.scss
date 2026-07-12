@@ -1,0 +1,39 @@
+.cooking-time-field {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    &__input {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__unit {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        pointer-events: none;
+        font:
+            500 11px "Geist Mono",
+            monospace;
+    }
+
+    &__separator {
+        flex: none;
+        color: var(--text-muted);
+        font:
+            700 16px "Geist Mono",
+            monospace;
+    }
+
+    &__hint {
+        margin: 5px 0 0;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+}

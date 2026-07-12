@@ -1,0 +1,125 @@
+@use "styles/abstracts" as *;
+
+// mobile-first: a compact row (thumbnail + text); tablet+ switches to a stacked card (image on top, text below)
+.recent-recipe-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: 8px 12px 8px 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    text-decoration: none;
+    transition:
+        transform var(--dur-base) var(--ease-out),
+        border-color var(--dur-base) var(--ease-out);
+
+    @include focus-ring;
+
+    @include on-hover {
+        border-color: var(--brand);
+        transform: translateY(-2px);
+    }
+
+    @include respond-to(tablet) {
+        display: block;
+        padding: 0;
+        background: var(--surface-2);
+    }
+
+    // a rotated phone reverts to the compact row - the tablet stacked card doesn't fit the landscape split's narrow right column
+    @include respond-to-short-landscape {
+        display: flex;
+        padding: 8px 12px 8px 8px;
+        background: var(--surface);
+    }
+
+    &__image {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 48px;
+        border-radius: var(--r-sm);
+        background: var(--surface-2);
+        color: var(--brand);
+
+        // tablet+ uses the wide 21:9 thumbnail; keeping it on desktop too lets the 3x3 grid fit a laptop viewport without scrolling
+        @include respond-to(tablet) {
+            width: auto;
+            height: auto;
+            aspect-ratio: 21 / 9;
+            border-bottom: 1px solid var(--border);
+            border-radius: 0;
+        }
+
+        @include respond-to-short-landscape {
+            width: 64px;
+            height: 48px;
+            aspect-ratio: auto;
+            border-bottom: none;
+            border-radius: var(--r-sm);
+        }
+    }
+
+    &__image-icon {
+        opacity: 0.35;
+    }
+
+    &__body {
+        min-width: 0;
+
+        @include respond-to(tablet) {
+            padding: var(--s-3) var(--s-4);
+        }
+
+        @include respond-to-short-landscape {
+            padding: 0;
+        }
+    }
+
+    &__title {
+        @include truncate;
+
+        color: var(--text);
+        font:
+            600 13px Fraunces,
+            serif;
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 3px;
+        color: var(--text-muted);
+        font:
+            500 11px "Geist Mono",
+            monospace;
+
+        span::after {
+            content: "·";
+            margin-left: 5px;
+            opacity: 0.5;
+        }
+
+        span:last-child::after {
+            content: none;
+        }
+    }
+
+    &__rating {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: 3px;
+        color: var(--text-2);
+
+        svg {
+            fill: var(--warning);
+            stroke: none;
+        }
+    }
+}

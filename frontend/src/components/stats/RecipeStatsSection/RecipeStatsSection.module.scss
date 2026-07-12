@@ -1,0 +1,50 @@
+@use "styles/abstracts" as *;
+
+.recipe-stats-section {
+    &__heading {
+        margin: 0 0 var(--s-5);
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(24px, 4vw, 28px) Fraunces,
+            serif;
+    }
+
+    &__tiles {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--s-4);
+        margin-bottom: var(--s-6);
+
+        @include respond-to(desktop) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-5);
+        margin-bottom: var(--s-5);
+
+        @include respond-to(desktop) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    &__card-title {
+        margin: 0 0 4px;
+        color: var(--text);
+        font:
+            600 16px Fraunces,
+            serif;
+    }
+
+    &__card-subtitle {
+        margin: 0 0 var(--s-5);
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+}

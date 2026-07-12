@@ -1,0 +1,35 @@
+{
+    "greeting": {
+        "welcome": "Welcome back 👋",
+        "welcomeWithName": "Welcome back, {{name}} 👋"
+    },
+    "actions": {
+        "news": "News",
+        "newMenu": "New menu",
+        "newRecipe": "New recipe"
+    },
+    "stats": {
+        "recipes": "Recipes",
+        "menus": "Menus",
+        "pantryItems": "Pantry items",
+        "pantryItemsShort": "Pantry",
+        "expiringSoon": "Expiring soon",
+        "expiringSoonShort": "Expiring"
+    },
+    "recentRecipes": {
+        "title": "Recent recipes",
+        "viewAll": "View all →",
+        "empty": "No recipes yet - add your first one.",
+        "cookingTimeHoursMinutes": "{{hours}}h {{minutes}}m",
+        "cookingTimeMinutesOnly": "{{minutes}}m"
+    },
+    "expiringSoon": {
+        "title": "Expiring soon",
+        "pantryLink": "Pantry →",
+        "expired": "Expired",
+        "daysLeft_one": "{{count}} day",
+        "daysLeft_other": "{{count}} days",
+        "addToShoppingList": "+ Add to shopping list",
+        "empty": "Nothing expiring soon."
+    }
+}

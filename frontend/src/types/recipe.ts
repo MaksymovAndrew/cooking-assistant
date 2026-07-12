@@ -4,12 +4,24 @@ export interface RecipeListItem {
     type_name: string;
     creation_date: string;
     cooking_time: number;
+    // present on the search/person-filtered endpoints, absent from the unpaginated stats-only query - optional so it stays honest about which callers have it
+    person_id?: number;
 }
 
-// shape returned by GET /api/recipes - the recipe list plus an array_agg of
-// ingredient names (the list query in PgRecipeRepository.findAllWithIngredients)
+// shape returned by GET /api/recipes - the recipe list plus an array_agg of ingredient names
 export interface RecipeWithIngredientNames extends RecipeListItem {
     ingredients: string[];
+}
+
+export interface RecipeSearchIngredient {
+    id: number;
+    name: string;
+    allergens: string | null;
+}
+
+// shape returned by GET /api/recipes-by-filters and /api/recipes-filters-person/:id (different ingredient shape from RecipeWithIngredientNames)
+export interface RecipeSearchResultItem extends RecipeListItem {
+    ingredients: RecipeSearchIngredient[];
 }
 
 export interface RecipeDetailIngredient {
@@ -17,11 +29,10 @@ export interface RecipeDetailIngredient {
     name: string;
     quantity_recipe_ingredients: number;
     unit_name: string;
+    allergens: string | null;
 }
 
-// full shape returned by GET /api/recipe/:id (superset consumed by
-// RecipeDetailsPage + ChangeRecipePage - both pages already rely on
-// every field below, so the union is accurate, not invented)
+// shape returned by GET /api/recipe/:id (superset of what RecipeDetailsPage + ChangeRecipePage use)
 export interface RecipeDetails {
     id: number;
     title: string;
@@ -31,10 +42,9 @@ export interface RecipeDetails {
     type_name: string;
     cooking_time: number;
     creation_date: string;
-    servings: number | null;
+    servings: string | null;
     person_id: number;
-    // computed by the backend (r.person_id = current user) so the client can gate
-    // Edit/Delete without decoding the session
+    // computed by the backend (r.person_id = current user) so the client can gate Edit/Delete without decoding the session
     isOwner: boolean;
 }
 
@@ -45,7 +55,8 @@ export interface RecipeFilterParams {
     end_date?: string;
     min_cooking_time?: string;
     max_cooking_time?: string;
-    sort_order: string;
+    // omitted (not empty string - the backend enum-validates "asc"/"desc") falls back to creation_date DESC server-side
+    sort_order?: string;
 }
 
 export interface CreateRecipeIngredient {
@@ -59,7 +70,7 @@ export interface CreateRecipeRequest {
     ingredients: CreateRecipeIngredient[];
     type_id: number | null;
     cooking_time: number;
-    servings: number | undefined;
+    servings: string | undefined;
 }
 
 export interface UpdateRecipeIngredient {
@@ -72,7 +83,7 @@ export interface UpdateRecipeRequest {
     content: string;
     type_id: number | null;
     cooking_time: number;
-    servings: number | undefined;
+    servings: string | undefined;
     ingredients: UpdateRecipeIngredient[];
 }
 
@@ -86,8 +97,8 @@ export interface RecipeFormIngredient {
 export interface RecipeFormInitialValues {
     title: string;
     content: string;
-    cookingTime: string;
-    servings: string;
+    cookingHours: string;
+    cookingMinutes: string;
     selectedTypeId: number | null;
     selectedIngredients: RecipeFormIngredient[];
 }
@@ -99,11 +110,9 @@ export interface RecipeFormCreateMessages {
     errorType: string;
     errorCookingTimeFormat: string;
     errorCookingTimeInvalid: string;
-    errorServings: string;
 }
 
 export interface RecipeFormChangeMessages {
     errorCookingTimeFormat: string;
     errorCookingTimeInvalid: string;
-    errorServings: string;
 }

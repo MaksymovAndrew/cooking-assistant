@@ -1,21 +1,38 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Suspense } from "react";
 
 import { RecipeTypeChart } from "components/stats/RecipeTypeChart";
 
-jest.mock("react-apexcharts", () => ({
+jest.mock("components/stats/PieChartCard/PieChartCard", () => ({
     __esModule: true,
-    default: () => null,
+    default: ({ data }: { data: { name: string; value: number }[] }) => (
+        <div data-testid="donut-chart">
+            {data.map((d) => (
+                <span key={d.name}>{d.name}</span>
+            ))}
+        </div>
+    ),
 }));
 
 describe("RecipeTypeChart", () => {
-    it("should render without errors", () => {
-        const { container } = render(
+    it("should render the chart and pass stats to the donut", async () => {
+        render(
             <Suspense fallback={null}>
-                <RecipeTypeChart stats={[{ typeName: "Soup", count: 2 }]} />
+                <RecipeTypeChart stats={[{ typeName: "Soup", count: 3 }]} />
             </Suspense>,
         );
 
-        expect(container).toBeInTheDocument();
+        expect(await screen.findByTestId("donut-chart")).toBeInTheDocument();
+        expect(screen.getByText("Soup")).toBeInTheDocument();
+    });
+
+    it("should render with empty stats without errors", async () => {
+        render(
+            <Suspense fallback={null}>
+                <RecipeTypeChart stats={[]} />
+            </Suspense>,
+        );
+
+        expect(await screen.findByTestId("donut-chart")).toBeInTheDocument();
     });
 });

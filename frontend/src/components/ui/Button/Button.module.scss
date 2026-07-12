@@ -1,0 +1,138 @@
+@use "styles/abstracts" as *;
+
+@keyframes button-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-2);
+    border: none;
+    border-radius: var(--r-sm);
+    font:
+        600 15px Inter,
+        sans-serif;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out),
+        color var(--dur-fast) var(--ease-out),
+        transform 100ms ease;
+
+    @include focus-ring;
+
+    &:active:not(:disabled) {
+        transform: translateY(1px);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+}
+
+.button--primary {
+    background: var(--brand-strong);
+    color: var(--on-brand);
+
+    @include on-hover {
+        background: var(--brand);
+    }
+
+    &:active:not(:disabled) {
+        background: var(--brand-press);
+    }
+
+    &:disabled {
+        background: var(--surface-2);
+        color: var(--text-muted);
+    }
+}
+
+.button--secondary {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+
+    @include on-hover {
+        border-color: var(--brand);
+        background: var(--brand-subtle);
+    }
+}
+
+.button--ghost {
+    background: transparent;
+    color: var(--text);
+
+    @include on-hover {
+        background: var(--surface-2);
+    }
+}
+
+.button--danger {
+    background: var(--danger);
+    color: var(--on-brand);
+
+    @include on-hover {
+        filter: brightness(1.08);
+    }
+}
+
+.button--link {
+    background: transparent;
+    color: var(--brand);
+    padding: 0 var(--s-2);
+    height: auto;
+
+    @include on-hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+}
+
+.button--sm {
+    height: 34px;
+    padding: 0 var(--s-4);
+    font-size: 13px;
+}
+
+.button--md {
+    height: 44px;
+    padding: 0 var(--s-5);
+}
+
+.button--lg {
+    height: 52px;
+    padding: 0 26px;
+    font-size: 17px;
+    border-radius: 10px;
+}
+
+.button--icon-only {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    flex: none;
+}
+
+.button--loading {
+    cursor: default;
+    opacity: 0.92;
+}
+
+.button__spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    border: 2.6px solid rgb(255 255 255 / 35%);
+    border-top-color: var(--on-brand);
+    border-radius: var(--r-pill);
+    animation: button-spin 0.7s linear infinite;
+}

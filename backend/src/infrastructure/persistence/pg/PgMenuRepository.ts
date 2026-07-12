@@ -2,9 +2,15 @@ import type { Pool } from "pg";
 
 import type { Menu } from "domain/entities/Menu";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
+import type { PaginatedResult } from "domain/repositories/pagination.types";
 
 import { findMenuByIdWithRecipes } from "./PgMenuRepository.detail";
-import { findAllMenus, searchPersonMenus } from "./PgMenuRepository.queries";
+import { deleteMenuById } from "./PgMenuRepository.mutations";
+import {
+    findAllMenus,
+    findAllMenusUnpaginated,
+    searchPersonMenus,
+} from "./PgMenuRepository.queries";
 
 interface MenuIdRow {
     menu_id: number;
@@ -25,8 +31,12 @@ export default class PgMenuRepository implements MenuRepository {
         return { placeholders, params };
     }
 
-    async findAll(filters: unknown): Promise<unknown[]> {
+    async findAll(filters: unknown): Promise<PaginatedResult<unknown>> {
         return findAllMenus(this.pool, filters);
+    }
+
+    async findAllUnpaginated(): Promise<unknown[]> {
+        return findAllMenusUnpaginated(this.pool);
     }
 
     async create(
@@ -128,45 +138,13 @@ export default class PgMenuRepository implements MenuRepository {
     }
 
     async deleteById(id: string | number, personId: number): Promise<unknown> {
-        // menu_recipe is deleted explicitly: databases adopted from the legacy
-        // database.sql carry a second menu_id FK without ON DELETE CASCADE,
-        // so relying on the cascade would fail there
-        const client = await this.pool.connect();
-
-        try {
-            await client.query("BEGIN");
-
-            const owned = await client.query(
-                "SELECT menu_id FROM menu WHERE menu_id = $1 AND person_id = $2 FOR UPDATE",
-                [id, personId],
-            );
-
-            if (owned.rowCount === 0) {
-                await client.query("ROLLBACK");
-
-                return false;
-            }
-
-            await client.query("DELETE FROM menu_recipe WHERE menu_id = $1", [
-                id,
-            ]);
-            await client.query("DELETE FROM menu WHERE menu_id = $1", [id]);
-
-            await client.query("COMMIT");
-
-            return true;
-        } catch (error) {
-            await client.query("ROLLBACK");
-            throw error;
-        } finally {
-            client.release();
-        }
+        return deleteMenuById(this.pool, id, personId);
     }
 
     async searchByPerson(
         personId: number,
         filters: unknown,
-    ): Promise<unknown[]> {
+    ): Promise<PaginatedResult<unknown>> {
         return searchPersonMenus(this.pool, personId, filters);
     }
 }

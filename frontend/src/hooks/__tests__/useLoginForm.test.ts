@@ -6,6 +6,7 @@ import { API_ROUTES } from "api/endpoints";
 import { useLoginForm } from "hooks/useLoginForm";
 
 import { mockedPost } from "test/apiClientMock";
+import { ROUTE_HOME } from "test/constants";
 import { mockNavigate } from "test/router";
 import { renderHookWithStore } from "test/store";
 
@@ -57,7 +58,7 @@ describe("useLoginForm", () => {
             login: "tester",
             password: "secret1",
         });
-        expect(mockNavigate).toHaveBeenCalledWith("/main");
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME);
     });
 
     it("should set a required-fields error and not call the api when fields are empty", async () => {

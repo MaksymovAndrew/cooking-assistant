@@ -1,0 +1,35 @@
+@use "styles/abstracts" as *;
+
+.segmented-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: var(--surface-2);
+
+    &__segment {
+        height: 30px;
+        padding: 0 var(--s-4);
+        border: none;
+        border-radius: var(--r-pill);
+        background: transparent;
+        color: var(--text-2);
+        font:
+            600 12px Inter,
+            sans-serif;
+        white-space: nowrap;
+        cursor: pointer;
+        transition:
+            background var(--dur-fast) var(--ease-out),
+            color var(--dur-fast) var(--ease-out);
+
+        @include focus-ring;
+    }
+
+    &__segment--active {
+        background: var(--brand-strong);
+        color: var(--on-brand);
+    }
+}

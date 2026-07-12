@@ -7,15 +7,13 @@ const MESSAGES = {
     errorDescription: "Description is required.",
     errorIngredients: "Add at least one ingredient.",
     errorType: "Select a recipe type.",
-    errorCookingTimeFormat: "Use HH:MM format.",
+    errorCookingTimeFormat: "Enter hours and minutes.",
     errorCookingTimeInvalid: "Cooking time is invalid.",
-    errorServings: "Servings is required.",
 };
 
 const CHANGE_MESSAGES = {
-    errorCookingTimeFormat: "Use HH:MM format.",
+    errorCookingTimeFormat: "Enter hours and minutes.",
     errorCookingTimeInvalid: "Cooking time is invalid.",
-    errorServings: "Servings is required.",
 };
 
 const VALID_CREATE = {
@@ -25,12 +23,12 @@ const VALID_CREATE = {
         { id: 1, name: "Beet", quantity: 1, unit_name: "kg" },
     ],
     selectedTypeId: 2,
-    cookingTime: "01:30",
-    servings: "4",
+    cookingHours: "1",
+    cookingMinutes: "30",
 };
 
 describe("useRecipeFormValidation", () => {
-    it("should return false and set error when title is empty", () => {
+    it("should return false and set titleError when title is empty", () => {
         const { result } = renderHook(() => useRecipeFormValidation());
 
         let valid = true;
@@ -43,10 +41,11 @@ describe("useRecipeFormValidation", () => {
         });
 
         expect(valid).toBe(false);
-        expect(result.current.error).toBe(MESSAGES.errorTitle);
+        expect(result.current.titleError).toBe(MESSAGES.errorTitle);
+        expect(result.current.descriptionError).toBeNull();
     });
 
-    it("should return false and set error when content is empty", () => {
+    it("should return false and set descriptionError when content is empty", () => {
         const { result } = renderHook(() => useRecipeFormValidation());
 
         let valid = true;
@@ -59,10 +58,11 @@ describe("useRecipeFormValidation", () => {
         });
 
         expect(valid).toBe(false);
-        expect(result.current.error).toBe(MESSAGES.errorDescription);
+        expect(result.current.descriptionError).toBe(MESSAGES.errorDescription);
+        expect(result.current.titleError).toBeNull();
     });
 
-    it("should return false and set error when no ingredients selected", () => {
+    it("should return false and set ingredientsError when no ingredients selected", () => {
         const { result } = renderHook(() => useRecipeFormValidation());
 
         let valid = true;
@@ -75,7 +75,21 @@ describe("useRecipeFormValidation", () => {
         });
 
         expect(valid).toBe(false);
-        expect(result.current.error).toBe(MESSAGES.errorIngredients);
+        expect(result.current.ingredientsError).toBe(MESSAGES.errorIngredients);
+    });
+
+    it("should flag every invalid field in one pass", () => {
+        const { result } = renderHook(() => useRecipeFormValidation());
+
+        act(() => {
+            result.current.validateCreate(
+                { ...VALID_CREATE, title: "", content: "" },
+                MESSAGES,
+            );
+        });
+
+        expect(result.current.titleError).toBe(MESSAGES.errorTitle);
+        expect(result.current.descriptionError).toBe(MESSAGES.errorDescription);
     });
 
     it("should return false and set typeError when no type selected", () => {
@@ -94,14 +108,14 @@ describe("useRecipeFormValidation", () => {
         expect(result.current.typeError).toBe(MESSAGES.errorType);
     });
 
-    it("should return false and set cookingTimeError when time has no colon", () => {
+    it("should return false and set cookingTimeError when hours or minutes are empty", () => {
         const { result } = renderHook(() => useRecipeFormValidation());
 
         let valid = true;
 
         act(() => {
             valid = result.current.validateCreate(
-                { ...VALID_CREATE, cookingTime: "90" },
+                { ...VALID_CREATE, cookingHours: "" },
                 MESSAGES,
             );
         });
@@ -112,14 +126,14 @@ describe("useRecipeFormValidation", () => {
         );
     });
 
-    it("should return false and set cookingTimeError when time parts are not numbers", () => {
+    it("should return false and set cookingTimeError when both hours and minutes are zero", () => {
         const { result } = renderHook(() => useRecipeFormValidation());
 
         let valid = true;
 
         act(() => {
             valid = result.current.validateCreate(
-                { ...VALID_CREATE, cookingTime: "ab:cd" },
+                { ...VALID_CREATE, cookingHours: "0", cookingMinutes: "0" },
                 MESSAGES,
             );
         });
@@ -130,20 +144,22 @@ describe("useRecipeFormValidation", () => {
         );
     });
 
-    it("should return false and set error when servings is empty", () => {
+    it("should return false and set cookingTimeError when minutes are out of range", () => {
         const { result } = renderHook(() => useRecipeFormValidation());
 
         let valid = true;
 
         act(() => {
             valid = result.current.validateCreate(
-                { ...VALID_CREATE, servings: "" },
+                { ...VALID_CREATE, cookingMinutes: "60" },
                 MESSAGES,
             );
         });
 
         expect(valid).toBe(false);
-        expect(result.current.error).toBe(MESSAGES.errorServings);
+        expect(result.current.cookingTimeError).toBe(
+            MESSAGES.errorCookingTimeInvalid,
+        );
     });
 
     it("should return true and clear all errors when all create fields are valid", () => {
@@ -156,35 +172,21 @@ describe("useRecipeFormValidation", () => {
         });
 
         expect(valid).toBe(true);
-        expect(result.current.error).toBeNull();
+        expect(result.current.titleError).toBeNull();
+        expect(result.current.descriptionError).toBeNull();
+        expect(result.current.ingredientsError).toBeNull();
         expect(result.current.typeError).toBeNull();
         expect(result.current.cookingTimeError).toBeNull();
     });
 
-    it("should validateChange: return false when servings is empty", () => {
+    it("should validateChange: return false when cooking time is empty", () => {
         const { result } = renderHook(() => useRecipeFormValidation());
 
         let valid = true;
 
         act(() => {
             valid = result.current.validateChange(
-                { cookingTime: "01:00", servings: "" },
-                CHANGE_MESSAGES,
-            );
-        });
-
-        expect(valid).toBe(false);
-        expect(result.current.error).toBe(CHANGE_MESSAGES.errorServings);
-    });
-
-    it("should validateChange: return false when cookingTime format is invalid", () => {
-        const { result } = renderHook(() => useRecipeFormValidation());
-
-        let valid = true;
-
-        act(() => {
-            valid = result.current.validateChange(
-                { cookingTime: "invalid", servings: "2" },
+                { cookingHours: "", cookingMinutes: "" },
                 CHANGE_MESSAGES,
             );
         });
@@ -195,20 +197,37 @@ describe("useRecipeFormValidation", () => {
         );
     });
 
-    it("should validateChange: return true for valid time and servings", () => {
+    it("should validateChange: return false when cooking time is invalid", () => {
+        const { result } = renderHook(() => useRecipeFormValidation());
+
+        let valid = true;
+
+        act(() => {
+            valid = result.current.validateChange(
+                { cookingHours: "0", cookingMinutes: "0" },
+                CHANGE_MESSAGES,
+            );
+        });
+
+        expect(valid).toBe(false);
+        expect(result.current.cookingTimeError).toBe(
+            CHANGE_MESSAGES.errorCookingTimeInvalid,
+        );
+    });
+
+    it("should validateChange: return true for a valid cooking time", () => {
         const { result } = renderHook(() => useRecipeFormValidation());
 
         let valid = false;
 
         act(() => {
             valid = result.current.validateChange(
-                { cookingTime: "00:45", servings: "2" },
+                { cookingHours: "0", cookingMinutes: "45" },
                 CHANGE_MESSAGES,
             );
         });
 
         expect(valid).toBe(true);
-        expect(result.current.error).toBeNull();
         expect(result.current.cookingTimeError).toBeNull();
     });
 
@@ -219,7 +238,7 @@ describe("useRecipeFormValidation", () => {
 
         act(() => {
             valid = result.current.validateChange(
-                { cookingTime: "00:30", servings: "1" },
+                { cookingHours: "0", cookingMinutes: "30" },
                 CHANGE_MESSAGES,
             );
         });

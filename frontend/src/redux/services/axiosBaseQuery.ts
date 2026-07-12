@@ -35,24 +35,19 @@ interface RunRequestArgs {
     params?: unknown;
 }
 
-// run the request through our shared axios client, mapping the HTTP verb to the
-// matching client method (the manual test mock only stubs the named methods, so
-// we never call the instance as a function)
-const runRequest = ({ url, method, data, params }: RunRequestArgs) => {
-    switch (method) {
-        case "POST":
-            return apiClient.post<unknown>(url, data);
-        case "PUT":
-            return apiClient.put<unknown>(url, data);
-        case "DELETE":
-            return apiClient.delete<unknown>(url, { params });
-        default:
-            return apiClient.get<unknown>(url, { params });
-    }
-};
+// keyed by HttpMethod so the map stays exhaustive - adding a verb fails to compile until handled here
+const requestByMethod = {
+    GET: ({ url, params }: RunRequestArgs) =>
+        apiClient.get<unknown>(url, { params }),
+    POST: ({ url, data }: RunRequestArgs) => apiClient.post<unknown>(url, data),
+    PUT: ({ url, data }: RunRequestArgs) => apiClient.put<unknown>(url, data),
+    DELETE: ({ url, params }: RunRequestArgs) =>
+        apiClient.delete<unknown>(url, { params }),
+} satisfies Record<HttpMethod, (args: RunRequestArgs) => Promise<unknown>>;
 
-// RTK Query baseQuery on top of apiClient: success -> { data }, failure ->
-// { error: { status, data } } with a user-facing message from getApiErrorMessage
+const runRequest = (args: RunRequestArgs) => requestByMethod[args.method](args);
+
+// RTK Query baseQuery on top of apiClient: success -> { data }, failure -> { error: { status, data } } with a user-facing message from getApiErrorMessage
 export const axiosBaseQuery =
     (): AxiosBaseQueryFn =>
     async ({ url, method = "GET", data, params }) => {

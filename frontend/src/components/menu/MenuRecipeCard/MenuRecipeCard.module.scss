@@ -1,0 +1,128 @@
+@use "styles/abstracts" as *;
+
+.menu-recipe-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: 8px 12px 8px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    text-decoration: none;
+    transition:
+        transform var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out);
+
+    @include focus-ring;
+
+    @include on-hover {
+        border-color: var(--brand);
+        box-shadow: 0 10px 26px rgb(0 0 0 / 30%);
+        transform: translateY(-3px);
+    }
+
+    @include respond-to(tablet) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    &__image {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 48px;
+        border-radius: var(--r-sm);
+        background: linear-gradient(
+            135deg,
+            var(--brand-subtle),
+            var(--surface-2)
+        );
+        color: var(--brand);
+
+        @include respond-to(tablet) {
+            width: auto;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            border-radius: 0;
+        }
+    }
+
+    &__image-icon {
+        opacity: 0.42;
+    }
+
+    &__body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+
+        @include respond-to(tablet) {
+            gap: 5px;
+            padding: 11px 13px;
+        }
+    }
+
+    &__title {
+        overflow: hidden;
+        color: var(--text);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font:
+            600 13px Fraunces,
+            serif;
+
+        @include respond-to(tablet) {
+            font-size: 14px;
+        }
+    }
+
+    &__meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-2);
+    }
+
+    &__meta {
+        overflow: hidden;
+        min-width: 0;
+        color: var(--text-muted);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font:
+            400 11px Inter,
+            sans-serif;
+
+        @include respond-to(tablet) {
+            font-size: 12px;
+        }
+    }
+
+    &__rating {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: 3px;
+        color: var(--text-2);
+        font:
+            600 10px "Geist Mono",
+            monospace;
+
+        svg {
+            color: var(--warning);
+            fill: var(--warning);
+        }
+
+        @include respond-to(tablet) {
+            font-size: 11px;
+        }
+    }
+}

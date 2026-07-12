@@ -1,0 +1,62 @@
+@use "styles/abstracts" as *;
+
+.menu-hero-actions {
+    display: none;
+    flex: none;
+    gap: var(--s-2);
+
+    // mobile owner-actions live in the subpage header's edit-pencil icon instead (see MobileSubpageHeader) - this inline row is tablet+ only
+    @include respond-to(tablet) {
+        display: flex;
+    }
+
+    &__edit {
+        height: 44px;
+        white-space: nowrap;
+    }
+
+    &__favourite {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--s-2);
+        height: 44px;
+        padding: 0 var(--s-4);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--surface);
+        color: var(--text);
+        cursor: default;
+        font:
+            600 13px Inter,
+            sans-serif;
+        white-space: nowrap;
+
+        svg {
+            color: var(--brand);
+        }
+    }
+
+    &__delete {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border));
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--danger) 8%, var(--surface));
+        color: var(--danger);
+        cursor: pointer;
+        transition:
+            background var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out);
+
+        @include focus-ring;
+
+        @include on-hover {
+            border-color: color-mix(in srgb, var(--danger) 50%, var(--border));
+            background: color-mix(in srgb, var(--danger) 14%, var(--surface));
+        }
+    }
+}

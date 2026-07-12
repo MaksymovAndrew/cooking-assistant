@@ -1,0 +1,56 @@
+@use "styles/abstracts" as *;
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--brand);
+
+    &--danger {
+        border-color: color-mix(in srgb, var(--danger) 30%, var(--border));
+        background: color-mix(in srgb, var(--danger) 6%, var(--surface));
+        color: var(--danger);
+    }
+
+    &--disabled {
+        opacity: 0.72;
+    }
+
+    &__text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__title {
+        color: var(--text);
+        font:
+            600 14px Inter,
+            sans-serif;
+
+        &--danger {
+            color: var(--danger);
+        }
+    }
+
+    &__description {
+        display: none;
+        margin-top: 2px;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+
+        // mobile is tight for a control-bearing row (e.g. the theme segmented control) - drop the description there, keep it from tablet up
+        @include respond-to(tablet) {
+            display: block;
+        }
+    }
+
+    &__control {
+        flex: none;
+    }
+}

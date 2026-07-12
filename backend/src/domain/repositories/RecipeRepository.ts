@@ -1,4 +1,5 @@
 import type { Recipe } from "domain/entities/Recipe";
+import type { PaginatedResult } from "domain/repositories/pagination.types";
 
 export interface RecipeRepository {
     create(recipe: Recipe): Promise<unknown>;
@@ -13,8 +14,11 @@ export interface RecipeRepository {
         data: Recipe,
     ): Promise<unknown>;
     deleteById(id: string | number, personId: number): Promise<unknown>;
-    search(filters: unknown): Promise<unknown[]>;
-    searchByPerson(personId: number, filters: unknown): Promise<unknown[]>;
+    search(filters: unknown): Promise<PaginatedResult<unknown>>;
+    searchByPerson(
+        personId: number,
+        filters: unknown,
+    ): Promise<PaginatedResult<unknown>>;
     findExistingIds(ids: number[]): Promise<number[]>;
     getStats(): Promise<unknown>;
     findAllIngredients(): Promise<unknown[]>;

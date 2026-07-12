@@ -1,0 +1,42 @@
+@use "styles/abstracts" as *;
+
+.textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    color: var(--text);
+    font:
+        400 14px Inter,
+        sans-serif;
+    resize: vertical;
+    transition:
+        border-color var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-fast) var(--ease-out);
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+
+    &:focus {
+        outline: none;
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px var(--brand-subtle);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+}
+
+.textarea--error {
+    border-color: var(--danger);
+
+    &:focus {
+        border-color: var(--danger);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 14%, transparent);
+    }
+}

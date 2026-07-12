@@ -4,11 +4,13 @@ import { ERROR_MESSAGES } from "constants/errorMessages";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
+const RECIPE_TYPES_PATH = "/api/recipe-types";
+
 describe("recipe type routes", () => {
     it("should return 401 without a token", async () => {
         const { app } = buildTestApp();
 
-        const res = await request(app).get("/api/recipe-types");
+        const res = await request(app).get(RECIPE_TYPES_PATH);
 
         expect(res.status).toBe(401);
     });
@@ -20,7 +22,7 @@ describe("recipe type routes", () => {
         deps.recipeTypeRepository.findAll.mockResolvedValue(types);
 
         const res = await request(app)
-            .get("/api/recipe-types")
+            .get(RECIPE_TYPES_PATH)
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
@@ -31,7 +33,7 @@ describe("recipe type routes", () => {
         const { app } = buildTestApp();
 
         const res = await request(app)
-            .post("/api/recipe-types")
+            .post(RECIPE_TYPES_PATH)
             .set("Cookie", authCookie())
             .send({ type_name: "Soup", description: "Warm" });
 

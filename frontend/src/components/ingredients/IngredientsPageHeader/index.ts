@@ -1,0 +1,1 @@
+export { IngredientsPageHeader } from "./IngredientsPageHeader";

@@ -1,0 +1,50 @@
+@use "styles/abstracts" as *;
+
+.stat-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--s-5);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+
+    &__label {
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font:
+            500 11px "Geist Mono",
+            monospace;
+    }
+
+    &__value {
+        color: var(--text);
+    }
+
+    &__value--number {
+        // never wrap a time like "1h 50m"; smaller on phones so it fits the 2x2 tiles
+        white-space: nowrap;
+        font:
+            700 30px "Geist Mono",
+            monospace;
+
+        @include respond-to(tablet) {
+            font-size: 38px;
+        }
+    }
+
+    &__value--text {
+        margin-top: 4px;
+        font:
+            700 24px Fraunces,
+            serif;
+    }
+
+    &__caption {
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+}

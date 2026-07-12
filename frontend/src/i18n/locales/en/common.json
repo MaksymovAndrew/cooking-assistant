@@ -1,30 +1,68 @@
 {
+    "appName": "Cooking Assistant",
     "sessionError": "Could not verify session. Please refresh the page.",
     "modal": {
         "cancel": "Cancel",
         "confirm": "Delete"
+    },
+    "mobileSubpageHeader": {
+        "back": "Back",
+        "edit": "Edit"
+    },
+    "button": {
+        "loading": "Saving…"
+    },
+    "chip": {
+        "remove": "Remove"
+    },
+    "passwordInput": {
+        "show": "Show password",
+        "hide": "Hide password"
+    },
+    "contentCard": {
+        "favourite": "Favourite",
+        "allergens": "Allergens",
+        "containsAllergens": "Contains allergens"
+    },
+    "toast": {
+        "dismiss": "Dismiss"
+    },
+    "pageSpinner": {
+        "loading": "Loading your cookbook…"
+    },
+    "accountMenu": {
+        "trigger": "Account menu",
+        "profile": "Profile",
+        "settings": "Settings"
     },
     "logoutModal": {
         "title": "Log out",
         "message": "Are you sure you want to log out of your account?",
         "confirm": "Log out"
     },
-    "header": {
-        "home": "Home",
-        "myRecipes": "My Recipes",
-        "statistics": "Statistics",
-        "types": "Types",
-        "myIngredients": "My Ingredients",
-        "menu": "Menu",
-        "myMenus": "My Menus",
-        "login": "Login",
-        "register": "Register",
-        "logout": "Logout"
+    "themeModal": {
+        "titleLight": "Switch to light theme?",
+        "titleDark": "Switch to dark theme?",
+        "titleSystem": "Switch to system theme?",
+        "message": "The app will reload to apply the new appearance. Your place in the app is preserved.",
+        "confirm": "Switch & reload"
+    },
+    "nav": {
+        "recipes": "Recipes",
+        "menus": "Menus",
+        "ingredients": "Ingredients",
+        "stats": "Stats",
+        "settings": "Settings",
+        "profile": "Profile",
+        "logout": "Logout",
+        "scrollToTop": "Scroll to top"
+    },
+    "theme": {
+        "toggleLabel": "Toggle theme"
     },
     "search": {
         "placeholderPrefix": "Search by",
-        "reset": "Reset Search",
-        "iconAlt": "Search icon"
+        "reset": "Reset Search"
     },
     "dateFilter": {
         "sortByDates": "Sort by dates",
@@ -35,10 +73,19 @@
         "invalidRange": "Please select a valid date range."
     },
     "notFound": {
-        "title": "Oops....",
-        "subtitle": "It looks like you got lost",
-        "description": "The page you are looking for does not exist or has been moved. We suggest you return to the homepage.",
-        "goHome": "GO TO HOMEPAGE"
+        "heading": "Page not found",
+        "description": "Looks like this dish isn't on the menu. The page you're looking for doesn't exist or has been moved.",
+        "backToRecipes": "Back to Recipes",
+        "recipes": "Recipes",
+        "pantry": "Pantry",
+        "menus": "Menus"
+    },
+    "errors": {
+        "unknown": "Unknown error"
+    },
+    "errorState": {
+        "title": "Something went wrong",
+        "retry": "Try again"
     },
     "notifications": {
         "somethingWentWrong": "Something went wrong",
@@ -49,5 +96,10 @@
         "ingredientsSaved": "Ingredients saved",
         "quantitiesUpdated": "Quantities updated",
         "purchaseSaved": "Purchase saved"
+    },
+    "loadMore": {
+        "showing": "Showing {{loaded}} of {{total}}",
+        "button": "Load more",
+        "loading": "Loading more"
     }
 }

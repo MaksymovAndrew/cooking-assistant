@@ -1,1 +1,0 @@
-export { MenuMetaInfo } from "./MenuMetaInfo";

@@ -10,8 +10,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
 
-// the pantry (and its purchase history) share one Pantry tag: any pantry write
-// invalidates the lot, so open pantry/history views refetch automatically
+// the pantry (and its purchase history) share one Pantry tag: any pantry write invalidates the lot, so open pantry/history views refetch automatically
 export const userIngredientsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getUserIngredients: build.query<UserIngredient[], null>({

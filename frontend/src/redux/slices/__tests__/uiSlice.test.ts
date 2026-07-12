@@ -46,15 +46,20 @@ describe("uiSlice", () => {
         ).toEqual(MODAL);
     });
 
-    it("should open a delete-recipe modal carrying the recipe id", () => {
+    it("should open a delete-recipe modal carrying the recipe id and title", () => {
         const state = uiReducer(
             undefined,
-            openModal({ type: MODAL_TYPE.deleteRecipe, recipeId: "42" }),
+            openModal({
+                type: MODAL_TYPE.deleteRecipe,
+                recipeId: "42",
+                recipeTitle: "Slow-roasted ragù",
+            }),
         );
 
         expect(state.modal).toMatchObject({
             type: "deleteRecipe",
             recipeId: "42",
+            recipeTitle: "Slow-roasted ragù",
         });
         expect(state.modal?.id.length).toBeGreaterThan(0);
     });
@@ -62,12 +67,17 @@ describe("uiSlice", () => {
     it("should open a delete-menu modal carrying the menu id", () => {
         const state = uiReducer(
             undefined,
-            openModal({ type: MODAL_TYPE.deleteMenu, menuId: 7 }),
+            openModal({
+                type: MODAL_TYPE.deleteMenu,
+                menuId: 7,
+                menuTitle: "Week of Comfort",
+            }),
         );
 
         expect(state.modal).toMatchObject({
             type: "deleteMenu",
             menuId: 7,
+            menuTitle: "Week of Comfort",
         });
         expect(state.modal?.id.length).toBeGreaterThan(0);
     });

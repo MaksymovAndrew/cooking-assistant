@@ -26,6 +26,7 @@ interface MenuRecipeRow {
 interface MissingIngredientRow {
     recipe_id: number;
     ingredient_name: string;
+    needed_quantity: number;
     missing_quantity: number;
     unit_name: string;
     coefficient: number;
@@ -81,8 +82,7 @@ export async function findMenuByIdWithRecipes(
 
     const recipeIds = recipeResult.rows.map((recipe) => recipe.recipe_id);
 
-    // fetch missing ingredients for every recipe of the menu in one query
-    // (previously an N+1 loop with a query per recipe), then group in memory
+    // fetch missing ingredients for every recipe of the menu in one query, then group in memory
     const missingByRecipe = new Map<number, unknown[]>();
 
     if (recipeIds.length > 0) {
@@ -90,6 +90,7 @@ export async function findMenuByIdWithRecipes(
             `SELECT
           ri.recipe_id,
           i.name AS ingredient_name,
+          ri.quantity_recipe_ingredients AS needed_quantity,
           GREATEST(ri.quantity_recipe_ingredients - COALESCE(pi.quantity_person_ingradient, 0), 0) AS missing_quantity,
           u.unit_name,
           u.coefficient
@@ -101,8 +102,7 @@ export async function findMenuByIdWithRecipes(
         LEFT JOIN unit_measurement u
           ON i.id_unit_measurement = u.id
         WHERE ri.recipe_id = ANY($2)
-        GROUP BY ri.recipe_id, i.name, ri.quantity_recipe_ingredients, pi.quantity_person_ingradient, u.unit_name, u.coefficient
-        HAVING GREATEST(ri.quantity_recipe_ingredients - COALESCE(pi.quantity_person_ingradient, 0), 0) > 0`,
+        GROUP BY ri.recipe_id, i.name, ri.quantity_recipe_ingredients, pi.quantity_person_ingradient, u.unit_name, u.coefficient`,
             [personId, recipeIds],
         );
 
@@ -111,6 +111,7 @@ export async function findMenuByIdWithRecipes(
 
             group.push({
                 ingredient_name: row.ingredient_name,
+                needed_quantity: row.needed_quantity,
                 missing_quantity: row.missing_quantity,
                 unit_name: row.unit_name,
                 coefficient: row.coefficient,
@@ -124,5 +125,19 @@ export async function findMenuByIdWithRecipes(
         missingIngredients: missingByRecipe.get(recipe.recipe_id) ?? [],
     }));
 
-    return { menu, recipes: recipesWithDetails };
+    const allergensResult = await pool.query<{ allergens: string }>(
+        `SELECT DISTINCT i.allergens
+      FROM menu_recipe mr
+      JOIN recipe_ingredients ri ON ri.recipe_id = mr.recipe_id
+      JOIN ingredients i ON i.id = ri.ingredient_id
+      WHERE mr.menu_id = $1 AND i.allergens IS NOT NULL
+      ORDER BY i.allergens`,
+        [id],
+    );
+
+    return {
+        menu,
+        recipes: recipesWithDetails,
+        allergens: allergensResult.rows.map((row) => row.allergens),
+    };
 }

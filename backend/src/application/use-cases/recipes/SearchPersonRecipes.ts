@@ -1,3 +1,4 @@
+import type { PaginatedResult } from "domain/repositories/pagination.types";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 
 import { idSchema } from "application/validation/common.schemas";
@@ -9,7 +10,10 @@ export default class SearchPersonRecipes {
         private recipeRepository: Pick<RecipeRepository, "searchByPerson">,
     ) {}
 
-    async execute(personId: number, filters: unknown): Promise<unknown[]> {
+    async execute(
+        personId: number,
+        filters: unknown,
+    ): Promise<PaginatedResult<unknown>> {
         const validPersonId = validate(idSchema, personId);
         const validFilters = validate(recipeFiltersSchema, filters);
 

@@ -9,6 +9,7 @@ import { recipeTypesApi } from "redux/services/recipeTypesApi";
 import { useCreateRecipePage } from "hooks/useCreateRecipePage";
 
 import { mockedPost, mockGetByUrl } from "test/apiClientMock";
+import { ROUTE_ALL_RECIPES } from "test/constants";
 import { mockNavigate } from "test/router";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
@@ -24,11 +25,10 @@ const TITLE = "Mashed potatoes";
 const DESCRIPTION = "Boil and mash";
 const SAMPLE_TYPES = [{ id: TYPE_ID, type_name: "Soup", description: "" }];
 const SAMPLE_INGREDIENTS = [
-    { id: INGREDIENT_ID, name: "Potato", unit_name: "g" },
+    { id: INGREDIENT_ID, name: "Potato", unit_name: "g", allergens: null },
 ];
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts,
-// so the reference-data queries read already-fulfilled data on first render
+// pre-seed the cache by awaiting the real query thunks before the hook mounts, so the reference-data queries read already-fulfilled data on first render
 const setup = async () => {
     mockGetByUrl({
         [API_ROUTES.ingredients.list]: SAMPLE_INGREDIENTS,
@@ -53,8 +53,8 @@ describe("useCreateRecipePage", () => {
         act(() => {
             result.current.form.setTitle(TITLE);
             result.current.form.setContent(DESCRIPTION);
-            result.current.form.setCookingTime("0:30");
-            result.current.form.setServings("2");
+            result.current.form.setCookingHours("0");
+            result.current.form.setCookingMinutes("30");
             result.current.form.setSelectedTypeId(TYPE_ID);
             result.current.form.toggleIngredientSelection(
                 SAMPLE_INGREDIENTS[0],
@@ -74,7 +74,7 @@ describe("useCreateRecipePage", () => {
                 ingredients: [{ id: INGREDIENT_ID, quantity: 1 }],
             }),
         );
-        expect(mockNavigate).toHaveBeenCalledWith("/main");
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
     });
 
     it("should not call the mutation when required fields are empty", async () => {
@@ -99,8 +99,8 @@ describe("useCreateRecipePage", () => {
         act(() => {
             result.current.form.setTitle(TITLE);
             result.current.form.setContent(DESCRIPTION);
-            result.current.form.setCookingTime("0:30");
-            result.current.form.setServings("2");
+            result.current.form.setCookingHours("0");
+            result.current.form.setCookingMinutes("30");
             result.current.form.setSelectedTypeId(TYPE_ID);
             result.current.form.toggleIngredientSelection(
                 SAMPLE_INGREDIENTS[0],

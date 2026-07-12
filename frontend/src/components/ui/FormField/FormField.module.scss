@@ -1,0 +1,32 @@
+@use "styles/abstracts" as *;
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+
+    &__label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-2);
+    }
+
+    &__label {
+        color: var(--text-2);
+        font:
+            600 13px Inter,
+            sans-serif;
+    }
+
+    &__error {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+        color: var(--danger);
+        font:
+            500 12px Inter,
+            sans-serif;
+    }
+}

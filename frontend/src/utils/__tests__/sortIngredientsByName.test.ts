@@ -6,6 +6,7 @@ const make = (id: number, name: string): Ingredient => ({
     id,
     name,
     unit_name: "g",
+    allergens: null,
 });
 
 describe("sortIngredientsByName", () => {

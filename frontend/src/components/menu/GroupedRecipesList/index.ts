@@ -1,1 +1,0 @@
-export { GroupedRecipesList } from "./GroupedRecipesList";

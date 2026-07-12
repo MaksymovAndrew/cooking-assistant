@@ -1,35 +1,47 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
 import { menuDetailsPath } from "constants/routes";
 
-import { Card, CardMetaRow } from "components/ui/Card";
+import type { ContentCardVariant } from "components/cards/ContentCard";
+import { ContentCard } from "components/cards/ContentCard";
+import { NotebookMark } from "components/icons";
 
 interface MenuCardProps {
     id: number;
     title: string;
-    content: string;
     categoryName: string;
+    recipeCount: number;
+    mine?: boolean;
+    variant?: ContentCardVariant;
 }
 
 export const MenuCard: React.FC<MenuCardProps> = ({
     id,
     title,
-    content,
     categoryName,
+    recipeCount,
+    mine = false,
+    variant,
 }) => {
     const { t } = useTranslation("menu");
 
     return (
-        <Card
-            title={title}
+        <ContentCard
             to={menuDetailsPath(id)}
-            actionLabel={t("menuCard.learnMore")}
-        >
-            <CardMetaRow label={t("menuCard.category")} value={categoryName} />
-            <div className="text-sm font-montserratRegular text-gray-700 mt-2">
-                {content}
-            </div>
-        </Card>
+            title={title}
+            imageIcon={NotebookMark}
+            chipLabel={categoryName}
+            mine={mine}
+            variant={variant}
+            rating={MENU_RATING}
+            ratingCount={MENU_RATING_COUNT}
+            showFavourite={false}
+            metaText={t("menuCard.meta", {
+                category: categoryName,
+                count: recipeCount,
+            })}
+        />
     );
 };

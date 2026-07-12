@@ -1,0 +1,39 @@
+{
+    "title": "What's new",
+    "close": "Close",
+    "newCount": "{{total}} new",
+    "items": {
+        "redesign": {
+            "title": "A brand-new look",
+            "description": "Every page has been redesigned, with dark and light themes, plus dozens of fixes and polish along the way."
+        },
+        "pantryAware": {
+            "title": "Pantry-aware recipes",
+            "description": "Recipe pages now show which ingredients you already have and scale quantities per portion."
+        },
+        "statsCharts": {
+            "title": "Richer statistics",
+            "description": "New charts for menus per category and average cooking time by recipe type."
+        },
+        "lockout": {
+            "title": "Safer sign-in",
+            "description": "Repeated failed sign-ins now lock the form briefly, with a live countdown, and signing out asks for confirmation first."
+        },
+        "instantUpdates": {
+            "title": "Instant updates",
+            "description": "Lists refresh automatically after you add, edit or delete - no page reloads."
+        },
+        "launch": {
+            "title": "Cooking Assistant goes live",
+            "description": "The app is now publicly available for anyone to use."
+        },
+        "fasterLoads": {
+            "title": "Faster page loads",
+            "description": "Pages, charts and reports now load on demand, so the app starts up noticeably faster."
+        },
+        "privateMenus": {
+            "title": "Your menus are now private",
+            "description": "Only you can open or change your own menus, and your session lives in a more secure cookie."
+        }
+    }
+}

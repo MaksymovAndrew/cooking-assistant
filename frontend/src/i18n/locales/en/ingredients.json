@@ -2,32 +2,50 @@
     "page": {
         "heading": "My Ingredients",
         "noIngredients": "You currently have no ingredients.",
+        "noSearchResults": "No ingredients match your search.",
+        "itemCount_one": "{{count}} item in your pantry",
+        "itemCount_other": "{{count}} items in your pantry",
+        "searchPlaceholder": "Search your pantry...",
+        "expiringSoonFilter_one": "Expiring soon ({{count}})",
+        "expiringSoonFilter_other": "Expiring soon ({{count}})",
         "allergens": "Allergens:",
         "shelfLife": "Shelf life:",
-        "shelfLifeDays": "{{days}} days.",
+        "shelfLifeDays": "{{days}} days",
         "noExpiration": "No expiration.",
         "storageConditions": "Storage conditions:",
         "season": "Season:",
-        "purchaseDate": "Purchase date:",
+        "purchaseDate": "Purchased:",
         "purchaseDateUnknown": "Unknown",
         "detailsButton": "Details",
         "deleteButton": "Delete",
-        "editButton": "Edit ingredients",
-        "saveButton": "Save",
+        "addIngredientButton": "Add ingredient",
         "editQuantitiesButton": "Edit quantities",
-        "saveQuantitiesButton": "Save quantities",
+        "doneEditingButton": "Done",
+        "saveQuantityButton": "Save",
+        "editModeActive": "edit mode active",
         "deleteTitle": "Delete confirmation",
         "deleteConfirmMessage": "Are you sure you want to delete the ingredient \"{{name}}\"?",
         "confirmButton": "Confirm",
         "cancelButton": "Cancel"
     },
+    "expiryBadge": {
+        "fresh": "Fresh",
+        "expired": "Expired",
+        "noExpiry": "No expiry",
+        "daysLeft_one": "{{count}} day",
+        "daysLeft_other": "{{count}} days"
+    },
+    "addIngredientModal": {
+        "title": "Add ingredient",
+        "searchPlaceholder": "Search ingredients...",
+        "noMatches": "No ingredients found",
+        "cancelButton": "Cancel",
+        "saveButton": "Add to pantry"
+    },
     "purchaseModal": {
         "title": "Purchase History: {{name}}",
         "loading": "Loading...",
         "noHistory": "No purchase history available.",
-        "closeButton": "Close",
-        "errorLoading": "Error loading purchase history.",
-        "errorSaving": "Error saving changes.",
-        "errorNoToken": "Token not found."
+        "closeButton": "Close"
     }
 }

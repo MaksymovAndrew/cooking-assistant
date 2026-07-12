@@ -1,1 +1,0 @@
-export { MenuCategoryFilter } from "./MenuCategoryFilter";

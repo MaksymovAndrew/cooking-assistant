@@ -1,0 +1,41 @@
+.expiring-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--s-2) var(--s-3);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+
+    &__name {
+        color: var(--text);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__badge {
+        color: var(--text-muted);
+        font:
+            700 12px "Geist Mono",
+            monospace;
+    }
+}
+
+.expiring-item--expired {
+    background: color-mix(in srgb, var(--danger) 8%, var(--surface-2));
+    border-color: color-mix(in srgb, var(--danger) 25%, var(--border));
+
+    .expiring-item__badge {
+        color: var(--danger);
+    }
+}
+
+.expiring-item--warning {
+    background: color-mix(in srgb, var(--warning) 8%, var(--surface-2));
+    border-color: color-mix(in srgb, var(--warning) 25%, var(--border));
+
+    .expiring-item__badge {
+        color: var(--warning);
+    }
+}

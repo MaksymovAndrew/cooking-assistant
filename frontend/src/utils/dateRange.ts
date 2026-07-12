@@ -1,8 +1,6 @@
 export type DateRangeError = "startAfterEnd" | "invalidRange";
 
-// returns which rule a start/end date range violates, or null when valid. `now` is
-// injected so the "no future dates" rule stays pure and testable. The returned key
-// maps onto the `dateFilter.*` i18n messages.
+// `now` is injected so the "no future dates" rule stays pure and testable
 export const getDateRangeError = (
     start: string,
     end: string,

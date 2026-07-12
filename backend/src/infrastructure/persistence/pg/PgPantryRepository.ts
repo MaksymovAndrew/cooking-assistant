@@ -130,8 +130,7 @@ export default class PgPantryRepository implements PantryRepository {
                 return null;
             }
 
-            // apply the purchase edit as a delta on the pantry stock so prior
-            // consumption is preserved (recomputing as SUM of purchases would lose it)
+            // apply the purchase edit as a delta on the pantry stock so prior consumption is preserved (recomputing as SUM of purchases would lose it)
             const { quantity: oldQuantity, ingredient_id: ingredientId } =
                 purchase.rows[0];
             const delta = quantity - oldQuantity;

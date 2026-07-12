@@ -1,0 +1,201 @@
+@use "styles/abstracts" as *;
+
+.recipe-ingredients-panel {
+    display: flex;
+    flex-direction: column;
+    padding: var(--s-5);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--e-1);
+
+    @include respond-to(desktop) {
+        position: sticky;
+        top: var(--s-5);
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+        margin-bottom: var(--s-4);
+    }
+
+    &__title {
+        color: var(--text);
+        font:
+            600 19px Fraunces,
+            serif;
+    }
+
+    &__caption {
+        margin-top: 3px;
+        color: var(--text-muted);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+    }
+
+    &__stepper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__stepper-label {
+        color: var(--text-muted);
+        font:
+            500 12px Inter,
+            sans-serif;
+    }
+
+    &__stepper-control {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        padding: 3px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-2);
+
+        span {
+            min-width: 30px;
+            text-align: center;
+            color: var(--text);
+            font:
+                600 15px "Geist Mono",
+                monospace;
+        }
+
+        button {
+            display: flex;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 7px;
+            background: transparent;
+            color: var(--text);
+            font:
+                600 18px Inter,
+                sans-serif;
+            cursor: pointer;
+
+            @include focus-ring;
+
+            &:last-child {
+                background: var(--brand-strong);
+                color: var(--on-brand);
+            }
+        }
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__row {
+        display: flex;
+        align-items: center;
+        gap: var(--s-3);
+        padding: var(--s-2) 0;
+        border-bottom: 1px solid var(--border);
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__row--missing {
+        margin: 2px 0;
+        padding: var(--s-2) var(--s-3);
+        border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--warning) 9%, var(--surface));
+    }
+
+    &__have-icon {
+        flex: none;
+        color: var(--success);
+    }
+
+    &__missing-dot {
+        display: block;
+        flex: none;
+        width: 9px;
+        height: 9px;
+        margin: 0 3.5px;
+        border-radius: var(--r-pill);
+        background: var(--warning);
+    }
+
+    &__name {
+        flex: 1;
+        min-width: 0;
+        color: var(--text);
+        font:
+            400 14px Inter,
+            sans-serif;
+    }
+
+    &__qty {
+        flex: none;
+        color: var(--text-2);
+        white-space: nowrap;
+        font:
+            500 13px "Geist Mono",
+            monospace;
+    }
+
+    &__banner {
+        display: flex;
+        align-items: center;
+        gap: var(--s-3);
+        margin-top: var(--s-4);
+        padding: var(--s-3) var(--s-4);
+        border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
+        border-radius: 12px;
+        background: color-mix(in srgb, var(--warning) 9%, var(--surface));
+    }
+
+    &__banner-dot {
+        flex: none;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--r-pill);
+        background: var(--warning);
+    }
+
+    &__banner-title {
+        margin-bottom: 2px;
+        color: var(--text);
+        font:
+            600 14px Inter,
+            sans-serif;
+    }
+
+    &__banner-text {
+        color: var(--text-2);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    &__banner-link {
+        color: var(--brand);
+        font-weight: 600;
+        text-decoration: none;
+
+        @include focus-ring;
+
+        @include on-hover {
+            text-decoration: underline;
+        }
+    }
+}

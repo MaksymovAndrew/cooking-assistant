@@ -1,20 +1,14 @@
-// lint-staged.config.js (CommonJS — root package.json has no "type":"module")
-//
-// ESLint v9 resolves flat-config (eslint.config.js) by walking up from each
-// file being linted, so we need its cwd set to the relevant sub-package dir.
-// We use `node -e` with execSync({cwd}) instead of `cd dir && cmd` because the
-// shell `&&` pattern is unreliable on Windows (Git Bash / husky context).
+// ESLint v9 flat-config is resolved by cwd, so backend/frontend files need
+// eslint run from their own directory; `node -e` + execSync({cwd}) is used
+// instead of `cd dir && cmd` because `&&` chaining is unreliable on Windows.
 const path = require("path");
 
 const backendDir = path.join(__dirname, "backend");
 const frontendDir = path.join(__dirname, "frontend");
-// Forward-slash form used inside the node -e string literal (safe on Windows too).
 const backendFwd = backendDir.replace(/\\/g, "/");
 const frontendFwd = frontendDir.replace(/\\/g, "/");
 
 module.exports = {
-    // backend TS: eslint --fix first (from backend/ so flat-config is found),
-    // then prettier
     "backend/**/*.ts": (files) => {
         const relPaths = files
             .map((f) => path.relative(backendDir, f).replace(/\\/g, "/").trim())
@@ -27,8 +21,6 @@ module.exports = {
         ];
     },
 
-    // frontend TS/TSX: eslint --fix first (from frontend/ so flat-config is found),
-    // then prettier
     "frontend/**/*.{ts,tsx}": (files) => {
         const relPaths = files
             .map((f) => path.relative(frontendDir, f).replace(/\\/g, "/").trim())
@@ -41,9 +33,10 @@ module.exports = {
         ];
     },
 
-    // frontend CSS/SCSS: stylelint then prettier (unchanged behaviour)
     "frontend/**/*.{css,scss}": [
         "./frontend/node_modules/.bin/stylelint --fix",
         "prettier --write",
     ],
+
+    "{e2e/**/*.ts,playwright.config.ts}": ["eslint --fix", "prettier --write"],
 };

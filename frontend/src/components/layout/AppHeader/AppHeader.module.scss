@@ -1,0 +1,49 @@
+@use "styles/abstracts" as *;
+
+// not sticky - scrolls away with the page; ScrollToTopButton is the way back to it
+.app-header {
+    position: relative;
+    z-index: var(--z-header);
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    height: 56px;
+    padding: 0 var(--s-4);
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+
+    @include respond-to(tablet) {
+        height: 60px;
+        padding: 0 var(--s-5);
+    }
+
+    @include respond-to(desktop) {
+        height: 64px;
+    }
+
+    &__nav {
+        display: none;
+        margin-left: var(--s-3);
+
+        @include respond-to(desktop) {
+            display: block;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        margin-left: auto;
+    }
+
+    // theme lives in Settings on mobile; the header toggle returns from tablet up
+    &__theme-toggle {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: block;
+        }
+    }
+}

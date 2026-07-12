@@ -1,0 +1,133 @@
+@use "styles/abstracts" as *;
+
+.menu-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+    max-width: 1180px;
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-5);
+        align-items: start;
+
+        @include respond-to(desktop) {
+            grid-template-columns: 1.1fr 1fr;
+        }
+    }
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-5);
+    }
+
+    &__recipes-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--s-4);
+    }
+
+    &__recipes-title {
+        display: block;
+        color: var(--text);
+        font:
+            600 16px Fraunces,
+            serif;
+
+        &::after {
+            content: " *";
+            color: var(--danger);
+        }
+    }
+
+    &__recipes-count {
+        display: block;
+        color: var(--text-muted);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+    }
+
+    &__selected {
+        margin-top: var(--s-4);
+    }
+
+    &__error {
+        margin: var(--s-3) 0 0;
+        color: var(--danger);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__reorder-hint {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        margin: var(--s-4) 0 0;
+        padding-top: var(--s-3);
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+
+        svg {
+            flex: none;
+            margin-top: 2px;
+        }
+    }
+
+    &__summary-bar {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-4);
+        align-items: flex-start;
+        justify-content: space-between;
+
+        @include card-surface;
+
+        padding: var(--s-4) var(--s-5);
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+
+    &__summary-text {
+        color: var(--text-muted);
+        font:
+            500 13px "Geist Mono",
+            monospace;
+    }
+
+    &__summary-actions {
+        display: flex;
+        gap: var(--s-3);
+    }
+
+    &__cancel {
+        display: inline-flex;
+        height: 44px;
+        align-items: center;
+        padding: 0 var(--s-5);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        color: var(--text);
+        text-decoration: none;
+        font:
+            600 15px Inter,
+            sans-serif;
+
+        @include focus-ring;
+
+        @include on-hover {
+            border-color: var(--brand);
+            background: var(--brand-subtle);
+        }
+    }
+}

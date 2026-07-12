@@ -1,6 +1,7 @@
 import type { Pool } from "pg";
 
 import type { Recipe } from "domain/entities/Recipe";
+import type { PaginatedResult } from "domain/repositories/pagination.types";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 
 import {
@@ -52,14 +53,14 @@ export default class PgRecipeRepository implements RecipeRepository {
         return updateRecipeInDb(this.pool, recipeId, personId, data);
     }
 
-    async search(filters: unknown): Promise<unknown[]> {
+    async search(filters: unknown): Promise<PaginatedResult<unknown>> {
         return searchRecipes(this.pool, filters);
     }
 
     async searchByPerson(
         personId: number,
         filters: unknown,
-    ): Promise<unknown[]> {
+    ): Promise<PaginatedResult<unknown>> {
         return searchPersonRecipes(this.pool, personId, filters);
     }
 

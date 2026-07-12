@@ -1,9 +1,9 @@
 {
   "name": "cooking-assistant",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "main": "src/index.ts",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "start": "tsx src/index.ts",
@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "test:db": "jest --config jest.db.config.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:sonarjs": "eslint . --config eslint.sonarjs.config.js",
@@ -19,10 +20,12 @@
     "migrate:up": "tsx src/scripts/migrate.ts up",
     "migrate:down": "tsx src/scripts/migrate.ts down",
     "migrate:create": "node-pg-migrate create -j sql -m migrations",
-    "seed": "tsx src/scripts/seed.ts",
-    "patch": "npm version patch --no-git-tag-version",
-    "minor": "npm version minor --no-git-tag-version",
-    "major": "npm version major --no-git-tag-version"
+    "seed": "tsx src/scripts/seed.ts"
+  },
+  "overrides": {
+    "tsup": {
+      "esbuild": "^0.28.1"
+    }
   },
   "keywords": [],
   "author": "",
@@ -45,6 +48,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@testcontainers/postgresql": "^12.0.4",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.0",
@@ -63,9 +67,9 @@
     "eslint-plugin-promise": "^7.3.0",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "eslint-plugin-sonarjs": "^4.0.3",
-    "globals": "^15.15.0",
     "jest": "^30.4.2",
     "supertest": "^7.2.2",
+    "testcontainers": "^12.0.4",
     "ts-jest": "^29.4.11",
     "tsup": "^8.5.1",
     "tsx": "^4.22.4",

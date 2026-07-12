@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import type * as ReactRouterDom from "react-router-dom";
@@ -10,11 +10,15 @@ import { API_ROUTES } from "api/endpoints";
 
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
-import { ModalRoot } from "components/ui/Modals";
+import { ModalRoot } from "components/modals";
 
 import RecipeDetailsPage from "pages/recipes/RecipeDetailsPage";
-import { mockedDelete, mockedGet } from "test/apiClientMock";
-import { BTN_DELETE_RECIPE, BTN_EDIT_RECIPE, ROUTE_MAIN } from "test/constants";
+import { mockedDelete, mockedGet, mockGetByUrl } from "test/apiClientMock";
+import {
+    BTN_DELETE_RECIPE,
+    BTN_EDIT_RECIPE,
+    ROUTE_ALL_RECIPES,
+} from "test/constants";
 import { mockNavigate } from "test/router";
 import { makeTestStore } from "test/store";
 
@@ -35,9 +39,16 @@ const SAMPLE: RecipeDetails = {
     type_name: "Soup",
     cooking_time: 60,
     creation_date: "2024-01-01",
-    servings: 4,
+    servings: "4",
     person_id: OWNER_ID,
     isOwner: true,
+};
+
+const mockRecipe = (recipe: RecipeDetails = SAMPLE) => {
+    mockGetByUrl({
+        [API_ROUTES.recipes.byId("1")]: recipe,
+        [API_ROUTES.userIngredients.list]: [],
+    });
 };
 
 const renderPage = (store = makeTestStore()) => {
@@ -64,21 +75,23 @@ const renderPage = (store = makeTestStore()) => {
 
 describe("RecipeDetailsPage", () => {
     it("should render the recipe title loaded from the api", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockRecipe();
 
         renderPage();
 
-        expect(await screen.findByText(TITLE)).toBeInTheDocument();
+        expect(
+            await screen.findByRole("heading", { name: TITLE }),
+        ).toBeInTheDocument();
     });
 
     it("should show Edit and Delete buttons when current user is the recipe owner", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockRecipe();
 
         renderPage();
-        await screen.findByText(TITLE);
+        await screen.findByRole("heading", { name: TITLE });
 
         expect(
-            screen.getByRole("button", { name: BTN_EDIT_RECIPE }),
+            screen.getByRole("link", { name: BTN_EDIT_RECIPE }),
         ).toBeInTheDocument();
         expect(
             screen.getByRole("button", { name: BTN_DELETE_RECIPE }),
@@ -86,12 +99,12 @@ describe("RecipeDetailsPage", () => {
     });
 
     it("should open the global delete modal and navigate to /main after delete", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockRecipe();
         mockedDelete.mockResolvedValue({ data: null });
 
         const { store } = renderPage();
 
-        await screen.findByText(TITLE);
+        await screen.findByRole("heading", { name: TITLE });
 
         await userEvent.click(
             screen.getByRole("button", { name: BTN_DELETE_RECIPE }),
@@ -99,13 +112,17 @@ describe("RecipeDetailsPage", () => {
 
         expect(store.getState().ui.modal?.type).toBe(MODAL_TYPE.deleteRecipe);
 
-        await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+        const dialog = screen.getByRole("dialog");
+
+        await userEvent.click(
+            within(dialog).getByRole("button", { name: BTN_DELETE_RECIPE }),
+        );
 
         expect(mockedDelete).toHaveBeenCalledWith(
             API_ROUTES.recipes.byId("1"),
             { params: undefined },
         );
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_MAIN);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
     });
 
     it("should show an error message when the recipe fails to load", async () => {
@@ -118,21 +135,31 @@ describe("RecipeDetailsPage", () => {
         ).toBeInTheDocument();
     });
 
-    it("should render cooking time in minutes only when under an hour", async () => {
-        mockedGet.mockResolvedValue({ data: { ...SAMPLE, cooking_time: 45 } });
+    it("should render a translated Try again button, not a raw i18n key", async () => {
+        mockedGet.mockRejectedValue(new Error("boom"));
 
         renderPage();
-        await screen.findByText(TITLE);
 
-        expect(screen.getByText("45 minutes")).toBeInTheDocument();
+        expect(
+            await screen.findByRole("button", { name: "Try again" }),
+        ).toBeInTheDocument();
+    });
+
+    it("should render cooking time in minutes only when under an hour", async () => {
+        mockRecipe({ ...SAMPLE, cooking_time: 45 });
+
+        renderPage();
+        await screen.findByRole("heading", { name: TITLE });
+
+        expect(screen.getByText("45 min")).toBeInTheDocument();
     });
 
     it("should close the delete confirmation modal when cancelled", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockRecipe();
 
         const { store } = renderPage();
 
-        await screen.findByText(TITLE);
+        await screen.findByRole("heading", { name: TITLE });
 
         await userEvent.click(
             screen.getByRole("button", { name: BTN_DELETE_RECIPE }),

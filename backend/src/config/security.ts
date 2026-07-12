@@ -2,8 +2,7 @@ import type { Options as RateLimitOptions } from "express-rate-limit";
 
 import { config } from "config/env";
 
-// production hardening knobs kept in one auditable place so the app wiring
-// in app.ts carries no magic numbers
+// production hardening knobs kept in one auditable place so the app wiring in app.ts carries no magic numbers
 
 const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
 const FIFTEEN_MINUTES_IN_MS = 15 * 60 * 1000;

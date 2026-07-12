@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import type * as ReactRouterDom from "react-router-dom";
@@ -10,11 +10,15 @@ import { API_ROUTES } from "api/endpoints";
 
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
-import { ModalRoot } from "components/ui/Modals";
+import { ModalRoot } from "components/modals";
 
 import MenuDetailsPage from "pages/menu/MenuDetailsPage";
 import { mockedDelete, mockedGet } from "test/apiClientMock";
-import { BTN_DELETE_MENU, ROUTE_MENU } from "test/constants";
+import {
+    BTN_DELETE_MENU,
+    BTN_EDIT_MENU,
+    ROUTE_ALL_MENUS,
+} from "test/constants";
 import { mockNavigate } from "test/router";
 import { makeTestStore } from "test/store";
 
@@ -36,7 +40,24 @@ const SAMPLE: MenuDetails = {
         personid: OWNER_ID,
         isOwner: true,
     },
-    recipes: [],
+    recipes: [
+        {
+            recipe_id: 10,
+            title: "Soup",
+            type_name: "Soup",
+            cooking_time: 30,
+            creation_date: "2024-01-01",
+            missingIngredients: [
+                {
+                    ingredient_name: "Carrot",
+                    needed_quantity: 2,
+                    missing_quantity: 2,
+                    unit_name: "pcs",
+                },
+            ],
+        },
+    ],
+    allergens: [],
 };
 
 const renderPage = (store = makeTestStore()) => {
@@ -67,15 +88,31 @@ describe("MenuDetailsPage", () => {
 
         renderPage();
 
-        expect(await screen.findByText(TITLE)).toBeInTheDocument();
+        expect(
+            await screen.findByRole("heading", { name: TITLE }),
+        ).toBeInTheDocument();
     });
 
-    it("should show Delete button when current user is the menu owner", async () => {
+    it("should render the menu's recipes and its missing ingredients", async () => {
         mockedGet.mockResolvedValue({ data: SAMPLE });
 
         renderPage();
-        await screen.findByText(TITLE);
+        await screen.findByRole("heading", { name: TITLE });
 
+        expect(screen.getByText("Soup")).toBeInTheDocument();
+        expect(screen.getByText("Carrot")).toBeInTheDocument();
+        expect(screen.getByText("2 pcs")).toBeInTheDocument();
+    });
+
+    it("should show Edit and Delete buttons when current user is the menu owner", async () => {
+        mockedGet.mockResolvedValue({ data: SAMPLE });
+
+        renderPage();
+        await screen.findByRole("heading", { name: TITLE });
+
+        expect(
+            screen.getByRole("link", { name: BTN_EDIT_MENU }),
+        ).toBeInTheDocument();
         expect(
             screen.getByRole("button", { name: BTN_DELETE_MENU }),
         ).toBeInTheDocument();
@@ -87,7 +124,7 @@ describe("MenuDetailsPage", () => {
 
         const { store } = renderPage();
 
-        await screen.findByText(TITLE);
+        await screen.findByRole("heading", { name: TITLE });
 
         await userEvent.click(
             screen.getByRole("button", { name: BTN_DELETE_MENU }),
@@ -95,20 +132,36 @@ describe("MenuDetailsPage", () => {
 
         expect(store.getState().ui.modal?.type).toBe(MODAL_TYPE.deleteMenu);
 
-        await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+        const dialog = screen.getByRole("dialog");
+
+        await userEvent.click(
+            within(dialog).getByRole("button", { name: BTN_DELETE_MENU }),
+        );
 
         expect(mockedDelete).toHaveBeenCalledWith(API_ROUTES.menu.byId(1), {
             params: undefined,
         });
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_MENU);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_MENUS);
     });
 
-    it("should render the error message when loading the menu fails", async () => {
+    it("should render the error state when loading the menu fails", async () => {
         mockedGet.mockRejectedValue(new Error("boom"));
 
         renderPage();
 
-        expect(await screen.findByText(/Error:/)).toBeInTheDocument();
+        expect(
+            await screen.findByText("Error: Error fetching menu details"),
+        ).toBeInTheDocument();
+    });
+
+    it("should render a translated Try again button, not a raw i18n key", async () => {
+        mockedGet.mockRejectedValue(new Error("boom"));
+
+        renderPage();
+
+        expect(
+            await screen.findByRole("button", { name: "Try again" }),
+        ).toBeInTheDocument();
     });
 
     it("should close the modal when Cancel is clicked", async () => {
@@ -116,7 +169,7 @@ describe("MenuDetailsPage", () => {
 
         const { store } = renderPage();
 
-        await screen.findByText(TITLE);
+        await screen.findByRole("heading", { name: TITLE });
 
         await userEvent.click(
             screen.getByRole("button", { name: BTN_DELETE_MENU }),

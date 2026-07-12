@@ -1,10 +1,16 @@
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+import { ROUTES } from "constants/routes";
 
 import { useCreateRecipePage } from "hooks/useCreateRecipePage";
 
 import { RecipeForm } from "components/forms/RecipeForm";
-import { Header } from "components/layout/Header";
+import { AppShell } from "components/layout/AppShell";
+
+import styles from "./RecipeFormPage.module.scss";
 
 const CreateRecipePage: React.FC = () => {
     const { t } = useTranslation("recipes");
@@ -12,10 +18,19 @@ const CreateRecipePage: React.FC = () => {
         useCreateRecipePage();
 
     return (
-        <div>
-            <Header />
-            <div className="mx-[15vw]">
-                <h1 className="text-relative-h3 my-[7vh] font-kharkiv font-bold mb-4">
+        <AppShell>
+            <div className={styles["recipe-form-page"]}>
+                <nav
+                    aria-label={t("createRecipePage.breadcrumb")}
+                    className={styles["recipe-form-page__breadcrumb"]}
+                >
+                    <Link to={ROUTES.allRecipes}>
+                        {t("createRecipePage.breadcrumbRecipes")}
+                    </Link>
+                    <ChevronRight size={14} aria-hidden="true" />
+                    <span>{t("createRecipePage.breadcrumbCurrent")}</span>
+                </nav>
+                <h1 className={styles["recipe-form-page__heading"]}>
                     {t("createRecipePage.heading")}
                 </h1>
                 <RecipeForm
@@ -24,18 +39,13 @@ const CreateRecipePage: React.FC = () => {
                     allTypes={allTypes}
                     keyPrefix="createRecipePage"
                     idPrefix="create-recipe"
-                    cookingTimePlaceholder={t(
-                        "createRecipePage.cookingTimePlaceholder",
-                    )}
-                    typeError={form.typeError}
-                    error={form.error}
                     submitLabel={t("createRecipePage.createButton")}
                     onSubmit={() => {
                         void handleSubmit();
                     }}
                 />
             </div>
-        </div>
+        </AppShell>
     );
 };
 

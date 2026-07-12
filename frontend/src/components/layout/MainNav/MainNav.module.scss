@@ -1,0 +1,41 @@
+@use "styles/abstracts" as *;
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--s-1);
+}
+
+.main-nav__item {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    height: 38px;
+    padding: 0 var(--s-4);
+    border-radius: var(--r-sm);
+    color: var(--text-2);
+    font:
+        600 14px Inter,
+        sans-serif;
+    text-decoration: none;
+    transition:
+        background var(--dur-fast) var(--ease-out),
+        color var(--dur-fast) var(--ease-out);
+
+    @include focus-ring;
+
+    @include on-hover {
+        background: var(--surface-2);
+        color: var(--text);
+    }
+}
+
+.main-nav__item--active {
+    background: var(--brand-subtle);
+    color: var(--brand);
+
+    @include on-hover {
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+}

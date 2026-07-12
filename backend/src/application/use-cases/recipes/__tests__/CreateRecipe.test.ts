@@ -14,7 +14,7 @@ function makeInput(overrides = {}) {
         ingredients: [{ id: 3, quantity: 2 }],
         type_id: 1,
         cooking_time: 30,
-        servings: 4,
+        servings: "4",
         ...overrides,
     };
 }
@@ -51,13 +51,13 @@ describe("CreateRecipe", () => {
         expect(result).toEqual(createdRecipe);
     });
 
-    it("should accept servings sent as a numeric string", async () => {
+    it("should accept free-form text servings, not just a plain number", async () => {
         const { useCase, recipeRepository } = setup();
 
-        await useCase.execute(makeInput({ servings: "4" }));
+        await useCase.execute(makeInput({ servings: "a full pot" }));
         const [recipe] = recipeRepository.create.mock.calls[0] as [Recipe];
 
-        expect(recipe).toMatchObject({ servings: 4 });
+        expect(recipe).toMatchObject({ servings: "a full pot" });
     });
 
     it("should throw a 400 ValidationError when ingredient ids are duplicated", async () => {

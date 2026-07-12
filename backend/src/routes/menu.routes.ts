@@ -10,6 +10,8 @@ export default function createMenuRouter(
 
     router.get("/menu", authenticateToken, menuController.getAll);
 
+    router.get("/menus", authenticateToken, menuController.getAllUnpaginated);
+
     router.post("/create-menu", authenticateToken, menuController.create);
 
     router.get("/menu/:id", authenticateToken, menuController.getById);

@@ -26,8 +26,17 @@ const notificationsSlice = createSlice({
     initialState,
     reducers: {
         addNotification: {
+            // several requests failing at once (e.g. the server going down mid-session) must not stack identical toasts - one visible copy is enough
             reducer: (state, action: PayloadAction<Notification>) => {
-                state.items.push(action.payload);
+                const isDuplicate = state.items.some(
+                    (item) =>
+                        item.type === action.payload.type &&
+                        item.message === action.payload.message,
+                );
+
+                if (!isDuplicate) {
+                    state.items.push(action.payload);
+                }
             },
             prepare: (input: NotificationInput) => ({
                 payload: { id: nanoid(), ...input },

@@ -6,7 +6,7 @@ export interface UserIngredient {
     storage_condition?: string;
     seasonality?: string;
     days_to_expire?: number | null;
-    allergens?: string[];
+    allergens?: string | null;
     purchase_date?: string;
 }
 
@@ -19,7 +19,7 @@ export interface PantryIngredient {
     storage_condition?: string;
     seasonality?: string;
     days_to_expire?: number | null;
-    allergens?: string[];
+    allergens?: string | null;
     purchase_date?: string;
 }
 

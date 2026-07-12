@@ -1,0 +1,1 @@
+export { MenuActiveFilters } from "./MenuActiveFilters";

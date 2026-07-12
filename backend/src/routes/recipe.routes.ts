@@ -3,6 +3,8 @@ import express, { type Router } from "express";
 import type RecipeController from "controller/recipe.controller";
 import authenticateToken from "middleware/jwtMiddleware";
 
+const RECIPE_BY_ID_PATH = "/recipe/:id";
+
 export default function createRecipeRouter(
     recipeController: RecipeController,
 ): Router {
@@ -13,7 +15,7 @@ export default function createRecipeRouter(
     router.get("/recipes", authenticateToken, recipeController.getAllRecipes);
 
     router.get(
-        "/recipe/:id",
+        RECIPE_BY_ID_PATH,
         authenticateToken,
         recipeController.getRecipeWithIngredients,
     );
@@ -24,10 +26,14 @@ export default function createRecipeRouter(
         recipeController.getAllIngredients,
     );
 
-    router.put("/recipe/:id", authenticateToken, recipeController.updateRecipe);
+    router.put(
+        RECIPE_BY_ID_PATH,
+        authenticateToken,
+        recipeController.updateRecipe,
+    );
 
     router.delete(
-        "/recipe/:id",
+        RECIPE_BY_ID_PATH,
         authenticateToken,
         recipeController.deleteRecipe,
     );

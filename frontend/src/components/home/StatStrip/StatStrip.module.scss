@@ -1,0 +1,18 @@
+@use "styles/abstracts" as *;
+
+.stat-strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--s-3);
+
+    @include respond-to(tablet) {
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--s-4);
+    }
+
+    // a rotated phone stays 2x2 - the 4-across tablet layout doesn't fit the narrow left column of the landscape split
+    @include respond-to-short-landscape {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--s-2);
+    }
+}

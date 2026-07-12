@@ -1,0 +1,39 @@
+@use "styles/abstracts" as *;
+
+.delete-account-modal {
+    text-align: center;
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        margin: 0 auto var(--s-4);
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--danger) 14%, transparent);
+        color: var(--danger);
+    }
+
+    &__title {
+        margin: 0 0 var(--s-2);
+        color: var(--text);
+        font:
+            600 22px Fraunces,
+            serif;
+    }
+
+    &__message {
+        margin: 0 0 var(--s-5);
+        color: var(--text-2);
+        font:
+            400 14px/1.55 Inter,
+            sans-serif;
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: center;
+        gap: var(--s-3);
+    }
+}

@@ -6,16 +6,16 @@ import { SelectedIngredientsList } from "components/recipes/SelectedIngredientsL
 const INGREDIENTS = [{ id: 1, name: "Potato", quantity: 3, unit_name: "g" }];
 
 describe("SelectedIngredientsList", () => {
-    it("should render heading, ingredient name, quantity input and unit", () => {
+    it("should render ingredient name, quantity input and unit", () => {
         render(
             <SelectedIngredientsList
                 ingredients={INGREDIENTS}
-                heading="Selected Ingredients"
                 onQuantityChange={jest.fn()}
+                onRemove={jest.fn()}
+                onReorder={jest.fn()}
             />,
         );
 
-        expect(screen.getByText("Selected Ingredients")).toBeInTheDocument();
         expect(screen.getByText("Potato")).toBeInTheDocument();
         expect(screen.getByRole("spinbutton")).toHaveValue(3);
         expect(screen.getByText("g")).toBeInTheDocument();
@@ -27,8 +27,9 @@ describe("SelectedIngredientsList", () => {
         render(
             <SelectedIngredientsList
                 ingredients={INGREDIENTS}
-                heading="Selected Ingredients"
                 onQuantityChange={onQuantityChange}
+                onRemove={jest.fn()}
+                onReorder={jest.fn()}
             />,
         );
 
@@ -43,13 +44,31 @@ describe("SelectedIngredientsList", () => {
         render(
             <SelectedIngredientsList
                 ingredients={INGREDIENTS}
-                heading="Selected Ingredients"
                 onQuantityChange={onQuantityChange}
+                onRemove={jest.fn()}
+                onReorder={jest.fn()}
             />,
         );
 
         await userEvent.clear(screen.getByRole("spinbutton"));
 
         expect(onQuantityChange).not.toHaveBeenCalled();
+    });
+
+    it("should call onRemove with the ingredient id when the remove button is clicked", async () => {
+        const onRemove = jest.fn();
+
+        render(
+            <SelectedIngredientsList
+                ingredients={INGREDIENTS}
+                onQuantityChange={jest.fn()}
+                onRemove={onRemove}
+                onReorder={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Remove" }));
+
+        expect(onRemove).toHaveBeenCalledWith(INGREDIENTS[0].id);
     });
 });

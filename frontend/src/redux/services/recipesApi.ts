@@ -1,8 +1,10 @@
+import { PAGE_SIZE } from "constants/pagination";
+import type { PaginatedResult } from "types/pagination";
 import type {
     CreateRecipeRequest,
     RecipeDetails,
     RecipeFilterParams,
-    RecipeListItem,
+    RecipeSearchResultItem,
     RecipeWithIngredientNames,
     UpdateRecipeRequest,
 } from "types/recipe";
@@ -10,20 +12,47 @@ import type {
 import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
-import { listProvidesTags, listTag } from "./cacheTags";
+import {
+    infiniteListProvidesTags,
+    listProvidesTags,
+    listTag,
+} from "./cacheTags";
+import { getNextOffsetParam } from "./infiniteQueryHelpers";
 
 const RECIPE = "Recipe" as const;
 const RECIPE_LIST = listTag(RECIPE);
 
 export const recipesApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        getRecipesByFilters: build.query<RecipeListItem[], RecipeFilterParams>({
-            query: (params) => ({ url: API_ROUTES.recipes.byFilters, params }),
-            providesTags: (result) => listProvidesTags(RECIPE, result),
+        getRecipesByFilters: build.infiniteQuery<
+            PaginatedResult<RecipeSearchResultItem>,
+            RecipeFilterParams,
+            number
+        >({
+            infiniteQueryOptions: {
+                initialPageParam: 0,
+                getNextPageParam: getNextOffsetParam,
+            },
+            query: ({ queryArg, pageParam }) => ({
+                url: API_ROUTES.recipes.byFilters,
+                params: { ...queryArg, limit: PAGE_SIZE, offset: pageParam },
+            }),
+            providesTags: (result) => infiniteListProvidesTags(RECIPE, result),
         }),
-        getRecipesByPerson: build.query<RecipeListItem[], RecipeFilterParams>({
-            query: (params) => ({ url: API_ROUTES.recipes.byPerson, params }),
-            providesTags: (result) => listProvidesTags(RECIPE, result),
+        getRecipesByPerson: build.infiniteQuery<
+            PaginatedResult<RecipeSearchResultItem>,
+            RecipeFilterParams,
+            number
+        >({
+            infiniteQueryOptions: {
+                initialPageParam: 0,
+                getNextPageParam: getNextOffsetParam,
+            },
+            query: ({ queryArg, pageParam }) => ({
+                url: API_ROUTES.recipes.byPerson,
+                params: { ...queryArg, limit: PAGE_SIZE, offset: pageParam },
+            }),
+            providesTags: (result) => infiniteListProvidesTags(RECIPE, result),
         }),
         getAllRecipes: build.query<RecipeWithIngredientNames[], null>({
             query: () => ({ url: API_ROUTES.recipes.list }),
@@ -69,8 +98,8 @@ export const recipesApi = baseApi.injectEndpoints({
 });
 
 export const {
-    useGetRecipesByFiltersQuery,
-    useGetRecipesByPersonQuery,
+    useGetRecipesByFiltersInfiniteQuery,
+    useGetRecipesByPersonInfiniteQuery,
     useGetAllRecipesQuery,
     useGetRecipeByIdQuery,
     useCreateRecipeMutation,

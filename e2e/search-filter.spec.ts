@@ -4,8 +4,7 @@ import { expect, test } from "@playwright/test";
 import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
-// exercises the recipe/menu search, type/category filter, and sort controls -
-// none of it was visited by the other e2e specs, which only create+read+edit+delete
+// exercises the recipe/menu search, type/category filter, and sort controls - none of it was visited by the other e2e specs, which only create+read+edit+delete
 test.describe.configure({ mode: "serial" });
 
 const DESCRIPTION = "Created by search-filter e2e.";
@@ -27,8 +26,7 @@ test.beforeAll(async ({ browser }) => {
     recipeBTitle = `Search filter recipe B ${runId}`;
     menuXTitle = `Search filter menu X ${runId}`;
     menuYTitle = `Search filter menu Y ${runId}`;
-    // reuses the shared primary account (registered once in global-setup) instead of
-    // registering a fresh one here - keeps the suite's total auth calls low
+    // reuses the shared primary account (registered once in global-setup) instead of registering a fresh one here - keeps the suite's total auth calls low
     context = await browser.newContext({ storageState: PRIMARY_STORAGE_STATE });
     page = await context.newPage();
 
@@ -100,10 +98,7 @@ test("should sort My Recipes by cooking time", async () => {
     await page.goto("/my-recipes");
     await page.getByRole("button", { name: "Filters", exact: true }).click();
 
-    // default sort is already "Fast → long" - switch to "Long → fast" first so the
-    // click actually changes state, then back, exercising both directions.
-    // polling the DOM (not a specific network response) for the reorder is
-    // the robust check here - the exact request shape can vary
+    // switch to "Long → fast" first so the click actually changes state, then back; polling the DOM (not a specific network response) is the robust check since the exact request shape can vary
     await page.getByRole("radio", { name: "Long → fast" }).click();
 
     await expect(async () => {
@@ -143,8 +138,7 @@ test("should filter My Menus by title", async () => {
 
 test("should filter My Menus by category", async () => {
     await page.goto("/my-menus");
-    // the list page's category filter is a checkbox dropdown, not a <select> -
-    // reuse the category text captured from the create-menu form instead
+    // the list page's category filter is a checkbox dropdown, not a <select> - reuse the category text captured from the create-menu form instead
     await page.getByRole("button", { name: "Filter", exact: true }).click();
     await page.getByLabel(menuXCategory).check();
 

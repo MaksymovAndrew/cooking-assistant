@@ -26,8 +26,7 @@ export const getErrorMessage = (payload: unknown): string =>
         ? payload.data
         : i18next.t("notifications.somethingWentWrong");
 
-// excluded from the global toast - these already show their own feedback (inline form errors,
-// PrivateRoute's session message) or shouldn't surface a scary generic error (logout)
+// excluded from the global toast - these already show their own feedback (inline form errors, PrivateRoute's session message) or shouldn't surface a scary generic error (logout)
 export const isSelfHandledRejection = isAnyOf(
     authApi.endpoints.login.matchRejected,
     authApi.endpoints.register.matchRejected,
@@ -37,8 +36,7 @@ export const isSelfHandledRejection = isAnyOf(
 
 export const notificationsListener = createListenerMiddleware();
 
-// single global error channel: every failed request becomes an error toast,
-// except the auth forms above that already show their own inline error
+// single global error channel: every failed request becomes an error toast, except the auth forms above that already show their own inline error
 notificationsListener.startListening({
     matcher: isRejectedWithValue,
     effect: (action, listenerApi) => {
@@ -128,8 +126,7 @@ notificationsListener.startListening({
     },
 });
 
-// a deliberate logout gets its own confirmation - distinct from the silent
-// hard-redirect that happens when a session merely expires
+// a deliberate logout gets its own confirmation - distinct from the silent hard-redirect that happens when a session merely expires
 notificationsListener.startListening({
     matcher: authApi.endpoints.logout.matchFulfilled,
     effect: (_action, listenerApi) => {

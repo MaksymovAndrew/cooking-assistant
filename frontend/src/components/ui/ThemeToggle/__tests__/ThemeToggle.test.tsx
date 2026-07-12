@@ -48,8 +48,7 @@ describe("ThemeToggle", () => {
             type: MODAL_TYPE.themeChange,
             nextMode: "light",
         });
-        // clicking the toggle must not switch the theme by itself - only
-        // confirming the modal does, since a switch reloads the page
+        // clicking the toggle must not switch the theme by itself - only confirming the modal does, since a switch reloads the page
         expect(store.getState().theme.mode).toBe("dark");
     });
 });

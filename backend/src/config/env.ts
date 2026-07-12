@@ -5,8 +5,7 @@ import { z } from "zod";
 import { ERROR_MESSAGES } from "constants/errorMessages";
 import { AppError } from "domain/errors/AppError";
 
-// shared by the schema defaults and the production guard so the "insecure default"
-// check can never drift from the value it is guarding against
+// shared by the schema defaults and the production guard so the "insecure default" check can never drift from the value it is guarding against
 const DEFAULT_DB_USER = "postgres";
 const DEFAULT_DB_PASSWORD = "12345678";
 
@@ -66,8 +65,7 @@ const envSchema = z.object({
     DB_HOST: envStringSchema("localhost"),
     DB_PORT: envNumberSchema(5432),
     DB_NAME: envStringSchema("cooking_helper"),
-    // SSL is on by default in production; rejectUnauthorized can be turned off for
-    // managed Postgres that presents a private/self-signed CA (e.g. Azure)
+    // SSL is on by default in production; rejectUnauthorized can be turned off for managed Postgres that presents a private/self-signed CA (e.g. Azure)
     DB_SSL: envOptionalBooleanSchema,
     DB_SSL_REJECT_UNAUTHORIZED: envBooleanSchema(true),
     TRUST_PROXY_HOPS: envOptionalHopsSchema,
@@ -129,8 +127,7 @@ export const config = {
     corsOrigin: env.CORS_ORIGIN,
     cookieDomain: env.COOKIE_DOMAIN,
     logLevel: env.LOG_LEVEL ?? "info",
-    // default to no trusted proxy in dev so a spoofed X-Forwarded-For cannot
-    // re-key the rate limiter; one hop in production (configurable per topology)
+    // default to no trusted proxy in dev so a spoofed X-Forwarded-For cannot re-key the rate limiter; one hop in production (configurable per topology)
     trustProxyHops: env.TRUST_PROXY_HOPS ?? (isProduction ? 1 : 0),
     rateLimitMax: env.RATE_LIMIT_MAX,
     rateLimitWindowMs: env.RATE_LIMIT_WINDOW_MS,
@@ -161,6 +158,5 @@ export function assertSecureProductionDb(cfg: {
     }
 }
 
-// run at config load so every consumer of config.db (the app, the migrate runner,
-// and the seed script) is guarded, not just the HTTP entry point
+// run at config load so every consumer of config.db (the app, the migrate runner, and the seed script) is guarded, not just the HTTP entry point
 assertSecureProductionDb(config);

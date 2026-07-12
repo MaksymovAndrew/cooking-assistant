@@ -42,7 +42,6 @@ export const useIngredientCatalog = () => {
         PantryIngredient[]
     >([]);
 
-    // re-seed the selection from the pantry whenever the cached list changes
     useEffect(() => {
         setSelectedIngredients(personIngredients.map((item) => item.id));
     }, [personIngredients]);

@@ -41,8 +41,7 @@ describe("IngredientPicker", () => {
             "pot",
         );
 
-        // the matched substring is wrapped in its own <strong>, which the
-        // accessible name computation separates with a space (e.g. "Pot ato")
+        // the matched substring is wrapped in its own <strong>, which the accessible name computation separates with a space (e.g. "Pot ato")
         expect(
             screen.getByRole("button", { name: /pot/i }),
         ).toBeInTheDocument();

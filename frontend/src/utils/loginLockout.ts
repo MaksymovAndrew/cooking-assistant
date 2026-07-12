@@ -8,8 +8,7 @@ import {
     SECONDS_PER_MINUTE,
 } from "constants/time";
 
-// the ladder values live in constants/loginLockout.ts; re-exported so the
-// form/hook consumers keep one import site for the whole lockout API
+// the ladder values live in constants/loginLockout.ts; re-exported so form/hook consumers keep one import site for the whole lockout API
 export { ATTEMPTS_PER_LOCK, LOCKOUT_LADDER_MINUTES };
 
 const STORAGE_KEY = "cooking.loginLockout";
@@ -54,8 +53,7 @@ export const clearLockout = (): void => {
     localStorage.removeItem(STORAGE_KEY);
 };
 
-// a failed (non-429) login attempt: bump the counter, and lock once it hits
-// the next multiple of ATTEMPTS_PER_LOCK, climbing one ladder step per lock
+// a failed (non-429) login attempt: bump the counter, and lock once it hits the next multiple of ATTEMPTS_PER_LOCK, climbing one ladder step per lock
 export const registerFailure = (state: LockoutState): LockoutState => {
     const failures = state.failures + 1;
 
@@ -73,8 +71,7 @@ export const registerFailure = (state: LockoutState): LockoutState => {
     return { failures, lockedUntil };
 };
 
-// the server's 429 Retry-After is authoritative for duration: take whichever
-// lockout (client ladder or server cool-down) ends later
+// the server's 429 Retry-After is authoritative for duration: take whichever lockout (client ladder or server cool-down) ends later
 export const mergeServerRetryAfter = (
     state: LockoutState,
     seconds: number,

@@ -3,9 +3,7 @@ import { LATEST_RELEASE_DATE, NEWS_ITEMS } from "constants/news";
 
 const STORAGE_KEY = "cooking.newsLastSeen";
 
-// a first-time visitor hasn't seen anything, but showing every historical
-// entry as "unseen" would be noisy - default to just before the latest
-// release, so a fresh account starts with only that release marked new
+// showing every historical entry as "unseen" would be noisy, so a fresh account defaults to just before the latest release, marking only that one new
 const DEFAULT_LAST_SEEN_DATE =
     NEWS_ITEMS.find((entry) => entry.date !== LATEST_RELEASE_DATE)?.date ??
     LATEST_RELEASE_DATE;

@@ -14,8 +14,7 @@ import recipes from "i18n/locales/en/recipes.json";
 import settings from "i18n/locales/en/settings.json";
 import stats from "i18n/locales/en/stats.json";
 
-// synchronous init (resources are inlined, no backend) so t() returns real strings
-// immediately; useSuspense:false avoids a Suspense boundary in the app and tests
+// synchronous init (resources are inlined, no backend) so t() returns real strings immediately; useSuspense:false avoids a Suspense boundary in the app and tests
 i18n.use(initReactI18next)
     .init({
         resources: {

@@ -19,8 +19,7 @@ interface WhatsNewCardProps {
 const ICON_SIZE = 17;
 const VISIBLE_ITEMS = 3;
 
-// a compact preview of NEWS_ITEMS - clicking it opens the same NewsModal
-// used by the mobile/tablet bell button, with the full list and descriptions
+// a compact preview of NEWS_ITEMS - clicking it opens the same NewsModal used by the mobile/tablet bell button, with the full list and descriptions
 export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({
     onOpenAll,
     unseenCount,

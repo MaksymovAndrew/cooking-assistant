@@ -8,8 +8,7 @@ import {
     writeLastSeenDate,
 } from "utils/newsReadState";
 
-// tracks which NEWS_ITEMS the user hasn't opened the popup since - unlike a
-// static "is this from the latest release" flag, the badge actually clears
+// tracks which NEWS_ITEMS the user hasn't opened the popup since - unlike a static "is this from the latest release" flag, the badge actually clears
 export const useNewsBadge = () => {
     const [lastSeenDate, setLastSeenDate] = useState(readLastSeenDate);
 

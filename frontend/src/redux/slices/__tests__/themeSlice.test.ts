@@ -21,8 +21,7 @@ const stubMatchMedia = (matches: boolean): void => {
 };
 
 describe("getInitialThemeMode", () => {
-    // must run before any test stubs window.matchMedia, so jsdom's real
-    // lack of matchMedia support drives this branch
+    // must run before any test stubs window.matchMedia, so jsdom's real lack of matchMedia support drives this branch
     it("should return dark when there is no stored preference and no matchMedia support", () => {
         expect(getInitialThemeMode()).toBe("dark");
     });

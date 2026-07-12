@@ -4,8 +4,7 @@ import type { DonburiMarkProps } from "./DonburiMark.types";
 
 const DEFAULT_SIZE = 16;
 
-// Tier 1/5 (smallest) - 16px - bare-minimum Donburi mark: bowl + one short
-// steam wisp, max stroke contrast. Tightest UI slots only.
+// Tier 1/5 (smallest) - 16px - bare-minimum Donburi mark: bowl + one short steam wisp, max stroke contrast, tightest UI slots only
 export const DonburiMarkMinimal: React.FC<DonburiMarkProps> = ({
     size = DEFAULT_SIZE,
     className,

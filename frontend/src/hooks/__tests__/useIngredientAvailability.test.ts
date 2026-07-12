@@ -32,8 +32,7 @@ const PANTRY_TOMATO: UserIngredient = {
     quantity_person_ingradient: 3,
 };
 
-// pre-seed the cache by awaiting the real query thunk before the hook mounts,
-// so the hook reads already-fulfilled data on first render
+// pre-seed the cache by awaiting the real query thunk before the hook mounts, so the hook reads already-fulfilled data on first render
 const setup = async (ingredients: RecipeDetailIngredient[]) => {
     const store = makeTestStore();
 

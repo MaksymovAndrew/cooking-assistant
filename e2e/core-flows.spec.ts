@@ -19,8 +19,7 @@ let menuId: string;
 
 test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
-    // reuses the shared primary account (registered once in global-setup) instead of
-    // registering a fresh one here - keeps the suite's total auth calls low
+    // reuses the shared primary account (registered once in global-setup) instead of registering a fresh one here - keeps the suite's total auth calls low
     context = await browser.newContext({ storageState: PRIMARY_STORAGE_STATE });
     page = await context.newPage();
 });

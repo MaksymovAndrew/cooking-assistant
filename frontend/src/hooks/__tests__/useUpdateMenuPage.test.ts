@@ -25,8 +25,7 @@ jest.mock("api/client");
 
 const TITLE = "Weekday menu";
 const CATEGORY_ID = 2;
-// distinct from recipe_id on purpose: the hook must map menu.recipes through
-// recipe_id, so a test that conflated the two fields could pass for the wrong reason
+// distinct from recipe_id on purpose: the hook must map menu.recipes through recipe_id, so a test that conflated the two fields could pass for the wrong reason
 const MENU_RECIPE = {
     id: 99,
     recipe_id: 10,
@@ -50,9 +49,7 @@ const SAMPLE: MenuDetails = {
     allergens: [],
 };
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts,
-// so useGetMenuByIdQuery/etc. read already-fulfilled data on first render
-// instead of racing a guessed number of promise ticks
+// pre-seed the cache by awaiting the real query thunks before the hook mounts, so useGetMenuByIdQuery/etc. read already-fulfilled data on first render instead of racing a guessed number of promise ticks
 const setup = async (sample: MenuDetails = SAMPLE) => {
     mockGetByUrl({
         [API_ROUTES.menu.byId("1")]: sample,

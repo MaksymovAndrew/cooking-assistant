@@ -35,8 +35,7 @@ const RECIPES = [
     },
 ];
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts,
-// so the reference-data queries read already-fulfilled data on first render
+// pre-seed the cache by awaiting the real query thunks before the hook mounts, so the reference-data queries read already-fulfilled data on first render
 const setup = async () => {
     mockGetByUrl({
         [API_ROUTES.menuCategories.list]: CATEGORIES,

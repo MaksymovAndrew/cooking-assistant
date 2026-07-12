@@ -5,7 +5,6 @@ interface HighlightedMatchProps {
     query: string;
 }
 
-// bolds the first case-insensitive occurrence of query within text
 export const HighlightedMatch: React.FC<HighlightedMatchProps> = ({
     text,
     query,

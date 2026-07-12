@@ -4,8 +4,7 @@ import type { DonburiMarkProps } from "./DonburiMark.types";
 
 const DEFAULT_SIZE = 20;
 
-// Tier 2/5 - 20px - Donburi mark with 2 steam wisps only, spaced wide so
-// they don't merge at small sizes.
+// Tier 2/5 - 20px - Donburi mark with 2 steam wisps only, spaced wide so they don't merge at small sizes
 export const DonburiMarkCompact: React.FC<DonburiMarkProps> = ({
     size = DEFAULT_SIZE,
     className,

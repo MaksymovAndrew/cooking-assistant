@@ -13,8 +13,7 @@ interface ListLoadMoreFooterProps {
     loadMoreError: string | null;
 }
 
-// standard paginated-list footer: wires LoadMore to the shared i18n labels and
-// shows the "Showing X of Y" counter only once the list exceeds one page
+// standard paginated-list footer: wires LoadMore to the shared i18n labels and shows the "Showing X of Y" counter only once the list exceeds one page
 export const ListLoadMoreFooter = ({
     total,
     loadedCount,

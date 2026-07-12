@@ -2,8 +2,6 @@ import { MINUTES_PER_HOUR } from "constants/time";
 
 const MAX_HOURS = 99;
 
-// Parses a "h:mm" or "hh:mm" form input to total minutes.
-// Returns null when the format is invalid or values are out of range.
 export const parseCookingTime = (value: string): number | null => {
     const parts = value.split(":");
 
@@ -34,8 +32,7 @@ export interface CookingTimeParts {
     minutes: number;
 }
 
-// Splits total minutes into whole hours and remaining minutes - the single source
-// of the "/60" math that display formatters and components build their labels on.
+// the single source of the "/60" math that display formatters and components build their labels on
 export const splitCookingTime = (totalMinutes: number): CookingTimeParts => ({
     hours: Math.floor(totalMinutes / MINUTES_PER_HOUR),
     minutes: totalMinutes % MINUTES_PER_HOUR,

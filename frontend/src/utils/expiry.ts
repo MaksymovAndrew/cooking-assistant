@@ -3,13 +3,11 @@ import type { ExpiryStatus } from "types/expiry";
 
 const WARNING_THRESHOLD_DAYS = 4;
 
-// purchase_date arrives as a UTC-midnight timestamp, so every getter here is
-// UTC - local getters would shift the calendar day for some timezones
+// purchase_date arrives as a UTC-midnight timestamp, so every getter here is UTC - local getters would shift the calendar day for some timezones
 const startOfDayUTC = (date: Date): number =>
     Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 
-// null when there's no usable expiry data; deliberately a different rule from
-// isExpired() in ingredientExpirationUtils.ts (that one expires on the expiry day itself)
+// null when there's no usable expiry data; deliberately a different rule from isExpired() in ingredientExpirationUtils.ts (that one expires on the expiry day itself)
 export const getExpiryStatus = (
     daysToExpire: number | null | undefined,
     purchaseDate: string | undefined,

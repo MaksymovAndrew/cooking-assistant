@@ -19,8 +19,7 @@ interface PurchaseRow {
     quantity: number;
 }
 
-// targets the misspelled `quantity_person_ingradient` column and the purchase-delta
-// math in PgPantryRepository.queries.ts - invisible to mocked-repository unit tests
+// targets the misspelled `quantity_person_ingradient` column and the purchase-delta math in PgPantryRepository.queries.ts - invisible to mocked-repository unit tests
 describe("PgPantryRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgPantryRepository;

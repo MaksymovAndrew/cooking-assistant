@@ -21,8 +21,7 @@ interface RecipeSearchRow {
     ingredients: { id: number; name: string; allergens: string | null }[];
 }
 
-// targets the hand-built SQL in PgRecipeRepository.search.ts (ILIKE/ANY filters,
-// GROUP BY + COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
+// targets the hand-built SQL in PgRecipeRepository.search.ts (ILIKE/ANY filters, GROUP BY + COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
 describe("PgRecipeRepository search (real Postgres)", () => {
     let pool: Pool;
     let repository: PgRecipeRepository;
@@ -40,8 +39,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         await pool.end();
     });
 
-    // each test scopes its search by a fresh unique ingredient name, so tests
-    // never see each other's recipes in the shared database
+    // each test scopes its search by a fresh unique ingredient name, so tests never see each other's recipes in the shared database
     async function createNamedIngredient(): Promise<{
         id: number;
         name: string;

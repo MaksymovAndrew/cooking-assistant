@@ -1,7 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 
-// shared create-recipe/create-menu form flows - four specs need them, and the
-// returned select-option texts feed the filter assertions in search-filter.spec.ts
+// shared create-recipe/create-menu form flows - four specs need them, and the returned select-option texts feed the filter assertions in search-filter.spec.ts
 
 // types into a searchable-combobox picker, then clicks the resulting option
 export async function selectFromPicker(

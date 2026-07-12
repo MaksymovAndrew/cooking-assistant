@@ -4,8 +4,7 @@ import type { DonburiMarkProps } from "./DonburiMark.types";
 
 const DEFAULT_SIZE = 32;
 
-// Tier 4/5 - 32px - Donburi mark with chopsticks and 3 single-bend steam
-// wisps, no foot yet.
+// Tier 4/5 - 32px - Donburi mark with chopsticks and 3 single-bend steam wisps, no foot yet
 export const DonburiMarkStandard: React.FC<DonburiMarkProps> = ({
     size = DEFAULT_SIZE,
     className,

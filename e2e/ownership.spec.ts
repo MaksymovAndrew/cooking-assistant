@@ -4,8 +4,7 @@ import { expect, test } from "@playwright/test";
 import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE, VIEWER_STORAGE_STATE } from "./sharedAccounts";
 
-// recipes and menus are a shared cookbook (public read) but only their owner
-// can edit/delete them - verifies both the UI gating and the server-side 404
+// recipes and menus are a shared cookbook (public read) but only their owner can edit/delete them - verifies both the UI gating and the server-side 404
 test.describe.configure({ mode: "serial" });
 
 let ownerContext: BrowserContext;
@@ -22,8 +21,7 @@ test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
     recipeTitle = `Ownership recipe ${runId}`;
     menuTitle = `Ownership menu ${runId}`;
-    // reuses the shared primary/viewer accounts (registered once in global-setup)
-    // instead of registering fresh ones here - keeps the suite's total auth calls low
+    // reuses the shared primary/viewer accounts (registered once in global-setup) instead of registering fresh ones here - keeps the suite's total auth calls low
     ownerContext = await browser.newContext({
         storageState: PRIMARY_STORAGE_STATE,
     });
@@ -89,8 +87,7 @@ async function loadUntilVisible(page: Page, text: string): Promise<void> {
 }
 
 test("should list the recipe and menu in the shared public listings", async () => {
-    // sorted by cooking time by default (not newest-first), so a freshly
-    // created item can land on any page once the list has grown large
+    // sorted by cooking time by default (not newest-first), so a freshly created item can land on any page once the list has grown large
     await viewerPage.goto("/all-recipes");
     await loadUntilVisible(viewerPage, recipeTitle);
     await expect(viewerPage.getByText(recipeTitle)).toBeVisible();

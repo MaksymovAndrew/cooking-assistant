@@ -4,8 +4,7 @@ import type { DonburiMarkProps } from "./DonburiMark.types";
 
 const DEFAULT_SIZE = 28;
 
-// Tier 5/5 (biggest/richest), 64px down to 28px: double-bend steam +
-// chopsticks + bowl + foot.
+// Tier 5/5 (biggest/richest), 64px down to 28px: double-bend steam + chopsticks + bowl + foot
 export const DonburiMarkDetailed: React.FC<DonburiMarkProps> = ({
     size = DEFAULT_SIZE,
     className,

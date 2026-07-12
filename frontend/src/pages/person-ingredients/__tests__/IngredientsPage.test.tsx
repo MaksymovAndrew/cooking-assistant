@@ -205,8 +205,7 @@ describe("IngredientsPage", () => {
         await userEvent.click(screen.getByRole("button", { name: "Delete" }));
         await userEvent.click(screen.getByRole("button", { name: "Confirm" }));
 
-        // RTK Query refetch after Pantry tag invalidation is async; wait for
-        // the empty-state text before asserting the ingredient is gone
+        // RTK Query refetch after Pantry tag invalidation is async; wait for the empty-state text before asserting the ingredient is gone
         await screen.findByText("You currently have no ingredients.");
         expect(screen.queryByText(INGREDIENT_NAME)).not.toBeInTheDocument();
     });

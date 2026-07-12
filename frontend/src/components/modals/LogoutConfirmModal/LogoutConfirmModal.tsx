@@ -21,8 +21,7 @@ export const LogoutConfirmModal = ({ modalId }: LogoutConfirmModalProps) => {
     const [logout, { isLoading }] = useLogoutMutation();
 
     const handleConfirm = async () => {
-        // success toast is handled by the global listener; a failed logout
-        // is silent there on purpose, so the modal just stays open
+        // success toast is handled by the global listener; a failed logout is silent there on purpose, so the modal just stays open
         const result = await logout(null);
 
         if ("data" in result) {

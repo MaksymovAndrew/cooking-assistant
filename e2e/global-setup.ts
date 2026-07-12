@@ -9,9 +9,7 @@ import {
     VIEWER_STORAGE_STATE,
 } from "./sharedAccounts";
 
-// registers two shared accounts ONCE per suite run (not once per spec file) so the
-// full suite stays well under the login/register rate limiter - specs read
-// accounts.json for the run-unique login/name and reuse the saved cookie via storageState
+// registers two shared accounts ONCE per suite run (not once per spec file) so the full suite stays well under the login/register rate limiter - specs read accounts.json for the run-unique login/name and reuse the saved cookie via storageState
 const BACKEND_URL = "http://localhost:3000";
 
 async function createAccount(

@@ -4,8 +4,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
 
-// getMe provides the Me tag; login/logout invalidate it so the session check
-// (sessionSlice listens to these endpoints) re-runs after auth changes
+// getMe provides the Me tag; login/logout invalidate it so the session check (sessionSlice listens to these endpoints) re-runs after auth changes
 export const authApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getMe: build.query<CurrentUser, null>({

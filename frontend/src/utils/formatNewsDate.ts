@@ -1,5 +1,4 @@
-// an ISO date parses as UTC midnight, so both formatters render in UTC -
-// local rendering would shift the calendar day in negative-offset timezones
+// an ISO date parses as UTC midnight, so both formatters render in UTC - local rendering would shift the calendar day in negative-offset timezones
 const FULL_FORMAT: Intl.DateTimeFormatOptions = {
     month: "short",
     day: "numeric",

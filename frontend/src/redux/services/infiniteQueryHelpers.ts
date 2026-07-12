@@ -2,8 +2,7 @@ import type { InfiniteData } from "@reduxjs/toolkit/query";
 
 import type { PaginatedResult } from "types/pagination";
 
-// the next OFFSET to request, or undefined once every item has been loaded -
-// shared getNextPageParam for every offset-paginated infiniteQuery endpoint
+// the next OFFSET to request, or undefined once every item has been loaded - shared getNextPageParam for every offset-paginated infiniteQuery endpoint
 export const getNextOffsetParam = (
     lastPage: PaginatedResult<unknown>,
     allPages: PaginatedResult<unknown>[],
@@ -13,13 +12,11 @@ export const getNextOffsetParam = (
     return loaded < lastPage.total ? loaded : undefined;
 };
 
-// flattens an infinite query's pages back into one item list
 export const flattenPages = <T>(
     data: InfiniteData<PaginatedResult<T>, number> | undefined,
 ): T[] => data?.pages.flatMap((page) => page.items) ?? [];
 
-// the total row count reported by the most recently fetched page - self-corrects
-// after a mutation invalidates and refetches the cached pages
+// the total row count reported by the most recently fetched page - self-corrects after a mutation invalidates and refetches the cached pages
 export const getPaginatedTotal = (
     data: InfiniteData<PaginatedResult<unknown>, number> | undefined,
 ): number => {

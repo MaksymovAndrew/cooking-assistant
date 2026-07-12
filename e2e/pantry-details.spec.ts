@@ -4,16 +4,14 @@ import { expect, test } from "@playwright/test";
 import { selectFromPicker } from "./forms";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
-// purchase history and full ingredient removal - neither is touched by
-// core-flows.spec.ts (quantity edit, different ingredient) or smoke.spec.ts (add only)
+// purchase history and full ingredient removal - neither is touched by core-flows.spec.ts (quantity edit, different ingredient) or smoke.spec.ts (add only)
 test.describe.configure({ mode: "serial" });
 
 let context: BrowserContext;
 let page: Page;
 
 test.beforeAll(async ({ browser }) => {
-    // reuses the shared primary account (registered once in global-setup) instead of
-    // registering a fresh one here - keeps the suite's total auth calls low
+    // reuses the shared primary account (registered once in global-setup) instead of registering a fresh one here - keeps the suite's total auth calls low
     context = await browser.newContext({ storageState: PRIMARY_STORAGE_STATE });
     page = await context.newPage();
 
@@ -34,9 +32,7 @@ test.afterAll(async () => {
 
 test("should open the purchase history modal and show the recorded purchase", async () => {
     await page.goto("/ingredients");
-    // ingredient cards are a plain div grid (no list semantics) - scope to
-    // the card via its own heading so Details/Delete aren't ambiguous
-    // between ingredients from other specs sharing this account's pantry
+    // ingredient cards are a plain div grid (no list semantics) - scope to the card via its own heading so Details/Delete aren't ambiguous between ingredients from other specs sharing this account's pantry
     const tomatoCard = page
         .getByRole("heading", { name: "Tomato", level: 3 })
         .locator("../..");

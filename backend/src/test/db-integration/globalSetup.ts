@@ -3,8 +3,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { runner } from "node-pg-migrate";
 
-// each test file is its own worker process, so connection info is handed off
-// via this file rather than an env var
+// each test file is its own worker process, so connection info is handed off via this file rather than an env var
 const CONNECTION_INFO_PATH = path.join(__dirname, ".connection.json");
 const migrationsDir = path.resolve(__dirname, "../../../migrations");
 

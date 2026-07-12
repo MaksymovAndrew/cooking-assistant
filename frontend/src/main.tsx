@@ -17,8 +17,7 @@ if (!rootElement) {
     throw new Error("Root element not found");
 }
 
-// set before the first paint so the correct theme never flashes on load;
-// ThemeManager takes over from here for subsequent changes
+// set before the first paint so the correct theme never flashes on load; ThemeManager takes over from here for subsequent changes
 document.documentElement.dataset.theme = store.getState().theme.mode;
 
 createRoot(rootElement).render(

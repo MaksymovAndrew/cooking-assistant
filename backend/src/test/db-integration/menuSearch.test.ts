@@ -17,8 +17,7 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-// targets the hand-built SQL in PgMenuRepository.queries.ts (ILIKE/ANY filters,
-// COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
+// targets the hand-built SQL in PgMenuRepository.queries.ts (ILIKE/ANY filters, COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
 describe("PgMenuRepository search (real Postgres)", () => {
     let pool: Pool;
     let menuRepository: PgMenuRepository;

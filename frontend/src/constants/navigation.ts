@@ -24,8 +24,7 @@ export interface NavItem {
     Icon: NavIcon;
 }
 
-// desktop top-bar nav - Recipes / Menus / Ingredients / Stats only, per the
-// Global Shell design; My Menus and My Recipes live under Profile instead
+// desktop top-bar nav - Recipes / Menus / Ingredients / Stats only; My Menus and My Recipes live under Profile instead
 export const NAV_ITEMS: NavItem[] = [
     { to: ROUTES.allRecipes, labelKey: "nav.recipes", Icon: BookMark },
     { to: ROUTES.allMenus, labelKey: "nav.menus", Icon: NotebookMark },
@@ -33,8 +32,7 @@ export const NAV_ITEMS: NavItem[] = [
     { to: ROUTES.stats, labelKey: "nav.stats", Icon: BarChartMark },
 ];
 
-// tablet/mobile bottom bar - a fixed 5-tab order (Stats, Menus, Recipes,
-// Settings, Profile) that replaces the desktop top nav on narrow screens
+// tablet/mobile bottom bar - a fixed 5-tab order (Stats, Menus, Recipes, Settings, Profile) that replaces the desktop top nav on narrow screens
 export const BOTTOM_NAV_ITEMS: NavItem[] = [
     { to: ROUTES.stats, labelKey: "nav.stats", Icon: BarChartMark },
     { to: ROUTES.allMenus, labelKey: "nav.menus", Icon: NotebookMark },

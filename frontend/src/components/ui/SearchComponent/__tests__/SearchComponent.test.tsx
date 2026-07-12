@@ -13,8 +13,7 @@ const PLACEHOLDER = "ingredient";
 const QUERY = "egg";
 const RESET_SEARCH = "Reset Search";
 
-// probes the URL search param the component writes, so a test can assert the
-// search was actually applied (not merely that the input kept its value)
+// probes the URL search param the component writes, so a test can assert the search was actually applied (not merely that the input kept its value)
 const ActiveFilter = () => {
     const [params] = useSearchParams();
 

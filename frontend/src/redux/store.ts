@@ -21,8 +21,7 @@ const rootReducer = combineReducers({
 // inferred from the reducer itself, so the type never drifts from the real shape
 export type RootState = ReturnType<typeof rootReducer>;
 
-// one factory used by both the real store and tests, so a test store can never
-// drift from the production wiring (the RTK Query middleware powers the cache)
+// one factory used by both the real store and tests, so a test store can never drift from the production wiring (the RTK Query middleware powers the cache)
 export const setupStore = (preloadedState?: Partial<RootState>) =>
     configureStore({
         reducer: rootReducer,

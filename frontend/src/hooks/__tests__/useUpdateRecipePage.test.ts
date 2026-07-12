@@ -38,8 +38,7 @@ const SAMPLE: RecipeDetails = {
     isOwner: true,
 };
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts,
-// so useGetRecipeByIdQuery/etc. read already-fulfilled data on first render
+// pre-seed the cache by awaiting the real query thunks before the hook mounts, so useGetRecipeByIdQuery/etc. read already-fulfilled data on first render
 const setup = async () => {
     mockGetByUrl({
         [API_ROUTES.recipes.byId("1")]: SAMPLE,

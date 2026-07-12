@@ -5,7 +5,6 @@ import {
     type RecipeFiltersState,
 } from "redux/slices/filtersSlice";
 
-// merges the stored recipe filters with the URL-sourced ingredient search into the query params the recipes endpoints expect
 export const buildRecipeFilterParams = (
     filters: RecipeFiltersState,
     ingredientName: string | null,

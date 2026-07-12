@@ -47,8 +47,7 @@ const CURRENT_USER: CurrentUser = {
     created_at: "2025-06-15T00:00:00.000Z",
 };
 
-// matches the default filters slice state + no URL ingredient search, so the
-// pre-seeded cache key lines up with what the hook itself requests
+// matches the default filters slice state + no URL ingredient search, so the pre-seeded cache key lines up with what the hook itself requests
 const DEFAULT_PARAMS = buildRecipeFilterParams(
     {
         selectedTypes: [],
@@ -64,9 +63,7 @@ const DEFAULT_PARAMS = buildRecipeFilterParams(
 const FAILURE_MESSAGE = "Recipes failed";
 const FAILURE = makeAxiosError(500, FAILURE_MESSAGE);
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts,
-// so the hook reads already-fulfilled data on first render instead of racing
-// a guessed number of promise ticks
+// pre-seed the cache by awaiting the real query thunks before the hook mounts, so the hook reads already-fulfilled data on first render instead of racing a guessed number of promise ticks
 const setup = async (
     source: (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE] = RECIPE_SOURCE.all,
 ) => {

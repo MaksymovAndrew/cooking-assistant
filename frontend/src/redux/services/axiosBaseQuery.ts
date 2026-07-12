@@ -47,8 +47,7 @@ const requestByMethod = {
 
 const runRequest = (args: RunRequestArgs) => requestByMethod[args.method](args);
 
-// RTK Query baseQuery on top of apiClient: success -> { data }, failure ->
-// { error: { status, data } } with a user-facing message from getApiErrorMessage
+// RTK Query baseQuery on top of apiClient: success -> { data }, failure -> { error: { status, data } } with a user-facing message from getApiErrorMessage
 export const axiosBaseQuery =
     (): AxiosBaseQueryFn =>
     async ({ url, method = "GET", data, params }) => {

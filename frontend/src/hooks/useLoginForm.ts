@@ -39,8 +39,7 @@ export const useLoginForm = () => {
 
     const { lockedUntil } = lockout;
 
-    // ticks once a second while locked, both to drive a live countdown and to
-    // auto-unlock the moment the lock expires
+    // ticks once a second while locked, both to drive a live countdown and to auto-unlock the moment the lock expires
     useEffect(() => {
         if (lockedUntil === null) {
             return undefined;

@@ -28,8 +28,7 @@ const SAMPLE_INGREDIENTS = [
     { id: INGREDIENT_ID, name: "Potato", unit_name: "g", allergens: null },
 ];
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts,
-// so the reference-data queries read already-fulfilled data on first render
+// pre-seed the cache by awaiting the real query thunks before the hook mounts, so the reference-data queries read already-fulfilled data on first render
 const setup = async () => {
     mockGetByUrl({
         [API_ROUTES.ingredients.list]: SAMPLE_INGREDIENTS,

@@ -24,8 +24,7 @@ const SIZE_CLASS: Record<ButtonSize, string> = {
     lg: buttonStyles["button--lg"],
 };
 
-// a navigation link styled like Button - kept as an <a> under the hood so
-// right-click/open-in-new-tab keep working, unlike a button + onClick(navigate)
+// a navigation link styled like Button - kept as an <a> under the hood so right-click/open-in-new-tab keep working, unlike a button + onClick(navigate)
 export const LinkButton: React.FC<LinkButtonProps> = ({
     variant = "primary",
     size = "md",

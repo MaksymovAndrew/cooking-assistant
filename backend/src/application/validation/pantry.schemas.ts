@@ -8,8 +8,7 @@ import {
 
 const INCORRECT_FORMAT_MESSAGE = "Incorrect data format";
 
-// the create and update payloads share one shape and differ only in the
-// lowest quantity they accept (create starts at 1, update allows zeroing out)
+// the create and update payloads share one shape and differ only in the lowest quantity they accept (create starts at 1, update allows zeroing out)
 const buildPantryIngredientsSchema = (
     minQuantity: number,
     minQuantityMessage: string,

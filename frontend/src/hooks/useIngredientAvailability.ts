@@ -9,8 +9,7 @@ export interface IngredientAvailability extends RecipeDetailIngredient {
     have: boolean;
 }
 
-// cross-references a recipe's ingredients against the current user's pantry,
-// the same way the existing "missing ingredients for a menu" feature does
+// cross-references a recipe's ingredients against the current user's pantry, the same way the existing "missing ingredients for a menu" feature does
 export const useIngredientAvailability = (
     ingredients: RecipeDetailIngredient[],
 ) => {

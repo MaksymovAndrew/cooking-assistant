@@ -1,5 +1,3 @@
-import { THEME_STORAGE_KEY } from "constants/theme";
-
 import { ThemeManager } from "components/theme/ThemeManager";
 
 import { renderWithProviders } from "test/router";
@@ -24,13 +22,12 @@ describe("ThemeManager", () => {
             });
     });
 
-    it("should set the html data-theme attribute and persist the mode", () => {
+    it("should set the html data-theme attribute", () => {
         const store = makeTestStore({ theme: { mode: "light" } });
 
         renderWithProviders(<ThemeManager />, { store });
 
         expect(document.documentElement.dataset.theme).toBe("light");
-        expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
     });
 
     it("should mirror the theme background into the theme-color metas", () => {

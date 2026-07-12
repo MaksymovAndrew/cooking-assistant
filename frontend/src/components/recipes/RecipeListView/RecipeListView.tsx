@@ -7,17 +7,16 @@ import type { RecipeListItem } from "types/recipe";
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import { RecipeCard } from "components/cards/RecipeCard";
-import { UtensilsMark } from "components/icons";
 import { AppShell } from "components/layout/AppShell";
 import { RecipeActiveFilters } from "components/recipes/RecipeActiveFilters";
 import type { RecipeFilterPanelProps } from "components/recipes/RecipeFilterPanel";
 import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
 import { RecipeTypeDescriptions } from "components/recipes/RecipeTypeDescriptions";
-import { EmptyState } from "components/ui/EmptyState";
 import { ErrorState } from "components/ui/ErrorState";
 import { LinkButton } from "components/ui/LinkButton";
 import { ListLoadMoreFooter } from "components/ui/LoadMore";
 
+import { RecipeListEmptyState } from "./RecipeListEmptyState";
 import styles from "./RecipeListView.module.scss";
 
 interface RecipeListViewProps extends RecipeFilterPanelProps {
@@ -27,9 +26,13 @@ interface RecipeListViewProps extends RecipeFilterPanelProps {
     onRetry: () => void;
     descriptions: RecipeTypeSummary[];
     heading: string;
-    emptyMessage: string;
+    subtitle: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    hasActiveFilters: boolean;
+    clearFilters: () => void;
     mine?: boolean;
-    total: number;
+    currentUserId?: number | null;
     loadedCount: number;
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
@@ -52,8 +55,13 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     onRetry,
     descriptions,
     heading,
-    emptyMessage,
+    subtitle,
+    emptyTitle,
+    emptyDescription,
+    hasActiveFilters,
+    clearFilters,
     mine = false,
+    currentUserId = null,
     searchPlaceholder,
     total,
     loadedCount,
@@ -68,9 +76,14 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
         <AppShell>
             <div className={styles["recipe-list-view"]}>
                 <div className={styles["recipe-list-view__header"]}>
-                    <h1 className={styles["recipe-list-view__heading"]}>
-                        {heading}
-                    </h1>
+                    <div>
+                        <h1 className={styles["recipe-list-view__heading"]}>
+                            {heading}
+                        </h1>
+                        <p className={styles["recipe-list-view__subtitle"]}>
+                            {subtitle}
+                        </p>
+                    </div>
                     <LinkButton to={ROUTES.addRecipe}>
                         <Plus size={NEW_RECIPE_ICON_SIZE} aria-hidden="true" />
                         {t("recipes:recipeListView.newRecipe")}
@@ -85,6 +98,7 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                     setSortOrder={setSortOrder}
                     types={types}
                     searchPlaceholder={searchPlaceholder}
+                    total={total}
                 />
                 <RecipeActiveFilters
                     total={total}
@@ -92,7 +106,7 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                     setMinCookingTime={setMinCookingTime}
                     setMaxCookingTime={setMaxCookingTime}
                     setSortOrder={setSortOrder}
-                    setSelectedTypes={setSelectedTypes}
+                    clearFilters={clearFilters}
                 />
                 {error && (
                     <ErrorState
@@ -103,18 +117,12 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                     />
                 )}
                 {!error && noRecipes && (
-                    <EmptyState
-                        icon={UtensilsMark}
-                        title={emptyMessage}
-                        action={
-                            <LinkButton to={ROUTES.addRecipe} size="lg">
-                                <Plus
-                                    size={NEW_RECIPE_ICON_SIZE}
-                                    aria-hidden="true"
-                                />
-                                {t("recipes:recipeListView.newRecipe")}
-                            </LinkButton>
-                        }
+                    <RecipeListEmptyState
+                        hasActiveFilters={hasActiveFilters}
+                        emptyTitle={emptyTitle}
+                        emptyDescription={emptyDescription}
+                        searchQuery={filters.ingredientName}
+                        clearFilters={clearFilters}
                     />
                 )}
                 {!error && !noRecipes && (
@@ -123,7 +131,11 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                             <RecipeCard
                                 key={recipe.id}
                                 recipe={recipe}
-                                mine={mine}
+                                mine={
+                                    mine ||
+                                    (typeof recipe.person_id === "number" &&
+                                        recipe.person_id === currentUserId)
+                                }
                             />
                         ))}
                     </div>

@@ -4,18 +4,21 @@ import { useTranslation } from "react-i18next";
 import type { PantryIngredient } from "types/userIngredient";
 
 import { TrashMark } from "components/icons";
-import { Chip, type ChipVariant } from "components/ui/Chip";
+import { Button } from "components/ui/Button";
+import { Chip } from "components/ui/Chip";
 import { NumberInput } from "components/ui/NumberInput";
 
-import { formatDate } from "utils/dateUtils";
 import { getExpiryStatus } from "utils/expiry";
 
+import { getExpiryPresentation } from "./getExpiryPresentation";
 import styles from "./IngredientCard.module.scss";
+import { IngredientCardMeta } from "./IngredientCardMeta";
 
 interface IngredientCardProps {
     ingredient: PantryIngredient;
     isEditingQuantity: boolean;
     onQuantityChange: (id: number, quantity: number) => void;
+    onSaveQuantity: (id: number) => void;
     onOpenHistory: (ingredient: PantryIngredient) => void;
     onDelete: (ingredient: PantryIngredient) => void;
 }
@@ -26,39 +29,35 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
     ingredient,
     isEditingQuantity,
     onQuantityChange,
+    onSaveQuantity,
     onOpenHistory,
     onDelete,
 }) => {
-    const { t, i18n } = useTranslation("ingredients");
+    const { t } = useTranslation("ingredients");
     const status = getExpiryStatus(
         ingredient.days_to_expire,
         ingredient.purchase_date,
     );
-
-    let expiryLabel: string;
-    let expiryVariant: ChipVariant;
-
-    if (status === null) {
-        expiryLabel = t("expiryBadge.noExpiry");
-        expiryVariant = "outline";
-    } else if (status.tone === "expired") {
-        expiryLabel = t("expiryBadge.expired");
-        expiryVariant = "danger";
-    } else if (status.tone === "warning") {
-        expiryLabel = t("expiryBadge.daysLeft", { count: status.days });
-        expiryVariant = "warning";
-    } else {
-        expiryLabel = t("expiryBadge.fresh");
-        expiryVariant = "success";
-    }
+    const expiry = getExpiryPresentation(status, t);
 
     return (
-        <div className={styles["ingredient-card"]}>
+        <div
+            className={[
+                styles["ingredient-card"],
+                isEditingQuantity
+                    ? styles["ingredient-card--editing"]
+                    : expiry.borderModifier,
+            ]
+                .filter(Boolean)
+                .join(" ")}
+        >
             <div className={styles["ingredient-card__header"]}>
                 <h3 className={styles["ingredient-card__name"]}>
                     {ingredient.ingredient_name}
                 </h3>
-                <Chip variant={expiryVariant}>{expiryLabel}</Chip>
+                <Chip variant={expiry.variant} icon={expiry.icon}>
+                    {expiry.label}
+                </Chip>
             </div>
 
             {isEditingQuantity ? (
@@ -75,6 +74,9 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
                         }}
                     />
                     <span>{ingredient.unit_name}</span>
+                    <span className={styles["ingredient-card__editing-hint"]}>
+                        {t("page.editModeActive")}
+                    </span>
                 </div>
             ) : (
                 <div className={styles["ingredient-card__quantity"]}>
@@ -85,55 +87,41 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
                 </div>
             )}
 
-            <dl className={styles["ingredient-card__meta"]}>
-                <div className={styles["ingredient-card__meta-row"]}>
-                    <dt>{t("page.allergens")}</dt>
-                    <dd>{ingredient.allergens ?? "—"}</dd>
-                </div>
-                <div className={styles["ingredient-card__meta-row"]}>
-                    <dt>{t("page.shelfLife")}</dt>
-                    <dd>
-                        {typeof ingredient.days_to_expire === "number"
-                            ? t("page.shelfLifeDays", {
-                                  days: ingredient.days_to_expire,
-                              })
-                            : t("page.noExpiration")}
-                    </dd>
-                </div>
-                <div className={styles["ingredient-card__meta-row"]}>
-                    <dt>{t("page.purchaseDate")}</dt>
-                    <dd>
-                        {ingredient.purchase_date
-                            ? formatDate(
-                                  ingredient.purchase_date,
-                                  i18n.language,
-                              )
-                            : t("page.purchaseDateUnknown")}
-                    </dd>
-                </div>
-            </dl>
+            <IngredientCardMeta ingredient={ingredient} />
 
             <div className={styles["ingredient-card__footer"]}>
-                <button
-                    type="button"
-                    onClick={() => {
-                        onOpenHistory(ingredient);
-                    }}
-                    className={styles["ingredient-card__details"]}
-                >
-                    {t("page.detailsButton")}
-                </button>
-                {!isEditingQuantity && (
-                    <button
+                {isEditingQuantity ? (
+                    <Button
                         type="button"
-                        aria-label={t("page.deleteButton")}
                         onClick={() => {
-                            onDelete(ingredient);
+                            onSaveQuantity(ingredient.id);
                         }}
-                        className={styles["ingredient-card__delete"]}
+                        className={styles["ingredient-card__save"]}
                     >
-                        <TrashMark size={DELETE_ICON_SIZE} />
-                    </button>
+                        {t("page.saveQuantityButton")}
+                    </Button>
+                ) : (
+                    <>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                onOpenHistory(ingredient);
+                            }}
+                            className={styles["ingredient-card__details"]}
+                        >
+                            {t("page.detailsButton")}
+                        </button>
+                        <button
+                            type="button"
+                            aria-label={t("page.deleteButton")}
+                            onClick={() => {
+                                onDelete(ingredient);
+                            }}
+                            className={styles["ingredient-card__delete"]}
+                        >
+                            <TrashMark size={DELETE_ICON_SIZE} />
+                        </button>
+                    </>
                 )}
             </div>
         </div>

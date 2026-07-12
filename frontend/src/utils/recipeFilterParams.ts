@@ -1,9 +1,11 @@
 import type { RecipeFilterParams } from "types/recipe";
 
-import type { RecipeFiltersState } from "redux/slices/filtersSlice";
+import {
+    RECIPE_DEFAULT_SORT_ORDER,
+    type RecipeFiltersState,
+} from "redux/slices/filtersSlice";
 
-// merges the stored recipe filters with the URL-sourced ingredient search into
-// the query params the recipes endpoints expect
+// merges the stored recipe filters with the URL-sourced ingredient search into the query params the recipes endpoints expect
 export const buildRecipeFilterParams = (
     filters: RecipeFiltersState,
     ingredientName: string | null,
@@ -19,3 +21,13 @@ export const buildRecipeFilterParams = (
     min_cooking_time: filters.minCookingTime || undefined,
     max_cooking_time: filters.maxCookingTime || undefined,
 });
+
+// a non-default sort counts as an active filter alongside search/type/time - shared by the filter badge count, the active-filter chips, and the truly-empty vs no-matches decision
+export const hasActiveRecipeFilters = (
+    filters: RecipeFiltersState & { ingredientName: string | null },
+): boolean =>
+    Boolean(filters.ingredientName) ||
+    Boolean(filters.minCookingTime) ||
+    Boolean(filters.maxCookingTime) ||
+    filters.sortOrder !== RECIPE_DEFAULT_SORT_ORDER ||
+    filters.selectedTypes.length > 0;

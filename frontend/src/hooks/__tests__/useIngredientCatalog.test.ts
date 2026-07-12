@@ -16,8 +16,8 @@ import { makeTestStore, renderHookWithStore } from "test/store";
 jest.mock("api/client");
 
 const CATALOG: Ingredient[] = [
-    { id: 2, name: "Onion", unit_name: "g" },
-    { id: 1, name: "Carrot", unit_name: "g" },
+    { id: 2, name: "Onion", unit_name: "g", allergens: null },
+    { id: 1, name: "Carrot", unit_name: "g", allergens: null },
 ];
 const OWNED: UserIngredient = {
     ingredient_id: 1,
@@ -146,7 +146,7 @@ describe("useIngredientCatalog", () => {
         ).toBeDefined();
     });
 
-    it("should send only the changed ingredients when saving updated quantities", async () => {
+    it("should save only the edited ingredient's quantity, keeping the edit session open", async () => {
         mockedPut.mockResolvedValue({ data: null });
 
         const { result } = await setup();
@@ -159,7 +159,7 @@ describe("useIngredientCatalog", () => {
         });
 
         await act(async () => {
-            await result.current.saveUpdatedQuantities();
+            await result.current.handleSaveQuantity(1);
         });
 
         expect(mockedPut).toHaveBeenCalledWith(
@@ -173,6 +173,38 @@ describe("useIngredientCatalog", () => {
                 ],
             },
         );
+        expect(result.current.isEditingQuantity).toBe(true);
+    });
+
+    it("should not send a request when saving an unchanged quantity", async () => {
+        mockedPut.mockResolvedValue({ data: null });
+
+        const { result } = await setup();
+
+        act(() => {
+            result.current.handleToggleQuantityEdit();
+        });
+
+        await act(async () => {
+            await result.current.handleSaveQuantity(1);
+        });
+
+        expect(mockedPut).not.toHaveBeenCalled();
+    });
+
+    it("should toggle quantity edit mode off without saving", async () => {
+        const { result } = await setup();
+
+        act(() => {
+            result.current.handleToggleQuantityEdit();
+        });
+
+        expect(result.current.isEditingQuantity).toBe(true);
+
+        act(() => {
+            result.current.handleToggleQuantityEdit();
+        });
+
         expect(result.current.isEditingQuantity).toBe(false);
     });
 });

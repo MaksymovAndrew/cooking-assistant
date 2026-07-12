@@ -4,6 +4,7 @@
     display: flex;
     align-items: center;
     gap: var(--s-3);
+    flex-wrap: wrap;
     margin-bottom: var(--s-5);
 
     &__count {
@@ -11,6 +12,44 @@
         font:
             500 13px Inter,
             sans-serif;
+    }
+
+    &__divider {
+        width: 1px;
+        height: 16px;
+        background: var(--border);
+    }
+
+    &__chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        height: 30px;
+        padding: 0 8px 0 13px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-pill);
+        background: var(--surface-2);
+        color: var(--text);
+        font:
+            500 13px Inter,
+            sans-serif;
+
+        button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border: none;
+            border-radius: var(--r-pill);
+            background: none;
+            color: var(--text-muted);
+            cursor: pointer;
+
+            @include on-hover {
+                color: var(--text);
+            }
+        }
     }
 
     &__clear {

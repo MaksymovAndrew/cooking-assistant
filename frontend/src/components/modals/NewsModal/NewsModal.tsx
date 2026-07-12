@@ -88,22 +88,38 @@ export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
                                     key={entry.id}
                                     className={styles["news-modal__item"]}
                                 >
-                                    <div className={styles["news-modal__date"]}>
-                                        {formatNewsDate(entry.date)}
-                                    </div>
+                                    <span
+                                        className={styles["news-modal__dot"]}
+                                        aria-hidden="true"
+                                    />
                                     <div
                                         className={
-                                            styles["news-modal__item-title"]
+                                            styles["news-modal__item-body"]
                                         }
                                     >
-                                        {title}
-                                    </div>
-                                    <div
-                                        className={
-                                            styles["news-modal__description"]
-                                        }
-                                    >
-                                        {description}
+                                        <div
+                                            className={
+                                                styles["news-modal__item-title"]
+                                            }
+                                        >
+                                            {title}
+                                        </div>
+                                        <div
+                                            className={
+                                                styles[
+                                                    "news-modal__description"
+                                                ]
+                                            }
+                                        >
+                                            {description}
+                                        </div>
+                                        <div
+                                            className={
+                                                styles["news-modal__date"]
+                                            }
+                                        >
+                                            {formatNewsDate(entry.date)}
+                                        </div>
                                     </div>
                                 </div>
                             );

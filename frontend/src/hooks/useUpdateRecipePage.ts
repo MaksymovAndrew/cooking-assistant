@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
+import { MINUTES_PER_HOUR } from "constants/time";
 
 import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 import {
@@ -14,10 +15,7 @@ import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
 
 import { useRecipeForm } from "hooks/useRecipeForm";
 
-import {
-    formatCookingTimeInput,
-    parseCookingTime,
-} from "utils/cookingTimeUtils";
+import { splitCookingTime } from "utils/cookingTimeUtils";
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 export const useUpdateRecipePage = () => {
@@ -41,11 +39,13 @@ export const useUpdateRecipePage = () => {
             return;
         }
 
+        const { hours, minutes } = splitCookingTime(recipe.cooking_time);
+
         setInitialValues({
             title: recipe.title,
             content: recipe.content,
-            cookingTime: formatCookingTimeInput(recipe.cooking_time),
-            servings: recipe.servings ?? "",
+            cookingHours: String(hours),
+            cookingMinutes: String(minutes),
             selectedTypeId: recipe.type_id,
             selectedIngredients: recipe.ingredients.map((i) => ({
                 id: i.id,
@@ -69,7 +69,6 @@ export const useUpdateRecipePage = () => {
                 errorCookingTimeInvalid: t(
                     "changeRecipePage.errorCookingTimeInvalid",
                 ),
-                errorServings: t("changeRecipePage.errorServings"),
             })
         ) {
             return;
@@ -82,8 +81,11 @@ export const useUpdateRecipePage = () => {
                 title: form.title,
                 content: form.content,
                 type_id: form.selectedTypeId,
-                cooking_time: parseCookingTime(form.cookingTime) ?? 0,
-                servings: form.servings !== "" ? form.servings : undefined,
+                cooking_time:
+                    Number(form.cookingHours) * MINUTES_PER_HOUR +
+                    Number(form.cookingMinutes),
+                // no servings field in the form - resend the recipe's current value unchanged (the backend treats an omitted field as NULL, not "leave as is")
+                servings: recipe?.servings ?? undefined,
                 ingredients: form.selectedIngredients.map(
                     ({ id: recipeId, quantity }) => ({
                         id: recipeId,
@@ -94,6 +96,7 @@ export const useUpdateRecipePage = () => {
         });
 
         if ("data" in result) {
+            form.markClean();
             void navigate(ROUTES.allRecipes);
         }
     };

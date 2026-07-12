@@ -13,7 +13,8 @@ import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
 
 import { getExpiryStatus } from "utils/expiry";
 
-const RECENT_RECIPES_LIMIT = 6;
+// fetched once at the desktop count (3x3); tablet/mobile crop the same 9 down to 4/2 via CSS (nth-child), so there's only ever one request
+const RECENT_RECIPES_LIMIT = 9;
 const EXPIRING_SOON_LIMIT = 5;
 // omitting sort_order (not "") falls back to the backend's creation_date DESC
 const RECENT_RECIPES_PARAMS = { ingredient_name: "" };

@@ -34,16 +34,19 @@ export const ScrollToTopButton = () => {
         });
     };
 
-    if (!isVisible) {
-        return null;
-    }
-
+    // stays mounted while hidden so CSS can fade it in and out smoothly
     return (
         <button
             type="button"
             onClick={handleClick}
             aria-label={t("nav.scrollToTop")}
-            className={styles["scroll-to-top-button"]}
+            aria-hidden={!isVisible}
+            className={[
+                styles["scroll-to-top-button"],
+                isVisible && styles["scroll-to-top-button--visible"],
+            ]
+                .filter(Boolean)
+                .join(" ")}
         >
             <ArrowUp size={ICON_SIZE} aria-hidden="true" />
         </button>

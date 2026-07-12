@@ -1,7 +1,6 @@
 @use "styles/abstracts" as *;
 
-// mobile/tablet tiles are compact (number + short label, no icon), per the
-// mockup; desktop adds the icon tile and the full label
+// mobile/tablet tiles are compact (number + short label, no icon); desktop adds the icon tile and the full label
 .stat-card {
     display: flex;
     align-items: center;

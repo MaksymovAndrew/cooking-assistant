@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
+import { RECIPE_DEFAULT_SORT_ORDER } from "redux/slices/filtersSlice";
+
 import type { RecipeFilterState } from "hooks/useRecipeListView";
 
 import styles from "components/recipes/RecipeFilterPanel/RecipeFilterPanel.module.scss";
@@ -20,6 +22,7 @@ interface RecipeFilterPopoverProps {
     setMaxCookingTime: (time: string) => void;
     setSortOrder: (order: string) => void;
     types: RecipeTypeSummary[];
+    total: number;
     onClose: () => void;
 }
 
@@ -36,6 +39,7 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
     setMaxCookingTime,
     setSortOrder,
     types,
+    total,
     onClose,
 }) => {
     const { t } = useTranslation("recipes");
@@ -52,7 +56,7 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
         setSelectedTypes([]);
         setMinCookingTime("");
         setMaxCookingTime("");
-        setSortOrder("asc");
+        setSortOrder(RECIPE_DEFAULT_SORT_ORDER);
     };
 
     return (
@@ -129,9 +133,21 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                 <button
                     type="button"
                     onClick={onClose}
+                    aria-label={t("filterPanel.showResults", { count: total })}
                     className={styles["recipe-filter-panel__apply-button"]}
                 >
-                    {t("filterPanel.apply")}
+                    <span
+                        aria-hidden="true"
+                        className={styles["recipe-filter-panel__apply-mobile"]}
+                    >
+                        {t("filterPanel.showResults", { count: total })}
+                    </span>
+                    <span
+                        aria-hidden="true"
+                        className={styles["recipe-filter-panel__apply-desktop"]}
+                    >
+                        {t("filterPanel.apply")}
+                    </span>
                 </button>
             </div>
         </div>

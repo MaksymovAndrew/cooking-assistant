@@ -48,13 +48,13 @@ describe("CreateMenuPage", () => {
 
         await screen.findByPlaceholderText("Search recipes...");
 
-        await userEvent.type(screen.getByLabelText("Menu title"), MENU_TITLE);
+        await userEvent.type(screen.getByLabelText("Menu title *"), MENU_TITLE);
         await userEvent.type(
-            screen.getByLabelText("Menu description"),
+            screen.getByLabelText("Menu description *"),
             MENU_DESC,
         );
         await userEvent.selectOptions(
-            screen.getByLabelText("Menu category"),
+            screen.getByLabelText("Menu category *"),
             String(CATEGORY_ID),
         );
         await userEvent.type(
@@ -65,7 +65,7 @@ describe("CreateMenuPage", () => {
             screen.getByRole("button", { name: new RegExp(RECIPE_TITLE, "i") }),
         );
         await userEvent.click(
-            screen.getByRole("button", { name: "Create Menu" }),
+            screen.getByRole("button", { name: "Create menu" }),
         );
 
         expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.menu.create, {

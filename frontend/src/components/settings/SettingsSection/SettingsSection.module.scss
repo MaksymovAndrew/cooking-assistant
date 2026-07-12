@@ -3,6 +3,11 @@
 .settings-section {
     margin-bottom: var(--s-6);
 
+    // the page's own bottom padding is the spacing below the last section - without this the two stack into dead scroll space
+    &:last-child {
+        margin-bottom: 0;
+    }
+
     &__heading {
         margin: 0 0 var(--s-3);
         color: var(--text-muted);

@@ -36,16 +36,16 @@ test.beforeAll(async ({ browser }) => {
         title: recipeATitle,
         description: DESCRIPTION,
         ingredient: "Tomato",
-        cookingTime: "0:05",
-        servings: "1 serving",
+        cookingHours: "0",
+        cookingMinutes: "5",
         typeIndex: 1,
     }));
     ({ typeText: recipeBType } = await createRecipeViaForm(page, {
         title: recipeBTitle,
         description: DESCRIPTION,
         ingredient: "Onion",
-        cookingTime: "1:00",
-        servings: "1 serving",
+        cookingHours: "1",
+        cookingMinutes: "0",
         typeIndex: 2,
     }));
     ({ categoryText: menuXCategory } = await createMenuViaForm(page, {
@@ -134,7 +134,7 @@ test("should filter My Menus by title", async () => {
     await page.getByPlaceholder("Search by menu title").fill(menuXTitle);
     await page.getByPlaceholder("Search by menu title").press("Enter");
 
-    await expect(page.getByText(menuXTitle)).toBeVisible();
+    await expect(page.getByRole("heading", { name: menuXTitle })).toBeVisible();
     await expect(page.getByText(menuYTitle)).toBeHidden();
 
     await page.getByRole("button", { name: "Reset Search" }).click();

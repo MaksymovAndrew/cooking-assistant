@@ -1,7 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
 import type { RecipeSearchResultItem } from "types/recipe";
+
+import { useMediaQuery } from "hooks/useMediaQuery";
 
 import { RecipeCard } from "components/cards/RecipeCard";
 import { UtensilsMark } from "components/icons";
@@ -26,6 +29,7 @@ export const ProfileRecipesTab: React.FC<ProfileRecipesTabProps> = ({
     fetchNextPage,
 }) => {
     const { t } = useTranslation("profile");
+    const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
 
     if (recipes.length === 0) {
         return (
@@ -40,7 +44,12 @@ export const ProfileRecipesTab: React.FC<ProfileRecipesTabProps> = ({
         <>
             <div className={styles["profile-recipes-tab__grid"]}>
                 {recipes.map((recipe) => (
-                    <RecipeCard key={recipe.id} recipe={recipe} mine />
+                    <RecipeCard
+                        key={recipe.id}
+                        recipe={recipe}
+                        mine
+                        variant={isMobile ? "row" : "grid"}
+                    />
                 ))}
             </div>
             <ListLoadMoreFooter

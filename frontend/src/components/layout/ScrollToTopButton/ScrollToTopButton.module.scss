@@ -3,8 +3,15 @@
 .scroll-to-top-button {
     position: fixed;
     right: var(--s-4);
-    bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+
+    // clears the fixed BottomNav (64px) below desktop, where it's visible
+    bottom: calc(64px + var(--s-4) + env(safe-area-inset-bottom));
     z-index: var(--z-dropdown);
+
+    @include respond-to(desktop) {
+        bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+    }
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -16,14 +23,30 @@
     color: var(--text);
     box-shadow: var(--e-2);
     cursor: pointer;
+
+    // hidden state: stays in the DOM so show/hide can pop in/out smoothly
+    opacity: 0;
+    transform: translateY(8px) scale(0.8);
+    visibility: hidden;
+    pointer-events: none;
     transition:
         background var(--dur-fast) var(--ease-out),
-        border-color var(--dur-fast) var(--ease-out);
+        border-color var(--dur-fast) var(--ease-out),
+        opacity var(--dur-base) var(--ease-out),
+        transform var(--dur-slow) var(--ease-out),
+        visibility var(--dur-slow) var(--ease-out);
 
     @include focus-ring;
 
     @include on-hover {
         background: var(--surface-2);
         border-color: var(--brand);
+    }
+
+    &--visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        visibility: visible;
+        pointer-events: auto;
     }
 }

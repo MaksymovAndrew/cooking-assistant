@@ -4,11 +4,17 @@ import { useTranslation } from "react-i18next";
 
 import { recipeDetailsPath } from "constants/routes";
 
+import type { ContentCardVariant } from "components/cards/ContentCard";
 import { ContentCard } from "components/cards/ContentCard";
 import { UtensilsMark } from "components/icons";
 
 import { splitCookingTime } from "utils/cookingTimeUtils";
-import { formatDate } from "utils/dateUtils";
+import { formatShortDate } from "utils/dateUtils";
+import { filterAllergens } from "utils/recipeAllergens";
+
+interface RecipeCardIngredient {
+    allergens: string | null;
+}
 
 interface RecipeCardRecipe {
     id: number;
@@ -16,21 +22,25 @@ interface RecipeCardRecipe {
     type_name: string;
     cooking_time: number;
     creation_date: string;
+    ingredients?: RecipeCardIngredient[];
 }
 
 interface RecipeCardProps {
     recipe: RecipeCardRecipe;
     mine?: boolean;
-    badge?: boolean;
+    variant?: ContentCardVariant;
 }
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({
     recipe,
     mine = false,
-    badge = false,
+    variant,
 }) => {
-    const { t, i18n } = useTranslation("recipes");
+    const { t } = useTranslation("recipes");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
+    const hasAllergens =
+        filterAllergens((recipe.ingredients ?? []).map((i) => i.allergens))
+            .length > 0;
 
     return (
         <ContentCard
@@ -39,7 +49,8 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             imageIcon={UtensilsMark}
             chipLabel={recipe.type_name}
             mine={mine}
-            badge={badge}
+            variant={variant}
+            badge={hasAllergens}
             metaItems={[
                 {
                     icon: Clock,
@@ -47,7 +58,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
                 },
                 {
                     icon: Calendar,
-                    label: formatDate(recipe.creation_date, i18n.language),
+                    label: formatShortDate(recipe.creation_date),
                 },
             ]}
         />

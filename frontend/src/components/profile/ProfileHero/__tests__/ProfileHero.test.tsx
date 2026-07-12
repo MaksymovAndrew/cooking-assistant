@@ -18,6 +18,7 @@ describe("ProfileHero", () => {
         expect(screen.getByText("Claude Cook")).toBeInTheDocument();
         expect(screen.getByText("5")).toBeInTheDocument();
         expect(screen.getByText("2")).toBeInTheDocument();
+        expect(screen.getByText("15")).toBeInTheDocument();
     });
 
     it("should fall back to the login when name/surname are missing", () => {
@@ -31,6 +32,35 @@ describe("ProfileHero", () => {
         );
 
         expect(screen.getByText("claude")).toBeInTheDocument();
+    });
+
+    it("should render the joined date when createdAt is provided", () => {
+        render(
+            <ProfileHero
+                name="Claude"
+                surname="Cook"
+                createdAt="2025-06-15"
+                recipesCount={0}
+                menusCount={0}
+                onLogout={jest.fn()}
+            />,
+        );
+
+        expect(screen.getByText("Joined Jun 2025")).toBeInTheDocument();
+    });
+
+    it("should not render a joined date when createdAt is missing", () => {
+        render(
+            <ProfileHero
+                name="Claude"
+                surname="Cook"
+                recipesCount={0}
+                menusCount={0}
+                onLogout={jest.fn()}
+            />,
+        );
+
+        expect(screen.queryByText(/^Joined/)).not.toBeInTheDocument();
     });
 
     it("should disable the Edit profile button", () => {
@@ -49,7 +79,7 @@ describe("ProfileHero", () => {
         ).toBeDisabled();
     });
 
-    it("should call onLogout when the logout button is clicked", async () => {
+    it("should call onLogout when the mobile logout button is clicked", async () => {
         const onLogout = jest.fn();
 
         render(

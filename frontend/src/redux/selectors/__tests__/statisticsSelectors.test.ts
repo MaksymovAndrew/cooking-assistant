@@ -1,4 +1,4 @@
-import type { Menu } from "types/menu";
+import type { MenuWithStats } from "types/menu";
 import type { RecipeWithIngredientNames } from "types/recipe";
 
 import {
@@ -40,10 +40,31 @@ const RECIPES: RecipeWithIngredientNames[] = [
     },
 ];
 
-const MENUS: Menu[] = [
-    { id: 1, title: "M1", categoryname: "Lunch", menucontent: "" },
-    { id: 2, title: "M2", categoryname: "Lunch", menucontent: "" },
-    { id: 3, title: "M3", categoryname: "Dinner", menucontent: "" },
+const MENUS: MenuWithStats[] = [
+    {
+        id: 1,
+        title: "M1",
+        categoryname: "Lunch",
+        menucontent: "",
+        recipe_count: 2,
+        total_cooking_time: 40,
+    },
+    {
+        id: 2,
+        title: "M2",
+        categoryname: "Lunch",
+        menucontent: "",
+        recipe_count: 4,
+        total_cooking_time: 80,
+    },
+    {
+        id: 3,
+        title: "M3",
+        categoryname: "Dinner",
+        menucontent: "",
+        recipe_count: 1,
+        total_cooking_time: 20,
+    },
 ];
 
 const loadRecipes = async (store: ReturnType<typeof makeTestStore>) => {
@@ -70,15 +91,31 @@ describe("statisticsSelectors", () => {
             { typeName: "Salad", count: 1 },
         ]);
         expect(result.mostUsedType).toEqual({ typeName: "Soup", count: 2 });
-        expect(result.averageCookingTimeOverall).toBe("00:20");
+        expect(result.averageCookingTimeOverall).toBe(20);
         expect(result.averageCookingTimesByType).toEqual([
-            { typeName: "Soup", averageCookingTime: "00:20" },
-            { typeName: "Salad", averageCookingTime: "00:20" },
+            { typeName: "Soup", averageCookingTime: 20 },
+            { typeName: "Salad", averageCookingTime: 20 },
         ]);
-        expect(result.fastestRecipes).toEqual([RECIPES[0]]);
-        expect(result.slowestRecipes).toEqual([RECIPES[1]]);
-        expect(result.mostIngredientsRecipes).toEqual([RECIPES[2]]);
-        expect(result.leastIngredientsRecipes).toEqual([RECIPES[0]]);
+        expect(result.fastestRecipes).toEqual([
+            RECIPES[0],
+            RECIPES[2],
+            RECIPES[1],
+        ]);
+        expect(result.slowestRecipes).toEqual([
+            RECIPES[1],
+            RECIPES[2],
+            RECIPES[0],
+        ]);
+        expect(result.mostIngredientsRecipes).toEqual([
+            RECIPES[2],
+            RECIPES[1],
+            RECIPES[0],
+        ]);
+        expect(result.leastIngredientsRecipes).toEqual([
+            RECIPES[0],
+            RECIPES[1],
+            RECIPES[2],
+        ]);
     });
 
     it("should return empty recipe statistics when the cache is empty", () => {
@@ -113,6 +150,20 @@ describe("statisticsSelectors", () => {
             categoryname: "Lunch",
             menuCount: 2,
         });
+        expect(result.averageTotalTime).toBe(47);
+        expect(result.averageRecipesPerMenu).toBeCloseTo(2.33, 2);
+        expect(result.averageTotalTimeByCategory).toEqual([
+            { categoryname: "Lunch", averageTotalTime: 60 },
+            { categoryname: "Dinner", averageTotalTime: 20 },
+        ]);
+        expect(result.fastestMenus).toEqual([MENUS[2], MENUS[0], MENUS[1]]);
+        expect(result.slowestMenus).toEqual([MENUS[1], MENUS[0], MENUS[2]]);
+        expect(result.mostRecipesMenus).toEqual([MENUS[1], MENUS[0], MENUS[2]]);
+        expect(result.leastRecipesMenus).toEqual([
+            MENUS[2],
+            MENUS[0],
+            MENUS[1],
+        ]);
     });
 
     it("should return empty menu statistics when the cache is empty", () => {
@@ -122,6 +173,13 @@ describe("statisticsSelectors", () => {
             menusCount: 0,
             menuCountByCategory: [],
             mostUsedCategory: null,
+            averageTotalTime: null,
+            averageRecipesPerMenu: null,
+            averageTotalTimeByCategory: [],
+            fastestMenus: [],
+            slowestMenus: [],
+            mostRecipesMenus: [],
+            leastRecipesMenus: [],
         });
     });
 });

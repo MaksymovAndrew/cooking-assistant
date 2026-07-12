@@ -17,6 +17,7 @@ export interface PublicUser {
     name: string;
     surname: string;
     login: string;
+    created_at: string;
 }
 
 export interface UserRepository {

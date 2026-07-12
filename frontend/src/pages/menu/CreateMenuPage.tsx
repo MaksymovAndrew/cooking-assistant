@@ -1,5 +1,9 @@
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+import { ROUTES } from "constants/routes";
 
 import { useCreateMenuPage } from "hooks/useCreateMenuPage";
 
@@ -15,6 +19,16 @@ const CreateMenuPage: React.FC = () => {
     return (
         <AppShell>
             <div className={styles["menu-form-page"]}>
+                <nav
+                    aria-label={t("createMenuPage.breadcrumb")}
+                    className={styles["menu-form-page__breadcrumb"]}
+                >
+                    <Link to={ROUTES.allMenus}>
+                        {t("createMenuPage.breadcrumbMenus")}
+                    </Link>
+                    <ChevronRight size={14} aria-hidden="true" />
+                    <span>{t("createMenuPage.breadcrumbCurrent")}</span>
+                </nav>
                 <h1 className={styles["menu-form-page__heading"]}>
                     {t("createMenuPage.heading")}
                 </h1>

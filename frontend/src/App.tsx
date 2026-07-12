@@ -1,6 +1,12 @@
 import type { ReactElement } from "react";
 import React, { Suspense } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+    createBrowserRouter,
+    createRoutesFromElements,
+    Outlet,
+    Route,
+    RouterProvider,
+} from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
@@ -62,28 +68,34 @@ const PRIVATE_ROUTES: AppRoute[] = [
     { path: ROUTES.settings, element: <SettingsPage /> },
 ];
 
-const App: React.FC = () => (
-    <Routes>
-        <Route path={ROUTES.login} element={<LoginPage />} />
-        <Route path={ROUTES.registration} element={<RegisterPage />} />
-        <Route element={<PrivateRoute />}>
-            {PRIVATE_ROUTES.map(({ path, element }) => (
-                <Route key={path} path={path} element={element} />
-            ))}
-        </Route>
-        <Route path={ROUTES.notFound} element={<NotFoundPage />} />
-    </Routes>
-);
-
-const AppWrapper: React.FC = () => (
-    <Router>
+// shell chrome shared by every route; lives inside the router so descendants (modals, forms) can use data-router hooks like useBlocker
+const RootLayout: React.FC = () => (
+    <>
         <ThemeManager />
         <Suspense fallback={<PageSpinner />}>
-            <App />
+            <Outlet />
         </Suspense>
         <ModalRoot />
         <Toaster />
-    </Router>
+    </>
 );
+
+// data router (not <BrowserRouter>): forms block in-app navigation away from unsaved edits via useBlocker, which plain routers don't support
+const router = createBrowserRouter(
+    createRoutesFromElements(
+        <Route element={<RootLayout />}>
+            <Route path={ROUTES.login} element={<LoginPage />} />
+            <Route path={ROUTES.registration} element={<RegisterPage />} />
+            <Route element={<PrivateRoute />}>
+                {PRIVATE_ROUTES.map(({ path, element }) => (
+                    <Route key={path} path={path} element={element} />
+                ))}
+            </Route>
+            <Route path={ROUTES.notFound} element={<NotFoundPage />} />
+        </Route>,
+    ),
+);
+
+const AppWrapper: React.FC = () => <RouterProvider router={router} />;
 
 export default AppWrapper;

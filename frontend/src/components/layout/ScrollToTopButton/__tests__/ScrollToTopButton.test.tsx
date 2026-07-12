@@ -36,10 +36,12 @@ describe("ScrollToTopButton", () => {
         });
     });
 
-    it("should render nothing before the page is scrolled", () => {
-        const { container } = renderWithProviders(<ScrollToTopButton />);
+    it("should stay hidden from assistive tech before the page is scrolled", () => {
+        renderWithProviders(<ScrollToTopButton />);
 
-        expect(container).toBeEmptyDOMElement();
+        expect(
+            screen.queryByRole("button", { name: BUTTON_NAME }),
+        ).not.toBeInTheDocument();
     });
 
     it("should appear once the page is scrolled past the reveal threshold", () => {

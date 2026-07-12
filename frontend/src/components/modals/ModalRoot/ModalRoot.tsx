@@ -31,12 +31,22 @@ export const ModalRoot = () => {
 
     if (modal?.type === MODAL_TYPE.deleteRecipe) {
         return (
-            <DeleteRecipeModal modalId={modal.id} recipeId={modal.recipeId} />
+            <DeleteRecipeModal
+                modalId={modal.id}
+                recipeId={modal.recipeId}
+                recipeTitle={modal.recipeTitle}
+            />
         );
     }
 
     if (modal?.type === MODAL_TYPE.deleteMenu) {
-        return <DeleteMenuModal modalId={modal.id} menuId={modal.menuId} />;
+        return (
+            <DeleteMenuModal
+                modalId={modal.id}
+                menuId={modal.menuId}
+                menuTitle={modal.menuTitle}
+            />
+        );
     }
 
     if (modal?.type === MODAL_TYPE.deleteIngredient) {

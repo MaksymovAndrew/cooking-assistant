@@ -1,4 +1,4 @@
-import { formatDate, formatDateTime } from "utils/dateUtils";
+import { formatDate, formatDateTime, formatJoinedDate } from "utils/dateUtils";
 
 describe("formatDate", () => {
     it("should format a date string as a short en-GB date by default", () => {
@@ -20,5 +20,11 @@ describe("formatDateTime", () => {
 
         expect(result).toContain("December");
         expect(result).toContain("2024");
+    });
+});
+
+describe("formatJoinedDate", () => {
+    it("should format a date as short month and year", () => {
+        expect(formatJoinedDate("2025-06-15")).toBe("Jun 2025");
     });
 });

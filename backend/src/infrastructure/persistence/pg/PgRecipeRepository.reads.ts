@@ -53,7 +53,8 @@ export async function findRecipeByIdWithIngredients(
                           'id', i.id,
                           'name', i.name,
                           'quantity_recipe_ingredients', ri.quantity_recipe_ingredients,
-                          'unit_name', um.unit_name
+                          'unit_name', um.unit_name,
+                          'allergens', i.allergens
                       )
                   ) AS ingredients,
                   rt.type_name

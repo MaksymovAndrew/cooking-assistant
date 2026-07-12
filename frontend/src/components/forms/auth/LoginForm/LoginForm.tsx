@@ -58,7 +58,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     }}
                 />
             </FormField>
-            <FormField htmlFor={PW_FIELD_ID} label={t("fields.passwordLabel")}>
+            <FormField
+                htmlFor={PW_FIELD_ID}
+                label={t("fields.passwordLabel")}
+                labelRight={
+                    <button
+                        type="button"
+                        disabled
+                        className={styles["login-form__forgot-password"]}
+                    >
+                        {t("fields.forgotPasswordLink")}
+                    </button>
+                }
+            >
                 <PasswordInput
                     id={PW_FIELD_ID}
                     value={values.password}

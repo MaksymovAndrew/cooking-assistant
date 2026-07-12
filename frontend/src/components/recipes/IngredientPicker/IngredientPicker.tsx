@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import type { Ingredient } from "types/ingredient";
 
+import { AllergenDot } from "components/ui/AllergenDot";
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
 
 import styles from "./IngredientPicker.module.scss";
@@ -32,12 +33,10 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
 
     const matches = trimmedQuery
         ? allIngredients
-              .filter(
-                  (ingredient) =>
-                      !selectedIds.includes(ingredient.id) &&
-                      ingredient.name
-                          .toLowerCase()
-                          .includes(trimmedQuery.toLowerCase()),
+              .filter((ingredient) =>
+                  ingredient.name
+                      .toLowerCase()
+                      .includes(trimmedQuery.toLowerCase()),
               )
               .slice(0, MAX_RESULTS)
         : [];
@@ -91,41 +90,59 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
                                 {t("ingredientPicker.noMatches")}
                             </li>
                         ) : (
-                            matches.map((ingredient) => (
-                                <li key={ingredient.id}>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            handleSelect(ingredient);
-                                        }}
-                                        className={
-                                            styles["ingredient-picker__result"]
-                                        }
-                                    >
-                                        <span
-                                            className={
+                            matches.map((ingredient) => {
+                                const isSelected = selectedIds.includes(
+                                    ingredient.id,
+                                );
+
+                                return (
+                                    <li key={ingredient.id}>
+                                        <button
+                                            type="button"
+                                            disabled={isSelected}
+                                            onClick={() => {
+                                                handleSelect(ingredient);
+                                            }}
+                                            className={[
                                                 styles[
-                                                    "ingredient-picker__result-name"
-                                                ]
-                                            }
+                                                    "ingredient-picker__result"
+                                                ],
+                                                isSelected &&
+                                                    styles[
+                                                        "ingredient-picker__result--selected"
+                                                    ],
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" ")}
                                         >
-                                            <HighlightedMatch
-                                                text={ingredient.name}
-                                                query={trimmedQuery}
+                                            <span
+                                                className={
+                                                    styles[
+                                                        "ingredient-picker__result-name"
+                                                    ]
+                                                }
+                                            >
+                                                <HighlightedMatch
+                                                    text={ingredient.name}
+                                                    query={trimmedQuery}
+                                                />
+                                            </span>
+                                            <span
+                                                className={
+                                                    styles[
+                                                        "ingredient-picker__result-unit"
+                                                    ]
+                                                }
+                                            >
+                                                {ingredient.unit_name}
+                                            </span>
+                                            <AllergenDot
+                                                allergens={ingredient.allergens}
                                             />
-                                        </span>
-                                        <span
-                                            className={
-                                                styles[
-                                                    "ingredient-picker__result-unit"
-                                                ]
-                                            }
-                                        >
-                                            {ingredient.unit_name}
-                                        </span>
-                                    </button>
-                                </li>
-                            ))
+                                        </button>
+                                    </li>
+                                );
+                            })
                         )}
                     </ul>
                 </div>

@@ -1,6 +1,7 @@
+// fetch API polyfill (Request/Response): the data router builds a Request for every client-side navigation, and jsdom doesn't ship one
+import "whatwg-fetch";
 import "@testing-library/jest-dom";
-// initialize the shared i18n instance so components using useTranslation()
-// render real English strings in tests (no provider needed - global instance)
+// initializes the shared i18n instance so components using useTranslation() render real English strings in tests
 import "i18n/index";
 
 import { configure } from "@testing-library/react";

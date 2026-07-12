@@ -10,7 +10,6 @@ describe("IngredientsPageHeader", () => {
                 count={3}
                 isEditingQuantity={false}
                 onToggleQuantityEdit={jest.fn()}
-                onSaveQuantities={jest.fn()}
                 onAddIngredient={jest.fn()}
             />,
         );
@@ -26,7 +25,6 @@ describe("IngredientsPageHeader", () => {
                 count={3}
                 isEditingQuantity={false}
                 onToggleQuantityEdit={onToggleQuantityEdit}
-                onSaveQuantities={jest.fn()}
                 onAddIngredient={jest.fn()}
             />,
         );
@@ -38,15 +36,14 @@ describe("IngredientsPageHeader", () => {
         expect(onToggleQuantityEdit).toHaveBeenCalledTimes(1);
     });
 
-    it("should show Save quantities and hide Add ingredient while editing quantities", async () => {
-        const onSaveQuantities = jest.fn();
+    it("should show Done and hide Add ingredient while editing quantities", async () => {
+        const onToggleQuantityEdit = jest.fn();
 
         render(
             <IngredientsPageHeader
                 count={3}
                 isEditingQuantity={true}
-                onToggleQuantityEdit={jest.fn()}
-                onSaveQuantities={onSaveQuantities}
+                onToggleQuantityEdit={onToggleQuantityEdit}
                 onAddIngredient={jest.fn()}
             />,
         );
@@ -55,11 +52,9 @@ describe("IngredientsPageHeader", () => {
             screen.queryByRole("button", { name: "Add ingredient" }),
         ).not.toBeInTheDocument();
 
-        await userEvent.click(
-            screen.getByRole("button", { name: "Save quantities" }),
-        );
+        await userEvent.click(screen.getByRole("button", { name: "Done" }));
 
-        expect(onSaveQuantities).toHaveBeenCalledTimes(1);
+        expect(onToggleQuantityEdit).toHaveBeenCalledTimes(1);
     });
 
     it("should call onAddIngredient when Add ingredient is clicked", async () => {
@@ -70,7 +65,6 @@ describe("IngredientsPageHeader", () => {
                 count={3}
                 isEditingQuantity={false}
                 onToggleQuantityEdit={jest.fn()}
-                onSaveQuantities={jest.fn()}
                 onAddIngredient={onAddIngredient}
             />,
         );

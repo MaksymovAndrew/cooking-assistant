@@ -22,6 +22,7 @@ interface AccountMenuProps {
 
 const CHEVRON_SIZE = 15;
 const MENU_ICON_SIZE = 18;
+const TRIGGER_AVATAR_SIZE = 32;
 const HEADER_AVATAR_SIZE = 40;
 
 export const AccountMenu: React.FC<AccountMenuProps> = ({
@@ -54,7 +55,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
                 aria-label={t("accountMenu.trigger")}
                 className={styles["account-menu__trigger"]}
             >
-                <Avatar initials={initials} />
+                <Avatar initials={initials} size={TRIGGER_AVATAR_SIZE} />
                 <ChevronDown size={CHEVRON_SIZE} aria-hidden="true" />
             </button>
             {isOpen && (

@@ -4,7 +4,12 @@ import type { Ingredient } from "types/ingredient";
 
 import { useRecipeForm } from "hooks/useRecipeForm";
 
-const INGREDIENT: Ingredient = { id: 1, name: "Egg", unit_name: "pcs" };
+const INGREDIENT: Ingredient = {
+    id: 1,
+    name: "Egg",
+    unit_name: "pcs",
+    allergens: null,
+};
 
 const CREATE_MESSAGES = {
     errorTitle: "Title required",
@@ -13,15 +18,14 @@ const CREATE_MESSAGES = {
     errorType: "Pick a type",
     errorCookingTimeFormat: "Bad time format",
     errorCookingTimeInvalid: "Invalid time",
-    errorServings: "Servings required",
 };
 
 const fillValid = (form: ReturnType<typeof useRecipeForm>) => {
     form.setInitialValues({
         title: "Soup",
         content: "boil",
-        cookingTime: "0:30",
-        servings: "2",
+        cookingHours: "0",
+        cookingMinutes: "30",
         selectedTypeId: 5,
         selectedIngredients: [
             { id: 1, name: "Egg", quantity: 1, unit_name: "pcs" },
@@ -43,11 +47,11 @@ describe("useRecipeForm", () => {
 
         act(() => {
             result.current.setTitle("Borscht");
-            result.current.setServings("4");
+            result.current.setCookingHours("1");
         });
 
         expect(result.current.title).toBe("Borscht");
-        expect(result.current.servings).toBe("4");
+        expect(result.current.cookingHours).toBe("1");
     });
 
     it("should toggle an ingredient into and back out of the selection", () => {
@@ -87,9 +91,26 @@ describe("useRecipeForm", () => {
         });
 
         expect(result.current.title).toBe("Soup");
-        expect(result.current.cookingTime).toBe("0:30");
+        expect(result.current.cookingHours).toBe("0");
+        expect(result.current.cookingMinutes).toBe("30");
         expect(result.current.selectedTypeId).toBe(5);
         expect(result.current.selectedIngredients).toHaveLength(1);
+    });
+
+    it("should not be dirty right after setInitialValues, but dirty after a further edit", () => {
+        const { result } = renderHook(() => useRecipeForm());
+
+        act(() => {
+            fillValid(result.current);
+        });
+
+        expect(result.current.isDirty).toBe(false);
+
+        act(() => {
+            result.current.setTitle("Different soup");
+        });
+
+        expect(result.current.isDirty).toBe(true);
     });
 
     it("should fail validateCreate and set the title error when empty", () => {
@@ -102,7 +123,7 @@ describe("useRecipeForm", () => {
         });
 
         expect(valid).toBe(false);
-        expect(result.current.error).toBe(CREATE_MESSAGES.errorTitle);
+        expect(result.current.titleError).toBe(CREATE_MESSAGES.errorTitle);
     });
 
     it("should pass validateCreate when every field is valid", () => {
@@ -119,6 +140,6 @@ describe("useRecipeForm", () => {
         });
 
         expect(valid).toBe(true);
-        expect(result.current.error).toBeNull();
+        expect(result.current.titleError).toBeNull();
     });
 });

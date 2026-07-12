@@ -40,7 +40,7 @@ export default class PgUserRepository implements UserRepository {
 
     async findById(id: number): Promise<PublicUser | null> {
         const result = await this.pool.query<PublicUser>(
-            `SELECT id, name, surname, login FROM person WHERE id = $1`,
+            `SELECT id, name, surname, login, created_at FROM person WHERE id = $1`,
             [id],
         );
 

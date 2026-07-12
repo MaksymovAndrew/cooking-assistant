@@ -8,6 +8,23 @@
     // overrides the mixin's border shorthand color only, keeping width/style
     border-color: color-mix(in srgb, var(--warning) 30%, var(--border));
 
+    // a rotated phone's rail column is tight - drop the pantry link and cap the list to 1 item
+    @include respond-to-short-landscape {
+        padding: var(--s-3);
+
+        &__header {
+            margin-bottom: var(--s-2);
+        }
+
+        &__link {
+            display: none;
+        }
+
+        &__list > :nth-child(n + 2) {
+            display: none;
+        }
+    }
+
     &__header {
         display: flex;
         align-items: center;
@@ -44,7 +61,6 @@
             sans-serif;
     }
 
-    // desktop-only, per the mockup (the mobile/tablet cards end at the list)
     &__shopping-list {
         display: none;
         align-items: center;
@@ -56,7 +72,7 @@
         border-radius: var(--r-sm);
         background: none;
         color: var(--text-2);
-        cursor: pointer;
+        cursor: default;
         font:
             600 12px Inter,
             sans-serif;

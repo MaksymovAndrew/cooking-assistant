@@ -77,13 +77,13 @@ describe("ContentCard", () => {
     it("should show a star rating in the grid variant", () => {
         renderCard();
 
-        expect(screen.getByText("4.8")).toBeInTheDocument();
+        expect(screen.getByText("4.2")).toBeInTheDocument();
     });
 
     it("should not show a star rating in the row variant", () => {
         renderCard({ variant: "row" });
 
-        expect(screen.queryByText("4.8")).not.toBeInTheDocument();
+        expect(screen.queryByText("4.2")).not.toBeInTheDocument();
     });
 
     it("should only show the first meta item in the row variant", () => {

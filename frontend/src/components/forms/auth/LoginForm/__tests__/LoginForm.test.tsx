@@ -16,8 +16,8 @@ describe("LoginForm", () => {
             />,
         );
 
-        expect(screen.getByLabelText("Username:")).toHaveValue("tester");
-        expect(screen.getByLabelText("Password:")).toHaveValue("secret1");
+        expect(screen.getByLabelText("Username")).toHaveValue("tester");
+        expect(screen.getByLabelText("Password")).toHaveValue("secret1");
     });
 
     it("should call onFieldChange with the field name and value", async () => {
@@ -32,7 +32,7 @@ describe("LoginForm", () => {
             />,
         );
 
-        await userEvent.type(screen.getByLabelText("Username:"), "a");
+        await userEvent.type(screen.getByLabelText("Username"), "a");
 
         expect(onFieldChange).toHaveBeenCalledWith("login", "a");
     });

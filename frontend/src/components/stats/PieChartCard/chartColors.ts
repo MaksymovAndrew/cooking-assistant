@@ -1,11 +1,10 @@
-export const CHART_COLORS: string[] = [
+// purple / blue / amber / teal - shared by every chart on the stats page
+export const STATS_PALETTE: string[] = [
     "#7E60BF",
-    "#B692C2",
-    "#8E72CC",
-    "#C9A8DA",
-    "#6B4FA8",
+    "#4FA3D9",
     "#E0A33E",
+    "#3FA98E",
 ];
 
 export const getChartColor = (index: number): string =>
-    CHART_COLORS[index % CHART_COLORS.length];
+    STATS_PALETTE[index % STATS_PALETTE.length];

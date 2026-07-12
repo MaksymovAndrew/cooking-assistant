@@ -142,25 +142,15 @@ export function buildControllers({
     };
 }
 
-const recipeTypeRepository = new PgRecipeTypeRepository(pool);
-const recipeRepository = new PgRecipeRepository(pool);
-const menuRepository = new PgMenuRepository(pool);
-const menuCategoryRepository = new PgMenuCategoryRepository(pool);
-const pantryRepository = new PgPantryRepository(pool);
-const userRepository = new PgUserRepository(pool);
-
-const passwordHasher = new BcryptPasswordHasher();
-const tokenService = new JwtTokenService();
-
 const controllers = buildControllers({
-    recipeRepository,
-    recipeTypeRepository,
-    menuRepository,
-    menuCategoryRepository,
-    pantryRepository,
-    userRepository,
-    passwordHasher,
-    tokenService,
+    recipeRepository: new PgRecipeRepository(pool),
+    recipeTypeRepository: new PgRecipeTypeRepository(pool),
+    menuRepository: new PgMenuRepository(pool),
+    menuCategoryRepository: new PgMenuCategoryRepository(pool),
+    pantryRepository: new PgPantryRepository(pool),
+    userRepository: new PgUserRepository(pool),
+    passwordHasher: new BcryptPasswordHasher(),
+    tokenService: new JwtTokenService(),
 });
 
 export default controllers;

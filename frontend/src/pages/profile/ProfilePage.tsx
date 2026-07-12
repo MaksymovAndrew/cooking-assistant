@@ -24,6 +24,7 @@ const ProfilePage: React.FC = () => {
                     name={profile.currentUser?.name}
                     surname={profile.currentUser?.surname}
                     login={profile.currentUser?.login}
+                    createdAt={profile.currentUser?.created_at}
                     recipesCount={profile.recipesCount}
                     menusCount={profile.menusCount}
                     onLogout={profile.openLogoutModal}
@@ -31,6 +32,7 @@ const ProfilePage: React.FC = () => {
                 <ProfileTabs
                     activeTab={profile.activeTab}
                     onChange={profile.setActiveTab}
+                    onLogout={profile.openLogoutModal}
                 />
 
                 {profile.activeTab === PROFILE_TAB.recipes && (

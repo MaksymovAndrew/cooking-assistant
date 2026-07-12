@@ -12,8 +12,7 @@
     }
 }
 
-// mobile-first: a bottom sheet per the mobile mockup; tablet+ switches to
-// the centered dialog
+// mobile-first: a bottom sheet; tablet+ switches to the centered dialog
 .news-modal__overlay {
     position: fixed;
     inset: 0;
@@ -135,6 +134,8 @@
     }
 
     &__item {
+        display: flex;
+        gap: var(--s-3);
         padding-bottom: var(--s-4);
         border-bottom: 1px solid var(--border);
 
@@ -144,8 +145,22 @@
         }
     }
 
+    &__dot {
+        flex: none;
+        width: 6px;
+        height: 6px;
+        margin-top: 7px;
+        border-radius: 50%;
+        background: var(--brand);
+    }
+
+    &__item-body {
+        flex: 1;
+        min-width: 0;
+    }
+
     &__date {
-        margin-bottom: var(--s-1);
+        margin-top: var(--s-1);
         color: var(--text-muted);
         font:
             500 11px "Geist Mono",

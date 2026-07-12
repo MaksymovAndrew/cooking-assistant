@@ -15,12 +15,14 @@ const TOMATO: RecipeDetailIngredient = {
     name: "Tomato",
     quantity_recipe_ingredients: 2,
     unit_name: "pcs",
+    allergens: null,
 };
 const ONION: RecipeDetailIngredient = {
     id: 2,
     name: "Onion",
     quantity_recipe_ingredients: 1,
     unit_name: "pcs",
+    allergens: null,
 };
 
 const PANTRY_TOMATO: UserIngredient = {

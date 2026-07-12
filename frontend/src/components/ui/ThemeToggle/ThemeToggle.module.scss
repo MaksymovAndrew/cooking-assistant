@@ -1,18 +1,16 @@
 @use "styles/abstracts" as *;
 
 .theme-toggle {
-    display: inline-flex;
+    display: flex;
+    flex: none;
     align-items: center;
-    gap: var(--s-2);
+    justify-content: center;
+    width: 40px;
     height: 40px;
-    padding: 0 var(--s-4);
     border: 1px solid var(--border);
-    border-radius: var(--r-pill);
+    border-radius: var(--r-sm);
     background: var(--surface);
-    color: var(--text);
-    font:
-        600 13px Inter,
-        sans-serif;
+    color: var(--text-2);
     cursor: pointer;
     transition:
         background var(--dur-fast) var(--ease-out),

@@ -1,0 +1,74 @@
+.pie-chart-card {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    &__pie-wrapper {
+        position: relative;
+        flex: none;
+        cursor: default;
+    }
+
+    &__center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        pointer-events: none;
+    }
+
+    &__center-total {
+        display: block;
+        font:
+            700 22px "Geist Mono",
+            monospace;
+    }
+
+    &__center-label {
+        display: block;
+        font-size: 11px;
+    }
+
+    &__legend {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    &__legend-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 13px;
+    }
+
+    &__legend-dot {
+        display: block;
+        flex-shrink: 0;
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+    }
+
+    &__legend-name {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__legend-value {
+        font:
+            600 13px "Geist Mono",
+            monospace;
+    }
+}
+
+// keeps the recharts SVG's own focus outline from doubling up with :focus-visible
+.pie-chart-card__svg {
+    outline: none;
+}

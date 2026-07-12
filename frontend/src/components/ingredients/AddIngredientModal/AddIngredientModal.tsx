@@ -6,6 +6,7 @@ import type { Ingredient } from "types/ingredient";
 import type { PantryIngredient } from "types/userIngredient";
 
 import { BaseModal } from "components/modals/BaseModal";
+import { AllergenDot } from "components/ui/AllergenDot";
 import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
@@ -117,6 +118,9 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
                                         >
                                             {ingredient.unit_name}
                                         </span>
+                                        <AllergenDot
+                                            allergens={ingredient.allergens}
+                                        />
                                     </button>
                                 </li>
                             ))

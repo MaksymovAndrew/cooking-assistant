@@ -7,8 +7,8 @@ import type { PantryIngredient } from "types/userIngredient";
 import { AddIngredientModal } from "components/ingredients/AddIngredientModal";
 
 const ALL_INGREDIENTS: Ingredient[] = [
-    { id: 1, name: "Potato", unit_name: "g" },
-    { id: 2, name: "Onion", unit_name: "g" },
+    { id: 1, name: "Potato", unit_name: "g", allergens: null },
+    { id: 2, name: "Onion", unit_name: "g", allergens: null },
 ];
 const OWNED: PantryIngredient[] = [
     {

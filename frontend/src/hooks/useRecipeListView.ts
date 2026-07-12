@@ -5,6 +5,7 @@ import { SEARCH_PARAM_INGREDIENT_NAME } from "constants/queryParams";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { selectRecipeFilters } from "redux/selectors/filtersSelectors";
+import { useGetMeQuery } from "redux/services/authApi";
 import {
     flattenPages,
     getPaginatedTotal,
@@ -14,8 +15,9 @@ import {
     useGetRecipesByPersonInfiniteQuery,
 } from "redux/services/recipesApi";
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
-import type { RecipeFiltersState } from "redux/slices/filtersSlice";
 import {
+    RECIPE_DEFAULT_SORT_ORDER,
+    type RecipeFiltersState,
     setRecipeEndDate,
     setRecipeMaxCookingTime,
     setRecipeMinCookingTime,
@@ -25,7 +27,10 @@ import {
 } from "redux/slices/filtersSlice";
 
 import { getQueryErrorMessage } from "utils/queryError";
-import { buildRecipeFilterParams } from "utils/recipeFilterParams";
+import {
+    buildRecipeFilterParams,
+    hasActiveRecipeFilters,
+} from "utils/recipeFilterParams";
 
 export interface RecipeFilterState extends RecipeFiltersState {
     ingredientName: string | null;
@@ -38,13 +43,13 @@ export const RECIPE_SOURCE = {
 
 export type RecipeSource = (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE];
 
-// view model for the two recipe lists: filters come from the store + the URL
-// search, pages come from RTK Query's infiniteQuery, sorting is fully server-side
+// view model for the two recipe lists: filters come from the store + the URL search, pages come from RTK Query's infiniteQuery, sorting is server-side
 export const useRecipeListView = (source: RecipeSource) => {
     const dispatch = useAppDispatch();
     const recipeFilters = useAppSelector(selectRecipeFilters);
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const ingredientName = searchParams.get(SEARCH_PARAM_INGREDIENT_NAME);
+    const filters = { ...recipeFilters, ingredientName };
 
     const params = useMemo(
         () => buildRecipeFilterParams(recipeFilters, ingredientName),
@@ -60,6 +65,8 @@ export const useRecipeListView = (source: RecipeSource) => {
     });
     const active = isPerson ? byPerson : byFilters;
 
+    // already fetched by PrivateRoute on mount, so this is a cache read, not a new request - used to flag the current user's own recipes in the "all" list
+    const { data: currentUser } = useGetMeQuery(null);
     const recipes = useMemo(() => flattenPages(active.data), [active.data]);
     const total = getPaginatedTotal(active.data);
     const hasLoadedRecipes = recipes.length > 0;
@@ -81,8 +88,16 @@ export const useRecipeListView = (source: RecipeSource) => {
     );
     const typesHeader = descriptions.map((type) => type.type_name).join(", ");
 
+    const clearFilters = () => {
+        setSearchParams({});
+        dispatch(setRecipeSelectedTypes([]));
+        dispatch(setRecipeMinCookingTime(""));
+        dispatch(setRecipeMaxCookingTime(""));
+        dispatch(setRecipeSortOrder(RECIPE_DEFAULT_SORT_ORDER));
+    };
+
     return {
-        filters: { ...recipeFilters, ingredientName },
+        filters,
         setSelectedTypes: (types: number[]) =>
             dispatch(setRecipeSelectedTypes(types)),
         setStartDate: (date: string) => dispatch(setRecipeStartDate(date)),
@@ -92,8 +107,11 @@ export const useRecipeListView = (source: RecipeSource) => {
         setMaxCookingTime: (time: string) =>
             dispatch(setRecipeMaxCookingTime(time)),
         setSortOrder: (order: string) => dispatch(setRecipeSortOrder(order)),
+        clearFilters,
+        hasActiveFilters: hasActiveRecipeFilters(filters),
         types: allTypes,
         recipes,
+        currentUserId: currentUser?.id ?? null,
         error: !hasLoadedRecipes ? errorMessage : null,
         noRecipes: active.isSuccess && !hasLoadedRecipes,
         descriptions,

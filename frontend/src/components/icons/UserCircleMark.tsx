@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// "profile" glyph traced from the Global Shell bottom-nav mockup - not a stock lucide icon
+// "profile" glyph - not a stock lucide icon
 export const UserCircleMark: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

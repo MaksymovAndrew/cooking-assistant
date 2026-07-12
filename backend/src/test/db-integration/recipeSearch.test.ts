@@ -18,6 +18,7 @@ interface RecipeSearchRow {
     id: number;
     title: string;
     cooking_time: number | null;
+    ingredients: { id: number; name: string; allergens: string | null }[];
 }
 
 // targets the hand-built SQL in PgRecipeRepository.search.ts (ILIKE/ANY filters,
@@ -189,6 +190,36 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         expect(firstPage.total).toBe(3);
         expect(secondPage.items).toHaveLength(1);
         expect(secondPage.total).toBe(3);
+    });
+
+    it("should include each ingredient's allergens in the search results", async () => {
+        const glutenId = await createIngredient(pool, unitId, "Gluten");
+        const result = await pool.query<{ name: string }>(
+            `SELECT name FROM ingredients WHERE id = $1`,
+            [glutenId],
+        );
+        const glutenName = result.rows[0].name;
+        const recipeId = await createRecipeWithIngredient(
+            "Allergen search recipe",
+            glutenId,
+            10,
+        );
+
+        const search = (await repository.search({
+            ingredient_name: glutenName,
+        })) as { items: RecipeSearchRow[] };
+
+        expect(search.items).toEqual([
+            expect.objectContaining({
+                id: recipeId,
+                ingredients: [
+                    expect.objectContaining({
+                        name: glutenName,
+                        allergens: "Gluten",
+                    }),
+                ],
+            }),
+        ]);
     });
 
     it("should scope searchByPerson to only that person's recipes", async () => {

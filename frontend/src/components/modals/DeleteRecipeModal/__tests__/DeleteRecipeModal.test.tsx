@@ -22,17 +22,23 @@ jest.mock("react-router-dom", () => ({
 }));
 
 const RECIPE_ID = "42";
+const RECIPE_TITLE = "Slow-roasted ragù";
 const MODAL_ID = "m1";
 const MODAL: ActiveModal = {
     id: MODAL_ID,
     type: MODAL_TYPE.deleteRecipe,
     recipeId: RECIPE_ID,
+    recipeTitle: RECIPE_TITLE,
 };
 
 const renderOpen = () => {
     const store = makeTestStore({ ui: { modal: MODAL } });
     const view = renderWithProviders(
-        <DeleteRecipeModal modalId={MODAL_ID} recipeId={RECIPE_ID} />,
+        <DeleteRecipeModal
+            modalId={MODAL_ID}
+            recipeId={RECIPE_ID}
+            recipeTitle={RECIPE_TITLE}
+        />,
         { store },
     );
 
@@ -40,14 +46,16 @@ const renderOpen = () => {
 };
 
 const clickConfirm = () =>
-    userEvent.click(screen.getByRole("button", { name: "Delete" }));
+    userEvent.click(screen.getByRole("button", { name: "Delete recipe" }));
 
 describe("DeleteRecipeModal", () => {
     it("should render the delete confirmation", () => {
         renderOpen();
 
         expect(
-            screen.getByText("Are you sure you want to delete this recipe?"),
+            screen.getByText(
+                `Are you sure you want to delete "${RECIPE_TITLE}"? It will be removed from any menus that include it. This action can't be undone.`,
+            ),
         ).toBeInTheDocument();
     });
 

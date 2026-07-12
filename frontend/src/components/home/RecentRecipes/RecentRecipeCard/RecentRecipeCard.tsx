@@ -3,6 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import { RECIPE_RATING } from "constants/ratings";
 import { recipeDetailsPath } from "constants/routes";
 import type { RecipeListItem } from "types/recipe";
 
@@ -18,9 +19,6 @@ interface RecentRecipeCardProps {
 
 const IMAGE_ICON_SIZE = 22;
 const STAR_ICON_SIZE = 11;
-// no rating data exists on the backend yet - a fixed decorative value matches
-// the design's rating figure without implying a real per-recipe review count
-const PLACEHOLDER_RATING = "4.8";
 
 export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
     recipe,
@@ -57,7 +55,7 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
                         aria-hidden="true"
                     >
                         <Star size={STAR_ICON_SIZE} />
-                        {PLACEHOLDER_RATING}
+                        {RECIPE_RATING}
                     </span>
                 </div>
             </div>

@@ -37,8 +37,8 @@ test.beforeAll(async ({ browser }) => {
         title: recipeTitle,
         description: "Created by ownership e2e.",
         ingredient: "Tomato",
-        cookingTime: "0:10",
-        servings: "1 serving",
+        cookingHours: "0",
+        cookingMinutes: "10",
     }));
     ({ menuId } = await createMenuViaForm(ownerPage, {
         title: menuTitle,
@@ -78,11 +78,25 @@ test("should let another user view the menu but hide owner-only controls", async
     ).toHaveCount(0);
 });
 
+async function loadUntilVisible(page: Page, text: string): Promise<void> {
+    await expect(async () => {
+        const loadMore = page.getByRole("button", { name: "Load more" });
+        if (await loadMore.isVisible().catch(() => false)) {
+            await loadMore.click();
+        }
+        await expect(page.getByText(text)).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 30_000 });
+}
+
 test("should list the recipe and menu in the shared public listings", async () => {
+    // sorted by cooking time by default (not newest-first), so a freshly
+    // created item can land on any page once the list has grown large
     await viewerPage.goto("/all-recipes");
+    await loadUntilVisible(viewerPage, recipeTitle);
     await expect(viewerPage.getByText(recipeTitle)).toBeVisible();
 
     await viewerPage.goto("/all-menus");
+    await loadUntilVisible(viewerPage, menuTitle);
     await expect(viewerPage.getByText(menuTitle)).toBeVisible();
 });
 
@@ -96,7 +110,7 @@ test("should refuse a non-owner's recipe update on the server", async () => {
                 res.url().includes(`/api/recipe/${recipeId}`) &&
                 res.request().method() === "PUT",
         ),
-        viewerPage.getByRole("button", { name: "Update Recipe" }).click(),
+        viewerPage.getByRole("button", { name: "Save changes" }).click(),
     ]);
 
     expect(response.status()).toBe(404);
@@ -115,7 +129,7 @@ test("should refuse a non-owner's menu update on the server", async () => {
                 res.url().includes(`/api/menu/${menuId}`) &&
                 res.request().method() === "PUT",
         ),
-        viewerPage.getByRole("button", { name: "Update Menu" }).click(),
+        viewerPage.getByRole("button", { name: "Save changes" }).click(),
     ]);
 
     expect(response.status()).toBe(404);

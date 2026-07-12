@@ -27,6 +27,7 @@ describe("IngredientGrid", () => {
                 emptyMessage="No ingredients"
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={jest.fn()}
             />,
@@ -43,6 +44,7 @@ describe("IngredientGrid", () => {
                 emptyMessage="No ingredients"
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={jest.fn()}
             />,

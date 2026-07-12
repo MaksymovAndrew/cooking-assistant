@@ -1,5 +1,9 @@
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+import { ROUTES } from "constants/routes";
 
 import { useCreateRecipePage } from "hooks/useCreateRecipePage";
 
@@ -16,6 +20,16 @@ const CreateRecipePage: React.FC = () => {
     return (
         <AppShell>
             <div className={styles["recipe-form-page"]}>
+                <nav
+                    aria-label={t("createRecipePage.breadcrumb")}
+                    className={styles["recipe-form-page__breadcrumb"]}
+                >
+                    <Link to={ROUTES.allRecipes}>
+                        {t("createRecipePage.breadcrumbRecipes")}
+                    </Link>
+                    <ChevronRight size={14} aria-hidden="true" />
+                    <span>{t("createRecipePage.breadcrumbCurrent")}</span>
+                </nav>
                 <h1 className={styles["recipe-form-page__heading"]}>
                     {t("createRecipePage.heading")}
                 </h1>
@@ -25,11 +39,6 @@ const CreateRecipePage: React.FC = () => {
                     allTypes={allTypes}
                     keyPrefix="createRecipePage"
                     idPrefix="create-recipe"
-                    cookingTimePlaceholder={t(
-                        "createRecipePage.cookingTimePlaceholder",
-                    )}
-                    typeError={form.typeError}
-                    error={form.error}
                     submitLabel={t("createRecipePage.createButton")}
                     onSubmit={() => {
                         void handleSubmit();

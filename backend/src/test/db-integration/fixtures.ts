@@ -1,8 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { Pool } from "pg";
 
-// unique names per call so tests never need to truncate shared tables between each
-// other; a UUID stays collision-free across parallel Jest workers sharing one database
+// unique names per call so tests never need to truncate shared tables between each other; a UUID stays collision-free across parallel Jest workers
 function unique(prefix: string): string {
     return `${prefix}-${randomUUID()}`;
 }
@@ -32,10 +31,11 @@ export async function createUnitMeasurement(
 export async function createIngredient(
     pool: Pool,
     unitId: number,
+    allergens: string | null = null,
 ): Promise<number> {
     const result = await pool.query<{ id: number }>(
-        `INSERT INTO ingredients (name, id_unit_measurement) VALUES ($1, $2) RETURNING id`,
-        [unique("ingredient"), unitId],
+        `INSERT INTO ingredients (name, id_unit_measurement, allergens) VALUES ($1, $2, $3) RETURNING id`,
+        [unique("ingredient"), unitId, allergens],
     );
 
     return result.rows[0].id;

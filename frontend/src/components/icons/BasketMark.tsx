@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// "pantry" glyph traced from Design System.dc.html's iconography legend - not a stock lucide icon
+// "pantry" glyph - not a stock lucide icon
 export const BasketMark: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

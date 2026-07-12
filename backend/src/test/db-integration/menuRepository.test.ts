@@ -24,6 +24,7 @@ interface MenuDetail {
             missing_quantity: number;
         }[];
     }[];
+    allergens: string[];
 }
 
 describe("PgMenuRepository (real Postgres)", () => {
@@ -150,7 +151,49 @@ describe("PgMenuRepository (real Postgres)", () => {
             viewerId,
         )) as MenuDetail;
 
-        expect(afterStock.recipes[0].missingIngredients).toEqual([]);
+        expect(afterStock.recipes[0].missingIngredients).toEqual([
+            expect.objectContaining({ missing_quantity: 0 }),
+        ]);
+    });
+
+    it("should collect distinct non-null allergens across every recipe of the menu", async () => {
+        const glutenId = await createIngredient(pool, unitId, "Gluten");
+        const dairyId = await createIngredient(pool, unitId, "Dairy");
+        const glutenAgainId = await createIngredient(pool, unitId, "Gluten");
+        const plainId = await createIngredient(pool, unitId);
+        const makeRecipeUsing = async (ingredientIds: number[]) => {
+            const recipe = Recipe.forCreation({
+                title: "Allergen recipe",
+                content: "For allergen tests.",
+                person_id: ownerId,
+                ingredients: ingredientIds.map((id) => ({
+                    id,
+                    quantity_recipe_ingredients: 1,
+                })),
+            });
+
+            return (await recipeRepository.create(recipe)) as { id: number };
+        };
+        const recipeA = await makeRecipeUsing([glutenId, plainId]);
+        const recipeB = await makeRecipeUsing([dairyId, glutenAgainId]);
+        const menu = Menu.forCreation({
+            menuTitle: "Allergen plan",
+            menuContent: "Notes.",
+            categoryId,
+            personId: ownerId,
+            recipeIds: [recipeA.id, recipeB.id],
+        });
+        const menuId = (await menuRepository.create(menu, [
+            recipeA.id,
+            recipeB.id,
+        ])) as number;
+
+        const detail = (await menuRepository.findByIdWithRecipes(
+            menuId,
+            ownerId,
+        )) as MenuDetail;
+
+        expect(detail.allergens).toEqual(["Dairy", "Gluten"]);
     });
 
     it("should refuse to update or delete a menu owned by someone else", async () => {

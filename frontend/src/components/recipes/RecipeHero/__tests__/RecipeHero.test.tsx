@@ -21,62 +21,59 @@ const BASE_RECIPE: RecipeDetails = {
     isOwner: false,
 };
 
+const baseProps = {
+    recipe: BASE_RECIPE,
+    canScaleServings: false,
+    servingsCount: null,
+    servingsDisplay: "4 servings",
+    editTo: "/change-recipe/1",
+    onDelete: jest.fn(),
+};
+
 describe("RecipeHero", () => {
-    it("should render the title, type chip and description", () => {
-        renderWithRouter(
-            <RecipeHero
-                recipe={BASE_RECIPE}
-                servingsDisplay="4 servings"
-                editTo="/change-recipe/1"
-                onDelete={jest.fn()}
-            />,
-        );
+    it("should render the title and type chip", () => {
+        renderWithRouter(<RecipeHero {...baseProps} />);
 
         expect(
             screen.getByRole("heading", { name: "Slow-roasted ragù" }),
         ).toBeInTheDocument();
         expect(screen.getByText("Main course")).toBeInTheDocument();
-        expect(
-            screen.getByText("A deeply savoury slow-cooked ragù."),
-        ).toBeInTheDocument();
     });
 
     it("should show the given servings display value", () => {
         renderWithRouter(
-            <RecipeHero
-                recipe={BASE_RECIPE}
-                servingsDisplay="8 servings"
-                editTo="/change-recipe/1"
-                onDelete={jest.fn()}
-            />,
+            <RecipeHero {...baseProps} servingsDisplay="8 servings" />,
         );
 
         expect(screen.getByText("8 servings")).toBeInTheDocument();
     });
 
-    it("should not show owner actions when the viewer does not own the recipe", () => {
-        renderWithRouter(
-            <RecipeHero
-                recipe={BASE_RECIPE}
-                servingsDisplay="4 servings"
-                editTo="/change-recipe/1"
-                onDelete={jest.fn()}
-            />,
-        );
+    it("should show a visitor banner and not owner actions when the viewer does not own the recipe", () => {
+        renderWithRouter(<RecipeHero {...baseProps} />);
 
         expect(
             screen.queryByRole("link", { name: /Edit recipe/ }),
         ).not.toBeInTheDocument();
+        expect(
+            screen.getByText(
+                "Viewing someone else's recipe — Edit & Delete not available",
+            ),
+        ).toBeInTheDocument();
     });
 
-    it("should show owner actions and call onDelete when the viewer owns the recipe", async () => {
+    it("should not show the rating stat for a visitor", () => {
+        renderWithRouter(<RecipeHero {...baseProps} />);
+
+        expect(screen.queryByText("Your rating")).not.toBeInTheDocument();
+    });
+
+    it("should show owner actions, the rating stat and call onDelete when the viewer owns the recipe", async () => {
         const onDelete = jest.fn();
 
         renderWithRouter(
             <RecipeHero
+                {...baseProps}
                 recipe={{ ...BASE_RECIPE, isOwner: true }}
-                servingsDisplay="4 servings"
-                editTo="/change-recipe/1"
                 onDelete={onDelete}
             />,
         );
@@ -84,6 +81,7 @@ describe("RecipeHero", () => {
         expect(
             screen.getByRole("link", { name: /Edit recipe/ }),
         ).toHaveAttribute("href", "/change-recipe/1");
+        expect(screen.getByText("Your rating")).toBeInTheDocument();
 
         await userEvent.click(
             screen.getByRole("button", { name: /Delete recipe/ }),
@@ -93,17 +91,10 @@ describe("RecipeHero", () => {
     });
 
     it("should disable the favourite button since favourites are not wired up yet", () => {
-        renderWithRouter(
-            <RecipeHero
-                recipe={BASE_RECIPE}
-                servingsDisplay="4 servings"
-                editTo="/change-recipe/1"
-                onDelete={jest.fn()}
-            />,
-        );
+        renderWithRouter(<RecipeHero {...baseProps} />);
 
         expect(
-            screen.getByRole("button", { name: "Favourite" }),
+            screen.getAllByRole("button", { name: "Favourite" })[0],
         ).toBeDisabled();
     });
 });

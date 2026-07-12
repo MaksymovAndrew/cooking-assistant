@@ -24,8 +24,8 @@ describe("LoginPage", () => {
 
         renderWithRouter(<LoginPage />);
 
-        await userEvent.type(screen.getByLabelText("Username:"), USERNAME);
-        await userEvent.type(screen.getByLabelText("Password:"), PASSWORD);
+        await userEvent.type(screen.getByLabelText("Username"), USERNAME);
+        await userEvent.type(screen.getByLabelText("Password"), PASSWORD);
         await userEvent.click(screen.getByRole("button", { name: "Log In" }));
 
         expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.auth.login, {

@@ -3,9 +3,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppDispatch } from "redux/hooks";
+import { getStoredThemeChoice } from "redux/slices/themeSlice";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
-
-import { useTheme } from "hooks/useTheme";
 
 import { SettingsRow } from "components/settings/SettingsRow";
 import { SettingsSection } from "components/settings/SettingsSection";
@@ -14,11 +13,12 @@ import { SegmentedControl } from "components/ui/SegmentedControl";
 export const AppearanceSection: React.FC = () => {
     const { t } = useTranslation("settings");
     const dispatch = useAppDispatch();
-    const { mode } = useTheme();
+    const activeChoice = getStoredThemeChoice();
 
     const themeOptions = [
         { value: "dark", label: t("appearanceSection.dark") },
         { value: "light", label: t("appearanceSection.light") },
+        { value: "system", label: t("appearanceSection.system") },
     ] as const;
 
     return (
@@ -31,9 +31,9 @@ export const AppearanceSection: React.FC = () => {
                 <SegmentedControl
                     label={t("appearanceSection.themeLabel")}
                     options={themeOptions}
-                    value={mode}
+                    value={activeChoice}
                     onChange={(nextMode) => {
-                        if (nextMode !== mode) {
+                        if (nextMode !== activeChoice) {
                             dispatch(
                                 openModal({
                                     type: MODAL_TYPE.themeChange,

@@ -1,8 +1,13 @@
 import { X } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
+
+import { RECIPE_DEFAULT_SORT_ORDER } from "redux/slices/filtersSlice";
 
 import type { RecipeFilterState } from "hooks/useRecipeListView";
+
+import { hasActiveRecipeFilters } from "utils/recipeFilterParams";
 
 import styles from "./RecipeActiveFilters.module.scss";
 
@@ -12,7 +17,7 @@ interface RecipeActiveFiltersProps {
     setMinCookingTime: (time: string) => void;
     setMaxCookingTime: (time: string) => void;
     setSortOrder: (order: string) => void;
-    setSelectedTypes: (types: number[]) => void;
+    clearFilters: () => void;
 }
 
 const REMOVE_ICON_SIZE = 12;
@@ -39,15 +44,12 @@ export const RecipeActiveFilters: React.FC<RecipeActiveFiltersProps> = ({
     setMinCookingTime,
     setMaxCookingTime,
     setSortOrder,
-    setSelectedTypes,
+    clearFilters,
 }) => {
     const { t } = useTranslation("recipes");
-    const hasSort = filters.sortOrder !== "asc";
-    const hasActiveFilters =
-        Boolean(filters.minCookingTime) ||
-        Boolean(filters.maxCookingTime) ||
-        hasSort ||
-        filters.selectedTypes.length > 0;
+    const [, setSearchParams] = useSearchParams();
+    const hasSort = filters.sortOrder !== RECIPE_DEFAULT_SORT_ORDER;
+    const hasActiveFilters = hasActiveRecipeFilters(filters);
 
     const countLabel = (
         <span className={styles["recipe-active-filters__count"]}>
@@ -61,6 +63,9 @@ export const RecipeActiveFilters: React.FC<RecipeActiveFiltersProps> = ({
         );
     }
 
+    const removeSearch = () => {
+        setSearchParams({});
+    };
     const removeMinTime = () => {
         setMinCookingTime("");
     };
@@ -68,19 +73,21 @@ export const RecipeActiveFilters: React.FC<RecipeActiveFiltersProps> = ({
         setMaxCookingTime("");
     };
     const removeSort = () => {
-        setSortOrder("asc");
-    };
-    const clearAll = () => {
-        removeMinTime();
-        removeMaxTime();
-        removeSort();
-        setSelectedTypes([]);
+        setSortOrder(RECIPE_DEFAULT_SORT_ORDER);
     };
 
     return (
         <div className={styles["recipe-active-filters"]}>
             {countLabel}
             <span className={styles["recipe-active-filters__divider"]} />
+            {filters.ingredientName && (
+                <span className={styles["recipe-active-filters__chip"]}>
+                    {t("filterPanel.searchChip", {
+                        query: filters.ingredientName,
+                    })}
+                    <RemoveFilterButton onRemove={removeSearch} />
+                </span>
+            )}
             {filters.minCookingTime && (
                 <span className={styles["recipe-active-filters__chip"]}>
                     {t("filterPanel.minChip", {
@@ -107,7 +114,7 @@ export const RecipeActiveFilters: React.FC<RecipeActiveFiltersProps> = ({
             )}
             <button
                 type="button"
-                onClick={clearAll}
+                onClick={clearFilters}
                 className={styles["recipe-active-filters__clear"]}
             >
                 {t("filterPanel.clearAll")}

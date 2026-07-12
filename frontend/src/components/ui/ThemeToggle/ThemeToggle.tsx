@@ -32,8 +32,11 @@ export const ThemeToggle: React.FC = () => {
             aria-label={t("theme.toggleLabel")}
             className={styles["theme-toggle"]}
         >
-            {isDark ? <Moon size={ICON_SIZE} /> : <Sun size={ICON_SIZE} />}
-            <span>{isDark ? t("theme.dark") : t("theme.light")}</span>
+            {isDark ? (
+                <Moon size={ICON_SIZE} aria-hidden="true" />
+            ) : (
+                <Sun size={ICON_SIZE} aria-hidden="true" />
+            )}
         </button>
     );
 };

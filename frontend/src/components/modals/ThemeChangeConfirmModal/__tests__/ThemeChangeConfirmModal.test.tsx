@@ -35,9 +35,10 @@ describe("ThemeChangeConfirmModal", () => {
     it("should render the theme-change confirmation", () => {
         renderOpen();
 
+        expect(screen.getByText("Switch to light theme?")).toBeInTheDocument();
         expect(
             screen.getByText(
-                "The page will reload to apply the new theme. Make sure any unsaved changes are saved first.",
+                "The app will reload to apply the new appearance. Your place in the app is preserved.",
             ),
         ).toBeInTheDocument();
     });
@@ -46,7 +47,7 @@ describe("ThemeChangeConfirmModal", () => {
         renderOpen();
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Switch theme" }),
+            screen.getByRole("button", { name: "Switch & reload" }),
         );
 
         expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");

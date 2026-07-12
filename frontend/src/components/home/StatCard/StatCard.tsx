@@ -7,7 +7,6 @@ interface StatCardProps {
     icon: LucideIcon;
     value: number;
     label: string;
-    // shown instead of label below desktop, per the mockup's compact tiles
     shortLabel?: string;
     tone?: "default" | "warning";
 }

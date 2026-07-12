@@ -1,8 +1,9 @@
 @use "styles/abstracts" as *;
 
-// no longer sticky - scrolls away with the page; ScrollToTopButton is the way
-// back to it
+// not sticky - scrolls away with the page; ScrollToTopButton is the way back to it
 .app-header {
+    position: relative;
+    z-index: var(--z-header);
     display: flex;
     align-items: center;
     gap: var(--s-4);

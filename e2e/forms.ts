@@ -17,8 +17,8 @@ interface RecipeFormInput {
     title: string;
     description: string;
     ingredient: string;
-    cookingTime: string;
-    servings: string;
+    cookingHours: string;
+    cookingMinutes: string;
     typeIndex?: number;
 }
 
@@ -47,17 +47,17 @@ export async function createRecipeViaForm(
     await page.goto("/add-recipe");
     await page.getByLabel("Title").fill(input.title);
     await page.getByLabel("Description").fill(input.description);
-    await page.getByLabel("Cooking Time").fill(input.cookingTime);
+    await page.getByLabel("Cooking time").fill(input.cookingHours);
+    await page.getByLabel("Minutes").fill(input.cookingMinutes);
     await page
-        .getByLabel("Recipe Type")
+        .getByLabel("Recipe type")
         .selectOption({ index: input.typeIndex ?? 1 });
-    const typeText = await readSelectedOptionText(page, "Recipe Type");
+    const typeText = await readSelectedOptionText(page, "Recipe type");
     await selectFromPicker(
         page,
         page.getByLabel("Ingredients"),
         input.ingredient,
     );
-    await page.getByLabel("Servings").fill(input.servings);
 
     const [response] = await Promise.all([
         page.waitForResponse(
@@ -65,7 +65,7 @@ export async function createRecipeViaForm(
                 res.url().includes("/api/recipe") &&
                 res.request().method() === "POST",
         ),
-        page.getByRole("button", { name: "Create Recipe" }).click(),
+        page.getByRole("button", { name: "Create recipe" }).click(),
     ]);
     const body = (await response.json()) as { id: number };
 
@@ -91,7 +91,7 @@ export async function createMenuViaForm(
                 res.url().includes("/api/create-menu") &&
                 res.request().method() === "POST",
         ),
-        page.getByRole("button", { name: "Create Menu" }).click(),
+        page.getByRole("button", { name: "Create menu" }).click(),
     ]);
     const body = (await response.json()) as { menuId: number };
 

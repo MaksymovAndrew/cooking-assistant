@@ -16,7 +16,8 @@ import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredie
 import { MenuRecipesPanel } from "components/menu/MenuRecipesPanel";
 import { ErrorState } from "components/ui/ErrorState";
 
-import { aggregateMissingIngredients } from "utils/menuUtils";
+import { aggregateMenuIngredients } from "utils/menuUtils";
+import { filterAllergens } from "utils/recipeAllergens";
 
 import styles from "./MenuDetailsPage.module.scss";
 
@@ -32,7 +33,7 @@ const MenuDetailsPage: React.FC = () => {
 
     if (isError) {
         return (
-            <AppShell>
+            <AppShell mobileBackTo={ROUTES.allMenus}>
                 <ErrorState
                     title={t("menuDetailsPage.error", {
                         message: t("menuDetailsPage.errorFetch"),
@@ -48,7 +49,7 @@ const MenuDetailsPage: React.FC = () => {
 
     if (!menu) {
         return (
-            <AppShell>
+            <AppShell mobileBackTo={ROUTES.allMenus}>
                 <p>{t("menuDetailsPage.loading")}</p>
             </AppShell>
         );
@@ -58,10 +59,17 @@ const MenuDetailsPage: React.FC = () => {
         (total, recipe) => total + recipe.cooking_time,
         0,
     );
-    const missingIngredients = aggregateMissingIngredients(menu.recipes);
+    const menuIngredients = aggregateMenuIngredients(menu.recipes);
+    const menuAllergens = filterAllergens(menu.allergens);
+    const isOwner = menu.menu.isOwner;
+    const gridClassName = `${styles["menu-details-page__grid"]} ${styles["menu-details-page__grid--with-aside"]}`;
 
     return (
-        <AppShell>
+        <AppShell
+            mobileBackTo={ROUTES.allMenus}
+            mobileTitle={menu.menu.title}
+            mobileEditTo={isOwner ? changeMenuPath(menu.menu.id) : undefined}
+        >
             <div className={styles["menu-details-page"]}>
                 <nav
                     aria-label={t("menuDetailsPage.breadcrumb")}
@@ -83,18 +91,20 @@ const MenuDetailsPage: React.FC = () => {
                             openModal({
                                 type: MODAL_TYPE.deleteMenu,
                                 menuId: menu.menu.id,
+                                menuTitle: menu.menu.title,
                             }),
                         );
                     }}
                 />
-                <div className={styles["menu-details-page__grid"]}>
+                <div className={gridClassName}>
                     <MenuRecipesPanel
                         recipes={menu.recipes}
-                        isOwner={menu.menu.isOwner}
+                        isOwner={isOwner}
                         addRecipesTo={changeMenuPath(menu.menu.id)}
                     />
                     <MenuMissingIngredientsPanel
-                        ingredients={missingIngredients}
+                        ingredients={menuIngredients}
+                        allergens={menuAllergens}
                     />
                 </div>
             </div>

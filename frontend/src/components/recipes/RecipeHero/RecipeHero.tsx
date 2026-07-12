@@ -1,20 +1,24 @@
-import { Calendar, Clock, Heart } from "lucide-react";
+import { Calendar, Clock, Heart, Users } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { RECIPE_RATING, RECIPE_RATING_COUNT } from "constants/ratings";
 import type { RecipeDetails } from "types/recipe";
 
-import { PortionsMark, UtensilsMarkSimple } from "components/icons";
+import { UtensilsMarkSimple } from "components/icons";
+import { RecipeRatingStars } from "components/recipes/RecipeRatingStars";
 import { Chip } from "components/ui/Chip";
 import { OwnerActions } from "components/ui/OwnerActions";
 
 import { splitCookingTime } from "utils/cookingTimeUtils";
-import { formatDate } from "utils/dateUtils";
+import { formatFullDate } from "utils/dateUtils";
 
 import styles from "./RecipeHero.module.scss";
 
 interface RecipeHeroProps {
     recipe: RecipeDetails;
+    canScaleServings: boolean;
+    servingsCount: number | null;
     servingsDisplay: string;
     editTo: string;
     onDelete: () => void;
@@ -26,11 +30,14 @@ const STAT_ICON_SIZE = 16;
 
 export const RecipeHero: React.FC<RecipeHeroProps> = ({
     recipe,
+    canScaleServings,
+    servingsCount,
     servingsDisplay,
     editTo,
     onDelete,
 }) => {
-    const { t, i18n } = useTranslation("recipes");
+    const { t } = useTranslation("recipes");
+    const favouriteLabel = t("recipeDetailsPage.favourite");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const formattedCookingTime =
         hours > 0
@@ -39,7 +46,10 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                   minutes,
               })
             : t("recipeDetailsPage.cookingTimeMinutes", { minutes });
-    const formattedDate = formatDate(recipe.creation_date, i18n.language);
+    const formattedDate = formatFullDate(recipe.creation_date);
+    const formattedServings = canScaleServings
+        ? t("recipeDetailsPage.portionsValue", { count: servingsCount })
+        : servingsDisplay;
 
     return (
         <div className={styles["recipe-hero"]}>
@@ -51,7 +61,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 <button
                     type="button"
                     disabled
-                    aria-label={t("recipeDetailsPage.favourite")}
+                    aria-label={favouriteLabel}
                     className={styles["recipe-hero__favourite"]}
                 >
                     <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
@@ -78,11 +88,16 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                         {t("recipeDetailsPage.servings")}
                     </span>
                     <span className={styles["recipe-hero__stat-value"]}>
-                        <PortionsMark size={STAT_ICON_SIZE} />
-                        {servingsDisplay}
+                        <Users size={STAT_ICON_SIZE} aria-hidden="true" />
+                        {formattedServings}
                     </span>
                 </div>
-                <div className={styles["recipe-hero__stat"]}>
+                <div
+                    className={[
+                        styles["recipe-hero__stat"],
+                        styles["recipe-hero__stat--secondary"],
+                    ].join(" ")}
+                >
                     <span className={styles["recipe-hero__stat-label"]}>
                         {t("recipeDetailsPage.creationDate")}
                     </span>
@@ -91,25 +106,48 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                         {formattedDate}
                     </span>
                 </div>
+                {recipe.isOwner && (
+                    <div
+                        className={[
+                            styles["recipe-hero__stat"],
+                            styles["recipe-hero__stat--secondary"],
+                        ].join(" ")}
+                    >
+                        <span className={styles["recipe-hero__stat-label"]}>
+                            {t("recipeDetailsPage.yourRating")}
+                        </span>
+                        <RecipeRatingStars
+                            rating={RECIPE_RATING}
+                            ratingCount={RECIPE_RATING_COUNT}
+                        />
+                    </div>
+                )}
             </div>
 
-            {recipe.isOwner && (
+            {recipe.isOwner ? (
                 <div className={styles["recipe-hero__actions"]}>
                     <OwnerActions
                         editTo={editTo}
                         onDelete={onDelete}
                         editLabel={t("recipeDetailsPage.editButton")}
                         deleteLabel={t("recipeDetailsPage.deleteButton")}
+                        favouriteLabel={favouriteLabel}
                     />
                 </div>
+            ) : (
+                <div className={styles["recipe-hero__visitor-banner"]}>
+                    <button
+                        type="button"
+                        disabled
+                        aria-label={favouriteLabel}
+                        className={styles["recipe-hero__visitor-favourite"]}
+                    >
+                        <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
+                        {favouriteLabel}
+                    </button>
+                    <span>{t("recipeDetailsPage.visitorBanner")}</span>
+                </div>
             )}
-
-            <span className={styles["recipe-hero__description-label"]}>
-                {t("recipeDetailsPage.description")}
-            </span>
-            <p className={styles["recipe-hero__description"]}>
-                {recipe.content}
-            </p>
         </div>
     );
 };

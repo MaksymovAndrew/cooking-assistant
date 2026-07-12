@@ -14,9 +14,12 @@ import { useIngredientAvailability } from "hooks/useIngredientAvailability";
 import { useServingsScaling } from "hooks/useServingsScaling";
 
 import { AppShell } from "components/layout/AppShell";
+import { RecipeDescriptionPanel } from "components/recipes/RecipeDescriptionPanel";
 import { RecipeHero } from "components/recipes/RecipeHero";
 import { RecipeIngredientsPanel } from "components/recipes/RecipeIngredientsPanel";
 import { ErrorState } from "components/ui/ErrorState";
+
+import { getRecipeAllergens } from "utils/recipeAllergens";
 
 import styles from "./RecipeDetailsPage.module.scss";
 
@@ -34,10 +37,11 @@ const RecipeDetailsPage: React.FC = () => {
     const { availability, haveCount, missingCount } = useIngredientAvailability(
         recipe?.ingredients ?? [],
     );
+    const allergens = getRecipeAllergens(recipe?.ingredients ?? []);
 
     if (isError) {
         return (
-            <AppShell>
+            <AppShell mobileBackTo={ROUTES.allRecipes}>
                 <ErrorState
                     title={t("recipeDetailsPage.error", {
                         message: t("recipeDetailsPage.errorFetch"),
@@ -53,14 +57,14 @@ const RecipeDetailsPage: React.FC = () => {
 
     if (!recipe) {
         return (
-            <AppShell>
+            <AppShell mobileBackTo={ROUTES.allRecipes}>
                 <p>{t("recipeDetailsPage.loading")}</p>
             </AppShell>
         );
     }
 
     return (
-        <AppShell>
+        <AppShell mobileBackTo={ROUTES.allRecipes}>
             <div className={styles["recipe-details-page"]}>
                 <nav
                     aria-label={t("recipeDetailsPage.breadcrumb")}
@@ -73,29 +77,51 @@ const RecipeDetailsPage: React.FC = () => {
                     <span>{recipe.title}</span>
                 </nav>
                 <div className={styles["recipe-details-page__grid"]}>
-                    <RecipeHero
-                        recipe={recipe}
-                        servingsDisplay={servings.displayValue}
-                        editTo={changeRecipePath(recipe.id)}
-                        onDelete={() => {
-                            dispatch(
-                                openModal({
-                                    type: MODAL_TYPE.deleteRecipe,
-                                    recipeId: String(recipe.id),
-                                }),
-                            );
-                        }}
-                    />
-                    <RecipeIngredientsPanel
-                        availability={availability}
-                        haveCount={haveCount}
-                        missingCount={missingCount}
-                        canScale={servings.canScale}
-                        servingsCount={servings.current}
-                        scaleFactor={servings.scaleFactor}
-                        onIncrement={servings.increment}
-                        onDecrement={servings.decrement}
-                    />
+                    <div className={styles["recipe-details-page__hero-area"]}>
+                        <RecipeHero
+                            recipe={recipe}
+                            canScaleServings={servings.canScale}
+                            servingsCount={servings.current}
+                            servingsDisplay={servings.displayValue}
+                            editTo={changeRecipePath(recipe.id)}
+                            onDelete={() => {
+                                dispatch(
+                                    openModal({
+                                        type: MODAL_TYPE.deleteRecipe,
+                                        recipeId: String(recipe.id),
+                                        recipeTitle: recipe.title,
+                                    }),
+                                );
+                            }}
+                        />
+                    </div>
+                    <div
+                        className={
+                            styles["recipe-details-page__ingredients-area"]
+                        }
+                    >
+                        <RecipeIngredientsPanel
+                            availability={availability}
+                            haveCount={haveCount}
+                            missingCount={missingCount}
+                            isOwner={recipe.isOwner}
+                            canScale={servings.canScale}
+                            servingsCount={servings.current}
+                            scaleFactor={servings.scaleFactor}
+                            onIncrement={servings.increment}
+                            onDecrement={servings.decrement}
+                        />
+                    </div>
+                    <div
+                        className={
+                            styles["recipe-details-page__description-area"]
+                        }
+                    >
+                        <RecipeDescriptionPanel
+                            content={recipe.content}
+                            allergens={allergens}
+                        />
+                    </div>
                 </div>
             </div>
         </AppShell>

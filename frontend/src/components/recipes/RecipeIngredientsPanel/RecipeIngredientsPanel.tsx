@@ -1,15 +1,17 @@
 import { Check } from "lucide-react";
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
+import { RecipeIngredientsBanner } from "./RecipeIngredientsBanner";
+import { RecipeIngredientsHeader } from "./RecipeIngredientsHeader";
 import styles from "./RecipeIngredientsPanel.module.scss";
 
 interface RecipeIngredientsPanelProps {
     availability: IngredientAvailability[];
     haveCount: number;
     missingCount: number;
+    isOwner: boolean;
     canScale: boolean;
     servingsCount: number | null;
     scaleFactor: number;
@@ -27,54 +29,26 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     availability,
     haveCount,
     missingCount,
+    isOwner,
     canScale,
     servingsCount,
     scaleFactor,
     onIncrement,
     onDecrement,
 }) => {
-    const { t } = useTranslation("recipes");
     const sorted = [...availability].sort((a, b) =>
         a.name.localeCompare(b.name),
     );
 
     return (
         <div className={styles["recipe-ingredients-panel"]}>
-            <div className={styles["recipe-ingredients-panel__header"]}>
-                <div>
-                    <div className={styles["recipe-ingredients-panel__title"]}>
-                        {t("recipeDetailsPage.ingredients")}
-                    </div>
-                    <div
-                        className={styles["recipe-ingredients-panel__caption"]}
-                    >
-                        {t("recipeDetailsPage.ingredientsCaption", {
-                            count: availability.length,
-                        })}
-                    </div>
-                </div>
-                {canScale && (
-                    <div
-                        className={styles["recipe-ingredients-panel__stepper"]}
-                    >
-                        <button
-                            type="button"
-                            aria-label={t("recipeDetailsPage.fewerPortions")}
-                            onClick={onDecrement}
-                        >
-                            −
-                        </button>
-                        <span>{servingsCount}</span>
-                        <button
-                            type="button"
-                            aria-label={t("recipeDetailsPage.morePortions")}
-                            onClick={onIncrement}
-                        >
-                            +
-                        </button>
-                    </div>
-                )}
-            </div>
+            <RecipeIngredientsHeader
+                ingredientCount={availability.length}
+                canScale={canScale}
+                servingsCount={servingsCount}
+                onIncrement={onIncrement}
+                onDecrement={onDecrement}
+            />
 
             <ul className={styles["recipe-ingredients-panel__list"]}>
                 {sorted.map((ingredient) => (
@@ -128,32 +102,14 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                 ))}
             </ul>
 
-            <div className={styles["recipe-ingredients-panel__banner"]}>
-                <span
-                    className={styles["recipe-ingredients-panel__banner-dot"]}
-                    aria-hidden="true"
+            {missingCount > 0 && (
+                <RecipeIngredientsBanner
+                    isOwner={isOwner}
+                    haveCount={haveCount}
+                    totalCount={availability.length}
+                    missingCount={missingCount}
                 />
-                <div>
-                    <div
-                        className={
-                            styles["recipe-ingredients-panel__banner-title"]
-                        }
-                    >
-                        {t("recipeDetailsPage.missingIngredients")}
-                    </div>
-                    <div
-                        className={
-                            styles["recipe-ingredients-panel__banner-text"]
-                        }
-                    >
-                        {t("recipeDetailsPage.haveOfTotal", {
-                            have: haveCount,
-                            total: availability.length,
-                        })}{" "}
-                        {t("recipeDetailsPage.toBuy", { count: missingCount })}
-                    </div>
-                </div>
-            </div>
+            )}
         </div>
     );
 };

@@ -4,8 +4,7 @@ import { expect, test } from "@playwright/test";
 import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE, readSharedAccounts } from "./sharedAccounts";
 
-// visits every private route once - a redesign that breaks a page's heading
-// or renders a blank screen fails here even if no other spec touches that route
+// visits every private route once - a broken heading or blank screen fails here even if no other spec touches that route
 test.describe.configure({ mode: "serial" });
 
 let context: BrowserContext;
@@ -29,15 +28,15 @@ test.afterAll(async () => {
 test("should create a recipe from /add-recipe and capture its id", async () => {
     await page.goto("/add-recipe");
     await expect(
-        page.getByRole("heading", { name: "Add New Recipe" }),
+        page.getByRole("heading", { name: "Create recipe" }),
     ).toBeVisible();
 
     const created = await createRecipeViaForm(page, {
         title: `Routes recipe ${runId}`,
         description: "Created by routes-smoke e2e.",
         ingredient: "Tomato",
-        cookingTime: "0:15",
-        servings: "a couple of bowls",
+        cookingHours: "0",
+        cookingMinutes: "15",
     });
 
     recipeId = created.recipeId;
@@ -47,7 +46,7 @@ test("should create a recipe from /add-recipe and capture its id", async () => {
 test("should create a menu from /add-menu and capture its id", async () => {
     await page.goto("/add-menu");
     await expect(
-        page.getByRole("heading", { name: "Add New Menu" }),
+        page.getByRole("heading", { name: "Create menu" }),
     ).toBeVisible();
 
     const created = await createMenuViaForm(page, {

@@ -35,6 +35,7 @@ const setup = (overrides: Partial<RecipeFilterState> = {}) => {
             setSortOrder={setSortOrder}
             types={[SOUP_TYPE, DESSERT_TYPE]}
             searchPlaceholder="Search recipes"
+            total={5}
         />,
     );
 
@@ -137,7 +138,9 @@ describe("RecipeFilterPanel", () => {
         setup();
 
         await openPanel();
-        await userEvent.click(screen.getByRole("button", { name: "Apply" }));
+        await userEvent.click(
+            screen.getByRole("button", { name: "Show 5 recipes" }),
+        );
 
         expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
@@ -153,6 +156,7 @@ describe("RecipeFilterPanel", () => {
                     setSortOrder={jest.fn()}
                     types={[]}
                     searchPlaceholder="Search recipes"
+                    total={5}
                 />
                 <button type="button">Outside</button>
             </div>,

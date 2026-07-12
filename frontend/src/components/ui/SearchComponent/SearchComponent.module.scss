@@ -4,6 +4,7 @@
     position: relative;
     display: flex;
     flex: 1;
+    min-width: 0;
     align-items: center;
     gap: var(--s-2);
     height: 46px;

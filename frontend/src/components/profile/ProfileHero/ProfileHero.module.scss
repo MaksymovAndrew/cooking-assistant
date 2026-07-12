@@ -4,13 +4,27 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--s-5);
+    gap: var(--s-4);
     margin-bottom: var(--s-6);
-    padding-bottom: var(--s-6);
+    padding-bottom: var(--s-5);
     border-bottom: 1px solid var(--border);
 
+    @include respond-to(tablet) {
+        gap: var(--s-5);
+        padding-bottom: var(--s-6);
+    }
+
+    &__identity {
+        flex: 1;
+        min-width: 0;
+
+        @include respond-to(tablet) {
+            flex: none;
+        }
+    }
+
     &__name {
-        margin: 0;
+        margin: 0 0 4px;
         color: var(--text);
         letter-spacing: -0.02em;
         font:
@@ -18,19 +32,71 @@
             serif;
     }
 
+    &__joined {
+        margin: 0;
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    // icon-only logout next to the name - mobile only, the tabs row carries a labeled Logout button from tablet up
+    &__mobile-logout {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--border));
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--danger) 8%, var(--surface));
+        color: var(--danger);
+        cursor: pointer;
+
+        @include focus-ring;
+
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
     &__spacer {
-        flex: 1;
+        display: none;
+
+        @include respond-to(tablet) {
+            display: block;
+            flex: 1;
+        }
     }
 
     &__stats {
-        display: flex;
-        gap: var(--s-6);
+        display: grid;
+        flex-basis: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--s-2);
+
+        @include respond-to(tablet) {
+            display: flex;
+            flex-basis: auto;
+            gap: var(--s-6);
+        }
     }
 
     &__stat {
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--surface);
+
+        @include respond-to(tablet) {
+            padding: 0;
+            border: none;
+            background: none;
+        }
     }
 
     &__stat-value {
@@ -48,7 +114,11 @@
     }
 
     &__actions {
-        display: flex;
-        gap: var(--s-2);
+        display: none;
+
+        @include respond-to(tablet) {
+            display: flex;
+            gap: var(--s-2);
+        }
     }
 }

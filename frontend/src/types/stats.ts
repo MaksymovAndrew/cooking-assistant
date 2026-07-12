@@ -1,8 +1,9 @@
+import type { MenuWithStats } from "types/menu";
 import type { RecipeWithIngredientNames } from "types/recipe";
 
 export interface AverageCookingTime {
     typeName: string;
-    averageCookingTime: string;
+    averageCookingTime: number;
 }
 
 export interface RecipesStatsResponse {
@@ -19,10 +20,15 @@ export interface RecipeTypeStat {
     count: number;
 }
 
+export interface AverageTimeByCategory {
+    categoryname: string;
+    averageTotalTime: number;
+}
+
 export interface RecipeStatistics {
     stats: RecipeTypeStat[];
     recipesCount: number;
-    averageCookingTimeOverall: string | null;
+    averageCookingTimeOverall: number | null;
     averageCookingTimesByType: AverageCookingTime[];
     mostUsedType: RecipeTypeStat | null;
     fastestRecipes: RecipeWithIngredientNames[];
@@ -35,4 +41,11 @@ export interface MenuStatistics {
     menusCount: number;
     menuCountByCategory: MenuCategoryStat[];
     mostUsedCategory: MenuCategoryStat | null;
+    averageTotalTime: number | null;
+    averageRecipesPerMenu: number | null;
+    averageTotalTimeByCategory: AverageTimeByCategory[];
+    fastestMenus: MenuWithStats[];
+    slowestMenus: MenuWithStats[];
+    mostRecipesMenus: MenuWithStats[];
+    leastRecipesMenus: MenuWithStats[];
 }

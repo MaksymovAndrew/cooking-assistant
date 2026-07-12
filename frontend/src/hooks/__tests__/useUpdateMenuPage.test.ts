@@ -47,6 +47,7 @@ const SAMPLE: MenuDetails = {
         isOwner: true,
     },
     recipes: [MENU_RECIPE],
+    allergens: [],
 };
 
 // pre-seed the cache by awaiting the real query thunks before the hook mounts,

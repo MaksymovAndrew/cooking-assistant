@@ -3,6 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 import { useServingsScaling } from "hooks/useServingsScaling";
 
 const FOUR_SERVINGS = "4 servings";
+const EIGHT_SERVINGS = "8 servings";
 
 describe("useServingsScaling", () => {
     it("should not allow scaling when servings has no leading number", () => {
@@ -38,6 +39,21 @@ describe("useServingsScaling", () => {
         expect(result.current.current).toBe(5);
         expect(result.current.displayValue).toBe("5 servings");
         expect(result.current.scaleFactor).toBe(1.25);
+    });
+
+    it("should resync the current count once servings arrives after the initial null render", () => {
+        const { result, rerender } = renderHook(
+            ({ servings }) => useServingsScaling(servings),
+            { initialProps: { servings: null as string | null } },
+        );
+
+        expect(result.current.current).toBeNull();
+
+        rerender({ servings: EIGHT_SERVINGS });
+
+        expect(result.current.current).toBe(8);
+        expect(result.current.displayValue).toBe(EIGHT_SERVINGS);
+        expect(result.current.scaleFactor).toBe(1);
     });
 
     it("should decrement the servings count down to a minimum of 1", () => {

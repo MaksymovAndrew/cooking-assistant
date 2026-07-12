@@ -61,7 +61,7 @@ describe("UserRecipesPage", () => {
 
         expect(await screen.findByText("Recipes: Soup")).toBeInTheDocument();
         expect(
-            screen.getByText("No recipes of this type found."),
+            screen.getByText("No recipes match your search"),
         ).toBeInTheDocument();
         expect(store.getState().filters.recipe.selectedTypes).toEqual([1]);
     });

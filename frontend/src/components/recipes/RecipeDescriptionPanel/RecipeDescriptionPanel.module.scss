@@ -1,0 +1,57 @@
+@use "styles/abstracts" as *;
+
+.recipe-description-panel {
+    &__label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font:
+            500 13px "Geist Mono",
+            monospace;
+    }
+
+    &__content {
+        margin: 0 0 var(--s-6);
+        color: var(--text-2);
+        font:
+            400 15px/1.65 Inter,
+            sans-serif;
+    }
+
+    &__allergens-head {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 11px;
+    }
+
+    &__dot {
+        flex: none;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--warning);
+    }
+
+    &__allergens {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-2);
+    }
+
+    &__allergen {
+        display: inline-flex;
+        align-items: center;
+        height: 30px;
+        padding: 0 13px;
+        border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--warning) 12%, var(--surface));
+        color: var(--warning);
+        font:
+            600 12px Inter,
+            sans-serif;
+    }
+}

@@ -17,10 +17,8 @@ const RECIPE: RecipeWithIngredientNames = {
 const STATS: RecipeStatistics = {
     stats: [{ typeName: "Soup", count: 2 }],
     recipesCount: 2,
-    averageCookingTimeOverall: "00:25",
-    averageCookingTimesByType: [
-        { typeName: "Soup", averageCookingTime: "00:20" },
-    ],
+    averageCookingTimeOverall: 25,
+    averageCookingTimesByType: [{ typeName: "Soup", averageCookingTime: 20 }],
     mostUsedType: { typeName: "Soup", count: 2 },
     fastestRecipes: [RECIPE],
     slowestRecipes: [RECIPE],
@@ -30,10 +28,11 @@ const STATS: RecipeStatistics = {
 
 describe("RecipeStatsSection", () => {
     it("should render the quick-stat tiles", () => {
-        render(<RecipeStatsSection stats={STATS} />);
+        render(<RecipeStatsSection stats={STATS} menusCount={5} />);
 
         expect(screen.getByText("2")).toBeInTheDocument();
-        expect(screen.getByText("00:25")).toBeInTheDocument();
+        expect(screen.getByText("5")).toBeInTheDocument();
+        expect(screen.getByText("25 min")).toBeInTheDocument();
         expect(screen.getAllByText("Soup").length).toBeGreaterThan(0);
         expect(screen.getByText("2 of 2 recipes")).toBeInTheDocument();
     });
@@ -42,6 +41,7 @@ describe("RecipeStatsSection", () => {
         render(
             <RecipeStatsSection
                 stats={{ ...STATS, mostUsedType: null, recipesCount: 0 }}
+                menusCount={5}
             />,
         );
 
@@ -49,7 +49,7 @@ describe("RecipeStatsSection", () => {
     });
 
     it("should render the recipe extremes", () => {
-        render(<RecipeStatsSection stats={STATS} />);
+        render(<RecipeStatsSection stats={STATS} menusCount={5} />);
 
         expect(screen.getAllByText("Borscht").length).toBeGreaterThan(0);
     });

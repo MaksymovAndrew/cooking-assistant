@@ -1,7 +1,9 @@
 {
     "profilePage": {
+        "joined": "Joined {{date}}",
         "recipesStat": "Recipes",
         "menusStat": "Menus",
+        "favouritesStat": "Favourites",
         "editProfileButton": "Edit profile",
         "logoutButton": "Logout",
         "recipesTab": "My recipes",

@@ -2,22 +2,42 @@
     "statsPage": {
         "recipeSectionHeading": "Recipe Statistics",
         "menuSectionHeading": "Menu Statistics",
+
         "totalRecipesTile": "Total recipes",
-        "avgCookingTimeTile": "Avg cooking time",
+        "totalRecipesCaption": "in your cookbook",
+        "totalMenusTile": "Total menus",
+        "totalMenusCaption": "created by you",
+        "avgCookingTimeTile": "Avg cook time",
+        "avgCookingTimeCaption": "across all types",
         "mostUsedTypeTile": "Most used type",
         "mostUsedCaption": "{{count}} of {{total}} recipes",
-        "totalMenusTile": "Total menus",
+        "avgTotalTimeTile": "Avg total time",
+        "avgRecipesTile": "Avg recipes",
+        "perMenuCaption": "per menu",
         "mostUsedCategoryTile": "Most used category",
         "mostUsedCategoryCaption": "{{count}} of {{total}} menus",
-        "avgTimeByTypeHeading": "Average cooking time by type",
-        "fastestRecipes": "Fastest Recipes:",
-        "slowestRecipes": "Slowest Recipes:",
-        "mostIngredients": "Recipes with Most Ingredients:",
-        "leastIngredients": "Recipes with Least Ingredients:",
+
+        "recipeTypesHeading": "Recipe Types Summary",
+        "recipeTypesSubtitle": "Distribution across {{count}} recipes",
+        "avgTimeByTypeHeading": "Average cooking time by recipe types",
+        "avgTimeByTypeSubtitle": "In minutes",
+        "menuCategoriesHeading": "Menu Categories Summary",
+        "menuCategoriesSubtitle": "Distribution across {{count}} menus",
+        "avgTimeByCategoryHeading": "Average total time by category",
+        "avgTimeByCategorySubtitle": "Cook time per menu",
+
+        "cookingTimeExtremesHeading": "Cooking time extremes",
+        "totalTimeExtremesHeading": "Total time extremes",
+        "ingredientCountsHeading": "Ingredient counts",
+        "recipeCountsHeading": "Recipe counts",
+        "fastest": "Fastest",
+        "slowest": "Slowest",
+        "most": "Most",
+        "least": "Least",
+
         "recipesLabel": "recipes",
         "menusLabel": "menus",
-        "legendEntry": "{{name}}: {{count}}",
-        "cookingTimeUnit": " min",
-        "ingredientsUnit": " ingredients"
+        "timeCompactHoursMinutes": "{{hours}}h {{minutes}}m",
+        "timeMinutesOnly": "{{minutes}} min"
     }
 }

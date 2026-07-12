@@ -93,7 +93,7 @@ describe("ModalRoot", () => {
         expect(mockedModal).not.toHaveBeenCalled();
     });
 
-    it("should render the delete-recipe modal with its id and recipe id", () => {
+    it("should render the delete-recipe modal with its id, recipe id and title", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
@@ -101,6 +101,7 @@ describe("ModalRoot", () => {
                         id: "modal-2",
                         type: MODAL_TYPE.deleteRecipe,
                         recipeId: "42",
+                        recipeTitle: "Slow-roasted ragù",
                     },
                 },
             }),
@@ -110,6 +111,7 @@ describe("ModalRoot", () => {
 
         expect(props.modalId).toBe("modal-2");
         expect(props.recipeId).toBe("42");
+        expect(props.recipeTitle).toBe("Slow-roasted ragù");
     });
 
     it("should render the delete-menu modal with its id and menu id", () => {
@@ -120,6 +122,7 @@ describe("ModalRoot", () => {
                         id: "modal-3",
                         type: MODAL_TYPE.deleteMenu,
                         menuId: 7,
+                        menuTitle: "Week of Comfort",
                     },
                 },
             }),

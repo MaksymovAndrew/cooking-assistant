@@ -14,16 +14,13 @@ const MainPage: React.FC = () => {
             ? t("mainPage.recipesBy", { types: list.typesHeader })
             : t("mainPage.allRecipes");
 
-    const emptyMessage =
-        list.filters.selectedTypes.length > 0
-            ? t("mainPage.noSuchRecipes")
-            : t("mainPage.createFirst");
-
     return (
         <RecipeListView
             {...list}
             heading={heading}
-            emptyMessage={emptyMessage}
+            subtitle={t("mainPage.subtitle")}
+            emptyTitle={t("mainPage.emptyTitle")}
+            emptyDescription={t("mainPage.emptyDescription")}
             searchPlaceholder={t("mainPage.searchPlaceholder")}
             onRetry={() => {
                 list.refetch().catch(() => undefined);

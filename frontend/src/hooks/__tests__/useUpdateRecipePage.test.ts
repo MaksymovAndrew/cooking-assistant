@@ -76,7 +76,12 @@ describe("useUpdateRecipePage", () => {
 
         expect(mockedPut).toHaveBeenCalledWith(
             API_ROUTES.recipes.byId("1"),
-            expect.objectContaining({ title: TITLE, cooking_time: 60 }),
+            expect.objectContaining({
+                title: TITLE,
+                cooking_time: 60,
+                // the form has no servings field - the recipe's existing value must be resent unchanged, not dropped
+                servings: SAMPLE.servings,
+            }),
         );
         expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
     });
@@ -85,7 +90,7 @@ describe("useUpdateRecipePage", () => {
         const { result } = await setup();
 
         act(() => {
-            result.current.form.setCookingTime("invalid");
+            result.current.form.setCookingMinutes("99");
         });
         await act(async () => {
             await result.current.handleSubmit();

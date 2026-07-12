@@ -119,6 +119,7 @@ describe("PgUserRepository (real Postgres)", () => {
             expect.objectContaining({ id: created.id, name: "Alan", login }),
         );
         expect(found).not.toHaveProperty("password");
+        expect(new Date(found?.created_at ?? "").getTime()).not.toBeNaN();
 
         const missing = await repository.findById(created.id + 1_000_000);
 

@@ -13,6 +13,7 @@ interface IngredientGridProps {
     emptyMessage: string;
     isEditingQuantity: boolean;
     onQuantityChange: (id: number, quantity: number) => void;
+    onSaveQuantity: (id: number) => void;
     onOpenHistory: (ingredient: PantryIngredient) => void;
     onDelete: (ingredient: PantryIngredient) => void;
 }
@@ -22,6 +23,7 @@ export const IngredientGrid: React.FC<IngredientGridProps> = ({
     emptyMessage,
     isEditingQuantity,
     onQuantityChange,
+    onSaveQuantity,
     onOpenHistory,
     onDelete,
 }) => {
@@ -37,6 +39,7 @@ export const IngredientGrid: React.FC<IngredientGridProps> = ({
                     ingredient={ingredient}
                     isEditingQuantity={isEditingQuantity}
                     onQuantityChange={onQuantityChange}
+                    onSaveQuantity={onSaveQuantity}
                     onOpenHistory={onOpenHistory}
                     onDelete={onDelete}
                 />

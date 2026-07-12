@@ -4,12 +4,7 @@
     position: relative;
 
     &__label {
-        display: block;
-        margin-bottom: var(--s-2);
-        color: var(--text-2);
-        font:
-            600 13px Inter,
-            sans-serif;
+        @include sr-only;
     }
 
     &__search {
@@ -61,8 +56,7 @@
         }
     }
 
-    // wrapper owns the border/radius/overflow:hidden so the list's
-    // scrollbar (on __results below) can't poke past the rounded corner
+    // wrapper owns the border/radius/overflow:hidden so the list's scrollbar (on __results below) can't poke past the rounded corner
     &__results-wrapper {
         position: absolute;
         top: 100%;
@@ -114,6 +108,15 @@
 
         @include on-hover {
             background: var(--brand-subtle);
+        }
+    }
+
+    &__result--selected {
+        cursor: not-allowed;
+        opacity: 0.5;
+
+        @include on-hover {
+            background: none;
         }
     }
 

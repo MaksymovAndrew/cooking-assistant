@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { THEME_STORAGE_KEY } from "constants/theme";
+
 import { API_ROUTES } from "api/endpoints";
 
 import { MODAL_TYPE } from "redux/slices/uiSlice";
@@ -35,12 +37,11 @@ describe("SettingsPage", () => {
     });
 
     it("should not open a confirmation when the current theme is re-selected", async () => {
+        localStorage.setItem(THEME_STORAGE_KEY, "dark");
+
         const { store } = setup();
 
-        const currentMode = store.getState().theme.mode;
-        const sameLabel = currentMode === "dark" ? "Dark" : "Light";
-
-        await userEvent.click(screen.getByRole("radio", { name: sameLabel }));
+        await userEvent.click(screen.getByRole("radio", { name: "Dark" }));
 
         expect(store.getState().ui.modal).toBeNull();
     });
@@ -48,7 +49,7 @@ describe("SettingsPage", () => {
     it("should open and close the change-password modal", async () => {
         setup();
 
-        await userEvent.click(screen.getByRole("button", { name: "Change" }));
+        await userEvent.click(screen.getByRole("button", { name: "Change…" }));
 
         expect(
             screen.getByRole("heading", { name: "Change password" }),

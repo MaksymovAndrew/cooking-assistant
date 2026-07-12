@@ -3,7 +3,7 @@ import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 import type { PantryIngredient } from "types/userIngredient";
 
-import type { ThemeMode } from "redux/slices/themeSlice";
+import type { ThemeChoice } from "redux/slices/themeSlice";
 
 // discriminated union keyed by `type` so ModalRoot renders the matching modal with a typed payload
 export const MODAL_TYPE = {
@@ -28,6 +28,7 @@ export interface IngredientHistoryModal extends IngredientHistoryModalInput {
 export interface DeleteRecipeModalInput {
     type: typeof MODAL_TYPE.deleteRecipe;
     recipeId: string;
+    recipeTitle: string;
 }
 
 export interface DeleteRecipeModal extends DeleteRecipeModalInput {
@@ -37,6 +38,7 @@ export interface DeleteRecipeModal extends DeleteRecipeModalInput {
 export interface DeleteMenuModalInput {
     type: typeof MODAL_TYPE.deleteMenu;
     menuId: string | number;
+    menuTitle: string;
 }
 
 export interface DeleteMenuModal extends DeleteMenuModalInput {
@@ -62,7 +64,7 @@ export interface LogoutModal extends LogoutModalInput {
 
 export interface ThemeChangeModalInput {
     type: typeof MODAL_TYPE.themeChange;
-    nextMode: ThemeMode;
+    nextMode: ThemeChoice;
 }
 
 export interface ThemeChangeModal extends ThemeChangeModalInput {

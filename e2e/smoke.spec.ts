@@ -32,15 +32,15 @@ test("should register a new account", async () => {
     await page.goto("/registration");
     await page.getByLabel("Name:", { exact: true }).fill(NAME);
     await page.getByLabel("Surname:", { exact: true }).fill("Smoke");
-    await page.getByLabel("Username:", { exact: true }).fill(login);
-    await page.getByLabel("Password:", { exact: true }).fill(password);
+    await page.getByLabel("Username", { exact: true }).fill(login);
+    await page.getByLabel("Password", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Register" }).click();
     await expect(page).toHaveURL(/\/login$/);
 });
 
 test("should log in and land on the dashboard", async () => {
-    await page.getByLabel("Username:", { exact: true }).fill(login);
-    await page.getByLabel("Password:", { exact: true }).fill(password);
+    await page.getByLabel("Username", { exact: true }).fill(login);
+    await page.getByLabel("Password", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Log In" }).click();
     await expect(page).toHaveURL("/");
     await expect(page.getByText(`Welcome back, ${NAME}`)).toBeVisible();
@@ -52,11 +52,11 @@ test("should create a recipe and list it under My Recipes", async () => {
     await page
         .getByLabel("Description")
         .fill("Created by the e2e smoke suite.");
-    await page.getByLabel("Cooking Time").fill("0:30");
-    await page.getByLabel("Recipe Type").selectOption({ index: 1 });
+    await page.getByLabel("Cooking time").fill("0");
+    await page.getByLabel("Minutes").fill("30");
+    await page.getByLabel("Recipe type").selectOption({ index: 1 });
     await selectFromPicker(page, page.getByLabel("Ingredients"), "Tomato");
-    await page.getByLabel("Servings").fill("2 servings");
-    await page.getByRole("button", { name: "Create Recipe" }).click();
+    await page.getByRole("button", { name: "Create recipe" }).click();
     await expect(page).toHaveURL(/\/all-recipes$/);
 
     await page.goto("/my-recipes");
@@ -71,7 +71,7 @@ test("should create a menu from that recipe and list it under My Menus", async (
         .fill("Created by the e2e smoke suite.");
     await page.getByLabel("Menu category").selectOption({ index: 1 });
     await selectFromPicker(page, page.getByLabel("Recipes"), recipeTitle);
-    await page.getByRole("button", { name: "Create Menu" }).click();
+    await page.getByRole("button", { name: "Create menu" }).click();
     await page.waitForURL((url) => !url.pathname.includes("add-menu"));
 
     await page.goto("/my-menus");

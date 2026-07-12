@@ -1,6 +1,8 @@
+import { Plus } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { EditMark } from "components/icons";
 import { Button } from "components/ui/Button";
 
 import styles from "./IngredientsPageHeader.module.scss";
@@ -9,15 +11,15 @@ interface IngredientsPageHeaderProps {
     count: number;
     isEditingQuantity: boolean;
     onToggleQuantityEdit: () => void;
-    onSaveQuantities: () => void;
     onAddIngredient: () => void;
 }
+
+const ICON_SIZE = 17;
 
 export const IngredientsPageHeader: React.FC<IngredientsPageHeaderProps> = ({
     count,
     isEditingQuantity,
     onToggleQuantityEdit,
-    onSaveQuantities,
     onAddIngredient,
 }) => {
     const { t } = useTranslation("ingredients");
@@ -36,18 +38,16 @@ export const IngredientsPageHeader: React.FC<IngredientsPageHeaderProps> = ({
                 <Button
                     type="button"
                     variant="secondary"
-                    onClick={
-                        isEditingQuantity
-                            ? onSaveQuantities
-                            : onToggleQuantityEdit
-                    }
+                    onClick={onToggleQuantityEdit}
                 >
+                    <EditMark size={ICON_SIZE} aria-hidden="true" />
                     {isEditingQuantity
-                        ? t("page.saveQuantitiesButton")
+                        ? t("page.doneEditingButton")
                         : t("page.editQuantitiesButton")}
                 </Button>
                 {!isEditingQuantity && (
                     <Button type="button" onClick={onAddIngredient}>
+                        <Plus size={ICON_SIZE} aria-hidden="true" />
                         {t("page.addIngredientButton")}
                     </Button>
                 )}

@@ -22,3 +22,37 @@ export const formatDateTime = (
     language: string = DEFAULT_LANGUAGE,
 ): string =>
     new Date(date).toLocaleString(dateLocaleFor(language), DATE_TIME_OPTIONS);
+
+// fixed en-US date style (cards/detail), independent of the app language - a DB date-only value parses as UTC midnight, so UTC keeps the calendar day stable regardless of the viewer's timezone
+const SHORT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+};
+
+const FULL_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+};
+
+// e.g. "Mar 12" - card and list dates
+export const formatShortDate = (date: Date | string): string =>
+    new Intl.DateTimeFormat("en-US", SHORT_DATE_OPTIONS).format(new Date(date));
+
+// e.g. "Mar 12, 2026" - detail-page dates
+export const formatFullDate = (date: Date | string): string =>
+    new Intl.DateTimeFormat("en-US", FULL_DATE_OPTIONS).format(new Date(date));
+
+const JOINED_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+};
+
+// e.g. "Jun 2025" - profile header "Joined ..." line
+export const formatJoinedDate = (date: Date | string): string =>
+    new Intl.DateTimeFormat("en-US", JOINED_DATE_OPTIONS).format(
+        new Date(date),
+    );

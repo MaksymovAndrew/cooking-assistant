@@ -1,0 +1,75 @@
+@use "styles/abstracts" as *;
+
+.mobile-subpage-header {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    height: 56px;
+    padding: 0 var(--s-3);
+    border-bottom: 1px solid var(--border);
+
+    @include respond-to(tablet) {
+        display: none;
+    }
+
+    &__back {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        color: var(--text);
+        text-decoration: none;
+        border-radius: 10px;
+
+        @include focus-ring;
+
+        @include on-hover {
+            background: var(--surface-2);
+        }
+    }
+
+    &__wordmark {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__title {
+        flex: 1;
+        overflow: hidden;
+        color: var(--text);
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font:
+            600 15px Fraunces,
+            serif;
+    }
+
+    &__edit {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        color: var(--text-2);
+        text-decoration: none;
+        border-radius: 10px;
+
+        @include focus-ring;
+
+        @include on-hover {
+            background: var(--surface-2);
+        }
+    }
+
+    &__spacer {
+        flex: none;
+        width: 44px;
+        height: 44px;
+    }
+}

@@ -1,7 +1,6 @@
 @use "styles/abstracts" as *;
 
-// mobile-first: a compact row (thumbnail + text) per the mobile mockup;
-// tablet+ switches to a stacked card (image on top, text below)
+// mobile-first: a compact row (thumbnail + text); tablet+ switches to a stacked card (image on top, text below)
 .recent-recipe-card {
     display: flex;
     align-items: center;
@@ -29,6 +28,13 @@
         background: var(--surface-2);
     }
 
+    // a rotated phone reverts to the compact row - the tablet stacked card doesn't fit the landscape split's narrow right column
+    @include respond-to-short-landscape {
+        display: flex;
+        padding: 8px 12px 8px 8px;
+        background: var(--surface);
+    }
+
     &__image {
         display: flex;
         flex: none;
@@ -40,7 +46,7 @@
         background: var(--surface-2);
         color: var(--brand);
 
-        // the tablet mockup uses a wider 21:9 thumbnail; desktop is 16:9
+        // tablet+ uses the wide 21:9 thumbnail; keeping it on desktop too lets the 3x3 grid fit a laptop viewport without scrolling
         @include respond-to(tablet) {
             width: auto;
             height: auto;
@@ -49,8 +55,12 @@
             border-radius: 0;
         }
 
-        @include respond-to(desktop) {
-            aspect-ratio: 16 / 9;
+        @include respond-to-short-landscape {
+            width: 64px;
+            height: 48px;
+            aspect-ratio: auto;
+            border-bottom: none;
+            border-radius: var(--r-sm);
         }
     }
 
@@ -63,6 +73,10 @@
 
         @include respond-to(tablet) {
             padding: var(--s-3) var(--s-4);
+        }
+
+        @include respond-to-short-landscape {
+            padding: 0;
         }
     }
 

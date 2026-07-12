@@ -71,7 +71,7 @@ describe("MainPage", () => {
             await screen.findByText(`Recipes: ${TYPE_NAME}`),
         ).toBeInTheDocument();
         expect(
-            screen.getByText("No such recipes created."),
+            screen.getByText("No recipes match your search"),
         ).toBeInTheDocument();
         expect(store.getState().filters.recipe.selectedTypes).toEqual([
             TYPE_ID,

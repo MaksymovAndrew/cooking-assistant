@@ -1,10 +1,12 @@
 import { act } from "@testing-library/react";
 import type * as ReactRouterDom from "react-router-dom";
 
+import type { CurrentUser } from "types/auth";
 import type { Menu } from "types/menu";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { authApi } from "redux/services/authApi";
 import { menuCategoriesApi } from "redux/services/menuCategoriesApi";
 import { menusApi } from "redux/services/menusApi";
 
@@ -26,12 +28,21 @@ const MENU_1: Menu = {
     title: "Weekday menu",
     categoryname: "Lunch",
     menucontent: "quick",
+    recipe_count: 2,
 };
 const MENU_2: Menu = {
     id: 2,
     title: "Weekend menu",
     categoryname: "Dinner",
     menucontent: "slow",
+    recipe_count: 5,
+};
+const CURRENT_USER: CurrentUser = {
+    id: 1,
+    name: "Claude",
+    surname: "Cook",
+    login: "claude",
+    created_at: "2025-06-15T00:00:00.000Z",
 };
 
 // matches the default filters slice state + no URL name search, so the
@@ -58,6 +69,7 @@ const setup = async (
         store.dispatch(
             menuCategoriesApi.endpoints.getMenuCategories.initiate(null),
         ),
+        store.dispatch(authApi.endpoints.getMe.initiate(null)),
     ]);
 
     return renderHookWithStore(() => useMenuListView(source), store);
@@ -66,6 +78,9 @@ const setup = async (
 describe("useMenuListView", () => {
     it("should flatten the loaded page and report the total", async () => {
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.menuCategories.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -87,8 +102,31 @@ describe("useMenuListView", () => {
         expect(result.current.noMenus).toBe(false);
     });
 
+    it("should expose the current user's id, for per-item ownership checks in the all-menus view", async () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
+            if (url === API_ROUTES.menuCategories.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.menu.list) {
+                return Promise.resolve({ data: { items: [], total: 0 } });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const { result } = await setup();
+
+        expect(result.current.currentUserId).toBe(CURRENT_USER.id);
+    });
+
     it("should report noMenus once loading succeeds with zero results", async () => {
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.menuCategories.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -107,6 +145,9 @@ describe("useMenuListView", () => {
 
     it("should request the current user's menus when the source is person", async () => {
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.menuCategories.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -130,6 +171,9 @@ describe("useMenuListView", () => {
 
     it("should fetch the next page and append it without dropping earlier rows", async () => {
         mockedGet.mockImplementation((url: string, config?: unknown) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.menuCategories.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -165,6 +209,9 @@ describe("useMenuListView", () => {
         const store = makeTestStore();
 
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.menuCategories.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -197,6 +244,9 @@ describe("useMenuListView", () => {
 
     it("should keep loaded menus and report loadMoreError when the next page fails", async () => {
         mockedGet.mockImplementation((url: string, config?: unknown) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.menuCategories.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -226,6 +276,9 @@ describe("useMenuListView", () => {
 
     it("should dispatch the selected categories through the store setter", async () => {
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.menuCategories.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -243,5 +296,58 @@ describe("useMenuListView", () => {
         });
 
         expect(result.current.selectedCategories).toEqual([3]);
+    });
+
+    it("should report hasActiveFilters once a category is selected", async () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
+            if (url === API_ROUTES.menuCategories.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.menu.list) {
+                return Promise.resolve({ data: { items: [], total: 0 } });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const { result } = await setup();
+
+        expect(result.current.hasActiveFilters).toBe(false);
+
+        act(() => {
+            result.current.setSelectedCategories([3]);
+        });
+
+        expect(result.current.hasActiveFilters).toBe(true);
+    });
+
+    it("should reset the selected categories when clearFilters is called", async () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
+            if (url === API_ROUTES.menuCategories.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.menu.list) {
+                return Promise.resolve({ data: { items: [], total: 0 } });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const { result } = await setup();
+
+        act(() => {
+            result.current.setSelectedCategories([3]);
+        });
+        act(() => {
+            result.current.clearFilters();
+        });
+
+        expect(result.current.selectedCategories).toEqual([]);
     });
 });

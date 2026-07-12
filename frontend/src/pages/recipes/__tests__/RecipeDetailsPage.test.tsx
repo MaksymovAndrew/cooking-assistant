@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import type * as ReactRouterDom from "react-router-dom";
@@ -112,7 +112,11 @@ describe("RecipeDetailsPage", () => {
 
         expect(store.getState().ui.modal?.type).toBe(MODAL_TYPE.deleteRecipe);
 
-        await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+        const dialog = screen.getByRole("dialog");
+
+        await userEvent.click(
+            within(dialog).getByRole("button", { name: BTN_DELETE_RECIPE }),
+        );
 
         expect(mockedDelete).toHaveBeenCalledWith(
             API_ROUTES.recipes.byId("1"),
@@ -147,7 +151,7 @@ describe("RecipeDetailsPage", () => {
         renderPage();
         await screen.findByRole("heading", { name: TITLE });
 
-        expect(screen.getByText("45 minutes")).toBeInTheDocument();
+        expect(screen.getByText("45 min")).toBeInTheDocument();
     });
 
     it("should close the delete confirmation modal when cancelled", async () => {

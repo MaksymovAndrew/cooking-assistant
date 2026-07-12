@@ -1,3 +1,4 @@
+import { LogOut } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -12,6 +13,7 @@ import styles from "./ProfileTabs.module.scss";
 interface ProfileTabsProps {
     activeTab: ProfileTab;
     onChange: (tab: ProfileTab) => void;
+    onLogout: () => void;
 }
 
 const TAB_KEYS: { tab: ProfileTab; labelKey: string }[] = [
@@ -21,9 +23,12 @@ const TAB_KEYS: { tab: ProfileTab; labelKey: string }[] = [
     { tab: PROFILE_TAB.dietary, labelKey: "profilePage.dietaryTab" },
 ];
 
+const LOGOUT_ICON_SIZE = 14;
+
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
     activeTab,
     onChange,
+    onLogout,
 }) => {
     const { t } = useTranslation("profile");
 
@@ -51,6 +56,15 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             <Link to={ROUTES.settings} className={styles["profile-tabs__tab"]}>
                 {t("profilePage.settingsTab")}
             </Link>
+            <div className={styles["profile-tabs__spacer"]} />
+            <button
+                type="button"
+                onClick={onLogout}
+                className={styles["profile-tabs__logout"]}
+            >
+                <LogOut size={LOGOUT_ICON_SIZE} aria-hidden="true" />
+                {t("profilePage.logoutButton")}
+            </button>
         </div>
     );
 };

@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 
 import {
-    CHART_COLORS,
     getChartColor,
+    STATS_PALETTE,
 } from "components/stats/PieChartCard/chartColors";
 import PieChartCard from "components/stats/PieChartCard/PieChartCard";
 
@@ -42,7 +42,7 @@ describe("PieChartCard", () => {
         expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
     });
 
-    it("should render one cell per datum with brand colors", () => {
+    it("should render one cell per datum with palette colors", () => {
         render(
             <PieChartCard
                 data={[
@@ -56,8 +56,8 @@ describe("PieChartCard", () => {
         const cells = screen.getAllByTestId("cell");
 
         expect(cells).toHaveLength(2);
-        expect(cells[0]).toHaveAttribute("data-fill", CHART_COLORS[0]);
-        expect(cells[1]).toHaveAttribute("data-fill", CHART_COLORS[1]);
+        expect(cells[0]).toHaveAttribute("data-fill", STATS_PALETTE[0]);
+        expect(cells[1]).toHaveAttribute("data-fill", STATS_PALETTE[1]);
     });
 
     it("should display the total value in the center", () => {
@@ -105,11 +105,11 @@ describe("PieChartCard", () => {
         expect(cells).toHaveLength(7);
         expect(cells[6]).toHaveAttribute(
             "data-fill",
-            CHART_COLORS[6 % CHART_COLORS.length],
+            STATS_PALETTE[6 % STATS_PALETTE.length],
         );
     });
 
-    it("should render legend entries for each datum", () => {
+    it("should render a legend row with the name and value for each datum", () => {
         render(
             <PieChartCard
                 data={[
@@ -120,25 +120,27 @@ describe("PieChartCard", () => {
             />,
         );
 
-        expect(screen.getByText("Soup: 6")).toBeInTheDocument();
-        expect(screen.getByText("Dessert: 9")).toBeInTheDocument();
+        expect(screen.getByText("Soup")).toBeInTheDocument();
+        expect(screen.getByText("6")).toBeInTheDocument();
+        expect(screen.getByText("Dessert")).toBeInTheDocument();
+        expect(screen.getByText("9")).toBeInTheDocument();
     });
 
     it("should render no legend entries for empty data", () => {
         render(<PieChartCard data={[]} centerLabel="recipes" />);
 
-        expect(screen.queryByText(/:/)).toBeNull();
+        expect(screen.queryByText("Soup")).toBeNull();
     });
 });
 
 describe("getChartColor", () => {
     it("should return the color at the given index", () => {
-        expect(getChartColor(0)).toBe(CHART_COLORS[0]);
-        expect(getChartColor(2)).toBe(CHART_COLORS[2]);
+        expect(getChartColor(0)).toBe(STATS_PALETTE[0]);
+        expect(getChartColor(2)).toBe(STATS_PALETTE[2]);
     });
 
     it("should wrap around when index exceeds palette length", () => {
-        expect(getChartColor(CHART_COLORS.length)).toBe(CHART_COLORS[0]);
-        expect(getChartColor(CHART_COLORS.length + 1)).toBe(CHART_COLORS[1]);
+        expect(getChartColor(STATS_PALETTE.length)).toBe(STATS_PALETTE[0]);
+        expect(getChartColor(STATS_PALETTE.length + 1)).toBe(STATS_PALETTE[1]);
     });
 });

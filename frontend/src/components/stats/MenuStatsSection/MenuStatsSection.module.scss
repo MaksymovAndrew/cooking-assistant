@@ -11,11 +11,40 @@
     }
 
     &__tiles {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--s-6);
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--s-4);
+        margin-bottom: var(--s-6);
+
+        @include respond-to(desktop) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-5);
         margin-bottom: var(--s-5);
-        padding-bottom: var(--s-5);
-        border-bottom: 1px solid var(--border);
+
+        @include respond-to(desktop) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    &__card-title {
+        margin: 0 0 4px;
+        color: var(--text);
+        font:
+            600 16px Fraunces,
+            serif;
+    }
+
+    &__card-subtitle {
+        margin: 0 0 var(--s-5);
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
     }
 }

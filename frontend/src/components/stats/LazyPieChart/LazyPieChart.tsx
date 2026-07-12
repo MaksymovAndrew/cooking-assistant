@@ -1,9 +1,6 @@
 import React, { Suspense } from "react";
 
-import {
-    CHART_CENTERING_STYLE,
-    CHART_FALLBACK_STYLE,
-} from "components/stats/PieChartCard/chartStyles";
+import { CHART_FALLBACK_STYLE } from "components/stats/PieChartCard/chartStyles";
 import type { PieChartDatum } from "components/stats/PieChartCard/PieChartCard";
 
 const LazyPieChartCard = React.lazy(
@@ -15,12 +12,9 @@ interface LazyPieChartProps {
     centerLabel: string;
 }
 
-// shared lazy wrapper for the stats donuts: loads the recharts chunk on
-// demand and keeps the layout stable while it arrives
+// shared lazy wrapper for the stats donuts: loads the recharts chunk on demand and keeps the layout stable while it arrives
 export const LazyPieChart = ({ data, centerLabel }: LazyPieChartProps) => (
     <Suspense fallback={<div style={CHART_FALLBACK_STYLE} />}>
-        <div style={CHART_CENTERING_STYLE}>
-            <LazyPieChartCard data={data} centerLabel={centerLabel} />
-        </div>
+        <LazyPieChartCard data={data} centerLabel={centerLabel} />
     </Suspense>
 );

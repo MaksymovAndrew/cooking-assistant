@@ -23,7 +23,10 @@ const StatsPage: React.FC = () => {
     return (
         <AppShell>
             <div className={styles["stats-page"]}>
-                <RecipeStatsSection stats={recipeStats} />
+                <RecipeStatsSection
+                    stats={recipeStats}
+                    menusCount={menuStats.menusCount}
+                />
                 <MenuStatsSection stats={menuStats} />
             </div>
         </AppShell>

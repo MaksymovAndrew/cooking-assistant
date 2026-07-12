@@ -121,6 +121,53 @@ describe("PgMenuRepository search (real Postgres)", () => {
         expect(secondPage.total).toBe(3);
     });
 
+    it("should report the recipe count per menu, including zero for a menu with none", async () => {
+        const categoryId = await createMenuCategory(pool);
+        const ingredientId = await createIngredient(pool, unitId);
+        const secondRecipe = Recipe.forCreation({
+            title: unique("Second menu search fixture recipe"),
+            content: "For menu search tests.",
+            person_id: ownerId,
+            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
+        });
+        const secondRecipeId = (
+            (await recipeRepository.create(secondRecipe)) as { id: number }
+        ).id;
+        const twoRecipeMenu = Menu.forCreation({
+            menuTitle: unique("Two-recipe menu"),
+            menuContent: "Search fixture.",
+            categoryId,
+            personId: ownerId,
+            recipeIds: [recipeId, secondRecipeId],
+        });
+        const twoRecipeMenuId = (await menuRepository.create(twoRecipeMenu, [
+            recipeId,
+            secondRecipeId,
+        ])) as number;
+        const emptyMenuId = await createOwnedMenu(
+            unique("Empty menu"),
+            categoryId,
+        );
+
+        await pool.query("DELETE FROM menu_recipe WHERE menu_id = $1", [
+            emptyMenuId,
+        ]);
+
+        const result = (await menuRepository.findAll({
+            category_ids: String(categoryId),
+        })) as { items: { id: number; recipe_count: number }[] };
+
+        expect(result.items).toContainEqual(
+            expect.objectContaining({
+                id: twoRecipeMenuId,
+                recipe_count: 2,
+            }),
+        );
+        expect(result.items).toContainEqual(
+            expect.objectContaining({ id: emptyMenuId, recipe_count: 0 }),
+        );
+    });
+
     it("should scope searchByPerson to only that person's menus", async () => {
         const otherPersonId = await createPerson(pool);
         const categoryId = await createMenuCategory(pool);

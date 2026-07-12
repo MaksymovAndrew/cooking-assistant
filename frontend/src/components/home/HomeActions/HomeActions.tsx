@@ -17,8 +17,7 @@ interface HomeActionsProps {
 const BELL_ICON_SIZE = 18;
 const PLUS_ICON_SIZE = 15;
 
-// the mobile/tablet action row from the mockup - on desktop these actions
-// live in the greeting header instead and this row is hidden via CSS
+// on desktop these actions live in the greeting header instead and this row is hidden via CSS
 export const HomeActions: React.FC<HomeActionsProps> = ({
     onOpenNews,
     hasUnseenNews,
@@ -47,6 +46,7 @@ export const HomeActions: React.FC<HomeActionsProps> = ({
                 variant="secondary"
                 className={styles["home-actions__menu"]}
             >
+                <Plus size={PLUS_ICON_SIZE} aria-hidden="true" />
                 {t("actions.newMenu")}
             </LinkButton>
             <LinkButton

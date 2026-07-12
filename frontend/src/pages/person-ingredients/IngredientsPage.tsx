@@ -40,22 +40,25 @@ const IngredientsPage: React.FC = () => {
         [catalog.personIngredients],
     );
 
-    const visibleIngredients = catalog.personIngredients.filter(
-        (ingredient) => {
-            const matchesQuery = (ingredient.ingredient_name ?? "")
-                .toLowerCase()
-                .includes(query.trim().toLowerCase());
+    // while editing, filter over the in-flight draft quantities so the inputs reflect what the user just typed rather than the stale cache
+    const sourceIngredients = catalog.isEditingQuantity
+        ? catalog.updatedIngredients
+        : catalog.personIngredients;
 
-            if (!matchesQuery) {
-                return false;
-            }
+    const visibleIngredients = sourceIngredients.filter((ingredient) => {
+        const matchesQuery = (ingredient.ingredient_name ?? "")
+            .toLowerCase()
+            .includes(query.trim().toLowerCase());
 
-            return (
-                !expiringSoonOnly ||
-                isUrgent(ingredient.days_to_expire, ingredient.purchase_date)
-            );
-        },
-    );
+        if (!matchesQuery) {
+            return false;
+        }
+
+        return (
+            !expiringSoonOnly ||
+            isUrgent(ingredient.days_to_expire, ingredient.purchase_date)
+        );
+    });
 
     const emptyMessage =
         catalog.personIngredients.length === 0
@@ -69,9 +72,6 @@ const IngredientsPage: React.FC = () => {
                     count={catalog.personIngredients.length}
                     isEditingQuantity={catalog.isEditingQuantity}
                     onToggleQuantityEdit={catalog.handleToggleQuantityEdit}
-                    onSaveQuantities={() => {
-                        catalog.saveUpdatedQuantities().catch(() => undefined);
-                    }}
                     onAddIngredient={() => {
                         catalog.handleSaveOrToggleEdit().catch(() => undefined);
                     }}
@@ -92,6 +92,9 @@ const IngredientsPage: React.FC = () => {
                     emptyMessage={emptyMessage}
                     isEditingQuantity={catalog.isEditingQuantity}
                     onQuantityChange={catalog.handleQuantityChange}
+                    onSaveQuantity={(id) => {
+                        catalog.handleSaveQuantity(id).catch(() => undefined);
+                    }}
                     onOpenHistory={(ingredient) => {
                         dispatch(
                             openModal({

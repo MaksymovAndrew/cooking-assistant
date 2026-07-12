@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// "stats" glyph traced from the Global Shell bottom-nav mockup - not a stock lucide icon
+// "stats" glyph - not a stock lucide icon
 export const BarChartMark: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

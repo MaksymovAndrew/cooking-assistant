@@ -28,8 +28,8 @@ describe("RegisterPage", () => {
 
         await userEvent.type(screen.getByLabelText("Name:"), NAME);
         await userEvent.type(screen.getByLabelText("Surname:"), SURNAME);
-        await userEvent.type(screen.getByLabelText("Username:"), LOGIN);
-        await userEvent.type(screen.getByLabelText("Password:"), PASSWORD);
+        await userEvent.type(screen.getByLabelText("Username"), LOGIN);
+        await userEvent.type(screen.getByLabelText("Password"), PASSWORD);
         await userEvent.click(screen.getByRole("button", { name: "Register" }));
 
         expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.auth.register, {

@@ -11,6 +11,7 @@ import { RecipeListView } from "components/recipes/RecipeListView";
 import { renderWithRouter } from "test/router";
 
 const RECIPE_TITLE = "Borscht";
+const MINE_CLASS = "content-card--mine";
 
 const RECIPES: RecipeListItem[] = [
     {
@@ -41,7 +42,11 @@ const baseProps = {
     types: [],
     descriptions: [],
     heading: "All recipes",
-    emptyMessage: "No recipes found",
+    subtitle: "Browse your cookbook",
+    emptyTitle: "No recipes yet",
+    emptyDescription: "Your cookbook is empty.",
+    hasActiveFilters: false,
+    clearFilters: jest.fn(),
     searchPlaceholder: "ingredient name",
     onRetry: jest.fn(),
     total: RECIPES.length,
@@ -53,7 +58,7 @@ const baseProps = {
 };
 
 describe("RecipeListView", () => {
-    it("should render the heading and a card per recipe", () => {
+    it("should render the heading, subtitle and a card per recipe", () => {
         renderWithRouter(
             <RecipeListView
                 {...baseProps}
@@ -64,6 +69,7 @@ describe("RecipeListView", () => {
         );
 
         expect(screen.getByText("All recipes")).toBeInTheDocument();
+        expect(screen.getByText("Browse your cookbook")).toBeInTheDocument();
         expect(screen.getByText(RECIPE_TITLE)).toBeInTheDocument();
     });
 
@@ -82,7 +88,7 @@ describe("RecipeListView", () => {
         ).toBeInTheDocument();
     });
 
-    it("should render the empty message instead of cards when there are no recipes", () => {
+    it("should render the truly-empty title, description and create-first action when there are no active filters", () => {
         renderWithRouter(
             <RecipeListView
                 {...baseProps}
@@ -92,8 +98,43 @@ describe("RecipeListView", () => {
             />,
         );
 
-        expect(screen.getByText("No recipes found")).toBeInTheDocument();
+        expect(screen.getByText("No recipes yet")).toBeInTheDocument();
+        expect(screen.getByText("Your cookbook is empty.")).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", { name: /Create your first recipe!/ }),
+        ).toBeInTheDocument();
         expect(screen.queryByText(RECIPE_TITLE)).not.toBeInTheDocument();
+    });
+
+    it("should render the no-matches state and a working Clear filters button when filters are active", async () => {
+        const clearFilters = jest.fn();
+
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={[]}
+                noRecipes={true}
+                error={null}
+                hasActiveFilters={true}
+                filters={{ ...FILTERS, ingredientName: "cauliflower" }}
+                clearFilters={clearFilters}
+            />,
+        );
+
+        expect(
+            screen.getByText("No recipes match your search"),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                "Nothing matches “cauliflower” with your current filters. Try a different ingredient, clear the filters, or create a brand-new recipe.",
+            ),
+        ).toBeInTheDocument();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Clear filters" }),
+        );
+
+        expect(clearFilters).toHaveBeenCalledTimes(1);
     });
 
     it("should render the error state and call onRetry when Try again is clicked", async () => {
@@ -187,7 +228,39 @@ describe("RecipeListView", () => {
         );
 
         expect(screen.getByRole("link", { name: /Borscht/ })).toHaveClass(
-            "content-card--mine",
+            MINE_CLASS,
+        );
+    });
+
+    it("should mark a card as mine when its person_id matches the current user, even without the mine prop", () => {
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={[{ ...RECIPES[0], person_id: 7 }]}
+                noRecipes={false}
+                error={null}
+                currentUserId={7}
+            />,
+        );
+
+        expect(screen.getByRole("link", { name: /Borscht/ })).toHaveClass(
+            MINE_CLASS,
+        );
+    });
+
+    it("should not mark another user's card as mine", () => {
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={[{ ...RECIPES[0], person_id: 7 }]}
+                noRecipes={false}
+                error={null}
+                currentUserId={9}
+            />,
+        );
+
+        expect(screen.getByRole("link", { name: /Borscht/ })).not.toHaveClass(
+            MINE_CLASS,
         );
     });
 });

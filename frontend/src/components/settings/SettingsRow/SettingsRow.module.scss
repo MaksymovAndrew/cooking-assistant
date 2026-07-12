@@ -37,11 +37,17 @@
     }
 
     &__description {
+        display: none;
         margin-top: 2px;
         color: var(--text-muted);
         font:
             400 12px Inter,
             sans-serif;
+
+        // mobile is tight for a control-bearing row (e.g. the theme segmented control) - drop the description there, keep it from tablet up
+        @include respond-to(tablet) {
+            display: block;
+        }
     }
 
     &__control {

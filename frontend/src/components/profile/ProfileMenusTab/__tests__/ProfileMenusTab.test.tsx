@@ -11,6 +11,7 @@ const MENU: Menu = {
     title: "Weekday menu",
     categoryname: "Lunch",
     menucontent: "",
+    recipe_count: 3,
 };
 
 describe("ProfileMenusTab", () => {

@@ -73,7 +73,17 @@
 
     &__grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: var(--s-4);
+        grid-template-columns: 1fr;
+        gap: 10px;
+
+        @include respond-to(tablet) {
+            grid-template-columns: 1fr 1fr;
+            gap: var(--s-3);
+        }
+
+        @include respond-to(desktop) {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: var(--s-4);
+        }
     }
 }

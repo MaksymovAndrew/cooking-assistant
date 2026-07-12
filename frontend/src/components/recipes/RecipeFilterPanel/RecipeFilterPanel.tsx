@@ -4,8 +4,11 @@ import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
+import { RECIPE_DEFAULT_SORT_ORDER } from "redux/slices/filtersSlice";
+
 import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 import type { RecipeFilterState } from "hooks/useRecipeListView";
+import { useScrollLock } from "hooks/useScrollLock";
 
 import { SearchComponent } from "components/ui/SearchComponent";
 
@@ -20,6 +23,7 @@ export interface RecipeFilterPanelProps {
     setSortOrder: (order: string) => void;
     types: RecipeTypeSummary[];
     searchPlaceholder: string;
+    total: number;
 }
 
 const FILTER_ICON_SIZE = 17;
@@ -32,6 +36,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
     setSortOrder,
     types,
     searchPlaceholder,
+    total,
 }) => {
     const { t } = useTranslation("recipes");
     const [isOpen, setIsOpen] = useState(false);
@@ -40,13 +45,15 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
     const activeCount =
         filters.selectedTypes.length +
         (filters.minCookingTime ? 1 : 0) +
-        (filters.maxCookingTime ? 1 : 0);
+        (filters.maxCookingTime ? 1 : 0) +
+        (filters.sortOrder !== RECIPE_DEFAULT_SORT_ORDER ? 1 : 0);
 
     const closePopover = () => {
         setIsOpen(false);
     };
 
     usePopoverDismiss(containerRef, isOpen, closePopover);
+    useScrollLock(isOpen);
 
     return (
         <div ref={containerRef} className={styles["recipe-filter-panel"]}>
@@ -82,6 +89,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
                     setMaxCookingTime={setMaxCookingTime}
                     setSortOrder={setSortOrder}
                     types={types}
+                    total={total}
                     onClose={() => {
                         setIsOpen(false);
                     }}

@@ -41,10 +41,38 @@ export const useSelectedIngredients = () => {
         [],
     );
 
+    const removeIngredient = useCallback((ingredientId: number) => {
+        setSelectedIngredients((prev) =>
+            prev.filter((ingredient) => ingredient.id !== ingredientId),
+        );
+    }, []);
+
+    const reorderIngredients = useCallback((fromId: number, toId: number) => {
+        setSelectedIngredients((prev) => {
+            const fromIndex = prev.findIndex((i) => i.id === fromId);
+            const toIndex = prev.findIndex((i) => i.id === toId);
+            const isNoOpReorder =
+                fromIndex === -1 || toIndex === -1 || fromIndex === toIndex;
+
+            if (isNoOpReorder) {
+                return prev;
+            }
+
+            const next = [...prev];
+            const [moved] = next.splice(fromIndex, 1);
+
+            next.splice(toIndex, 0, moved);
+
+            return next;
+        });
+    }, []);
+
     return {
         selectedIngredients,
         setSelectedIngredients,
         toggleIngredientSelection,
         updateIngredientQuantity,
+        removeIngredient,
+        reorderIngredients,
     };
 };

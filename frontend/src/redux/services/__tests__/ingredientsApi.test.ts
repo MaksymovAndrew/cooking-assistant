@@ -9,7 +9,9 @@ import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
 
-const SAMPLE: Ingredient[] = [{ id: 1, name: "Salt", unit_name: "g" }];
+const SAMPLE: Ingredient[] = [
+    { id: 1, name: "Salt", unit_name: "g", allergens: null },
+];
 
 describe("ingredientsApi", () => {
     it("should fetch the ingredient catalog", async () => {

@@ -1,1 +1,0 @@
-export { RecipeExtremeList } from "./RecipeExtremeList";

@@ -21,7 +21,9 @@ const UserMenuPage: React.FC = () => {
         <MenuListView
             {...list}
             heading={heading}
-            emptyMessage={t("userMenuPage.noMenus")}
+            subtitle={t("userMenuPage.subtitle", { count: list.total })}
+            emptyTitle={t("userMenuPage.emptyTitle")}
+            emptyDescription={t("userMenuPage.emptyDescription")}
             searchPlaceholder={t("userMenuPage.searchPlaceholder")}
             onRetry={() => {
                 list.refetch().catch(() => undefined);

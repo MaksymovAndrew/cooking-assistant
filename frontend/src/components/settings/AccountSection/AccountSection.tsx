@@ -1,11 +1,14 @@
-import { KeyRound } from "lucide-react";
+import { KeyRound, User } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+
+import { ROUTES } from "constants/routes";
 
 import { TrashMark } from "components/icons";
 import { SettingsRow } from "components/settings/SettingsRow";
 import { SettingsSection } from "components/settings/SettingsSection";
 import { Button } from "components/ui/Button";
+import { LinkButton } from "components/ui/LinkButton";
 
 interface AccountSectionProps {
     onChangePassword: () => void;
@@ -20,6 +23,15 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
 
     return (
         <SettingsSection heading={t("accountSection.heading")}>
+            <SettingsRow
+                icon={User}
+                title={t("accountSection.profileTitle")}
+                description={t("accountSection.profileDescription")}
+            >
+                <LinkButton to={ROUTES.profile} variant="secondary" size="sm">
+                    {t("accountSection.openProfileButton")}
+                </LinkButton>
+            </SettingsRow>
             <SettingsRow
                 icon={KeyRound}
                 title={t("accountSection.changePasswordTitle")}

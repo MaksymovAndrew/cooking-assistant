@@ -180,7 +180,7 @@
     }
 
     &__apply-button {
-        flex: 1;
+        flex: 2;
         height: 42px;
         border: none;
         border-radius: 8px;
@@ -192,5 +192,23 @@
         cursor: pointer;
 
         @include focus-ring;
+
+        @include respond-to(tablet) {
+            flex: 1;
+        }
+    }
+
+    &__apply-mobile {
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
+    &__apply-desktop {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: inline;
+        }
     }
 }

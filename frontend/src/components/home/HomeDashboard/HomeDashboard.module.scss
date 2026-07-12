@@ -6,8 +6,41 @@
     gap: var(--s-6);
     padding: var(--s-6) var(--s-4);
 
+    // tighter vertical rhythm on desktop so the dashboard fits a laptop viewport without a sliver of scroll
     @include respond-to(desktop) {
-        padding: var(--s-6) var(--s-5);
+        gap: var(--s-5);
+        padding: var(--s-5);
+    }
+
+    // a rotated phone is too short for the column layout, so it splits into greeting+stats+actions on the left and the recipes/expiring panels on the right
+    @include respond-to-short-landscape {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, auto);
+        gap: var(--s-3);
+        padding: var(--s-3) var(--s-4);
+
+        // GreetingHeader, StatStrip, HomeActions - the home-dashboard's 1st/2nd/4th children (3rd is the panels grid below)
+        > :nth-child(1) {
+            grid-column: 1;
+            grid-row: 1;
+            align-self: center;
+        }
+
+        > :nth-child(2) {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        > :nth-child(4) {
+            grid-column: 1;
+            grid-row: 3;
+        }
+
+        > .home-dashboard__panels {
+            grid-column: 2;
+            grid-row: 1 / 4;
+        }
     }
 
     &__panels {
@@ -18,12 +51,26 @@
         @include respond-to(desktop) {
             grid-template-columns: 1.65fr 1fr;
         }
+
+        @include respond-to-short-landscape {
+            grid-template-columns: 1fr;
+            gap: var(--s-3);
+        }
     }
 
     &__rail {
         display: flex;
         flex-direction: column;
         gap: var(--s-5);
+
+        // News is reachable via the bell button in HomeActions here, so the card is dropped to save height
+        @include respond-to-short-landscape {
+            gap: var(--s-3);
+
+            > :last-child {
+                display: none;
+            }
+        }
     }
 
     &__error {

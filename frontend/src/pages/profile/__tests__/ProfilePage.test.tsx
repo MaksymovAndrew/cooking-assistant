@@ -18,6 +18,7 @@ const CURRENT_USER: CurrentUser = {
     name: "Claude",
     surname: "Cook",
     login: "claude",
+    created_at: "2025-06-15T00:00:00.000Z",
 };
 const RECIPE: RecipeSearchResultItem = {
     id: 1,
@@ -32,6 +33,7 @@ const MENU: Menu = {
     title: "Weekday menu",
     categoryname: "Lunch",
     menucontent: "",
+    recipe_count: 3,
 };
 
 const setup = () => {

@@ -34,7 +34,7 @@ const ICON_BY_VARIANT: Record<ConfirmVariant, ConfirmModalIcon> = {
     primary: AlertCircle,
 };
 
-const ICON_SIZE = 22;
+const ICON_SIZE = 26;
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     title,
@@ -60,7 +60,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
             >
                 <Icon size={ICON_SIZE} aria-hidden="true" />
             </span>
-            {title}
+            <span>{title}</span>
         </span>
     );
 

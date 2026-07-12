@@ -1,0 +1,1 @@
+export { MenuRecipeCard } from "./MenuRecipeCard";

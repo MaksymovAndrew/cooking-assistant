@@ -38,4 +38,18 @@ describe("FormField", () => {
             "Title is required",
         );
     });
+
+    it("should render labelRight alongside the label when provided", () => {
+        render(
+            <FormField
+                label="Password"
+                htmlFor="password"
+                labelRight={<span>Forgot password?</span>}
+            >
+                <input id="password" />
+            </FormField>,
+        );
+
+        expect(screen.getByText("Forgot password?")).toBeInTheDocument();
+    });
 });

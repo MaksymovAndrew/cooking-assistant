@@ -1,4 +1,6 @@
+export { AlertTriangleMark } from "./AlertTriangleMark";
 export { BarChartMark } from "./BarChartMark";
+export { BasketAddMark } from "./BasketAddMark";
 export { BasketMark } from "./BasketMark";
 export { BookMark } from "./BookMark";
 export type { DonburiMarkProps } from "./DonburiMark.types";
@@ -8,6 +10,7 @@ export { DonburiMarkMinimal } from "./DonburiMarkMinimal";
 export { DonburiMarkSimple } from "./DonburiMarkSimple";
 export { DonburiMarkStandard } from "./DonburiMarkStandard";
 export { EditMark } from "./EditMark";
+export { GripMark } from "./GripMark";
 export type { IconProps } from "./Icon.types";
 export { NotebookMark } from "./NotebookMark";
 export { PortionsMark } from "./PortionsMark";

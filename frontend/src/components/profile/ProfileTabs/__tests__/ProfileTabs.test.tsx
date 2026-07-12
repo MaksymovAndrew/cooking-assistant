@@ -13,6 +13,7 @@ describe("ProfileTabs", () => {
             <ProfileTabs
                 activeTab={PROFILE_TAB.recipes}
                 onChange={jest.fn()}
+                onLogout={jest.fn()}
             />,
         );
 
@@ -30,7 +31,11 @@ describe("ProfileTabs", () => {
         const onChange = jest.fn();
 
         renderWithRouter(
-            <ProfileTabs activeTab={PROFILE_TAB.recipes} onChange={onChange} />,
+            <ProfileTabs
+                activeTab={PROFILE_TAB.recipes}
+                onChange={onChange}
+                onLogout={jest.fn()}
+            />,
         );
 
         await userEvent.click(screen.getByRole("tab", { name: "My menus" }));
@@ -38,11 +43,28 @@ describe("ProfileTabs", () => {
         expect(onChange).toHaveBeenCalledWith(PROFILE_TAB.menus);
     });
 
+    it("should call onLogout when the logout button is clicked", async () => {
+        const onLogout = jest.fn();
+
+        renderWithRouter(
+            <ProfileTabs
+                activeTab={PROFILE_TAB.recipes}
+                onChange={jest.fn()}
+                onLogout={onLogout}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Logout" }));
+
+        expect(onLogout).toHaveBeenCalledTimes(1);
+    });
+
     it("should render Settings as a link to the settings page", () => {
         renderWithRouter(
             <ProfileTabs
                 activeTab={PROFILE_TAB.recipes}
                 onChange={jest.fn()}
+                onLogout={jest.fn()}
             />,
         );
 

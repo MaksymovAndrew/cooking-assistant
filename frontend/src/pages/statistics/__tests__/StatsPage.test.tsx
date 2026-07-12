@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 
-import type { Menu } from "types/menu";
+import type { MenuWithStats } from "types/menu";
 import type { RecipeWithIngredientNames } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
@@ -29,12 +29,14 @@ const SAMPLE_RECIPES: RecipeWithIngredientNames[] = [
         ingredients: ["beet"],
     },
 ];
-const SAMPLE_MENUS: Menu[] = [
+const SAMPLE_MENUS: MenuWithStats[] = [
     {
         id: 1,
         title: "Weekday menu",
         categoryname: CATEGORY_NAME,
         menucontent: "",
+        recipe_count: 3,
+        total_cooking_time: 120,
     },
 ];
 
@@ -74,6 +76,6 @@ describe("StatsPage", () => {
         expect(
             (await screen.findAllByText(CATEGORY_NAME)).length,
         ).toBeGreaterThan(0);
-        expect(screen.getByText("Total menus")).toBeInTheDocument();
+        expect(screen.getAllByText("Total menus").length).toBeGreaterThan(0);
     });
 });

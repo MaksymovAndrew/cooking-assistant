@@ -12,11 +12,13 @@ import { ConfirmModal } from "components/modals/ConfirmModal";
 interface DeleteRecipeModalProps {
     modalId: string;
     recipeId: string;
+    recipeTitle: string;
 }
 
 export const DeleteRecipeModal = ({
     modalId,
     recipeId,
+    recipeTitle,
 }: DeleteRecipeModalProps) => {
     const { t } = useTranslation("recipes");
     const dispatch = useAppDispatch();
@@ -36,7 +38,10 @@ export const DeleteRecipeModal = ({
     return (
         <ConfirmModal
             title={t("recipeDetailsPage.deleteTitle")}
-            message={t("recipeDetailsPage.deleteMessage")}
+            message={t("recipeDetailsPage.deleteMessage", {
+                title: recipeTitle,
+            })}
+            confirmLabel={t("recipeDetailsPage.deleteButton")}
             isConfirmDisabled={isLoading}
             onClose={() => dispatch(closeModal(modalId))}
             onConfirm={() => void handleConfirm()}

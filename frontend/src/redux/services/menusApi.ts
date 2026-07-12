@@ -4,6 +4,7 @@ import type {
     Menu,
     MenuDetails,
     MenuListParams,
+    MenuWithStats,
     UpdateMenuRequest,
 } from "types/menu";
 import type { PaginatedResult } from "types/pagination";
@@ -55,7 +56,7 @@ export const menusApi = baseApi.injectEndpoints({
             }),
             providesTags: (result) => infiniteListProvidesTags(MENU, result),
         }),
-        getAllMenus: build.query<Menu[], null>({
+        getAllMenus: build.query<MenuWithStats[], null>({
             query: () => ({ url: API_ROUTES.menu.allUnpaginated }),
             providesTags: (result) => listProvidesTags(MENU, result),
         }),

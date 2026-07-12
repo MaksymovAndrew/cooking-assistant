@@ -94,6 +94,7 @@ describe("user routes", () => {
             name: "Bob",
             surname: "Cook",
             login: "bob",
+            created_at: "2026-01-15T00:00:00.000Z",
         };
 
         deps.userRepository.findById.mockResolvedValue(currentUser);

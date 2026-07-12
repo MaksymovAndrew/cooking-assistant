@@ -13,8 +13,7 @@ import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 const todayIso = () => new Date().toISOString().split("T")[0];
 
-// pantry view model: data comes from RTK Query (the Pantry tag refetches the
-// list after every write), the editing/selection state stays local UI state
+// pantry view model: data comes from RTK Query (the Pantry tag refetches the list after every write), the editing/selection state stays local UI state
 export const useIngredientCatalog = () => {
     const { data: rawAllIngredients } = useGetIngredientsQuery(null);
     const { data: rawUserIngredients } = useGetUserIngredientsQuery(null);
@@ -93,6 +92,12 @@ export const useIngredientCatalog = () => {
     };
 
     const handleToggleQuantityEdit = () => {
+        if (isEditingQuantity) {
+            setIsEditingQuantity(false);
+
+            return;
+        }
+
         setUpdatedIngredients(personIngredients.map((item) => ({ ...item })));
         setIsEditingQuantity(true);
         setIsEditing(false);
@@ -117,30 +122,27 @@ export const useIngredientCatalog = () => {
         );
     };
 
-    const saveUpdatedQuantities = async () => {
-        const changedIngredients = updatedIngredients.filter(
-            (updatedIngredient) => {
-                const original = personIngredients.find(
-                    (ingredient) => ingredient.id === updatedIngredient.id,
-                );
-
-                return (
-                    original &&
-                    original.quantity_person_ingradient !==
-                        updatedIngredient.quantity_person_ingradient
-                );
-            },
+    const handleSaveQuantity = async (id: number) => {
+        const updated = updatedIngredients.find(
+            (ingredient) => ingredient.id === id,
+        );
+        const original = personIngredients.find(
+            (ingredient) => ingredient.id === id,
         );
 
-        if (changedIngredients.length === 0) {
-            setIsEditingQuantity(false);
-
+        if (!updated || !original) {
             return;
         }
 
-        // close the editor regardless of outcome; a failure is toasted globally
-        await updateQuantities({ updatedIngredients: changedIngredients });
-        setIsEditingQuantity(false);
+        if (
+            original.quantity_person_ingradient ===
+            updated.quantity_person_ingradient
+        ) {
+            return;
+        }
+
+        // a failed mutation is already toasted by the global listener
+        await updateQuantities({ updatedIngredients: [updated] });
     };
 
     return {
@@ -152,7 +154,7 @@ export const useIngredientCatalog = () => {
         isEditingQuantity,
         updatedIngredients,
         handleQuantityChange,
-        saveUpdatedQuantities,
+        handleSaveQuantity,
         handleSaveOrToggleEdit,
         handleCancelEdit,
         handleToggleQuantityEdit,

@@ -8,8 +8,7 @@ import {
 } from "./forms";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
-// ids come from the create-response bodies, not card/list markup, so these
-// survive the upcoming page redesign
+// ids come from the create-response bodies, not card/list markup, so these keep working across page changes
 test.describe.configure({ mode: "serial" });
 
 let context: BrowserContext;
@@ -35,8 +34,8 @@ test("should create a recipe and capture its id from the API response", async ()
         title: `Original recipe title ${runId}`,
         description: "Created by core-flows e2e.",
         ingredient: "Potato",
-        cookingTime: "0:20",
-        servings: "a full pot",
+        cookingHours: "0",
+        cookingMinutes: "20",
     });
 
     recipeId = created.recipeId;
@@ -48,7 +47,7 @@ test("should edit the recipe and see the new title on its details page", async (
     const titleInput = page.getByLabel("Title");
     await titleInput.fill("");
     await titleInput.fill(`Updated recipe title ${runId}`);
-    await page.getByRole("button", { name: "Update Recipe" }).click();
+    await page.getByRole("button", { name: "Save changes" }).click();
     await expect(page).toHaveURL(/\/all-recipes$/);
 
     await page.goto(`/recipe/${recipeId}`);
@@ -73,7 +72,7 @@ test("should edit the menu and see the new title on its details page", async () 
     const titleInput = page.getByLabel("Menu title");
     await titleInput.fill("");
     await titleInput.fill(`Updated menu title ${runId}`);
-    await page.getByRole("button", { name: "Update Menu" }).click();
+    await page.getByRole("button", { name: "Save changes" }).click();
     await expect(page).toHaveURL(/\/all-menus$/);
 
     await page.goto(`/menu/${menuId}`);
@@ -85,14 +84,20 @@ test("should edit the menu and see the new title on its details page", async () 
 test("should delete the menu and redirect away from its details page", async () => {
     await page.goto(`/menu/${menuId}`);
     await page.getByRole("button", { name: "Delete menu" }).click();
-    await page.getByRole("button", { name: "Delete", exact: true }).click();
+    await page
+        .getByRole("dialog")
+        .getByRole("button", { name: "Delete menu" })
+        .click();
     await expect(page).toHaveURL(/\/all-menus$/);
 });
 
 test("should delete the recipe and redirect away from its details page", async () => {
     await page.goto(`/recipe/${recipeId}`);
     await page.getByRole("button", { name: "Delete recipe" }).click();
-    await page.getByRole("button", { name: "Delete", exact: true }).click();
+    await page
+        .getByRole("dialog")
+        .getByRole("button", { name: "Delete recipe" })
+        .click();
     await expect(page).toHaveURL(/\/all-recipes$/);
 });
 
@@ -110,7 +115,10 @@ test("should edit a pantry ingredient's quantity and persist it across reload", 
     await page.getByRole("button", { name: "Edit quantities" }).click();
     const quantityInput = page.locator('input[type="number"]').first();
     await quantityInput.fill("7");
-    await page.getByRole("button", { name: "Save quantities" }).click();
+    await page
+        .getByRole("button", { name: "Save", exact: true })
+        .first()
+        .click();
     await expect(page.getByText("Quantities updated")).toBeVisible();
 
     await page.reload();
@@ -122,7 +130,7 @@ test("should switch the theme via the confirm modal and persist it across reload
     const htmlBefore = await page.locator("html").getAttribute("data-theme");
 
     await page.getByRole("button", { name: "Toggle theme" }).click();
-    await page.getByRole("button", { name: "Switch theme" }).click();
+    await page.getByRole("button", { name: "Switch & reload" }).click();
     await page.waitForLoadState("load");
 
     await expect(page.locator("html")).not.toHaveAttribute(

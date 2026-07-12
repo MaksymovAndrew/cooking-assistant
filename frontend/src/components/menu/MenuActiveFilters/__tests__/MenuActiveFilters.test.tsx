@@ -10,6 +10,8 @@ describe("MenuActiveFilters", () => {
                 total={3}
                 selectedCategories={[]}
                 setSelectedCategories={jest.fn()}
+                searchQuery={null}
+                removeSearch={jest.fn()}
             />,
         );
 
@@ -22,6 +24,8 @@ describe("MenuActiveFilters", () => {
                 total={3}
                 selectedCategories={[]}
                 setSelectedCategories={jest.fn()}
+                searchQuery={null}
+                removeSearch={jest.fn()}
             />,
         );
 
@@ -38,6 +42,8 @@ describe("MenuActiveFilters", () => {
                 total={3}
                 selectedCategories={[1]}
                 setSelectedCategories={setSelectedCategories}
+                searchQuery={null}
+                removeSearch={jest.fn()}
             />,
         );
 
@@ -46,5 +52,37 @@ describe("MenuActiveFilters", () => {
         );
 
         expect(setSelectedCategories).toHaveBeenCalledWith([]);
+    });
+
+    it("should show a removable chip for an active search query", () => {
+        render(
+            <MenuActiveFilters
+                total={3}
+                selectedCategories={[]}
+                setSelectedCategories={jest.fn()}
+                searchQuery="cauliflower"
+                removeSearch={jest.fn()}
+            />,
+        );
+
+        expect(screen.getByText("“cauliflower”")).toBeInTheDocument();
+    });
+
+    it("should call removeSearch when the search chip is dismissed", async () => {
+        const removeSearch = jest.fn();
+
+        render(
+            <MenuActiveFilters
+                total={3}
+                selectedCategories={[]}
+                setSelectedCategories={jest.fn()}
+                searchQuery="cauliflower"
+                removeSearch={removeSearch}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Remove" }));
+
+        expect(removeSearch).toHaveBeenCalledTimes(1);
     });
 });

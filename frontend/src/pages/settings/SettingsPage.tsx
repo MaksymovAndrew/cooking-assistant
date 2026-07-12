@@ -22,6 +22,9 @@ const SettingsPage: React.FC = () => {
                 <h1 className={styles["settings-page__heading"]}>
                     {t("settingsPage.heading")}
                 </h1>
+                <p className={styles["settings-page__subtitle"]}>
+                    {t("settingsPage.subheading")}
+                </p>
 
                 <AppearanceSection />
                 <LanguageSection />

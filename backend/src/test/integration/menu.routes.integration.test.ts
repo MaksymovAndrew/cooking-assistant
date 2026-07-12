@@ -133,7 +133,11 @@ describe("menu routes", () => {
 
     it("should return menu details scoped to the authenticated user", async () => {
         const { app, deps } = buildTestApp();
-        const menu = { menu: { id: 9, isOwner: true }, recipes: [] };
+        const menu = {
+            menu: { id: 9, isOwner: true },
+            recipes: [],
+            allergens: [],
+        };
 
         deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
 
@@ -154,7 +158,11 @@ describe("menu routes", () => {
 
     it("should return menu details with isOwner:false when reading a menu of another user", async () => {
         const { app, deps } = buildTestApp();
-        const menu = { menu: { id: 9, isOwner: false }, recipes: [] };
+        const menu = {
+            menu: { id: 9, isOwner: false },
+            recipes: [],
+            allergens: [],
+        };
 
         deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
 

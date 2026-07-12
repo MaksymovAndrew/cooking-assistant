@@ -42,6 +42,7 @@ export const ExpiringSoon: React.FC<ExpiringSoonProps> = ({ items }) => {
             )}
             <button
                 type="button"
+                disabled
                 className={styles["expiring-soon__shopping-list"]}
             >
                 {t("expiringSoon.addToShoppingList")}

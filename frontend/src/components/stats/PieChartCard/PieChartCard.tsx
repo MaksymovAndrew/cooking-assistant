@@ -1,23 +1,15 @@
-import { useTranslation } from "react-i18next";
 import { Cell, Pie, PieChart as RechartsPieChart, Tooltip } from "recharts";
 
 import { getChartColor } from "./chartColors";
 import {
-    CENTER_LABEL_STYLE,
-    CENTER_STYLE,
-    CENTER_TOTAL_STYLE,
-    LEGEND_DOT_BASE_STYLE,
-    LEGEND_ITEM_STYLE,
-    LEGEND_WRAPPER_STYLE,
     PIE_CURSOR,
     PIE_DATA_KEY,
     PIE_NAME_KEY,
     PIE_SIZE,
-    PIE_WRAPPER_STYLE,
-    RECHARTS_SVG_STYLE,
     TOOLTIP_CONTENT_STYLE,
     TOOLTIP_WRAPPER_STYLE,
 } from "./chartStyles";
+import styles from "./PieChartCard.module.scss";
 
 export interface PieChartDatum {
     name: string;
@@ -30,14 +22,14 @@ interface PieChartCardProps {
 }
 
 const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
-    const { t } = useTranslation("stats");
     const total = data.reduce((sum, d) => sum + d.value, 0);
 
     return (
-        <div>
+        <div className={styles["pie-chart-card"]}>
             <div
                 role="presentation"
-                style={PIE_WRAPPER_STYLE}
+                className={styles["pie-chart-card__pie-wrapper"]}
+                style={{ width: PIE_SIZE, height: PIE_SIZE }}
                 onMouseDown={(e) => {
                     e.preventDefault();
                 }}
@@ -45,7 +37,7 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                 <RechartsPieChart
                     width={PIE_SIZE}
                     height={PIE_SIZE}
-                    style={RECHARTS_SVG_STYLE}
+                    className={styles["pie-chart-card__svg"]}
                 >
                     <Pie
                         data={data}
@@ -53,8 +45,8 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                         nameKey={PIE_NAME_KEY}
                         cx="50%"
                         cy="50%"
-                        innerRadius={70}
-                        outerRadius={110}
+                        innerRadius={40}
+                        outerRadius={64}
                         paddingAngle={2}
                         strokeWidth={0}
                         cursor={PIE_CURSOR}
@@ -72,25 +64,35 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                         wrapperStyle={TOOLTIP_WRAPPER_STYLE}
                     />
                 </RechartsPieChart>
-                <div aria-hidden="true" style={CENTER_STYLE}>
-                    <span style={CENTER_TOTAL_STYLE}>{total}</span>
-                    <span style={CENTER_LABEL_STYLE}>{centerLabel}</span>
+                <div
+                    aria-hidden="true"
+                    className={styles["pie-chart-card__center"]}
+                >
+                    <span className={styles["pie-chart-card__center-total"]}>
+                        {total}
+                    </span>
+                    <span className={styles["pie-chart-card__center-label"]}>
+                        {centerLabel}
+                    </span>
                 </div>
             </div>
-            <div style={LEGEND_WRAPPER_STYLE}>
+            <div className={styles["pie-chart-card__legend"]}>
                 {data.map((entry, index) => (
-                    <div key={entry.name} style={LEGEND_ITEM_STYLE}>
+                    <div
+                        key={entry.name}
+                        className={styles["pie-chart-card__legend-item"]}
+                    >
                         <span
-                            style={{
-                                ...LEGEND_DOT_BASE_STYLE,
-                                backgroundColor: getChartColor(index),
-                            }}
+                            className={styles["pie-chart-card__legend-dot"]}
+                            style={{ backgroundColor: getChartColor(index) }}
                         />
-                        <span>
-                            {t("statsPage.legendEntry", {
-                                name: entry.name,
-                                count: entry.value,
-                            })}
+                        <span className={styles["pie-chart-card__legend-name"]}>
+                            {entry.name}
+                        </span>
+                        <span
+                            className={styles["pie-chart-card__legend-value"]}
+                        >
+                            {entry.value}
                         </span>
                     </div>
                 ))}

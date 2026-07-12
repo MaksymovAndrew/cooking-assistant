@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// recipe-card placeholder glyph traced from RecipeCard.dc.html - not a stock lucide icon
+// recipe-card placeholder glyph - not a stock lucide icon
 export const UtensilsMark: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

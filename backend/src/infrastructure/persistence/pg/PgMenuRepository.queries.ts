@@ -14,14 +14,18 @@ interface MenuListRow {
     title: string;
     categoryName: string;
     menuContent: string;
+    person_id: number;
+    recipe_count: number;
     total_count: number;
 }
+
+// shared by both paginated list queries: menu_recipe joined for the per-menu recipe count needs this GROUP BY over every non-aggregated selected column
+const MENU_LIST_GROUP_BY = ` GROUP BY m.menu_id, mc.category_name`;
 
 // menu_id is the primary key, so ordering by it is already a deterministic tie-breaker
 const MENU_ORDER_BY = ` ORDER BY m.menu_id DESC`;
 
-// shared tail of both menu list queries: ordering and pagination appended to
-// the caller-assembled WHERE, then the paginated rows unwrapped
+// shared tail of both menu list queries: ordering and pagination appended to the caller-assembled WHERE, then the paginated rows unwrapped
 async function runPaginatedMenuQuery(
     pool: Pool,
     baseQuery: string,
@@ -29,7 +33,7 @@ async function runPaginatedMenuQuery(
     limit: number | undefined,
     offset: number | undefined,
 ): Promise<PaginatedResult<unknown>> {
-    let query = baseQuery + MENU_ORDER_BY;
+    let query = baseQuery + MENU_LIST_GROUP_BY + MENU_ORDER_BY;
 
     query += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
     queryParams.push(
@@ -55,10 +59,13 @@ export async function findAllMenus(
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
+        m.person_id AS person_id,
+        COUNT(DISTINCT mr.recipe_id)::int AS recipe_count,
         -- cast: COUNT() is bigint, which pg returns as a string, not a number
         COUNT(*) OVER()::int AS total_count
       FROM menu m
              LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
+             LEFT JOIN menu_recipe mr ON mr.menu_id = m.menu_id
     `;
 
     const queryParams: QueryParam[] = [];
@@ -96,10 +103,13 @@ export async function searchPersonMenus(
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
+        m.person_id AS person_id,
+        COUNT(DISTINCT mr.recipe_id)::int AS recipe_count,
         -- cast: COUNT() is bigint, which pg returns as a string, not a number
         COUNT(*) OVER()::int AS total_count
       FROM menu m
       LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
+      LEFT JOIN menu_recipe mr ON mr.menu_id = m.menu_id
       WHERE m.person_id = $1
     `;
 
@@ -125,19 +135,25 @@ interface MenuRow {
     title: string;
     categoryName: string;
     menuContent: string;
+    recipe_count: number;
+    total_cooking_time: number;
 }
 
-// unbounded, no filters/pagination - mirrors PgRecipeRepository's
-// findAllRecipes, used by the statistics page which needs every menu
+// unbounded, no filters/pagination - the statistics page needs every menu (incl. recipe count/total cooking time) for the averages and extremes
 export async function findAllMenusUnpaginated(pool: Pool): Promise<unknown[]> {
     const result = await pool.query<MenuRow>(`
       SELECT
         m.menu_id AS id,
         m.menu_title AS title,
         mc.category_name AS categoryName,
-        m.menu_content AS menuContent
+        m.menu_content AS menuContent,
+        COUNT(mr.recipe_id)::int AS recipe_count,
+        COALESCE(SUM(r.cooking_time), 0)::int AS total_cooking_time
       FROM menu m
              LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
+             LEFT JOIN menu_recipe mr ON mr.menu_id = m.menu_id
+             LEFT JOIN recipes r ON r.id = mr.recipe_id
+      GROUP BY m.menu_id, mc.category_name
       ${MENU_ORDER_BY}
     `);
 

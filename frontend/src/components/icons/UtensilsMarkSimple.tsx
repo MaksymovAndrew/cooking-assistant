@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// hero/empty-state utensils glyph traced from Recipe Detail.dc.html - not a stock lucide icon
+// hero/empty-state utensils glyph - not a stock lucide icon
 export const UtensilsMarkSimple: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import type * as ReactRouterDom from "react-router-dom";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { createMemoryRouter, RouterProvider } from "react-router-dom";
 
 import type { RecipeDetails } from "types/recipe";
 
@@ -26,7 +26,7 @@ jest.mock("react-router-dom", () => ({
 jest.mock("api/client");
 
 const TITLE = "Borscht";
-const UPDATE_RECIPE = "Update Recipe";
+const UPDATE_RECIPE = "Save changes";
 const SAMPLE: RecipeDetails = {
     id: 1,
     title: TITLE,
@@ -49,16 +49,15 @@ const setup = () => {
     });
     const store = makeTestStore();
 
+    // data router (not <MemoryRouter>): the form inside uses useBlocker
+    const router = createMemoryRouter(
+        [{ path: "/change-recipe/:id", element: <ChangeRecipePage /> }],
+        { initialEntries: ["/change-recipe/1"] },
+    );
+
     render(
         <Provider store={store}>
-            <MemoryRouter initialEntries={["/change-recipe/1"]}>
-                <Routes>
-                    <Route
-                        path="/change-recipe/:id"
-                        element={<ChangeRecipePage />}
-                    />
-                </Routes>
-            </MemoryRouter>
+            <RouterProvider router={router} />
         </Provider>,
     );
 

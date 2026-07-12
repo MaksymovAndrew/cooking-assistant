@@ -1,11 +1,14 @@
-import { Clock, Heart, Star, UtensilsCrossed } from "lucide-react";
+import { Clock, Heart, Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
 import type { MenuDetails } from "types/menu";
 
+import { BookMark } from "components/icons";
+import { MenuHeroActions } from "components/menu/MenuHeroActions";
+import { RecipeRatingStars } from "components/recipes/RecipeRatingStars";
 import { Chip } from "components/ui/Chip";
-import { OwnerActions } from "components/ui/OwnerActions";
 
 import { splitCookingTime } from "utils/cookingTimeUtils";
 
@@ -21,9 +24,7 @@ interface MenuHeroProps {
 
 const FAVOURITE_ICON_SIZE = 17;
 const STAT_ICON_SIZE = 16;
-// no rating data exists on the backend yet - a fixed decorative value matches the
-// design's rating stat without implying a real per-menu review count
-const PLACEHOLDER_RATING = "4.8";
+const RATING_ICON_SIZE = 13;
 
 export const MenuHero: React.FC<MenuHeroProps> = ({
     menu,
@@ -33,6 +34,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
     onDelete,
 }) => {
     const { t } = useTranslation("menu");
+    const favouriteLabel = t("menuDetailsPage.favourite");
     const { hours, minutes } = splitCookingTime(totalCookingTime);
     const formattedTotalTime =
         hours > 0
@@ -41,35 +43,49 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
 
     return (
         <div className={styles["menu-hero"]}>
-            <div className={styles["menu-hero__title-row"]}>
-                <h1 className={styles["menu-hero__title"]}>{menu.title}</h1>
-                <Chip variant="type">{menu.categoryname}</Chip>
+            <div className={styles["menu-hero__header"]}>
+                <div className={styles["menu-hero__title-row"]}>
+                    <h1 className={styles["menu-hero__title"]}>{menu.title}</h1>
+                    <Chip variant="type">{menu.categoryname}</Chip>
+                    <span className={styles["menu-hero__rating-inline"]}>
+                        <Star
+                            size={RATING_ICON_SIZE}
+                            aria-hidden="true"
+                            className={styles["menu-hero__rating-inline-icon"]}
+                        />
+                        {MENU_RATING}
+                        <span className={styles["menu-hero__stat-count"]}>
+                            {MENU_RATING_COUNT}
+                        </span>
+                    </span>
+                </div>
+                {menu.isOwner && (
+                    <MenuHeroActions
+                        editTo={editTo}
+                        onDelete={onDelete}
+                        editLabel={t("menuDetailsPage.editButton")}
+                        deleteLabel={t("menuDetailsPage.deleteButton")}
+                        favouriteLabel={favouriteLabel}
+                    />
+                )}
             </div>
+
             {menu.menucontent && (
                 <p className={styles["menu-hero__description"]}>
                     {menu.menucontent}
                 </p>
             )}
 
-            {menu.isOwner ? (
-                <div className={styles["menu-hero__actions"]}>
-                    <OwnerActions
-                        editTo={editTo}
-                        onDelete={onDelete}
-                        editLabel={t("menuDetailsPage.editButton")}
-                        deleteLabel={t("menuDetailsPage.deleteButton")}
-                    />
-                </div>
-            ) : (
+            {!menu.isOwner && (
                 <div className={styles["menu-hero__visitor-banner"]}>
                     <button
                         type="button"
                         disabled
-                        aria-label={t("menuDetailsPage.favourite")}
+                        aria-label={favouriteLabel}
                         className={styles["menu-hero__favourite"]}
                     >
                         <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
-                        {t("menuDetailsPage.favourite")}
+                        {favouriteLabel}
                     </button>
                     <span>{t("menuDetailsPage.visitorBanner")}</span>
                 </div>
@@ -85,27 +101,44 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                         {formattedTotalTime}
                     </span>
                 </div>
-                <div className={styles["menu-hero__stat"]}>
-                    <span className={styles["menu-hero__stat-label"]}>
-                        {t("menuDetailsPage.rating")}
-                    </span>
-                    <span className={styles["menu-hero__stat-value"]}>
-                        <Star size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {PLACEHOLDER_RATING}
-                    </span>
-                </div>
+                {menu.isOwner && (
+                    <div
+                        className={[
+                            styles["menu-hero__stat"],
+                            styles["menu-hero__stat--secondary"],
+                        ].join(" ")}
+                    >
+                        <span className={styles["menu-hero__stat-label"]}>
+                            {t("menuDetailsPage.yourRating")}
+                        </span>
+                        <RecipeRatingStars
+                            rating={MENU_RATING}
+                            ratingCount={MENU_RATING_COUNT}
+                        />
+                    </div>
+                )}
                 <div className={styles["menu-hero__stat"]}>
                     <span className={styles["menu-hero__stat-label"]}>
                         {t("menuDetailsPage.recipes")}
                     </span>
                     <span className={styles["menu-hero__stat-value"]}>
-                        <UtensilsCrossed
-                            size={STAT_ICON_SIZE}
-                            aria-hidden="true"
-                        />
+                        <BookMark size={STAT_ICON_SIZE} />
                         {recipeCount}
                     </span>
                 </div>
+            </div>
+
+            <div className={styles["menu-hero__mobile-meta"]}>
+                <span className={styles["menu-hero__mobile-meta-item"]}>
+                    <Clock size={STAT_ICON_SIZE} aria-hidden="true" />
+                    {formattedTotalTime}
+                </span>
+                <span className={styles["menu-hero__mobile-meta-item"]}>
+                    <BookMark size={STAT_ICON_SIZE} />
+                    {t("menuDetailsPage.recipesCaption", {
+                        count: recipeCount,
+                    })}
+                </span>
             </div>
         </div>
     );

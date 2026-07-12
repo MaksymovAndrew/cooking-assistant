@@ -4,12 +4,20 @@
     padding: var(--s-6) var(--s-4);
 
     &__heading {
-        margin: 0 0 var(--s-6);
+        margin: 0 0 4px;
         color: var(--text);
         letter-spacing: -0.02em;
         font:
             600 clamp(26px, 4vw, 34px) Fraunces,
             serif;
+    }
+
+    &__subtitle {
+        margin: 0 0 var(--s-6);
+        color: var(--text-muted);
+        font:
+            400 14px Inter,
+            sans-serif;
     }
 
     &__pill {

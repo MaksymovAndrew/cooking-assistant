@@ -8,14 +8,10 @@ import styles from "./AuthLayout.module.scss";
 interface AuthLayoutProps {
     tagline: string;
     description: string;
-    // the Login mockup's illustration panel shows the wordmark alone; only
-    // Register pairs it with a small icon
     brandIcon?: boolean;
     children: React.ReactNode;
 }
 
-// the richest tier (double-bend steam + foot) - the mockup's icon at every
-// size in this layout is the same full 7-path bowl, just scaled
 const BRAND_ICON_SIZE = 40;
 const ILLUSTRATION_ICON_SIZE = 90;
 const MOBILE_ICON_SIZE = 40;

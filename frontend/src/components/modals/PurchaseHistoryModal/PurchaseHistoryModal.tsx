@@ -27,7 +27,7 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
     ingredientName,
     onClose,
 }) => {
-    const { t, i18n } = useTranslation("ingredients");
+    const { t } = useTranslation("ingredients");
     const {
         data: history,
         isLoading,
@@ -88,7 +88,6 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
                         <PurchaseItem
                             key={purchase.id}
                             purchase={purchase}
-                            language={i18n.language}
                             onQuantityChange={handleQuantityChange}
                             onSave={handleSave}
                         />

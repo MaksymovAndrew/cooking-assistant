@@ -3,17 +3,65 @@
 .owner-actions {
     display: flex;
     gap: var(--s-3);
-    flex-wrap: wrap;
+
+    &__edit {
+        flex: 1;
+
+        @include respond-to(tablet) {
+            flex: none;
+        }
+    }
+
+    &__favourite {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        gap: var(--s-2);
+        width: 46px;
+        height: 46px;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--brand);
+        cursor: default;
+
+        svg {
+            flex: none;
+        }
+
+        @include respond-to(tablet) {
+            width: auto;
+            padding: 0 var(--s-4);
+            color: var(--text);
+        }
+    }
+
+    &__label {
+        display: none;
+        color: inherit;
+        font:
+            600 14px Inter,
+            sans-serif;
+
+        @include respond-to(tablet) {
+            display: inline;
+        }
+    }
 
     &__delete {
         display: inline-flex;
+        flex: none;
         align-items: center;
+        justify-content: center;
         gap: var(--s-2);
+        width: 46px;
         height: 46px;
-        padding: 0 var(--s-4);
-        border: 1px solid transparent;
+        padding: 0;
+        border: 1px solid color-mix(in srgb, var(--danger) 40%, var(--border));
         border-radius: 10px;
-        background: transparent;
+        background: color-mix(in srgb, var(--danger) 8%, var(--surface));
         color: var(--danger);
         font:
             600 14px Inter,
@@ -24,6 +72,14 @@
             border-color var(--dur-fast) var(--ease-out);
 
         @include focus-ring;
+
+        @include respond-to(tablet) {
+            width: auto;
+            padding: 0 var(--s-4);
+            margin-left: auto;
+            border-color: transparent;
+            background: transparent;
+        }
 
         @include on-hover {
             border-color: color-mix(in srgb, var(--danger) 35%, var(--border));

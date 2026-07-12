@@ -20,7 +20,7 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
-## 3.3 - 2026-07-02
+## 3.3 - 2026-07-12
 
 ### Frontend
 
@@ -90,6 +90,43 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: The Home dashboard now matches the design across mobile, tablet and desktop - stat tiles are compact icon-free numbers below desktop, the "New menu"/"New recipe" actions and a bell icon for What's new move into one row at the bottom of the page, and a dedicated "What's new" card (opening the same full popup on click) appears next to Expiring soon on desktop.
 - Changed: The "What's new" popup now lists 8 real highlights from past releases (the redesign, pantry-aware recipes, richer statistics, safer sign-in, instant list updates, the public launch, faster page loads, and private menus) instead of placeholder text, and opens as a bottom sheet on mobile instead of a centered dialog.
 - Fixed: The "What's new" popup's scrollbar no longer pokes out past its rounded corner when the list is taller than the popup; the popup is also a bit wider on tablet and desktop.
+- Changed: The menu detail page has been redesigned - owner actions (Edit, Favourite, Delete) now sit in the page header, sized consistently, and recipes appear as compact cards with the layout adapting cleanly across phone, tablet and desktop.
+- Added: A menu's ingredient list now shows every ingredient it needs - both what you already have and what's still missing, with quantities - to anyone viewing the menu, not just its owner; an "Allergens across menu" section lists the allergens found across all its recipes.
+- Changed: On a menu, "Go to pantry" now takes you straight to the pantry page to add ingredients yourself, instead of adding them automatically.
+- Added: The menu detail page shows a star-rating panel for menus you own, matching the recipe page's rating display.
+- Fixed: Delete and logout confirmation popups now center their icon, title, message and buttons.
+- Added: On phones, menu and recipe subpages now show a back button with the page title (and an edit shortcut on menus you own) in place of the full navigation bar.
+- Changed: The delete-menu confirmation now names the menu being deleted and clarifies that its recipes are kept.
+- Changed: Recipe and menu cards show an allergen warning badge when any of their ingredients contain an allergen; menu cards now show how many recipes they contain.
+- Added: The recipe and menu list pages show an active search chip and a "Clear filters" option, with a friendlier empty state when nothing matches your search or filters.
+- Changed: The theme toggle is now icon-only, and the desktop navigation shows plain text links instead of icons.
+- Changed: The Home dashboard now shows up to 9 recent recipes on desktop (4 on tablet, 2 on mobile), and switches to a two-column layout when a phone is rotated to landscape.
+- Changed: Switching between light, dark and system theme now opens a redesigned confirmation showing the target theme, and reloads the app to apply it. A new "System" option follows your device's theme automatically.
+- Changed: The "What's new" popup now shows a bullet next to each update, with the date placed under its description.
+- Changed: Pantry "Edit quantities" and "Add ingredient" buttons now have icons; editing a quantity now saves and reverts that ingredient individually instead of saving every edited ingredient at once.
+- Changed: Pantry expiry badges now show an icon (clock, checkmark or warning), and a card's border is highlighted when its ingredient is expiring soon or has expired.
+- Changed: The "Add ingredient" dropdown flags allergen-containing ingredients with a dot, matching the recipe form's ingredient picker.
+- Changed: The profile page now shows when the account was created and a "Favourites" count, and uses a redesigned, more compact layout on mobile. The profile, recipe and menu grids now use a consistent column count across screen sizes.
+- Changed: Settings gained a subtitle, a "System" theme option, and a "Profile" row linking to the profile page.
+- Added: The login page shows a decorative "Forgot password?" link; field labels no longer have trailing colons.
+- Fixed: Deleting a recipe now names the recipe being deleted and clarifies it will be removed from any menus that include it.
+- Fixed: The "scroll to top" button no longer overlaps the bottom navigation bar on mobile and tablet.
+- Fixed: The account menu dropdown no longer lets page content (e.g. the Filters button) show through it.
+- Fixed: A recipe's serving count and scaled ingredient quantities now show correctly on first load, instead of staying stuck at 1 serving until you used the +/- controls.
+- Fixed: Background page scroll is now blocked while a filter panel or bottom sheet is open.
+- Fixed: The statistics page no longer overflows horizontally on narrow phone screens.
+- Fixed: Leaving a recipe or menu form with unsaved changes now asks "Discard changes?" no matter how you leave (navigation bar, breadcrumb, back button) - previously only the Cancel button warned, and any other way out silently lost your edits.
+- Fixed: Submitting an incomplete recipe form now flags every missing field at once, each with its own message under the field - previously only one error showed at a time, and a filled field could be outlined red because a different one was empty.
+- Fixed: The Home dashboard's "New menu"/"New recipe" action row no longer overflows past the edge of the page on narrow phone screens.
+- Fixed: The profile tab row no longer shows a visible scrollbar on phones - it still swipes, just without the bar.
+- Fixed: Avatar initials now scale with the avatar's size instead of staying a fixed small size regardless of how large the avatar is.
+- Changed: The statistics "fastest/slowest" and "most/least" lists now always show up to three items, instead of only the ones exactly tied for the extreme value.
+- Changed: Statistics now show cooking times in a compact "1h 25m" format that always fits on one line, including on phones.
+- Changed: The "scroll to top" button now fades and scales in and out smoothly instead of appearing and disappearing abruptly.
+- Fixed: The Settings page no longer lets you scroll past its last section into empty space.
+- Changed: The Home dashboard has tighter spacing on desktop so it fits a laptop screen without a sliver of extra scroll.
+- Fixed: Hovering an allergen-flagged recipe or menu card now keeps its amber border, instead of switching to the brand purple used for other cards.
+- Added: Recipes and menus you own are now highlighted with a purple border in the "All recipes" and "All menus" lists too, not just on your own-content pages.
 
 ### Backend
 
@@ -99,6 +136,8 @@ changelogs and the tags and now track everything here against one shared version
 - Added: The session check now returns your name alongside your account id, so the frontend can greet you by name.
 - Security: Updated vulnerable third-party libraries (a CRLF-injection fix in form-data, a DoS fix in js-yaml, and a file-read fix in the build tool's esbuild).
 - Fixed: The "Servings" field on a recipe now correctly saves whatever was typed (e.g. "a full pot"), instead of silently discarding non-numeric answers.
+- Added: The profile page now shows when an account was created.
+- Changed: The pantry unit "gr" has been renamed to "g".
 
 ### Project
 

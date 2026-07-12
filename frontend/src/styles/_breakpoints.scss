@@ -1,5 +1,6 @@
 $bp-tablet: 768px;
 $bp-desktop: 1280px;
+$bp-short-landscape-height: 500px;
 
 @mixin respond-to($breakpoint) {
     @if $breakpoint == tablet {
@@ -12,5 +13,12 @@ $bp-desktop: 1280px;
         }
     } @else {
         @error "Unknown breakpoint `#{$breakpoint}`. Use `tablet` or `desktop`.";
+    }
+}
+
+// a phone rotated to landscape is too short for the normal tablet/desktop width tiers to kick in usefully, so it gets its own layout by height+orientation
+@mixin respond-to-short-landscape {
+    @media (orientation: landscape) and (max-height: $bp-short-landscape-height) {
+        @content;
     }
 }

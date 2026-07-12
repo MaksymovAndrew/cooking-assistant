@@ -6,7 +6,7 @@
     padding: var(--s-6) var(--s-4);
 
     &__breadcrumb {
-        display: flex;
+        display: none;
         align-items: center;
         gap: var(--s-2);
         margin-bottom: var(--s-5);
@@ -14,6 +14,10 @@
         font:
             500 13px Inter,
             sans-serif;
+
+        @include respond-to(desktop) {
+            display: flex;
+        }
 
         a {
             color: var(--text-muted);
@@ -36,11 +40,30 @@
     &__grid {
         display: grid;
         grid-template-columns: 1fr;
+        grid-template-areas:
+            "hero"
+            "ingredients"
+            "description";
         gap: var(--s-7);
 
         @include respond-to(desktop) {
             grid-template-columns: 1.05fr 1fr;
+            grid-template-areas:
+                "hero ingredients"
+                "description ingredients";
             align-items: start;
         }
+    }
+
+    &__hero-area {
+        grid-area: hero;
+    }
+
+    &__ingredients-area {
+        grid-area: ingredients;
+    }
+
+    &__description-area {
+        grid-area: description;
     }
 }

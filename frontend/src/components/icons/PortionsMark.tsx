@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// "portions" glyph traced from Design System.dc.html's iconography legend - not a stock lucide icon
+// "portions" glyph - not a stock lucide icon
 export const PortionsMark: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

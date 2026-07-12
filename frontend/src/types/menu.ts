@@ -3,6 +3,14 @@ export interface Menu {
     title: string;
     categoryname: string;
     menucontent: string;
+    recipe_count: number;
+    // present on the browse/person list endpoints, absent from the unpaginated stats-only query - optional so it stays honest about which callers have it
+    person_id?: number;
+}
+
+// shape returned by GET /api/menus (unpaginated) - the plain menu list plus each menu's recipe count/total cooking time, used for stats-page averages
+export interface MenuWithStats extends Menu {
+    total_cooking_time: number;
 }
 
 export interface MenuCategory {
@@ -12,6 +20,7 @@ export interface MenuCategory {
 
 export interface MissingIngredient {
     ingredient_name: string;
+    needed_quantity: number;
     missing_quantity: number;
     unit_name: string;
 }
@@ -36,6 +45,8 @@ export interface MenuDetails {
         isOwner: boolean;
     };
     recipes: MenuDetailRecipe[];
+    // distinct raw allergen values across every recipe of the menu ("None" included)
+    allergens: string[];
 }
 
 export interface MenuListParams {

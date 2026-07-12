@@ -1,10 +1,12 @@
 import { act } from "@testing-library/react";
 import type * as ReactRouterDom from "react-router-dom";
 
+import type { CurrentUser } from "types/auth";
 import type { RecipeListItem } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { authApi } from "redux/services/authApi";
 import { recipesApi } from "redux/services/recipesApi";
 import { recipeTypesApi } from "redux/services/recipeTypesApi";
 
@@ -36,6 +38,13 @@ const RECIPE_2: RecipeListItem = {
     type_name: "Main",
     creation_date: "2024-01-02",
     cooking_time: 45,
+};
+const CURRENT_USER: CurrentUser = {
+    id: 1,
+    name: "Claude",
+    surname: "Cook",
+    login: "claude",
+    created_at: "2025-06-15T00:00:00.000Z",
 };
 
 // matches the default filters slice state + no URL ingredient search, so the
@@ -70,6 +79,7 @@ const setup = async (
     await Promise.all([
         store.dispatch(endpoint.initiate(DEFAULT_PARAMS)),
         store.dispatch(recipeTypesApi.endpoints.getRecipeTypes.initiate(null)),
+        store.dispatch(authApi.endpoints.getMe.initiate(null)),
     ]);
 
     return renderHookWithStore(() => useRecipeListView(source), store);
@@ -78,6 +88,9 @@ const setup = async (
 describe("useRecipeListView", () => {
     it("should flatten the loaded page, report the total and keep the server order", async () => {
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -99,8 +112,31 @@ describe("useRecipeListView", () => {
         expect(result.current.noRecipes).toBe(false);
     });
 
+    it("should expose the current user's id, for per-item ownership checks in the all-recipes view", async () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
+            if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.recipes.byFilters) {
+                return Promise.resolve({ data: { items: [], total: 0 } });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const { result } = await setup();
+
+        expect(result.current.currentUserId).toBe(CURRENT_USER.id);
+    });
+
     it("should report noRecipes once loading succeeds with zero results", async () => {
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -119,6 +155,9 @@ describe("useRecipeListView", () => {
 
     it("should request the current user's recipes when the source is person", async () => {
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -142,6 +181,9 @@ describe("useRecipeListView", () => {
 
     it("should fetch the next page and append it without dropping earlier rows", async () => {
         mockedGet.mockImplementation((url: string, config?: unknown) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -177,6 +219,9 @@ describe("useRecipeListView", () => {
         const store = makeTestStore();
 
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -211,6 +256,9 @@ describe("useRecipeListView", () => {
 
     it("should keep loaded recipes and report loadMoreError when the next page fails", async () => {
         mockedGet.mockImplementation((url: string, config?: unknown) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
@@ -240,6 +288,9 @@ describe("useRecipeListView", () => {
 
     it("should dispatch filter changes through the store setters", async () => {
         mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }

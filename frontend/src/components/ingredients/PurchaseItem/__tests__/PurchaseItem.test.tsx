@@ -31,7 +31,6 @@ const setup = (
     render(
         <PurchaseItem
             purchase={purchase}
-            language="en"
             onQuantityChange={onQuantityChange}
             onSave={onSave}
         />,

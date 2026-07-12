@@ -22,6 +22,7 @@ describe("IngredientCard", () => {
                 ingredient={BASE_INGREDIENT}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={jest.fn()}
             />,
@@ -38,6 +39,7 @@ describe("IngredientCard", () => {
                 ingredient={{ ...BASE_INGREDIENT, allergens: "Dairy" }}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={jest.fn()}
             />,
@@ -52,6 +54,7 @@ describe("IngredientCard", () => {
                 ingredient={{ ...BASE_INGREDIENT, allergens: null }}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={jest.fn()}
             />,
@@ -66,6 +69,7 @@ describe("IngredientCard", () => {
                 ingredient={BASE_INGREDIENT}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={jest.fn()}
             />,
@@ -84,6 +88,7 @@ describe("IngredientCard", () => {
                 }}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={jest.fn()}
             />,
@@ -100,6 +105,7 @@ describe("IngredientCard", () => {
                 ingredient={BASE_INGREDIENT}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={onOpenHistory}
                 onDelete={jest.fn()}
             />,
@@ -118,6 +124,7 @@ describe("IngredientCard", () => {
                 ingredient={BASE_INGREDIENT}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={onDelete}
             />,
@@ -128,7 +135,7 @@ describe("IngredientCard", () => {
         expect(onDelete).toHaveBeenCalledWith(BASE_INGREDIENT);
     });
 
-    it("should show a quantity input instead of delete when editing quantity", async () => {
+    it("should show a quantity input and a Save button instead of Details/Delete when editing quantity", async () => {
         const onQuantityChange = jest.fn();
 
         render(
@@ -136,6 +143,7 @@ describe("IngredientCard", () => {
                 ingredient={BASE_INGREDIENT}
                 isEditingQuantity={true}
                 onQuantityChange={onQuantityChange}
+                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
                 onDelete={jest.fn()}
             />,
@@ -144,9 +152,69 @@ describe("IngredientCard", () => {
         expect(
             screen.queryByRole("button", { name: "Delete" }),
         ).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole("button", { name: "Details" }),
+        ).not.toBeInTheDocument();
 
         await userEvent.type(screen.getByRole("spinbutton"), "5");
 
         expect(onQuantityChange).toHaveBeenCalledWith(1, 35);
+    });
+
+    it("should call onSaveQuantity with the ingredient's id when the card's Save button is clicked", async () => {
+        const onSaveQuantity = jest.fn();
+
+        render(
+            <IngredientCard
+                ingredient={BASE_INGREDIENT}
+                isEditingQuantity={true}
+                onQuantityChange={jest.fn()}
+                onSaveQuantity={onSaveQuantity}
+                onOpenHistory={jest.fn()}
+                onDelete={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+        expect(onSaveQuantity).toHaveBeenCalledWith(1);
+    });
+
+    it("should show a Clock icon badge and an amber border for an ingredient expiring soon", () => {
+        render(
+            <IngredientCard
+                ingredient={{
+                    ...BASE_INGREDIENT,
+                    days_to_expire: 3,
+                    purchase_date: new Date().toISOString(),
+                }}
+                isEditingQuantity={false}
+                onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
+                onOpenHistory={jest.fn()}
+                onDelete={jest.fn()}
+            />,
+        );
+
+        expect(screen.getAllByText("3 days")).toHaveLength(2);
+    });
+
+    it("should show a 'Fresh' badge for an ingredient well within its shelf life", () => {
+        render(
+            <IngredientCard
+                ingredient={{
+                    ...BASE_INGREDIENT,
+                    days_to_expire: 30,
+                    purchase_date: new Date().toISOString(),
+                }}
+                isEditingQuantity={false}
+                onQuantityChange={jest.fn()}
+                onSaveQuantity={jest.fn()}
+                onOpenHistory={jest.fn()}
+                onDelete={jest.fn()}
+            />,
+        );
+
+        expect(screen.getByText("Fresh")).toBeInTheDocument();
     });
 });

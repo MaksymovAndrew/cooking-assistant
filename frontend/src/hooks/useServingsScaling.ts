@@ -1,10 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const LEADING_NUMBER = /^\d+/;
 const MIN_SERVINGS = 1;
 
-// only recipes whose servings text starts with a number (e.g. "4 servings")
-// can be scaled - free-text values like "1 large pot" are shown as-is
+// only recipes whose servings text starts with a number (e.g. "4 servings") can be scaled - free-text values like "1 large pot" are shown as-is
 export const useServingsScaling = (servings: string | null) => {
     const parsed = useMemo(() => {
         if (!servings) {
@@ -20,6 +19,13 @@ export const useServingsScaling = (servings: string | null) => {
     }, [servings]);
 
     const [current, setCurrent] = useState(parsed?.base ?? MIN_SERVINGS);
+
+    // servings resolve after the recipe query loads, so the useState initializer above only sees the real base once this effect runs
+    useEffect(() => {
+        if (parsed) {
+            setCurrent(parsed.base);
+        }
+    }, [parsed]);
 
     if (!parsed) {
         return {

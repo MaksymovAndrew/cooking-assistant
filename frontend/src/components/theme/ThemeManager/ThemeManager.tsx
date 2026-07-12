@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 
-import { THEME_STORAGE_KEY } from "constants/theme";
-
 import { useTheme } from "hooks/useTheme";
 
 // mirrors --bg into <meta name="theme-color"> so Android/older iOS browser chrome follows the theme
@@ -19,12 +17,12 @@ const syncThemeColorMeta = () => {
     });
 };
 
+// persistence is owned by ThemeChangeConfirmModal - this only ever applies the resolved mode to the DOM, never writes storage itself
 export const ThemeManager = () => {
     const { mode } = useTheme();
 
     useEffect(() => {
         document.documentElement.dataset.theme = mode;
-        localStorage.setItem(THEME_STORAGE_KEY, mode);
         syncThemeColorMeta();
     }, [mode]);
 

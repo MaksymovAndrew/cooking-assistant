@@ -46,6 +46,7 @@ const MENU_1: Menu = {
     title: "Weekday menu",
     categoryname: "Lunch",
     menucontent: "quick",
+    recipe_count: 3,
 };
 
 const EXPIRED_INGREDIENT: UserIngredient = {

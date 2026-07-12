@@ -8,7 +8,7 @@ const RELEASE_3_3_DATE = "2026-07-02";
 
 // the "What's new" feed - every entry must describe a real shipped release (see CHANGELOG.md)
 export const NEWS_ITEMS: readonly NewsEntry[] = [
-    { id: "redesign", date: RELEASE_3_3_DATE },
+    { id: "redesign", date: "2026-07-12" },
     { id: "pantryAware", date: RELEASE_3_3_DATE },
     { id: "statsCharts", date: RELEASE_3_3_DATE },
     { id: "lockout", date: "2026-06-27" },

@@ -6,8 +6,8 @@ import { IngredientPicker } from "components/recipes/IngredientPicker";
 const SEARCH_PLACEHOLDER = "Search ingredients...";
 
 const INGREDIENTS = [
-    { id: 1, name: "Potato", unit_name: "g" },
-    { id: 2, name: "Onion", unit_name: "g" },
+    { id: 1, name: "Potato", unit_name: "g", allergens: null },
+    { id: 2, name: "Onion", unit_name: "g", allergens: null },
 ];
 
 describe("IngredientPicker", () => {
@@ -51,7 +51,7 @@ describe("IngredientPicker", () => {
         ).not.toBeInTheDocument();
     });
 
-    it("should not show already-selected ingredients as matches", async () => {
+    it("should show already-selected ingredients as a disabled match", async () => {
         render(
             <IngredientPicker
                 allIngredients={INGREDIENTS}
@@ -66,13 +66,11 @@ describe("IngredientPicker", () => {
             "o",
         );
 
-        expect(
-            screen.queryByRole("button", { name: /potato/i }),
-        ).not.toBeInTheDocument();
-        // "O" is highlighted separately from "nion", so match the unhighlighted remainder
+        // the matched "o" is highlighted separately, so match the unhighlighted remainder
+        expect(screen.getByRole("button", { name: /tato/i })).toBeDisabled();
         expect(
             screen.getByRole("button", { name: /nion/i }),
-        ).toBeInTheDocument();
+        ).not.toBeDisabled();
     });
 
     it("should show a no-matches message when nothing matches", async () => {

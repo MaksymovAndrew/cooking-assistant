@@ -24,7 +24,7 @@ interface RecipeSearchRow {
 
 const BASE_RECIPE_SELECT = `
         SELECT r.id, r.title, r.content, r.person_id, r.type_id, r.creation_date, r.cooking_time,
-               rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name)) AS ingredients,
+               rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name, 'allergens', i.allergens)) AS ingredients,
                -- cast: COUNT() is bigint, which pg returns as a string, not a number
                COUNT(*) OVER()::int AS total_count
         FROM recipes r
@@ -99,8 +99,7 @@ function buildRecipeOrderBy(sortOrder?: "asc" | "desc"): string {
     return ` ORDER BY r.creation_date DESC, r.id DESC`;
 }
 
-// shared tail of both searches: filters, grouping, ordering, and pagination
-// applied on top of the caller's WHERE seed
+// shared tail of both searches: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed
 async function runRecipeSearch(
     pool: Pool,
     whereSeed: string,

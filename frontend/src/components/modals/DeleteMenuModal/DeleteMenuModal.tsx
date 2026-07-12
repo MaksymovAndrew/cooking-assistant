@@ -12,9 +12,14 @@ import { ConfirmModal } from "components/modals/ConfirmModal";
 interface DeleteMenuModalProps {
     modalId: string;
     menuId: string | number;
+    menuTitle: string;
 }
 
-export const DeleteMenuModal = ({ modalId, menuId }: DeleteMenuModalProps) => {
+export const DeleteMenuModal = ({
+    modalId,
+    menuId,
+    menuTitle,
+}: DeleteMenuModalProps) => {
     const { t } = useTranslation("menu");
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -33,7 +38,8 @@ export const DeleteMenuModal = ({ modalId, menuId }: DeleteMenuModalProps) => {
     return (
         <ConfirmModal
             title={t("menuDetailsPage.deleteTitle")}
-            message={t("menuDetailsPage.deleteMessage")}
+            message={t("menuDetailsPage.deleteMessage", { title: menuTitle })}
+            confirmLabel={t("menuDetailsPage.deleteButton")}
             isConfirmDisabled={isLoading}
             onClose={() => dispatch(closeModal(modalId))}
             onConfirm={() => void handleConfirm()}

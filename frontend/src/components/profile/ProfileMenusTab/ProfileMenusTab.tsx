@@ -1,7 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
 import type { Menu } from "types/menu";
+
+import { useMediaQuery } from "hooks/useMediaQuery";
 
 import { NotebookMark } from "components/icons";
 import { MenuCard } from "components/menu/MenuCard";
@@ -26,6 +29,7 @@ export const ProfileMenusTab: React.FC<ProfileMenusTabProps> = ({
     fetchNextPage,
 }) => {
     const { t } = useTranslation("profile");
+    const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
 
     if (menus.length === 0) {
         return (
@@ -42,7 +46,9 @@ export const ProfileMenusTab: React.FC<ProfileMenusTabProps> = ({
                         id={menu.id}
                         title={menu.title}
                         categoryName={menu.categoryname}
+                        recipeCount={menu.recipe_count}
                         mine
+                        variant={isMobile ? "row" : "grid"}
                     />
                 ))}
             </div>

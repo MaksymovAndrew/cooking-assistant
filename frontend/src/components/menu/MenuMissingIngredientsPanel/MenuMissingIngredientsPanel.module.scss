@@ -1,16 +1,23 @@
 @use "styles/abstracts" as *;
 
 .menu-missing-ingredients-panel {
-    position: sticky;
-    top: 8px;
     display: flex;
     flex-direction: column;
     gap: var(--s-3);
-    max-height: 660px;
-    padding: var(--s-4);
+    padding: 14px;
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
     background: var(--surface);
+
+    @include respond-to(tablet) {
+        padding: var(--s-4);
+    }
+
+    @include respond-to(desktop) {
+        position: sticky;
+        top: 8px;
+        max-height: 660px;
+    }
 
     &__header {
         display: flex;
@@ -21,26 +28,42 @@
     &__title {
         color: var(--text);
         font:
-            600 15px Fraunces,
+            600 14px Fraunces,
             serif;
+
+        @include respond-to(desktop) {
+            font-size: 15px;
+        }
     }
 
     &__badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 22px;
-        height: 22px;
-        padding: 0 7px;
-        border-radius: var(--r-pill);
-        background: color-mix(in srgb, var(--danger) 16%, transparent);
-        color: var(--danger);
-        font:
-            700 11px "Geist Mono",
-            monospace;
+        display: none;
+
+        @include respond-to(tablet) {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: var(--r-pill);
+            background: color-mix(in srgb, var(--danger) 16%, transparent);
+            color: var(--danger);
+            font:
+                700 10px "Geist Mono",
+                monospace;
+        }
+
+        @include respond-to(desktop) {
+            min-width: 22px;
+            height: 22px;
+            padding: 0 7px;
+            font-size: 11px;
+        }
     }
 
     &__empty {
+        margin: 0;
         color: var(--text-2);
         font:
             400 13px Inter,
@@ -50,27 +73,69 @@
     &__list {
         display: flex;
         flex-direction: column;
-        gap: var(--s-2);
+        gap: 7px;
         margin: 0;
-        overflow-y: auto;
         list-style: none;
         padding-inline-start: 0;
+
+        @include respond-to(tablet) {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--s-2);
+        }
+
+        @include respond-to(desktop) {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 470px;
+            padding-right: 2px;
+        }
     }
 
     &__row {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: var(--s-2);
-        padding: 10px 13px;
-        border: 1px solid color-mix(in srgb, var(--danger) 25%, var(--border));
+        gap: 9px;
+        min-width: 0;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
         border-radius: var(--r-sm);
-        background: color-mix(in srgb, var(--danger) 7%, var(--surface-2));
+        background: var(--surface-2);
+
+        @include respond-to(tablet) {
+            padding: 9px 13px;
+        }
+
+        @include respond-to(desktop) {
+            padding: 10px 13px;
+        }
+    }
+
+    // still-missing ingredients get the warning highlight, mirroring RecipeIngredientsPanel's row--missing treatment
+    &__row--missing {
+        border-color: color-mix(in srgb, var(--warning) 35%, var(--border));
+        background: color-mix(in srgb, var(--warning) 9%, var(--surface));
+    }
+
+    &__check {
+        flex: none;
+        color: var(--success);
+    }
+
+    &__missing-dot {
+        display: block;
+        flex: none;
+        width: 9px;
+        height: 9px;
+        border-radius: var(--r-pill);
+        background: var(--warning);
     }
 
     &__name {
         @include truncate;
 
+        flex: 1;
         min-width: 0;
         color: var(--text);
         font:
@@ -80,9 +145,113 @@
 
     &__qty {
         flex: none;
-        color: var(--danger);
+        color: var(--text-2);
+        white-space: nowrap;
         font:
-            600 11px "Geist Mono",
+            500 12px "Geist Mono",
             monospace;
+    }
+
+    &__add {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: center;
+            gap: var(--s-2);
+            width: 100%;
+            height: 42px;
+            border: none;
+            border-radius: var(--r-sm);
+            background: var(--brand-strong);
+            color: var(--on-brand);
+            cursor: pointer;
+            text-decoration: none;
+            font:
+                600 13px Inter,
+                sans-serif;
+
+            @include focus-ring;
+        }
+    }
+
+    &__allergens-block {
+        flex: none;
+        padding-top: 11px;
+        border-top: 1px solid var(--border);
+
+        @include respond-to(tablet) {
+            padding-top: 13px;
+        }
+    }
+
+    &__allergens-head {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 9px;
+
+        @include respond-to(tablet) {
+            gap: 7px;
+            margin-bottom: 10px;
+        }
+    }
+
+    &__dot {
+        flex: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--warning);
+
+        @include respond-to(tablet) {
+            width: 9px;
+            height: 9px;
+        }
+    }
+
+    &__allergens-label {
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font:
+            500 11px "Geist Mono",
+            monospace;
+
+        @include respond-to(tablet) {
+            font-size: 12px;
+        }
+    }
+
+    &__allergens {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+
+        @include respond-to(tablet) {
+            gap: 7px;
+        }
+    }
+
+    &__allergen {
+        display: inline-flex;
+        align-items: center;
+        height: 25px;
+        padding: 0 11px;
+        border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--warning) 12%, var(--surface));
+        color: var(--warning);
+        font:
+            600 11px Inter,
+            sans-serif;
+
+        @include respond-to(tablet) {
+            height: 27px;
+            padding: 0 12px;
+            font-size: 12px;
+        }
     }
 }

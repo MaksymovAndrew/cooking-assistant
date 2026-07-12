@@ -6,14 +6,12 @@ import { NAV_ITEMS } from "constants/navigation";
 
 import styles from "./MainNav.module.scss";
 
-const ICON_SIZE = 17;
-
 export const MainNav: React.FC = () => {
     const { t } = useTranslation();
 
     return (
         <nav className={styles["main-nav"]}>
-            {NAV_ITEMS.map(({ to, labelKey, Icon }) => (
+            {NAV_ITEMS.map(({ to, labelKey }) => (
                 <NavLink
                     key={to}
                     to={to}
@@ -26,8 +24,7 @@ export const MainNav: React.FC = () => {
                             .join(" ")
                     }
                 >
-                    <Icon size={ICON_SIZE} aria-hidden="true" />
-                    <span>{t(labelKey)}</span>
+                    {t(labelKey)}
                 </NavLink>
             ))}
         </nav>

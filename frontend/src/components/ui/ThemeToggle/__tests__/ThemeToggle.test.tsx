@@ -8,21 +8,31 @@ import { ThemeToggle } from "components/ui/ThemeToggle";
 import { renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
 
+const TOGGLE_BUTTON_NAME = "Toggle theme";
+
 describe("ThemeToggle", () => {
-    it("should show the moon icon and dark label in dark mode", () => {
+    it("should render as an icon-only button in dark mode, with no visible label", () => {
         renderWithProviders(<ThemeToggle />, {
             store: makeTestStore({ theme: { mode: "dark" } }),
         });
 
-        expect(screen.getByText("Dark")).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: TOGGLE_BUTTON_NAME }),
+        ).toBeInTheDocument();
+        expect(screen.queryByText("Dark")).not.toBeInTheDocument();
+        expect(screen.queryByText("Light")).not.toBeInTheDocument();
     });
 
-    it("should show the sun icon and light label in light mode", () => {
+    it("should render as an icon-only button in light mode, with no visible label", () => {
         renderWithProviders(<ThemeToggle />, {
             store: makeTestStore({ theme: { mode: "light" } }),
         });
 
-        expect(screen.getByText("Light")).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: TOGGLE_BUTTON_NAME }),
+        ).toBeInTheDocument();
+        expect(screen.queryByText("Dark")).not.toBeInTheDocument();
+        expect(screen.queryByText("Light")).not.toBeInTheDocument();
     });
 
     it("should open the theme-change confirmation modal with the opposite mode when clicked", async () => {
@@ -31,7 +41,7 @@ describe("ThemeToggle", () => {
         renderWithProviders(<ThemeToggle />, { store });
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Toggle theme" }),
+            screen.getByRole("button", { name: TOGGLE_BUTTON_NAME }),
         );
 
         expect(store.getState().ui.modal).toMatchObject({

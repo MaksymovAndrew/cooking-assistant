@@ -25,7 +25,7 @@ const TITLE = "Mashed potatoes";
 const DESCRIPTION = "Boil and mash";
 const SAMPLE_TYPES = [{ id: TYPE_ID, type_name: "Soup", description: "" }];
 const SAMPLE_INGREDIENTS = [
-    { id: INGREDIENT_ID, name: "Potato", unit_name: "g" },
+    { id: INGREDIENT_ID, name: "Potato", unit_name: "g", allergens: null },
 ];
 
 // pre-seed the cache by awaiting the real query thunks before the hook mounts,
@@ -54,8 +54,8 @@ describe("useCreateRecipePage", () => {
         act(() => {
             result.current.form.setTitle(TITLE);
             result.current.form.setContent(DESCRIPTION);
-            result.current.form.setCookingTime("0:30");
-            result.current.form.setServings("2");
+            result.current.form.setCookingHours("0");
+            result.current.form.setCookingMinutes("30");
             result.current.form.setSelectedTypeId(TYPE_ID);
             result.current.form.toggleIngredientSelection(
                 SAMPLE_INGREDIENTS[0],
@@ -100,8 +100,8 @@ describe("useCreateRecipePage", () => {
         act(() => {
             result.current.form.setTitle(TITLE);
             result.current.form.setContent(DESCRIPTION);
-            result.current.form.setCookingTime("0:30");
-            result.current.form.setServings("2");
+            result.current.form.setCookingHours("0");
+            result.current.form.setCookingMinutes("30");
             result.current.form.setSelectedTypeId(TYPE_ID);
             result.current.form.toggleIngredientSelection(
                 SAMPLE_INGREDIENTS[0],

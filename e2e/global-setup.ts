@@ -21,12 +21,24 @@ async function createAccount(
     const { login, name } = account;
     const context = await request.newContext();
 
-    await context.post(`${BACKEND_URL}/api/register`, {
+    const registerResponse = await context.post(`${BACKEND_URL}/api/register`, {
         data: { name, surname: "E2E", login, password: login },
     });
-    await context.post(`${BACKEND_URL}/api/login`, {
+    if (!registerResponse.ok()) {
+        throw new Error(
+            `global-setup: register failed for "${login}" (${registerResponse.status()}): ${await registerResponse.text()}`,
+        );
+    }
+
+    const loginResponse = await context.post(`${BACKEND_URL}/api/login`, {
         data: { login, password: login },
     });
+    if (!loginResponse.ok()) {
+        throw new Error(
+            `global-setup: login failed for "${login}" (${loginResponse.status()}): ${await loginResponse.text()}`,
+        );
+    }
+
     await context.storageState({ path: storagePath });
     await context.dispose();
 }

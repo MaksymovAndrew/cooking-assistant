@@ -22,7 +22,13 @@ import { makeTestStore } from "test/store";
 jest.mock("api/client");
 
 const LIST: Menu[] = [
-    { id: 1, title: "Week", categoryname: "Weekly", menucontent: "x" },
+    {
+        id: 1,
+        title: "Week",
+        categoryname: "Weekly",
+        menucontent: "x",
+        recipe_count: 3,
+    },
 ];
 const PAGE = { items: LIST, total: LIST.length };
 const PARAMS: MenuListParams = { menu_name: "Week" };
@@ -36,6 +42,7 @@ const DETAIL: MenuDetails = {
         isOwner: true,
     },
     recipes: [],
+    allergens: [],
 };
 const CREATE: CreateMenuRequest = {
     menuTitle: "Week",

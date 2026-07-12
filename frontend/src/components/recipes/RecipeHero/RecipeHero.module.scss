@@ -55,12 +55,25 @@
     &__stats {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--s-6);
+        gap: var(--s-4);
         margin-bottom: var(--s-5);
+
+        @include respond-to(tablet) {
+            gap: var(--s-6);
+        }
+    }
+
+    // mobile shows a compact, unlabeled time+portions row only (no date, no rating) - the labeled 4-up meta grid is tablet+ only
+    &__stat--secondary {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: block;
+        }
     }
 
     &__stat-label {
-        display: block;
+        display: none;
         margin-bottom: 5px;
         color: var(--text-muted);
         letter-spacing: 0.08em;
@@ -68,19 +81,38 @@
         font:
             500 11px "Geist Mono",
             monospace;
+
+        @include respond-to(tablet) {
+            display: block;
+        }
     }
 
     &__stat-value {
         display: flex;
         align-items: center;
-        gap: 7px;
-        color: var(--text);
+        gap: 6px;
+        color: var(--text-2);
         font:
-            500 16px "Geist Mono",
+            500 13px "Geist Mono",
             monospace;
 
         svg {
+            width: 15px;
+            height: 15px;
             color: var(--brand);
+        }
+
+        @include respond-to(tablet) {
+            gap: 7px;
+            color: var(--text);
+            font:
+                500 16px "Geist Mono",
+                monospace;
+
+            svg {
+                width: 17px;
+                height: 17px;
+            }
         }
     }
 
@@ -88,22 +120,31 @@
         margin-bottom: var(--s-6);
     }
 
-    &__description-label {
-        display: block;
-        margin-bottom: 10px;
+    &__visitor-banner {
+        display: flex;
+        align-items: center;
+        gap: var(--s-4);
+        margin-bottom: var(--s-6);
         color: var(--text-muted);
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
         font:
-            500 13px "Geist Mono",
-            monospace;
+            500 13px Inter,
+            sans-serif;
     }
 
-    &__description {
-        margin: var(--s-5) 0 0;
-        color: var(--text-2);
+    &__visitor-favourite {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: var(--s-2);
+        height: 46px;
+        padding: 0 var(--s-4);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--text);
         font:
-            400 15px/1.65 Inter,
+            600 14px Inter,
             sans-serif;
+        cursor: default;
     }
 }

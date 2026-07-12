@@ -40,6 +40,19 @@
     &__stepper {
         display: flex;
         align-items: center;
+        gap: 10px;
+    }
+
+    &__stepper-label {
+        color: var(--text-muted);
+        font:
+            500 12px Inter,
+            sans-serif;
+    }
+
+    &__stepper-control {
+        display: flex;
+        align-items: center;
         gap: 2px;
         padding: 3px;
         border: 1px solid var(--border);
@@ -97,6 +110,14 @@
         &:last-child {
             border-bottom: none;
         }
+    }
+
+    &__row--missing {
+        margin: 2px 0;
+        padding: var(--s-2) var(--s-3);
+        border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--warning) 9%, var(--surface));
     }
 
     &__have-icon {
@@ -164,5 +185,17 @@
         font:
             400 13px Inter,
             sans-serif;
+    }
+
+    &__banner-link {
+        color: var(--brand);
+        font-weight: 600;
+        text-decoration: none;
+
+        @include focus-ring;
+
+        @include on-hover {
+            text-decoration: underline;
+        }
     }
 }

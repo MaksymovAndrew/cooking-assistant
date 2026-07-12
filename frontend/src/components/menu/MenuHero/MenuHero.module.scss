@@ -1,21 +1,54 @@
 @use "styles/abstracts" as *;
 
 .menu-hero {
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--s-4);
+        margin-bottom: var(--s-3);
+    }
+
     &__title-row {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         gap: var(--s-3);
-        margin-bottom: var(--s-3);
+        min-width: 0;
     }
 
     &__title {
+        display: none;
         margin: 0;
         color: var(--text);
         letter-spacing: -0.02em;
         font:
             600 clamp(26px, 4vw, 30px) Fraunces,
             serif;
+
+        @include respond-to(tablet) {
+            display: block;
+        }
+    }
+
+    // mobile shows the rating inline next to the category chip - the labeled stats row (with its own rating stat) is tablet+ only
+    &__rating-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--text-2);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
+    &__rating-inline-icon {
+        color: var(--warning);
+        fill: var(--warning);
     }
 
     &__description {
@@ -23,12 +56,13 @@
         margin: 0 0 var(--s-5);
         color: var(--text-2);
         font:
-            400 14px/1.55 Inter,
+            400 13px/1.5 Inter,
             sans-serif;
-    }
 
-    &__actions {
-        margin-bottom: var(--s-5);
+        @include respond-to(tablet) {
+            font-size: 14px;
+            line-height: 1.55;
+        }
     }
 
     &__visitor-banner {
@@ -67,12 +101,25 @@
         }
     }
 
+    // labeled 3-up stats row - tablet+ only (mobile uses the compact unlabeled meta row below instead)
     &__stats {
-        display: flex;
-        flex-wrap: wrap;
+        display: none;
         gap: var(--s-6);
         padding-bottom: var(--s-5);
         border-bottom: 1px solid var(--border);
+
+        @include respond-to(tablet) {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
+
+    &__stat--secondary {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: block;
+        }
     }
 
     &__stat-label {
@@ -93,6 +140,35 @@
         color: var(--text);
         font:
             500 15px "Geist Mono",
+            monospace;
+
+        svg {
+            color: var(--brand);
+        }
+    }
+
+    &__stat-count {
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+    &__mobile-meta {
+        display: flex;
+        gap: var(--s-5);
+        margin-bottom: var(--s-5);
+
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
+    &__mobile-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-2);
+        font:
+            500 13px "Geist Mono",
             monospace;
 
         svg {

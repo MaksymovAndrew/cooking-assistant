@@ -4,21 +4,19 @@ import type { Purchase } from "types/userIngredient";
 
 import { NumberInput } from "components/ui/NumberInput";
 
-import { formatDate } from "utils/dateUtils";
+import { formatShortDate } from "utils/dateUtils";
 import { isExpired } from "utils/ingredientExpirationUtils";
 
 import styles from "./PurchaseItem.module.scss";
 
 interface PurchaseItemProps {
     purchase: Purchase;
-    language: string;
     onQuantityChange: (id: number, quantity: number) => void;
     onSave: (id: number, quantity: number) => Promise<void>;
 }
 
 export const PurchaseItem: React.FC<PurchaseItemProps> = ({
     purchase,
-    language,
     onQuantityChange,
     onSave,
 }) => {
@@ -33,7 +31,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
                 .filter(Boolean)
                 .join(" ")}
         >
-            <span>{formatDate(purchase.purchase_date, language)}</span>
+            <span>{formatShortDate(purchase.purchase_date)}</span>
             <NumberInput
                 min={1}
                 className={styles["purchase-item__quantity"]}

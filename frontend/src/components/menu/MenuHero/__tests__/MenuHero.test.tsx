@@ -49,7 +49,8 @@ describe("MenuHero", () => {
             />,
         );
 
-        expect(screen.getByText("1 hours 30 minutes")).toBeInTheDocument();
+        // shown twice: the labeled stats row (tablet+) and the compact mobile meta
+        expect(screen.getAllByText("1h 30m")).toHaveLength(2);
         expect(screen.getByText("3")).toBeInTheDocument();
     });
 
@@ -95,5 +96,33 @@ describe("MenuHero", () => {
         );
 
         expect(onDelete).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not show the star-rating panel for a menu the viewer does not own", () => {
+        renderWithRouter(
+            <MenuHero
+                menu={BASE_MENU}
+                totalCookingTime={90}
+                recipeCount={3}
+                editTo="/change-menu/1"
+                onDelete={jest.fn()}
+            />,
+        );
+
+        expect(screen.queryByText("Your rating")).not.toBeInTheDocument();
+    });
+
+    it("should show the star-rating panel when the viewer owns the menu", () => {
+        renderWithRouter(
+            <MenuHero
+                menu={{ ...BASE_MENU, isOwner: true }}
+                totalCookingTime={90}
+                recipeCount={3}
+                editTo="/change-menu/1"
+                onDelete={jest.fn()}
+            />,
+        );
+
+        expect(screen.getByText("Your rating")).toBeInTheDocument();
     });
 });

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { MenuCategory } from "types/menu";
 
 import { usePopoverDismiss } from "hooks/usePopoverDismiss";
+import { useScrollLock } from "hooks/useScrollLock";
 
 import { SearchComponent } from "components/ui/SearchComponent";
 
@@ -35,6 +36,7 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
     };
 
     usePopoverDismiss(containerRef, isOpen, closePopover);
+    useScrollLock(isOpen);
 
     const toggleCategory = (id: number) => {
         setSelectedCategories(

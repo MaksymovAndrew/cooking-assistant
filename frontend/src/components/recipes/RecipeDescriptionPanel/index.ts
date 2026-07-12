@@ -1,0 +1,1 @@
+export { RecipeDescriptionPanel } from "./RecipeDescriptionPanel";

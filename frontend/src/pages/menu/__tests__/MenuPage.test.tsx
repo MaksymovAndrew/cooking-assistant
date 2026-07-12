@@ -15,7 +15,13 @@ jest.mock("api/client");
 const TITLE = "Weekday menu";
 const CATEGORY_NAME = "Lunch";
 const SAMPLE: Menu[] = [
-    { id: 1, title: TITLE, categoryname: CATEGORY_NAME, menucontent: "quick" },
+    {
+        id: 1,
+        title: TITLE,
+        categoryname: CATEGORY_NAME,
+        menucontent: "quick",
+        recipe_count: 4,
+    },
 ];
 const CATEGORIES: MenuCategory[] = [
     { menu_category_id: 3, category_name: CATEGORY_NAME },

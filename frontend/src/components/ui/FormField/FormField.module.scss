@@ -5,6 +5,13 @@
     flex-direction: column;
     gap: var(--s-2);
 
+    &__label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-2);
+    }
+
     &__label {
         color: var(--text-2);
         font:

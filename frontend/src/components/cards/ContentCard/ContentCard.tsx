@@ -1,97 +1,55 @@
-import { Heart, Star } from "lucide-react";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import { RECIPE_RATING, RECIPE_RATING_COUNT } from "constants/ratings";
+
 import styles from "./ContentCard.module.scss";
+import type {
+    ContentCardIcon,
+    ContentCardMetaItem,
+    ContentCardVariant,
+} from "./ContentCard.types";
+import { ContentCardBody } from "./ContentCardBody";
+import { ContentCardImage, ContentCardRowHeader } from "./ContentCardHeader";
 
-export type ContentCardVariant = "grid" | "row";
-
-// accepts both lucide-react icons and hand-authored components/icons/* glyphs
-export type ContentCardIcon = React.ComponentType<{
-    size?: number;
-    className?: string;
-    "aria-hidden"?: boolean | "true" | "false";
-}>;
-
-export interface ContentCardMetaItem {
-    icon: ContentCardIcon;
-    label: string;
-}
+export type {
+    ContentCardIcon,
+    ContentCardMetaItem,
+    ContentCardVariant,
+} from "./ContentCard.types";
 
 interface ContentCardProps {
     to: string;
     title: string;
     imageIcon: ContentCardIcon;
     chipLabel: string;
-    metaItems: ContentCardMetaItem[];
+    // icon+label meta row (recipe cards); mutually exclusive with metaText
+    metaItems?: ContentCardMetaItem[];
+    // plain-text meta line, no icons (menu cards' "Category: X · N recipes")
+    metaText?: string;
     variant?: ContentCardVariant;
     mine?: boolean;
     badge?: boolean;
     favourite?: boolean;
+    showFavourite?: boolean;
+    rating?: string;
+    ratingCount?: string;
 }
-
-const IMAGE_ICON_SIZE = 40;
-const ROW_IMAGE_ICON_SIZE = 26;
-const HEART_ICON_SIZE = 18;
-const META_ICON_SIZE = 14;
-const STAR_ICON_SIZE = 14;
-// no rating data exists on the backend yet - a fixed decorative value matches the
-// design's rating row without implying real per-item review counts
-const PLACEHOLDER_RATING = "4.8";
-// the row variant only has room for one meta item (time) per the design
-const ROW_META_COUNT = 1;
-
-const ContentCardChip: React.FC<{ isRow: boolean; label: string }> = ({
-    isRow,
-    label,
-}) => (
-    <span
-        className={[
-            styles["content-card__chip"],
-            isRow && styles["content-card__chip--row"],
-        ]
-            .filter(Boolean)
-            .join(" ")}
-    >
-        {label}
-    </span>
-);
-
-const ContentCardFavourite: React.FC<{ isRow: boolean; active: boolean }> = ({
-    isRow,
-    active,
-}) => {
-    const { t } = useTranslation();
-
-    return (
-        <button
-            type="button"
-            disabled
-            aria-label={t("contentCard.favourite")}
-            className={[
-                styles["content-card__favourite"],
-                isRow && styles["content-card__favourite--row"],
-                active && styles["content-card__favourite--active"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
-        >
-            <Heart size={HEART_ICON_SIZE} aria-hidden="true" />
-        </button>
-    );
-};
 
 export const ContentCard: React.FC<ContentCardProps> = ({
     to,
     title,
     imageIcon: ImageIcon,
     chipLabel,
-    metaItems,
+    metaItems = [],
+    metaText,
     variant = "grid",
     mine = false,
     badge = false,
     favourite = false,
+    showFavourite = true,
+    rating = RECIPE_RATING,
+    ratingCount = RECIPE_RATING_COUNT,
 }) => {
     const isRow = variant === "row";
 
@@ -104,53 +62,34 @@ export const ContentCard: React.FC<ContentCardProps> = ({
         .filter(Boolean)
         .join(" ");
 
-    const visibleMetaItems = isRow
-        ? metaItems.slice(0, ROW_META_COUNT)
-        : metaItems;
-
     return (
         <Link to={to} className={cardClassNames}>
-            <span className={styles["content-card__image"]}>
-                <ImageIcon
-                    size={isRow ? ROW_IMAGE_ICON_SIZE : IMAGE_ICON_SIZE}
-                    aria-hidden="true"
-                    className={styles["content-card__image-icon"]}
-                />
-                {!isRow && <ContentCardChip isRow={isRow} label={chipLabel} />}
-                {!isRow && (
-                    <ContentCardFavourite isRow={isRow} active={favourite} />
-                )}
-            </span>
+            <ContentCardImage
+                isRow={isRow}
+                imageIcon={ImageIcon}
+                chipLabel={chipLabel}
+                favourite={favourite}
+                showFavourite={showFavourite}
+            />
             <span className={styles["content-card__body"]}>
                 {isRow && (
-                    <span className={styles["content-card__row-header"]}>
-                        <ContentCardChip isRow={isRow} label={chipLabel} />
-                        <ContentCardFavourite
-                            isRow={isRow}
-                            active={favourite}
-                        />
-                    </span>
+                    <ContentCardRowHeader
+                        chipLabel={chipLabel}
+                        favourite={favourite}
+                        showFavourite={showFavourite}
+                    />
                 )}
                 <h3 className={styles["content-card__title"]} title={title}>
                     {title}
                 </h3>
-                {!isRow && (
-                    <span className={styles["content-card__rating"]}>
-                        <Star size={STAR_ICON_SIZE} aria-hidden="true" />
-                        {PLACEHOLDER_RATING}
-                    </span>
-                )}
-                <span className={styles["content-card__meta"]}>
-                    {visibleMetaItems.map(({ icon: Icon, label }) => (
-                        <span
-                            key={label}
-                            className={styles["content-card__meta-item"]}
-                        >
-                            <Icon size={META_ICON_SIZE} aria-hidden="true" />
-                            {label}
-                        </span>
-                    ))}
-                </span>
+                <ContentCardBody
+                    isRow={isRow}
+                    badge={badge}
+                    rating={rating}
+                    ratingCount={ratingCount}
+                    metaText={metaText}
+                    metaItems={metaItems}
+                />
             </span>
         </Link>
     );

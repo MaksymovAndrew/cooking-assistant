@@ -1,14 +1,16 @@
 {
     "settingsPage": {
-        "heading": "Settings"
+        "heading": "Settings",
+        "subheading": "Appearance, language and account preferences."
     },
     "appearanceSection": {
         "heading": "Appearance",
         "themeTitle": "Theme",
-        "themeDescription": "Choose how the app looks.",
+        "themeDescription": "Choose how the app looks on this device.",
         "themeLabel": "Theme",
         "dark": "Dark",
-        "light": "Light"
+        "light": "Light",
+        "system": "System"
     },
     "languageSection": {
         "heading": "Language & region",
@@ -29,9 +31,12 @@
     },
     "accountSection": {
         "heading": "Account",
+        "profileTitle": "Profile",
+        "profileDescription": "Name, email and photo live on your profile page.",
+        "openProfileButton": "Open profile",
         "changePasswordTitle": "Change password",
         "changePasswordDescription": "Update the password for your account.",
-        "changePasswordButton": "Change",
+        "changePasswordButton": "Change…",
         "deleteAccountTitle": "Delete account",
         "deleteAccountDescription": "Permanently removes recipes, menus and pantry data.",
         "deleteAccountButton": "Delete…"

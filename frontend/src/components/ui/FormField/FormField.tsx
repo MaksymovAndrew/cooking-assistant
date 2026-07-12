@@ -7,6 +7,7 @@ interface FormFieldProps {
     label: string;
     htmlFor: string;
     error?: string | null;
+    labelRight?: React.ReactNode;
     children: React.ReactNode;
 }
 
@@ -16,12 +17,16 @@ export const FormField: React.FC<FormFieldProps> = ({
     label,
     htmlFor,
     error,
+    labelRight,
     children,
 }) => (
     <div className={styles["form-field"]}>
-        <label htmlFor={htmlFor} className={styles["form-field__label"]}>
-            {label}
-        </label>
+        <div className={styles["form-field__label-row"]}>
+            <label htmlFor={htmlFor} className={styles["form-field__label"]}>
+                {label}
+            </label>
+            {labelRight}
+        </div>
         {children}
         {error && (
             <p className={styles["form-field__error"]} role="alert">

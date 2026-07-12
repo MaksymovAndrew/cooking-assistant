@@ -1,8 +1,10 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-// recipe/menu list filters that used to live in per-page useState; the text
-// search stays URL-sourced, so only the non-text fields move into the store
+// the recipe list's "no explicit sort" value (falls back to creation_date DESC server-side); the filter badge count and active-filter chips treat any other value as an active filter
+export const RECIPE_DEFAULT_SORT_ORDER = "asc";
+
+// text search stays URL-sourced; only the non-text filter fields live in the store
 export interface RecipeFiltersState {
     selectedTypes: number[];
     startDate: string;
@@ -28,7 +30,7 @@ const initialState: FiltersState = {
         endDate: "",
         minCookingTime: "",
         maxCookingTime: "",
-        sortOrder: "asc",
+        sortOrder: RECIPE_DEFAULT_SORT_ORDER,
     },
     menu: { selectedCategories: [] },
 };

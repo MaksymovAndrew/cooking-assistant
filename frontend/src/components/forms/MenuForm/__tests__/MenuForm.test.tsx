@@ -12,7 +12,7 @@ import { renderWithRouter } from "test/router";
 
 type Form = ReturnType<typeof useMenuForm>;
 
-const MENU_TITLE_LABEL = "Menu title";
+const MENU_TITLE_LABEL = "Menu title *";
 
 const makeForm = (): Form => ({
     menuTitle: "",
@@ -30,7 +30,11 @@ const makeForm = (): Form => ({
     setSelectedCategory: jest.fn(),
     validateForm: jest.fn(),
     toggleRecipeSelection: jest.fn(),
+    reorderSelectedRecipes: jest.fn(),
     setInitialValues: jest.fn(),
+    isDirty: false,
+    isDirtyRef: { current: false },
+    markClean: jest.fn(),
 });
 
 const CATEGORIES: MenuCategory[] = [
@@ -46,7 +50,7 @@ const RECIPES: RecipeListItem[] = [
     },
 ];
 
-const renderForm = (form: Form, opts: { onSubmit?: () => void } = {}) =>
+const renderForm = (form: Form, onSubmit: () => void = jest.fn()) =>
     renderWithRouter(
         <MenuForm
             form={form}
@@ -54,8 +58,8 @@ const renderForm = (form: Form, opts: { onSubmit?: () => void } = {}) =>
             allRecipes={RECIPES}
             keyPrefix="createMenuPage"
             idPrefix="create-menu"
-            submitLabel="Create Menu"
-            onSubmit={opts.onSubmit ?? jest.fn()}
+            submitLabel="Create menu"
+            onSubmit={onSubmit}
         />,
     );
 
@@ -64,11 +68,11 @@ describe("MenuForm", () => {
         renderForm(makeForm());
 
         expect(screen.getByText(MENU_TITLE_LABEL)).toBeInTheDocument();
-        expect(screen.getByText("Menu description")).toBeInTheDocument();
-        expect(screen.getByText("Menu category")).toBeInTheDocument();
-        expect(screen.getByText("Recipes")).toBeInTheDocument();
+        expect(screen.getByText("Menu description *")).toBeInTheDocument();
+        expect(screen.getByText("Menu category *")).toBeInTheDocument();
+        expect(screen.getAllByText("Recipes").length).toBeGreaterThan(0);
         expect(
-            screen.getByRole("button", { name: "Create Menu" }),
+            screen.getByRole("button", { name: "Create menu" }),
         ).toBeInTheDocument();
     });
 
@@ -93,7 +97,7 @@ describe("MenuForm", () => {
         expect(form.setMenuTitle).toHaveBeenCalledWith("S");
     });
 
-    it("should search and select a recipe, showing it as a removable chip", async () => {
+    it("should search and select a recipe", async () => {
         const form = makeForm();
 
         renderForm(form);
@@ -107,7 +111,7 @@ describe("MenuForm", () => {
         expect(form.toggleRecipeSelection).toHaveBeenCalledWith(1);
     });
 
-    it("should show selected recipes as removable chips", async () => {
+    it("should show selected recipes as removable rows", async () => {
         const form = makeForm();
 
         form.selectedRecipes = [1];
@@ -118,7 +122,7 @@ describe("MenuForm", () => {
         expect(form.toggleRecipeSelection).toHaveBeenCalledWith(1);
     });
 
-    it("should show the recipes error banner when provided", () => {
+    it("should show the recipes error when provided", () => {
         const form = makeForm();
 
         form.errors.recipesError = "Please select at least one recipe.";
@@ -132,12 +136,38 @@ describe("MenuForm", () => {
     it("should call onSubmit when the submit button is clicked", async () => {
         const onSubmit = jest.fn();
 
-        renderForm(makeForm(), { onSubmit });
+        renderForm(makeForm(), onSubmit);
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Create Menu" }),
+            screen.getByRole("button", { name: "Create menu" }),
         );
 
         expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it("should show a discard-changes confirmation when cancelling a dirty form", async () => {
+        const form = makeForm();
+
+        form.isDirtyRef.current = true;
+        renderForm(form);
+
+        await userEvent.click(screen.getByText("Cancel"));
+
+        expect(screen.getByText("Discard changes?")).toBeInTheDocument();
+    });
+
+    it("should stay on the form when the discard confirmation is cancelled", async () => {
+        const form = makeForm();
+
+        form.isDirtyRef.current = true;
+        renderForm(form);
+
+        await userEvent.click(screen.getByText("Cancel"));
+        await userEvent.click(
+            screen.getByRole("button", { name: "Keep editing" }),
+        );
+
+        expect(screen.queryByText("Discard changes?")).not.toBeInTheDocument();
+        expect(screen.getByText(MENU_TITLE_LABEL)).toBeInTheDocument();
     });
 });

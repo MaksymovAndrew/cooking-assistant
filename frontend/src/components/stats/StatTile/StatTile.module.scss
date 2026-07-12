@@ -3,7 +3,11 @@
 .stat-tile {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    padding: var(--s-5);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
 
     &__label {
         color: var(--text-muted);
@@ -16,9 +20,25 @@
 
     &__value {
         color: var(--text);
+    }
+
+    &__value--number {
+        // never wrap a time like "1h 50m"; smaller on phones so it fits the 2x2 tiles
+        white-space: nowrap;
         font:
-            600 26px "Geist Mono",
+            700 30px "Geist Mono",
             monospace;
+
+        @include respond-to(tablet) {
+            font-size: 38px;
+        }
+    }
+
+    &__value--text {
+        margin-top: 4px;
+        font:
+            700 24px Fraunces,
+            serif;
     }
 
     &__caption {

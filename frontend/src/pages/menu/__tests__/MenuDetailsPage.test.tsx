@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import type * as ReactRouterDom from "react-router-dom";
@@ -50,12 +50,14 @@ const SAMPLE: MenuDetails = {
             missingIngredients: [
                 {
                     ingredient_name: "Carrot",
+                    needed_quantity: 2,
                     missing_quantity: 2,
                     unit_name: "pcs",
                 },
             ],
         },
     ],
+    allergens: [],
 };
 
 const renderPage = (store = makeTestStore()) => {
@@ -97,9 +99,7 @@ describe("MenuDetailsPage", () => {
         renderPage();
         await screen.findByRole("heading", { name: TITLE });
 
-        expect(
-            screen.getByRole("heading", { name: "Soup" }),
-        ).toBeInTheDocument();
+        expect(screen.getByText("Soup")).toBeInTheDocument();
         expect(screen.getByText("Carrot")).toBeInTheDocument();
         expect(screen.getByText("2 pcs")).toBeInTheDocument();
     });
@@ -132,7 +132,11 @@ describe("MenuDetailsPage", () => {
 
         expect(store.getState().ui.modal?.type).toBe(MODAL_TYPE.deleteMenu);
 
-        await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+        const dialog = screen.getByRole("dialog");
+
+        await userEvent.click(
+            within(dialog).getByRole("button", { name: BTN_DELETE_MENU }),
+        );
 
         expect(mockedDelete).toHaveBeenCalledWith(API_ROUTES.menu.byId(1), {
             params: undefined,

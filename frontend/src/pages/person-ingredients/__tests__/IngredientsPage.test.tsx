@@ -17,7 +17,8 @@ jest.mock("api/client");
 
 const INGREDIENT_NAME = "Potato";
 const SEARCH_INGREDIENTS_PLACEHOLDER = "Search ingredients...";
-const SAVE_QUANTITIES = "Save quantities";
+const SAVE_QUANTITY = "Save";
+const EDIT_QUANTITIES = "Edit quantities";
 const USER_INGREDIENTS: UserIngredient[] = [
     {
         ingredient_id: 5,
@@ -27,8 +28,8 @@ const USER_INGREDIENTS: UserIngredient[] = [
     },
 ];
 const ALL_INGREDIENTS: Ingredient[] = [
-    { id: 5, name: INGREDIENT_NAME, unit_name: "g" },
-    { id: 6, name: "Tomato", unit_name: "kg" },
+    { id: 5, name: INGREDIENT_NAME, unit_name: "g", allergens: null },
+    { id: 6, name: "Tomato", unit_name: "kg", allergens: null },
 ];
 
 let pantry: UserIngredient[];
@@ -126,36 +127,57 @@ describe("IngredientsPage", () => {
         expect(screen.getByText(deleteMessage)).toBeInTheDocument();
     });
 
-    it("should show the quantity input after clicking Edit quantities", async () => {
+    it("should show a per-card quantity input and Save button after clicking Edit quantities", async () => {
         setup();
 
         await screen.findByText(INGREDIENT_NAME);
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Edit quantities" }),
+            screen.getByRole("button", { name: EDIT_QUANTITIES }),
         );
 
         expect(
-            screen.getByRole("button", { name: SAVE_QUANTITIES }),
+            screen.getByRole("button", { name: SAVE_QUANTITY }),
         ).toBeInTheDocument();
         expect(screen.getByRole("spinbutton")).toBeInTheDocument();
     });
 
-    it("should hide the quantity input after clicking Save quantities", async () => {
+    it("should persist the edited quantity and keep the edit session open after clicking the card's Save", async () => {
         mockedPut.mockResolvedValue({ data: null });
         setup();
 
         await screen.findByText(INGREDIENT_NAME);
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Edit quantities" }),
+            screen.getByRole("button", { name: EDIT_QUANTITIES }),
         );
+        await userEvent.clear(screen.getByRole("spinbutton"));
+        await userEvent.type(screen.getByRole("spinbutton"), "5");
         await userEvent.click(
-            screen.getByRole("button", { name: SAVE_QUANTITIES }),
+            screen.getByRole("button", { name: SAVE_QUANTITY }),
         );
 
+        expect(mockedPut).toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.updateQuantities,
+            expect.anything(),
+        );
         expect(
-            screen.queryByRole("button", { name: SAVE_QUANTITIES }),
+            screen.getByRole("button", { name: SAVE_QUANTITY }),
+        ).toBeInTheDocument();
+    });
+
+    it("should hide the quantity input after clicking Done", async () => {
+        setup();
+
+        await screen.findByText(INGREDIENT_NAME);
+
+        await userEvent.click(
+            screen.getByRole("button", { name: EDIT_QUANTITIES }),
+        );
+        await userEvent.click(screen.getByRole("button", { name: "Done" }));
+
+        expect(
+            screen.queryByRole("button", { name: SAVE_QUANTITY }),
         ).not.toBeInTheDocument();
     });
 

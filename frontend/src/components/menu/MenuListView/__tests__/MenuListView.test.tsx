@@ -9,6 +9,7 @@ import { MenuListView } from "components/menu/MenuListView";
 import { renderWithRouter } from "test/router";
 
 const MENU_TITLE = "Weekday menu";
+const MINE_CLASS = "content-card--mine";
 
 const MENUS: Menu[] = [
     {
@@ -16,6 +17,7 @@ const MENUS: Menu[] = [
         title: MENU_TITLE,
         categoryname: "Lunch",
         menucontent: "quick",
+        recipe_count: 4,
     },
 ];
 
@@ -24,8 +26,14 @@ const baseProps = {
     setSelectedCategories: jest.fn(),
     categories: [],
     heading: "All menus",
-    emptyMessage: "No menus found",
+    subtitle: "1 menu published",
+    emptyTitle: "No menus yet",
+    emptyDescription: "Your menu collection is empty.",
+    hasActiveFilters: false,
+    clearFilters: jest.fn(),
+    searchQuery: null,
     searchPlaceholder: "menu title",
+    removeSearch: jest.fn(),
     onRetry: jest.fn(),
     total: MENUS.length,
     loadedCount: MENUS.length,
@@ -36,7 +44,7 @@ const baseProps = {
 };
 
 describe("MenuListView", () => {
-    it("should render the heading and a card per menu", () => {
+    it("should render the heading, subtitle and a card per menu", () => {
         renderWithRouter(
             <MenuListView
                 {...baseProps}
@@ -47,6 +55,7 @@ describe("MenuListView", () => {
         );
 
         expect(screen.getByText("All menus")).toBeInTheDocument();
+        expect(screen.getByText("1 menu published")).toBeInTheDocument();
         expect(screen.getByText(MENU_TITLE)).toBeInTheDocument();
     });
 
@@ -65,7 +74,7 @@ describe("MenuListView", () => {
         ).toBeInTheDocument();
     });
 
-    it("should render the empty message instead of cards when there are no menus", () => {
+    it("should render the truly-empty title, description and create-first action when there are no active filters", () => {
         renderWithRouter(
             <MenuListView
                 {...baseProps}
@@ -75,8 +84,41 @@ describe("MenuListView", () => {
             />,
         );
 
-        expect(screen.getByText("No menus found")).toBeInTheDocument();
+        expect(screen.getByText("No menus yet")).toBeInTheDocument();
+        expect(
+            screen.getByText("Your menu collection is empty."),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", { name: /Create your first menu!/ }),
+        ).toBeInTheDocument();
         expect(screen.queryByText(MENU_TITLE)).not.toBeInTheDocument();
+    });
+
+    it("should render the no-matches state and a working Clear filters button when filters are active", async () => {
+        const clearFilters = jest.fn();
+
+        renderWithRouter(
+            <MenuListView
+                {...baseProps}
+                menus={[]}
+                noMenus={true}
+                error={null}
+                hasActiveFilters={true}
+                searchQuery="brunch"
+                clearFilters={clearFilters}
+            />,
+        );
+
+        expect(
+            screen.getByText("No menus match your search"),
+        ).toBeInTheDocument();
+        expect(screen.getAllByText(/“brunch”/)).toHaveLength(2);
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Clear filters" }),
+        );
+
+        expect(clearFilters).toHaveBeenCalledTimes(1);
     });
 
     it("should render the error state and call onRetry when Try again is clicked", async () => {
@@ -171,6 +213,38 @@ describe("MenuListView", () => {
 
         expect(
             screen.getByRole("link", { name: new RegExp(MENU_TITLE) }),
-        ).toHaveClass("content-card--mine");
+        ).toHaveClass(MINE_CLASS);
+    });
+
+    it("should mark a card as mine when its person_id matches the current user, even without the mine prop", () => {
+        renderWithRouter(
+            <MenuListView
+                {...baseProps}
+                menus={[{ ...MENUS[0], person_id: 7 }]}
+                noMenus={false}
+                error={null}
+                currentUserId={7}
+            />,
+        );
+
+        expect(
+            screen.getByRole("link", { name: new RegExp(MENU_TITLE) }),
+        ).toHaveClass(MINE_CLASS);
+    });
+
+    it("should not mark another user's card as mine", () => {
+        renderWithRouter(
+            <MenuListView
+                {...baseProps}
+                menus={[{ ...MENUS[0], person_id: 7 }]}
+                noMenus={false}
+                error={null}
+                currentUserId={9}
+            />,
+        );
+
+        expect(
+            screen.getByRole("link", { name: new RegExp(MENU_TITLE) }),
+        ).not.toHaveClass(MINE_CLASS);
     });
 });

@@ -5,6 +5,10 @@
         "cancel": "Cancel",
         "confirm": "Delete"
     },
+    "mobileSubpageHeader": {
+        "back": "Back",
+        "edit": "Edit"
+    },
     "button": {
         "loading": "Saving…"
     },
@@ -16,7 +20,9 @@
         "hide": "Hide password"
     },
     "contentCard": {
-        "favourite": "Favourite"
+        "favourite": "Favourite",
+        "allergens": "Allergens",
+        "containsAllergens": "Contains allergens"
     },
     "toast": {
         "dismiss": "Dismiss"
@@ -35,9 +41,11 @@
         "confirm": "Log out"
     },
     "themeModal": {
-        "title": "Switch theme?",
-        "message": "The page will reload to apply the new theme. Make sure any unsaved changes are saved first.",
-        "confirm": "Switch theme"
+        "titleLight": "Switch to light theme?",
+        "titleDark": "Switch to dark theme?",
+        "titleSystem": "Switch to system theme?",
+        "message": "The app will reload to apply the new appearance. Your place in the app is preserved.",
+        "confirm": "Switch & reload"
     },
     "nav": {
         "recipes": "Recipes",
@@ -50,8 +58,6 @@
         "scrollToTop": "Scroll to top"
     },
     "theme": {
-        "dark": "Dark",
-        "light": "Light",
         "toggleLabel": "Toggle theme"
     },
     "search": {

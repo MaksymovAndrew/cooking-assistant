@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import type { MenuDetailRecipe } from "types/menu";
 
-import { RecipeCard } from "components/cards/RecipeCard";
 import { UtensilsMarkSimple } from "components/icons";
+import { MenuRecipeCard } from "components/menu/MenuRecipeCard";
 import { EmptyState } from "components/ui/EmptyState";
 import { LinkButton } from "components/ui/LinkButton";
 
@@ -81,14 +81,13 @@ export const MenuRecipesPanel: React.FC<MenuRecipesPanelProps> = ({
             ) : (
                 <div className={styles["menu-recipes-panel__grid"]}>
                     {visibleRecipes.map((recipe) => (
-                        <RecipeCard
+                        <MenuRecipeCard
                             key={recipe.recipe_id}
                             recipe={{
                                 id: recipe.recipe_id,
                                 title: recipe.title,
                                 type_name: recipe.type_name,
                                 cooking_time: recipe.cooking_time,
-                                creation_date: recipe.creation_date,
                             }}
                         />
                     ))}

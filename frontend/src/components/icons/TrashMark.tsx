@@ -4,7 +4,7 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// "delete" glyph traced from Recipe Detail.dc.html's Delete button - not a stock lucide icon
+// "delete" glyph - not a stock lucide icon
 export const TrashMark: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

@@ -5,6 +5,9 @@ import { THEME_STORAGE_KEY } from "constants/theme";
 
 export type ThemeMode = "dark" | "light";
 
+// "system" isn't a renderable mode itself - it means "no stored override, resolve from prefers-color-scheme"
+export type ThemeChoice = ThemeMode | "system";
+
 const prefersLightScheme = (): boolean =>
     typeof window.matchMedia === "function" &&
     window.matchMedia("(prefers-color-scheme: light)").matches;
@@ -18,6 +21,13 @@ export const getInitialThemeMode = (): ThemeMode => {
     }
 
     return prefersLightScheme() ? "light" : "dark";
+};
+
+// the Settings segmented control's active option - "system" when nothing is stored, regardless of what that currently resolves to
+export const getStoredThemeChoice = (): ThemeChoice => {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+
+    return stored === "dark" || stored === "light" ? stored : "system";
 };
 
 interface ThemeState {

@@ -87,4 +87,12 @@ describe("handleAuthError", () => {
 
         expect(jest.mocked(redirectToLogin)).not.toHaveBeenCalled();
     });
+
+    it("should not redirect on a 401 from the change-password endpoint", async () => {
+        const error = makeAuthError(401, API_ROUTES.auth.changePassword);
+
+        await expect(handleAuthError(error)).rejects.toBe(error);
+
+        expect(jest.mocked(redirectToLogin)).not.toHaveBeenCalled();
+    });
 });

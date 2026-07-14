@@ -3,6 +3,7 @@ import i18next from "i18next";
 
 interface ApiErrorBody {
     error?: string;
+    code?: string;
 }
 
 export function getApiErrorMessage(error: unknown): string {
@@ -30,6 +31,15 @@ export function getApiErrorStatus(error: unknown): number | undefined {
     }
 
     return undefined;
+}
+
+// the stable machine-readable error code the backend attaches to some 4xx bodies; null when absent
+export function getApiErrorCode(error: unknown): string | null {
+    if (axios.isAxiosError<ApiErrorBody>(error)) {
+        return error.response?.data.code ?? null;
+    }
+
+    return null;
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>

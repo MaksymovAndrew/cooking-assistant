@@ -8,6 +8,7 @@ test.describe.configure({ mode: "serial" });
 
 let page: Page;
 let login: string;
+let email: string;
 let password: string;
 let recipeTitle: string;
 let menuTitle: string;
@@ -17,8 +18,9 @@ const NAME = "Playwright";
 test.beforeAll(async ({ browser }) => {
     const runId = Date.now().toString(36);
     login = `e2e-${runId}`;
-    // throwaway per-run account, so the login doubles as its password
-    password = login;
+    email = `${login}@example.com`;
+    // throwaway per-run account; still needs to satisfy the real password policy
+    password = `${login}-Aa1!`;
     recipeTitle = `Smoke recipe ${runId}`;
     menuTitle = `Smoke menu ${runId}`;
     page = await browser.newPage();
@@ -28,18 +30,26 @@ test.afterAll(async () => {
     await page.close();
 });
 
-test("should register a new account", async () => {
+test("should register a new account and land on the dashboard already logged in", async () => {
     await page.goto("/registration");
     await page.getByLabel("Name:", { exact: true }).fill(NAME);
     await page.getByLabel("Surname:", { exact: true }).fill("Smoke");
     await page.getByLabel("Username", { exact: true }).fill(login);
+    await page.getByLabel("Email", { exact: true }).fill(email);
     await page.getByLabel("Password", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Register" }).click();
-    await expect(page).toHaveURL(/\/login$/);
+    await expect(page).toHaveURL("/");
+    await expect(page.getByText(`Welcome back, ${NAME}`)).toBeVisible();
 });
 
-test("should log in and land on the dashboard", async () => {
-    await page.getByLabel("Username", { exact: true }).fill(login);
+test("should log out, then log back in with the email identifier", async () => {
+    await page.getByRole("button", { name: "Account menu" }).click();
+    await page.getByRole("menuitem", { name: "Logout" }).click();
+    await page.getByRole("button", { name: "Log out" }).click();
+    await expect(page).toHaveURL(/\/login$/);
+
+    await page.getByRole("radio", { name: "Email" }).click();
+    await page.getByLabel("Email", { exact: true }).fill(email);
     await page.getByLabel("Password", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Log In" }).click();
     await expect(page).toHaveURL("/");

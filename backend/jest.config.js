@@ -16,6 +16,7 @@ module.exports = {
         "^routes/(.*)$": "<rootDir>/src/routes/$1",
         "^middleware/(.*)$": "<rootDir>/src/middleware/$1",
         "^config/(.*)$": "<rootDir>/src/config/$1",
+        "^i18n/(.*)$": "<rootDir>/src/i18n/$1",
         "^test/(.*)$": "<rootDir>/src/test/$1",
         "^app$": "<rootDir>/src/app",
         "^composition-root$": "<rootDir>/src/composition-root",

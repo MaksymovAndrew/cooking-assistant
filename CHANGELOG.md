@@ -20,6 +20,35 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Backend
+
+- Fixed: Registering or logging in now shows the right message - "username already taken", "too many attempts, try again in X seconds", or a generic server error - instead of always saying the username is taken.
+- Fixed: Name, surname, and username are trimmed of accidental leading/trailing spaces before being saved, so a stray space (e.g. from a keyboard autocomplete) can no longer create an account with an unusable username.
+- Changed: Login and registration attempts are now rate-limited independently of each other, and per account rather than just by network address - so someone else failing to log in on the same wifi no longer locks out your account too. A coarser network-wide limit still applies on top, so spraying attempts across many different accounts from one address is still caught.
+- Changed: After 5 failed login attempts you're locked out for 1 minute; a further 5 failed attempts locks you out for 5 minutes. The lockout resets automatically after 30 minutes without another failed attempt.
+- Added: Registration now requires an email address, and passwords must be at least 8 characters with a letter, a number, and a special character.
+- Added: A "forgot password" flow - request a reset link by email, then set a new password from it. Only accounts with a verified email can request one, every request gets the same response either way so it can't be used to check which emails are registered, requests are rate-limited whether or not they succeed, each link can only be used once, and the new password must differ from the current one.
+- Added: A "change password" option for signed-in users - entering the wrong current password shows an inline error without signing you out, and the new password must differ from the current one.
+- Added: Email verification - confirm your email via an emailed link, with a rate-limited "resend link" action if it's not yet verified. Every account always has an email now, so there's no separate "add email" step.
+- Added: Registering logs you in immediately instead of sending you to the login page.
+- Added: Logging in now accepts either your username or your email address.
+- Changed: Every auth error now carries a stable error code alongside its message, so the app always shows the exact right explanation (e.g. "username already taken" vs "email already registered" vs "too many attempts") instead of guessing from the HTTP status.
+
+### Frontend
+
+- Fixed: Registering with a name, surname, or username that has a stray leading/trailing space no longer fails validation.
+- Changed: The login lockout countdown bar now depletes smoothly instead of jumping once per second.
+- Added: Registration now includes an email field, and the password field enforces the stronger password rule.
+- Added: "Forgot password?" on the login page now leads to a real flow instead of doing nothing; the confirmation screen also explains that no email is sent for an unregistered or unverified address.
+- Added: A working "Change password" option in Settings.
+- Added: An "Email" row in Settings showing a verified/unverified badge and a "Send email" action to (re)send the verification link - throttled to once a minute, shared with the same action on the Home banner.
+- Added: A dismissible banner on Home nudging you to verify your email, since password reset only works for a verified email.
+- Added: Opening a verification link shows a confirmation screen that offers to continue straight into the app if you're already signed in, or to log in if you're not.
+- Added: A username/email toggle on the login form, so you can sign in with whichever you remember.
+- Changed: Successfully registering now takes you straight to the dashboard instead of the login page.
+- Changed: Registration and login error messages are now specific to the actual cause instead of a generic guess based on the response status.
+- Fixed: The login lockout after repeated failed attempts is now scoped to the account you're signing into, so on a shared device one account's lockout no longer blocks a different account from logging in.
+
 ## 3.3 - 2026-07-12
 
 ### Frontend

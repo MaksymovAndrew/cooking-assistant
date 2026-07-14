@@ -2,6 +2,7 @@ import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { AxiosError, AxiosHeaders } from "axios";
 
 import {
+    getApiErrorCode,
     getApiErrorMessage,
     getApiErrorRetryAfter,
     getApiErrorStatus,
@@ -107,5 +108,49 @@ describe("getApiErrorRetryAfter", () => {
 
     it("should return null for a non-axios error", () => {
         expect(getApiErrorRetryAfter(new Error("boom"))).toBeNull();
+    });
+});
+
+describe("getApiErrorCode", () => {
+    it("should return the code from an axios error response", () => {
+        const response: AxiosResponse = {
+            data: { error: SERVER_MESSAGE, code: "RATE_LIMITED" },
+            status: 429,
+            statusText: STATUS_TEXT,
+            headers: new AxiosHeaders(),
+            config,
+        };
+        const error = new AxiosError(
+            AXIOS_MESSAGE,
+            AXIOS_CODE,
+            config,
+            undefined,
+            response,
+        );
+
+        expect(getApiErrorCode(error)).toBe("RATE_LIMITED");
+    });
+
+    it("should return null when the response has no code field", () => {
+        const response: AxiosResponse = {
+            data: { error: SERVER_MESSAGE },
+            status: 429,
+            statusText: STATUS_TEXT,
+            headers: new AxiosHeaders(),
+            config,
+        };
+        const error = new AxiosError(
+            AXIOS_MESSAGE,
+            AXIOS_CODE,
+            config,
+            undefined,
+            response,
+        );
+
+        expect(getApiErrorCode(error)).toBeNull();
+    });
+
+    it("should return null for a non-axios error", () => {
+        expect(getApiErrorCode(new Error("boom"))).toBeNull();
     });
 });

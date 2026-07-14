@@ -3,6 +3,7 @@
 .settings-row {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: var(--s-3);
     padding: var(--s-4);
     border: 1px solid var(--border);
@@ -52,5 +53,6 @@
 
     &__control {
         flex: none;
+        margin-left: auto;
     }
 }

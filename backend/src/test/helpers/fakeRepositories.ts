@@ -7,8 +7,11 @@ import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
+import type { EmailSender } from "application/ports/EmailSender";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
+
+import { TEST_FRONTEND_ORIGIN } from "test/helpers/testConstants";
 
 export interface FakeRepositoryDeps extends RepositoryDeps {
     recipeRepository: jest.Mocked<RecipeRepository>;
@@ -19,6 +22,7 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     userRepository: jest.Mocked<UserRepository>;
     passwordHasher: jest.Mocked<PasswordHasher>;
     tokenService: jest.Mocked<TokenService>;
+    emailSender: jest.Mocked<EmailSender>;
 }
 
 function createRecipeRepository(): jest.Mocked<RecipeRepository> {
@@ -63,8 +67,14 @@ function createUserRepository(): jest.Mocked<UserRepository> {
     return {
         findByLogin: jest.fn(),
         findById: jest.fn(),
+        findByEmail: jest.fn(),
+        findCredentialsById: jest.fn(),
+        findCredentialsByEmail: jest.fn(),
+        findPasswordResetCandidateByEmail: jest.fn(),
         create: jest.fn(),
         findAll: jest.fn(),
+        updatePassword: jest.fn(),
+        markEmailVerified: jest.fn(),
     };
 }
 
@@ -78,6 +88,15 @@ function createPasswordHasher(): jest.Mocked<PasswordHasher> {
 function createTokenService(): jest.Mocked<TokenService> {
     return {
         generate: jest.fn(),
+        generatePurposeToken: jest.fn(),
+        verifyPurposeToken: jest.fn(),
+    };
+}
+
+function createEmailSender(): jest.Mocked<EmailSender> {
+    return {
+        sendPasswordResetEmail: jest.fn(),
+        sendVerificationEmail: jest.fn(),
     };
 }
 
@@ -91,5 +110,7 @@ export function buildFakeDeps(): FakeRepositoryDeps {
         userRepository: createUserRepository(),
         passwordHasher: createPasswordHasher(),
         tokenService: createTokenService(),
+        emailSender: createEmailSender(),
+        frontendOrigin: TEST_FRONTEND_ORIGIN,
     };
 }

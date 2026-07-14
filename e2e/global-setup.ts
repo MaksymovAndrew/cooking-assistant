@@ -12,15 +12,20 @@ import {
 // registers two shared accounts ONCE per suite run (not once per spec file) so the full suite stays well under the login/register rate limiter - specs read accounts.json for the run-unique login/name and reuse the saved cookie via storageState
 const BACKEND_URL = "http://localhost:3000";
 
+// meets the backend's password policy (8+ chars, a letter, a digit, a special char) regardless of what the login happens to contain
+const passwordFor = (login: string) => `${login}-Aa1!`;
+
 async function createAccount(
     storagePath: string,
     account: SharedAccount,
 ): Promise<void> {
     const { login, name } = account;
+    const email = `${login}@example.com`;
+    const password = passwordFor(login);
     const context = await request.newContext();
 
     const registerResponse = await context.post(`${BACKEND_URL}/api/register`, {
-        data: { name, surname: "E2E", login, password: login },
+        data: { name, surname: "E2E", login, email, password },
     });
     if (!registerResponse.ok()) {
         throw new Error(
@@ -29,7 +34,7 @@ async function createAccount(
     }
 
     const loginResponse = await context.post(`${BACKEND_URL}/api/login`, {
-        data: { login, password: login },
+        data: { login, password },
     });
     if (!loginResponse.ok()) {
         throw new Error(

@@ -3,6 +3,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 
 import { notificationsListener } from "redux/middleware/notificationsListener";
 import { baseApi } from "redux/services/baseApi";
+import { emailVerificationReducer } from "redux/slices/emailVerificationSlice";
 import { filtersReducer } from "redux/slices/filtersSlice";
 import { notificationsReducer } from "redux/slices/notificationsSlice";
 import { sessionReducer } from "redux/slices/sessionSlice";
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
     notifications: notificationsReducer,
     filters: filtersReducer,
     theme: themeReducer,
+    emailVerification: emailVerificationReducer,
     [baseApi.reducerPath]: baseApi.reducer,
 });
 

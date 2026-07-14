@@ -1,9 +1,9 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { NEWS_ITEMS } from "constants/news";
-
 import { WhatsNewCard } from "components/home/WhatsNewCard";
+
+import { getNewsItems } from "utils/newsItems";
 
 import { renderWithRouter } from "test/router";
 
@@ -15,14 +15,16 @@ describe("WhatsNewCard", () => {
             <WhatsNewCard
                 onOpenAll={jest.fn()}
                 unseenCount={0}
-                lastSeenDate={NEWS_ITEMS[0].date}
+                lastSeenDate={getNewsItems()[0].date}
             />,
         );
 
         expect(screen.getByText("What's new")).toBeInTheDocument();
+        expect(
+            screen.getByText("Password reset & email verification"),
+        ).toBeInTheDocument();
+        expect(screen.getByText("Sign in your way")).toBeInTheDocument();
         expect(screen.getByText("A brand-new look")).toBeInTheDocument();
-        expect(screen.getByText("Pantry-aware recipes")).toBeInTheDocument();
-        expect(screen.getByText("Richer statistics")).toBeInTheDocument();
     });
 
     it("should show the unseen-count badge", () => {
@@ -42,7 +44,7 @@ describe("WhatsNewCard", () => {
             <WhatsNewCard
                 onOpenAll={jest.fn()}
                 unseenCount={0}
-                lastSeenDate={NEWS_ITEMS[0].date}
+                lastSeenDate={getNewsItems()[0].date}
             />,
         );
 
@@ -56,7 +58,7 @@ describe("WhatsNewCard", () => {
             <WhatsNewCard
                 onOpenAll={onOpenAll}
                 unseenCount={0}
-                lastSeenDate={NEWS_ITEMS[0].date}
+                lastSeenDate={getNewsItems()[0].date}
             />,
         );
 

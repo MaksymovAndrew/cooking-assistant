@@ -7,10 +7,17 @@ const VALUES = {
     name: "Test",
     surname: "User",
     login: "tester",
+    email: "tester@example.com",
     password: "secret1",
 };
 
-const EMPTY_VALUES = { name: "", surname: "", login: "", password: "" };
+const EMPTY_VALUES = {
+    name: "",
+    surname: "",
+    login: "",
+    email: "",
+    password: "",
+};
 
 describe("RegisterForm", () => {
     it("should render all fields with their values", () => {
@@ -27,6 +34,9 @@ describe("RegisterForm", () => {
         expect(screen.getByLabelText("Name:")).toHaveValue("Test");
         expect(screen.getByLabelText("Surname:")).toHaveValue("User");
         expect(screen.getByLabelText("Username")).toHaveValue("tester");
+        expect(screen.getByLabelText("Email")).toHaveValue(
+            "tester@example.com",
+        );
         expect(screen.getByLabelText("Password")).toHaveValue("secret1");
     });
 

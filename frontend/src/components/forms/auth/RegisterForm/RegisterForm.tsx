@@ -14,6 +14,7 @@ import styles from "./RegisterForm.module.scss";
 const NAME_ID = "register-name";
 const SURNAME_ID = "register-surname";
 const USERNAME_ID = "register-username";
+const EMAIL_ID = "register-email";
 const PW_FIELD_ID = "register-password";
 
 interface RegisterFormProps {
@@ -84,6 +85,21 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                     hasError={Boolean(errors.login)}
                     onChange={(e) => {
                         onFieldChange("login", e.target.value);
+                    }}
+                />
+            </FormField>
+            <FormField
+                htmlFor={EMAIL_ID}
+                label={t("fields.emailLabel")}
+                error={errors.email}
+            >
+                <TextInput
+                    id={EMAIL_ID}
+                    type="email"
+                    value={values.email}
+                    hasError={Boolean(errors.email)}
+                    onChange={(e) => {
+                        onFieldChange("email", e.target.value);
                     }}
                 />
             </FormField>

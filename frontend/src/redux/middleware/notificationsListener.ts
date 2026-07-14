@@ -1,3 +1,4 @@
+import type { PayloadAction } from "@reduxjs/toolkit";
 import {
     createListenerMiddleware,
     isAnyOf,
@@ -32,6 +33,11 @@ export const isSelfHandledRejection = isAnyOf(
     authApi.endpoints.register.matchRejected,
     authApi.endpoints.getMe.matchRejected,
     authApi.endpoints.logout.matchRejected,
+    authApi.endpoints.forgotPassword.matchRejected,
+    authApi.endpoints.resetPassword.matchRejected,
+    authApi.endpoints.changePassword.matchRejected,
+    // confirmEmail's page renders its own rich success/failure state - a toast would be redundant
+    authApi.endpoints.confirmEmail.matchRejected,
 );
 
 export const notificationsListener = createListenerMiddleware();
@@ -54,87 +60,57 @@ notificationsListener.startListening({
 });
 
 // only mutations that keep the user on the same page get a success toast - navigating away is the signal
-notificationsListener.startListening({
-    matcher: recipesApi.endpoints.deleteRecipe.matchFulfilled,
-    effect: (_action, listenerApi) => {
-        listenerApi.dispatch(
-            addNotification({
-                type: "success",
-                message: i18next.t("notifications.recipeDeleted"),
-            }),
-        );
-    },
-});
+const registerSuccessToast = <Payload>(
+    matcher: (action: unknown) => action is PayloadAction<Payload>,
+    messageKey: string,
+) => {
+    notificationsListener.startListening({
+        matcher,
+        effect: (_action, listenerApi) => {
+            listenerApi.dispatch(
+                addNotification({
+                    type: "success",
+                    message: i18next.t(messageKey),
+                }),
+            );
+        },
+    });
+};
 
-notificationsListener.startListening({
-    matcher: menusApi.endpoints.deleteMenu.matchFulfilled,
-    effect: (_action, listenerApi) => {
-        listenerApi.dispatch(
-            addNotification({
-                type: "success",
-                message: i18next.t("notifications.menuDeleted"),
-            }),
-        );
-    },
-});
-
-notificationsListener.startListening({
-    matcher: userIngredientsApi.endpoints.deleteUserIngredient.matchFulfilled,
-    effect: (_action, listenerApi) => {
-        listenerApi.dispatch(
-            addNotification({
-                type: "success",
-                message: i18next.t("notifications.ingredientDeleted"),
-            }),
-        );
-    },
-});
-
-notificationsListener.startListening({
-    matcher: userIngredientsApi.endpoints.saveUserIngredient.matchFulfilled,
-    effect: (_action, listenerApi) => {
-        listenerApi.dispatch(
-            addNotification({
-                type: "success",
-                message: i18next.t("notifications.ingredientsSaved"),
-            }),
-        );
-    },
-});
-
-notificationsListener.startListening({
-    matcher: userIngredientsApi.endpoints.updateQuantities.matchFulfilled,
-    effect: (_action, listenerApi) => {
-        listenerApi.dispatch(
-            addNotification({
-                type: "success",
-                message: i18next.t("notifications.quantitiesUpdated"),
-            }),
-        );
-    },
-});
-
-notificationsListener.startListening({
-    matcher: userIngredientsApi.endpoints.updatePurchase.matchFulfilled,
-    effect: (_action, listenerApi) => {
-        listenerApi.dispatch(
-            addNotification({
-                type: "success",
-                message: i18next.t("notifications.purchaseSaved"),
-            }),
-        );
-    },
-});
-
+registerSuccessToast(
+    recipesApi.endpoints.deleteRecipe.matchFulfilled,
+    "notifications.recipeDeleted",
+);
+registerSuccessToast(
+    menusApi.endpoints.deleteMenu.matchFulfilled,
+    "notifications.menuDeleted",
+);
+registerSuccessToast(
+    userIngredientsApi.endpoints.deleteUserIngredient.matchFulfilled,
+    "notifications.ingredientDeleted",
+);
+registerSuccessToast(
+    userIngredientsApi.endpoints.saveUserIngredient.matchFulfilled,
+    "notifications.ingredientsSaved",
+);
+registerSuccessToast(
+    userIngredientsApi.endpoints.updateQuantities.matchFulfilled,
+    "notifications.quantitiesUpdated",
+);
+registerSuccessToast(
+    userIngredientsApi.endpoints.updatePurchase.matchFulfilled,
+    "notifications.purchaseSaved",
+);
+registerSuccessToast(
+    authApi.endpoints.changePassword.matchFulfilled,
+    "notifications.passwordChanged",
+);
+registerSuccessToast(
+    authApi.endpoints.requestEmailVerification.matchFulfilled,
+    "notifications.verificationEmailSent",
+);
 // a deliberate logout gets its own confirmation - distinct from the silent hard-redirect that happens when a session merely expires
-notificationsListener.startListening({
-    matcher: authApi.endpoints.logout.matchFulfilled,
-    effect: (_action, listenerApi) => {
-        listenerApi.dispatch(
-            addNotification({
-                type: "success",
-                message: i18next.t("notifications.loggedOut"),
-            }),
-        );
-    },
-});
+registerSuccessToast(
+    authApi.endpoints.logout.matchFulfilled,
+    "notifications.loggedOut",
+);

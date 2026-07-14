@@ -1,10 +1,11 @@
 import { act, renderHook } from "@testing-library/react";
 
-import { LATEST_RELEASE_DATE, NEWS_ITEMS } from "constants/news";
-
 import { useNewsBadge } from "hooks/useNewsBadge";
 
-const latestReleaseCount = NEWS_ITEMS.filter(
+import { getLatestReleaseDate, getNewsItems } from "utils/newsItems";
+
+const LATEST_RELEASE_DATE = getLatestReleaseDate();
+const latestReleaseCount = getNewsItems().filter(
     (entry) => entry.date === LATEST_RELEASE_DATE,
 ).length;
 

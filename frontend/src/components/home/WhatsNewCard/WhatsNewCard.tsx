@@ -2,10 +2,8 @@ import { Bell } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { NEWS_ITEMS } from "constants/news";
-
 import { formatNewsDateShort } from "utils/formatNewsDate";
-import { getNewsItemText } from "utils/newsItemText";
+import { getNewsItems } from "utils/newsItems";
 import { isEntryUnseen } from "utils/newsReadState";
 
 import styles from "./WhatsNewCard.module.scss";
@@ -19,7 +17,7 @@ interface WhatsNewCardProps {
 const ICON_SIZE = 17;
 const VISIBLE_ITEMS = 3;
 
-// a compact preview of NEWS_ITEMS - clicking it opens the same NewsModal used by the mobile/tablet bell button, with the full list and descriptions
+// a compact preview of getNewsItems() - clicking it opens the same NewsModal used by the mobile/tablet bell button, with the full list and descriptions
 export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({
     onOpenAll,
     unseenCount,
@@ -45,10 +43,9 @@ export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({
                 )}
             </div>
             <div className={styles["whats-new-card__list"]}>
-                {NEWS_ITEMS.slice(0, VISIBLE_ITEMS).map((entry) => {
-                    const { title, description } = getNewsItemText(t, entry);
-
-                    return (
+                {getNewsItems()
+                    .slice(0, VISIBLE_ITEMS)
+                    .map((entry) => (
                         <div
                             key={entry.id}
                             className={styles["whats-new-card__item"]}
@@ -71,22 +68,21 @@ export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({
                                         styles["whats-new-card__item-title"]
                                     }
                                 >
-                                    {title}
+                                    {entry.title}
                                 </div>
                                 <div
                                     className={
                                         styles["whats-new-card__description"]
                                     }
                                 >
-                                    {description}
+                                    {entry.description}
                                 </div>
                                 <div className={styles["whats-new-card__date"]}>
                                     {formatNewsDateShort(entry.date)}
                                 </div>
                             </div>
                         </div>
-                    );
-                })}
+                    ))}
             </div>
         </button>
     );

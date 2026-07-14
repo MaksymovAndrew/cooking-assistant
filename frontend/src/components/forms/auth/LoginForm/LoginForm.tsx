@@ -1,12 +1,17 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
+import { ROUTES } from "constants/routes";
 import type { LoginRequest } from "types/auth";
+
+import type { LoginMode } from "hooks/useLoginForm";
 
 import { Button } from "components/ui/Button";
 import { FormErrorBanner } from "components/ui/FormErrorBanner";
 import { FormField } from "components/ui/FormField";
 import { PasswordInput } from "components/ui/PasswordInput";
+import { SegmentedControl } from "components/ui/SegmentedControl";
 import { TextInput } from "components/ui/TextInput";
 
 import { LockoutNotice } from "./LockoutNotice";
@@ -18,6 +23,8 @@ const PW_FIELD_ID = "login-password";
 interface LoginFormProps {
     values: LoginRequest;
     onFieldChange: (field: keyof LoginRequest, value: string) => void;
+    loginMode: LoginMode;
+    onModeChange: (mode: LoginMode) => void;
     onSubmit: () => unknown;
     submitLabel: string;
     submitError?: string | null;
@@ -29,6 +36,8 @@ interface LoginFormProps {
 export const LoginForm: React.FC<LoginFormProps> = ({
     values,
     onFieldChange,
+    loginMode,
+    onModeChange,
     onSubmit,
     submitLabel,
     submitError,
@@ -38,6 +47,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
     const { t } = useTranslation("auth");
     const hasCredentialError = Boolean(submitError) && !isLocked;
+    const modeOptions = [
+        { value: "username" as const, label: t("fields.usernameLabel") },
+        { value: "email" as const, label: t("fields.emailLabel") },
+    ];
 
     return (
         <form
@@ -47,9 +60,25 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 onSubmit();
             }}
         >
-            <FormField htmlFor={USERNAME_ID} label={t("fields.usernameLabel")}>
+            <div className={styles["login-form__mode-toggle"]}>
+                <SegmentedControl
+                    label={t("fields.loginModeLabel")}
+                    options={modeOptions}
+                    value={loginMode}
+                    onChange={onModeChange}
+                />
+            </div>
+            <FormField
+                htmlFor={USERNAME_ID}
+                label={
+                    loginMode === "email"
+                        ? t("fields.emailLabel")
+                        : t("fields.usernameLabel")
+                }
+            >
                 <TextInput
                     id={USERNAME_ID}
+                    type={loginMode === "email" ? "email" : "text"}
                     value={values.login}
                     hasError={hasCredentialError}
                     disabled={isLocked}
@@ -62,13 +91,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 htmlFor={PW_FIELD_ID}
                 label={t("fields.passwordLabel")}
                 labelRight={
-                    <button
-                        type="button"
-                        disabled
+                    <Link
+                        to={ROUTES.forgotPassword}
                         className={styles["login-form__forgot-password"]}
                     >
                         {t("fields.forgotPasswordLink")}
-                    </button>
+                    </Link>
                 }
             >
                 <PasswordInput

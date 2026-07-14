@@ -1,8 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useChangePasswordForm } from "hooks/useChangePasswordForm";
+
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
+import { FormErrorBanner } from "components/ui/FormErrorBanner";
 import { FormField } from "components/ui/FormField";
 import { PasswordInput } from "components/ui/PasswordInput";
 
@@ -20,6 +23,9 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     onClose,
 }) => {
     const { t } = useTranslation("settings");
+    const form = useChangePasswordForm(onClose);
+    // erases the promise (matches LoginForm/RegisterForm) so a fire-and-forget submit needs no void/catch
+    const submitForm = (): unknown => form.handleSubmit();
 
     return (
         <BaseModal
@@ -27,37 +33,62 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             title={t("changePasswordModal.title")}
             onClose={onClose}
         >
-            <p className={styles["change-password-modal__notice"]}>
-                {t("changePasswordModal.notice")}
-            </p>
-            <form className={styles["change-password-modal__form"]}>
+            <form
+                className={styles["change-password-modal__form"]}
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    submitForm();
+                }}
+            >
                 <FormField
                     htmlFor={CURRENT_PW_FIELD_ID}
                     label={t("changePasswordModal.currentPasswordLabel")}
                 >
-                    <PasswordInput id={CURRENT_PW_FIELD_ID} disabled />
+                    <PasswordInput
+                        id={CURRENT_PW_FIELD_ID}
+                        value={form.currentPassword}
+                        hasError={Boolean(form.error)}
+                        onChange={(e) => {
+                            form.setCurrentPassword(e.target.value);
+                        }}
+                    />
                 </FormField>
                 <FormField
                     htmlFor={NEW_PW_FIELD_ID}
                     label={t("changePasswordModal.newPasswordLabel")}
                 >
-                    <PasswordInput id={NEW_PW_FIELD_ID} disabled />
+                    <PasswordInput
+                        id={NEW_PW_FIELD_ID}
+                        value={form.newPassword}
+                        hasError={Boolean(form.error)}
+                        onChange={(e) => {
+                            form.setNewPassword(e.target.value);
+                        }}
+                    />
                 </FormField>
                 <FormField
                     htmlFor={CONFIRM_PW_FIELD_ID}
                     label={t("changePasswordModal.confirmPasswordLabel")}
                 >
-                    <PasswordInput id={CONFIRM_PW_FIELD_ID} disabled />
+                    <PasswordInput
+                        id={CONFIRM_PW_FIELD_ID}
+                        value={form.confirmPassword}
+                        hasError={Boolean(form.error)}
+                        onChange={(e) => {
+                            form.setConfirmPassword(e.target.value);
+                        }}
+                    />
                 </FormField>
+                {form.error && <FormErrorBanner message={form.error} />}
+                <div className={styles["change-password-modal__footer"]}>
+                    <Button type="button" variant="secondary" onClick={onClose}>
+                        {t("changePasswordModal.cancelButton")}
+                    </Button>
+                    <Button type="submit">
+                        {t("changePasswordModal.saveButton")}
+                    </Button>
+                </div>
             </form>
-            <div className={styles["change-password-modal__footer"]}>
-                <Button type="button" variant="secondary" onClick={onClose}>
-                    {t("changePasswordModal.cancelButton")}
-                </Button>
-                <Button type="button" disabled>
-                    {t("changePasswordModal.saveButton")}
-                </Button>
-            </div>
         </BaseModal>
     );
 };

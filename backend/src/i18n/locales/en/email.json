@@ -1,0 +1,17 @@
+{
+    "brandName": "Cooking Assistant",
+    "passwordReset": {
+        "subject": "Reset your password",
+        "heading": "Reset your password",
+        "body": "We received a request to reset your Cooking Assistant password.",
+        "button": "Reset password",
+        "footer": "This link expires in 30 minutes. If you didn't request this, you can safely ignore this email."
+    },
+    "verification": {
+        "subject": "Verify your email",
+        "heading": "Verify your email",
+        "body": "Confirm your email address to enable password reset on your Cooking Assistant account.",
+        "button": "Verify email",
+        "footer": "This link expires in 24 hours. If you didn't create this account, you can safely ignore this email - nothing happens until it's opened."
+    }
+}

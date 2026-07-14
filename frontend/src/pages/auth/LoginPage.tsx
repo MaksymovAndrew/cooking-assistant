@@ -29,6 +29,8 @@ const LoginPage: React.FC = () => {
             <LoginForm
                 values={form.values}
                 onFieldChange={form.setField}
+                loginMode={form.loginMode}
+                onModeChange={form.setMode}
                 onSubmit={form.handleSubmit}
                 submitLabel={t("loginPage.submit")}
                 submitError={form.error}

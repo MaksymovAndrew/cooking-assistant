@@ -95,7 +95,9 @@
         "ingredientDeleted": "Ingredient deleted",
         "ingredientsSaved": "Ingredients saved",
         "quantitiesUpdated": "Quantities updated",
-        "purchaseSaved": "Purchase saved"
+        "purchaseSaved": "Purchase saved",
+        "passwordChanged": "Password changed",
+        "verificationEmailSent": "Verification link sent"
     },
     "loadMore": {
         "showing": "Showing {{loaded}} of {{total}}",

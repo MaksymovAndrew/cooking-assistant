@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import type { RefObject } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +9,7 @@ import type { LoginRequest } from "types/auth";
 
 import { useLoginMutation } from "redux/services/authApi";
 
+import { isValidEmail } from "utils/authValidation";
 import {
     ATTEMPTS_PER_LOCK,
     clearLockout,
@@ -17,14 +19,27 @@ import {
     registerFailure,
     writeLockout,
 } from "utils/loginLockout";
-import { getQueryErrorRetryAfter, getQueryErrorStatus } from "utils/queryError";
+import {
+    getRateLimitSeconds,
+    isRateLimitError,
+    isServerError,
+} from "utils/queryError";
+
+export type LoginMode = "username" | "email";
 
 const EMPTY_FORM: LoginRequest = { login: "", password: "" };
-const TOO_MANY_ATTEMPTS_STATUS = 429;
-const SERVER_ERROR_STATUS_THRESHOLD = 500;
-// used only when the server did not send a Retry-After header
-const FALLBACK_LOCKOUT_SECONDS = 60;
 const TICK_INTERVAL_MS = 1000;
+
+// runs `update` only if `login` is still the identifier on screen, guarding against a stale response overwriting a since-changed account's state
+function applyIfCurrent(
+    currentLoginRef: RefObject<string>,
+    login: string,
+    update: () => void,
+): void {
+    if (currentLoginRef.current === login) {
+        update();
+    }
+}
 
 // a failed login shows one generic message, never revealing whether the username or the password was wrong
 export const useLoginForm = () => {
@@ -33,11 +48,20 @@ export const useLoginForm = () => {
     const [login] = useLoginMutation();
 
     const [values, setValues] = useState<LoginRequest>(EMPTY_FORM);
+    const [loginMode, setLoginMode] = useState<LoginMode>("username");
     const [error, setError] = useState<string | null>(null);
-    const [lockout, setLockout] = useState(() => readLockout());
+    const [lockout, setLockout] = useState(() => readLockout(EMPTY_FORM.login));
     const [now, setNow] = useState(() => Date.now());
 
     const { lockedUntil } = lockout;
+    // tracks the identifier actually on screen so a slow response for a since-changed login doesn't clobber it
+    const currentLoginRef = useRef(values.login);
+
+    // lockout is scoped per identifier, so switching which account is typed re-reads that account's own state
+    useEffect(() => {
+        currentLoginRef.current = values.login;
+        setLockout(readLockout(values.login));
+    }, [values.login]);
 
     // ticks once a second while locked, both to drive a live countdown and to auto-unlock the moment the lock expires
     useEffect(() => {
@@ -68,6 +92,13 @@ export const useLoginForm = () => {
         setValues((prev) => ({ ...prev, [field]: value }));
     }, []);
 
+    // switching mode clears the identifier field so a typed username can't be submitted as an email or vice versa
+    const setMode = useCallback((mode: LoginMode) => {
+        setLoginMode(mode);
+        setValues((prev) => ({ ...prev, login: "" }));
+        setError(null);
+    }, []);
+
     const isLocked = lockedUntil !== null && now < lockedUntil;
     const lockoutRemainingMs = isLocked ? lockedUntil - now : null;
     // derived from the same ladder registerFailure climbs, purely for the countdown progress bar
@@ -92,42 +123,68 @@ export const useLoginForm = () => {
             return;
         }
 
-        const result = await login(values);
+        if (loginMode === "email" && !isValidEmail(values.login)) {
+            setError(t("errors.email"));
+
+            return;
+        }
+
+        // applyIfCurrent guards the visible state, since the field may change before this request resolves
+        const submittedLogin = values.login;
+        const result = await login({ ...values, login: submittedLogin.trim() });
 
         if ("data" in result) {
-            clearLockout();
-            setLockout({ failures: 0, lockedUntil: null });
+            clearLockout(submittedLogin);
+            applyIfCurrent(currentLoginRef, submittedLogin, () => {
+                setLockout({
+                    failures: 0,
+                    lockedUntil: null,
+                    lastFailureAt: null,
+                });
+            });
             void navigate(ROUTES.home);
 
             return;
         }
 
-        const status = getQueryErrorStatus(result.error);
+        if (isRateLimitError(result.error)) {
+            const seconds = getRateLimitSeconds(result.error);
+            // counts as a failed attempt too, so the client ladder stays in sync with an early server rejection
+            const next = mergeServerRetryAfter(
+                registerFailure(lockout),
+                seconds,
+            );
 
-        if (status === TOO_MANY_ATTEMPTS_STATUS) {
-            const seconds =
-                getQueryErrorRetryAfter(result.error) ??
-                FALLBACK_LOCKOUT_SECONDS;
-            const next = mergeServerRetryAfter(lockout, seconds);
+            writeLockout(next, submittedLogin);
+            applyIfCurrent(currentLoginRef, submittedLogin, () => {
+                setLockout(next);
+                setError(t("errors.tooManyAttempts", { seconds }));
+            });
 
-            writeLockout(next);
-            setLockout(next);
-            setError(t("errors.tooManyAttempts", { seconds }));
-        } else if (status !== null && status >= SERVER_ERROR_STATUS_THRESHOLD) {
-            setError(t("errors.serverError"));
+            return;
+        }
+
+        if (isServerError(result.error)) {
+            applyIfCurrent(currentLoginRef, submittedLogin, () => {
+                setError(t("errors.serverError"));
+            });
         } else {
             const next = registerFailure(lockout);
 
-            writeLockout(next);
-            setLockout(next);
-            setError(t("errors.invalidCredentials"));
+            writeLockout(next, submittedLogin);
+            applyIfCurrent(currentLoginRef, submittedLogin, () => {
+                setLockout(next);
+                setError(t("errors.invalidCredentials"));
+            });
         }
-    }, [isLocked, lockout, login, navigate, t, values]);
+    }, [isLocked, loginMode, lockout, login, navigate, t, values]);
 
     return {
         values,
         error,
         setField,
+        loginMode,
+        setMode,
         handleSubmit,
         isLocked,
         lockoutRemainingMs,

@@ -21,4 +21,11 @@ export default [
             "sonarjs/no-duplicate-string": "error",
         },
     },
+    {
+        // test fixtures use fake credentials by design (mirrors backend/eslint.sonarjs.config.js)
+        files: ["**/__tests__/**/*.{ts,tsx}", "**/*.test.{ts,tsx}"],
+        rules: {
+            "sonarjs/no-hardcoded-passwords": "off",
+        },
+    },
 ];

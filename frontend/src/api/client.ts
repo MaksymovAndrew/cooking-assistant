@@ -18,7 +18,8 @@ export const apiClient: AxiosInstance = axios.create({
 });
 
 const AUTH_ERROR_STATUSES = [HTTP_STATUS_UNAUTHORIZED, HTTP_STATUS_FORBIDDEN];
-const SKIP_REDIRECT_URLS = [API_ROUTES.auth.me];
+// change-password's 401 means "wrong current password", a normal in-band form error the modal already shows inline - not an expired session
+const SKIP_REDIRECT_URLS = [API_ROUTES.auth.me, API_ROUTES.auth.changePassword];
 
 export function handleAuthError(error: AxiosError): Promise<never> {
     const status = error.response?.status;

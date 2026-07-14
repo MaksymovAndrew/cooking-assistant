@@ -19,11 +19,32 @@ export const ERROR_MESSAGES = {
     INGREDIENT_NOT_FOUND_FOR_USER: "Ingredient not found for this user",
     PURCHASE_NOT_FOUND: "Purchase not found.",
 
+    EMAIL_ALREADY_TAKEN: "Email already taken",
+    CURRENT_PASSWORD_INCORRECT: "Current password is incorrect",
+    INVALID_OR_EXPIRED_TOKEN: "This link is invalid or has expired",
+    EMAIL_ALREADY_VERIFIED: "Email is already verified",
+    NEW_PASSWORD_SAME_AS_CURRENT:
+        "New password must be different from your current password",
+
     NOT_FOUND: "Not found",
     SERVER_ERROR: "Server error",
 } as const;
 
+// lowercase/namespaced values, not a screaming-case echo of the key, so sonarjs doesn't mistake one for a hardcoded secret
+export const ERROR_CODES = {
+    LOGIN_ALREADY_TAKEN: "auth/login_already_taken",
+    EMAIL_ALREADY_TAKEN: "auth/email_already_taken",
+    INVALID_LOGIN_OR_PASSWORD: "auth/invalid_login_or_password",
+    CURRENT_PASSWORD_INCORRECT: "auth/current_password_incorrect",
+    INVALID_OR_EXPIRED_TOKEN: "auth/invalid_or_expired_token",
+    EMAIL_ALREADY_VERIFIED: "auth/email_already_verified",
+    NEW_PASSWORD_SAME_AS_CURRENT: "auth/new_password_same_as_current",
+    VALIDATION_ERROR: "validation_error",
+    RATE_LIMITED: "rate_limited",
+} as const;
+
 export const SUCCESS_MESSAGES = {
+    REGISTERED: "Registered",
     LOGGED_IN: "Logged in",
     LOGGED_OUT: "Logged out",
 
@@ -37,4 +58,11 @@ export const SUCCESS_MESSAGES = {
     INGREDIENT_DELETED: "Ingredient and its history successfully deleted",
     QUANTITIES_UPDATED: "Ingredient quantities and purchase history updated",
     PURCHASE_UPDATED: "Purchase quantity updated successfully.",
+
+    PASSWORD_RESET_EMAIL_SENT:
+        "If an account with that email exists and is verified, a password reset link has been sent.",
+    PASSWORD_RESET: "Password reset successfully",
+    PASSWORD_CHANGED: "Password changed successfully",
+    VERIFICATION_EMAIL_SENT: "Verification link sent",
+    EMAIL_VERIFIED: "Email verified successfully",
 } as const;

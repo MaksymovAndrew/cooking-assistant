@@ -19,6 +19,8 @@ const CURRENT_USER: CurrentUser = {
     surname: "Cook",
     login: "claude",
     created_at: "2025-06-15T00:00:00.000Z",
+    email: "claude@example.com",
+    email_verified_at: null,
 };
 const RECIPE: RecipeSearchResultItem = {
     id: 1,

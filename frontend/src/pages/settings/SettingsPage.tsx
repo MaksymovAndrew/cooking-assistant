@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useGetMeQuery } from "redux/services/authApi";
+
+import { useResendVerificationCooldown } from "hooks/useResendVerificationCooldown";
+
 import { AppShell } from "components/layout/AppShell";
 import { AccountSection } from "components/settings/AccountSection";
 import { AppearanceSection } from "components/settings/AppearanceSection";
@@ -13,6 +17,9 @@ import styles from "./SettingsPage.module.scss";
 
 const SettingsPage: React.FC = () => {
     const { t } = useTranslation("settings");
+    const { data: currentUser } = useGetMeQuery(null);
+    const { send: sendVerificationEmail, isOnCooldown } =
+        useResendVerificationCooldown();
     const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
     const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
 
@@ -30,6 +37,10 @@ const SettingsPage: React.FC = () => {
                 <LanguageSection />
                 <NotificationsSection />
                 <AccountSection
+                    email={currentUser?.email ?? ""}
+                    emailVerified={Boolean(currentUser?.email_verified_at)}
+                    onResendVerification={sendVerificationEmail}
+                    isResendDisabled={isOnCooldown}
                     onChangePassword={() => {
                         setIsChangePasswordOpen(true);
                     }}

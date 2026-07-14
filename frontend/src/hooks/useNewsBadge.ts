@@ -1,24 +1,25 @@
 import { useState } from "react";
 
-import { LATEST_RELEASE_DATE, NEWS_ITEMS } from "constants/news";
-
+import { getLatestReleaseDate, getNewsItems } from "utils/newsItems";
 import {
     isEntryUnseen,
     readLastSeenDate,
     writeLastSeenDate,
 } from "utils/newsReadState";
 
-// tracks which NEWS_ITEMS the user hasn't opened the popup since - unlike a static "is this from the latest release" flag, the badge actually clears
+// tracks which news items the user hasn't opened the popup since - unlike a static "is this from the latest release" flag, the badge actually clears
 export const useNewsBadge = () => {
     const [lastSeenDate, setLastSeenDate] = useState(readLastSeenDate);
 
-    const unseenCount = NEWS_ITEMS.filter((entry) =>
+    const unseenCount = getNewsItems().filter((entry) =>
         isEntryUnseen(entry, lastSeenDate),
     ).length;
 
     const markAllSeen = () => {
-        writeLastSeenDate(LATEST_RELEASE_DATE);
-        setLastSeenDate(LATEST_RELEASE_DATE);
+        const latestReleaseDate = getLatestReleaseDate();
+
+        writeLastSeenDate(latestReleaseDate);
+        setLastSeenDate(latestReleaseDate);
     };
 
     return { lastSeenDate, unseenCount, markAllSeen };

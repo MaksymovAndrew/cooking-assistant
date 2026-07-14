@@ -9,20 +9,46 @@ export interface NewUser {
     surname: string;
     login: string;
     password: string;
+    email: string;
 }
 
-// the safe, public-facing shape of a person row - no password
+// the safe, public-facing shape of a person row - no password. email is always set (required at
+// registration, NOT NULL in the DB); email_verified_at stays nullable - that's the real unverified state
 export interface PublicUser {
     id: number;
     name: string;
     surname: string;
     login: string;
     created_at: string;
+    email: string;
+    email_verified_at: string | null;
+}
+
+// just enough to check/update a password without ever exposing it through GetCurrentUser/`/me`
+export interface UserCredentials {
+    id: number;
+    password: string;
+}
+
+// just enough for RequestPasswordReset to decide silently-noop vs proceed, and to bind the
+// reset token to the current password hash, in a single query
+export interface PasswordResetCandidate {
+    id: number;
+    password: string;
+    email_verified_at: string | null;
 }
 
 export interface UserRepository {
     findByLogin(login: string): Promise<UserRecord | null>;
     findById(id: number): Promise<PublicUser | null>;
-    create(user: NewUser): Promise<unknown>;
+    findByEmail(email: string): Promise<PublicUser | null>;
+    findCredentialsById(id: number): Promise<UserCredentials | null>;
+    findCredentialsByEmail(email: string): Promise<UserCredentials | null>;
+    findPasswordResetCandidateByEmail(
+        email: string,
+    ): Promise<PasswordResetCandidate | null>;
+    create(user: NewUser): Promise<{ id: number }>;
     findAll(): Promise<unknown[]>;
+    updatePassword(id: number, hashedPassword: string): Promise<void>;
+    markEmailVerified(id: number): Promise<void>;
 }

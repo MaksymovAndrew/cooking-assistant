@@ -1,5 +1,5 @@
 import { AlertTriangle } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { formatCountdown } from "utils/loginLockout";
@@ -12,17 +12,14 @@ interface LockoutNoticeProps {
 }
 
 const ICON_SIZE = 15;
-const MAX_PERCENTAGE = 100;
 
 export const LockoutNotice: React.FC<LockoutNoticeProps> = ({
     remainingMs,
     totalMs,
 }) => {
     const { t } = useTranslation("auth");
-
-    const percentage = totalMs
-        ? Math.min(MAX_PERCENTAGE, (remainingMs / totalMs) * MAX_PERCENTAGE)
-        : MAX_PERCENTAGE;
+    // captured once so the CSS animation plays start-to-finish instead of restarting each tick
+    const [durationMs] = useState(() => totalMs ?? remainingMs);
 
     return (
         <div className={styles["lockout-notice"]} role="alert">
@@ -39,7 +36,7 @@ export const LockoutNotice: React.FC<LockoutNoticeProps> = ({
             <div className={styles["lockout-notice__bar"]}>
                 <div
                     className={styles["lockout-notice__bar-fill"]}
-                    style={{ width: `${percentage}%` }}
+                    style={{ animationDuration: `${durationMs}ms` }}
                 />
             </div>
         </div>

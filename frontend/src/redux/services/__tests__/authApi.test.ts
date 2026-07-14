@@ -14,6 +14,7 @@ const REGISTRATION: RegisterRequest = {
     name: "Cl",
     surname: "Aude",
     login: "claude",
+    email: "claude@example.com",
     password: "12345678",
 };
 
@@ -50,6 +51,22 @@ describe("authApi", () => {
         expect(mockedPost).toHaveBeenCalledWith(
             API_ROUTES.auth.register,
             REGISTRATION,
+        );
+    });
+
+    it("should invalidate the cached session after registering, so a stale unauthenticated result isn't reused", async () => {
+        mockedGet.mockResolvedValue({ data: null });
+        mockedPost.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+
+        await store.dispatch(authApi.endpoints.getMe.initiate(null));
+        const callsAfterFirstFetch = mockedGet.mock.calls.length;
+
+        await store.dispatch(authApi.endpoints.register.initiate(REGISTRATION));
+        await store.dispatch(authApi.endpoints.getMe.initiate(null));
+
+        expect(mockedGet.mock.calls.length).toBeGreaterThan(
+            callsAfterFirstFetch,
         );
     });
 

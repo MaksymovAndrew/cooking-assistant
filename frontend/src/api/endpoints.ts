@@ -4,6 +4,11 @@ export const API_ROUTES = {
         register: "/api/register",
         logout: "/api/logout",
         me: "/api/me",
+        forgotPassword: "/api/forgot-password",
+        resetPassword: "/api/reset-password",
+        changePassword: "/api/change-password",
+        resendVerificationEmail: "/api/resend-verification-email",
+        confirmEmail: "/api/confirm-email",
     },
     recipes: {
         list: "/api/recipes",

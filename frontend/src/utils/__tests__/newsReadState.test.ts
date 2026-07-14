@@ -1,17 +1,17 @@
-import { LATEST_RELEASE_DATE, NEWS_ITEMS } from "constants/news";
-
+import { getLatestReleaseDate, getNewsItems } from "utils/newsItems";
 import {
     isEntryUnseen,
     readLastSeenDate,
     writeLastSeenDate,
 } from "utils/newsReadState";
 
-const previousRelease = NEWS_ITEMS.find(
+const LATEST_RELEASE_DATE = getLatestReleaseDate();
+const previousRelease = getNewsItems().find(
     (entry) => entry.date !== LATEST_RELEASE_DATE,
 );
 
 if (!previousRelease) {
-    throw new Error("expected NEWS_ITEMS to span more than one release");
+    throw new Error("expected news items to span more than one release");
 }
 
 const PREVIOUS_RELEASE_DATE = previousRelease.date;
@@ -31,19 +31,13 @@ describe("readLastSeenDate", () => {
 describe("isEntryUnseen", () => {
     it("should be true when the entry is newer than the last-seen date", () => {
         expect(
-            isEntryUnseen(
-                { id: "x", date: LATEST_RELEASE_DATE },
-                PREVIOUS_RELEASE_DATE,
-            ),
+            isEntryUnseen({ date: LATEST_RELEASE_DATE }, PREVIOUS_RELEASE_DATE),
         ).toBe(true);
     });
 
     it("should be false when the entry is at or before the last-seen date", () => {
         expect(
-            isEntryUnseen(
-                { id: "x", date: PREVIOUS_RELEASE_DATE },
-                LATEST_RELEASE_DATE,
-            ),
+            isEntryUnseen({ date: PREVIOUS_RELEASE_DATE }, LATEST_RELEASE_DATE),
         ).toBe(false);
     });
 });

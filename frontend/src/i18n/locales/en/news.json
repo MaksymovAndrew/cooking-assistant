@@ -3,35 +3,53 @@
     "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "accountSecurity": {
+            "date": "2026-07-14",
+            "title": "Password reset & email verification",
+            "description": "Reset a forgotten password by email, verify your email address, and change your password anytime from Settings."
+        },
+        "flexibleSignIn": {
+            "date": "2026-07-14",
+            "title": "Sign in your way",
+            "description": "Log in with your username or email, and skip straight to your dashboard right after signing up."
+        },
         "redesign": {
+            "date": "2026-07-12",
             "title": "A brand-new look",
             "description": "Every page has been redesigned, with dark and light themes, plus dozens of fixes and polish along the way."
         },
         "pantryAware": {
+            "date": "2026-07-02",
             "title": "Pantry-aware recipes",
             "description": "Recipe pages now show which ingredients you already have and scale quantities per portion."
         },
         "statsCharts": {
+            "date": "2026-07-02",
             "title": "Richer statistics",
             "description": "New charts for menus per category and average cooking time by recipe type."
         },
         "lockout": {
+            "date": "2026-06-27",
             "title": "Safer sign-in",
             "description": "Repeated failed sign-ins now lock the form briefly, with a live countdown, and signing out asks for confirmation first."
         },
         "instantUpdates": {
+            "date": "2026-06-26",
             "title": "Instant updates",
             "description": "Lists refresh automatically after you add, edit or delete - no page reloads."
         },
         "launch": {
+            "date": "2026-06-21",
             "title": "Cooking Assistant goes live",
             "description": "The app is now publicly available for anyone to use."
         },
         "fasterLoads": {
+            "date": "2026-06-20",
             "title": "Faster page loads",
             "description": "Pages, charts and reports now load on demand, so the app starts up noticeably faster."
         },
         "privateMenus": {
+            "date": "2026-06-20",
             "title": "Your menus are now private",
             "description": "Only you can open or change your own menus, and your session lives in a more secure cookie."
         }

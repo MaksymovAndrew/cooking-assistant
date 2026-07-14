@@ -1,7 +1,9 @@
 @use "styles/abstracts" as *;
 
 .segmented-control {
-    display: inline-flex;
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
     align-items: center;
     gap: 2px;
     padding: 3px;

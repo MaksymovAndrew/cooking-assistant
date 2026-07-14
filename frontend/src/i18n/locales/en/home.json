@@ -31,5 +31,10 @@
         "daysLeft_other": "{{count}} days",
         "addToShoppingList": "+ Add to shopping list",
         "empty": "Nothing expiring soon."
+    },
+    "emailVerificationBanner": {
+        "unverifiedMessage": "Verify your email to enable password reset for your account.",
+        "sendEmail": "Send email",
+        "later": "Later"
     }
 }

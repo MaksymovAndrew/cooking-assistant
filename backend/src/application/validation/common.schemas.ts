@@ -37,6 +37,9 @@ export function nonEmptyStringSchema(field: string) {
             message: `${field} cannot be empty`,
         });
 }
+export function trimmedStringSchema(field: string) {
+    return nonEmptyStringSchema(field).transform((value) => value.trim());
+}
 
 export function optionalStringSchema(field: string) {
     return z

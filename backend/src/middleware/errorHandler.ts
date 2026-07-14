@@ -32,6 +32,15 @@ function getErrorMessage(err: unknown, status: number): string {
     return ERROR_MESSAGES.SERVER_ERROR;
 }
 
+// codes are a fixed, self-defined literal set (ERROR_CODES) - safe to expose even on a 5xx, unlike the message
+function getErrorCode(err: unknown, status: number): string | undefined {
+    if (status >= 500) {
+        return undefined;
+    }
+
+    return err instanceof AppError ? err.code : undefined;
+}
+
 const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     logger.error(err);
 
@@ -42,8 +51,12 @@ const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     }
 
     const status = getErrorStatus(err);
+    const code = getErrorCode(err, status);
 
-    res.status(status).json({ error: getErrorMessage(err, status) });
+    res.status(status).json({
+        error: getErrorMessage(err, status),
+        ...(code && { code }),
+    });
 };
 
 export default errorHandler;

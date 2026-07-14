@@ -1,5 +1,6 @@
 import type { z } from "zod";
 
+import { ERROR_CODES } from "constants/errorMessages";
 import { ValidationError } from "domain/errors/AppError";
 
 export function validate<Output, Input>(
@@ -17,7 +18,7 @@ export function validate<Output, Input>(
             )
             .join("; ");
 
-        throw new ValidationError(message);
+        throw new ValidationError(message, ERROR_CODES.VALIDATION_ERROR);
     }
 
     return result.data;

@@ -1,5 +1,6 @@
 import {
     ATTEMPTS_PER_LOCK,
+    FAILURE_RESET_IDLE_MINUTES,
     LOCKOUT_LADDER_MINUTES,
 } from "constants/loginLockout";
 import {
@@ -11,14 +12,24 @@ import {
 // the ladder values live in constants/loginLockout.ts; re-exported so form/hook consumers keep one import site for the whole lockout API
 export { ATTEMPTS_PER_LOCK, LOCKOUT_LADDER_MINUTES };
 
-const STORAGE_KEY = "cooking.loginLockout";
+const STORAGE_KEY_PREFIX = "cooking.loginLockout";
+const FAILURE_RESET_IDLE_MS = FAILURE_RESET_IDLE_MINUTES * MS_PER_MINUTE;
+
+// scoped per identifier (trimmed only - never lowercased, since login lookups are case-sensitive server-side) so a shared/kiosk browser can't cross-lock unrelated accounts
+const storageKey = (login: string): string =>
+    `${STORAGE_KEY_PREFIX}.${login.trim()}`;
 
 export interface LockoutState {
     failures: number;
     lockedUntil: number | null;
+    lastFailureAt: number | null;
 }
 
-const EMPTY_LOCKOUT: LockoutState = { failures: 0, lockedUntil: null };
+const EMPTY_LOCKOUT: LockoutState = {
+    failures: 0,
+    lockedUntil: null,
+    lastFailureAt: null,
+};
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null;
@@ -26,10 +37,11 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 const isLockoutState = (value: unknown): value is LockoutState =>
     isObject(value) &&
     typeof value.failures === "number" &&
-    (value.lockedUntil === null || typeof value.lockedUntil === "number");
+    (value.lockedUntil === null || typeof value.lockedUntil === "number") &&
+    (value.lastFailureAt === null || typeof value.lastFailureAt === "number");
 
-export const readLockout = (): LockoutState => {
-    const raw = localStorage.getItem(STORAGE_KEY);
+export const readLockout = (login: string): LockoutState => {
+    const raw = localStorage.getItem(storageKey(login));
 
     if (!raw) {
         return EMPTY_LOCKOUT;
@@ -45,20 +57,30 @@ export const readLockout = (): LockoutState => {
     }
 };
 
-export const writeLockout = (state: LockoutState): void => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+export const writeLockout = (state: LockoutState, login: string): void => {
+    localStorage.setItem(storageKey(login), JSON.stringify(state));
 };
 
-export const clearLockout = (): void => {
-    localStorage.removeItem(STORAGE_KEY);
+export const clearLockout = (login: string): void => {
+    localStorage.removeItem(storageKey(login));
 };
 
-// a failed (non-429) login attempt: bump the counter, and lock once it hits the next multiple of ATTEMPTS_PER_LOCK, climbing one ladder step per lock
+// bumps the counter and locks once it hits the next ATTEMPTS_PER_LOCK multiple; a stale-enough streak resets first
 export const registerFailure = (state: LockoutState): LockoutState => {
-    const failures = state.failures + 1;
+    const now = Date.now();
+    const isStreakStale =
+        state.lastFailureAt !== null &&
+        now - state.lastFailureAt > FAILURE_RESET_IDLE_MS;
+    const previousFailures = isStreakStale ? 0 : state.failures;
+    const previousLockedUntil = isStreakStale ? null : state.lockedUntil;
+    const failures = previousFailures + 1;
 
     if (failures % ATTEMPTS_PER_LOCK !== 0) {
-        return { failures, lockedUntil: state.lockedUntil };
+        return {
+            failures,
+            lockedUntil: previousLockedUntil,
+            lastFailureAt: now,
+        };
     }
 
     const stageIndex = Math.min(
@@ -66,9 +88,9 @@ export const registerFailure = (state: LockoutState): LockoutState => {
         LOCKOUT_LADDER_MINUTES.length - 1,
     );
     const lockedUntil =
-        Date.now() + LOCKOUT_LADDER_MINUTES[stageIndex] * MS_PER_MINUTE;
+        now + LOCKOUT_LADDER_MINUTES[stageIndex] * MS_PER_MINUTE;
 
-    return { failures, lockedUntil };
+    return { failures, lockedUntil, lastFailureAt: now };
 };
 
 // the server's 429 Retry-After is authoritative for duration: take whichever lockout (client ladder or server cool-down) ends later

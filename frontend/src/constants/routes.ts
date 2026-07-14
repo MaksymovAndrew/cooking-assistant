@@ -2,6 +2,9 @@ export const ROUTES = {
     home: "/",
     login: "/login",
     registration: "/registration",
+    forgotPassword: "/forgot-password",
+    resetPassword: "/reset-password",
+    verifyEmail: "/verify-email",
 
     allRecipes: "/all-recipes",
     myRecipes: "/my-recipes",
@@ -39,4 +42,10 @@ export const menuDetailsPath = (id: string | number): string =>
 export const changeMenuPath = (id: string | number): string =>
     withId(ROUTES.changeMenu, id);
 
-export const PUBLIC_PATHS: string[] = [ROUTES.login, ROUTES.registration];
+export const PUBLIC_PATHS: string[] = [
+    ROUTES.login,
+    ROUTES.registration,
+    ROUTES.forgotPassword,
+    ROUTES.resetPassword,
+    ROUTES.verifyEmail,
+];

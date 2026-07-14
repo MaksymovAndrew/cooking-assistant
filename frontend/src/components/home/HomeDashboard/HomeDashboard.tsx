@@ -2,9 +2,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { useDisclosure } from "hooks/useDisclosure";
+import { useEmailVerificationNudge } from "hooks/useEmailVerificationNudge";
 import { useHomeDashboard } from "hooks/useHomeDashboard";
 import { useNewsBadge } from "hooks/useNewsBadge";
 
+import { EmailVerificationBanner } from "components/home/EmailVerificationBanner";
 import { ExpiringSoon } from "components/home/ExpiringSoon";
 import { GreetingHeader } from "components/home/GreetingHeader";
 import { HomeActions } from "components/home/HomeActions";
@@ -21,6 +23,7 @@ export const HomeDashboard: React.FC = () => {
     const dashboard = useHomeDashboard();
     const news = useDisclosure();
     const newsBadge = useNewsBadge();
+    const emailNudge = useEmailVerificationNudge();
 
     const openNews = () => {
         newsBadge.markAllSeen();
@@ -42,6 +45,13 @@ export const HomeDashboard: React.FC = () => {
     return (
         <div className={styles["home-dashboard"]}>
             <GreetingHeader />
+            {emailNudge.show && (
+                <EmailVerificationBanner
+                    onSendEmail={emailNudge.sendEmail}
+                    isSendDisabled={emailNudge.isSendDisabled}
+                    onDismiss={emailNudge.dismiss}
+                />
+            )}
             <StatStrip
                 recipesCount={dashboard.recipesCount}
                 menusCount={dashboard.menusCount}

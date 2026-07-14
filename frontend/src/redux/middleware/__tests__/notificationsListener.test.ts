@@ -12,6 +12,7 @@ jest.mock("api/client");
 const REQUEST_FAILED_MESSAGE = "Request failed";
 const BAD_CREDENTIALS_ERROR = "Bad credentials";
 const FALLBACK_ERROR_MESSAGE = "Something went wrong";
+const NEW_PASSWORD = "new-secret1!";
 
 describe("getErrorMessage", () => {
     it("should return the data message from a query error payload", () => {
@@ -87,6 +88,7 @@ describe("notificationsListener", () => {
                 name: "Test",
                 surname: "User",
                 login: "tester",
+                email: "tester@example.com",
                 password: "secret1",
             }),
         );
@@ -123,6 +125,62 @@ describe("notificationsListener", () => {
         expect(store.getState().notifications.items).toEqual([]);
     });
 
+    it("should not add a notification when a forgotPassword request fails", async () => {
+        mockedPost.mockRejectedValue({
+            isAxiosError: true,
+            response: { status: 429, data: { error: "Too many requests" } },
+            message: REQUEST_FAILED_MESSAGE,
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            authApi.endpoints.forgotPassword.initiate({
+                email: "tester@example.com",
+            }),
+        );
+
+        expect(store.getState().notifications.items).toEqual([]);
+    });
+
+    it("should not add a notification when a resetPassword request fails", async () => {
+        mockedPost.mockRejectedValue({
+            isAxiosError: true,
+            response: { status: 401, data: { error: "Invalid token" } },
+            message: REQUEST_FAILED_MESSAGE,
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            authApi.endpoints.resetPassword.initiate({
+                token: "bad-token",
+                newPassword: NEW_PASSWORD,
+            }),
+        );
+
+        expect(store.getState().notifications.items).toEqual([]);
+    });
+
+    it("should not add a notification when a changePassword request fails", async () => {
+        mockedPost.mockRejectedValue({
+            isAxiosError: true,
+            response: {
+                status: 401,
+                data: { error: "Current password is incorrect" },
+            },
+            message: REQUEST_FAILED_MESSAGE,
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            authApi.endpoints.changePassword.initiate({
+                currentPassword: "wrong",
+                newPassword: NEW_PASSWORD,
+            }),
+        );
+
+        expect(store.getState().notifications.items).toEqual([]);
+    });
+
     it("should add a success notification when logout succeeds", async () => {
         mockedPost.mockResolvedValue({ data: null });
         const store = makeTestStore();
@@ -152,6 +210,26 @@ describe("notificationsListener success toasts", () => {
         expect(items[0]).toMatchObject({
             type: "success",
             message: "Recipe deleted",
+        });
+    });
+
+    it("should add a success notification when the password is changed", async () => {
+        mockedPost.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            authApi.endpoints.changePassword.initiate({
+                currentPassword: "old-secret",
+                newPassword: NEW_PASSWORD,
+            }),
+        );
+
+        const { items } = store.getState().notifications;
+
+        expect(items).toHaveLength(1);
+        expect(items[0]).toMatchObject({
+            type: "success",
+            message: "Password changed",
         });
     });
 

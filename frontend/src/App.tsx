@@ -18,6 +18,13 @@ import { Toaster } from "components/ui/Toasts";
 
 const LoginPage = React.lazy(() => import("pages/auth/LoginPage"));
 const RegisterPage = React.lazy(() => import("pages/auth/RegisterPage"));
+const ForgotPasswordPage = React.lazy(
+    () => import("pages/auth/ForgotPasswordPage"),
+);
+const ResetPasswordPage = React.lazy(
+    () => import("pages/auth/ResetPasswordPage"),
+);
+const VerifyEmailPage = React.lazy(() => import("pages/auth/VerifyEmailPage"));
 const HomePage = React.lazy(() => import("pages/home/HomePage"));
 const ChangeMenuPage = React.lazy(() => import("pages/menu/ChangeMenuPage"));
 const CreateMenuPage = React.lazy(() => import("pages/menu/CreateMenuPage"));
@@ -86,6 +93,15 @@ const router = createBrowserRouter(
         <Route element={<RootLayout />}>
             <Route path={ROUTES.login} element={<LoginPage />} />
             <Route path={ROUTES.registration} element={<RegisterPage />} />
+            <Route
+                path={ROUTES.forgotPassword}
+                element={<ForgotPasswordPage />}
+            />
+            <Route
+                path={ROUTES.resetPassword}
+                element={<ResetPasswordPage />}
+            />
+            <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
             <Route element={<PrivateRoute />}>
                 {PRIVATE_ROUTES.map(({ path, element }) => (
                     <Route key={path} path={path} element={element} />

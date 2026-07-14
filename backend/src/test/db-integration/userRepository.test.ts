@@ -19,6 +19,7 @@ interface PublicUserRow {
 }
 
 const PASSWORD = "hashed-password";
+const uniqueEmail = (prefix: string) => `${unique(prefix)}@example.com`;
 
 describe("PgUserRepository (real Postgres)", () => {
     let pool: Pool;
@@ -33,23 +34,16 @@ describe("PgUserRepository (real Postgres)", () => {
         await pool.end();
     });
 
-    it("should create a user and return only its public fields", async () => {
-        const login = unique("newuser");
-        const created = (await repository.create({
+    it("should create a user and return its new id", async () => {
+        const created = await repository.create({
             name: "Ada",
             surname: "Lovelace",
-            login,
+            login: unique("newuser"),
             password: PASSWORD,
-        })) as PublicUserRow;
+            email: uniqueEmail("ada"),
+        });
 
-        expect(created).toEqual(
-            expect.objectContaining({
-                name: "Ada",
-                surname: "Lovelace",
-                login,
-            }),
-        );
-        expect(created).not.toHaveProperty("password");
+        expect(typeof created.id).toBe("number");
     });
 
     it("should reject a duplicate login with a 409", async () => {
@@ -60,6 +54,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "User",
             login,
             password: PASSWORD,
+            email: uniqueEmail("first"),
         });
 
         const error = await catchError(
@@ -68,6 +63,7 @@ describe("PgUserRepository (real Postgres)", () => {
                 surname: "User",
                 login,
                 password: PASSWORD,
+                email: uniqueEmail("second"),
             }),
         );
 
@@ -75,6 +71,34 @@ describe("PgUserRepository (real Postgres)", () => {
         expect((error as AppError).status).toBe(409);
         expect((error as AppError).message).toBe(
             ERROR_MESSAGES.LOGIN_ALREADY_TAKEN,
+        );
+    });
+
+    it("should reject a duplicate email with a 409", async () => {
+        const email = uniqueEmail("dupe");
+
+        await repository.create({
+            name: "First",
+            surname: "User",
+            login: unique("emailowner"),
+            password: PASSWORD,
+            email,
+        });
+
+        const error = await catchError(
+            repository.create({
+                name: "Second",
+                surname: "User",
+                login: unique("emailthief"),
+                password: PASSWORD,
+                email,
+            }),
+        );
+
+        expect(error).toBeInstanceOf(AppError);
+        expect((error as AppError).status).toBe(409);
+        expect((error as AppError).message).toBe(
+            ERROR_MESSAGES.EMAIL_ALREADY_TAKEN,
         );
     });
 
@@ -86,6 +110,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Hopper",
             login,
             password: PASSWORD,
+            email: uniqueEmail("grace"),
         });
 
         const found = await repository.findByLogin(login);
@@ -106,22 +131,51 @@ describe("PgUserRepository (real Postgres)", () => {
 
     it("should return only public fields by id, and null for an unknown id", async () => {
         const login = unique("findbyid");
-        const created = (await repository.create({
+        const email = uniqueEmail("findbyid");
+        const created = await repository.create({
             name: "Alan",
             surname: "Turing",
             login,
             password: PASSWORD,
-        })) as { id: number };
+            email,
+        });
 
         const found = await repository.findById(created.id);
 
         expect(found).toEqual(
-            expect.objectContaining({ id: created.id, name: "Alan", login }),
+            expect.objectContaining({
+                id: created.id,
+                name: "Alan",
+                login,
+                email,
+                email_verified_at: null,
+            }),
         );
         expect(found).not.toHaveProperty("password");
         expect(new Date(found?.created_at ?? "").getTime()).not.toBeNaN();
 
         const missing = await repository.findById(created.id + 1_000_000);
+
+        expect(missing).toBeNull();
+    });
+
+    it("should find a user by email, and null for an unknown email", async () => {
+        const email = uniqueEmail("byemail");
+        const created = await repository.create({
+            name: "Margaret",
+            surname: "Hamilton",
+            login: unique("byemail"),
+            password: PASSWORD,
+            email,
+        });
+
+        const found = await repository.findByEmail(email);
+
+        expect(found).toEqual(
+            expect.objectContaining({ id: created.id, email }),
+        );
+
+        const missing = await repository.findByEmail(uniqueEmail("missing"));
 
         expect(missing).toBeNull();
     });
@@ -134,6 +188,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Johnson",
             login,
             password: PASSWORD,
+            email: uniqueEmail("katherine"),
         });
 
         const all = (await repository.findAll()) as PublicUserRow[];
@@ -143,5 +198,107 @@ describe("PgUserRepository (real Postgres)", () => {
         all.forEach((row) => {
             expect(row).not.toHaveProperty("password");
         });
+    });
+
+    it("should find credentials by id including the password hash, and null for an unknown id", async () => {
+        const login = unique("creds");
+        const created = await repository.create({
+            name: "Radia",
+            surname: "Perlman",
+            login,
+            password: PASSWORD,
+            email: uniqueEmail("radia"),
+        });
+
+        const found = await repository.findCredentialsById(created.id);
+
+        expect(found).toEqual({ id: created.id, password: PASSWORD });
+
+        const missing = await repository.findCredentialsById(
+            created.id + 1_000_000,
+        );
+
+        expect(missing).toBeNull();
+    });
+
+    it("should find credentials by email including the password hash, and null for an unknown email", async () => {
+        const email = uniqueEmail("creds");
+        const created = await repository.create({
+            name: "Katie",
+            surname: "Bouman",
+            login: unique("creds-email"),
+            password: PASSWORD,
+            email,
+        });
+
+        const found = await repository.findCredentialsByEmail(email);
+
+        expect(found).toEqual({ id: created.id, password: PASSWORD });
+
+        const missing = await repository.findCredentialsByEmail(
+            uniqueEmail("missing-creds"),
+        );
+
+        expect(missing).toBeNull();
+    });
+
+    it("should find a password-reset candidate by email with verification status, and null for an unknown email", async () => {
+        const email = uniqueEmail("reset-candidate");
+        const created = await repository.create({
+            name: "Grace",
+            surname: "Hopper",
+            login: unique("reset-candidate"),
+            password: PASSWORD,
+            email,
+        });
+
+        const found = await repository.findPasswordResetCandidateByEmail(email);
+
+        expect(found).toEqual({
+            id: created.id,
+            password: PASSWORD,
+            email_verified_at: null,
+        });
+
+        const missing = await repository.findPasswordResetCandidateByEmail(
+            uniqueEmail("missing-reset-candidate"),
+        );
+
+        expect(missing).toBeNull();
+    });
+
+    it("should update the password hash for a user", async () => {
+        const created = await repository.create({
+            name: "Hedy",
+            surname: "Lamarr",
+            login: unique("changepw"),
+            password: PASSWORD,
+            email: uniqueEmail("hedy"),
+        });
+
+        await repository.updatePassword(created.id, "new-hashed-password");
+
+        const found = await repository.findCredentialsById(created.id);
+
+        expect(found?.password).toBe("new-hashed-password");
+    });
+
+    it("should mark the email as verified", async () => {
+        const created = await repository.create({
+            name: "Mary",
+            surname: "Jackson",
+            login: unique("verify"),
+            password: PASSWORD,
+            email: uniqueEmail("mary"),
+        });
+
+        await repository.markEmailVerified(created.id);
+
+        const found = await repository.findById(created.id);
+
+        expect(found?.email_verified_at).not.toBeNull();
+        expect(
+            new Date(found?.email_verified_at ?? "").getTime(),
+        ).not.toBeNaN();
     });
 });

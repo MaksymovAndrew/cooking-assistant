@@ -2,13 +2,11 @@ import { Bell, X } from "lucide-react";
 import React, { useId } from "react";
 import { useTranslation } from "react-i18next";
 
-import { NEWS_ITEMS } from "constants/news";
-
 import { useEscapeKey } from "hooks/useEscapeKey";
 import { useScrollLock } from "hooks/useScrollLock";
 
 import { formatNewsDate } from "utils/formatNewsDate";
-import { getNewsItemText } from "utils/newsItemText";
+import { getNewsItems } from "utils/newsItems";
 
 import styles from "./NewsModal.module.scss";
 
@@ -19,6 +17,7 @@ interface NewsModalProps {
 
 const ICON_SIZE = 20;
 const CLOSE_ICON_SIZE = 16;
+const MAX_VISIBLE_ITEMS = 10;
 
 export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation("news");
@@ -36,6 +35,8 @@ export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
             onClose();
         }
     };
+
+    const visibleItems = getNewsItems().slice(0, MAX_VISIBLE_ITEMS);
 
     return (
         <div
@@ -77,53 +78,38 @@ export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
                 {/* scrollbar lives here, not on the rounded outer box, so it can't poke past the corner */}
                 <div className={styles["news-modal__scroll"]}>
                     <div className={styles["news-modal__list"]}>
-                        {NEWS_ITEMS.map((entry) => {
-                            const { title, description } = getNewsItemText(
-                                t,
-                                entry,
-                            );
-
-                            return (
+                        {visibleItems.map((entry) => (
+                            <div
+                                key={entry.id}
+                                className={styles["news-modal__item"]}
+                            >
+                                <span
+                                    className={styles["news-modal__dot"]}
+                                    aria-hidden="true"
+                                />
                                 <div
-                                    key={entry.id}
-                                    className={styles["news-modal__item"]}
+                                    className={styles["news-modal__item-body"]}
                                 >
-                                    <span
-                                        className={styles["news-modal__dot"]}
-                                        aria-hidden="true"
-                                    />
                                     <div
                                         className={
-                                            styles["news-modal__item-body"]
+                                            styles["news-modal__item-title"]
                                         }
                                     >
-                                        <div
-                                            className={
-                                                styles["news-modal__item-title"]
-                                            }
-                                        >
-                                            {title}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles[
-                                                    "news-modal__description"
-                                                ]
-                                            }
-                                        >
-                                            {description}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles["news-modal__date"]
-                                            }
-                                        >
-                                            {formatNewsDate(entry.date)}
-                                        </div>
+                                        {entry.title}
+                                    </div>
+                                    <div
+                                        className={
+                                            styles["news-modal__description"]
+                                        }
+                                    >
+                                        {entry.description}
+                                    </div>
+                                    <div className={styles["news-modal__date"]}>
+                                        {formatNewsDate(entry.date)}
                                     </div>
                                 </div>
-                            );
-                        })}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

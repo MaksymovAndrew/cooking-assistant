@@ -1,7 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 
-import { ERROR_MESSAGES } from "constants/errorMessages";
-import { AppError, NotFoundError } from "domain/errors/AppError";
+import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import {
+    AppError,
+    NotFoundError,
+    UnauthorizedError,
+} from "domain/errors/AppError";
 
 import errorHandler from "middleware/errorHandler";
 
@@ -113,6 +117,41 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(422);
+        expect(res.json).toHaveBeenCalledWith({
+            error: ERROR_MESSAGES.SERVER_ERROR,
+        });
+    });
+
+    it("should include the error code when the AppError carries one", () => {
+        const err = new UnauthorizedError(
+            ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
+            ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
+        );
+        const req = {} as Request;
+        const res = makeResponse();
+        const next = jest.fn() as NextFunction;
+
+        errorHandler(err, req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({
+            error: ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
+            code: ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
+        });
+    });
+
+    it("should not include a code on a 5xx even if the AppError carries one", () => {
+        const err = new AppError(
+            ERROR_MESSAGES.JWT_NOT_CONFIGURED,
+            500,
+            "SOME_CODE",
+        );
+        const req = {} as Request;
+        const res = makeResponse();
+        const next = jest.fn() as NextFunction;
+
+        errorHandler(err, req, res, next);
+
         expect(res.json).toHaveBeenCalledWith({
             error: ERROR_MESSAGES.SERVER_ERROR,
         });

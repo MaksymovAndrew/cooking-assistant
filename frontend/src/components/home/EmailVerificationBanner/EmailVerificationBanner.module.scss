@@ -1,0 +1,28 @@
+@use "styles/abstracts" as *;
+
+.email-verification-banner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid color-mix(in srgb, var(--warning) 30%, var(--border));
+    border-radius: var(--r-sm);
+    background: color-mix(in srgb, var(--warning) 10%, var(--surface));
+    color: var(--warning);
+
+    &__message {
+        flex: 1 1 auto;
+        min-width: 200px;
+        margin: 0;
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+    }
+}

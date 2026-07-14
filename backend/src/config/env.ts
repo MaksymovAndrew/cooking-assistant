@@ -77,6 +77,9 @@ const envSchema = z.object({
         emptyToUndefined,
         z.string().min(32, "must be at least 32 characters").optional(),
     ),
+    // both optional - absence picks LoggingEmailService over ResendEmailService (see composition-root.ts)
+    RESEND_API_KEY: z.preprocess(emptyToUndefined, z.string().optional()),
+    EMAIL_FROM: z.preprocess(emptyToUndefined, z.string().optional()),
     LOG_LEVEL: z
         .preprocess(
             emptyToUndefined,
@@ -126,6 +129,8 @@ export const config = {
     },
     corsOrigin: env.CORS_ORIGIN,
     cookieDomain: env.COOKIE_DOMAIN,
+    resendApiKey: env.RESEND_API_KEY,
+    emailFrom: env.EMAIL_FROM,
     logLevel: env.LOG_LEVEL ?? "info",
     // default to no trusted proxy in dev so a spoofed X-Forwarded-For cannot re-key the rate limiter; one hop in production (configurable per topology)
     trustProxyHops: env.TRUST_PROXY_HOPS ?? (isProduction ? 1 : 0),
@@ -158,5 +163,19 @@ export function assertSecureProductionDb(cfg: {
     }
 }
 
+export function assertConsistentEmailConfig(cfg: {
+    resendApiKey?: string;
+    emailFrom?: string;
+}): void {
+    const hasOnlyOne = Boolean(cfg.resendApiKey) !== Boolean(cfg.emailFrom);
+
+    if (hasOnlyOne) {
+        throw new Error(
+            "Invalid environment configuration: RESEND_API_KEY and EMAIL_FROM must be set together (or both left unset to use the logging email fallback).",
+        );
+    }
+}
+
 // run at config load so every consumer of config.db (the app, the migrate runner, and the seed script) is guarded, not just the HTTP entry point
 assertSecureProductionDb(config);
+assertConsistentEmailConfig(config);

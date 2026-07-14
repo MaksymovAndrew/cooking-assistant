@@ -4,6 +4,8 @@ import React from "react";
 import { Provider } from "react-redux";
 import type * as ReactRouterDom from "react-router-dom";
 
+import { ERROR_CODES } from "constants/errorCodes";
+
 import { API_ROUTES } from "api/endpoints";
 
 import { useRegisterForm } from "hooks/useRegisterForm";
@@ -18,6 +20,8 @@ jest.mock("react-router-dom", () => ({
 }));
 jest.mock("api/client");
 
+const EMAIL = "tester@example.com";
+
 interface FormResult {
     current: ReturnType<typeof useRegisterForm>;
 }
@@ -30,7 +34,7 @@ const renderRegisterForm = () =>
 
 const setField = (
     result: FormResult,
-    field: "name" | "surname" | "login" | "password",
+    field: "name" | "surname" | "login" | "email" | "password",
     value: string,
 ) => {
     act(() => {
@@ -42,7 +46,8 @@ const fillValid = (result: FormResult) => {
     setField(result, "name", "Test");
     setField(result, "surname", "User");
     setField(result, "login", "tester");
-    setField(result, "password", "secret1");
+    setField(result, "email", EMAIL);
+    setField(result, "password", "secret1!");
 };
 
 const submit = (result: FormResult) =>
@@ -51,7 +56,7 @@ const submit = (result: FormResult) =>
     });
 
 describe("useRegisterForm", () => {
-    it("should register the user and navigate to login when all fields are valid", async () => {
+    it("should register the user and navigate to the dashboard when all fields are valid", async () => {
         mockedPost.mockResolvedValue({ data: null });
 
         const { result } = renderRegisterForm();
@@ -63,9 +68,32 @@ describe("useRegisterForm", () => {
             name: "Test",
             surname: "User",
             login: "tester",
-            password: "secret1",
+            email: EMAIL,
+            password: "secret1!",
         });
-        expect(mockNavigate).toHaveBeenCalledWith("/login");
+        expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
+
+    it("should trim leading and trailing whitespace from name, surname, login and email before submitting", async () => {
+        mockedPost.mockResolvedValue({ data: null });
+
+        const { result } = renderRegisterForm();
+
+        setField(result, "name", "Test ");
+        setField(result, "surname", " User");
+        setField(result, "login", " tester ");
+        setField(result, "email", " tester@example.com ");
+        setField(result, "password", "secret1!");
+        await submit(result);
+
+        expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.auth.register, {
+            name: "Test",
+            surname: "User",
+            login: "tester",
+            email: EMAIL,
+            password: "secret1!",
+        });
+        expect(mockNavigate).toHaveBeenCalledWith("/");
     });
 
     it("should not submit and should set a field error when the name is invalid", async () => {
@@ -74,7 +102,8 @@ describe("useRegisterForm", () => {
         setField(result, "name", "test");
         setField(result, "surname", "User");
         setField(result, "login", "tester");
-        setField(result, "password", "secret1");
+        setField(result, "email", EMAIL);
+        setField(result, "password", "secret1!");
         await submit(result);
 
         expect(mockedPost).not.toHaveBeenCalled();
@@ -90,7 +119,8 @@ describe("useRegisterForm", () => {
         setField(result, "name", "Test");
         setField(result, "surname", "user");
         setField(result, "login", "tester");
-        setField(result, "password", "secret1");
+        setField(result, "email", EMAIL);
+        setField(result, "password", "secret1!");
         await submit(result);
 
         expect(mockedPost).not.toHaveBeenCalled();
@@ -106,11 +136,29 @@ describe("useRegisterForm", () => {
         setField(result, "name", "Test");
         setField(result, "surname", "User");
         setField(result, "login", "a");
-        setField(result, "password", "secret1");
+        setField(result, "email", EMAIL);
+        setField(result, "password", "secret1!");
         await submit(result);
 
         expect(mockedPost).not.toHaveBeenCalled();
         expect(result.current.errors.login).toBeDefined();
+        expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it("should not submit and should set a field error when the email is invalid", async () => {
+        const { result } = renderRegisterForm();
+
+        setField(result, "name", "Test");
+        setField(result, "surname", "User");
+        setField(result, "login", "tester");
+        setField(result, "email", "not-an-email");
+        setField(result, "password", "secret1!");
+        await submit(result);
+
+        expect(mockedPost).not.toHaveBeenCalled();
+        expect(result.current.errors.email).toBe(
+            "Please enter a valid email address.",
+        );
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 
@@ -120,12 +168,13 @@ describe("useRegisterForm", () => {
         setField(result, "name", "Test");
         setField(result, "surname", "User");
         setField(result, "login", "tester");
+        setField(result, "email", EMAIL);
         setField(result, "password", "short");
         await submit(result);
 
         expect(mockedPost).not.toHaveBeenCalled();
         expect(result.current.errors.password).toBe(
-            "Password must be at least 6 characters.",
+            "Password must be at least 8 characters and include a letter, a number, and a special character.",
         );
     });
 
@@ -152,6 +201,76 @@ describe("useRegisterForm", () => {
         await submit(result);
 
         expect(result.current.error).toBe("This user already exists.");
+        expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it("should set an email-already-taken error when the email code is returned", async () => {
+        mockedPost.mockRejectedValue(
+            Object.assign(new Error(), {
+                isAxiosError: true,
+                response: {
+                    status: 409,
+                    data: {
+                        error: "Email already taken",
+                        code: ERROR_CODES.EMAIL_ALREADY_TAKEN,
+                    },
+                },
+            }),
+        );
+
+        const { result } = renderRegisterForm();
+
+        fillValid(result);
+        await submit(result);
+
+        expect(result.current.error).toBe(
+            "An account with this email already exists.",
+        );
+        expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it("should set a registration-failed error for an unrecognized status", async () => {
+        mockedPost.mockRejectedValue(
+            Object.assign(new Error(), {
+                isAxiosError: true,
+                response: {
+                    status: 400,
+                    data: { error: "Name cannot be empty" },
+                },
+            }),
+        );
+
+        const { result } = renderRegisterForm();
+
+        fillValid(result);
+        await submit(result);
+
+        expect(result.current.error).toBe(
+            "Registration failed. Please check your details and try again.",
+        );
+        expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it("should set a rate-limit error when registration is throttled", async () => {
+        mockedPost.mockRejectedValue(
+            Object.assign(new Error(), {
+                isAxiosError: true,
+                response: {
+                    status: 429,
+                    data: { error: "Too many requests" },
+                    headers: { "retry-after": "30" },
+                },
+            }),
+        );
+
+        const { result } = renderRegisterForm();
+
+        fillValid(result);
+        await submit(result);
+
+        expect(result.current.error).toBe(
+            "Too many registration attempts. Please wait 30 seconds.",
+        );
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 });

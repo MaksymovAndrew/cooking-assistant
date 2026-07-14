@@ -1,3 +1,4 @@
+import { config } from "config/env";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
@@ -5,6 +6,7 @@ import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
+import type { EmailSender } from "application/ports/EmailSender";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
 import GetAllMenuCategories from "application/use-cases/menu-categories/GetAllMenuCategories";
@@ -31,11 +33,8 @@ import GetRecipeStats from "application/use-cases/recipes/GetRecipeStats";
 import SearchPersonRecipes from "application/use-cases/recipes/SearchPersonRecipes";
 import SearchRecipes from "application/use-cases/recipes/SearchRecipes";
 import UpdateRecipe from "application/use-cases/recipes/UpdateRecipe";
-import GetCurrentUser from "application/use-cases/users/GetCurrentUser";
-import GetUsers from "application/use-cases/users/GetUsers";
-import LoginUser from "application/use-cases/users/LoginUser";
-import RegisterUser from "application/use-cases/users/RegisterUser";
 
+import { createEmailSender } from "infrastructure/email/createEmailSender";
 import PgMenuCategoryRepository from "infrastructure/persistence/pg/PgMenuCategoryRepository";
 import PgMenuRepository from "infrastructure/persistence/pg/PgMenuRepository";
 import PgPantryRepository from "infrastructure/persistence/pg/PgPantryRepository";
@@ -49,9 +48,10 @@ import MenuController from "controller/menu.controller";
 import MenuCategoryController from "controller/menuCategory.controller";
 import RecipeController from "controller/recipe.controller";
 import RecipeTypeController from "controller/type.controller";
-import UserController from "controller/user.controller";
+import type UserController from "controller/user.controller";
 import UserIngredientsController from "controller/userIngredients.controller";
 
+import { buildUserController } from "./composition-root.user";
 import pool from "./db";
 
 export interface RepositoryDeps {
@@ -63,6 +63,8 @@ export interface RepositoryDeps {
     userRepository: UserRepository;
     passwordHasher: PasswordHasher;
     tokenService: TokenService;
+    emailSender: EmailSender;
+    frontendOrigin: string;
 }
 
 export interface Controllers {
@@ -83,6 +85,8 @@ export function buildControllers({
     userRepository,
     passwordHasher,
     tokenService,
+    emailSender,
+    frontendOrigin,
 }: RepositoryDeps): Controllers {
     const recipeTypeController = new RecipeTypeController({
         getAllRecipeTypes: new GetAllRecipeTypes(recipeTypeRepository),
@@ -125,11 +129,12 @@ export function buildControllers({
         getPurchaseHistory: new GetPurchaseHistory(pantryRepository),
     });
 
-    const userController = new UserController({
-        registerUser: new RegisterUser(userRepository, passwordHasher),
-        loginUser: new LoginUser(userRepository, passwordHasher, tokenService),
-        getUsers: new GetUsers(userRepository),
-        getCurrentUser: new GetCurrentUser(userRepository),
+    const userController = buildUserController({
+        userRepository,
+        passwordHasher,
+        tokenService,
+        emailSender,
+        frontendOrigin,
     });
 
     return {
@@ -151,6 +156,8 @@ const controllers = buildControllers({
     userRepository: new PgUserRepository(pool),
     passwordHasher: new BcryptPasswordHasher(),
     tokenService: new JwtTokenService(),
+    emailSender: createEmailSender(config.resendApiKey, config.emailFrom),
+    frontendOrigin: config.corsOrigin,
 });
 
 export default controllers;

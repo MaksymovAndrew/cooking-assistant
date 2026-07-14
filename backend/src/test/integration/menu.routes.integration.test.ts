@@ -1,6 +1,10 @@
 import request from "supertest";
 
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "constants/errorMessages";
+import {
+    ERROR_CODES,
+    ERROR_MESSAGES,
+    SUCCESS_MESSAGES,
+} from "constants/errorMessages";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
@@ -68,6 +72,7 @@ describe("menu routes", () => {
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
             error: "limit: Limit must be at most 100",
+            code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(deps.menuRepository.findAll).not.toHaveBeenCalled();
     });

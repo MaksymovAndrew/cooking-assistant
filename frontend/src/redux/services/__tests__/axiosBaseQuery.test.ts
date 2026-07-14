@@ -15,6 +15,7 @@ jest.mock("api/client");
 
 const PROBE_URL = "/api/probe";
 const SAMPLE_DATA = { ok: true };
+const REQUEST_FAILED_MESSAGE = "Request failed";
 
 // throwaway api just to drive axiosBaseQuery through the real RTK Query pipeline
 const probeApi = createApi({
@@ -60,7 +61,7 @@ describe("axiosBaseQuery", () => {
                 data: { error: "Not found" },
                 headers: {},
             },
-            message: "Request failed",
+            message: REQUEST_FAILED_MESSAGE,
         });
         const store = makeProbeStore();
 
@@ -72,6 +73,7 @@ describe("axiosBaseQuery", () => {
             status: 404,
             data: "Not found",
             retryAfter: null,
+            code: null,
         });
     });
 
@@ -87,6 +89,7 @@ describe("axiosBaseQuery", () => {
             status: undefined,
             data: "network down",
             retryAfter: null,
+            code: null,
         });
     });
 
@@ -98,7 +101,7 @@ describe("axiosBaseQuery", () => {
                 data: { error: "Too many" },
                 headers: { "retry-after": "30" },
             },
-            message: "Request failed",
+            message: REQUEST_FAILED_MESSAGE,
         });
         const store = makeProbeStore();
 
@@ -110,6 +113,34 @@ describe("axiosBaseQuery", () => {
             status: 429,
             data: "Too many",
             retryAfter: 30,
+            code: null,
+        });
+    });
+
+    it("should surface the server's error code on a 4xx response", async () => {
+        mockedGet.mockRejectedValue({
+            isAxiosError: true,
+            response: {
+                status: 409,
+                data: {
+                    error: "Login already taken",
+                    code: "LOGIN_ALREADY_TAKEN",
+                },
+                headers: {},
+            },
+            message: REQUEST_FAILED_MESSAGE,
+        });
+        const store = makeProbeStore();
+
+        const result = await store.dispatch(
+            probeApi.endpoints.read.initiate({ url: PROBE_URL }),
+        );
+
+        expect(result.error).toEqual({
+            status: 409,
+            data: "Login already taken",
+            retryAfter: null,
+            code: "LOGIN_ALREADY_TAKEN",
         });
     });
 

@@ -9,8 +9,8 @@ function unique(prefix: string): string {
 export async function createPerson(pool: Pool): Promise<number> {
     const login = unique("person");
     const result = await pool.query<{ id: number }>(
-        `INSERT INTO person (name, surname, login, password) VALUES ($1, $2, $3, $4) RETURNING id`,
-        ["Test", "User", login, "hashed-password"],
+        `INSERT INTO person (name, surname, login, password, email) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        ["Test", "User", login, "hashed-password", `${login}@example.com`],
     );
 
     return result.rows[0].id;

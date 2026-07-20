@@ -32,8 +32,6 @@
     }
 
     &__footer {
-        display: flex;
-        justify-content: center;
-        gap: var(--s-3);
+        @include mobile-stacked-actions;
     }
 }

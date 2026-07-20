@@ -18,6 +18,8 @@
     }
 
     &__title {
+        @include wrap-anywhere;
+
         display: none;
         margin: 0;
         color: var(--text);
@@ -52,6 +54,8 @@
     }
 
     &__description {
+        @include wrap-anywhere;
+
         max-width: 60ch;
         margin: 0 0 var(--s-5);
         color: var(--text-2);

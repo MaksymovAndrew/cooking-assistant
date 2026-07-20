@@ -5,12 +5,12 @@ import { BottomNav } from "components/layout/BottomNav";
 import { renderWithRouter } from "test/router";
 
 describe("BottomNav", () => {
-    it("should render all 5 tabs in the Stats, Menus, Recipes, Settings, Profile order", () => {
+    it("should render all 5 tabs in the Stats, Menus, Recipes, Ingredients, Profile order", () => {
         renderWithRouter(<BottomNav />);
 
         expect(
             screen.getAllByRole("link").map((link) => link.textContent),
-        ).toEqual(["Stats", "Menus", "Recipes", "Settings", "Profile"]);
+        ).toEqual(["Stats", "Menus", "Recipes", "Ingredients", "Profile"]);
     });
 
     it("should mark the tab matching the current route as active", () => {

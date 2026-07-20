@@ -7,14 +7,28 @@
     left: 0;
     z-index: var(--z-header);
     display: flex;
-    align-items: stretch;
-    height: 64px;
-    padding-bottom: env(safe-area-inset-bottom);
+    flex-direction: column;
     border-top: 1px solid var(--border);
     background: var(--surface);
 
     @include respond-to(desktop) {
         display: none;
+    }
+
+    // the icon/label row's own box is never touched by the animating safe-area value below, so
+    // there is nothing here for Chrome's non-fast-path repaint lag to visibly squeeze
+    &__content {
+        display: flex;
+        flex: none;
+        align-items: stretch;
+        height: 64px;
+    }
+
+    // a separate, contentless block absorbs the safe-area inset - if its own resize lags behind
+    // the address bar animation, there is no icon/text inside it for that lag to be visible on
+    &__safe-area-spacer {
+        flex: none;
+        height: env(safe-area-inset-bottom);
     }
 
     &__item {

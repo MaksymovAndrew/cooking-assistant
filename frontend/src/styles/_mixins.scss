@@ -1,3 +1,5 @@
+@use "breakpoints";
+
 @mixin focus-ring {
     &:focus-visible {
         outline: 2px solid var(--brand);
@@ -30,6 +32,11 @@
     white-space: nowrap;
 }
 
+// for headings/prose that wrap normally but must not push the page wide when the text has no spaces (a pasted URL, a long ingredient name)
+@mixin wrap-anywhere {
+    overflow-wrap: break-word;
+}
+
 // multi-line ellipsis - use for descriptions that must not grow unbounded
 @mixin line-clamp($lines) {
     display: -webkit-box;
@@ -49,6 +56,30 @@
     @media (hover: hover) {
         &:hover {
             @content;
+        }
+    }
+}
+
+// a Cancel/primary action pair: full-width and stacked (primary on top) on mobile so both are
+// easy to tap; a compact auto-width row from tablet up. Match ConfirmModal's proven pattern.
+@mixin mobile-stacked-actions {
+    display: flex;
+    flex-direction: column-reverse;
+    align-self: stretch;
+    gap: var(--s-3);
+
+    @include breakpoints.respond-to(tablet) {
+        flex-direction: row;
+        align-self: auto;
+        justify-content: center;
+    }
+
+    > * {
+        width: 100%;
+        justify-content: center;
+
+        @include breakpoints.respond-to(tablet) {
+            width: auto;
         }
     }
 }

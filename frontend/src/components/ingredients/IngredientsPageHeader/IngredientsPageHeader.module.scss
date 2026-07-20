@@ -26,7 +26,15 @@
     }
 
     &__actions {
-        display: flex;
-        gap: var(--s-3);
+        @include mobile-stacked-actions;
+
+        // the parent row wraps this onto its own line on mobile - claim the full line so the
+        // stacked buttons below can actually stretch across it instead of hugging their content
+        flex: 1 1 100%;
+
+        @include respond-to(tablet) {
+            flex: none;
+            justify-content: flex-end;
+        }
     }
 }

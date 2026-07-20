@@ -159,8 +159,7 @@
     }
 
     &__summary-actions {
-        display: flex;
-        gap: var(--s-3);
+        @include mobile-stacked-actions;
     }
 
     &__cancel {

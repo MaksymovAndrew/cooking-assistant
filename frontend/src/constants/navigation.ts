@@ -1,4 +1,3 @@
-import { Lock } from "lucide-react";
 import type React from "react";
 
 import {
@@ -32,11 +31,11 @@ export const NAV_ITEMS: NavItem[] = [
     { to: ROUTES.stats, labelKey: "nav.stats", Icon: BarChartMark },
 ];
 
-// tablet/mobile bottom bar - a fixed 5-tab order (Stats, Menus, Recipes, Settings, Profile) that replaces the desktop top nav on narrow screens
+// tablet/mobile bottom bar - a fixed 5-tab order (Stats, Menus, Recipes, Pantry, Profile) that replaces the desktop top nav on narrow screens; Settings is reachable from Profile instead, it's easy enough to find there
 export const BOTTOM_NAV_ITEMS: NavItem[] = [
     { to: ROUTES.stats, labelKey: "nav.stats", Icon: BarChartMark },
     { to: ROUTES.allMenus, labelKey: "nav.menus", Icon: NotebookMark },
     { to: ROUTES.allRecipes, labelKey: "nav.recipes", Icon: BookMark },
-    { to: ROUTES.settings, labelKey: "nav.settings", Icon: Lock },
+    { to: ROUTES.ingredients, labelKey: "nav.ingredients", Icon: BasketMark },
     { to: ROUTES.profile, labelKey: "nav.profile", Icon: UserCircleMark },
 ];

@@ -12,17 +12,36 @@
     color: var(--warning);
 
     &__message {
-        flex: 1 1 auto;
-        min-width: 200px;
+        @include truncate;
+
+        // an explicit basis (not auto) keeps the wrap decision based on this floor, not on
+        // the full unwrapped text width nowrap reports as the "natural" size
+        flex: 1 1 140px;
+        min-width: 140px;
         margin: 0;
         font:
             500 13px Inter,
             sans-serif;
+
+        // tablet+ has room for the full sentence on one row - no need to truncate
+        @include respond-to(tablet) {
+            white-space: normal;
+            flex: 1 1 auto;
+            min-width: 200px;
+        }
     }
 
     &__actions {
         display: flex;
+        flex: 1 1 100%;
         align-items: center;
+        justify-content: center;
         gap: var(--s-2);
+
+        // tablet+ keeps the compact single-row layout instead of a full-width centered block
+        @include respond-to(tablet) {
+            flex: none;
+            justify-content: flex-start;
+        }
     }
 }

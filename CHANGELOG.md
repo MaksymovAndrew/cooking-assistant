@@ -20,6 +20,20 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Frontend
+
+- Fixed: Typing into any text field on a phone no longer zooms the whole page in - form fields now use a large enough font to stay under the browser's auto-zoom threshold, including the recipe ingredient quantity, menu recipe search, and a few other fields missed on the first pass.
+- Fixed: A very long recipe or menu title, or a description with a long unbroken word (e.g. a pasted link), no longer pushes the page sideways on narrow screens.
+- Fixed: A recipe or pantry ingredient quantity field can now be cleared and retyped freely (e.g. to change "1" to "18") instead of snapping back to the old value on every keystroke; leaving it empty or entering something invalid reverts to the last saved amount once you move on.
+- Fixed: The Cancel/Save button pairs on the recipe form, menu form, "Add ingredient", "Change password" and "Delete account" now stack full-width and centered on phones instead of being squeezed side by side; "Edit quantities"/"Add ingredient" on the Ingredients page get the same treatment.
+- Fixed: The "What's new" popup no longer looks stretched and oversized when the phone is in landscape.
+- Changed: A pantry item's purchase quantity in Purchase History is now read-only until you tap its edit button, so an accidental scroll or tap can no longer change a saved amount; its quantity and unit (e.g. "1333 g") now sit next to each other instead of being spread across the row.
+- Changed: The "verify your email" banner on Home now shows "Later" before "Send email". On phones the message is also shorter and stays on one line next to its icon instead of wrapping, with the two buttons centered on their own row below; tablet and desktop keep the original single-line layout.
+- Changed: The mobile bottom navigation bar now shows Ingredients instead of Settings - Settings is easy enough to find from Profile, and the pantry gets a direct tab.
+- Fixed: The bottom navigation bar's icons no longer get squeezed as the browser's bottom safe area grows (e.g. as Chrome's address bar collapses on scroll) - the icon/label row now has a fixed height of its own, with the safe-area space absorbed by a separate empty strip below it instead of shrinking the icons' room.
+
+## 3.4 - 2026-07-14
+
 ### Backend
 
 - Fixed: Registering or logging in now shows the right message - "username already taken", "too many attempts, try again in X seconds", or a generic server error - instead of always saying the username is taken.

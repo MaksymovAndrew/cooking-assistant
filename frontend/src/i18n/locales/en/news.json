@@ -3,6 +3,11 @@
     "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "underTheHood": {
+            "date": "2026-07-21",
+            "title": "Behind-the-scenes maintenance",
+            "description": "This update focused on keeping the app's technical foundations current - no new features this time, just upkeep to keep things running smoothly."
+        },
         "reliability": {
             "date": "2026-07-21",
             "title": "Built to recover",

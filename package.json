@@ -1,6 +1,6 @@
 {
   "name": "cooking-assistant",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "private": true,
   "engines": {
     "node": ">=22"
@@ -38,15 +38,15 @@
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@playwright/test": "^1.61.1",
-    "@types/node": "^26.1.0",
-    "concurrently": "^9.0.1",
+    "@types/node": "^26.1.1",
+    "concurrently": "^10.0.3",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-playwright": "^2.10.4",
+    "eslint-plugin-playwright": "^2.10.5",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.7",
-    "prettier": "^3.8.3",
+    "lint-staged": "^17.1.0",
+    "prettier": "^3.9.6",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.62.1"
+    "typescript-eslint": "^8.65.0"
   }
 }

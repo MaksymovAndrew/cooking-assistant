@@ -26,7 +26,7 @@ jobs:
     outputs:
       skip: ${{ steps.decide.outputs.skip }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 1
@@ -46,7 +46,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: package-lock.json
@@ -59,7 +59,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: backend/package-lock.json
@@ -72,7 +72,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: backend/package-lock.json
@@ -85,7 +85,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: backend/package-lock.json
@@ -98,7 +98,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: backend/package-lock.json
@@ -111,7 +111,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: backend/package-lock.json
@@ -124,7 +124,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: frontend/package-lock.json
@@ -137,7 +137,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: frontend/package-lock.json
@@ -150,7 +150,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: frontend/package-lock.json
@@ -163,7 +163,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: frontend/package-lock.json
@@ -176,7 +176,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: frontend/package-lock.json
@@ -189,7 +189,7 @@ jobs:
     if: ${{ needs.gate.outputs.skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: frontend/package-lock.json
@@ -223,7 +223,7 @@ jobs:
       DB_NAME: cooking_helper
       JWT_SECRET_KEY: e2e-ci-only-secret-key-0123456789abcdef
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           cache-dependency-path: |
@@ -239,7 +239,7 @@ jobs:
         run: npx playwright test
       - name: Upload traces on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-traces
           path: test-results/

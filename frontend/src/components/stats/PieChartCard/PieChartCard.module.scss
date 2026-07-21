@@ -9,10 +9,13 @@
         cursor: default;
     }
 
+    // z-index below the recharts tooltip (see TOOLTIP_WRAPPER_STYLE) - without this, being later in
+    // the DOM would otherwise let this absolutely-positioned label paint over the tooltip, not the other way round
     &__center {
         position: absolute;
         top: 50%;
         left: 50%;
+        z-index: 0;
         transform: translate(-50%, -50%);
         text-align: center;
         pointer-events: none;

@@ -10,8 +10,10 @@ import {
 
 import { ROUTES } from "constants/routes";
 
+import { OfflineModal } from "components/connectivity/OfflineModal";
 import { PageSpinner } from "components/layout/PageSpinner";
 import { PrivateRoute } from "components/layout/PrivateRoute";
+import { RouteErrorBoundary } from "components/layout/RouteErrorBoundary";
 import { ModalRoot } from "components/modals";
 import { ThemeManager } from "components/theme/ThemeManager";
 import { Toaster } from "components/ui/Toasts";
@@ -83,6 +85,7 @@ const RootLayout: React.FC = () => (
             <Outlet />
         </Suspense>
         <ModalRoot />
+        <OfflineModal />
         <Toaster />
     </>
 );
@@ -90,7 +93,7 @@ const RootLayout: React.FC = () => (
 // data router (not <BrowserRouter>): forms block in-app navigation away from unsaved edits via useBlocker, which plain routers don't support
 const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route element={<RootLayout />}>
+        <Route element={<RootLayout />} errorElement={<RouteErrorBoundary />}>
             <Route path={ROUTES.login} element={<LoginPage />} />
             <Route path={ROUTES.registration} element={<RegisterPage />} />
             <Route

@@ -6,6 +6,7 @@ export interface StatBarItem {
     label: string;
     value: number;
     displayValue: string;
+    color?: string;
 }
 
 interface StatBarListProps {
@@ -25,8 +26,10 @@ export const StatBarList: React.FC<StatBarListProps> = ({ items }) => {
                     <span className={styles["stat-bar-list__track"]}>
                         <span
                             className={styles["stat-bar-list__fill"]}
+                            data-testid="stat-bar-fill"
                             style={{
                                 width: `${(item.value / maxValue) * 100}%`,
+                                backgroundColor: item.color,
                             }}
                         />
                     </span>

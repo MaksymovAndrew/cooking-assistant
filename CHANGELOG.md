@@ -31,6 +31,15 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: The "verify your email" banner on Home now shows "Later" before "Send email". On phones the message is also shorter and stays on one line next to its icon instead of wrapping, with the two buttons centered on their own row below; tablet and desktop keep the original single-line layout.
 - Changed: The mobile bottom navigation bar now shows Ingredients instead of Settings - Settings is easy enough to find from Profile, and the pantry gets a direct tab.
 - Fixed: The bottom navigation bar's icons no longer get squeezed as the browser's bottom safe area grows (e.g. as Chrome's address bar collapses on scroll) - the icon/label row now has a fixed height of its own, with the safe-area space absorbed by a separate empty strip below it instead of shrinking the icons' room.
+- Added: A friendly error screen with a retry button and a link back home now appears if something goes wrong while navigating, instead of a raw browser error page.
+- Added: A popup now appears when your device loses its internet connection, reminding you to check it; it closes on its own once you're back online.
+- Fixed: With the theme set to "System", switching your device's light/dark mode while the app stays open now updates the app's theme right away instead of only on the next reload.
+- Removed: The disabled Metric/Imperial toggle in Settings, since only metric units are supported.
+- Fixed: Tabbing through an open dialog now stays inside it instead of escaping to the page behind it.
+- Fixed: If logging out fails, the confirmation dialog now shows an error message instead of silently staying open.
+- Fixed: The "Check pantry" link on a recipe's missing-ingredients notice now also shows for the recipe's own owner, not just visitors, matching the menu page's behavior.
+- Changed: The average cooking time bars on the Stats page are now colored per recipe type, matching the donut chart above them.
+- Fixed: Hovering a slice of the recipe/menu donut charts on the Stats page no longer shows the total count on top of the slice's tooltip.
 
 ## 3.4 - 2026-07-14
 

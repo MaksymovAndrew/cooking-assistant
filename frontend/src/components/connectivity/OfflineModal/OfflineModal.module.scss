@@ -1,0 +1,37 @@
+@use "styles/abstracts" as *;
+
+.offline-modal {
+    &__heading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--s-4);
+    }
+
+    &__icon {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: color-mix(in srgb, var(--info) 14%, transparent);
+        color: var(--info);
+    }
+
+    &__message {
+        margin: var(--s-4) 0 0;
+        color: var(--text-2);
+        text-align: center;
+        font:
+            400 14px/1.5 Inter,
+            sans-serif;
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: center;
+        margin-top: var(--s-5);
+    }
+}

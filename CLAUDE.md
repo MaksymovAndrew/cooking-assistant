@@ -89,10 +89,11 @@ Rule of thumb: the version takes care of itself. The pre-commit hook runs [scrip
 
 There is ONE changelog: root [CHANGELOG.md](CHANGELOG.md). There are no per-package changelogs.
 
-1. Each release is a `## [x.y] - YYYY-MM-DD` heading containing `### Backend` and/or `### Frontend` subsections. Omit the subsection for a side that was not touched.
-2. While work is in flight, add entries under the top `## [Unreleased]` heading; at release time, move them into a new dated version heading and leave `## [Unreleased]` empty.
+1. Each release is a `## x.y - YYYY-MM-DD` heading containing `### Backend` and/or `### Frontend` subsections. Omit the subsection for a side that was not touched.
+2. While work is in flight, add entries under the top `## Unreleased` heading; at release time, move them into a new dated version heading and leave `## Unreleased` empty.
 3. Write entries from the user's perspective, not the code's. Good: "Filter recipes by cooking time range". Bad: "Add `time_min`/`time_max` query params to `/api/recipes-by-filters`".
 4. Use Keep a Changelog wording where it helps (`Added`, `Changed`, `Fixed`, `Removed`, `Security`), but the `### Backend` / `### Frontend` split is the primary structure here.
+5. **Every release with user-visible changes also gets an entry in [frontend/src/i18n/locales/en/news.json](frontend/src/i18n/locales/en/news.json)** - the in-app "What's new" popup, read by [frontend/src/utils/newsItems.ts](frontend/src/utils/newsItems.ts). Add ONE new key to the TOP of `items` (object key order = display order, newest first - `getLatestReleaseDate()` reads the first entry for the "N new" badge, so a key added anywhere else silently breaks it) dated with the release date, with a short title and a one/two-sentence description in the same friendly, non-technical tone as the existing entries. Curate, don't transcribe: one news entry can summarize several related CHANGELOG bullets (e.g. password reset + email verification + change password all became one "Password reset & email verification" entry in 3.4); skip internal/technical fixes with no user-facing effect. A release with no user-visible changes (ops/infra only) gets no news entry.
 
 ## Commit and PR conventions
 

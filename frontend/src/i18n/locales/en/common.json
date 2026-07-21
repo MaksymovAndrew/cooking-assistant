@@ -103,5 +103,15 @@
         "showing": "Showing {{loaded}} of {{total}}",
         "button": "Load more",
         "loading": "Loading more"
+    },
+    "offlineModal": {
+        "title": "No internet connection",
+        "message": "Please check your connection. We'll keep trying to reach the server in the background.",
+        "close": "Close"
+    },
+    "routeError": {
+        "description": "An unexpected error interrupted this page. Your data is safe - try again.",
+        "responseDescription": "This page ran into an error ({{status}}). Your data is safe - try again.",
+        "goHome": "Go to homepage"
     }
 }

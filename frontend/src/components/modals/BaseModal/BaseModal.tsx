@@ -19,6 +19,9 @@ const SIZE_CLASS: Record<BaseModalSize, string> = {
     lg: styles["base-modal--lg"],
 };
 
+const FOCUSABLE_SELECTOR =
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 // no isOpen prop - visibility is owned by the caller (mounted = open)
 export const BaseModal: React.FC<BaseModalProps> = ({
     onClose,
@@ -51,6 +54,45 @@ export const BaseModal: React.FC<BaseModalProps> = ({
 
     useEffect(() => {
         containerRef.current?.focus();
+    }, []);
+
+    // traps Tab navigation inside the modal so it can't escape to the page behind it
+    useEffect(() => {
+        const handleTabKey = (e: KeyboardEvent) => {
+            if (e.key !== "Tab") {
+                return;
+            }
+
+            const container = containerRef.current;
+            const focusable = container
+                ? Array.from(
+                      container.querySelectorAll<HTMLElement>(
+                          FOCUSABLE_SELECTOR,
+                      ),
+                  )
+                : [];
+
+            if (focusable.length === 0) {
+                return;
+            }
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        };
+
+        document.addEventListener("keydown", handleTabKey);
+
+        return () => {
+            document.removeEventListener("keydown", handleTabKey);
+        };
     }, []);
 
     useEffect(() => {

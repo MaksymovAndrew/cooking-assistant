@@ -20,11 +20,11 @@ describe("WhatsNewCard", () => {
         );
 
         expect(screen.getByText("What's new")).toBeInTheDocument();
+        expect(screen.getByText("Built to recover")).toBeInTheDocument();
+        expect(screen.getByText("Smoother on mobile")).toBeInTheDocument();
         expect(
             screen.getByText("Password reset & email verification"),
         ).toBeInTheDocument();
-        expect(screen.getByText("Sign in your way")).toBeInTheDocument();
-        expect(screen.getByText("A brand-new look")).toBeInTheDocument();
     });
 
     it("should show the unseen-count badge", () => {

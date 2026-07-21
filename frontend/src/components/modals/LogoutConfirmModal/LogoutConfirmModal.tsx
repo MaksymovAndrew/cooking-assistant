@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
 import { useAppDispatch } from "redux/hooks";
+import { getErrorMessage } from "redux/middleware/notificationsListener";
 import { useLogoutMutation } from "redux/services/authApi";
 import { baseApi } from "redux/services/baseApi";
 import { closeModal } from "redux/slices/uiSlice";
@@ -19,9 +21,10 @@ export const LogoutConfirmModal = ({ modalId }: LogoutConfirmModalProps) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [logout, { isLoading }] = useLogoutMutation();
+    const [error, setError] = useState<string | null>(null);
 
     const handleConfirm = async () => {
-        // success toast is handled by the global listener; a failed logout is silent there on purpose, so the modal just stays open
+        // success toast is handled by the global listener; a failed logout is excluded there on purpose (no scary app-wide error), so it's surfaced inline here instead
         const result = await logout(null);
 
         if ("data" in result) {
@@ -29,6 +32,8 @@ export const LogoutConfirmModal = ({ modalId }: LogoutConfirmModalProps) => {
             dispatch(baseApi.util.resetApiState());
             dispatch(closeModal(modalId));
             void navigate(ROUTES.login);
+        } else {
+            setError(getErrorMessage(result.error));
         }
     };
 
@@ -39,6 +44,7 @@ export const LogoutConfirmModal = ({ modalId }: LogoutConfirmModalProps) => {
             confirmLabel={t("logoutModal.confirm")}
             confirmVariant="primary"
             isConfirmDisabled={isLoading}
+            error={error}
             onClose={() => dispatch(closeModal(modalId))}
             onConfirm={() => void handleConfirm()}
         />

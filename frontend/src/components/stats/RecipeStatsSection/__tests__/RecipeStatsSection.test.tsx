@@ -53,4 +53,29 @@ describe("RecipeStatsSection", () => {
 
         expect(screen.getAllByText("Borscht").length).toBeGreaterThan(0);
     });
+
+    it("should color each average-time bar to match its type's donut-chart color", () => {
+        render(
+            <RecipeStatsSection
+                stats={{
+                    ...STATS,
+                    stats: [
+                        { typeName: "Soup", count: 2 },
+                        { typeName: "Dessert", count: 1 },
+                    ],
+                    averageCookingTimesByType: [
+                        // deliberately reversed order vs. `stats` above
+                        { typeName: "Dessert", averageCookingTime: 15 },
+                        { typeName: "Soup", averageCookingTime: 20 },
+                    ],
+                }}
+                menusCount={5}
+            />,
+        );
+
+        const fills = screen.getAllByTestId("stat-bar-fill");
+
+        expect(fills[0]).toHaveStyle({ backgroundColor: "#4FA3D9" }); // Dessert - index 1 in `stats`
+        expect(fills[1]).toHaveStyle({ backgroundColor: "#7E60BF" }); // Soup - index 0 in `stats`
+    });
 });

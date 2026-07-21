@@ -9,18 +9,20 @@ interface NumberInputProps extends Omit<
     hasError?: boolean;
 }
 
-export const NumberInput: React.FC<NumberInputProps> = ({
-    hasError = false,
-    className,
-    ...rest
-}) => {
-    const classNames = [
-        styles["number-input"],
-        hasError && styles["number-input--error"],
-        className,
-    ]
-        .filter(Boolean)
-        .join(" ");
+export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
+    ({ hasError = false, className, ...rest }, ref) => {
+        const classNames = [
+            styles["number-input"],
+            hasError && styles["number-input--error"],
+            className,
+        ]
+            .filter(Boolean)
+            .join(" ");
 
-    return <input type="number" className={classNames} {...rest} />;
-};
+        return (
+            <input ref={ref} type="number" className={classNames} {...rest} />
+        );
+    },
+);
+
+NumberInput.displayName = "NumberInput";

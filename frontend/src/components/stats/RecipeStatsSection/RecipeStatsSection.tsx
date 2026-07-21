@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import type { RecipeStatistics } from "types/stats";
 
+import { getChartColor } from "components/stats/PieChartCard/chartColors";
 import { RecipeTypeChart } from "components/stats/RecipeTypeChart";
 import { StatBarList } from "components/stats/StatBarList";
 import { StatCard } from "components/stats/StatCard";
@@ -23,6 +24,14 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
     menusCount,
 }) => {
     const { t } = useTranslation("stats");
+
+    // keyed by type name (not array index) so a given recipe type keeps the same color here as in the donut chart, even if the two lists differ in order or length
+    const colorByTypeName = new Map(
+        stats.stats.map((entry, index) => [
+            entry.typeName,
+            getChartColor(index),
+        ]),
+    );
 
     const formatCompactTime = (totalMinutes: number): string => {
         const { hours, minutes } = splitCookingTime(totalMinutes);
@@ -107,6 +116,7 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
                             displayValue: formatCompactTime(
                                 entry.averageCookingTime,
                             ),
+                            color: colorByTypeName.get(entry.typeName),
                         }))}
                     />
                 </StatCard>

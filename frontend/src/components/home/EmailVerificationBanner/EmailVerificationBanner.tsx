@@ -2,6 +2,10 @@ import { Mail } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
+
+import { useMediaQuery } from "hooks/useMediaQuery";
+
 import { Button } from "components/ui/Button";
 
 import styles from "./EmailVerificationBanner.module.scss";
@@ -18,14 +22,27 @@ export const EmailVerificationBanner: React.FC<
     EmailVerificationBannerProps
 > = ({ onSendEmail, isSendDisabled, onDismiss }) => {
     const { t } = useTranslation("home");
+    const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
 
     return (
         <div className={styles["email-verification-banner"]} role="status">
             <Mail size={ICON_SIZE} aria-hidden="true" />
             <p className={styles["email-verification-banner__message"]}>
-                {t("emailVerificationBanner.unverifiedMessage")}
+                {t(
+                    isMobile
+                        ? "emailVerificationBanner.unverifiedMessageShort"
+                        : "emailVerificationBanner.unverifiedMessage",
+                )}
             </p>
             <div className={styles["email-verification-banner__actions"]}>
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={onDismiss}
+                >
+                    {t("emailVerificationBanner.later")}
+                </Button>
                 <Button
                     type="button"
                     variant="secondary"
@@ -34,14 +51,6 @@ export const EmailVerificationBanner: React.FC<
                     disabled={isSendDisabled}
                 >
                     {t("emailVerificationBanner.sendEmail")}
-                </Button>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={onDismiss}
-                >
-                    {t("emailVerificationBanner.later")}
                 </Button>
             </div>
         </div>

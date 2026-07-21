@@ -43,6 +43,8 @@
     }
 
     &__title {
+        @include wrap-anywhere;
+
         margin: 0 0 var(--s-4);
         color: var(--text);
         letter-spacing: -0.02em;

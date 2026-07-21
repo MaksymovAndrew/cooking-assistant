@@ -46,6 +46,7 @@
         "title": "Purchase History: {{name}}",
         "loading": "Loading...",
         "noHistory": "No purchase history available.",
-        "closeButton": "Close"
+        "closeButton": "Close",
+        "editButton": "Edit quantity"
     }
 }

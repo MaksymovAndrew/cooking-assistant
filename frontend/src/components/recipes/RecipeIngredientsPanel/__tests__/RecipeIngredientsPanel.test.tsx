@@ -46,14 +46,14 @@ describe("RecipeIngredientsPanel", () => {
         expect(screen.getByText("1 pcs")).toBeInTheDocument();
     });
 
-    it("should show the have/missing summary banner for the owner", () => {
+    it("should show the have/missing summary banner and a pantry link for the owner", () => {
         renderWithRouter(<RecipeIngredientsPanel {...baseProps} />);
 
         expect(
-            screen.getByText(
-                (_, element) =>
-                    element?.textContent === "You have 1 of 2 — 1 to buy.",
-            ),
+            screen.getByText(/You have 1 of 2 — 1 to buy\./),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", { name: "Check pantry →" }),
         ).toBeInTheDocument();
     });
 

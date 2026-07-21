@@ -70,7 +70,7 @@ describe("LogoutConfirmModal", () => {
         expect(store.getState().ui.modal).toBeNull();
     });
 
-    it("should keep the modal open and not navigate when logout fails", async () => {
+    it("should keep the modal open, show an inline error, and not navigate when logout fails", async () => {
         mockedPost.mockRejectedValue({
             isAxiosError: true,
             response: { status: 500, data: { error: "Boom" } },
@@ -82,5 +82,6 @@ describe("LogoutConfirmModal", () => {
 
         expect(store.getState().ui.modal).toEqual(MODAL);
         expect(mockNavigate).not.toHaveBeenCalled();
+        expect(screen.getByText("Boom")).toBeInTheDocument();
     });
 });

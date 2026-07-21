@@ -18,4 +18,23 @@ describe("StatBarList", () => {
         expect(screen.getByText("Salad")).toBeInTheDocument();
         expect(screen.getByText("00:10")).toBeInTheDocument();
     });
+
+    it("should apply the given color to each bar's fill", () => {
+        render(
+            <StatBarList
+                items={[
+                    {
+                        label: "Soup",
+                        value: 20,
+                        displayValue: "00:20",
+                        color: "#7E60BF",
+                    },
+                ]}
+            />,
+        );
+
+        expect(screen.getByTestId("stat-bar-fill")).toHaveStyle({
+            backgroundColor: "#7E60BF",
+        });
+    });
 });

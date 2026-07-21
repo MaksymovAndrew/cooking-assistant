@@ -13,6 +13,8 @@
     }
 
     &__content {
+        @include wrap-anywhere;
+
         margin: 0 0 var(--s-6);
         color: var(--text-2);
         font:

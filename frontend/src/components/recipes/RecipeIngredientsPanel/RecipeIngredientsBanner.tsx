@@ -33,30 +33,24 @@ export const RecipeIngredientsBanner: React.FC<
                 <div
                     className={styles["recipe-ingredients-panel__banner-text"]}
                 >
-                    {isOwner ? (
-                        t("recipeDetailsPage.haveOfTotalToBuy", {
-                            have: haveCount,
-                            total: totalCount,
-                            count: missingCount,
-                        })
-                    ) : (
-                        <>
-                            {t("recipeDetailsPage.haveOfTotalVisitor", {
-                                have: haveCount,
-                                total: totalCount,
-                            })}{" "}
-                            <Link
-                                to={ROUTES.ingredients}
-                                className={
-                                    styles[
-                                        "recipe-ingredients-panel__banner-link"
-                                    ]
-                                }
-                            >
-                                {t("recipeDetailsPage.checkPantry")}
-                            </Link>
-                        </>
-                    )}
+                    {isOwner
+                        ? t("recipeDetailsPage.haveOfTotalToBuy", {
+                              have: haveCount,
+                              total: totalCount,
+                              count: missingCount,
+                          })
+                        : t("recipeDetailsPage.haveOfTotalVisitor", {
+                              have: haveCount,
+                              total: totalCount,
+                          })}{" "}
+                    <Link
+                        to={ROUTES.ingredients}
+                        className={
+                            styles["recipe-ingredients-panel__banner-link"]
+                        }
+                    >
+                        {t("recipeDetailsPage.checkPantry")}
+                    </Link>
                 </div>
             </div>
         </div>

@@ -15,12 +15,7 @@
     "languageSection": {
         "heading": "Language & region",
         "languageTitle": "Language",
-        "languageDescription": "English - more languages coming soon.",
-        "unitsTitle": "Units",
-        "unitsDescription": "Measurement system for ingredient amounts.",
-        "unitsLabel": "Units",
-        "metric": "Metric",
-        "imperial": "Imperial"
+        "languageDescription": "English - more languages coming soon."
     },
     "notificationsSection": {
         "heading": "Notifications",

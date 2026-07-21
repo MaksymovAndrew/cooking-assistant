@@ -3,6 +3,16 @@
     "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "reliability": {
+            "date": "2026-07-21",
+            "title": "Built to recover",
+            "description": "A friendly screen now appears if something goes wrong, and we'll let you know if your connection drops - both recover automatically once things are back to normal."
+        },
+        "mobilePolish": {
+            "date": "2026-07-21",
+            "title": "Smoother on mobile",
+            "description": "Fixed input fields zooming the page, long titles overflowing the screen, and cramped buttons on phones; Purchase History and the bottom navigation are steadier too."
+        },
         "accountSecurity": {
             "date": "2026-07-14",
             "title": "Password reset & email verification",

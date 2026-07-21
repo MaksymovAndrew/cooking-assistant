@@ -21,6 +21,9 @@ export const TOOLTIP_CONTENT_STYLE: React.CSSProperties = {
     padding: "6px 10px",
 };
 
+// z-index above the donut's center label (see PieChartCard.module.scss's __center) - both are
+// absolutely positioned, so without this the center label (later in the DOM) would paint over it
 export const TOOLTIP_WRAPPER_STYLE: React.CSSProperties = {
     outline: "none",
+    zIndex: 1,
 };

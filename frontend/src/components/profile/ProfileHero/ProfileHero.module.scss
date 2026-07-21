@@ -24,6 +24,8 @@
     }
 
     &__name {
+        @include wrap-anywhere;
+
         margin: 0 0 4px;
         color: var(--text);
         letter-spacing: -0.02em;

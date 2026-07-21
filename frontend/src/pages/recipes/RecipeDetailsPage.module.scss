@@ -57,13 +57,16 @@
 
     &__hero-area {
         grid-area: hero;
+        min-width: 0;
     }
 
     &__ingredients-area {
         grid-area: ingredients;
+        min-width: 0;
     }
 
     &__description-area {
         grid-area: description;
+        min-width: 0;
     }
 }

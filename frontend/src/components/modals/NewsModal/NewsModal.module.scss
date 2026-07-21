@@ -27,6 +27,13 @@
         align-items: center;
         padding: var(--s-4);
     }
+
+    // a phone in landscape is wide but short - the bottom-sheet treatment looks stretched and
+    // clips against the keyboard/chrome, so it gets the same centered dialog as tablet+
+    @include respond-to-short-landscape {
+        align-items: center;
+        padding: var(--s-4);
+    }
 }
 
 // a flex column so only __scroll grows/scrolls, keeping the scrollbar off this rounded box
@@ -47,6 +54,14 @@
     @include respond-to(tablet) {
         max-width: 480px;
         padding: var(--s-6) var(--s-6) 0;
+        border-bottom: 1px solid var(--border);
+        border-radius: var(--r-lg);
+    }
+
+    @include respond-to-short-landscape {
+        max-width: 480px;
+        max-height: 88svh;
+        padding: var(--s-4) var(--s-6) 0;
         border-bottom: 1px solid var(--border);
         border-radius: var(--r-lg);
     }
@@ -72,6 +87,10 @@
         background: var(--border);
 
         @include respond-to(tablet) {
+            display: none;
+        }
+
+        @include respond-to-short-landscape {
             display: none;
         }
     }

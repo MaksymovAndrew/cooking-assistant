@@ -18,8 +18,43 @@
         color: var(--danger);
     }
 
+    &__quantity-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
     &__quantity {
         max-width: 80px;
         text-align: center;
+    }
+
+    &__value {
+        min-width: 44px;
+        text-align: center;
+        font:
+            600 16px "Geist Mono",
+            monospace;
+    }
+
+    &__edit {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--surface);
+        color: var(--text-muted);
+        cursor: pointer;
+
+        @include focus-ring;
+
+        @include on-hover {
+            border-color: var(--brand);
+            color: var(--text);
+        }
     }
 }

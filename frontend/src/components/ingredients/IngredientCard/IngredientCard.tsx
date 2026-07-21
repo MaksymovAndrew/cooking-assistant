@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import type { PantryIngredient } from "types/userIngredient";
 
+import { useEditableQuantity } from "hooks/useEditableQuantity";
+
 import { TrashMark } from "components/icons";
 import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
@@ -39,6 +41,12 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
         ingredient.purchase_date,
     );
     const expiry = getExpiryPresentation(status, t);
+    const quantity = useEditableQuantity(
+        ingredient.quantity_person_ingradient,
+        (value) => {
+            onQuantityChange(ingredient.id, value);
+        },
+    );
 
     return (
         <div
@@ -64,14 +72,9 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
                 <div className={styles["ingredient-card__quantity-edit"]}>
                     <NumberInput
                         min={0}
-                        value={ingredient.quantity_person_ingradient}
-                        onChange={(e) => {
-                            const value = parseInt(e.target.value, 10);
-
-                            if (!isNaN(value)) {
-                                onQuantityChange(ingredient.id, value);
-                            }
-                        }}
+                        value={quantity.text}
+                        onChange={quantity.onChange}
+                        onBlur={quantity.onBlur}
                     />
                     <span>{ingredient.unit_name}</span>
                     <span className={styles["ingredient-card__editing-hint"]}>

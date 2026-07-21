@@ -112,6 +112,40 @@ describe("BaseModal", () => {
         expect(onClose).not.toHaveBeenCalled();
     });
 
+    it("should wrap Tab from the last focusable element back to the first", async () => {
+        render(
+            <BaseModal onClose={jest.fn()}>
+                <button>First</button>
+                <button>Last</button>
+            </BaseModal>,
+        );
+
+        const first = screen.getByRole("button", { name: "First" });
+        const last = screen.getByRole("button", { name: "Last" });
+
+        last.focus();
+        await userEvent.tab();
+
+        expect(first).toHaveFocus();
+    });
+
+    it("should wrap Shift+Tab from the first focusable element back to the last", async () => {
+        render(
+            <BaseModal onClose={jest.fn()}>
+                <button>First</button>
+                <button>Last</button>
+            </BaseModal>,
+        );
+
+        const first = screen.getByRole("button", { name: "First" });
+        const last = screen.getByRole("button", { name: "Last" });
+
+        first.focus();
+        await userEvent.tab({ shift: true });
+
+        expect(last).toHaveFocus();
+    });
+
     it("should lock body scroll while mounted and restore it on unmount", () => {
         const { unmount } = render(
             <BaseModal onClose={jest.fn()}>

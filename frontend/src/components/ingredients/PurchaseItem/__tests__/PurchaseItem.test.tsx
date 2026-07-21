@@ -39,12 +39,19 @@ const setup = (
     return { onQuantityChange, onSave };
 };
 
+const startEditing = async () => {
+    await userEvent.click(
+        screen.getByRole("button", { name: "Edit quantity" }),
+    );
+};
+
 describe("PurchaseItem", () => {
-    it("should render the unit and quantity", () => {
+    it("should render the quantity and unit as read-only text", () => {
         setup(FRESH);
 
-        expect(screen.getByDisplayValue("500")).toBeInTheDocument();
+        expect(screen.getByText("500")).toBeInTheDocument();
         expect(screen.getByText("g")).toBeInTheDocument();
+        expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
     });
 
     it("should not apply the expired modifier class when not expired", () => {
@@ -63,8 +70,19 @@ describe("PurchaseItem", () => {
         );
     });
 
+    it("should show the quantity input after clicking the edit button", async () => {
+        setup(FRESH);
+
+        await startEditing();
+
+        expect(screen.getByDisplayValue("500")).toBeInTheDocument();
+    });
+
     it("should call onQuantityChange with the purchase id and new value on change", async () => {
         const { onQuantityChange } = setup(FRESH);
+
+        await startEditing();
+
         const input = screen.getByRole("spinbutton");
 
         await userEvent.type(input, "1");
@@ -74,6 +92,9 @@ describe("PurchaseItem", () => {
 
     it("should call onSave with the purchase id and current value on blur", async () => {
         const { onSave } = setup(FRESH);
+
+        await startEditing();
+
         const input = screen.getByRole("spinbutton");
 
         await userEvent.click(input);
@@ -82,14 +103,31 @@ describe("PurchaseItem", () => {
         expect(onSave).toHaveBeenCalledWith(FRESH.id, FRESH.quantity);
     });
 
-    it("should enforce a minimum value of 1", () => {
+    it("should return to read-only text after blur", async () => {
         setup(FRESH);
+
+        await startEditing();
+        await userEvent.tab();
+
+        expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: "Edit quantity" }),
+        ).toBeInTheDocument();
+    });
+
+    it("should enforce a minimum value of 1", async () => {
+        setup(FRESH);
+
+        await startEditing();
 
         expect(screen.getByRole("spinbutton")).toHaveAttribute("min", "1");
     });
 
     it("should save the original value on blur after clearing (never 0)", async () => {
         const { onSave } = setup(FRESH);
+
+        await startEditing();
+
         const input = screen.getByRole("spinbutton");
 
         await userEvent.clear(input);
@@ -101,6 +139,9 @@ describe("PurchaseItem", () => {
 
     it("should not call onQuantityChange when the input is cleared", async () => {
         const { onQuantityChange } = setup(FRESH);
+
+        await startEditing();
+
         const input = screen.getByRole("spinbutton");
 
         await userEvent.clear(input);

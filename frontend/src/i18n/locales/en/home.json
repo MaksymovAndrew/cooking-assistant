@@ -34,6 +34,7 @@
     },
     "emailVerificationBanner": {
         "unverifiedMessage": "Verify your email to enable password reset for your account.",
+        "unverifiedMessageShort": "Verify your email to enable password reset.",
         "sendEmail": "Send email",
         "later": "Later"
     }

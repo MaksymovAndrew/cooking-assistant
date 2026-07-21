@@ -11,20 +11,20 @@ const OLDEST_DATE = "2000-01-01";
 
 describe("WhatsNewCard", () => {
     it("should render the title and the most recent news items", () => {
+        const items = getNewsItems();
+
         renderWithRouter(
             <WhatsNewCard
                 onOpenAll={jest.fn()}
                 unseenCount={0}
-                lastSeenDate={getNewsItems()[0].date}
+                lastSeenDate={items[0].date}
             />,
         );
 
         expect(screen.getByText("What's new")).toBeInTheDocument();
-        expect(screen.getByText("Built to recover")).toBeInTheDocument();
-        expect(screen.getByText("Smoother on mobile")).toBeInTheDocument();
-        expect(
-            screen.getByText("Password reset & email verification"),
-        ).toBeInTheDocument();
+        items.slice(0, 3).forEach((item) => {
+            expect(screen.getByText(item.title)).toBeInTheDocument();
+        });
     });
 
     it("should show the unseen-count badge", () => {

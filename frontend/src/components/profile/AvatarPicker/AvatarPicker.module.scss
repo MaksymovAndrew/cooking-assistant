@@ -1,0 +1,41 @@
+@use "styles/abstracts" as *;
+
+.avatar-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: var(--s-3);
+}
+
+.avatar-picker__option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    border: 2px solid transparent;
+    border-radius: var(--r-pill);
+    background: none;
+    cursor: pointer;
+
+    // a plain `outline` doesn't hug a fully round (pill) element in every browser - a circular
+    // box-shadow keeps the ring perfectly round instead of the squarish default outline
+    &:focus-visible {
+        outline: none;
+        box-shadow:
+            0 0 0 2px var(--bg),
+            0 0 0 4px var(--brand);
+    }
+
+    @include on-hover {
+        border-color: var(--border);
+    }
+}
+
+.avatar-picker__option--selected {
+    border-color: var(--brand);
+
+    // higher specificity than the plain :hover rule above, so hovering a selected avatar
+    // keeps its brand-colored ring instead of it being overridden back to the neutral hover color
+    @include on-hover {
+        border-color: var(--brand);
+    }
+}

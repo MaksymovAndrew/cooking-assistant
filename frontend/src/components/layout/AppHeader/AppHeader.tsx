@@ -33,6 +33,7 @@ export const AppHeader: React.FC = () => {
                     name={currentUser?.name}
                     surname={currentUser?.surname}
                     login={currentUser?.login}
+                    avatar={currentUser?.avatar}
                     onLogout={openLogoutModal}
                 />
             </div>

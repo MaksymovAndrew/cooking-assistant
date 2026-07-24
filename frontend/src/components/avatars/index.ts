@@ -1,0 +1,12 @@
+export { AvocadoAvatar } from "./AvocadoAvatar";
+export { BreadAvatar } from "./BreadAvatar";
+export { ChefToqueAvatar } from "./ChefToqueAvatar";
+export { ChiliAvatar } from "./ChiliAvatar";
+export { FriedEggAvatar } from "./FriedEggAvatar";
+export { HerbAvatar } from "./HerbAvatar";
+export { LemonAvatar } from "./LemonAvatar";
+export { MushroomAvatar } from "./MushroomAvatar";
+export { PotAvatar } from "./PotAvatar";
+export { RamenBowlAvatar } from "./RamenBowlAvatar";
+export { SushiAvatar } from "./SushiAvatar";
+export { TomatoAvatar } from "./TomatoAvatar";

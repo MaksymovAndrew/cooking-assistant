@@ -59,6 +59,7 @@ const SettingsPage: React.FC = () => {
             )}
             {isDeleteAccountOpen && (
                 <DeleteAccountModal
+                    login={currentUser?.login ?? ""}
                     onClose={() => {
                         setIsDeleteAccountOpen(false);
                     }}

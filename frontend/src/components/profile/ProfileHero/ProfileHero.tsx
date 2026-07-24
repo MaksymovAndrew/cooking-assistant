@@ -19,9 +19,11 @@ interface ProfileHeroProps {
     surname?: string;
     login?: string;
     createdAt?: string;
+    avatar?: string | null;
     recipesCount: number;
     menusCount: number;
     onLogout: () => void;
+    onEditProfile: () => void;
 }
 
 const AVATAR_SIZE = 88;
@@ -33,9 +35,11 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
     surname,
     login,
     createdAt,
+    avatar,
     recipesCount,
     menusCount,
     onLogout,
+    onEditProfile,
 }) => {
     const { t } = useTranslation("profile");
     const initials = name && surname ? getInitials(name, surname) : undefined;
@@ -43,7 +47,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
 
     return (
         <div className={styles["profile-hero"]}>
-            <Avatar initials={initials} size={AVATAR_SIZE} />
+            <Avatar initials={initials} size={AVATAR_SIZE} avatarKey={avatar} />
             <div className={styles["profile-hero__identity"]}>
                 <h1 className={styles["profile-hero__name"]}>{displayName}</h1>
                 {createdAt && (
@@ -93,7 +97,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
                 <Button
                     type="button"
                     variant="secondary"
-                    disabled
+                    onClick={onEditProfile}
                     className={styles["profile-hero__edit"]}
                 >
                     <EditMark size={EDIT_ICON_SIZE} />

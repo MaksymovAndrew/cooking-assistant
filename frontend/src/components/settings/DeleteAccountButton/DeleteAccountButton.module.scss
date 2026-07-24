@@ -1,0 +1,60 @@
+@use "styles/abstracts" as *;
+
+.delete-account-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    padding: 0 var(--s-4);
+    overflow: hidden;
+    border: none;
+    border-radius: var(--r-sm);
+    background: var(--danger);
+    color: var(--on-brand);
+    font:
+        600 13px Inter,
+        sans-serif;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+
+    @include focus-ring;
+
+    @include on-hover {
+        filter: brightness(1.08);
+    }
+}
+
+.delete-account-button__fill {
+    position: absolute;
+    inset: 0;
+    width: 0;
+    background: color-mix(in srgb, rgb(0 0 0) 25%, var(--danger));
+}
+
+// the animation only applies while holding - releasing early drops this class, so the fill
+// snaps straight back to the static width: 0 above instead of animating out
+.delete-account-button--holding .delete-account-button__fill {
+    animation-name: delete-hold-fill;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+.delete-account-button__label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+}
+
+@keyframes delete-hold-fill {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}

@@ -1,0 +1,32 @@
+@use "styles/abstracts" as *;
+
+.edit-profile-modal {
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-4);
+    }
+
+    &__avatar-section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
+    }
+
+    &__avatar-label {
+        font:
+            600 13px Inter,
+            sans-serif;
+        color: var(--text-2);
+    }
+
+    &__footer {
+        @include mobile-stacked-actions;
+
+        margin-top: var(--s-5);
+
+        @include respond-to(tablet) {
+            justify-content: flex-end;
+        }
+    }
+}

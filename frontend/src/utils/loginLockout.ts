@@ -12,12 +12,17 @@ import {
 // the ladder values live in constants/loginLockout.ts; re-exported so form/hook consumers keep one import site for the whole lockout API
 export { ATTEMPTS_PER_LOCK, LOCKOUT_LADDER_MINUTES };
 
-const STORAGE_KEY_PREFIX = "cooking.loginLockout";
+const LOGIN_STORAGE_KEY_PREFIX = "cooking.loginLockout";
+
+// a distinct namespace so delete-account attempts never share a counter with login attempts
+export const DELETE_ACCOUNT_STORAGE_KEY_PREFIX = "cooking.deleteAccountLockout";
 const FAILURE_RESET_IDLE_MS = FAILURE_RESET_IDLE_MINUTES * MS_PER_MINUTE;
 
-// scoped per identifier (trimmed only - never lowercased, since login lookups are case-sensitive server-side) so a shared/kiosk browser can't cross-lock unrelated accounts
-const storageKey = (login: string): string =>
-    `${STORAGE_KEY_PREFIX}.${login.trim()}`;
+// scoped per identifier (trimmed only - never lowercased, since login lookups are case-sensitive server-side) so a shared/kiosk browser can't cross-lock unrelated accounts; the prefix defaults to the login flow's own namespace, but a second flow (e.g. delete-account) can pass its own so the two never share attempt counters
+const storageKey = (
+    login: string,
+    prefix: string = LOGIN_STORAGE_KEY_PREFIX,
+): string => `${prefix}.${login.trim()}`;
 
 export interface LockoutState {
     failures: number;
@@ -40,8 +45,8 @@ const isLockoutState = (value: unknown): value is LockoutState =>
     (value.lockedUntil === null || typeof value.lockedUntil === "number") &&
     (value.lastFailureAt === null || typeof value.lastFailureAt === "number");
 
-export const readLockout = (login: string): LockoutState => {
-    const raw = localStorage.getItem(storageKey(login));
+export const readLockout = (login: string, prefix?: string): LockoutState => {
+    const raw = localStorage.getItem(storageKey(login, prefix));
 
     if (!raw) {
         return EMPTY_LOCKOUT;
@@ -57,12 +62,16 @@ export const readLockout = (login: string): LockoutState => {
     }
 };
 
-export const writeLockout = (state: LockoutState, login: string): void => {
-    localStorage.setItem(storageKey(login), JSON.stringify(state));
+export const writeLockout = (
+    state: LockoutState,
+    login: string,
+    prefix?: string,
+): void => {
+    localStorage.setItem(storageKey(login, prefix), JSON.stringify(state));
 };
 
-export const clearLockout = (login: string): void => {
-    localStorage.removeItem(storageKey(login));
+export const clearLockout = (login: string, prefix?: string): void => {
+    localStorage.removeItem(storageKey(login, prefix));
 };
 
 // bumps the counter and locks once it hits the next ATTEMPTS_PER_LOCK multiple; a stale-enough streak resets first

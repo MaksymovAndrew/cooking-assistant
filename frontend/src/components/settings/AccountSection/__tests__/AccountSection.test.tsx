@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { AccountSection } from "components/settings/AccountSection";
@@ -7,6 +7,7 @@ import { renderWithRouter } from "test/router";
 
 const EMAIL = "tester@example.com";
 const SEND_EMAIL = "Send email";
+const DELETE_ACCOUNT = "Delete account";
 
 const baseProps = {
     email: EMAIL,
@@ -41,14 +42,58 @@ describe("AccountSection", () => {
         expect(onChangePassword).toHaveBeenCalledTimes(1);
     });
 
-    it("should call onDeleteAccount when Delete… is clicked", async () => {
+    it("should call onDeleteAccount after holding the delete button for the full duration", () => {
+        jest.useFakeTimers();
         const onDeleteAccount = jest.fn();
 
         renderWithRouter(
             <AccountSection {...baseProps} onDeleteAccount={onDeleteAccount} />,
         );
 
-        await userEvent.click(screen.getByRole("button", { name: "Delete…" }));
+        const button = screen.getByRole("button", { name: DELETE_ACCOUNT });
+
+        fireEvent.pointerDown(button, { pointerId: 1 });
+        act(() => {
+            jest.advanceTimersByTime(500);
+        });
+        fireEvent.pointerUp(button, { pointerId: 1 });
+
+        expect(onDeleteAccount).toHaveBeenCalledTimes(1);
+        jest.useRealTimers();
+    });
+
+    it("should not call onDeleteAccount when the delete button is released early", () => {
+        jest.useFakeTimers();
+        const onDeleteAccount = jest.fn();
+
+        renderWithRouter(
+            <AccountSection {...baseProps} onDeleteAccount={onDeleteAccount} />,
+        );
+
+        const button = screen.getByRole("button", { name: DELETE_ACCOUNT });
+
+        fireEvent.pointerDown(button, { pointerId: 1 });
+        act(() => {
+            jest.advanceTimersByTime(200);
+        });
+        fireEvent.pointerUp(button, { pointerId: 1 });
+        act(() => {
+            jest.advanceTimersByTime(500);
+        });
+
+        expect(onDeleteAccount).not.toHaveBeenCalled();
+        jest.useRealTimers();
+    });
+
+    it("should call onDeleteAccount immediately on Enter for keyboard users", async () => {
+        const onDeleteAccount = jest.fn();
+
+        renderWithRouter(
+            <AccountSection {...baseProps} onDeleteAccount={onDeleteAccount} />,
+        );
+
+        screen.getByRole("button", { name: DELETE_ACCOUNT }).focus();
+        await userEvent.keyboard("{Enter}");
 
         expect(onDeleteAccount).toHaveBeenCalledTimes(1);
     });

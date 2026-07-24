@@ -16,5 +16,18 @@
         "comingSoonDescription": "Coming in a future release.",
         "favouritesTitle": "Favourites",
         "dietaryTitle": "Dietary preferences"
+    },
+    "editProfileModal": {
+        "title": "Edit profile",
+        "nameLabel": "Name",
+        "surnameLabel": "Surname",
+        "avatarLabel": "Avatar",
+        "noAvatarOption": "No avatar",
+        "cancelButton": "Cancel",
+        "saveButton": "Save",
+        "errors": {
+            "allFieldsRequired": "Name and surname are required",
+            "genericError": "Something went wrong. Please try again."
+        }
     }
 }

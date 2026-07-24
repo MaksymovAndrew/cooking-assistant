@@ -17,6 +17,7 @@ interface AccountMenuProps {
     name?: string;
     surname?: string;
     login?: string;
+    avatar?: string | null;
     onLogout: () => void;
 }
 
@@ -29,6 +30,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
     name,
     surname,
     login,
+    avatar,
     onLogout,
 }) => {
     const { t } = useTranslation();
@@ -55,13 +57,25 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
                 aria-label={t("accountMenu.trigger")}
                 className={styles["account-menu__trigger"]}
             >
-                <Avatar initials={initials} size={TRIGGER_AVATAR_SIZE} />
-                <ChevronDown size={CHEVRON_SIZE} aria-hidden="true" />
+                <Avatar
+                    initials={initials}
+                    size={TRIGGER_AVATAR_SIZE}
+                    avatarKey={avatar}
+                />
+                <ChevronDown
+                    size={CHEVRON_SIZE}
+                    aria-hidden="true"
+                    className={styles["account-menu__chevron"]}
+                />
             </button>
             {isOpen && (
                 <div role="menu" className={styles["account-menu__panel"]}>
                     <div className={styles["account-menu__header"]}>
-                        <Avatar initials={initials} size={HEADER_AVATAR_SIZE} />
+                        <Avatar
+                            initials={initials}
+                            size={HEADER_AVATAR_SIZE}
+                            avatarKey={avatar}
+                        />
                         <span className={styles["account-menu__identity"]}>
                             <span className={styles["account-menu__name"]}>
                                 {displayName}

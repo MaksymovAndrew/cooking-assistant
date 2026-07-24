@@ -12,6 +12,7 @@ describe("ProfileHero", () => {
                 recipesCount={5}
                 menusCount={2}
                 onLogout={jest.fn()}
+                onEditProfile={jest.fn()}
             />,
         );
 
@@ -28,6 +29,7 @@ describe("ProfileHero", () => {
                 recipesCount={0}
                 menusCount={0}
                 onLogout={jest.fn()}
+                onEditProfile={jest.fn()}
             />,
         );
 
@@ -43,6 +45,7 @@ describe("ProfileHero", () => {
                 recipesCount={0}
                 menusCount={0}
                 onLogout={jest.fn()}
+                onEditProfile={jest.fn()}
             />,
         );
 
@@ -57,13 +60,16 @@ describe("ProfileHero", () => {
                 recipesCount={0}
                 menusCount={0}
                 onLogout={jest.fn()}
+                onEditProfile={jest.fn()}
             />,
         );
 
         expect(screen.queryByText(/^Joined/)).not.toBeInTheDocument();
     });
 
-    it("should disable the Edit profile button", () => {
+    it("should call onEditProfile when the Edit profile button is clicked", async () => {
+        const onEditProfile = jest.fn();
+
         render(
             <ProfileHero
                 name="Claude"
@@ -71,12 +77,15 @@ describe("ProfileHero", () => {
                 recipesCount={0}
                 menusCount={0}
                 onLogout={jest.fn()}
+                onEditProfile={onEditProfile}
             />,
         );
 
-        expect(
+        await userEvent.click(
             screen.getByRole("button", { name: "Edit profile" }),
-        ).toBeDisabled();
+        );
+
+        expect(onEditProfile).toHaveBeenCalledTimes(1);
     });
 
     it("should call onLogout when the mobile logout button is clicked", async () => {
@@ -89,6 +98,7 @@ describe("ProfileHero", () => {
                 recipesCount={0}
                 menusCount={0}
                 onLogout={onLogout}
+                onEditProfile={jest.fn()}
             />,
         );
 

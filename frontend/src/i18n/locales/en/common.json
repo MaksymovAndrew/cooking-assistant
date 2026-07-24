@@ -97,7 +97,9 @@
         "quantitiesUpdated": "Quantities updated",
         "purchaseSaved": "Purchase saved",
         "passwordChanged": "Password changed",
-        "verificationEmailSent": "Verification link sent"
+        "verificationEmailSent": "Verification link sent",
+        "profileUpdated": "Profile updated",
+        "accountDeleted": "Account deleted"
     },
     "loadMore": {
         "showing": "Showing {{loaded}} of {{total}}",

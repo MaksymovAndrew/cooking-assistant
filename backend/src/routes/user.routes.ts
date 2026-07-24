@@ -5,6 +5,7 @@ import authenticateToken from "middleware/jwtMiddleware";
 import {
     changePasswordLimiter,
     confirmEmailLimiter,
+    deleteAccountLimiter,
     forgotPasswordLimiter,
     loginIpLimiter,
     loginLimiter,
@@ -49,6 +50,13 @@ export default function createUserRouter(
         authenticateToken,
         changePasswordLimiter,
         userController.changePassword,
+    );
+    router.patch("/me", authenticateToken, userController.updateProfile);
+    router.delete(
+        "/me",
+        authenticateToken,
+        deleteAccountLimiter,
+        userController.deleteAccount,
     );
     router.post(
         "/resend-verification-email",

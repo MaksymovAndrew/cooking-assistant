@@ -11,6 +11,7 @@ export interface CurrentUser {
     created_at: string;
     email: string;
     email_verified_at: string | null;
+    avatar: string | null;
 }
 
 export interface RegisterRequest {
@@ -45,4 +46,14 @@ export interface ChangePasswordRequest {
 
 export interface ConfirmEmailRequest {
     token: string;
+}
+
+export interface UpdateProfileRequest {
+    name: string;
+    surname: string;
+    avatar: string | null;
+}
+
+export interface DeleteAccountRequest {
+    password: string;
 }

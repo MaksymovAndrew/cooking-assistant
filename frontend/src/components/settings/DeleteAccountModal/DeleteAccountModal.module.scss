@@ -31,7 +31,16 @@
             sans-serif;
     }
 
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-4);
+        text-align: left;
+    }
+
     &__footer {
         @include mobile-stacked-actions;
+
+        margin-top: var(--s-1);
     }
 }

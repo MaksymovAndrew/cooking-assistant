@@ -37,8 +37,7 @@
         "changePasswordDescription": "Update the password for your account.",
         "changePasswordButton": "Change…",
         "deleteAccountTitle": "Delete account",
-        "deleteAccountDescription": "Permanently removes recipes, menus and pantry data.",
-        "deleteAccountButton": "Delete…"
+        "deleteAccountDescription": "Permanently removes recipes, menus and pantry data."
     },
     "changePasswordModal": {
         "title": "Change password",
@@ -58,8 +57,19 @@
     },
     "deleteAccountModal": {
         "title": "Delete account?",
-        "message": "Account deletion is coming in a future release. Once available, this will permanently remove your recipes, menus and pantry data.",
+        "message": "This will permanently remove your recipes, menus and pantry data. Enter your password to confirm.",
+        "passwordLabel": "Password",
         "cancelButton": "Cancel",
-        "confirmButton": "Delete account"
+        "confirmButton": "Delete account",
+        "errors": {
+            "passwordRequired": "Please enter your password.",
+            "incorrectPassword": "Incorrect password.",
+            "tooManyAttempts": "Too many attempts. Please wait {{seconds}} seconds.",
+            "genericError": "Something went wrong. Please try again."
+        }
+    },
+    "deleteAccountButton": {
+        "label": "Delete account",
+        "holdInstruction": "Hold to confirm"
     }
 }

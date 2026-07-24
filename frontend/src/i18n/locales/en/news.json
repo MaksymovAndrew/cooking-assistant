@@ -3,6 +3,11 @@
     "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "profileControls": {
+            "date": "2026-07-24",
+            "title": "Make your profile yours",
+            "description": "Edit your name and pick from a set of cooking-themed avatars right on your profile. And if you ever need to, you can now permanently delete your account from Settings."
+        },
         "underTheHood": {
             "date": "2026-07-21",
             "title": "Behind-the-scenes maintenance",

@@ -1,13 +1,23 @@
 import type { Pool } from "pg";
 
 import { ERROR_MESSAGES } from "constants/errorMessages";
+import { Menu } from "domain/entities/Menu";
+import Recipe from "domain/entities/Recipe";
 import { AppError } from "domain/errors/AppError";
 
+import PgMenuRepository from "infrastructure/persistence/pg/PgMenuRepository";
+import PgPantryRepository from "infrastructure/persistence/pg/PgPantryRepository";
+import PgRecipeRepository from "infrastructure/persistence/pg/PgRecipeRepository";
 import PgUserRepository from "infrastructure/persistence/pg/PgUserRepository";
 
 import { catchError } from "test/helpers/assertions";
 
-import { unique } from "./fixtures";
+import {
+    createIngredient,
+    createMenuCategory,
+    createUnitMeasurement,
+    unique,
+} from "./fixtures";
 import { createTestPool } from "./testPool";
 
 interface PublicUserRow {
@@ -300,5 +310,137 @@ describe("PgUserRepository (real Postgres)", () => {
         expect(
             new Date(found?.email_verified_at ?? "").getTime(),
         ).not.toBeNaN();
+    });
+
+    it("should update the profile's name, surname, and avatar", async () => {
+        const created = await repository.create({
+            name: "Sally",
+            surname: "Ride",
+            login: unique("profile"),
+            password: PASSWORD,
+            email: uniqueEmail("sally"),
+        });
+
+        await repository.updateProfile(created.id, {
+            name: "Sally-Kristen",
+            surname: "Ride-Jones",
+            avatar: "tomato",
+        });
+
+        const found = await repository.findById(created.id);
+
+        expect(found).toEqual(
+            expect.objectContaining({
+                name: "Sally-Kristen",
+                surname: "Ride-Jones",
+                avatar: "tomato",
+            }),
+        );
+    });
+
+    // exercises the real transactional cascade - a person's recipe linked into someone
+    // ELSE's menu, their own menu, and their own pantry data - since menu.person_id and
+    // menu_recipe.recipe_id have no ON DELETE CASCADE, mocked-repository tests can't catch a
+    // half-cleaned delete leaving orphaned rows behind
+    it("should delete a person and clean up their recipes, menus, and cross-referenced menu_recipe rows", async () => {
+        const menuRepository = new PgMenuRepository(pool);
+        const recipeRepository = new PgRecipeRepository(pool);
+        const pantryRepository = new PgPantryRepository(pool);
+
+        const owner = await repository.create({
+            name: "Owner",
+            surname: "ToDelete",
+            login: unique("delete-owner"),
+            password: PASSWORD,
+            email: uniqueEmail("delete-owner"),
+        });
+        const otherPerson = await repository.create({
+            name: "Other",
+            surname: "Person",
+            login: unique("delete-other"),
+            password: PASSWORD,
+            email: uniqueEmail("delete-other"),
+        });
+        const ownerId = owner.id;
+        const otherPersonId = otherPerson.id;
+        const unitId = await createUnitMeasurement(pool);
+        const categoryId = await createMenuCategory(pool);
+        const ingredientId = await createIngredient(pool, unitId);
+
+        const ownedRecipe = Recipe.forCreation({
+            title: "Owner's recipe",
+            content: "Linked into someone else's menu too.",
+            person_id: ownerId,
+            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
+        });
+        const { id: recipeId } = (await recipeRepository.create(
+            ownedRecipe,
+        )) as { id: number };
+
+        const ownMenu = Menu.forCreation({
+            menuTitle: "Owner's own menu",
+            menuContent: "Notes.",
+            categoryId,
+            personId: ownerId,
+            recipeIds: [recipeId],
+        });
+        const ownMenuId = (await menuRepository.create(ownMenu, [
+            recipeId,
+        ])) as number;
+
+        const othersMenu = Menu.forCreation({
+            menuTitle: "Someone else's menu",
+            menuContent: "Borrows the owner's recipe.",
+            categoryId,
+            personId: otherPersonId,
+            recipeIds: [recipeId],
+        });
+        const othersMenuId = (await menuRepository.create(othersMenu, [
+            recipeId,
+        ])) as number;
+
+        await pantryRepository.addIngredients(ownerId, [
+            { id: ingredientId, quantity_person_ingradient: 2 },
+        ]);
+
+        await repository.delete(ownerId);
+
+        expect(await repository.findById(ownerId)).toBeNull();
+
+        const remainingRecipe = await pool.query(
+            `SELECT id FROM recipes WHERE id = $1`,
+            [recipeId],
+        );
+
+        expect(remainingRecipe.rowCount).toBe(0);
+
+        const ownMenuRow = await pool.query(
+            `SELECT menu_id FROM menu WHERE menu_id = $1`,
+            [ownMenuId],
+        );
+
+        expect(ownMenuRow.rowCount).toBe(0);
+
+        // the other person's menu itself survives - only its reference to the deleted recipe is cleared
+        const othersMenuRow = await pool.query(
+            `SELECT menu_id FROM menu WHERE menu_id = $1`,
+            [othersMenuId],
+        );
+
+        expect(othersMenuRow.rowCount).toBe(1);
+
+        const othersMenuRecipes = await pool.query(
+            `SELECT recipe_id FROM menu_recipe WHERE menu_id = $1`,
+            [othersMenuId],
+        );
+
+        expect(othersMenuRecipes.rowCount).toBe(0);
+
+        const remainingPantry = await pool.query(
+            `SELECT ingredient_id FROM person_ingredients WHERE person_id = $1`,
+            [ownerId],
+        );
+
+        expect(remainingPantry.rowCount).toBe(0);
     });
 });

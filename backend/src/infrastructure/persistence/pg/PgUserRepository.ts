@@ -1,61 +1,19 @@
 import type { Pool } from "pg";
 
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
-import { AppError } from "domain/errors/AppError";
 import type {
     NewUser,
     PasswordResetCandidate,
+    ProfileUpdate,
     PublicUser,
     UserCredentials,
     UserRecord,
     UserRepository,
 } from "domain/repositories/UserRepository";
 
-const UNIQUE_LOGIN_CONSTRAINT = "unique_login";
-const UNIQUE_EMAIL_CONSTRAINT = "unique_email";
-
-// null when the error isn't a unique-violation at all; otherwise the constraint name Postgres reported
-function getUniqueViolationConstraint(error: unknown): string | null {
-    const isUniqueViolation =
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        (error as { code?: unknown }).code === "23505";
-
-    if (!isUniqueViolation) {
-        return null;
-    }
-
-    const { constraint } = error as { constraint?: unknown };
-
-    return typeof constraint === "string" ? constraint : null;
-}
-
-// maps a unique-violation to the right domain error; null when the error isn't one we recognize (caller rethrows as-is)
-function uniqueViolationError(error: unknown): AppError | null {
-    const constraint = getUniqueViolationConstraint(error);
-
-    if (constraint === UNIQUE_EMAIL_CONSTRAINT) {
-        return new AppError(
-            ERROR_MESSAGES.EMAIL_ALREADY_TAKEN,
-            409,
-            ERROR_CODES.EMAIL_ALREADY_TAKEN,
-        );
-    }
-
-    if (constraint === UNIQUE_LOGIN_CONSTRAINT) {
-        return new AppError(
-            ERROR_MESSAGES.LOGIN_ALREADY_TAKEN,
-            409,
-            ERROR_CODES.LOGIN_ALREADY_TAKEN,
-        );
-    }
-
-    return null;
-}
+import { uniqueViolationError } from "./PgUserRepository.errors";
 
 const PUBLIC_USER_COLUMNS =
-    "id, name, surname, login, created_at, email, email_verified_at";
+    "id, name, surname, login, created_at, email, email_verified_at, avatar";
 
 export default class PgUserRepository implements UserRepository {
     constructor(private pool: Pool) {}
@@ -152,10 +110,44 @@ export default class PgUserRepository implements UserRepository {
         ]);
     }
 
+    async updateProfile(
+        id: number,
+        { name, surname, avatar }: ProfileUpdate,
+    ): Promise<void> {
+        await this.pool.query(
+            `UPDATE person SET name = $1, surname = $2, avatar = $3 WHERE id = $4`,
+            [name, surname, avatar, id],
+        );
+    }
+
     async markEmailVerified(id: number): Promise<void> {
         await this.pool.query(
             `UPDATE person SET email_verified_at = now() WHERE id = $1`,
             [id],
         );
+    }
+
+    // transactional cascade-by-hand: menu.person_id and menu_recipe.recipe_id have no ON DELETE
+    // CASCADE, so clear them before deleting the person (recipes/pantry/purchases cascade cleanly)
+    async delete(id: number): Promise<void> {
+        const client = await this.pool.connect();
+
+        try {
+            await client.query("BEGIN");
+
+            await client.query(
+                `DELETE FROM menu_recipe WHERE recipe_id IN (SELECT id FROM recipes WHERE person_id = $1)`,
+                [id],
+            );
+            await client.query(`DELETE FROM menu WHERE person_id = $1`, [id]);
+            await client.query(`DELETE FROM person WHERE id = $1`, [id]);
+
+            await client.query("COMMIT");
+        } catch (error) {
+            await client.query("ROLLBACK");
+            throw error;
+        } finally {
+            client.release();
+        }
     }
 }

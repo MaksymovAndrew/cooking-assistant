@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { THEME_STORAGE_KEY } from "constants/theme";
@@ -62,11 +62,19 @@ describe("SettingsPage", () => {
         ).not.toBeInTheDocument();
     });
 
-    it("should open the delete-account modal", async () => {
+    it("should open the delete-account modal after holding the delete button", () => {
+        jest.useFakeTimers();
         setup();
 
-        await userEvent.click(screen.getByRole("button", { name: "Delete…" }));
+        const button = screen.getByRole("button", { name: "Delete account" });
+
+        fireEvent.pointerDown(button, { pointerId: 1 });
+        act(() => {
+            jest.advanceTimersByTime(500);
+        });
+        fireEvent.pointerUp(button, { pointerId: 1 });
 
         expect(screen.getByText("Delete account?")).toBeInTheDocument();
+        jest.useRealTimers();
     });
 });

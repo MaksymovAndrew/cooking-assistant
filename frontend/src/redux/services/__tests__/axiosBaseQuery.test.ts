@@ -7,6 +7,7 @@ import { axiosBaseQuery } from "redux/services/axiosBaseQuery";
 import {
     mockedDelete,
     mockedGet,
+    mockedPatch,
     mockedPost,
     mockedPut,
 } from "test/apiClientMock";
@@ -176,6 +177,22 @@ describe("axiosBaseQuery", () => {
         expect(mockedPut).toHaveBeenCalledWith(PROBE_URL, body);
     });
 
+    it("should route a PATCH mutation through apiClient.patch with the body", async () => {
+        mockedPatch.mockResolvedValue({ data: SAMPLE_DATA });
+        const store = makeProbeStore();
+        const body = { name: "z" };
+
+        await store.dispatch(
+            probeApi.endpoints.send.initiate({
+                url: PROBE_URL,
+                method: "PATCH",
+                data: body,
+            }),
+        );
+
+        expect(mockedPatch).toHaveBeenCalledWith(PROBE_URL, body);
+    });
+
     it("should route a DELETE mutation through apiClient.delete with params", async () => {
         mockedDelete.mockResolvedValue({ data: SAMPLE_DATA });
         const store = makeProbeStore();
@@ -189,7 +206,29 @@ describe("axiosBaseQuery", () => {
             }),
         );
 
-        expect(mockedDelete).toHaveBeenCalledWith(PROBE_URL, { params });
+        expect(mockedDelete).toHaveBeenCalledWith(PROBE_URL, {
+            data: undefined,
+            params,
+        });
+    });
+
+    it("should route a DELETE mutation through apiClient.delete with a body", async () => {
+        mockedDelete.mockResolvedValue({ data: SAMPLE_DATA });
+        const store = makeProbeStore();
+        const body = { password: "secret1!" };
+
+        await store.dispatch(
+            probeApi.endpoints.send.initiate({
+                url: PROBE_URL,
+                method: "DELETE",
+                data: body,
+            }),
+        );
+
+        expect(mockedDelete).toHaveBeenCalledWith(PROBE_URL, {
+            data: body,
+            params: undefined,
+        });
     });
 
     it("should deduplicate concurrent identical queries into a single request", async () => {

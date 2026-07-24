@@ -12,7 +12,12 @@ import {
 } from "redux/selectors/sessionSelectors";
 import { useGetMeQuery } from "redux/services/authApi";
 
+import { ErrorState } from "components/ui/ErrorState";
+
 import { getQueryErrorStatus } from "utils/queryError";
+import { reloadPage } from "utils/reloadPage";
+
+import styles from "./PrivateRoute.module.scss";
 
 const UNAUTHORIZED_STATUSES = [401, 403];
 
@@ -36,5 +41,14 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 
     if (isUnauthorized) return <Navigate to={ROUTES.login} replace />;
 
-    return <div>{t("sessionError")}</div>;
+    return (
+        <div className={styles["private-route-error"]}>
+            <ErrorState
+                title={t("errorState.title")}
+                description={t("sessionError")}
+                onRetry={reloadPage}
+                retryLabel={t("errorState.retry")}
+            />
+        </div>
+    );
 };

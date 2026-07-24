@@ -63,6 +63,8 @@ export const SUCCESS_MESSAGES = {
         "If an account with that email exists and is verified, a password reset link has been sent.",
     PASSWORD_RESET: "Password reset successfully",
     PASSWORD_CHANGED: "Password changed successfully",
+    PROFILE_UPDATED: "Profile updated successfully",
+    ACCOUNT_DELETED: "Account deleted successfully",
     VERIFICATION_EMAIL_SENT: "Verification link sent",
     EMAIL_VERIFIED: "Email verified successfully",
 } as const;

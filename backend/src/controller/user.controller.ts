@@ -6,12 +6,14 @@ import { SUCCESS_MESSAGES } from "constants/errorMessages";
 import type ChangePassword from "application/use-cases/users/ChangePassword";
 import type ConfirmEmailVerification from "application/use-cases/users/ConfirmEmailVerification";
 import type ConfirmPasswordReset from "application/use-cases/users/ConfirmPasswordReset";
+import type DeleteAccount from "application/use-cases/users/DeleteAccount";
 import type GetCurrentUser from "application/use-cases/users/GetCurrentUser";
 import type GetUsers from "application/use-cases/users/GetUsers";
 import type LoginUser from "application/use-cases/users/LoginUser";
 import type RegisterUser from "application/use-cases/users/RegisterUser";
 import type RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
 import type RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
+import type UpdateProfile from "application/use-cases/users/UpdateProfile";
 
 import { getUserId } from "controller/requestUser";
 
@@ -23,6 +25,8 @@ interface UserControllerDependencies {
     requestPasswordReset: RequestPasswordReset;
     confirmPasswordReset: ConfirmPasswordReset;
     changePassword: ChangePassword;
+    updateProfile: UpdateProfile;
+    deleteAccount: DeleteAccount;
     requestEmailVerification: RequestEmailVerification;
     confirmEmailVerification: ConfirmEmailVerification;
 }
@@ -35,6 +39,8 @@ export default class UserController {
     private requestPasswordResetUseCase: RequestPasswordReset;
     private confirmPasswordResetUseCase: ConfirmPasswordReset;
     private changePasswordUseCase: ChangePassword;
+    private updateProfileUseCase: UpdateProfile;
+    private deleteAccountUseCase: DeleteAccount;
     private requestEmailVerificationUseCase: RequestEmailVerification;
     private confirmEmailVerificationUseCase: ConfirmEmailVerification;
 
@@ -46,6 +52,8 @@ export default class UserController {
         requestPasswordReset,
         confirmPasswordReset,
         changePassword,
+        updateProfile,
+        deleteAccount,
         requestEmailVerification,
         confirmEmailVerification,
     }: UserControllerDependencies) {
@@ -56,6 +64,8 @@ export default class UserController {
         this.requestPasswordResetUseCase = requestPasswordReset;
         this.confirmPasswordResetUseCase = confirmPasswordReset;
         this.changePasswordUseCase = changePassword;
+        this.updateProfileUseCase = updateProfile;
+        this.deleteAccountUseCase = deleteAccount;
         this.requestEmailVerificationUseCase = requestEmailVerification;
         this.confirmEmailVerificationUseCase = confirmEmailVerification;
     }
@@ -118,6 +128,25 @@ export default class UserController {
         );
 
         res.json({ message: SUCCESS_MESSAGES.PASSWORD_CHANGED });
+    };
+
+    updateProfile: RequestHandler = async (req, res) => {
+        await this.updateProfileUseCase.execute(
+            getUserId(req),
+            req.body as Record<string, unknown>,
+        );
+
+        res.json({ message: SUCCESS_MESSAGES.PROFILE_UPDATED });
+    };
+
+    deleteAccount: RequestHandler = async (req, res) => {
+        await this.deleteAccountUseCase.execute(
+            getUserId(req),
+            req.body as Record<string, unknown>,
+        );
+
+        res.clearCookie(AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS);
+        res.json({ message: SUCCESS_MESSAGES.ACCOUNT_DELETED });
     };
 
     requestEmailVerification: RequestHandler = async (req, res) => {

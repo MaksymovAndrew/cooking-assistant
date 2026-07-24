@@ -21,6 +21,7 @@ const UNVERIFIED_USER: CurrentUser = {
     created_at: "2025-06-15T00:00:00.000Z",
     email: "claude@example.com",
     email_verified_at: null,
+    avatar: null,
 };
 const VERIFIED_USER: CurrentUser = {
     ...UNVERIFIED_USER,

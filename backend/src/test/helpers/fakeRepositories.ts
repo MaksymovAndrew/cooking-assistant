@@ -74,7 +74,9 @@ function createUserRepository(): jest.Mocked<UserRepository> {
         create: jest.fn(),
         findAll: jest.fn(),
         updatePassword: jest.fn(),
+        updateProfile: jest.fn(),
         markEmailVerified: jest.fn(),
+        delete: jest.fn(),
     };
 }
 

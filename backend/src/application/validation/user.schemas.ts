@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { AVATAR_KEYS } from "constants/avatarKeys";
+
 import { nonEmptyStringSchema, trimmedStringSchema } from "./common.schemas";
 
 const PASSWORD_MIN_LENGTH = 8;
@@ -68,4 +70,15 @@ export const changePasswordSchema = z.object({
 
 export const confirmEmailSchema = z.object({
     token: nonEmptyStringSchema("Token"),
+});
+
+// avatar is a preset key or null (no avatar); an unknown string is rejected
+export const updateProfileSchema = z.object({
+    name: trimmedStringSchema("Name"),
+    surname: trimmedStringSchema("Surname"),
+    avatar: z.enum(AVATAR_KEYS).nullable(),
+});
+
+export const deleteAccountSchema = z.object({
+    password: nonEmptyStringSchema("Password"),
 });

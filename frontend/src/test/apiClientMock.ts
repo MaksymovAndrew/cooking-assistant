@@ -6,6 +6,7 @@ const mockedClient = jest.mocked(apiClient);
 export const mockedGet = mockedClient.get;
 export const mockedPost = mockedClient.post;
 export const mockedPut = mockedClient.put;
+export const mockedPatch = mockedClient.patch;
 export const mockedDelete = mockedClient.delete;
 
 // resolve GET requests by url, for pages that hit several endpoints at once; an unmapped url rejects so a forgotten stub fails loudly instead of hanging

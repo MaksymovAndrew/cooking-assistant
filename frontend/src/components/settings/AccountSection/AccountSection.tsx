@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ROUTES } from "constants/routes";
 
 import { TrashMark } from "components/icons";
+import { DeleteAccountButton } from "components/settings/DeleteAccountButton";
 import { SettingsRow } from "components/settings/SettingsRow";
 import { SettingsSection } from "components/settings/SettingsSection";
 import { Button } from "components/ui/Button";
@@ -91,14 +92,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                 description={t("accountSection.deleteAccountDescription")}
                 danger
             >
-                <Button
-                    type="button"
-                    variant="danger"
-                    size="sm"
-                    onClick={onDeleteAccount}
-                >
-                    {t("accountSection.deleteAccountButton")}
-                </Button>
+                <DeleteAccountButton onConfirm={onDeleteAccount} />
             </SettingsRow>
         </SettingsSection>
     );

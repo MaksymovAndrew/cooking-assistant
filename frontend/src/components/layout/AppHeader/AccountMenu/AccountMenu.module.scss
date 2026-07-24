@@ -22,17 +22,18 @@
             border-color: var(--brand);
         }
 
-        svg {
-            transition: transform var(--dur-fast) var(--ease-out);
-        }
-
         &[aria-expanded="true"] {
             border-color: var(--brand);
-
-            svg {
-                transform: rotate(180deg);
-            }
         }
+    }
+
+    // scoped to the chevron only - an unscoped `svg` selector here would also flip the avatar's own SVG when open
+    &__chevron {
+        transition: transform var(--dur-fast) var(--ease-out);
+    }
+
+    &__trigger[aria-expanded="true"] &__chevron {
+        transform: rotate(180deg);
     }
 
     &__panel {

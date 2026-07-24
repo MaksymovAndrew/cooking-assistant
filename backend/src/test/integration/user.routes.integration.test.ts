@@ -14,6 +14,8 @@ const CHANGE_PASSWORD_PATH = "/api/change-password";
 const EMAIL = "bob@example.com";
 const NEW_PASSWORD = "new-secret1!";
 const HASHED_NEW_PASSWORD = "hashed-new-secret";
+const CURRENT_PASSWORD = "current-secret";
+const HASHED_CURRENT_PASSWORD = "hashed-current";
 const TOKEN_VALUE = "token-value";
 const VERIFY_TOKEN = "verify-token";
 const CREATED_AT = "2026-01-15T00:00:00.000Z";
@@ -132,6 +134,7 @@ describe("user routes", () => {
             created_at: CREATED_AT,
             email: EMAIL,
             email_verified_at: null,
+            avatar: null,
         };
 
         deps.userRepository.findById.mockResolvedValue(currentUser);
@@ -299,7 +302,7 @@ describe("user routes", () => {
         const { app } = buildTestApp();
 
         const res = await request(app).post(CHANGE_PASSWORD_PATH).send({
-            currentPassword: "current-secret",
+            currentPassword: CURRENT_PASSWORD,
             newPassword: NEW_PASSWORD,
         });
 
@@ -311,7 +314,7 @@ describe("user routes", () => {
 
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
-            password: "hashed-current",
+            password: HASHED_CURRENT_PASSWORD,
         });
         deps.passwordHasher.compare
             .mockResolvedValueOnce(true) // current password check
@@ -322,7 +325,7 @@ describe("user routes", () => {
             .post(CHANGE_PASSWORD_PATH)
             .set("Cookie", authCookie())
             .send({
-                currentPassword: "current-secret",
+                currentPassword: CURRENT_PASSWORD,
                 newPassword: NEW_PASSWORD,
             });
 
@@ -341,7 +344,7 @@ describe("user routes", () => {
 
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
-            password: "hashed-current",
+            password: HASHED_CURRENT_PASSWORD,
         });
         deps.passwordHasher.compare.mockResolvedValue(false);
 
@@ -369,6 +372,7 @@ describe("user routes", () => {
             created_at: CREATED_AT,
             email: EMAIL,
             email_verified_at: null,
+            avatar: null,
         });
         deps.tokenService.generatePurposeToken.mockReturnValue(VERIFY_TOKEN);
 
@@ -414,5 +418,103 @@ describe("user routes", () => {
             error: ERROR_MESSAGES.INVALID_OR_EXPIRED_TOKEN,
             code: ERROR_CODES.INVALID_OR_EXPIRED_TOKEN,
         });
+    });
+
+    it("should return 401 on PATCH /api/me without a token", async () => {
+        const { app } = buildTestApp();
+
+        const res = await request(app)
+            .patch("/api/me")
+            .send({ name: "Claude", surname: "Cook", avatar: null });
+
+        expect(res.status).toBe(401);
+    });
+
+    it("should update the profile for an authenticated request", async () => {
+        const { app, deps } = buildTestApp();
+
+        const res = await request(app)
+            .patch("/api/me")
+            .set("Cookie", authCookie())
+            .send({ name: "Claude", surname: "Cook", avatar: "tomato" });
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            message: SUCCESS_MESSAGES.PROFILE_UPDATED,
+        });
+        expect(deps.userRepository.updateProfile).toHaveBeenCalledWith(1, {
+            name: "Claude",
+            surname: "Cook",
+            avatar: "tomato",
+        });
+    });
+
+    it("should reject PATCH /api/me with an unknown avatar key", async () => {
+        const { app, deps } = buildTestApp();
+
+        const res = await request(app)
+            .patch("/api/me")
+            .set("Cookie", authCookie())
+            .send({ name: "Claude", surname: "Cook", avatar: "not-real" });
+
+        expect(res.status).toBe(400);
+        expect(deps.userRepository.updateProfile).not.toHaveBeenCalled();
+    });
+
+    it("should return 401 on DELETE /api/me without a token", async () => {
+        const { app } = buildTestApp();
+
+        const res = await request(app)
+            .delete("/api/me")
+            .send({ password: CURRENT_PASSWORD });
+
+        expect(res.status).toBe(401);
+    });
+
+    it("should delete the account and clear the session cookie for the correct password", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.userRepository.findCredentialsById.mockResolvedValue({
+            id: 1,
+            password: HASHED_CURRENT_PASSWORD,
+        });
+        deps.passwordHasher.compare.mockResolvedValue(true);
+
+        const res = await request(app)
+            .delete("/api/me")
+            .set("Cookie", authCookie())
+            .send({ password: CURRENT_PASSWORD });
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            message: SUCCESS_MESSAGES.ACCOUNT_DELETED,
+        });
+        expect(deps.userRepository.delete).toHaveBeenCalledWith(1);
+
+        const headers = res.headers as IncomingHttpHeaders;
+
+        expect(headers["set-cookie"]?.join(";") ?? "").toContain("authToken=;");
+    });
+
+    it("should reject DELETE /api/me with the wrong password", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.userRepository.findCredentialsById.mockResolvedValue({
+            id: 1,
+            password: HASHED_CURRENT_PASSWORD,
+        });
+        deps.passwordHasher.compare.mockResolvedValue(false);
+
+        const res = await request(app)
+            .delete("/api/me")
+            .set("Cookie", authCookie())
+            .send({ password: "wrong-password" });
+
+        expect(res.status).toBe(401);
+        expect(res.body).toEqual({
+            error: ERROR_MESSAGES.CURRENT_PASSWORD_INCORRECT,
+            code: ERROR_CODES.CURRENT_PASSWORD_INCORRECT,
+        });
+        expect(deps.userRepository.delete).not.toHaveBeenCalled();
     });
 });

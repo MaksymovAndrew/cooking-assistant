@@ -22,6 +22,14 @@ export interface PublicUser {
     created_at: string;
     email: string;
     email_verified_at: string | null;
+    avatar: string | null;
+}
+
+// the editable profile fields; avatar is a preset key or null (no avatar - fall back to initials)
+export interface ProfileUpdate {
+    name: string;
+    surname: string;
+    avatar: string | null;
 }
 
 // just enough to check/update a password without ever exposing it through GetCurrentUser/`/me`
@@ -50,5 +58,7 @@ export interface UserRepository {
     create(user: NewUser): Promise<{ id: number }>;
     findAll(): Promise<unknown[]>;
     updatePassword(id: number, hashedPassword: string): Promise<void>;
+    updateProfile(id: number, data: ProfileUpdate): Promise<void>;
     markEmailVerified(id: number): Promise<void>;
+    delete(id: number): Promise<void>;
 }

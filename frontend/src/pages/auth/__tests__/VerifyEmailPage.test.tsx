@@ -19,6 +19,7 @@ const CURRENT_USER: CurrentUser = {
     created_at: "2025-06-15T00:00:00.000Z",
     email: "claude@example.com",
     email_verified_at: "2026-01-01T00:00:00.000Z",
+    avatar: null,
 };
 
 describe("VerifyEmailPage", () => {

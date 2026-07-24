@@ -4,7 +4,12 @@ import { menusApi } from "redux/services/menusApi";
 import { recipesApi } from "redux/services/recipesApi";
 import { userIngredientsApi } from "redux/services/userIngredientsApi";
 
-import { mockedDelete, mockedPost, mockedPut } from "test/apiClientMock";
+import {
+    mockedDelete,
+    mockedPatch,
+    mockedPost,
+    mockedPut,
+} from "test/apiClientMock";
 import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
@@ -13,6 +18,7 @@ const REQUEST_FAILED_MESSAGE = "Request failed";
 const BAD_CREDENTIALS_ERROR = "Bad credentials";
 const FALLBACK_ERROR_MESSAGE = "Something went wrong";
 const NEW_PASSWORD = "new-secret1!";
+const CURRENT_PASSWORD_INCORRECT_ERROR = "Current password is incorrect";
 
 describe("getErrorMessage", () => {
     it("should return the data message from a query error payload", () => {
@@ -54,6 +60,30 @@ describe("notificationsListener", () => {
         expect(items[0]).toMatchObject({
             type: "error",
             message: BAD_CREDENTIALS_ERROR,
+        });
+    });
+
+    it("should add an error notification when a deleteAccount request fails", async () => {
+        mockedDelete.mockRejectedValue({
+            isAxiosError: true,
+            response: {
+                status: 401,
+                data: { error: CURRENT_PASSWORD_INCORRECT_ERROR },
+            },
+            message: REQUEST_FAILED_MESSAGE,
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            authApi.endpoints.deleteAccount.initiate({ password: "wrong" }),
+        );
+
+        const { items } = store.getState().notifications;
+
+        expect(items).toHaveLength(1);
+        expect(items[0]).toMatchObject({
+            type: "error",
+            message: CURRENT_PASSWORD_INCORRECT_ERROR,
         });
     });
 
@@ -165,7 +195,7 @@ describe("notificationsListener", () => {
             isAxiosError: true,
             response: {
                 status: 401,
-                data: { error: "Current password is incorrect" },
+                data: { error: CURRENT_PASSWORD_INCORRECT_ERROR },
             },
             message: REQUEST_FAILED_MESSAGE,
         });
@@ -175,6 +205,25 @@ describe("notificationsListener", () => {
             authApi.endpoints.changePassword.initiate({
                 currentPassword: "wrong",
                 newPassword: NEW_PASSWORD,
+            }),
+        );
+
+        expect(store.getState().notifications.items).toEqual([]);
+    });
+
+    it("should not add a notification when an updateProfile request fails", async () => {
+        mockedPatch.mockRejectedValue({
+            isAxiosError: true,
+            response: { status: 400, data: { error: "Invalid" } },
+            message: REQUEST_FAILED_MESSAGE,
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            authApi.endpoints.updateProfile.initiate({
+                name: "Claude",
+                surname: "Cook",
+                avatar: null,
             }),
         );
 
@@ -230,6 +279,44 @@ describe("notificationsListener success toasts", () => {
         expect(items[0]).toMatchObject({
             type: "success",
             message: "Password changed",
+        });
+    });
+
+    it("should add a success notification when the profile is updated", async () => {
+        mockedPatch.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            authApi.endpoints.updateProfile.initiate({
+                name: "Claude",
+                surname: "Cook",
+                avatar: "tomato",
+            }),
+        );
+
+        const { items } = store.getState().notifications;
+
+        expect(items).toHaveLength(1);
+        expect(items[0]).toMatchObject({
+            type: "success",
+            message: "Profile updated",
+        });
+    });
+
+    it("should add a success notification when the account is deleted", async () => {
+        mockedDelete.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            authApi.endpoints.deleteAccount.initiate({ password: "secret1!" }),
+        );
+
+        const { items } = store.getState().notifications;
+
+        expect(items).toHaveLength(1);
+        expect(items[0]).toMatchObject({
+            type: "success",
+            message: "Account deleted",
         });
     });
 

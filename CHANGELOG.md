@@ -20,6 +20,28 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 3.7 - 2026-07-24
+
+### Backend
+
+- Added: You can now update your profile's name and surname, and choose a profile avatar.
+- Added: You can now permanently delete your account, with a password confirmation and a short lockout after repeated wrong attempts.
+
+### Frontend
+
+- Added: The "Edit profile" button on your Profile page now works - update your name, surname, and pick from a set of cooking-themed preset avatars, shown across your profile and the account menu.
+- Added: Deleting your account from Settings now works - press and hold the Delete account button to confirm, then enter your password. Repeated wrong passwords temporarily lock the action, just like signing in, and a confirmation toast appears once the account is gone.
+- Fixed: If your session can't be verified for a reason other than being signed out (e.g. a temporary server issue), you now see a proper error screen with a retry button instead of plain unstyled text.
+
+## 3.6 - 2026-07-21
+
+### Project
+
+- Changed: Routine dependency maintenance - updated the GitHub Actions used by CI and deploy, and refreshed a batch of minor/patch library versions across the project.
+- Security: Resolved a transitive dependency advisory (a denial-of-service issue in a nested `brace-expansion` package) via an audit fix.
+
+## 3.5 - 2026-07-21
+
 ### Frontend
 
 - Fixed: Typing into any text field on a phone no longer zooms the whole page in - form fields now use a large enough font to stay under the browser's auto-zoom threshold, including the recipe ingredient quantity, menu recipe search, and a few other fields missed on the first pass.

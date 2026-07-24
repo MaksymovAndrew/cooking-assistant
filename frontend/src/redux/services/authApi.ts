@@ -2,10 +2,12 @@ import type {
     ChangePasswordRequest,
     ConfirmEmailRequest,
     CurrentUser,
+    DeleteAccountRequest,
     ForgotPasswordRequest,
     LoginRequest,
     RegisterRequest,
     ResetPasswordRequest,
+    UpdateProfileRequest,
 } from "types/auth";
 
 import { API_ROUTES } from "api/endpoints";
@@ -60,6 +62,23 @@ export const authApi = baseApi.injectEndpoints({
                 data,
             }),
         }),
+        updateProfile: build.mutation<null, UpdateProfileRequest>({
+            query: (data) => ({
+                url: API_ROUTES.auth.me,
+                method: "PATCH",
+                data,
+            }),
+            // a static tag array invalidates on error too, which would refetch getMe and (via PrivateRoute's isChecking) unmount this modal mid-error
+            invalidatesTags: (_result, error) => (error ? [] : ["Me"]),
+        }),
+        deleteAccount: build.mutation<null, DeleteAccountRequest>({
+            query: (data) => ({
+                url: API_ROUTES.auth.me,
+                method: "DELETE",
+                data,
+            }),
+            invalidatesTags: (_result, error) => (error ? [] : ["Me"]),
+        }),
         requestEmailVerification: build.mutation<null, null>({
             query: () => ({
                 url: API_ROUTES.auth.resendVerificationEmail,
@@ -85,6 +104,8 @@ export const {
     useForgotPasswordMutation,
     useResetPasswordMutation,
     useChangePasswordMutation,
+    useUpdateProfileMutation,
+    useDeleteAccountMutation,
     useRequestEmailVerificationMutation,
     useConfirmEmailMutation,
 } = authApi;

@@ -81,6 +81,8 @@ export const changePasswordLimiter = createLimiter(
     isTestMode,
     userIdLimiterKey,
 );
+// destructive endpoint, keyed by the authenticated user like changePasswordLimiter
+export const deleteAccountLimiter = createLimiter(isTestMode, userIdLimiterKey);
 // public token-redemption endpoints: no account/email field to key on, so IP is the only signal available
 export const resetPasswordLimiter = createLimiter(
     isTestMode,

@@ -115,12 +115,23 @@
             sans-serif;
     }
 
+    // now that Edit profile is a real action (not the old disabled placeholder), it needs to
+    // stay reachable on mobile too - full width there so it doesn't compete with the stats grid
     &__actions {
-        display: none;
+        display: flex;
+        flex-basis: 100%;
+        gap: var(--s-2);
 
         @include respond-to(tablet) {
-            display: flex;
-            gap: var(--s-2);
+            flex-basis: auto;
+        }
+    }
+
+    &__edit {
+        flex: 1;
+
+        @include respond-to(tablet) {
+            flex: none;
         }
     }
 }

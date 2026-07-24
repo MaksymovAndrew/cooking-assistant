@@ -8,7 +8,7 @@ import {
     getApiErrorStatus,
 } from "api/httpError";
 
-export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export interface AxiosBaseQueryArgs {
     url: string;
@@ -43,8 +43,10 @@ const requestByMethod = {
         apiClient.get<unknown>(url, { params }),
     POST: ({ url, data }: RunRequestArgs) => apiClient.post<unknown>(url, data),
     PUT: ({ url, data }: RunRequestArgs) => apiClient.put<unknown>(url, data),
-    DELETE: ({ url, params }: RunRequestArgs) =>
-        apiClient.delete<unknown>(url, { params }),
+    PATCH: ({ url, data }: RunRequestArgs) =>
+        apiClient.patch<unknown>(url, data),
+    DELETE: ({ url, data, params }: RunRequestArgs) =>
+        apiClient.delete<unknown>(url, { data, params }),
 } satisfies Record<HttpMethod, (args: RunRequestArgs) => Promise<unknown>>;
 
 const runRequest = (args: RunRequestArgs) => requestByMethod[args.method](args);

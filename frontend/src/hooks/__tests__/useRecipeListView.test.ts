@@ -47,6 +47,7 @@ const CURRENT_USER: CurrentUser = {
     created_at: "2025-06-15T00:00:00.000Z",
     email: "claude@example.com",
     email_verified_at: null,
+    avatar: null,
 };
 
 // matches the default filters slice state + no URL ingredient search, so the pre-seeded cache key lines up with what the hook itself requests

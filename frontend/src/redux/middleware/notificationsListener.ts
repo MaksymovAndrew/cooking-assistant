@@ -36,6 +36,7 @@ export const isSelfHandledRejection = isAnyOf(
     authApi.endpoints.forgotPassword.matchRejected,
     authApi.endpoints.resetPassword.matchRejected,
     authApi.endpoints.changePassword.matchRejected,
+    authApi.endpoints.updateProfile.matchRejected,
     // confirmEmail's page renders its own rich success/failure state - a toast would be redundant
     authApi.endpoints.confirmEmail.matchRejected,
 );
@@ -104,6 +105,14 @@ registerSuccessToast(
 registerSuccessToast(
     authApi.endpoints.changePassword.matchFulfilled,
     "notifications.passwordChanged",
+);
+registerSuccessToast(
+    authApi.endpoints.updateProfile.matchFulfilled,
+    "notifications.profileUpdated",
+);
+registerSuccessToast(
+    authApi.endpoints.deleteAccount.matchFulfilled,
+    "notifications.accountDeleted",
 );
 registerSuccessToast(
     authApi.endpoints.requestEmailVerification.matchFulfilled,

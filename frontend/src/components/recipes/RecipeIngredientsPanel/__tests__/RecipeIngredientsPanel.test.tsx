@@ -9,18 +9,22 @@ import { renderWithRouter } from "test/router";
 
 const TOMATO: IngredientAvailability = {
     id: 1,
+    slug: "tomato",
     name: "Tomato",
+    category: "vegetables",
     quantity_recipe_ingredients: 2,
-    unit_name: "pcs",
-    allergens: null,
+    unit_name: "piece",
+    allergens: [],
     have: true,
 };
 const ONION: IngredientAvailability = {
     id: 2,
+    slug: "onion",
     name: "Onion",
+    category: "vegetables",
     quantity_recipe_ingredients: 1,
-    unit_name: "pcs",
-    allergens: null,
+    unit_name: "piece",
+    allergens: [],
     have: false,
 };
 
@@ -41,9 +45,9 @@ describe("RecipeIngredientsPanel", () => {
         renderWithRouter(<RecipeIngredientsPanel {...baseProps} />);
 
         expect(screen.getByText("Tomato")).toBeInTheDocument();
-        expect(screen.getByText("2 pcs")).toBeInTheDocument();
+        expect(screen.getByText("2 piece")).toBeInTheDocument();
         expect(screen.getByText("Onion")).toBeInTheDocument();
-        expect(screen.getByText("1 pcs")).toBeInTheDocument();
+        expect(screen.getByText("1 piece")).toBeInTheDocument();
     });
 
     it("should show the have/missing summary banner and a pantry link for the owner", () => {
@@ -110,7 +114,7 @@ describe("RecipeIngredientsPanel", () => {
             />,
         );
 
-        expect(screen.getByText("3 pcs")).toBeInTheDocument();
+        expect(screen.getByText("3 piece")).toBeInTheDocument();
 
         await userEvent.click(
             screen.getByRole("button", { name: "More portions" }),

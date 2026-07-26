@@ -12,24 +12,31 @@ jest.mock("api/client");
 
 const TOMATO: RecipeDetailIngredient = {
     id: 1,
+    slug: "tomato",
     name: "Tomato",
+    category: "vegetables",
     quantity_recipe_ingredients: 2,
-    unit_name: "pcs",
-    allergens: null,
+    unit_name: "piece",
+    allergens: [],
 };
 const ONION: RecipeDetailIngredient = {
     id: 2,
+    slug: "onion",
     name: "Onion",
+    category: "vegetables",
     quantity_recipe_ingredients: 1,
-    unit_name: "pcs",
-    allergens: null,
+    unit_name: "piece",
+    allergens: [],
 };
 
 const PANTRY_TOMATO: UserIngredient = {
     ingredient_id: 1,
+    ingredient_slug: "tomato",
     ingredient_name: "Tomato",
-    unit_name: "pcs",
+    category: "vegetables",
+    unit_name: "piece",
     quantity_person_ingradient: 3,
+    allergens: [],
 };
 
 // pre-seed the cache by awaiting the real query thunk before the hook mounts, so the hook reads already-fulfilled data on first render

@@ -16,7 +16,7 @@ export interface RecipeWithIngredientNames extends RecipeListItem {
 export interface RecipeSearchIngredient {
     id: number;
     name: string;
-    allergens: string | null;
+    allergens: string[];
 }
 
 // shape returned by GET /api/recipes-by-filters and /api/recipes-filters-person/:id (different ingredient shape from RecipeWithIngredientNames)
@@ -26,10 +26,12 @@ export interface RecipeSearchResultItem extends RecipeListItem {
 
 export interface RecipeDetailIngredient {
     id: number;
+    slug: string;
     name: string;
+    category: string;
     quantity_recipe_ingredients: number;
     unit_name: string;
-    allergens: string | null;
+    allergens: string[];
 }
 
 // shape returned by GET /api/recipe/:id (superset of what RecipeDetailsPage + ChangeRecipePage use)

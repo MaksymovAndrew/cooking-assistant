@@ -21,17 +21,19 @@ function makeInput(overrides = {}) {
 
 function setup() {
     const recipeRepository = { create: jest.fn() };
-    const useCase = new CreateRecipe(recipeRepository);
+    const ingredientRepository = { findExistingIds: jest.fn() };
+    const useCase = new CreateRecipe(recipeRepository, ingredientRepository);
 
-    return { useCase, recipeRepository };
+    return { useCase, recipeRepository, ingredientRepository };
 }
 
 describe("CreateRecipe", () => {
     it("should create a recipe entity and return the repository result", async () => {
-        const { useCase, recipeRepository } = setup();
+        const { useCase, recipeRepository, ingredientRepository } = setup();
         const input = makeInput();
         const createdRecipe = { id: 12, ...input };
 
+        ingredientRepository.findExistingIds.mockResolvedValue([3]);
         recipeRepository.create.mockResolvedValue(createdRecipe);
 
         const result = await useCase.execute(input);
@@ -52,7 +54,9 @@ describe("CreateRecipe", () => {
     });
 
     it("should accept free-form text servings, not just a plain number", async () => {
-        const { useCase, recipeRepository } = setup();
+        const { useCase, recipeRepository, ingredientRepository } = setup();
+
+        ingredientRepository.findExistingIds.mockResolvedValue([3]);
 
         await useCase.execute(makeInput({ servings: "a full pot" }));
         const [recipe] = recipeRepository.create.mock.calls[0] as [Recipe];
@@ -92,6 +96,21 @@ describe("CreateRecipe", () => {
         expect(error).toBeAppError(
             ValidationError,
             ERROR_MESSAGES.RECIPE_INGREDIENTS_EMPTY,
+            400,
+        );
+        expect(recipeRepository.create).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when an ingredient does not exist", async () => {
+        const { useCase, recipeRepository, ingredientRepository } = setup();
+
+        ingredientRepository.findExistingIds.mockResolvedValue([]);
+
+        const error = await catchError(useCase.execute(makeInput()));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_MESSAGES.RECIPE_INGREDIENTS_NOT_EXIST,
             400,
         );
         expect(recipeRepository.create).not.toHaveBeenCalled();

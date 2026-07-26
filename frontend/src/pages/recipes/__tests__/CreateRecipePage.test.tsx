@@ -24,7 +24,16 @@ const DESCRIPTION = "Boil and mash";
 
 const SAMPLE_TYPES = [{ id: TYPE_ID, type_name: TYPE_NAME, description: "" }];
 const SAMPLE_INGREDIENTS = [
-    { id: INGREDIENT_ID, name: INGREDIENT_NAME, unit_name: "g" },
+    {
+        id: INGREDIENT_ID,
+        slug: "potato",
+        name: INGREDIENT_NAME,
+        category: "vegetables",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 30,
+        calories_per_unit: null,
+    },
 ];
 
 describe("CreateRecipePage", () => {

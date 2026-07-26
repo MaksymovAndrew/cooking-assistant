@@ -45,7 +45,7 @@ export interface MenuDetails {
         isOwner: boolean;
     };
     recipes: MenuDetailRecipe[];
-    // distinct raw allergen values across every recipe of the menu ("None" included)
+    // distinct allergen slugs across every recipe of the menu
     allergens: string[];
 }
 

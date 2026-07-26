@@ -21,6 +21,7 @@ const INGREDIENT: PantryIngredient = {
     ingredient_name: "Salt",
     unit_name: "g",
     quantity_person_ingradient: 100,
+    allergens: [],
 };
 const MODAL_ID = "m1";
 const MODAL: ActiveModal = {

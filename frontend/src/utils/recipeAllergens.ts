@@ -1,20 +1,10 @@
 import type { RecipeDetailIngredient } from "types/recipe";
 
-const NONE_ALLERGEN = "none";
-
-// dedupes and drops null/"None" placeholder values from raw allergen lists
-export const filterAllergens = (allergens: (string | null)[]): string[] => {
-    const unique = new Set(
-        allergens.filter(
-            (allergen): allergen is string =>
-                allergen !== null && allergen.toLowerCase() !== NONE_ALLERGEN,
-        ),
-    );
-
-    return Array.from(unique);
-};
+// dedupes a flat list of allergen slugs
+export const filterAllergens = (allergens: string[]): string[] =>
+    Array.from(new Set(allergens));
 
 export const getRecipeAllergens = (
     ingredients: RecipeDetailIngredient[],
 ): string[] =>
-    filterAllergens(ingredients.map((ingredient) => ingredient.allergens));
+    filterAllergens(ingredients.flatMap((ingredient) => ingredient.allergens));

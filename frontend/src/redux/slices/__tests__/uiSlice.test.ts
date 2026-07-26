@@ -20,6 +20,7 @@ const PANTRY_INGREDIENT: PantryIngredient = {
     ingredient_name: "Salt",
     unit_name: "g",
     quantity_person_ingradient: 100,
+    allergens: [],
 };
 
 describe("uiSlice", () => {

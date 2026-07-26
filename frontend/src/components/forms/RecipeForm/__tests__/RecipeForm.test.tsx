@@ -47,7 +47,16 @@ const TYPES: RecipeTypeSummary[] = [
     { id: 1, type_name: "Soup", description: "" },
 ];
 const INGREDIENTS: Ingredient[] = [
-    { id: 1, name: "Egg", unit_name: "pcs", allergens: null },
+    {
+        id: 1,
+        slug: "egg",
+        name: "Egg",
+        category: "eggs",
+        unit_name: "piece",
+        allergens: ["eggs"],
+        days_to_expire: null,
+        calories_per_unit: null,
+    },
 ];
 
 const renderForm = (form: Form, onSubmit: () => void = jest.fn()) =>

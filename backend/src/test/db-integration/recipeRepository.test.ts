@@ -21,7 +21,7 @@ interface RecipeDetail {
         name: string;
         quantity_recipe_ingredients: number;
         unit_name: string;
-        allergens: string | null;
+        allergens: string[];
     }[];
 }
 
@@ -43,7 +43,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
     });
 
     it("should persist a recipe together with its ingredient rows", async () => {
-        const ingredientId = await createIngredient(pool, unitId, "Gluten");
+        const ingredientId = await createIngredient(pool, unitId, ["gluten"]);
         const typeId = await createRecipeType(pool);
         const recipe = Recipe.forCreation({
             title: "Borscht",
@@ -68,7 +68,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
             expect.objectContaining({
                 id: ingredientId,
                 quantity_recipe_ingredients: 2,
-                allergens: "Gluten",
+                allergens: ["gluten"],
             }),
         ]);
     });

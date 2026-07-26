@@ -22,14 +22,35 @@ const EDIT_QUANTITIES = "Edit quantities";
 const USER_INGREDIENTS: UserIngredient[] = [
     {
         ingredient_id: 5,
+        ingredient_slug: "potato",
         ingredient_name: INGREDIENT_NAME,
+        category: "vegetables",
         unit_name: "g",
         quantity_person_ingradient: 100,
+        allergens: [],
     },
 ];
 const ALL_INGREDIENTS: Ingredient[] = [
-    { id: 5, name: INGREDIENT_NAME, unit_name: "g", allergens: null },
-    { id: 6, name: "Tomato", unit_name: "kg", allergens: null },
+    {
+        id: 5,
+        slug: "potato",
+        name: INGREDIENT_NAME,
+        category: "vegetables",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 30,
+        calories_per_unit: null,
+    },
+    {
+        id: 6,
+        slug: "tomato",
+        name: "Tomato",
+        category: "vegetables",
+        unit_name: "kg",
+        allergens: [],
+        days_to_expire: 7,
+        calories_per_unit: null,
+    },
 ];
 
 let pantry: UserIngredient[];

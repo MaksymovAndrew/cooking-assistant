@@ -27,19 +27,16 @@ describe("UpdateIngredientQuantities", () => {
         expect(pantryRepository.updateQuantities).not.toHaveBeenCalled();
     });
 
-    it("should throw a 400 ValidationError when a quantity is not an integer", async () => {
+    it("should update to a fractional quantity", async () => {
         const { useCase, pantryRepository } = setup();
+        const items = [{ id: 3, quantity_person_ingradient: 1.5 }];
 
-        const error = await catchError(
-            useCase.execute(7, [{ id: 3, quantity_person_ingradient: 1.5 }]),
-        );
+        await useCase.execute(7, items);
 
-        expect(error).toBeAppError(
-            ValidationError,
-            "0.quantity_person_ingradient: Quantity must be an integer",
-            400,
+        expect(pantryRepository.updateQuantities).toHaveBeenCalledWith(
+            7,
+            items,
         );
-        expect(pantryRepository.updateQuantities).not.toHaveBeenCalled();
     });
 
     it("should throw a 400 ValidationError when ingredient ids are duplicated", async () => {

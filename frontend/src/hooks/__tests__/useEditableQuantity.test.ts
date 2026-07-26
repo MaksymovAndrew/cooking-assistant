@@ -97,4 +97,17 @@ describe("useEditableQuantity", () => {
 
         expect(committed).toBe(8);
     });
+
+    it("should commit a fractional value as the user types it", () => {
+        const onCommit = jest.fn();
+        const { result } = renderHook(() => useEditableQuantity(1, onCommit));
+
+        act(() => {
+            result.current.onChange({
+                target: { value: "1.5" },
+            } as React.ChangeEvent<HTMLInputElement>);
+        });
+
+        expect(onCommit).toHaveBeenCalledWith(1.5);
+    });
 });

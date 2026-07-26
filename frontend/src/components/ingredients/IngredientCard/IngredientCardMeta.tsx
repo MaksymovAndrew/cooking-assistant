@@ -20,7 +20,11 @@ export const IngredientCardMeta: React.FC<IngredientCardMetaProps> = ({
         <dl className={styles["ingredient-card__meta"]}>
             <div className={styles["ingredient-card__meta-row"]}>
                 <dt>{t("page.allergens")}</dt>
-                <dd>{ingredient.allergens ?? "—"}</dd>
+                <dd>
+                    {ingredient.allergens.length > 0
+                        ? ingredient.allergens.join(", ")
+                        : "—"}
+                </dd>
             </div>
             <div className={styles["ingredient-card__meta-row"]}>
                 <dt>{t("page.shelfLife")}</dt>

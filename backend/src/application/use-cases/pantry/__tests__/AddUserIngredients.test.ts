@@ -27,7 +27,7 @@ describe("AddUserIngredients", () => {
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
 
-    it("should throw a 400 ValidationError when a quantity is below 1", async () => {
+    it("should throw a 400 ValidationError when a quantity is not greater than 0", async () => {
         const { useCase, pantryRepository } = setup();
 
         const error = await catchError(
@@ -36,25 +36,22 @@ describe("AddUserIngredients", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "0.quantity_person_ingradient: Quantity must be at least 1",
+            "0.quantity_person_ingradient: Quantity must be greater than 0",
             400,
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
 
-    it("should throw a 400 ValidationError when a quantity is not an integer", async () => {
+    it("should add a fractional quantity", async () => {
         const { useCase, pantryRepository } = setup();
+        const ingredients = [{ id: 3, quantity_person_ingradient: 1.5 }];
 
-        const error = await catchError(
-            useCase.execute(7, [{ id: 3, quantity_person_ingradient: 1.5 }]),
-        );
+        await useCase.execute(7, ingredients);
 
-        expect(error).toBeAppError(
-            ValidationError,
-            "0.quantity_person_ingradient: Quantity must be an integer",
-            400,
+        expect(pantryRepository.addIngredients).toHaveBeenCalledWith(
+            7,
+            ingredients,
         );
-        expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
 
     it("should throw a 400 ValidationError when ingredient ids are duplicated", async () => {

@@ -115,12 +115,12 @@ describe("PurchaseItem", () => {
         ).toBeInTheDocument();
     });
 
-    it("should enforce a minimum value of 1", async () => {
+    it("should enforce a minimum value greater than 0", async () => {
         setup(FRESH);
 
         await startEditing();
 
-        expect(screen.getByRole("spinbutton")).toHaveAttribute("min", "1");
+        expect(screen.getByRole("spinbutton")).toHaveAttribute("min", "0.01");
     });
 
     it("should save the original value on blur after clearing (never 0)", async () => {

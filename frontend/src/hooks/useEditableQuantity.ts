@@ -17,7 +17,7 @@ export const useEditableQuantity = (
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setText(e.target.value);
 
-        const parsed = parseInt(e.target.value, 10);
+        const parsed = parseFloat(e.target.value);
 
         if (!isNaN(parsed) && parsed >= min) {
             onCommit(parsed);
@@ -25,7 +25,7 @@ export const useEditableQuantity = (
     };
 
     const onBlur = (): number => {
-        const parsed = parseInt(text, 10);
+        const parsed = parseFloat(text);
         const next = !isNaN(parsed) && parsed >= min ? parsed : value;
 
         setText(String(next));

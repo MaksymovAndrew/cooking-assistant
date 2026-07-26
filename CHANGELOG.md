@@ -23,6 +23,9 @@ changelogs and the tags and now track everything here against one shared version
 ### Backend
 
 - Added: The ingredient catalog has been rebuilt from 22 items to 739, covering meat, fish, dairy, grains, spices, sauces, and more, each with calorie data and Russian/Ukrainian/Polish name translations ready for future use.
+- Changed: Ingredient units now follow the metric system (grams, kilograms, milliliters, liters, cloves, bunches, and more) instead of the old, partly imperial set.
+- Changed: Pantry and purchase quantities can now be fractional (e.g. 0.5 kg), not just whole numbers.
+- Removed: Old ingredients, recipes, menus, and pantry contents have been cleared to make room for the new catalog. Accounts, recipe types, and menu categories are unaffected.
 
 ## 3.7 - 2026-07-24
 

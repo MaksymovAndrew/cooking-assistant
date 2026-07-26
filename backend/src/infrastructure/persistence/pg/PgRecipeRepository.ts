@@ -9,7 +9,6 @@ import {
     updateRecipeInDb,
 } from "./PgRecipeRepository.mutations";
 import {
-    findAllRecipeIngredients,
     findAllRecipes,
     findRecipeByIdWithIngredients,
 } from "./PgRecipeRepository.reads";
@@ -116,10 +115,6 @@ export default class PgRecipeRepository implements RecipeRepository {
         } finally {
             client.release();
         }
-    }
-
-    async findAllIngredients(): Promise<unknown[]> {
-        return findAllRecipeIngredients(this.pool);
     }
 
     async getStats(): Promise<unknown> {

@@ -10,12 +10,14 @@ const INGREDIENTS: PantryIngredient[] = [
         ingredient_name: "Carrot",
         unit_name: "kg",
         quantity_person_ingradient: 2,
+        allergens: [],
     },
     {
         id: 2,
         ingredient_name: "Onion",
         unit_name: "kg",
         quantity_person_ingradient: 1,
+        allergens: [],
     },
 ];
 

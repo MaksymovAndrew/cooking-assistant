@@ -6,8 +6,26 @@ import { IngredientPicker } from "components/recipes/IngredientPicker";
 const SEARCH_PLACEHOLDER = "Search ingredients...";
 
 const INGREDIENTS = [
-    { id: 1, name: "Potato", unit_name: "g", allergens: null },
-    { id: 2, name: "Onion", unit_name: "g", allergens: null },
+    {
+        id: 1,
+        slug: "potato",
+        name: "Potato",
+        category: "vegetables",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 30,
+        calories_per_unit: null,
+    },
+    {
+        id: 2,
+        slug: "onion",
+        name: "Onion",
+        category: "vegetables",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 30,
+        calories_per_unit: null,
+    },
 ];
 
 describe("IngredientPicker", () => {

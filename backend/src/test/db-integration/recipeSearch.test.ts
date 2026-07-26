@@ -18,7 +18,7 @@ interface RecipeSearchRow {
     id: number;
     title: string;
     cooking_time: number | null;
-    ingredients: { id: number; name: string; allergens: string | null }[];
+    ingredients: { id: number; name: string; allergens: string[] }[];
 }
 
 // targets the hand-built SQL in PgRecipeRepository.search.ts (ILIKE/ANY filters, GROUP BY + COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
@@ -191,7 +191,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
     });
 
     it("should include each ingredient's allergens in the search results", async () => {
-        const glutenId = await createIngredient(pool, unitId, "Gluten");
+        const glutenId = await createIngredient(pool, unitId, ["gluten"]);
         const result = await pool.query<{ name: string }>(
             `SELECT name FROM ingredients WHERE id = $1`,
             [glutenId],
@@ -213,7 +213,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
                 ingredients: [
                     expect.objectContaining({
                         name: glutenName,
-                        allergens: "Gluten",
+                        allergens: ["gluten"],
                     }),
                 ],
             }),

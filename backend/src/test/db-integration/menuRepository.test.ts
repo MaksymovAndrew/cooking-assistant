@@ -156,10 +156,10 @@ describe("PgMenuRepository (real Postgres)", () => {
         ]);
     });
 
-    it("should collect distinct non-null allergens across every recipe of the menu", async () => {
-        const glutenId = await createIngredient(pool, unitId, "Gluten");
-        const dairyId = await createIngredient(pool, unitId, "Dairy");
-        const glutenAgainId = await createIngredient(pool, unitId, "Gluten");
+    it("should collect distinct allergens across every recipe of the menu", async () => {
+        const glutenId = await createIngredient(pool, unitId, ["gluten"]);
+        const dairyId = await createIngredient(pool, unitId, ["milk"]);
+        const glutenAgainId = await createIngredient(pool, unitId, ["gluten"]);
         const plainId = await createIngredient(pool, unitId);
         const makeRecipeUsing = async (ingredientIds: number[]) => {
             const recipe = Recipe.forCreation({
@@ -193,7 +193,7 @@ describe("PgMenuRepository (real Postgres)", () => {
             ownerId,
         )) as MenuDetail;
 
-        expect(detail.allergens).toEqual(["Dairy", "Gluten"]);
+        expect(detail.allergens).toEqual(["gluten", "milk"]);
     });
 
     it("should refuse to update or delete a menu owned by someone else", async () => {

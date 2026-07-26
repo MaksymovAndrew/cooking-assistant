@@ -3,6 +3,8 @@ import { Pool } from "pg";
 import { config } from "config/env";
 import { logger } from "config/logger";
 
+import { seedIngredientsFromCatalog } from "./seedIngredientsFromCatalog";
+
 // idempotent reference + sample data; safe to re-run (guards against existing rows)
 const seedUnitMeasurements = `
     INSERT INTO unit_measurement (unit_name, coefficient)
@@ -13,10 +15,16 @@ const seedUnitMeasurements = `
             ('kg', 1000),
             ('ml', 1),
             ('l', 1000),
-            ('teaspoon', 5),
-            ('tablespoon', 15),
-            ('cup', 250),
-            ('pcs', NULL)
+            ('tsp', 5),
+            ('tbsp', 15),
+            ('piece', NULL),
+            ('clove', NULL),
+            ('bunch', NULL),
+            ('sprig', NULL),
+            ('slice', NULL),
+            ('head', NULL),
+            ('can', NULL),
+            ('package', NULL)
     ) AS v (unit_name, coefficient)
     WHERE NOT EXISTS (
         SELECT 1 FROM unit_measurement m WHERE m.unit_name = v.unit_name
@@ -52,38 +60,6 @@ const seedMenuCategories = `
     );
 `;
 
-const seedIngredients = `
-    INSERT INTO ingredients (name, id_unit_measurement, allergens, days_to_expire, seasonality, storage_condition)
-    SELECT v.name, u.id, v.allergens, v.days_to_expire, v.seasonality, v.storage_condition
-    FROM (
-        VALUES
-            ('Potato', 'pcs', 'None', 30, 'All seasons', 'Dry place, room temperature'),
-            ('Carrot', 'g', 'None', 14, 'All seasons', 'Dry place, room temperature'),
-            ('Onion', 'pcs', 'None', 30, 'All seasons', 'Dry place, room temperature'),
-            ('Tomato', 'pcs', 'None', 7, 'Summer, Autumn', '+4 - +8°C'),
-            ('Cucumber', 'pcs', 'None', 7, 'Summer, Autumn', '+4 - +8°C'),
-            ('Water', 'ml', 'None', 365, 'All seasons', 'Room temperature'),
-            ('Tea', 'g', 'None', 730, 'All seasons', 'Dry place, room temperature'),
-            ('Lemon', 'pcs', 'None', 21, 'Winter, Spring', '+4 - +8°C'),
-            ('Basil', 'g', 'None', 7, 'Summer', '+4 - +8°C'),
-            ('Garlic', 'pcs', 'None', 60, 'All seasons', 'Dry place, room temperature'),
-            ('Mushrooms', 'g', 'None', 7, 'All seasons', '+4 - +8°C'),
-            ('Sour cream', 'ml', 'Dairy', 14, 'All seasons', '+4 - +8°C'),
-            ('Chicken fillet', 'g', 'Poultry', 2, 'All seasons', '+4 - +8°C'),
-            ('Milk', 'ml', 'Dairy', 7, 'All seasons', '+4 - +8°C'),
-            ('Honey', 'ml', 'None', 1095, 'All seasons', 'Room temperature'),
-            ('Flour', 'g', 'Gluten', 365, 'All seasons', 'Dry place, room temperature'),
-            ('Sugar', 'g', 'None', 1825, 'All seasons', 'Dry place, room temperature'),
-            ('Rice', 'g', 'None', 730, 'All seasons', 'Dry place, room temperature'),
-            ('Cheese', 'g', 'Dairy', 30, 'All seasons', '+4 - +8°C'),
-            ('Pepper', 'g', 'None', 1095, 'All seasons', 'Dry place, room temperature'),
-            ('Pasta', 'g', 'Gluten', 730, 'All seasons', 'Dry place, room temperature'),
-            ('Olive oil', 'ml', 'None', 730, 'All seasons', 'Dark place, room temperature')
-    ) AS v (name, unit, allergens, days_to_expire, seasonality, storage_condition)
-    JOIN unit_measurement u ON u.unit_name = v.unit
-    ON CONFLICT (name) DO NOTHING;
-`;
-
 export async function runSeed(): Promise<void> {
     const pool = new Pool(config.db);
 
@@ -92,7 +68,6 @@ export async function runSeed(): Promise<void> {
             { label: "unit_measurement", sql: seedUnitMeasurements },
             { label: "recipe_types", sql: seedRecipeTypes },
             { label: "menu_category", sql: seedMenuCategories },
-            { label: "ingredients", sql: seedIngredients },
         ];
 
         for (const step of steps) {
@@ -100,6 +75,13 @@ export async function runSeed(): Promise<void> {
 
             logger.info({ inserted: result.rowCount }, `Seeded ${step.label}`);
         }
+
+        const ingredientsAffected = await seedIngredientsFromCatalog(pool);
+
+        logger.info(
+            { affected: ingredientsAffected },
+            "Seeded ingredients from catalog",
+        );
     } finally {
         await pool.end();
     }

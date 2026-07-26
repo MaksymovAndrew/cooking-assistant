@@ -13,7 +13,7 @@ import { formatShortDate } from "utils/dateUtils";
 import { filterAllergens } from "utils/recipeAllergens";
 
 interface RecipeCardIngredient {
-    allergens: string | null;
+    allergens: string[];
 }
 
 interface RecipeCardRecipe {
@@ -39,7 +39,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     const { t } = useTranslation("recipes");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const hasAllergens =
-        filterAllergens((recipe.ingredients ?? []).map((i) => i.allergens))
+        filterAllergens((recipe.ingredients ?? []).flatMap((i) => i.allergens))
             .length > 0;
 
     return (

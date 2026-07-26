@@ -4,10 +4,12 @@ import type { PantryIngredientInput } from "domain/repositories/PantryRepository
 
 interface PantryIngredientRow {
     ingredient_id: number;
+    ingredient_slug: string;
     ingredient_name: string;
+    category: string;
     quantity_person_ingradient: number;
     unit_name: string;
-    allergens: string | null;
+    allergens: string[];
     days_to_expire: number | null;
     seasonality: string | null;
     storage_condition: string | null;
@@ -16,6 +18,17 @@ interface PantryIngredientRow {
 
 interface QuantityRow {
     quantity_person_ingradient: number;
+}
+
+// 2 decimal places
+const QUANTITY_ROUNDING_FACTOR = 100;
+
+// fractional quantities (kg, l) can leave a subtraction like 0.3 - 0.1 a hair off zero;
+// round before branching so that doesn't get mistaken for a real increase or decrease
+function roundQuantity(value: number): number {
+    return (
+        Math.round(value * QUANTITY_ROUNDING_FACTOR) / QUANTITY_ROUNDING_FACTOR
+    );
 }
 
 interface PurchaseHistoryRow {
@@ -33,7 +46,9 @@ export async function findPantryByUser(
     const result = await pool.query<PantryIngredientRow>(
         `SELECT
          pi.ingredient_id,
+         i.slug AS ingredient_slug,
          i.name AS ingredient_name,
+         i.category,
          pi.quantity_person_ingradient,
          um.unit_name,
          i.allergens,
@@ -71,8 +86,9 @@ export async function updatePantryQuantities(
             );
 
             const currentQuantity = rows[0]?.quantity_person_ingradient ?? 0;
-            const addedQuantity =
-                ingredient.quantity_person_ingradient - currentQuantity;
+            const addedQuantity = roundQuantity(
+                ingredient.quantity_person_ingradient - currentQuantity,
+            );
 
             if (addedQuantity > 0) {
                 // an increase is a purchase: upsert the pantry row and log it

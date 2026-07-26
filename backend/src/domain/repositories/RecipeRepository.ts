@@ -21,5 +21,4 @@ export interface RecipeRepository {
     ): Promise<PaginatedResult<unknown>>;
     findExistingIds(ids: number[]): Promise<number[]>;
     getStats(): Promise<unknown>;
-    findAllIngredients(): Promise<unknown[]>;
 }

@@ -31,11 +31,18 @@ export async function createUnitMeasurement(
 export async function createIngredient(
     pool: Pool,
     unitId: number,
-    allergens: string | null = null,
+    allergens: string[] = [],
 ): Promise<number> {
     const result = await pool.query<{ id: number }>(
-        `INSERT INTO ingredients (name, id_unit_measurement, allergens) VALUES ($1, $2, $3) RETURNING id`,
-        [unique("ingredient"), unitId, allergens],
+        `INSERT INTO ingredients (name, slug, category, id_unit_measurement, allergens)
+         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        [
+            unique("ingredient"),
+            unique("slug"),
+            "test_category",
+            unitId,
+            allergens,
+        ],
     );
 
     return result.rows[0].id;

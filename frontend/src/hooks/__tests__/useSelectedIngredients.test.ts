@@ -2,8 +2,26 @@ import { act, renderHook } from "@testing-library/react";
 
 import { useSelectedIngredients } from "hooks/useSelectedIngredients";
 
-const ING_A = { id: 1, name: "Potato", unit_name: "kg", allergens: null };
-const ING_B = { id: 2, name: "Carrot", unit_name: "g", allergens: null };
+const ING_A = {
+    id: 1,
+    slug: "potato",
+    name: "Potato",
+    category: "vegetables",
+    unit_name: "kg",
+    allergens: [],
+    days_to_expire: 30,
+    calories_per_unit: null,
+};
+const ING_B = {
+    id: 2,
+    slug: "carrot",
+    name: "Carrot",
+    category: "vegetables",
+    unit_name: "g",
+    allergens: [],
+    days_to_expire: 14,
+    calories_per_unit: null,
+};
 
 describe("useSelectedIngredients", () => {
     it("should start with empty selection", () => {

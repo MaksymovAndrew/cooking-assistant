@@ -51,33 +51,45 @@ const MENU_1: Menu = {
 
 const EXPIRED_INGREDIENT: UserIngredient = {
     ingredient_id: 1,
+    ingredient_slug: "milk",
     ingredient_name: "Milk",
+    category: "dairy",
     unit_name: "l",
     quantity_person_ingradient: 1,
     days_to_expire: 5,
+    allergens: ["milk"],
     purchase_date: daysFromNow(-10),
 };
 const SOON_INGREDIENT: UserIngredient = {
     ingredient_id: 2,
+    ingredient_slug: "eggs",
     ingredient_name: "Eggs",
-    unit_name: "pcs",
+    category: "eggs",
+    unit_name: "piece",
     quantity_person_ingradient: 6,
     days_to_expire: 5,
+    allergens: ["eggs"],
     purchase_date: daysFromNow(-3),
 };
 const FRESH_INGREDIENT: UserIngredient = {
     ingredient_id: 3,
+    ingredient_slug: "flour",
     ingredient_name: "Flour",
+    category: "flour_baking",
     unit_name: "kg",
     quantity_person_ingradient: 1,
     days_to_expire: 60,
+    allergens: ["gluten"],
     purchase_date: daysFromNow(0),
 };
 const NO_EXPIRY_DATA_INGREDIENT: UserIngredient = {
     ingredient_id: 4,
+    ingredient_slug: "salt",
     ingredient_name: "Salt",
+    category: "spices",
     unit_name: "kg",
     quantity_person_ingradient: 1,
+    allergens: [],
 };
 
 const setup = async (

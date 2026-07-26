@@ -35,6 +35,7 @@ describe("recipe routes", () => {
         const { app, deps } = buildTestApp();
         const createdRecipe = { id: 12, title: RECIPE_TITLE };
 
+        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.recipeRepository.create.mockResolvedValue(createdRecipe);
 
         const res = await request(app)
@@ -78,24 +79,11 @@ describe("recipe routes", () => {
         expect(res.body).toEqual(recipe);
     });
 
-    it("should return all known ingredients", async () => {
-        const { app, deps } = buildTestApp();
-        const ingredients = [{ id: 3, name: "tomato" }];
-
-        deps.recipeRepository.findAllIngredients.mockResolvedValue(ingredients);
-
-        const res = await request(app)
-            .get("/api/ingredients")
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual(ingredients);
-    });
-
     it("should update a recipe owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
         const updatedRecipe = { id: 12, title: RECIPE_TITLE };
 
+        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.recipeRepository.update.mockResolvedValue(updatedRecipe);
 
         const res = await request(app)
@@ -112,6 +100,7 @@ describe("recipe routes", () => {
     it("should return 404 when updating a recipe of another user", async () => {
         const { app, deps } = buildTestApp();
 
+        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.recipeRepository.update.mockResolvedValue(null);
 
         const res = await request(app)

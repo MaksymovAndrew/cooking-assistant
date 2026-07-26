@@ -10,7 +10,7 @@ const BASE_INGREDIENT: PantryIngredient = {
     ingredient_name: "Carrot",
     unit_name: "kg",
     quantity_person_ingradient: 3,
-    allergens: "None",
+    allergens: [],
     days_to_expire: null,
     purchase_date: undefined,
 };
@@ -33,10 +33,13 @@ describe("IngredientCard", () => {
         expect(screen.getByText("kg")).toBeInTheDocument();
     });
 
-    it("should render the allergens value as-is (the API sends a single string, not a list)", () => {
+    it("should render the allergens list joined by comma", () => {
         render(
             <IngredientCard
-                ingredient={{ ...BASE_INGREDIENT, allergens: "Dairy" }}
+                ingredient={{
+                    ...BASE_INGREDIENT,
+                    allergens: ["dairy", "gluten"],
+                }}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
                 onSaveQuantity={jest.fn()}
@@ -45,13 +48,13 @@ describe("IngredientCard", () => {
             />,
         );
 
-        expect(screen.getByText("Dairy")).toBeInTheDocument();
+        expect(screen.getByText("dairy, gluten")).toBeInTheDocument();
     });
 
     it("should show a dash when there are no allergens", () => {
         render(
             <IngredientCard
-                ingredient={{ ...BASE_INGREDIENT, allergens: null }}
+                ingredient={{ ...BASE_INGREDIENT, allergens: [] }}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
                 onSaveQuantity={jest.fn()}

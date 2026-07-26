@@ -16,14 +16,35 @@ import { makeTestStore, renderHookWithStore } from "test/store";
 jest.mock("api/client");
 
 const CATALOG: Ingredient[] = [
-    { id: 2, name: "Onion", unit_name: "g", allergens: null },
-    { id: 1, name: "Carrot", unit_name: "g", allergens: null },
+    {
+        id: 2,
+        slug: "onion",
+        name: "Onion",
+        category: "vegetables",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 30,
+        calories_per_unit: null,
+    },
+    {
+        id: 1,
+        slug: "carrot",
+        name: "Carrot",
+        category: "vegetables",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 14,
+        calories_per_unit: null,
+    },
 ];
 const OWNED: UserIngredient = {
     ingredient_id: 1,
+    ingredient_slug: "carrot",
     ingredient_name: "Carrot",
+    category: "vegetables",
     unit_name: "g",
     quantity_person_ingradient: 2,
+    allergens: [],
 };
 
 const setup = async (pantry: UserIngredient[] = [OWNED]) => {

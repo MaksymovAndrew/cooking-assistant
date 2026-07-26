@@ -25,6 +25,8 @@ interface MenuRecipeRow {
 
 interface MissingIngredientRow {
     recipe_id: number;
+    ingredient_id: number;
+    ingredient_slug: string;
     ingredient_name: string;
     needed_quantity: number;
     missing_quantity: number;
@@ -89,6 +91,8 @@ export async function findMenuByIdWithRecipes(
         const missingResult = await pool.query<MissingIngredientRow>(
             `SELECT
           ri.recipe_id,
+          i.id AS ingredient_id,
+          i.slug AS ingredient_slug,
           i.name AS ingredient_name,
           ri.quantity_recipe_ingredients AS needed_quantity,
           GREATEST(ri.quantity_recipe_ingredients - COALESCE(pi.quantity_person_ingradient, 0), 0) AS missing_quantity,
@@ -102,7 +106,7 @@ export async function findMenuByIdWithRecipes(
         LEFT JOIN unit_measurement u
           ON i.id_unit_measurement = u.id
         WHERE ri.recipe_id = ANY($2)
-        GROUP BY ri.recipe_id, i.name, ri.quantity_recipe_ingredients, pi.quantity_person_ingradient, u.unit_name, u.coefficient`,
+        GROUP BY ri.recipe_id, i.id, i.slug, i.name, ri.quantity_recipe_ingredients, pi.quantity_person_ingradient, u.unit_name, u.coefficient`,
             [personId, recipeIds],
         );
 
@@ -110,6 +114,8 @@ export async function findMenuByIdWithRecipes(
             const group = missingByRecipe.get(row.recipe_id) ?? [];
 
             group.push({
+                ingredient_id: row.ingredient_id,
+                ingredient_slug: row.ingredient_slug,
                 ingredient_name: row.ingredient_name,
                 needed_quantity: row.needed_quantity,
                 missing_quantity: row.missing_quantity,
@@ -125,19 +131,19 @@ export async function findMenuByIdWithRecipes(
         missingIngredients: missingByRecipe.get(recipe.recipe_id) ?? [],
     }));
 
-    const allergensResult = await pool.query<{ allergens: string }>(
-        `SELECT DISTINCT i.allergens
+    const allergensResult = await pool.query<{ allergen: string }>(
+        `SELECT DISTINCT unnest(i.allergens) AS allergen
       FROM menu_recipe mr
       JOIN recipe_ingredients ri ON ri.recipe_id = mr.recipe_id
       JOIN ingredients i ON i.id = ri.ingredient_id
-      WHERE mr.menu_id = $1 AND i.allergens IS NOT NULL
-      ORDER BY i.allergens`,
+      WHERE mr.menu_id = $1
+      ORDER BY allergen`,
         [id],
     );
 
     return {
         menu,
         recipes: recipesWithDetails,
-        allergens: allergensResult.rows.map((row) => row.allergens),
+        allergens: allergensResult.rows.map((row) => row.allergen),
     };
 }

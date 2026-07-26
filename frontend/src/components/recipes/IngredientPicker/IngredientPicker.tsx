@@ -7,6 +7,8 @@ import type { Ingredient } from "types/ingredient";
 import { AllergenDot } from "components/ui/AllergenDot";
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
 
+import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+
 import styles from "./IngredientPicker.module.scss";
 
 interface IngredientPickerProps {
@@ -34,7 +36,7 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
     const matches = trimmedQuery
         ? allIngredients
               .filter((ingredient) =>
-                  ingredient.name
+                  resolveIngredientName(ingredient)
                       .toLowerCase()
                       .includes(trimmedQuery.toLowerCase()),
               )
@@ -123,7 +125,9 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
                                                 }
                                             >
                                                 <HighlightedMatch
-                                                    text={ingredient.name}
+                                                    text={resolveIngredientName(
+                                                        ingredient,
+                                                    )}
                                                     query={trimmedQuery}
                                                 />
                                             </span>
@@ -134,7 +138,9 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
                                                     ]
                                                 }
                                             >
-                                                {ingredient.unit_name}
+                                                {resolveUnit(
+                                                    ingredient.unit_name,
+                                                )}
                                             </span>
                                             <AllergenDot
                                                 allergens={ingredient.allergens}

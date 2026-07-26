@@ -50,6 +50,7 @@ export const useHomeDashboard = () => {
                 return status && status.tone !== "ok"
                     ? {
                           ingredientId: ingredient.ingredient_id,
+                          slug: ingredient.ingredient_slug,
                           name: ingredient.ingredient_name,
                           status,
                       }

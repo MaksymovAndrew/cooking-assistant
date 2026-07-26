@@ -91,6 +91,7 @@ export interface UpdateRecipeRequest {
 
 export interface RecipeFormIngredient {
     id: number;
+    slug: string;
     name: string;
     quantity: number;
     unit_name: string;

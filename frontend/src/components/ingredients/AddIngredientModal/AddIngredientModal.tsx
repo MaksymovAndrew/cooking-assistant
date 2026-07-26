@@ -6,12 +6,13 @@ import type { Ingredient } from "types/ingredient";
 import type { PantryIngredient } from "types/userIngredient";
 
 import { BaseModal } from "components/modals/BaseModal";
-import { AllergenDot } from "components/ui/AllergenDot";
 import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
-import { HighlightedMatch } from "components/ui/HighlightedMatch";
+
+import { resolveIngredientName } from "utils/ingredientName";
 
 import styles from "./AddIngredientModal.module.scss";
+import { AddIngredientResult } from "./AddIngredientResult";
 
 interface AddIngredientModalProps {
     allIngredients: Ingredient[];
@@ -49,7 +50,7 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
               .filter(
                   (ingredient) =>
                       !selectedIngredients.includes(ingredient.id) &&
-                      ingredient.name
+                      resolveIngredientName(ingredient)
                           .toLowerCase()
                           .includes(trimmedQuery.toLowerCase()),
               )
@@ -90,39 +91,15 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
                             </li>
                         ) : (
                             matches.map((ingredient) => (
-                                <li key={ingredient.id}>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            onToggle(ingredient.id);
-                                            setQuery("");
-                                        }}
-                                        className={
-                                            styles[
-                                                "add-ingredient-modal__result"
-                                            ]
-                                        }
-                                    >
-                                        <span>
-                                            <HighlightedMatch
-                                                text={ingredient.name}
-                                                query={trimmedQuery}
-                                            />
-                                        </span>
-                                        <span
-                                            className={
-                                                styles[
-                                                    "add-ingredient-modal__result-unit"
-                                                ]
-                                            }
-                                        >
-                                            {ingredient.unit_name}
-                                        </span>
-                                        <AllergenDot
-                                            allergens={ingredient.allergens}
-                                        />
-                                    </button>
-                                </li>
+                                <AddIngredientResult
+                                    key={ingredient.id}
+                                    ingredient={ingredient}
+                                    query={trimmedQuery}
+                                    onSelect={(id) => {
+                                        onToggle(id);
+                                        setQuery("");
+                                    }}
+                                />
                             ))
                         )}
                     </ul>
@@ -139,7 +116,7 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
                                 onToggle(ingredient.id);
                             }}
                         >
-                            {ingredient.name}
+                            {resolveIngredientName(ingredient)}
                         </Chip>
                     ))}
                 </div>

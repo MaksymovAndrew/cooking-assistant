@@ -30,7 +30,7 @@ export const useUpdateRecipePage = () => {
     const [updateRecipe] = useUpdateRecipeMutation();
 
     const allIngredients = useMemo(
-        () => sortIngredientsByName(ingredients ?? [], "uk"),
+        () => sortIngredientsByName(ingredients ?? []),
         [ingredients],
     );
 
@@ -49,6 +49,7 @@ export const useUpdateRecipePage = () => {
             selectedTypeId: recipe.type_id,
             selectedIngredients: recipe.ingredients.map((i) => ({
                 id: i.id,
+                slug: i.slug,
                 name: i.name,
                 quantity: i.quantity_recipe_ingredients,
                 unit_name: i.unit_name,

@@ -11,6 +11,7 @@ import { Chip } from "components/ui/Chip";
 import { NumberInput } from "components/ui/NumberInput";
 
 import { getExpiryStatus } from "utils/expiry";
+import { resolvePantryIngredientName, resolveUnit } from "utils/ingredientName";
 
 import { getExpiryPresentation } from "./getExpiryPresentation";
 import styles from "./IngredientCard.module.scss";
@@ -41,6 +42,8 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
         ingredient.purchase_date,
     );
     const expiry = getExpiryPresentation(status, t);
+    const displayName = resolvePantryIngredientName(ingredient);
+    const displayUnit = resolveUnit(ingredient.unit_name);
     const quantity = useEditableQuantity(
         ingredient.quantity_person_ingradient,
         (value) => {
@@ -61,7 +64,7 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
         >
             <div className={styles["ingredient-card__header"]}>
                 <h3 className={styles["ingredient-card__name"]}>
-                    {ingredient.ingredient_name}
+                    {displayName}
                 </h3>
                 <Chip variant={expiry.variant} icon={expiry.icon}>
                     {expiry.label}
@@ -76,7 +79,7 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
                         onChange={quantity.onChange}
                         onBlur={quantity.onBlur}
                     />
-                    <span>{ingredient.unit_name}</span>
+                    <span>{displayUnit}</span>
                     <span className={styles["ingredient-card__editing-hint"]}>
                         {t("page.editModeActive")}
                     </span>
@@ -85,7 +88,7 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
                 <div className={styles["ingredient-card__quantity"]}>
                     {ingredient.quantity_person_ingradient}
                     <span className={styles["ingredient-card__unit"]}>
-                        {ingredient.unit_name}
+                        {displayUnit}
                     </span>
                 </div>
             )}

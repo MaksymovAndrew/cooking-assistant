@@ -44,6 +44,7 @@ const mockedThemeChange = jest.mocked(ThemeChangeConfirmModal);
 
 const INGREDIENT: PantryIngredient = {
     id: 9,
+    slug: "salt",
     ingredient_name: "Salt",
     unit_name: "g",
     quantity_person_ingradient: 100,

@@ -3,7 +3,9 @@ import userEvent from "@testing-library/user-event";
 
 import { SelectedIngredientsList } from "components/recipes/SelectedIngredientsList";
 
-const INGREDIENTS = [{ id: 1, name: "Potato", quantity: 3, unit_name: "g" }];
+const INGREDIENTS = [
+    { id: 1, slug: "potato", name: "Potato", quantity: 3, unit_name: "g" },
+];
 
 describe("SelectedIngredientsList", () => {
     it("should render ingredient name, quantity input and unit", () => {
@@ -18,7 +20,7 @@ describe("SelectedIngredientsList", () => {
 
         expect(screen.getByText("Potato")).toBeInTheDocument();
         expect(screen.getByRole("spinbutton")).toHaveValue(3);
-        expect(screen.getByText("g")).toBeInTheDocument();
+        expect(screen.getByText("gram")).toBeInTheDocument();
     });
 
     it("should call onQuantityChange with the parsed number when the quantity changes", async () => {

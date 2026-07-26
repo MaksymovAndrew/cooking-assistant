@@ -8,6 +8,7 @@ import { renderWithRouter } from "test/router";
 
 const ITEM: ExpiringIngredient = {
     ingredientId: 1,
+    slug: "milk",
     name: "Milk",
     status: { tone: "warning", days: 2 },
 };

@@ -13,6 +13,7 @@ import { IngredientsToolbar } from "components/ingredients/IngredientsToolbar";
 import { AppShell } from "components/layout/AppShell";
 
 import { getExpiryStatus } from "utils/expiry";
+import { resolvePantryIngredientName } from "utils/ingredientName";
 
 import styles from "./IngredientsPage.module.scss";
 
@@ -101,7 +102,7 @@ const IngredientsPage: React.FC = () => {
                                 type: MODAL_TYPE.ingredientHistory,
                                 ingredientId: ingredient.id,
                                 ingredientName:
-                                    ingredient.ingredient_name ?? "",
+                                    resolvePantryIngredientName(ingredient),
                             }),
                         );
                     }}

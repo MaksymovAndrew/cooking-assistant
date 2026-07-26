@@ -1,6 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { resolveAllergen } from "utils/ingredientName";
+
 import styles from "./RecipeDescriptionPanel.module.scss";
 
 interface RecipeDescriptionPanelProps {
@@ -52,7 +54,7 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
                                     styles["recipe-description-panel__allergen"]
                                 }
                             >
-                                {allergen}
+                                {resolveAllergen(allergen)}
                             </span>
                         ))}
                     </div>

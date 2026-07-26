@@ -1,5 +1,7 @@
 import React from "react";
 
+import { resolveAllergen } from "utils/ingredientName";
+
 import styles from "./AllergenDot.module.scss";
 
 interface AllergenDotProps {
@@ -12,6 +14,9 @@ export const AllergenDot: React.FC<AllergenDotProps> = ({ allergens }) => {
     }
 
     return (
-        <span title={allergens.join(", ")} className={styles["allergen-dot"]} />
+        <span
+            title={allergens.map(resolveAllergen).join(", ")}
+            className={styles["allergen-dot"]}
+        />
     );
 };

@@ -4,6 +4,7 @@ import { initReactI18next } from "react-i18next";
 import { logger } from "config/logger";
 
 import auth from "i18n/locales/en/auth.json";
+import catalog from "i18n/locales/en/catalog.json";
 import common from "i18n/locales/en/common.json";
 import home from "i18n/locales/en/home.json";
 import ingredients from "i18n/locales/en/ingredients.json";
@@ -29,6 +30,7 @@ i18n.use(initReactI18next)
                 news,
                 profile,
                 settings,
+                catalog,
             },
         },
         lng: "en",

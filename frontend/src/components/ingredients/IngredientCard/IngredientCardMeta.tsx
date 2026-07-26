@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { PantryIngredient } from "types/userIngredient";
 
 import { formatShortDate } from "utils/dateUtils";
+import { resolveAllergen } from "utils/ingredientName";
 
 import styles from "./IngredientCard.module.scss";
 
@@ -22,7 +23,7 @@ export const IngredientCardMeta: React.FC<IngredientCardMetaProps> = ({
                 <dt>{t("page.allergens")}</dt>
                 <dd>
                     {ingredient.allergens.length > 0
-                        ? ingredient.allergens.join(", ")
+                        ? ingredient.allergens.map(resolveAllergen).join(", ")
                         : "—"}
                 </dd>
             </div>

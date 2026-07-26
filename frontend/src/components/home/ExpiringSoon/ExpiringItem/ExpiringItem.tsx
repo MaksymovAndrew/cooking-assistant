@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import type { ExpiringIngredient } from "types/expiry";
 
+import { resolveIngredientName } from "utils/ingredientName";
+
 import styles from "./ExpiringItem.module.scss";
 
 interface ExpiringItemProps {
@@ -24,7 +26,9 @@ export const ExpiringItem: React.FC<ExpiringItemProps> = ({ item }) => {
 
     return (
         <div className={rowClass}>
-            <span className={styles["expiring-item__name"]}>{item.name}</span>
+            <span className={styles["expiring-item__name"]}>
+                {resolveIngredientName(item)}
+            </span>
             <span className={styles["expiring-item__badge"]}>{label}</span>
         </div>
     );

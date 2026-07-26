@@ -14,6 +14,7 @@ export interface UserIngredient {
 
 export interface PantryIngredient {
     id: number;
+    slug: string;
     name?: string;
     ingredient_name?: string;
     unit_name: string;

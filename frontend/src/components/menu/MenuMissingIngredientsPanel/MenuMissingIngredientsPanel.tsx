@@ -7,13 +7,14 @@ import { ROUTES } from "constants/routes";
 
 import { BasketAddMark } from "components/icons";
 
+import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
 import type { AggregatedIngredient } from "utils/menuUtils";
 
 import { MenuAllergens } from "./MenuAllergens";
 import styles from "./MenuMissingIngredientsPanel.module.scss";
 
 interface MenuMissingIngredientsPanelProps {
-    ingredients: Record<string, AggregatedIngredient>;
+    ingredients: Record<number, AggregatedIngredient>;
     allergens: string[];
 }
 
@@ -59,9 +60,12 @@ export const MenuMissingIngredientsPanel: React.FC<
                         }
                     >
                         {entries.map(
-                            ([name, { quantity, unit, sufficient }]) => (
+                            ([
+                                id,
+                                { slug, name, quantity, unit, sufficient },
+                            ]) => (
                                 <li
-                                    key={name}
+                                    key={id}
                                     className={[
                                         styles[
                                             "menu-missing-ingredients-panel__row"
@@ -103,7 +107,10 @@ export const MenuMissingIngredientsPanel: React.FC<
                                             ]
                                         }
                                     >
-                                        {name}
+                                        {resolveIngredientName({
+                                            slug,
+                                            name,
+                                        })}
                                     </span>
                                     <span
                                         className={
@@ -112,7 +119,7 @@ export const MenuMissingIngredientsPanel: React.FC<
                                             ]
                                         }
                                     >
-                                        {quantity} {unit}
+                                        {quantity} {resolveUnit(unit)}
                                     </span>
                                 </li>
                             ),

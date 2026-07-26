@@ -49,10 +49,12 @@ const SAMPLE: MenuDetails = {
             creation_date: "2024-01-01",
             missingIngredients: [
                 {
+                    ingredient_id: 7,
+                    ingredient_slug: "carrot",
                     ingredient_name: "Carrot",
                     needed_quantity: 2,
                     missing_quantity: 2,
-                    unit_name: "pcs",
+                    unit_name: "piece",
                 },
             ],
         },
@@ -101,7 +103,7 @@ describe("MenuDetailsPage", () => {
 
         expect(screen.getByText("Soup")).toBeInTheDocument();
         expect(screen.getByText("Carrot")).toBeInTheDocument();
-        expect(screen.getByText("2 pcs")).toBeInTheDocument();
+        expect(screen.getByText("2 piece")).toBeInTheDocument();
     });
 
     it("should show Edit and Delete buttons when current user is the menu owner", async () => {

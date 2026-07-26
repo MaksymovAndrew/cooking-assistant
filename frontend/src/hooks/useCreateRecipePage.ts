@@ -25,7 +25,7 @@ export const useCreateRecipePage = () => {
     const [createRecipe] = useCreateRecipeMutation();
 
     const allIngredients = useMemo(
-        () => sortIngredientsByName(ingredients ?? [], "uk"),
+        () => sortIngredientsByName(ingredients ?? []),
         [ingredients],
     );
 

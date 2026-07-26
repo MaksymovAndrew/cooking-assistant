@@ -1,6 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { resolveAllergen } from "utils/ingredientName";
+
 import styles from "./MenuMissingIngredientsPanel.module.scss";
 
 interface MenuAllergensProps {
@@ -48,7 +50,7 @@ export const MenuAllergens: React.FC<MenuAllergensProps> = ({ allergens }) => {
                             styles["menu-missing-ingredients-panel__allergen"]
                         }
                     >
-                        {allergen}
+                        {resolveAllergen(allergen)}
                     </span>
                 ))}
             </div>

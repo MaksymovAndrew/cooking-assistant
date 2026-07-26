@@ -8,6 +8,8 @@ import { closeModal } from "redux/slices/uiSlice";
 
 import { ConfirmModal } from "components/modals/ConfirmModal";
 
+import { resolvePantryIngredientName } from "utils/ingredientName";
+
 interface DeleteIngredientModalProps {
     modalId: string;
     ingredient: PantryIngredient;
@@ -34,7 +36,7 @@ export const DeleteIngredientModal = ({
         <ConfirmModal
             title={t("page.deleteTitle")}
             message={t("page.deleteConfirmMessage", {
-                name: ingredient.ingredient_name,
+                name: resolvePantryIngredientName(ingredient),
             })}
             confirmLabel={t("page.confirmButton")}
             cancelLabel={t("page.cancelButton")}

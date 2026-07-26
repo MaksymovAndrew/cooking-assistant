@@ -7,6 +7,7 @@ import { IngredientCard } from "components/ingredients/IngredientCard";
 
 const BASE_INGREDIENT: PantryIngredient = {
     id: 1,
+    slug: "carrot",
     ingredient_name: "Carrot",
     unit_name: "kg",
     quantity_person_ingradient: 3,
@@ -30,7 +31,7 @@ describe("IngredientCard", () => {
 
         expect(screen.getByText("Carrot")).toBeInTheDocument();
         expect(screen.getByText("3")).toBeInTheDocument();
-        expect(screen.getByText("kg")).toBeInTheDocument();
+        expect(screen.getByText("kilogram")).toBeInTheDocument();
     });
 
     it("should render the allergens list joined by comma", () => {
@@ -38,7 +39,7 @@ describe("IngredientCard", () => {
             <IngredientCard
                 ingredient={{
                     ...BASE_INGREDIENT,
-                    allergens: ["dairy", "gluten"],
+                    allergens: ["milk", "gluten"],
                 }}
                 isEditingQuantity={false}
                 onQuantityChange={jest.fn()}
@@ -48,7 +49,7 @@ describe("IngredientCard", () => {
             />,
         );
 
-        expect(screen.getByText("dairy, gluten")).toBeInTheDocument();
+        expect(screen.getByText("Milk, Gluten")).toBeInTheDocument();
     });
 
     it("should show a dash when there are no allergens", () => {

@@ -17,6 +17,7 @@ const MODAL: ActiveModal = { id: "modal-1", ...MODAL_INPUT };
 
 const PANTRY_INGREDIENT: PantryIngredient = {
     id: 9,
+    slug: "salt",
     ingredient_name: "Salt",
     unit_name: "g",
     quantity_person_ingradient: 100,

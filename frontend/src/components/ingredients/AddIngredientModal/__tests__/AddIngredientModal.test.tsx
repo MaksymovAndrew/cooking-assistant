@@ -31,6 +31,7 @@ const ALL_INGREDIENTS: Ingredient[] = [
 const OWNED: PantryIngredient[] = [
     {
         id: 2,
+        slug: "onion",
         ingredient_name: "Onion",
         unit_name: "g",
         quantity_person_ingradient: 1,

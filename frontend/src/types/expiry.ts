@@ -7,6 +7,7 @@ export interface ExpiryStatus {
 
 export interface ExpiringIngredient {
     ingredientId: number;
+    slug: string;
     name: string;
     status: ExpiryStatus;
 }

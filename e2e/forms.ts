@@ -2,6 +2,31 @@ import type { Locator, Page } from "@playwright/test";
 
 // shared create-recipe/create-menu form flows - four specs need them, and the returned select-option texts feed the filter assertions in search-filter.spec.ts
 
+// an ingredient option's accessible name is "<name> <unit>" (HighlightedMatch highlights the
+// matched substring wherever it occurs, so a plain exact-text match on that substring still
+// matches longer names built from it, e.g. "Tomato" inside "Tomato juice") - anchoring the query
+// at the start and requiring a known unit word right after it picks out only the exact ingredient
+const CATALOG_UNIT_WORDS = [
+    "g",
+    "kg",
+    "ml",
+    "l",
+    "tsp",
+    "tbsp",
+    "piece",
+    "clove",
+    "bunch",
+    "sprig",
+    "slice",
+    "head",
+    "can",
+    "package",
+];
+
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // types into a searchable-combobox picker, then clicks the resulting option
 export async function selectFromPicker(
     page: Page,
@@ -9,6 +34,21 @@ export async function selectFromPicker(
     query: string,
 ): Promise<void> {
     await searchBox.fill(query);
+
+    const unitPattern = CATALOG_UNIT_WORDS.join("|");
+    const exactIngredientOption = page.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(query)}\\s(${unitPattern})\\b`, "i"),
+    });
+
+    // ingredient options resolve through the unit anchor above; the recipe picker (no unit
+    // suffix) falls back to the original substring match, which stays unambiguous for the
+    // uniquely-generated recipe titles these specs use
+    if ((await exactIngredientOption.count()) === 1) {
+        await exactIngredientOption.click();
+
+        return;
+    }
+
     await page.getByRole("button", { name: query }).click();
 }
 

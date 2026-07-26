@@ -1,0 +1,290 @@
+{
+    "red_onion": {
+        "kcalPer100": 40,
+        "confidence": "sourced"
+    },
+    "cherry_tomato": {
+        "kcalPer100": 18,
+        "confidence": "sourced"
+    },
+    "peach": {
+        "kcalPer100": 39,
+        "confidence": "sourced"
+    },
+    "dragon_fruit": {
+        "kcalPer100": 50,
+        "confidence": "sourced"
+    },
+    "frozen_mixed_berries": {
+        "kcalPer100": 50,
+        "confidence": "sourced"
+    },
+    "mint": {
+        "kcalPer100": 44,
+        "confidence": "sourced"
+    },
+    "sage": {
+        "kcalPer100": 125,
+        "confidence": "estimated"
+    },
+    "oregano_fresh": {
+        "kcalPer100": 105,
+        "confidence": "estimated"
+    },
+    "tarragon": {
+        "kcalPer100": 117,
+        "confidence": "estimated"
+    },
+    "marjoram": {
+        "kcalPer100": 107,
+        "confidence": "estimated"
+    },
+    "bay_leaf_fresh": {
+        "kcalPer100": 124,
+        "confidence": "estimated"
+    },
+    "lovage": {
+        "kcalPer100": 35,
+        "confidence": "estimated"
+    },
+    "mushroom_porcini_dried": {
+        "kcalPer100": 300,
+        "confidence": "sourced"
+    },
+    "mushroom_truffle": {
+        "kcalPer100": 30,
+        "confidence": "sourced"
+    },
+    "mushroom_wood_ear": {
+        "kcalPer100": 300,
+        "confidence": "estimated"
+    },
+    "mushroom_morel_dried": {
+        "kcalPer100": 300,
+        "confidence": "estimated"
+    },
+    "prosciutto": {
+        "kcalPer100": 220,
+        "confidence": "sourced"
+    },
+    "pepperoni": {
+        "kcalPer100": 504,
+        "confidence": "sourced"
+    },
+    "chorizo": {
+        "kcalPer100": 455,
+        "confidence": "sourced"
+    },
+    "bone_marrow": {
+        "kcalPer100": 800,
+        "confidence": "sourced"
+    },
+    "creme_fraiche": {
+        "kcalPer100": 393,
+        "confidence": "sourced"
+    },
+    "oat_milk": {
+        "kcalPer100": 44,
+        "confidence": "sourced"
+    },
+    "cheese_gorgonzola": {
+        "kcalPer100": 357,
+        "confidence": "sourced"
+    },
+    "cheese_mascarpone": {
+        "kcalPer100": 437,
+        "confidence": "sourced"
+    },
+    "split_peas": {
+        "kcalPer100": 341,
+        "confidence": "sourced"
+    },
+    "pasta_rice_noodles": {
+        "kcalPer100": 364,
+        "confidence": "sourced"
+    },
+    "flour_almond": {
+        "kcalPer100": 590,
+        "confidence": "sourced"
+    },
+    "breadcrumbs": {
+        "kcalPer100": 395,
+        "confidence": "sourced"
+    },
+    "panko": {
+        "kcalPer100": 357,
+        "confidence": "sourced"
+    },
+    "pizza_dough": {
+        "kcalPer100": 290,
+        "confidence": "sourced"
+    },
+    "garam_masala": {
+        "kcalPer100": 380,
+        "confidence": "sourced"
+    },
+    "vanilla_pod": {
+        "kcalPer100": 288,
+        "confidence": "sourced"
+    },
+    "oyster_sauce": {
+        "kcalPer100": 51,
+        "confidence": "sourced"
+    },
+    "vanilla_sugar": {
+        "kcalPer100": 381,
+        "confidence": "sourced"
+    },
+    "cooking_sherry": {
+        "kcalPer100": 83,
+        "confidence": "sourced"
+    },
+    "vegetable_stock": {
+        "kcalPer100": 4,
+        "confidence": "sourced"
+    },
+    "sparkling_water": {
+        "kcalPer100": 0,
+        "confidence": "sourced"
+    },
+    "plantain": {
+        "kcalPer100": 122,
+        "confidence": "sourced"
+    },
+    "acai_berry": {
+        "kcalPer100": 70,
+        "confidence": "sourced"
+    },
+    "juniper_berry": {
+        "kcalPer100": 250,
+        "confidence": "estimated"
+    },
+    "sea_urchin": {
+        "kcalPer100": 40,
+        "confidence": "estimated"
+    },
+    "beef_oxtail": {
+        "kcalPer100": 240,
+        "confidence": "estimated"
+    },
+    "cheese_american": {
+        "kcalPer100": 337,
+        "confidence": "sourced"
+    },
+    "cheese_queso_fresco": {
+        "kcalPer100": 90,
+        "confidence": "sourced"
+    },
+    "cheese_queso_blanco": {
+        "kcalPer100": 310,
+        "confidence": "sourced"
+    },
+    "cheese_asiago": {
+        "kcalPer100": 357,
+        "confidence": "sourced"
+    },
+    "cheese_paneer": {
+        "kcalPer100": 321,
+        "confidence": "sourced"
+    },
+    "cheese_manchego": {
+        "kcalPer100": 423,
+        "confidence": "sourced"
+    },
+    "cheese_havarti": {
+        "kcalPer100": 371,
+        "confidence": "sourced"
+    },
+    "cheese_taleggio": {
+        "kcalPer100": 340,
+        "confidence": "estimated"
+    },
+    "farro": {
+        "kcalPer100": 355,
+        "confidence": "sourced"
+    },
+    "freekeh": {
+        "kcalPer100": 355,
+        "confidence": "estimated"
+    },
+    "flour_coconut": {
+        "kcalPer100": 443,
+        "confidence": "sourced"
+    },
+    "duck_fat": {
+        "kcalPer100": 882,
+        "confidence": "sourced"
+    },
+    "nutritional_yeast": {
+        "kcalPer100": 389,
+        "confidence": "sourced"
+    },
+    "zaatar": {
+        "kcalPer100": 375,
+        "confidence": "sourced"
+    },
+    "ras_el_hanout": {
+        "kcalPer100": 400,
+        "confidence": "sourced"
+    },
+    "asafoetida": {
+        "kcalPer100": 300,
+        "confidence": "estimated"
+    },
+    "sumac": {
+        "kcalPer100": 280,
+        "confidence": "estimated"
+    },
+    "five_spice_powder": {
+        "kcalPer100": 380,
+        "confidence": "estimated"
+    },
+    "herbes_de_provence": {
+        "kcalPer100": 330,
+        "confidence": "estimated"
+    },
+    "cajun_seasoning": {
+        "kcalPer100": 250,
+        "confidence": "estimated"
+    },
+    "berbere": {
+        "kcalPer100": 350,
+        "confidence": "estimated"
+    },
+    "old_bay_seasoning": {
+        "kcalPer100": 280,
+        "confidence": "estimated"
+    },
+    "harissa": {
+        "kcalPer100": 120,
+        "confidence": "estimated"
+    },
+    "chimichurri": {
+        "kcalPer100": 300,
+        "confidence": "estimated"
+    },
+    "adobo_sauce": {
+        "kcalPer100": 60,
+        "confidence": "estimated"
+    },
+    "duck_sauce": {
+        "kcalPer100": 220,
+        "confidence": "estimated"
+    },
+    "erythritol": {
+        "kcalPer100": 0,
+        "confidence": "sourced"
+    },
+    "monk_fruit_sweetener": {
+        "kcalPer100": 400,
+        "confidence": "sourced"
+    },
+    "canned_artichoke_hearts": {
+        "kcalPer100": 28,
+        "confidence": "sourced"
+    },
+    "cashew_milk": {
+        "kcalPer100": 10,
+        "confidence": "sourced"
+    }
+}

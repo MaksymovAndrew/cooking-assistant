@@ -1,6 +1,6 @@
 {
   "name": "cooking-assistant",
-  "version": "3.7.0",
+  "version": "3.8.0",
   "main": "src/index.ts",
   "engines": {
     "node": ">=22"
@@ -20,7 +20,8 @@
     "migrate:up": "tsx src/scripts/migrate.ts up",
     "migrate:down": "tsx src/scripts/migrate.ts down",
     "migrate:create": "node-pg-migrate create -j sql -m migrations",
-    "seed": "tsx src/scripts/seed.ts"
+    "seed": "tsx src/scripts/seed.ts",
+    "catalog:locales": "tsx src/scripts/catalog/generateCatalogLocales.ts"
   },
   "overrides": {
     "tsup": {

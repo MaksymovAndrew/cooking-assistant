@@ -20,6 +20,10 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Backend
+
+- Added: The ingredient catalog has been rebuilt from 22 items to 739, covering meat, fish, dairy, grains, spices, sauces, and more, each with calorie data and Russian/Ukrainian/Polish name translations ready for future use.
+
 ## 3.7 - 2026-07-24
 
 ### Backend

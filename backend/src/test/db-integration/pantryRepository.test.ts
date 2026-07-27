@@ -101,6 +101,25 @@ describe("PgPantryRepository (real Postgres)", () => {
         expect(history).toHaveLength(2);
     });
 
+    it("should persist an edit even when the delta rounds to zero", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+
+        await repository.addIngredients(userId, [
+            { id: ingredientId, quantity_person_ingradient: 5 },
+        ]);
+        // 5.001 - 5 rounds to 0.00, but the raw quantities genuinely differ
+        await repository.updateQuantities(userId, [
+            { id: ingredientId, quantity_person_ingradient: 5.001 },
+        ]);
+
+        const pantry = (await repository.findByUser(userId)) as PantryRow[];
+
+        expect(
+            pantry.find((row) => row.ingredient_id === ingredientId)
+                ?.quantity_person_ingradient,
+        ).toBeCloseTo(5.001);
+    });
+
     it("should delete both the pantry row and its purchase history when updateQuantities drops stock to zero", async () => {
         const ingredientId = await createIngredient(pool, unitId);
 

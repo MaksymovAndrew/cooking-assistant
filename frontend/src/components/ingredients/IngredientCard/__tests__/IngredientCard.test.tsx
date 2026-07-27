@@ -9,6 +9,7 @@ const BASE_INGREDIENT: PantryIngredient = {
     id: 1,
     slug: "carrot",
     ingredient_name: "Carrot",
+    category: "vegetables",
     unit_name: "kg",
     quantity_person_ingradient: 3,
     allergens: [],

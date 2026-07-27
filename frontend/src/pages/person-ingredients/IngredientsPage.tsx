@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import React from "react";
 
 import { useAppDispatch } from "redux/hooks";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { useIngredientCatalog } from "hooks/useIngredientCatalog";
+import { usePantryFilters } from "hooks/usePantryFilters";
 
 import { AddIngredientModal } from "components/ingredients/AddIngredientModal";
 import { IngredientGrid } from "components/ingredients/IngredientGrid";
@@ -12,59 +12,19 @@ import { IngredientsPageHeader } from "components/ingredients/IngredientsPageHea
 import { IngredientsToolbar } from "components/ingredients/IngredientsToolbar";
 import { AppShell } from "components/layout/AppShell";
 
-import { getExpiryStatus } from "utils/expiry";
 import { resolvePantryIngredientName } from "utils/ingredientName";
 
 import styles from "./IngredientsPage.module.scss";
 
-const isUrgent = (
-    daysToExpire: number | null | undefined,
-    purchaseDate: string | undefined,
-): boolean => {
-    const status = getExpiryStatus(daysToExpire, purchaseDate);
-
-    return status !== null && status.tone !== "ok";
-};
-
 const IngredientsPage: React.FC = () => {
-    const { t } = useTranslation("ingredients");
     const dispatch = useAppDispatch();
     const catalog = useIngredientCatalog();
-    const [query, setQuery] = useState("");
-    const [expiringSoonOnly, setExpiringSoonOnly] = useState(false);
-
-    const expiringSoonCount = useMemo(
-        () =>
-            catalog.personIngredients.filter((ingredient) =>
-                isUrgent(ingredient.days_to_expire, ingredient.purchase_date),
-            ).length,
-        [catalog.personIngredients],
-    );
-
-    // while editing, filter over the in-flight draft quantities so the inputs reflect what the user just typed rather than the stale cache
-    const sourceIngredients = catalog.isEditingQuantity
-        ? catalog.updatedIngredients
-        : catalog.personIngredients;
-
-    const visibleIngredients = sourceIngredients.filter((ingredient) => {
-        const matchesQuery = (ingredient.ingredient_name ?? "")
-            .toLowerCase()
-            .includes(query.trim().toLowerCase());
-
-        if (!matchesQuery) {
-            return false;
-        }
-
-        return (
-            !expiringSoonOnly ||
-            isUrgent(ingredient.days_to_expire, ingredient.purchase_date)
-        );
+    const filters = usePantryFilters({
+        personIngredients: catalog.personIngredients,
+        sourceIngredients: catalog.isEditingQuantity
+            ? catalog.updatedIngredients
+            : catalog.personIngredients,
     });
-
-    const emptyMessage =
-        catalog.personIngredients.length === 0
-            ? t("page.noIngredients")
-            : t("page.noSearchResults");
 
     return (
         <AppShell>
@@ -79,18 +39,21 @@ const IngredientsPage: React.FC = () => {
                 />
 
                 <IngredientsToolbar
-                    query={query}
-                    onQueryChange={setQuery}
-                    expiringSoonCount={expiringSoonCount}
-                    expiringSoonOnly={expiringSoonOnly}
+                    query={filters.query}
+                    onQueryChange={filters.setQuery}
+                    expiringSoonCount={filters.expiringSoonCount}
+                    expiringSoonOnly={filters.expiringSoonOnly}
                     onToggleExpiringSoon={() => {
-                        setExpiringSoonOnly((prev) => !prev);
+                        filters.setExpiringSoonOnly((prev) => !prev);
                     }}
+                    categories={filters.categories}
+                    categoryFilter={filters.categoryFilter}
+                    onCategoryFilterChange={filters.setCategoryFilter}
                 />
 
                 <IngredientGrid
-                    ingredients={visibleIngredients}
-                    emptyMessage={emptyMessage}
+                    ingredients={filters.visibleIngredients}
+                    emptyMessage={filters.emptyMessage}
                     isEditingQuantity={catalog.isEditingQuantity}
                     onQuantityChange={catalog.handleQuantityChange}
                     onSaveQuantity={(id) => {

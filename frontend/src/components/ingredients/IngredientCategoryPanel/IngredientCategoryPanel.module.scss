@@ -1,0 +1,66 @@
+@use "styles/abstracts" as *;
+
+.category-panel {
+    &__categories {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        list-style: none;
+        padding-inline-start: 0;
+    }
+
+    &__category {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+        padding: var(--s-3) var(--s-4);
+        border: none;
+        border-top: 1px solid var(--border);
+        background: none;
+        color: var(--text);
+        cursor: pointer;
+        text-align: left;
+        font:
+            500 14px Inter,
+            sans-serif;
+
+        &:first-child {
+            border-top: none;
+        }
+
+        @include on-hover {
+            background: var(--brand-subtle);
+        }
+    }
+
+    &__category-count {
+        flex: none;
+        color: var(--text-muted);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+    }
+
+    &__back {
+        display: flex;
+        flex: none;
+        align-items: center;
+        gap: var(--s-2);
+        padding: var(--s-3) var(--s-4);
+        border: none;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface-2);
+        color: var(--text);
+        cursor: pointer;
+        text-align: left;
+        font:
+            600 13px Inter,
+            sans-serif;
+
+        @include on-hover {
+            background: var(--brand-subtle);
+        }
+    }
+}

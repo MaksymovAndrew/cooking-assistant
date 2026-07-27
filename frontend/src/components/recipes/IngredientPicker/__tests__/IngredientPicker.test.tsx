@@ -26,6 +26,16 @@ const INGREDIENTS = [
         days_to_expire: 30,
         calories_per_unit: null,
     },
+    {
+        id: 3,
+        slug: "salmon",
+        name: "Salmon",
+        category: "fish",
+        unit_name: "g",
+        allergens: ["fish"],
+        days_to_expire: 2,
+        calories_per_unit: null,
+    },
 ];
 
 describe("IngredientPicker", () => {
@@ -145,5 +155,59 @@ describe("IngredientPicker", () => {
         await userEvent.click(screen.getByRole("button", { name: "Clear" }));
 
         expect(input).toHaveValue("");
+    });
+
+    it("should browse ingredients by category when the search box is focused without typing", async () => {
+        render(
+            <IngredientPicker
+                allIngredients={INGREDIENTS}
+                selectedIds={[]}
+                label="Ingredients"
+                onToggle={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByPlaceholderText(SEARCH_PLACEHOLDER));
+
+        expect(
+            screen.getByRole("button", { name: /^Vegetables/ }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: /^Fish/ }),
+        ).toBeInTheDocument();
+    });
+
+    it("should show a category's ingredients after clicking it, then go back to the category list", async () => {
+        render(
+            <IngredientPicker
+                allIngredients={INGREDIENTS}
+                selectedIds={[]}
+                label="Ingredients"
+                onToggle={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByPlaceholderText(SEARCH_PLACEHOLDER));
+        await userEvent.click(
+            screen.getByRole("button", { name: /^Vegetables/ }),
+        );
+
+        expect(
+            screen.getByRole("button", { name: /onion/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: /potato/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole("button", { name: /salmon/i }),
+        ).not.toBeInTheDocument();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: /Back to categories/i }),
+        );
+
+        expect(
+            screen.getByRole("button", { name: /^Vegetables/ }),
+        ).toBeInTheDocument();
     });
 });

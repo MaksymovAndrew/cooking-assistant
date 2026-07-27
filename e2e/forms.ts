@@ -5,12 +5,14 @@ import type { Locator, Page } from "@playwright/test";
 // an ingredient option's accessible name is "<name> <unit>" (HighlightedMatch highlights the
 // matched substring wherever it occurs, so a plain exact-text match on that substring still
 // matches longer names built from it, e.g. "Tomato" inside "Tomato juice") - anchoring the query
-// at the start and requiring a known unit word right after it picks out only the exact ingredient
+// at the start and requiring a known unit word right after it picks out only the exact ingredient.
+// These are the *displayed* unit words (catalog.json's "en" translations), not the raw catalog
+// unit keys - g/kg/ml/l render as "gram"/"kilogram"/"milliliter"/"liter".
 const CATALOG_UNIT_WORDS = [
-    "g",
-    "kg",
-    "ml",
-    "l",
+    "gram",
+    "kilogram",
+    "milliliter",
+    "liter",
     "tsp",
     "tbsp",
     "piece",

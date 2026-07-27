@@ -1,3 +1,5 @@
+import type { CatalogIngredientRef } from "types/catalogIngredientRef";
+
 export interface UserIngredient {
     ingredient_id: number;
     ingredient_slug: string;
@@ -12,11 +14,11 @@ export interface UserIngredient {
     purchase_date?: string;
 }
 
-export interface PantryIngredient {
+export interface PantryIngredient extends CatalogIngredientRef {
     id: number;
-    slug: string;
     name?: string;
     ingredient_name?: string;
+    category: string;
     unit_name: string;
     quantity_person_ingradient: number;
     storage_condition?: string;

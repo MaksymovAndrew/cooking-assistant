@@ -89,6 +89,9 @@ export async function updatePantryQuantities(
             const addedQuantity = roundQuantity(
                 ingredient.quantity_person_ingradient - currentQuantity,
             );
+            // addedQuantity can round to 0 while the raw quantities still differ (e.g. 5 -> 5.001)
+            const hasRawChange =
+                ingredient.quantity_person_ingradient !== currentQuantity;
 
             if (addedQuantity > 0) {
                 // an increase is a purchase: upsert the pantry row and log it
@@ -109,7 +112,7 @@ export async function updatePantryQuantities(
            VALUES ($1, $2, $3, NOW())`,
                     [userId, ingredient.id, addedQuantity],
                 );
-            } else if (addedQuantity < 0) {
+            } else if (addedQuantity < 0 || hasRawChange) {
                 if (ingredient.quantity_person_ingradient === 0) {
                     await client.query(
                         `DELETE FROM ingredient_purchases

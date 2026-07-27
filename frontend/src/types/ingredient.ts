@@ -1,6 +1,7 @@
-export interface Ingredient {
+import type { CatalogIngredientRef } from "types/catalogIngredientRef";
+
+export interface Ingredient extends CatalogIngredientRef {
     id: number;
-    slug: string;
     name: string;
     category: string;
     unit_name: string;

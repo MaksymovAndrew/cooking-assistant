@@ -1,9 +1,12 @@
 import { Search } from "lucide-react";
-import React, { useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { Ingredient } from "types/ingredient";
 import type { PantryIngredient } from "types/userIngredient";
+
+import { useCategorizedIngredients } from "hooks/useCategorizedIngredients";
+import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
@@ -11,8 +14,8 @@ import { Chip } from "components/ui/Chip";
 
 import { resolveIngredientName } from "utils/ingredientName";
 
+import { AddIngredientDropdown } from "./AddIngredientDropdown";
 import styles from "./AddIngredientModal.module.scss";
-import { AddIngredientResult } from "./AddIngredientResult";
 
 interface AddIngredientModalProps {
     allIngredients: Ingredient[];
@@ -35,27 +38,54 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
     onClose,
 }) => {
     const { t } = useTranslation("ingredients");
-    const [query, setQuery] = useState("");
-    const trimmedQuery = query.trim();
+    const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    const availableIngredients = allIngredients.filter(
-        (ingredient) =>
-            !personIngredients.some((item) => item.id === ingredient.id),
+    const ownedIds = useMemo(
+        () => new Set(personIngredients.map((item) => item.id)),
+        [personIngredients],
     );
-    const newlySelected = availableIngredients.filter((ingredient) =>
-        selectedIngredients.includes(ingredient.id),
+    const selectedIds = useMemo(
+        () => new Set(selectedIngredients),
+        [selectedIngredients],
     );
-    const matches = trimmedQuery
-        ? availableIngredients
-              .filter(
-                  (ingredient) =>
-                      !selectedIngredients.includes(ingredient.id) &&
-                      resolveIngredientName(ingredient)
-                          .toLowerCase()
-                          .includes(trimmedQuery.toLowerCase()),
-              )
-              .slice(0, MAX_RESULTS)
-        : [];
+    const availableIngredients = useMemo(
+        () =>
+            allIngredients.filter(
+                (ingredient) =>
+                    !ownedIds.has(ingredient.id) &&
+                    !selectedIds.has(ingredient.id),
+            ),
+        [allIngredients, ownedIds, selectedIds],
+    );
+    const newlySelected = useMemo(
+        () =>
+            allIngredients.filter((ingredient) =>
+                selectedIds.has(ingredient.id),
+            ),
+        [allIngredients, selectedIds],
+    );
+    const {
+        query,
+        setQuery,
+        trimmedQuery,
+        activeCategory,
+        setActiveCategory,
+        categories,
+        visibleIngredients,
+    } = useCategorizedIngredients({
+        ingredients: availableIngredients,
+        maxSearchResults: MAX_RESULTS,
+    });
+
+    usePopoverDismiss(containerRef, isOpen, () => {
+        setIsOpen(false);
+    });
+
+    const handleSelect = (ingredient: Ingredient) => {
+        onToggle(ingredient.id);
+        setQuery("");
+    };
 
     return (
         <BaseModal
@@ -63,72 +93,62 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
             title={t("addIngredientModal.title")}
             onClose={onClose}
         >
-            <div className={styles["add-ingredient-modal__search"]}>
-                <Search size={SEARCH_ICON_SIZE} aria-hidden="true" />
-                <input
-                    type="text"
-                    autoComplete="off"
-                    value={query}
-                    onChange={(e) => {
-                        setQuery(e.target.value);
-                    }}
-                    placeholder={t("addIngredientModal.searchPlaceholder")}
-                    className={styles["add-ingredient-modal__input"]}
-                />
-            </div>
-            {trimmedQuery && (
-                <div
-                    className={styles["add-ingredient-modal__results-wrapper"]}
-                >
-                    <ul className={styles["add-ingredient-modal__results"]}>
-                        {matches.length === 0 ? (
-                            <li
-                                className={
-                                    styles["add-ingredient-modal__empty"]
-                                }
+            <div ref={containerRef}>
+                <div className={styles["add-ingredient-modal__search"]}>
+                    <Search size={SEARCH_ICON_SIZE} aria-hidden="true" />
+                    <input
+                        type="text"
+                        autoComplete="off"
+                        value={query}
+                        onFocus={() => {
+                            setIsOpen(true);
+                        }}
+                        onChange={(e) => {
+                            setQuery(e.target.value);
+                            setIsOpen(true);
+                        }}
+                        placeholder={t("addIngredientModal.searchPlaceholder")}
+                        className={styles["add-ingredient-modal__input"]}
+                    />
+                </div>
+                {isOpen && (
+                    <AddIngredientDropdown
+                        trimmedQuery={trimmedQuery}
+                        activeCategory={activeCategory}
+                        categories={categories}
+                        visibleIngredients={visibleIngredients}
+                        onSelectCategory={setActiveCategory}
+                        onBack={() => {
+                            setActiveCategory(null);
+                        }}
+                        onSelect={handleSelect}
+                    />
+                )}
+
+                {newlySelected.length > 0 && (
+                    <div className={styles["add-ingredient-modal__selected"]}>
+                        {newlySelected.map((ingredient) => (
+                            <Chip
+                                key={ingredient.id}
+                                removable
+                                onRemove={() => {
+                                    onToggle(ingredient.id);
+                                }}
                             >
-                                {t("addIngredientModal.noMatches")}
-                            </li>
-                        ) : (
-                            matches.map((ingredient) => (
-                                <AddIngredientResult
-                                    key={ingredient.id}
-                                    ingredient={ingredient}
-                                    query={trimmedQuery}
-                                    onSelect={(id) => {
-                                        onToggle(id);
-                                        setQuery("");
-                                    }}
-                                />
-                            ))
-                        )}
-                    </ul>
-                </div>
-            )}
+                                {resolveIngredientName(ingredient)}
+                            </Chip>
+                        ))}
+                    </div>
+                )}
 
-            {newlySelected.length > 0 && (
-                <div className={styles["add-ingredient-modal__selected"]}>
-                    {newlySelected.map((ingredient) => (
-                        <Chip
-                            key={ingredient.id}
-                            removable
-                            onRemove={() => {
-                                onToggle(ingredient.id);
-                            }}
-                        >
-                            {resolveIngredientName(ingredient)}
-                        </Chip>
-                    ))}
+                <div className={styles["add-ingredient-modal__footer"]}>
+                    <Button type="button" variant="secondary" onClick={onClose}>
+                        {t("addIngredientModal.cancelButton")}
+                    </Button>
+                    <Button type="button" onClick={onSave}>
+                        {t("addIngredientModal.saveButton")}
+                    </Button>
                 </div>
-            )}
-
-            <div className={styles["add-ingredient-modal__footer"]}>
-                <Button type="button" variant="secondary" onClick={onClose}>
-                    {t("addIngredientModal.cancelButton")}
-                </Button>
-                <Button type="button" onClick={onSave}>
-                    {t("addIngredientModal.saveButton")}
-                </Button>
             </div>
         </BaseModal>
     );

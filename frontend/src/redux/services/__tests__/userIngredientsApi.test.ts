@@ -45,6 +45,7 @@ const QUANTITIES: UpdateQuantitiesRequest = {
         {
             id: 1,
             slug: "salt",
+            category: "spices",
             unit_name: "g",
             quantity_person_ingradient: 3,
             allergens: [],

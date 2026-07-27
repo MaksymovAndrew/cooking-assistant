@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 
 import { IngredientsToolbar } from "components/ingredients/IngredientsToolbar";
 
+const NO_CATEGORIES: never[] = [];
+
 describe("IngredientsToolbar", () => {
     it("should call onQueryChange as the search box is typed into", async () => {
         const onQueryChange = jest.fn();
@@ -14,6 +16,9 @@ describe("IngredientsToolbar", () => {
                 expiringSoonCount={0}
                 expiringSoonOnly={false}
                 onToggleExpiringSoon={jest.fn()}
+                categories={NO_CATEGORIES}
+                categoryFilter={null}
+                onCategoryFilterChange={jest.fn()}
             />,
         );
 
@@ -33,6 +38,9 @@ describe("IngredientsToolbar", () => {
                 expiringSoonCount={0}
                 expiringSoonOnly={false}
                 onToggleExpiringSoon={jest.fn()}
+                categories={NO_CATEGORIES}
+                categoryFilter={null}
+                onCategoryFilterChange={jest.fn()}
             />,
         );
 
@@ -51,6 +59,9 @@ describe("IngredientsToolbar", () => {
                 expiringSoonCount={2}
                 expiringSoonOnly={false}
                 onToggleExpiringSoon={onToggleExpiringSoon}
+                categories={NO_CATEGORIES}
+                categoryFilter={null}
+                onCategoryFilterChange={jest.fn()}
             />,
         );
 
@@ -71,11 +82,59 @@ describe("IngredientsToolbar", () => {
                 expiringSoonCount={2}
                 expiringSoonOnly={true}
                 onToggleExpiringSoon={jest.fn()}
+                categories={NO_CATEGORIES}
+                categoryFilter={null}
+                onCategoryFilterChange={jest.fn()}
             />,
         );
 
         expect(
             screen.getByRole("button", { name: "Expiring soon (2)" }),
         ).toHaveClass("ingredients-toolbar__filter-pill--active");
+    });
+
+    it("should not show the category select when there are no categories", () => {
+        render(
+            <IngredientsToolbar
+                query=""
+                onQueryChange={jest.fn()}
+                expiringSoonCount={0}
+                expiringSoonOnly={false}
+                onToggleExpiringSoon={jest.fn()}
+                categories={NO_CATEGORIES}
+                categoryFilter={null}
+                onCategoryFilterChange={jest.fn()}
+            />,
+        );
+
+        expect(
+            screen.queryByRole("combobox", { name: "Filter by category" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should call onCategoryFilterChange when a category is selected", async () => {
+        const onCategoryFilterChange = jest.fn();
+
+        render(
+            <IngredientsToolbar
+                query=""
+                onQueryChange={jest.fn()}
+                expiringSoonCount={0}
+                expiringSoonOnly={false}
+                onToggleExpiringSoon={jest.fn()}
+                categories={[
+                    { key: "vegetables", label: "Vegetables", count: 2 },
+                ]}
+                categoryFilter={null}
+                onCategoryFilterChange={onCategoryFilterChange}
+            />,
+        );
+
+        await userEvent.selectOptions(
+            screen.getByRole("combobox", { name: "Filter by category" }),
+            "vegetables",
+        );
+
+        expect(onCategoryFilterChange).toHaveBeenCalledWith("vegetables");
     });
 });

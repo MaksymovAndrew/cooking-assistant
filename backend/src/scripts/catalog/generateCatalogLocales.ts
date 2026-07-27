@@ -6,6 +6,7 @@ import { join } from "path";
 
 import { ALLERGEN_SLUGS, CATEGORY_KEYS, UNIT_KEYS } from "./catalog.types";
 import rawCatalogData from "./catalogData.json";
+import { parseCatalogData } from "./catalogDataSchema";
 import {
     ALLERGEN_NAMES,
     CATEGORY_NAMES,
@@ -13,9 +14,8 @@ import {
     LOCALES,
     UNIT_NAMES,
 } from "./catalogVocabulary";
-import type { CatalogDataEntry } from "./resolveCatalogEntry";
 
-const catalogData = rawCatalogData as CatalogDataEntry[];
+const catalogData = parseCatalogData(rawCatalogData);
 
 function capitalize(value: string): string {
     return value.length > 0 ? value[0].toUpperCase() + value.slice(1) : value;

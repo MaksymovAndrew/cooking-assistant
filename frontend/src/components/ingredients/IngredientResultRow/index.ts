@@ -1,0 +1,1 @@
+export { IngredientResultRow } from "./IngredientResultRow";

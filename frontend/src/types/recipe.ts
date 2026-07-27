@@ -1,3 +1,5 @@
+import type { CatalogIngredientRef } from "types/catalogIngredientRef";
+
 export interface RecipeListItem {
     id: number;
     title: string;
@@ -24,9 +26,8 @@ export interface RecipeSearchResultItem extends RecipeListItem {
     ingredients: RecipeSearchIngredient[];
 }
 
-export interface RecipeDetailIngredient {
+export interface RecipeDetailIngredient extends CatalogIngredientRef {
     id: number;
-    slug: string;
     name: string;
     category: string;
     quantity_recipe_ingredients: number;
@@ -89,9 +90,8 @@ export interface UpdateRecipeRequest {
     ingredients: UpdateRecipeIngredient[];
 }
 
-export interface RecipeFormIngredient {
+export interface RecipeFormIngredient extends CatalogIngredientRef {
     id: number;
-    slug: string;
     name: string;
     quantity: number;
     unit_name: string;

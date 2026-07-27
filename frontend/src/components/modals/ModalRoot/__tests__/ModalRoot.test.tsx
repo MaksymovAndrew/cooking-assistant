@@ -46,6 +46,7 @@ const INGREDIENT: PantryIngredient = {
     id: 9,
     slug: "salt",
     ingredient_name: "Salt",
+    category: "spices",
     unit_name: "g",
     quantity_person_ingradient: 100,
     allergens: [],

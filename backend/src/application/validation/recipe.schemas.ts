@@ -8,10 +8,13 @@ import {
     nonEmptyStringSchema,
     numberSchema,
     offsetSchema,
-    optionalStringSchema,
     positiveIntegerSchema,
     toNumber,
 } from "./common.schemas";
+
+// the ingredient catalog has hundreds of entries - a search box match can surface many ids,
+// so cap how many this filter accepts rather than building an unbounded ANY($1::int[]) list
+const MAX_INGREDIENT_FILTER_IDS = 20;
 
 // both quantity field names are accepted and unified into quantity_recipe_ingredients
 const recipeIngredientSchema = z
@@ -53,7 +56,12 @@ export const updateRecipeSchema = createRecipeSchema.omit({
 });
 
 export const recipeFiltersSchema = z.object({
-    ingredient_name: optionalStringSchema("Ingredient name"),
+    ingredient_ids: idListStringSchema("Ingredient IDs")
+        .refine(
+            (value) => value.split(",").length <= MAX_INGREDIENT_FILTER_IDS,
+            `Ingredient IDs must be at most ${MAX_INGREDIENT_FILTER_IDS} items`,
+        )
+        .optional(),
     type_ids: idListStringSchema("Type IDs").optional(),
     start_date: z
         .string({ invalid_type_error: "Start date must be a string" })

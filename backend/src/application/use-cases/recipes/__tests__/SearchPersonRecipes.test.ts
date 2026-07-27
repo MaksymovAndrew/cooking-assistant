@@ -14,7 +14,7 @@ function setup() {
 describe("SearchPersonRecipes", () => {
     it("should search person recipes with filters and return the repository result", async () => {
         const { useCase, recipeRepository } = setup();
-        const filters = { ingredient_name: "tomato", type_ids: "2" };
+        const filters = { ingredient_ids: "3", type_ids: "2" };
         const paginated = {
             items: [{ id: 1, title: "Tomato soup" }],
             total: 1,

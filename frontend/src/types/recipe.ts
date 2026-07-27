@@ -52,7 +52,7 @@ export interface RecipeDetails {
 }
 
 export interface RecipeFilterParams {
-    ingredient_name: string;
+    ingredient_ids?: string;
     type_ids?: string;
     start_date?: string;
     end_date?: string;

@@ -1,12 +1,15 @@
 import { act } from "@testing-library/react";
 import type * as ReactRouterDom from "react-router-dom";
 
+import { PAGE_SIZE } from "constants/pagination";
 import type { CurrentUser } from "types/auth";
+import type { Ingredient } from "types/ingredient";
 import type { RecipeListItem } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
 
 import { authApi } from "redux/services/authApi";
+import { ingredientsApi } from "redux/services/ingredientsApi";
 import { recipesApi } from "redux/services/recipesApi";
 import { recipeTypesApi } from "redux/services/recipeTypesApi";
 
@@ -17,9 +20,14 @@ import { buildRecipeFilterParams } from "utils/recipeFilterParams";
 import { byOffset, makeAxiosError, mockedGet } from "test/apiClientMock";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
+const mockSearchParams = jest.fn((): [URLSearchParams, jest.Mock] => [
+    new URLSearchParams(),
+    jest.fn(),
+]);
+
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual<typeof ReactRouterDom>("react-router-dom"),
-    useSearchParams: () => [new URLSearchParams(), jest.fn()],
+    useSearchParams: () => mockSearchParams(),
 }));
 jest.mock("api/client");
 
@@ -49,6 +57,16 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: null,
     avatar: null,
 };
+const MILK: Ingredient = {
+    id: 3,
+    slug: "milk",
+    name: "Milk",
+    category: "dairy",
+    unit_name: "ml",
+    allergens: ["milk"],
+    days_to_expire: 7,
+    calories_per_unit: null,
+};
 
 // matches the default filters slice state + no URL ingredient search, so the pre-seeded cache key lines up with what the hook itself requests
 const DEFAULT_PARAMS = buildRecipeFilterParams(
@@ -60,7 +78,7 @@ const DEFAULT_PARAMS = buildRecipeFilterParams(
         maxCookingTime: "",
         sortOrder: "asc",
     },
-    null,
+    undefined,
 );
 
 const FAILURE_MESSAGE = "Recipes failed";
@@ -86,12 +104,23 @@ const setup = async (
 };
 
 describe("useRecipeListView", () => {
+    afterEach(() => {
+        mockSearchParams.mockReset();
+        mockSearchParams.mockImplementation(() => [
+            new URLSearchParams(),
+            jest.fn(),
+        ]);
+    });
+
     it("should flatten the loaded page, report the total and keep the server order", async () => {
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
                 return Promise.resolve({ data: CURRENT_USER });
             }
             if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -120,6 +149,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 return Promise.resolve({ data: { items: [], total: 0 } });
             }
@@ -138,6 +170,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: CURRENT_USER });
             }
             if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -159,6 +194,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: CURRENT_USER });
             }
             if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byPerson) {
@@ -185,6 +223,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: CURRENT_USER });
             }
             if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -225,6 +266,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
 
             return Promise.reject(FAILURE);
         });
@@ -262,6 +306,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 if (byOffset(config) === 0) {
                     return Promise.resolve({
@@ -294,6 +341,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.recipeTypes.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 return Promise.resolve({ data: { items: [], total: 0 } });
             }
@@ -320,5 +370,113 @@ describe("useRecipeListView", () => {
             maxCookingTime: "60",
             sortOrder: "desc",
         });
+    });
+
+    it("should send matched ingredient_ids in the request, not the raw search text", async () => {
+        mockSearchParams.mockImplementation(() => [
+            new URLSearchParams({ ingredient_name: "milk" }),
+            jest.fn(),
+        ]);
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
+            if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [MILK] });
+            }
+            if (url === API_ROUTES.recipes.byFilters) {
+                return Promise.resolve({
+                    data: { items: [RECIPE_1], total: 1 },
+                });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const store = makeTestStore();
+        const paramsWithMatchedId = buildRecipeFilterParams(
+            {
+                selectedTypes: [],
+                startDate: "",
+                endDate: "",
+                minCookingTime: "",
+                maxCookingTime: "",
+                sortOrder: "asc",
+            },
+            String(MILK.id),
+        );
+
+        await Promise.all([
+            store.dispatch(
+                recipesApi.endpoints.getRecipesByFilters.initiate(
+                    paramsWithMatchedId,
+                ),
+            ),
+            store.dispatch(
+                recipeTypesApi.endpoints.getRecipeTypes.initiate(null),
+            ),
+            store.dispatch(authApi.endpoints.getMe.initiate(null)),
+            store.dispatch(
+                ingredientsApi.endpoints.getIngredients.initiate(null),
+            ),
+        ]);
+
+        const { result } = renderHookWithStore(
+            () => useRecipeListView(RECIPE_SOURCE.all),
+            store,
+        );
+
+        expect(result.current.recipes).toEqual([RECIPE_1]);
+        // exact match, not objectContaining - proves ingredient_ids was sent instead of ingredient_name, not alongside it
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byFilters, {
+            params: { ...paramsWithMatchedId, limit: PAGE_SIZE, offset: 0 },
+        });
+    });
+
+    it("should skip the request and report noRecipes when the search text matches no ingredient", async () => {
+        mockSearchParams.mockImplementation(() => [
+            new URLSearchParams({ ingredient_name: "zzz" }),
+            jest.fn(),
+        ]);
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
+            if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [MILK] });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const store = makeTestStore();
+
+        await Promise.all([
+            store.dispatch(
+                recipeTypesApi.endpoints.getRecipeTypes.initiate(null),
+            ),
+            store.dispatch(authApi.endpoints.getMe.initiate(null)),
+            store.dispatch(
+                ingredientsApi.endpoints.getIngredients.initiate(null),
+            ),
+        ]);
+
+        const { result } = renderHookWithStore(
+            () => useRecipeListView(RECIPE_SOURCE.all),
+            store,
+        );
+
+        expect(result.current.noRecipes).toBe(true);
+        expect(result.current.recipes).toEqual([]);
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.recipes.byFilters,
+            expect.anything(),
+        );
     });
 });

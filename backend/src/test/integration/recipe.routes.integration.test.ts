@@ -136,7 +136,7 @@ describe("recipe routes", () => {
         deps.recipeRepository.search.mockResolvedValue(paginated);
 
         const res = await request(app)
-            .get("/api/recipes-by-filters?ingredient_name=tomato")
+            .get("/api/recipes-by-filters?ingredient_ids=3")
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
@@ -174,6 +174,22 @@ describe("recipe routes", () => {
         expect(deps.recipeRepository.search).not.toHaveBeenCalled();
     });
 
+    it("should return a 400 error body for too many ingredient_ids", async () => {
+        const { app, deps } = buildTestApp();
+        const tooMany = Array.from({ length: 21 }, (_, i) => i + 1).join(",");
+
+        const res = await request(app)
+            .get(`/api/recipes-by-filters?ingredient_ids=${tooMany}`)
+            .set("Cookie", authCookie());
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({
+            error: "ingredient_ids: Ingredient IDs must be at most 20 items",
+            code: ERROR_CODES.VALIDATION_ERROR,
+        });
+        expect(deps.recipeRepository.search).not.toHaveBeenCalled();
+    });
+
     it("should return a 400 error body for an out-of-range limit", async () => {
         const { app, deps } = buildTestApp();
 
@@ -199,13 +215,13 @@ describe("recipe routes", () => {
         deps.recipeRepository.searchByPerson.mockResolvedValue(paginated);
 
         const res = await request(app)
-            .get("/api/recipes-filters-person?ingredient_name=tomato")
+            .get("/api/recipes-filters-person?ingredient_ids=3")
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual(paginated);
         expect(deps.recipeRepository.searchByPerson).toHaveBeenCalledWith(7, {
-            ingredient_name: "tomato",
+            ingredient_ids: "3",
         });
     });
 

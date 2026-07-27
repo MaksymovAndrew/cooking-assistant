@@ -17,7 +17,7 @@ import { makeTestStore, renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
 
-const RECENT_RECIPES_PARAMS = { ingredient_name: "" };
+const RECENT_RECIPES_PARAMS = {};
 
 // local YYYY-MM-DD string for "n days from now" - avoids UTC round-trip drift
 const daysFromNow = (days: number): string => {

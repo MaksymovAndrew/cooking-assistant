@@ -10,6 +10,7 @@ import {
     flattenPages,
     getPaginatedTotal,
 } from "redux/services/infiniteQueryHelpers";
+import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 import {
     useGetRecipesByFiltersInfiniteQuery,
     useGetRecipesByPersonInfiniteQuery,
@@ -30,6 +31,7 @@ import { getQueryErrorMessage } from "utils/queryError";
 import {
     buildRecipeFilterParams,
     hasActiveRecipeFilters,
+    matchIngredientIds,
 } from "utils/recipeFilterParams";
 
 export interface RecipeFilterState extends RecipeFiltersState {
@@ -43,6 +45,19 @@ export const RECIPE_SOURCE = {
 
 export type RecipeSource = (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE];
 
+// text was typed but it matches no catalog ingredient - the caller skips the request entirely
+// rather than sending one that would just come back empty
+const hasUnmatchedIngredientSearch = (
+    ingredientName: string | null,
+    matchedIngredientIds: string | undefined,
+): boolean => Boolean(ingredientName?.trim()) && !matchedIngredientIds;
+
+const isRecipeListEmpty = (
+    hasUnmatchedSearch: boolean,
+    isSuccess: boolean,
+    hasLoadedRecipes: boolean,
+): boolean => hasUnmatchedSearch || (isSuccess && !hasLoadedRecipes);
+
 // view model for the two recipe lists: filters come from the store + the URL search, pages come from RTK Query's infiniteQuery, sorting is server-side
 export const useRecipeListView = (source: RecipeSource) => {
     const dispatch = useAppDispatch();
@@ -51,17 +66,28 @@ export const useRecipeListView = (source: RecipeSource) => {
     const ingredientName = searchParams.get(SEARCH_PARAM_INGREDIENT_NAME);
     const filters = { ...recipeFilters, ingredientName };
 
+    // the catalog is already cached by the ingredient picker/pantry pages - this is a read, not a new request
+    const { data: catalog = [] } = useGetIngredientsQuery(null);
+    const matchedIngredientIds = useMemo(
+        () => matchIngredientIds(ingredientName, catalog),
+        [ingredientName, catalog],
+    );
+    const hasUnmatchedSearch = hasUnmatchedIngredientSearch(
+        ingredientName,
+        matchedIngredientIds,
+    );
+
     const params = useMemo(
-        () => buildRecipeFilterParams(recipeFilters, ingredientName),
-        [recipeFilters, ingredientName],
+        () => buildRecipeFilterParams(recipeFilters, matchedIngredientIds),
+        [recipeFilters, matchedIngredientIds],
     );
 
     const isPerson = source === RECIPE_SOURCE.person;
     const byFilters = useGetRecipesByFiltersInfiniteQuery(params, {
-        skip: isPerson,
+        skip: isPerson || hasUnmatchedSearch,
     });
     const byPerson = useGetRecipesByPersonInfiniteQuery(params, {
-        skip: !isPerson,
+        skip: !isPerson || hasUnmatchedSearch,
     });
     const active = isPerson ? byPerson : byFilters;
 
@@ -113,7 +139,11 @@ export const useRecipeListView = (source: RecipeSource) => {
         recipes,
         currentUserId: currentUser?.id ?? null,
         error: !hasLoadedRecipes ? errorMessage : null,
-        noRecipes: active.isSuccess && !hasLoadedRecipes,
+        noRecipes: isRecipeListEmpty(
+            hasUnmatchedSearch,
+            active.isSuccess,
+            hasLoadedRecipes,
+        ),
         descriptions,
         typesHeader,
         total,

@@ -19,7 +19,7 @@ export const PROFILE_TAB = {
 
 export type ProfileTab = (typeof PROFILE_TAB)[keyof typeof PROFILE_TAB];
 
-const RECIPES_PARAMS = { ingredient_name: "" };
+const RECIPES_PARAMS = {};
 const MENUS_PARAMS = { menu_name: "" };
 
 export const useProfilePage = () => {

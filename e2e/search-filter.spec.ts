@@ -67,7 +67,17 @@ test.afterAll(async () => {
 test("should filter My Recipes by ingredient name", async () => {
     await page.goto("/my-recipes");
     await page.getByPlaceholder("Search by ingredient").fill("Tomato");
-    await page.getByPlaceholder("Search by ingredient").press("Enter");
+
+    // the search box stays a text field/URL param, but it must resolve to ingredient_ids before hitting the API
+    const [request] = await Promise.all([
+        page.waitForRequest((req) =>
+            req.url().includes("/api/recipes-filters-person"),
+        ),
+        page.getByPlaceholder("Search by ingredient").press("Enter"),
+    ]);
+
+    expect(request.url()).toContain("ingredient_ids=");
+    expect(request.url()).not.toContain("ingredient_name=");
 
     await expect(page.getByText(recipeATitle)).toBeVisible();
     await expect(page.getByText(recipeBTitle)).toBeHidden();

@@ -32,7 +32,7 @@ const LIST: RecipeSearchResultItem[] = [
     },
 ];
 const PAGE = { items: LIST, total: LIST.length };
-const FILTERS: RecipeFilterParams = { ingredient_name: "", sort_order: "asc" };
+const FILTERS: RecipeFilterParams = { sort_order: "asc" };
 const CREATE: CreateRecipeRequest = {
     title: "Soup",
     content: "boil",

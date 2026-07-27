@@ -15,7 +15,7 @@ describe("SearchRecipes", () => {
     it("should search recipes with filters and return the repository result", async () => {
         const { useCase, recipeRepository } = setup();
         const filters = {
-            ingredient_name: "tomato",
+            ingredient_ids: "3,4",
             type_ids: "1,2",
             min_cooking_time: "10",
             sort_order: "asc",
@@ -30,7 +30,7 @@ describe("SearchRecipes", () => {
         const result = await useCase.execute(filters);
 
         expect(recipeRepository.search).toHaveBeenCalledWith({
-            ingredient_name: "tomato",
+            ingredient_ids: "3,4",
             type_ids: "1,2",
             min_cooking_time: 10,
             sort_order: "asc",
@@ -60,6 +60,37 @@ describe("SearchRecipes", () => {
         expect(error).toBeAppError(
             ValidationError,
             "type_ids: Type IDs must be a comma-separated list of IDs",
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when ingredient_ids is not an id list", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute({ ingredient_ids: "abc" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            "ingredient_ids: Ingredient IDs must be a comma-separated list of IDs",
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when ingredient_ids has too many items", async () => {
+        const { useCase, recipeRepository } = setup();
+        const tooMany = Array.from({ length: 21 }, (_, i) => i + 1).join(",");
+
+        const error = await catchError(
+            useCase.execute({ ingredient_ids: tooMany }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            "ingredient_ids: Ingredient IDs must be at most 20 items",
             400,
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();

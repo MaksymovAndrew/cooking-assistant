@@ -42,7 +42,7 @@ function applyRecipeFilters(
     let query = baseQuery;
     let paramIndex = startIndex;
     const {
-        ingredient_name,
+        ingredient_ids,
         type_ids,
         start_date,
         end_date,
@@ -50,9 +50,14 @@ function applyRecipeFilters(
         max_cooking_time,
     } = filters;
 
-    if (ingredient_name) {
-        query += ` AND i.name ILIKE $${paramIndex}`;
-        params.push(`%${ingredient_name}%`);
+    if (ingredient_ids) {
+        // a separate EXISTS subquery (not a WHERE on the outer join) so a match doesn't strip
+        // the recipe's other ingredients out of the json_agg below - OR semantics: any id matches
+        query += ` AND EXISTS (
+        SELECT 1 FROM recipe_ingredients ri2
+        WHERE ri2.recipe_id = r.id AND ri2.ingredient_id = ANY($${paramIndex}::int[])
+      )`;
+        params.push(ingredient_ids.split(",").map(Number));
         paramIndex++;
     }
 

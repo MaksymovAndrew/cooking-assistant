@@ -27,6 +27,8 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: Pantry and purchase quantities can now be fractional (e.g. 0.5 kg), not just whole numbers.
 - Removed: Old ingredients, recipes, menus, and pantry contents have been cleared to make room for the new catalog. Accounts, recipe types, and menu categories are unaffected.
 
+- Fixed: Searching recipes by ingredient could show a recipe with only the matching ingredient listed instead of its full ingredient list.
+
 ### Frontend
 
 - Added: The ingredient search in recipes and your pantry now lets you browse by category (Vegetables, Meat, Fish, and so on) instead of only searching by name - handy now that the catalog has hundreds of items.

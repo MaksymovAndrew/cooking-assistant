@@ -72,4 +72,17 @@ describe("SearchPersonRecipes", () => {
         );
         expect(recipeRepository.searchByPerson).not.toHaveBeenCalled();
     });
+
+    it("should pass through the in_pantry filter as a boolean", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.searchByPerson.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { in_pantry: "true" });
+
+        expect(recipeRepository.searchByPerson).toHaveBeenCalledWith(7, {
+            in_pantry: true,
+        });
+    });
 });

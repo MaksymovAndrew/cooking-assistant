@@ -14,6 +14,7 @@ const EMPTY: RecipeFiltersState = {
     minCookingTime: "",
     maxCookingTime: "",
     sortOrder: "asc",
+    inPantry: false,
 };
 
 const CATALOG: Ingredient[] = [
@@ -65,6 +66,7 @@ describe("buildRecipeFilterParams", () => {
             end_date: undefined,
             min_cooking_time: undefined,
             max_cooking_time: undefined,
+            in_pantry: undefined,
         });
     });
 
@@ -76,6 +78,7 @@ describe("buildRecipeFilterParams", () => {
             minCookingTime: "10",
             maxCookingTime: "90",
             sortOrder: "desc",
+            inPantry: true,
         };
 
         expect(buildRecipeFilterParams(filters, "1,2")).toEqual({
@@ -86,6 +89,7 @@ describe("buildRecipeFilterParams", () => {
             end_date: "2024-02-01",
             min_cooking_time: "10",
             max_cooking_time: "90",
+            in_pantry: true,
         });
     });
 });

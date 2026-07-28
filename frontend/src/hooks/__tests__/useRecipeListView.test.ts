@@ -77,6 +77,7 @@ const DEFAULT_PARAMS = buildRecipeFilterParams(
         minCookingTime: "",
         maxCookingTime: "",
         sortOrder: "asc",
+        inPantry: false,
     },
     undefined,
 );
@@ -123,6 +124,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 return Promise.resolve({
                     data: { items: [RECIPE_1, RECIPE_2], total: 2 },
@@ -152,6 +156,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 return Promise.resolve({ data: { items: [], total: 0 } });
             }
@@ -173,6 +180,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -197,6 +207,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byPerson) {
@@ -226,6 +239,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -269,6 +285,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
 
             return Promise.reject(FAILURE);
         });
@@ -309,6 +328,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 if (byOffset(config) === 0) {
                     return Promise.resolve({
@@ -342,6 +364,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -387,6 +412,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [MILK] });
             }
+            if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 return Promise.resolve({
                     data: { items: [RECIPE_1], total: 1 },
@@ -405,6 +433,7 @@ describe("useRecipeListView", () => {
                 minCookingTime: "",
                 maxCookingTime: "",
                 sortOrder: "asc",
+                inPantry: false,
             },
             String(MILK.id),
         );
@@ -450,6 +479,9 @@ describe("useRecipeListView", () => {
             }
             if (url === API_ROUTES.ingredients.list) {
                 return Promise.resolve({ data: [MILK] });
+            }
+            if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
             }
 
             return Promise.reject(new Error(`unexpected GET ${url}`));

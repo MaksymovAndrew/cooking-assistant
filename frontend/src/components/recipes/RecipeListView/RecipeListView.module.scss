@@ -31,6 +31,17 @@
             sans-serif;
     }
 
+    &__pantry-banner {
+        margin: 0 0 var(--s-4);
+        padding: var(--s-3) var(--s-4);
+        border-radius: var(--r-sm);
+        background: var(--brand-subtle);
+        color: var(--brand);
+        font:
+            600 13px Inter,
+            sans-serif;
+    }
+
     &__grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

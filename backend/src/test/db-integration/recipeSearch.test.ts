@@ -86,7 +86,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             ingredient_ids: String(ingredient.id),
         };
 
-        const result = await repository.search(filters);
+        const result = await repository.search(ownerId, filters);
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: recipeId }),
@@ -103,7 +103,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             10,
         );
 
-        const result = await repository.search({
+        const result = await repository.search(ownerId, {
             ingredient_ids: `${first.id},${second.id}`,
         });
 
@@ -121,7 +121,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             10,
         );
 
-        const result = (await repository.search({
+        const result = (await repository.search(ownerId, {
             ingredient_ids: String(matched.id),
         })) as { items: RecipeSearchRow[] };
         const recipe = result.items.find((item) => item.id === recipeId);
@@ -146,7 +146,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             type_ids: String(typeId),
         };
 
-        const result = await repository.search(filters);
+        const result = await repository.search(ownerId, filters);
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: recipeId }),
@@ -178,7 +178,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             max_cooking_time: 60,
         };
 
-        const result = await repository.search(filters);
+        const result = await repository.search(ownerId, filters);
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: inRangeId }),
@@ -198,11 +198,11 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             50,
         );
 
-        const ascending = (await repository.search({
+        const ascending = (await repository.search(ownerId, {
             ingredient_ids: String(ingredient.id),
             sort_order: "asc",
         })) as { items: RecipeSearchRow[] };
-        const descending = (await repository.search({
+        const descending = (await repository.search(ownerId, {
             ingredient_ids: String(ingredient.id),
             sort_order: "desc",
         })) as { items: RecipeSearchRow[] };
@@ -222,12 +222,12 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             );
         }
 
-        const firstPage = await repository.search({
+        const firstPage = await repository.search(ownerId, {
             ingredient_ids: String(ingredient.id),
             limit: 2,
             offset: 0,
         });
-        const secondPage = await repository.search({
+        const secondPage = await repository.search(ownerId, {
             ingredient_ids: String(ingredient.id),
             limit: 2,
             offset: 2,
@@ -252,7 +252,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             10,
         );
 
-        const search = (await repository.search({
+        const search = (await repository.search(ownerId, {
             ingredient_ids: String(glutenId),
         })) as { items: RecipeSearchRow[] };
 
@@ -292,6 +292,130 @@ describe("PgRecipeRepository search (real Postgres)", () => {
 
         const result = await repository.searchByPerson(ownerId, {
             ingredient_ids: String(ingredient.id),
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: ownRecipeId }),
+        ]);
+    });
+
+    it("should only return recipes whose every ingredient is in the requester's pantry when in_pantry is set", async () => {
+        const requesterId = await createPerson(pool);
+        const inPantry = await createNamedIngredient();
+        const notInPantry = await createNamedIngredient();
+        const fullyStockedId = await createRecipeWithIngredients(
+            "Fully stocked recipe",
+            [inPantry.id],
+            10,
+        );
+
+        await createRecipeWithIngredients(
+            "Missing an ingredient recipe",
+            [inPantry.id, notInPantry.id],
+            10,
+        );
+        await pool.query(
+            `INSERT INTO person_ingredients (person_id, ingredient_id) VALUES ($1, $2)`,
+            [requesterId, inPantry.id],
+        );
+
+        const result = await repository.search(requesterId, {
+            ingredient_ids: `${inPantry.id},${notInPantry.id}`,
+            in_pantry: true,
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: fullyStockedId }),
+        ]);
+    });
+
+    it("should exclude a recipe when the pantry has the ingredient but not enough of it", async () => {
+        const requesterId = await createPerson(pool);
+        const ingredient = await createNamedIngredient();
+        const recipe = Recipe.forCreation({
+            title: "Needs half a kilo recipe",
+            content: "Quantity fixture.",
+            person_id: ownerId,
+            cooking_time: 10,
+            ingredients: [
+                { id: ingredient.id, quantity_recipe_ingredients: 0.5 },
+            ],
+        });
+        const created = (await repository.create(recipe)) as { id: number };
+
+        await pool.query(
+            `INSERT INTO person_ingredients (person_id, ingredient_id, quantity_person_ingradient) VALUES ($1, $2, $3)`,
+            [requesterId, ingredient.id, 0.2],
+        );
+
+        const shortOnStock = await repository.search(requesterId, {
+            ingredient_ids: String(ingredient.id),
+            in_pantry: true,
+        });
+
+        expect(
+            shortOnStock.items.some(
+                (item) => (item as { id: number }).id === created.id,
+            ),
+        ).toBe(false);
+
+        await pool.query(
+            `UPDATE person_ingredients SET quantity_person_ingradient = $1 WHERE person_id = $2 AND ingredient_id = $3`,
+            [0.5, requesterId, ingredient.id],
+        );
+
+        const fullyStocked = await repository.search(requesterId, {
+            ingredient_ids: String(ingredient.id),
+            in_pantry: true,
+        });
+
+        expect(fullyStocked.items).toEqual([
+            expect.objectContaining({ id: created.id }),
+        ]);
+    });
+
+    it("should not match a recipe with no ingredients when in_pantry is set", async () => {
+        const requesterId = await createPerson(pool);
+
+        // Recipe.forCreation enforces non-empty ingredients, so insert directly to
+        // reach the edge case the second EXISTS in the SQL filter guards against
+        const created = await pool.query<{ id: number }>(
+            `INSERT INTO recipes (title, content, person_id, cooking_time) VALUES ($1, $2, $3, $4) RETURNING id`,
+            [
+                "Ingredient-less recipe",
+                "Should never pass an all-ingredients-in-pantry check.",
+                ownerId,
+                10,
+            ],
+        );
+
+        const result = await repository.search(requesterId, {
+            in_pantry: true,
+        });
+
+        expect(
+            result.items.some(
+                (item) => (item as { id: number }).id === created.rows[0].id,
+            ),
+        ).toBe(false);
+    });
+
+    it("should keep the in_pantry filter scoped to the requesting person in searchByPerson", async () => {
+        const inPantry = await createNamedIngredient();
+        const ownRecipeId = await createRecipeWithIngredients(
+            "Own fully stocked recipe",
+            [inPantry.id],
+            10,
+        );
+
+        await pool.query(
+            `INSERT INTO person_ingredients (person_id, ingredient_id) VALUES ($1, $2)`,
+            [ownerId, inPantry.id],
+        );
+
+        const result = await repository.searchByPerson(ownerId, {
+            ingredient_ids: String(inPantry.id),
+            in_pantry: true,
         });
 
         expect(result.items).toEqual([

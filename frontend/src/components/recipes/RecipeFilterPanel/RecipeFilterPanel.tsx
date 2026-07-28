@@ -21,6 +21,7 @@ export interface RecipeFilterPanelProps {
     setMinCookingTime: (time: string) => void;
     setMaxCookingTime: (time: string) => void;
     setSortOrder: (order: string) => void;
+    setInPantry: (value: boolean) => void;
     types: RecipeTypeSummary[];
     searchPlaceholder: string;
     total: number;
@@ -34,6 +35,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
     setMinCookingTime,
     setMaxCookingTime,
     setSortOrder,
+    setInPantry,
     types,
     searchPlaceholder,
     total,
@@ -46,7 +48,8 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
         filters.selectedTypes.length +
         (filters.minCookingTime ? 1 : 0) +
         (filters.maxCookingTime ? 1 : 0) +
-        (filters.sortOrder !== RECIPE_DEFAULT_SORT_ORDER ? 1 : 0);
+        (filters.sortOrder !== RECIPE_DEFAULT_SORT_ORDER ? 1 : 0) +
+        (filters.inPantry ? 1 : 0);
 
     const closePopover = () => {
         setIsOpen(false);
@@ -88,6 +91,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
                     setMinCookingTime={setMinCookingTime}
                     setMaxCookingTime={setMaxCookingTime}
                     setSortOrder={setSortOrder}
+                    setInPantry={setInPantry}
                     types={types}
                     total={total}
                     onClose={() => {

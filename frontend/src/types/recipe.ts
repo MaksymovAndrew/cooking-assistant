@@ -60,6 +60,7 @@ export interface RecipeFilterParams {
     max_cooking_time?: string;
     // omitted (not empty string - the backend enum-validates "asc"/"desc") falls back to creation_date DESC server-side
     sort_order?: string;
+    in_pantry?: boolean;
 }
 
 export interface CreateRecipeIngredient {

@@ -151,6 +151,23 @@
         }
     }
 
+    &__pantry-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+    }
+
+    &__pantry-label {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        color: var(--text);
+        font:
+            600 14px Inter,
+            sans-serif;
+    }
+
     &__type-list {
         display: flex;
         flex-wrap: wrap;

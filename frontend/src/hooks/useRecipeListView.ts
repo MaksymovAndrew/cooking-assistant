@@ -16,10 +16,12 @@ import {
     useGetRecipesByPersonInfiniteQuery,
 } from "redux/services/recipesApi";
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
+import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
 import {
     RECIPE_DEFAULT_SORT_ORDER,
     type RecipeFiltersState,
     setRecipeEndDate,
+    setRecipeInPantry,
     setRecipeMaxCookingTime,
     setRecipeMinCookingTime,
     setRecipeSelectedTypes,
@@ -34,6 +36,13 @@ import {
     matchIngredientIds,
 } from "utils/recipeFilterParams";
 
+import {
+    hasUnmatchedIngredientSearch,
+    isPantryFilterEmpty,
+    isRecipeListEmpty,
+    shouldSkipRecipesRequest,
+} from "./recipeListViewHelpers";
+
 export interface RecipeFilterState extends RecipeFiltersState {
     ingredientName: string | null;
 }
@@ -44,19 +53,6 @@ export const RECIPE_SOURCE = {
 } as const;
 
 export type RecipeSource = (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE];
-
-// text was typed but it matches no catalog ingredient - the caller skips the request entirely
-// rather than sending one that would just come back empty
-const hasUnmatchedIngredientSearch = (
-    ingredientName: string | null,
-    matchedIngredientIds: string | undefined,
-): boolean => Boolean(ingredientName?.trim()) && !matchedIngredientIds;
-
-const isRecipeListEmpty = (
-    hasUnmatchedSearch: boolean,
-    isSuccess: boolean,
-    hasLoadedRecipes: boolean,
-): boolean => hasUnmatchedSearch || (isSuccess && !hasLoadedRecipes);
 
 // view model for the two recipe lists: filters come from the store + the URL search, pages come from RTK Query's infiniteQuery, sorting is server-side
 export const useRecipeListView = (source: RecipeSource) => {
@@ -77,6 +73,17 @@ export const useRecipeListView = (source: RecipeSource) => {
         matchedIngredientIds,
     );
 
+    // already fetched by the pantry page/home dashboard - a cache read, not a new request
+    const { data: pantry = [] } = useGetUserIngredientsQuery(null);
+    const isPantryEmpty = isPantryFilterEmpty(
+        recipeFilters.inPantry,
+        pantry.length,
+    );
+    const skipRecipesRequest = shouldSkipRecipesRequest(
+        hasUnmatchedSearch,
+        isPantryEmpty,
+    );
+
     const params = useMemo(
         () => buildRecipeFilterParams(recipeFilters, matchedIngredientIds),
         [recipeFilters, matchedIngredientIds],
@@ -84,10 +91,10 @@ export const useRecipeListView = (source: RecipeSource) => {
 
     const isPerson = source === RECIPE_SOURCE.person;
     const byFilters = useGetRecipesByFiltersInfiniteQuery(params, {
-        skip: isPerson || hasUnmatchedSearch,
+        skip: isPerson || skipRecipesRequest,
     });
     const byPerson = useGetRecipesByPersonInfiniteQuery(params, {
-        skip: !isPerson || hasUnmatchedSearch,
+        skip: !isPerson || skipRecipesRequest,
     });
     const active = isPerson ? byPerson : byFilters;
 
@@ -120,6 +127,7 @@ export const useRecipeListView = (source: RecipeSource) => {
         dispatch(setRecipeMinCookingTime(""));
         dispatch(setRecipeMaxCookingTime(""));
         dispatch(setRecipeSortOrder(RECIPE_DEFAULT_SORT_ORDER));
+        dispatch(setRecipeInPantry(false));
     };
 
     return {
@@ -133,6 +141,7 @@ export const useRecipeListView = (source: RecipeSource) => {
         setMaxCookingTime: (time: string) =>
             dispatch(setRecipeMaxCookingTime(time)),
         setSortOrder: (order: string) => dispatch(setRecipeSortOrder(order)),
+        setInPantry: (value: boolean) => dispatch(setRecipeInPantry(value)),
         clearFilters,
         hasActiveFilters: hasActiveRecipeFilters(filters),
         types: allTypes,
@@ -141,9 +150,11 @@ export const useRecipeListView = (source: RecipeSource) => {
         error: !hasLoadedRecipes ? errorMessage : null,
         noRecipes: isRecipeListEmpty(
             hasUnmatchedSearch,
+            isPantryEmpty,
             active.isSuccess,
             hasLoadedRecipes,
         ),
+        isPantryEmpty,
         descriptions,
         typesHeader,
         total,

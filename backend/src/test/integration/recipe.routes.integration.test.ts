@@ -153,9 +153,24 @@ describe("recipe routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(deps.recipeRepository.search).toHaveBeenCalledWith({
+        expect(deps.recipeRepository.search).toHaveBeenCalledWith(1, {
             limit: 10,
             offset: 20,
+        });
+    });
+
+    it("should pass the in_pantry filter through to the repository", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.recipeRepository.search.mockResolvedValue({ items: [], total: 0 });
+
+        const res = await request(app)
+            .get("/api/recipes-by-filters?in_pantry=true")
+            .set("Cookie", authCookie(7));
+
+        expect(res.status).toBe(200);
+        expect(deps.recipeRepository.search).toHaveBeenCalledWith(7, {
+            in_pantry: true,
         });
     });
 

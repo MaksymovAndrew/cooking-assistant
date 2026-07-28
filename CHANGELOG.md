@@ -28,11 +28,13 @@ changelogs and the tags and now track everything here against one shared version
 - Removed: Old ingredients, recipes, menus, and pantry contents have been cleared to make room for the new catalog. Accounts, recipe types, and menu categories are unaffected.
 
 - Fixed: Searching recipes by ingredient could show a recipe with only the matching ingredient listed instead of its full ingredient list.
+- Added: Recipes can now be filtered to only the ones you can make right now with what's in your pantry.
 
 ### Frontend
 
 - Added: The ingredient search in recipes and your pantry now lets you browse by category (Vegetables, Meat, Fish, and so on) instead of only searching by name - handy now that the catalog has hundreds of items.
 - Added: Your pantry has a category filter, so you can quickly narrow the list down to just what you have in, say, Dairy or Spices.
+- Added: A "From my pantry" filter on the recipe list shows only recipes you can make right now with what's already in your pantry, with a shortcut card on the home page.
 
 ## 3.7 - 2026-07-24
 

@@ -1,0 +1,48 @@
+@use "styles/abstracts" as *;
+
+.pantry-recipes-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-3);
+    padding: var(--s-5);
+
+    @include card-surface;
+
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: var(--r-sm);
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &__title {
+        color: var(--text);
+        font:
+            600 15px Fraunces,
+            serif;
+    }
+
+    &__description {
+        margin: 0;
+        color: var(--text-2);
+        font:
+            400 13px/1.45 Inter,
+            sans-serif;
+    }
+
+    &__cta {
+        align-self: stretch;
+        text-align: center;
+    }
+}

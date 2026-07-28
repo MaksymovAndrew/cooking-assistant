@@ -30,6 +30,7 @@ const FILTERS: RecipeFilterState = {
     minCookingTime: "",
     maxCookingTime: "",
     sortOrder: "asc",
+    inPantry: false,
     ingredientName: null,
 };
 
@@ -39,6 +40,8 @@ const baseProps = {
     setMinCookingTime: jest.fn(),
     setMaxCookingTime: jest.fn(),
     setSortOrder: jest.fn(),
+    setInPantry: jest.fn(),
+    isPantryEmpty: false,
     types: [],
     descriptions: [],
     heading: "All recipes",
@@ -262,5 +265,47 @@ describe("RecipeListView", () => {
         expect(screen.getByRole("link", { name: /Borscht/ })).not.toHaveClass(
             MINE_CLASS,
         );
+    });
+
+    it("should show the pantry banner with the result count when the pantry filter is active", () => {
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={RECIPES}
+                noRecipes={false}
+                error={null}
+                filters={{ ...FILTERS, inPantry: true }}
+                total={1}
+            />,
+        );
+
+        expect(
+            screen.getByText(
+                "Showing only recipes you can make right now — 1 recipe",
+            ),
+        ).toBeInTheDocument();
+    });
+
+    it("should show the pantry-empty state with a link to the pantry when the pantry is empty", () => {
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={[]}
+                noRecipes={true}
+                error={null}
+                filters={{ ...FILTERS, inPantry: true }}
+                isPantryEmpty={true}
+            />,
+        );
+
+        expect(screen.getByText("Your pantry is empty")).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", { name: "Go to pantry" }),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByText(
+                "Showing only recipes you can make right now — 1 recipe",
+            ),
+        ).not.toBeInTheDocument();
     });
 });

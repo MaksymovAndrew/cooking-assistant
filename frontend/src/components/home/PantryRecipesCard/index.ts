@@ -1,0 +1,1 @@
+export { PantryRecipesCard } from "./PantryRecipesCard";

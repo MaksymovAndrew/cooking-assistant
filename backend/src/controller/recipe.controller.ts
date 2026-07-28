@@ -96,7 +96,10 @@ export default class RecipeController {
     };
 
     searchRecipes: RequestHandler = async (req, res) => {
-        const recipes = await this.searchRecipesUseCase.execute(req.query);
+        const recipes = await this.searchRecipesUseCase.execute(
+            getUserId(req),
+            req.query,
+        );
 
         res.json(recipes);
     };

@@ -27,9 +27,9 @@ describe("SearchRecipes", () => {
 
         recipeRepository.search.mockResolvedValue(paginated);
 
-        const result = await useCase.execute(filters);
+        const result = await useCase.execute(7, filters);
 
-        expect(recipeRepository.search).toHaveBeenCalledWith({
+        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
             ingredient_ids: "3,4",
             type_ids: "1,2",
             min_cooking_time: 10,
@@ -44,18 +44,46 @@ describe("SearchRecipes", () => {
 
         recipeRepository.search.mockResolvedValue(paginated);
 
-        await useCase.execute({ limit: "10", offset: "20" });
+        await useCase.execute(7, { limit: "10", offset: "20" });
 
-        expect(recipeRepository.search).toHaveBeenCalledWith({
+        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
             limit: 10,
             offset: 20,
         });
     });
 
+    it("should pass through the in_pantry filter as a boolean", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { in_pantry: "true" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
+            in_pantry: true,
+        });
+    });
+
+    it("should throw a 400 ValidationError when in_pantry is not a boolean", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(7, { in_pantry: "yes" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            "in_pantry: In pantry must be true or false",
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
     it("should throw a 400 ValidationError when type_ids is not an id list", async () => {
         const { useCase, recipeRepository } = setup();
 
-        const error = await catchError(useCase.execute({ type_ids: "abc" }));
+        const error = await catchError(useCase.execute(7, { type_ids: "abc" }));
 
         expect(error).toBeAppError(
             ValidationError,
@@ -69,7 +97,7 @@ describe("SearchRecipes", () => {
         const { useCase, recipeRepository } = setup();
 
         const error = await catchError(
-            useCase.execute({ ingredient_ids: "abc" }),
+            useCase.execute(7, { ingredient_ids: "abc" }),
         );
 
         expect(error).toBeAppError(
@@ -85,7 +113,7 @@ describe("SearchRecipes", () => {
         const tooMany = Array.from({ length: 21 }, (_, i) => i + 1).join(",");
 
         const error = await catchError(
-            useCase.execute({ ingredient_ids: tooMany }),
+            useCase.execute(7, { ingredient_ids: tooMany }),
         );
 
         expect(error).toBeAppError(
@@ -99,7 +127,9 @@ describe("SearchRecipes", () => {
     it("should throw a 400 ValidationError when sort_order is unknown", async () => {
         const { useCase, recipeRepository } = setup();
 
-        const error = await catchError(useCase.execute({ sort_order: "junk" }));
+        const error = await catchError(
+            useCase.execute(7, { sort_order: "junk" }),
+        );
 
         expect(error).toBeAppError(
             ValidationError,
@@ -112,7 +142,7 @@ describe("SearchRecipes", () => {
     it("should throw a 400 ValidationError when limit exceeds the maximum", async () => {
         const { useCase, recipeRepository } = setup();
 
-        const error = await catchError(useCase.execute({ limit: 101 }));
+        const error = await catchError(useCase.execute(7, { limit: 101 }));
 
         expect(error).toBeAppError(
             ValidationError,
@@ -125,7 +155,7 @@ describe("SearchRecipes", () => {
     it("should throw a 400 ValidationError when limit is not positive", async () => {
         const { useCase, recipeRepository } = setup();
 
-        const error = await catchError(useCase.execute({ limit: 0 }));
+        const error = await catchError(useCase.execute(7, { limit: 0 }));
 
         expect(error).toBeAppError(
             ValidationError,
@@ -138,7 +168,7 @@ describe("SearchRecipes", () => {
     it("should throw a 400 ValidationError when offset is negative", async () => {
         const { useCase, recipeRepository } = setup();
 
-        const error = await catchError(useCase.execute({ offset: -1 }));
+        const error = await catchError(useCase.execute(7, { offset: -1 }));
 
         expect(error).toBeAppError(
             ValidationError,
@@ -151,7 +181,7 @@ describe("SearchRecipes", () => {
     it("should throw a 400 ValidationError when offset is not an integer", async () => {
         const { useCase, recipeRepository } = setup();
 
-        const error = await catchError(useCase.execute({ offset: 1.5 }));
+        const error = await catchError(useCase.execute(7, { offset: 1.5 }));
 
         expect(error).toBeAppError(
             ValidationError,

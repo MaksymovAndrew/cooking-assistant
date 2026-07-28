@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
 
-import { UtensilsMark } from "components/icons";
+import { BasketMark, UtensilsMark } from "components/icons";
 import { Button } from "components/ui/Button";
 import { EmptyState } from "components/ui/EmptyState";
 import { LinkButton } from "components/ui/LinkButton";
@@ -13,6 +13,7 @@ const NEW_RECIPE_ICON_SIZE = 18;
 
 interface RecipeListEmptyStateProps {
     hasActiveFilters: boolean;
+    isPantryEmpty: boolean;
     emptyTitle: string;
     emptyDescription: string;
     searchQuery: string | null;
@@ -21,6 +22,7 @@ interface RecipeListEmptyStateProps {
 
 export const RecipeListEmptyState: React.FC<RecipeListEmptyStateProps> = ({
     hasActiveFilters,
+    isPantryEmpty,
     emptyTitle,
     emptyDescription,
     searchQuery,
@@ -33,6 +35,21 @@ export const RecipeListEmptyState: React.FC<RecipeListEmptyStateProps> = ({
             {t("recipeListView.createFirst")}
         </LinkButton>
     );
+
+    if (isPantryEmpty) {
+        return (
+            <EmptyState
+                icon={BasketMark}
+                title={t("filterPanel.pantryEmptyTitle")}
+                description={t("filterPanel.pantryEmptyDescription")}
+                action={
+                    <LinkButton to={ROUTES.ingredients} size="lg">
+                        {t("filterPanel.pantryEmptyAction")}
+                    </LinkButton>
+                }
+            />
+        );
+    }
 
     if (!hasActiveFilters) {
         return (

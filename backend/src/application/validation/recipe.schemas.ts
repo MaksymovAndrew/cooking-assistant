@@ -80,6 +80,13 @@ export const recipeFiltersSchema = z.object({
         positiveIntegerSchema("Max cooking time").optional(),
     ),
     sort_order: z.enum(["asc", "desc"]).optional(),
+    in_pantry: z
+        .string({ invalid_type_error: "In pantry must be true or false" })
+        .refine((value) => value === "true" || value === "false", {
+            message: "In pantry must be true or false",
+        })
+        .transform((value) => value === "true")
+        .optional(),
     limit: limitSchema,
     offset: offsetSchema,
 });

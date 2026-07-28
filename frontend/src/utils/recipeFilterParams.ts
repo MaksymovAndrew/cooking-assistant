@@ -48,6 +48,7 @@ export const buildRecipeFilterParams = (
     end_date: filters.endDate || undefined,
     min_cooking_time: filters.minCookingTime || undefined,
     max_cooking_time: filters.maxCookingTime || undefined,
+    in_pantry: filters.inPantry || undefined,
 });
 
 // a non-default sort counts as an active filter alongside search/type/time - shared by the filter badge count, the active-filter chips, and the truly-empty vs no-matches decision
@@ -58,4 +59,5 @@ export const hasActiveRecipeFilters = (
     Boolean(filters.minCookingTime) ||
     Boolean(filters.maxCookingTime) ||
     filters.sortOrder !== RECIPE_DEFAULT_SORT_ORDER ||
-    filters.selectedTypes.length > 0;
+    filters.selectedTypes.length > 0 ||
+    filters.inPantry;

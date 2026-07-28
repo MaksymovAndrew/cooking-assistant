@@ -13,6 +13,7 @@ import { RecipeTypeToggle } from "components/recipes/RecipeFilterPanel/RecipeTyp
 import type { SegmentedOption } from "components/ui/SegmentedControl";
 import { SegmentedControl } from "components/ui/SegmentedControl";
 
+import { RecipePantryToggle } from "./RecipePantryToggle";
 import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
 
 interface RecipeFilterPopoverProps {
@@ -21,6 +22,7 @@ interface RecipeFilterPopoverProps {
     setMinCookingTime: (time: string) => void;
     setMaxCookingTime: (time: string) => void;
     setSortOrder: (order: string) => void;
+    setInPantry: (value: boolean) => void;
     types: RecipeTypeSummary[];
     total: number;
     onClose: () => void;
@@ -38,6 +40,7 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
     setMinCookingTime,
     setMaxCookingTime,
     setSortOrder,
+    setInPantry,
     types,
     total,
     onClose,
@@ -57,6 +60,7 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
         setMinCookingTime("");
         setMaxCookingTime("");
         setSortOrder(RECIPE_DEFAULT_SORT_ORDER);
+        setInPantry(false);
     };
 
     return (
@@ -76,6 +80,11 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                     <X size={CLOSE_ICON_SIZE} aria-hidden="true" />
                 </button>
             </div>
+
+            <RecipePantryToggle
+                checked={filters.inPantry}
+                onChange={setInPantry}
+            />
 
             <div className={styles["recipe-filter-panel__section"]}>
                 <span className={styles["recipe-filter-panel__label"]}>

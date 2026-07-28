@@ -14,7 +14,7 @@ export interface RecipeRepository {
         data: Recipe,
     ): Promise<unknown>;
     deleteById(id: string | number, personId: number): Promise<unknown>;
-    search(filters: unknown): Promise<PaginatedResult<unknown>>;
+    search(userId: number, filters: unknown): Promise<PaginatedResult<unknown>>;
     searchByPerson(
         personId: number,
         filters: unknown,

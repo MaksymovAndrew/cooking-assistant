@@ -52,8 +52,11 @@ export default class PgRecipeRepository implements RecipeRepository {
         return updateRecipeInDb(this.pool, recipeId, personId, data);
     }
 
-    async search(filters: unknown): Promise<PaginatedResult<unknown>> {
-        return searchRecipes(this.pool, filters);
+    async search(
+        userId: number,
+        filters: unknown,
+    ): Promise<PaginatedResult<unknown>> {
+        return searchRecipes(this.pool, userId, filters);
     }
 
     async searchByPerson(

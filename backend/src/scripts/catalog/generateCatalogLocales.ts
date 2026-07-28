@@ -1,6 +1,4 @@
-// build-time: turns catalogData.json into the four frontend catalog.json locale files.
-// Only en/ is imported by the running app (see frontend/src/i18n/index.ts) - ru/uk/pl are
-// generated and committed so they're ready the day translations (CA-10) actually ship.
+// build-time: turns catalogData.json into the four frontend catalog.json locale files - only en/ is imported by the running app (see frontend/src/i18n/index.ts), ru/uk/pl are generated and committed ahead of translations (CA-10) shipping
 import { writeFileSync } from "fs";
 import { join } from "path";
 
@@ -56,9 +54,7 @@ function buildLocaleResource(locale: Locale): {
     for (const entry of catalogData) {
         const name = ingredientNameFor(locale, entry);
 
-        // no draft found for this language - omit the key entirely rather than fabricate a
-        // translation; the resolver's defaultValue falls back to the raw DB name until this
-        // is filled in (tracked below, and again at generation time in the coverage report)
+        // no draft found for this language - omit the key rather than fabricate a translation; the resolver falls back to the raw DB name until this is filled in
         if (name === null) {
             missingIngredients.push(entry.slug);
             continue;

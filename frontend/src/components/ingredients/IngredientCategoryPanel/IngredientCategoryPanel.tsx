@@ -15,8 +15,7 @@ interface IngredientCategoryPanelProps {
 
 const BACK_ICON_SIZE = 15;
 
-// the non-search dropdown content shared by the recipe ingredient picker and the pantry
-// add-ingredient modal: a category browse list, or (once one is picked) a back header
+// the non-search dropdown content shared by the recipe ingredient picker and the pantry add-ingredient modal: a category browse list, or (once one is picked) a back header
 export const IngredientCategoryPanel: React.FC<
     IngredientCategoryPanelProps
 > = ({ categories, activeCategory, onSelectCategory, onBack }) => {

@@ -377,8 +377,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
     it("should not match a recipe with no ingredients when in_pantry is set", async () => {
         const requesterId = await createPerson(pool);
 
-        // Recipe.forCreation enforces non-empty ingredients, so insert directly to
-        // reach the edge case the second EXISTS in the SQL filter guards against
+        // Recipe.forCreation enforces non-empty ingredients, so insert directly to reach the edge case the second EXISTS guards against
         const created = await pool.query<{ id: number }>(
             `INSERT INTO recipes (title, content, person_id, cooking_time) VALUES ($1, $2, $3, $4) RETURNING id`,
             [

@@ -1,5 +1,6 @@
 import { act } from "@testing-library/react";
 
+import type { ExpiringIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
 
 import type { ActiveModal } from "redux/slices/uiSlice";
@@ -9,6 +10,7 @@ import { ModalRoot } from "components/modals";
 import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
 import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
+import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
@@ -34,6 +36,9 @@ jest.mock("components/modals/LogoutConfirmModal", () => ({
 jest.mock("components/modals/ThemeChangeConfirmModal", () => ({
     ThemeChangeConfirmModal: jest.fn(() => null),
 }));
+jest.mock("components/modals/ExpiredIngredientsModal", () => ({
+    ExpiredIngredientsModal: jest.fn(() => null),
+}));
 
 const mockedModal = jest.mocked(PurchaseHistoryModal);
 const mockedDeleteRecipe = jest.mocked(DeleteRecipeModal);
@@ -41,6 +46,7 @@ const mockedDeleteMenu = jest.mocked(DeleteMenuModal);
 const mockedDeleteIngredient = jest.mocked(DeleteIngredientModal);
 const mockedLogout = jest.mocked(LogoutConfirmModal);
 const mockedThemeChange = jest.mocked(ThemeChangeConfirmModal);
+const mockedExpiredIngredients = jest.mocked(ExpiredIngredientsModal);
 
 const INGREDIENT: PantryIngredient = {
     id: 9,
@@ -185,5 +191,33 @@ describe("ModalRoot", () => {
 
         expect(props.modalId).toBe("modal-6");
         expect(props.nextMode).toBe("dark");
+    });
+
+    it("should render the expired-ingredients modal with its id and ingredient list", () => {
+        const ingredients: ExpiringIngredient[] = [
+            {
+                ingredientId: 1,
+                slug: "milk",
+                name: "Milk",
+                status: { tone: "expired", days: -2 },
+            },
+        ];
+
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: {
+                    modal: {
+                        id: "modal-7",
+                        type: MODAL_TYPE.expiredIngredients,
+                        ingredients,
+                    },
+                },
+            }),
+        });
+
+        const props = mockedExpiredIngredients.mock.calls[0][0];
+
+        expect(props.modalId).toBe("modal-7");
+        expect(props.ingredients).toEqual(ingredients);
     });
 });

@@ -53,5 +53,12 @@
         "noHistory": "No purchase history available.",
         "closeButton": "Close",
         "editButton": "Edit quantity"
+    },
+    "expiredNoticeModal": {
+        "title": "Expired ingredients",
+        "message_one": "{{count}} ingredient in your pantry has expired:",
+        "message_other": "{{count}} ingredients in your pantry have expired:",
+        "close": "Close",
+        "goToPantry": "Go to my pantry"
     }
 }

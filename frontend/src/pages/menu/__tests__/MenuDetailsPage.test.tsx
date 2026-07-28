@@ -13,7 +13,7 @@ import { MODAL_TYPE } from "redux/slices/uiSlice";
 import { ModalRoot } from "components/modals";
 
 import MenuDetailsPage from "pages/menu/MenuDetailsPage";
-import { mockedDelete, mockedGet } from "test/apiClientMock";
+import { mockedDelete, mockedGet, mockGetByUrl } from "test/apiClientMock";
 import {
     BTN_DELETE_MENU,
     BTN_EDIT_MENU,
@@ -62,6 +62,15 @@ const SAMPLE: MenuDetails = {
     allergens: [],
 };
 
+// AppShell (via AppHeader/useExpiredIngredientsNotice) also hits getMe and the pantry list - scope every GET by url instead of blanket-resolving to the menu payload
+const mockMenuDetails = () => {
+    mockGetByUrl({
+        [API_ROUTES.menu.byId(1)]: SAMPLE,
+        [API_ROUTES.userIngredients.list]: [],
+        [API_ROUTES.auth.me]: null,
+    });
+};
+
 const renderPage = (store = makeTestStore()) => {
     const view = render(
         <Provider store={store}>
@@ -86,7 +95,7 @@ const renderPage = (store = makeTestStore()) => {
 
 describe("MenuDetailsPage", () => {
     it("should render the menu title loaded from the api", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockMenuDetails();
 
         renderPage();
 
@@ -96,7 +105,7 @@ describe("MenuDetailsPage", () => {
     });
 
     it("should render the menu's recipes and its missing ingredients", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockMenuDetails();
 
         renderPage();
         await screen.findByRole("heading", { name: TITLE });
@@ -107,7 +116,7 @@ describe("MenuDetailsPage", () => {
     });
 
     it("should show Edit and Delete buttons when current user is the menu owner", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockMenuDetails();
 
         renderPage();
         await screen.findByRole("heading", { name: TITLE });
@@ -121,7 +130,7 @@ describe("MenuDetailsPage", () => {
     });
 
     it("should open the global delete modal and navigate to /menu after delete", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockMenuDetails();
         mockedDelete.mockResolvedValue({ data: null });
 
         const { store } = renderPage();
@@ -167,7 +176,7 @@ describe("MenuDetailsPage", () => {
     });
 
     it("should close the modal when Cancel is clicked", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE });
+        mockMenuDetails();
 
         const { store } = renderPage();
 

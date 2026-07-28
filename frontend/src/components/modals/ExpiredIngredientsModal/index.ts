@@ -1,0 +1,1 @@
+export { ExpiredIngredientsModal } from "./ExpiredIngredientsModal";

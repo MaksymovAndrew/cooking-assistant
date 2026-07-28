@@ -33,8 +33,7 @@ const catalogMapEntrySchema = z
         }),
     );
 
-// validates the raw JSON data at build time - a bad category/unit/allergen slug or a missing
-// unitGrams on a counted unit fails loudly here instead of silently producing bad catalog data
+// validates the raw JSON at build time - a bad category/unit/allergen slug or a missing unitGrams on a counted unit fails loudly here instead of silently producing bad catalog data
 export function parseCatalogMap(raw: unknown): CatalogMapEntry[] {
     const entries = z.array(catalogMapEntrySchema).parse(raw);
     const seenSlugs = new Set<string>();

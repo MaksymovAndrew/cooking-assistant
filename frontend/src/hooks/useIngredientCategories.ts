@@ -14,8 +14,7 @@ interface CategorizedItem {
     category: string;
 }
 
-// counts occurrences per category and returns only the categories actually present,
-// in the catalog's canonical order - shared by the picker/browse combobox and the pantry filter
+// counts occurrences per category, returning only categories actually present, in the catalog's canonical order
 export const useIngredientCategories = (
     ingredients: CategorizedItem[],
 ): IngredientCategoryOption[] =>

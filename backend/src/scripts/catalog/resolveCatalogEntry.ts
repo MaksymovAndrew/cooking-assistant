@@ -5,7 +5,11 @@ import type {
     CategoryKey,
     UnitKey,
 } from "./catalog.types";
-import { caloriesPerUnit, findFdcIdByDescription } from "./nutritionSource";
+import {
+    caloriesPerUnit,
+    findFdcIdByDescription,
+    isImplausibleKcalPer100g,
+} from "./nutritionSource";
 import {
     parseCalorieOverrides,
     parseTranslationOverrides,
@@ -36,6 +40,7 @@ function resolveCalories(
     unitGrams: number | null,
     descriptionByFdcId: Map<string, string>,
     energyByFdcId: Map<string, number>,
+    implausibleSlugs: string[],
 ): number | null {
     const matchTarget = item.nutritionMatch ?? item.searchName;
     const fdcId = findFdcIdByDescription(matchTarget, descriptionByFdcId);
@@ -43,6 +48,10 @@ function resolveCalories(
         fdcId === null ? null : (energyByFdcId.get(fdcId) ?? null);
     const kcalPer100g =
         sourceKcalPer100g ?? calorieOverrides[item.slug]?.kcalPer100 ?? null;
+
+    if (kcalPer100g !== null && isImplausibleKcalPer100g(kcalPer100g)) {
+        implausibleSlugs.push(item.slug);
+    }
 
     return kcalPer100g === null
         ? null
@@ -74,6 +83,7 @@ export function buildCatalogEntry(
     descriptionByFdcId: Map<string, string>,
     energyByFdcId: Map<string, number>,
     translations: Map<string, Translation>,
+    implausibleSlugs: string[],
 ): CatalogDataEntry {
     const unitGrams = item.unitGrams ?? null;
     const calories = resolveCalories(
@@ -81,6 +91,7 @@ export function buildCatalogEntry(
         unitGrams,
         descriptionByFdcId,
         energyByFdcId,
+        implausibleSlugs,
     );
     const names = resolveNames(item, translations);
 

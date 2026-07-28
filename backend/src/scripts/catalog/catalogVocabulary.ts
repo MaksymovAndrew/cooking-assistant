@@ -1,6 +1,4 @@
-// hand-written translations for the closed vocabularies (categories, allergens, units) -
-// unlike ingredient names these never come from the translation source, so they live here
-// as plain data, cross-checked against catalog.types.ts's key lists at generation time.
+// hand-written translations for the closed vocabularies (categories, allergens, units) - unlike ingredient names these never come from the translation source, cross-checked against catalog.types.ts's key lists at generation time
 import type { ALLERGEN_SLUGS, CATEGORY_KEYS, UNIT_KEYS } from "./catalog.types";
 
 export type Locale = "en" | "ru" | "uk" | "pl";

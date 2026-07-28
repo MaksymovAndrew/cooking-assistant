@@ -9,16 +9,13 @@ import { sortIngredientsByName } from "utils/sortIngredientsByName";
 import type { IngredientCategoryOption } from "./useIngredientCategories";
 import { useIngredientCategories } from "./useIngredientCategories";
 
-// ranks name matches ahead of category matches, so searching "meat" surfaces Steak (category
-// Meat) even though "meat" isn't in its name - name matches that start with the query come
-// first, then other name matches, then the rest of any category whose own name matches the query
+// ranks name matches (starts-with, then contains) ahead of category matches, so searching "meat" surfaces Steak (category Meat) even though "meat" isn't in its name
 const searchIngredients = (
     ingredients: Ingredient[],
     categories: IngredientCategoryOption[],
     query: string,
 ): Ingredient[] => {
-    // resolve each name once (i18next lookup) and reuse it for both matching and sorting,
-    // instead of re-resolving per comparison
+    // resolve each name once (i18next lookup) and reuse it for both matching and sorting, instead of re-resolving per comparison
     const names = new Map<number, string>(
         ingredients.map((ingredient) => [
             ingredient.id,
@@ -84,8 +81,7 @@ interface UseCategorizedIngredientsResult {
     visibleIngredients: Ingredient[];
 }
 
-// shared browse/search state for the ingredient picker and the pantry add-ingredient modal -
-// both need the same "search across everything, or drill into a category" combobox behaviour
+// shared browse/search state for the ingredient picker and the pantry add-ingredient modal - both need the same "search across everything, or drill into a category" combobox behaviour
 export const useCategorizedIngredients = ({
     ingredients,
     maxSearchResults,
@@ -96,8 +92,7 @@ export const useCategorizedIngredients = ({
 
     const categories = useIngredientCategories(ingredients);
 
-    // the active category can vanish from the list (its last addable item just got picked) -
-    // drop the stale selection rather than showing a "back" panel for a category that no longer exists
+    // drops a stale category selection (its last addable item just got picked) rather than showing a "back" panel for a category that no longer exists
     useEffect(() => {
         if (
             activeCategory &&

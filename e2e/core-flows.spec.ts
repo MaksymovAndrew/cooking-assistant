@@ -122,6 +122,15 @@ test("should edit a pantry ingredient's quantity and persist it across reload", 
 
     await page.reload();
     await expect(page.getByText("Onion")).toBeVisible();
+
+    // cleanup: leave the shared account's pantry empty for other specs
+    await page
+        .getByRole("heading", { name: "Onion", level: 3 })
+        .locator("../..")
+        .getByRole("button", { name: "Delete" })
+        .click();
+    await page.getByRole("button", { name: "Confirm" }).click();
+    await expect(page.getByText("Ingredient deleted")).toBeVisible();
 });
 
 test("should switch the theme via the confirm modal and persist it across reload", async () => {

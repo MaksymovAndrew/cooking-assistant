@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useExpiredIngredientsNotice } from "hooks/useExpiredIngredientsNotice";
+
 import { AppHeader } from "components/layout/AppHeader";
 import { BottomNav } from "components/layout/BottomNav";
 import { MobileSubpageHeader } from "components/layout/MobileSubpageHeader";
@@ -20,26 +22,30 @@ export const AppShell: React.FC<AppShellProps> = ({
     mobileBackTo,
     mobileTitle,
     mobileEditTo,
-}) => (
-    <div className={styles["app-shell"]}>
-        {mobileBackTo && (
-            <MobileSubpageHeader
-                backTo={mobileBackTo}
-                title={mobileTitle}
-                editTo={mobileEditTo}
-            />
-        )}
-        <div
-            className={
-                mobileBackTo
-                    ? styles["app-shell__header--desktop-only"]
-                    : undefined
-            }
-        >
-            <AppHeader />
+}) => {
+    useExpiredIngredientsNotice();
+
+    return (
+        <div className={styles["app-shell"]}>
+            {mobileBackTo && (
+                <MobileSubpageHeader
+                    backTo={mobileBackTo}
+                    title={mobileTitle}
+                    editTo={mobileEditTo}
+                />
+            )}
+            <div
+                className={
+                    mobileBackTo
+                        ? styles["app-shell__header--desktop-only"]
+                        : undefined
+                }
+            >
+                <AppHeader />
+            </div>
+            <main className={styles["app-shell__main"]}>{children}</main>
+            <ScrollToTopButton />
+            <BottomNav />
         </div>
-        <main className={styles["app-shell__main"]}>{children}</main>
-        <ScrollToTopButton />
-        <BottomNav />
-    </div>
-);
+    );
+};

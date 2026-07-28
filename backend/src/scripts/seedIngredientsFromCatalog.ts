@@ -73,8 +73,7 @@ async function insertIngredientBatch(
     return result.rowCount ?? 0;
 }
 
-// re-run on every deploy: ON CONFLICT (slug) DO UPDATE keeps the catalog in sync with
-// catalogData.json (refreshed calories/translations/allergens) instead of only inserting once
+// re-run on every deploy: ON CONFLICT (slug) DO UPDATE keeps the catalog in sync with catalogData.json instead of only inserting once
 export async function seedIngredientsFromCatalog(pool: Pool): Promise<number> {
     const catalogData = parseCatalogData(rawCatalogData);
     const unitRows = await pool.query<{ id: number; unit_name: string }>(

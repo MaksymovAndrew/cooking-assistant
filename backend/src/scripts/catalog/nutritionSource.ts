@@ -80,7 +80,20 @@ function round2(value: number): number {
     return Math.round(value * 100) / 100;
 }
 
-// ккал/100г → ккал на один юнит ингредиента
+// physiological range for any real food, roughly 0.1-9 kcal/g; 0 itself is a legitimate value
+// (salt, water, stevia) and is excluded from this check rather than treated as implausible
+const MIN_PLAUSIBLE_KCAL_PER_100G = 10;
+const MAX_PLAUSIBLE_KCAL_PER_100G = 900;
+
+export function isImplausibleKcalPer100g(kcalPer100g: number): boolean {
+    return (
+        kcalPer100g !== 0 &&
+        (kcalPer100g < MIN_PLAUSIBLE_KCAL_PER_100G ||
+            kcalPer100g > MAX_PLAUSIBLE_KCAL_PER_100G)
+    );
+}
+
+// kcal/100g -> kcal per one unit of the ingredient
 export function caloriesPerUnit(
     kcalPer100g: number,
     unit: UnitKey,

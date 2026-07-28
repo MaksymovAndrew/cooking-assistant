@@ -5,8 +5,7 @@ interface ResolvableIngredient {
     name: string;
 }
 
-// works outside React too (i18next is initialized synchronously) - the DB name is the
-// defaultValue so an ingredient missing from the catalog locale still renders something
+// works outside React too (i18next is synchronous) - the DB name is the defaultValue so a missing catalog translation still renders something
 export const resolveIngredientName = ({
     slug,
     name,

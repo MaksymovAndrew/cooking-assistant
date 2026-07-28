@@ -23,8 +23,7 @@ interface QuantityRow {
 // 2 decimal places
 const QUANTITY_ROUNDING_FACTOR = 100;
 
-// fractional quantities (kg, l) can leave a subtraction like 0.3 - 0.1 a hair off zero;
-// round before branching so that doesn't get mistaken for a real increase or decrease
+// rounds before branching so a fractional subtraction like 0.3 - 0.1 landing a hair off zero isn't mistaken for a real increase/decrease
 function roundQuantity(value: number): number {
     return (
         Math.round(value * QUANTITY_ROUNDING_FACTOR) / QUANTITY_ROUNDING_FACTOR

@@ -22,8 +22,7 @@ const translationOverrideSchema = z.object({
     pl: z.string().min(1).optional(),
 });
 
-// slug -> override; both JSON files are hand-authored data, so a typo'd field name or an
-// invalid confidence value fails loudly here instead of silently resolving to undefined
+// slug -> override; both JSON files are hand-authored, so a typo'd field or invalid value fails loudly here instead of silently resolving to undefined
 export function parseCalorieOverrides(
     raw: unknown,
 ): Partial<Record<string, CalorieOverride>> {

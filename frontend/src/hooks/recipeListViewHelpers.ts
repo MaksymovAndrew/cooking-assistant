@@ -1,12 +1,10 @@
-// text was typed but it matches no catalog ingredient - the caller skips the request entirely
-// rather than sending one that would just come back empty
+// text was typed but matches no catalog ingredient - the caller skips the request rather than sending one that would just come back empty
 export const hasUnmatchedIngredientSearch = (
     ingredientName: string | null,
     matchedIngredientIds: string | undefined,
 ): boolean => Boolean(ingredientName?.trim()) && !matchedIngredientIds;
 
-// the "in my pantry" filter has nothing to search against once the pantry itself is empty -
-// the caller shows a dedicated empty state instead of sending a request that always returns zero
+// the "in my pantry" filter has nothing to search against once the pantry itself is empty - the caller shows a dedicated empty state instead
 export const isPantryFilterEmpty = (
     inPantry: boolean,
     pantryCount: number,

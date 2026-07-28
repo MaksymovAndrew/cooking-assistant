@@ -30,8 +30,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
 }) => {
     const { t } = useTranslation("ingredients");
     const expired = isExpired(purchase.purchase_date, purchase.days_to_expire);
-    // the quantity is read-only until the edit button is pressed, so an accidental scroll or
-    // stray tap over the row can never change a saved purchase
+    // read-only until the edit button is pressed, so an accidental scroll or stray tap over the row can never change a saved purchase
     const [isEditing, setIsEditing] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const quantity = useEditableQuantity(

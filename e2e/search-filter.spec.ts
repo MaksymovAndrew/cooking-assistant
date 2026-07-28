@@ -1,7 +1,11 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
-import { createMenuViaForm, createRecipeViaForm } from "./forms";
+import {
+    createMenuViaForm,
+    createRecipeViaForm,
+    selectFromPicker,
+} from "./forms";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
 // exercises the recipe/menu search, type/category filter, and sort controls - none of it was visited by the other e2e specs, which only create+read+edit+delete
@@ -154,4 +158,35 @@ test("should filter My Menus by category", async () => {
 
     await expect(page.getByText(menuXTitle)).toBeVisible();
     await expect(page.getByText(menuYTitle)).toBeHidden();
+});
+
+test("should filter My Recipes to only what's in the pantry", async () => {
+    // recipe A needs Tomato, recipe B needs Onion - stocking only Tomato should isolate A
+    await page.goto("/ingredients");
+    await page.getByRole("button", { name: "Add ingredient" }).click();
+    await selectFromPicker(
+        page,
+        page.getByPlaceholder("Search ingredients..."),
+        "Tomato",
+    );
+    await page.getByRole("button", { name: "Add to pantry" }).click();
+    await expect(page.getByText("Ingredients saved")).toBeVisible();
+
+    await page.goto("/my-recipes");
+    await page.getByRole("button", { name: "Filters", exact: true }).click();
+    await page.getByRole("switch", { name: "Only what I can make" }).click();
+    await page.getByRole("button", { name: /^Show \d+ recipes?$/ }).click();
+
+    await expect(page.getByText(recipeATitle)).toBeVisible();
+    await expect(page.getByText(recipeBTitle)).toBeHidden();
+
+    // cleanup: leave the shared account's pantry empty for other specs (the goto below already resets the plain-Redux pantry filter state)
+    await page.goto("/ingredients");
+    await page
+        .getByRole("heading", { name: "Tomato", level: 3 })
+        .locator("../..")
+        .getByRole("button", { name: "Delete" })
+        .click();
+    await page.getByRole("button", { name: "Confirm" }).click();
+    await expect(page.getByText("Ingredient deleted")).toBeVisible();
 });

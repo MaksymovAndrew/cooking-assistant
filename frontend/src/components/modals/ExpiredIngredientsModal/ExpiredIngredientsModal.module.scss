@@ -1,0 +1,32 @@
+@use "styles/abstracts" as *;
+
+.expired-ingredients-modal {
+    &__title {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        color: var(--danger);
+    }
+
+    &__message {
+        margin: 0 0 var(--s-3);
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
+        max-height: 320px;
+        margin: 0;
+        overflow-y: auto;
+        list-style: none;
+        padding-inline-start: 0;
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--s-2);
+        margin-top: var(--s-4);
+    }
+}

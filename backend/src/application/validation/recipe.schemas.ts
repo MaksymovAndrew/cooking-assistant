@@ -12,8 +12,7 @@ import {
     toNumber,
 } from "./common.schemas";
 
-// the ingredient catalog has hundreds of entries - a search box match can surface many ids,
-// so cap how many this filter accepts rather than building an unbounded ANY($1::int[]) list
+// caps how many ids this filter accepts, since the catalog has hundreds of entries and a search match can surface many
 const MAX_INGREDIENT_FILTER_IDS = 20;
 
 // both quantity field names are accepted and unified into quantity_recipe_ingredients

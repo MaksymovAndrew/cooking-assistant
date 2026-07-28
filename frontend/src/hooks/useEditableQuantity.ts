@@ -1,8 +1,7 @@
 import type React from "react";
 import { useEffect, useState } from "react";
 
-// lets a numeric field go empty while typing instead of snapping back to the controlled value on
-// every keystroke; on blur an invalid or too-small entry reverts to the last committed value
+// lets a numeric field go empty while typing instead of snapping back on every keystroke; on blur an invalid or too-small entry reverts to the last committed value
 export const useEditableQuantity = (
     value: number,
     onCommit: (value: number) => void,

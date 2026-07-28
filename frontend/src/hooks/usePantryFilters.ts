@@ -34,8 +34,7 @@ export const usePantryFilters = ({
     const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
     const categories = useIngredientCategories(personIngredients);
 
-    // the selected category can vanish from the pantry (its last item just got deleted) -
-    // drop the stale filter rather than silently matching nothing forever
+    // drops a stale category filter (its last item just got deleted) rather than silently matching nothing forever
     useEffect(() => {
         if (
             categoryFilter &&

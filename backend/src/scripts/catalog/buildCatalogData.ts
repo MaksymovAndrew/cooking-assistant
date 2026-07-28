@@ -1,10 +1,4 @@
-// dev-time only: converts the hand-curated catalogMap into the committed catalogData.json,
-// resolving calories-per-unit and ru/uk/pl draft names against two local nutrition/translation
-// dumps (paths given as argv, not committed).
-//
-// usage: tsx src/scripts/catalog/buildCatalogData.ts <foodCsvDir> <translationsFile>
-//   <foodCsvDir>        directory containing food.csv and food_nutrient.csv (nutrition dump, 2018-04 release)
-//   <translationsFile>  ingredients taxonomy text file (translation dump)
+// dev-time only: builds catalogData.json from catalogMap against local nutrition/translation dumps (paths as argv, not committed) - run without args for usage
 import rawCatalogMap from "./catalogMap.json";
 import { parseCatalogMap } from "./catalogMapSchema";
 import { loadEnergyByFdcId, loadFoodDescriptions } from "./nutritionSource";
@@ -14,13 +8,15 @@ import {
 } from "./resolveCatalogEntry";
 import { loadTranslations } from "./translationSource";
 
-// stdout is reserved for the generated file content (see main()); all developer-facing
-// progress/report output goes to stderr instead
+// stdout is reserved for the generated JSON (see main()) - all other output goes to stderr
 function reportLine(line: string): void {
     process.stderr.write(`${line}\n`);
 }
 
-function reportCoverage(data: CatalogDataEntry[]): void {
+function reportCoverage(
+    data: CatalogDataEntry[],
+    implausibleSlugs: string[],
+): void {
     const missingCalories = data.filter(
         (entry) => entry.caloriesPerUnit === null,
     );
@@ -41,6 +37,11 @@ function reportCoverage(data: CatalogDataEntry[]): void {
             `Still missing a translation after overrides: ${missingTranslations.map((entry) => entry.slug).join(", ")}`,
         );
     }
+    if (implausibleSlugs.length > 0) {
+        reportLine(
+            `Implausible calories (outside ~0.1-9 kcal/g), check the source match: ${implausibleSlugs.join(", ")}`,
+        );
+    }
 }
 
 function buildCatalogData(
@@ -51,6 +52,7 @@ function buildCatalogData(
     const descriptionByFdcId = loadFoodDescriptions(foodCsvDir);
     const translations = loadTranslations(translationsFile);
     const catalogMap = parseCatalogMap(rawCatalogMap);
+    const implausibleSlugs: string[] = [];
 
     const data = catalogMap.map((item) =>
         buildCatalogEntry(
@@ -58,11 +60,12 @@ function buildCatalogData(
             descriptionByFdcId,
             energyByFdcId,
             translations,
+            implausibleSlugs,
         ),
     );
 
     // the generated catalog goes to stdout (see main()), so the coverage report goes to stderr
-    reportCoverage(data);
+    reportCoverage(data, implausibleSlugs);
 
     return data;
 }

@@ -23,8 +23,7 @@ export const groupRecipesByType = (
         return groups;
     }, {});
 
-// every ingredient used anywhere in the menu, not just what's missing - "sufficient" is the pantry covering the summed need across all recipes
-// keyed by ingredient_id (not name) so it stays correct once ingredient names are translated
+// every ingredient used anywhere in the menu, not just what's missing - keyed by ingredient_id (not name) so it stays correct once ingredient names are translated
 export const aggregateMenuIngredients = (
     recipes: MenuDetailRecipe[],
 ): Record<number, AggregatedIngredient> =>

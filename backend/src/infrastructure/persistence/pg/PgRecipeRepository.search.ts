@@ -53,8 +53,7 @@ function applyRecipeFilters(
     } = filters;
 
     if (ingredient_ids) {
-        // a separate EXISTS subquery (not a WHERE on the outer join) so a match doesn't strip
-        // the recipe's other ingredients out of the json_agg below - OR semantics: any id matches
+        // a separate EXISTS (not a WHERE on the outer join) so a match doesn't strip the recipe's other ingredients out of the json_agg below - OR semantics: any id matches
         query += ` AND EXISTS (
         SELECT 1 FROM recipe_ingredients ri2
         WHERE ri2.recipe_id = r.id AND ri2.ingredient_id = ANY($${paramIndex}::int[])
@@ -96,10 +95,7 @@ function applyRecipeFilters(
     }
 
     if (in_pantry) {
-        // a recipe qualifies only if the pantry covers every ingredient in sufficient quantity;
-        // ROUND avoids DOUBLE PRECISION noise flipping an exact match into "not enough" (same
-        // concern as PgPantryRepository.queries.ts). Second EXISTS rules out ingredient-less
-        // recipes, which would pass the NOT EXISTS trivially otherwise
+        // a recipe qualifies only if the pantry covers every ingredient in sufficient quantity (ROUND avoids float noise, see PgPantryRepository.queries.ts); the second EXISTS rules out ingredient-less recipes, which would pass the NOT EXISTS trivially otherwise
         query += ` AND NOT EXISTS (
         SELECT 1 FROM recipe_ingredients ri2
         LEFT JOIN person_ingredients pi

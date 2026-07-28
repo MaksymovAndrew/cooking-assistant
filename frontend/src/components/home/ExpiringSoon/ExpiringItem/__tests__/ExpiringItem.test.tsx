@@ -9,6 +9,7 @@ const buildItem = (
     days: number,
 ): ExpiringIngredient => ({
     ingredientId: 1,
+    slug: "milk",
     name: "Milk",
     status: { tone, days },
 });

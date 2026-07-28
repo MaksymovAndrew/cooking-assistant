@@ -17,6 +17,7 @@ const BASE_FILTERS: RecipeFilterState = {
     minCookingTime: "",
     maxCookingTime: "",
     sortOrder: "asc",
+    inPantry: false,
     ingredientName: null,
 };
 
@@ -25,6 +26,7 @@ const setup = (overrides: Partial<RecipeFilterState> = {}) => {
     const setMinCookingTime = jest.fn();
     const setMaxCookingTime = jest.fn();
     const setSortOrder = jest.fn();
+    const setInPantry = jest.fn();
 
     renderWithRouter(
         <RecipeFilterPanel
@@ -33,6 +35,7 @@ const setup = (overrides: Partial<RecipeFilterState> = {}) => {
             setMinCookingTime={setMinCookingTime}
             setMaxCookingTime={setMaxCookingTime}
             setSortOrder={setSortOrder}
+            setInPantry={setInPantry}
             types={[SOUP_TYPE, DESSERT_TYPE]}
             searchPlaceholder="Search recipes"
             total={5}
@@ -44,6 +47,7 @@ const setup = (overrides: Partial<RecipeFilterState> = {}) => {
         setMinCookingTime,
         setMaxCookingTime,
         setSortOrder,
+        setInPantry,
     };
 };
 
@@ -111,16 +115,33 @@ describe("RecipeFilterPanel", () => {
         expect(setSelectedTypes).toHaveBeenCalledWith([1]);
     });
 
+    it("should call setInPantry when the pantry toggle is clicked", async () => {
+        const { setInPantry } = setup();
+
+        await openPanel();
+        await userEvent.click(screen.getByRole("switch"));
+
+        expect(setInPantry).toHaveBeenCalledWith(true);
+    });
+
+    it("should count the pantry filter in the active filter badge", () => {
+        setup({ inPantry: true });
+
+        expect(screen.getByText("1")).toBeInTheDocument();
+    });
+
     it("should reset every filter when Reset filters is clicked", async () => {
         const {
             setSelectedTypes,
             setMinCookingTime,
             setMaxCookingTime,
             setSortOrder,
+            setInPantry,
         } = setup({
             selectedTypes: [1],
             minCookingTime: "5",
             maxCookingTime: "90",
+            inPantry: true,
         });
 
         await openPanel();
@@ -132,6 +153,7 @@ describe("RecipeFilterPanel", () => {
         expect(setMinCookingTime).toHaveBeenCalledWith("");
         expect(setMaxCookingTime).toHaveBeenCalledWith("");
         expect(setSortOrder).toHaveBeenCalledWith("asc");
+        expect(setInPantry).toHaveBeenCalledWith(false);
     });
 
     it("should close the popover when Apply is clicked", async () => {
@@ -154,6 +176,7 @@ describe("RecipeFilterPanel", () => {
                     setMinCookingTime={jest.fn()}
                     setMaxCookingTime={jest.fn()}
                     setSortOrder={jest.fn()}
+                    setInPantry={jest.fn()}
                     types={[]}
                     searchPlaceholder="Search recipes"
                     total={5}

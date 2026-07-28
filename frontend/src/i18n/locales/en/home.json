@@ -32,6 +32,11 @@
         "addToShoppingList": "+ Add to shopping list",
         "empty": "Nothing expiring soon."
     },
+    "pantryRecipes": {
+        "title": "Cook from your pantry",
+        "description": "See which recipes you can make right now with what you already have.",
+        "cta": "See recipes"
+    },
     "emailVerificationBanner": {
         "unverifiedMessage": "Verify your email to enable password reset for your account.",
         "unverifiedMessageShort": "Verify your email to enable password reset.",

@@ -205,7 +205,8 @@ module.exports = tseslint.config(
                         meta: {
                             type: "suggestion",
                             messages: {
-                                complex: "Condition has 3+ operands: extract it into a named constant.",
+                                complex:
+                                    "Condition has 3+ operands: extract it into a named constant.",
                             },
                         },
                         create(context) {
@@ -214,8 +215,15 @@ module.exports = tseslint.config(
                                     ? count(n.left) + count(n.right)
                                     : 1;
                             const check = (t) => {
-                                if (t && t.type === "LogicalExpression" && count(t) >= 3) {
-                                    context.report({ node: t, messageId: "complex" });
+                                if (
+                                    t &&
+                                    t.type === "LogicalExpression" &&
+                                    count(t) >= 3
+                                ) {
+                                    context.report({
+                                        node: t,
+                                        messageId: "complex",
+                                    });
                                 }
                             };
 
@@ -277,12 +285,14 @@ module.exports = tseslint.config(
                                     { type: "routes" },
                                 ],
                             },
-                            message: "Application must not import infrastructure or HTTP layers.",
+                            message:
+                                "Application must not import infrastructure or HTTP layers.",
                         },
                         {
                             from: [{ type: "controller" }],
                             disallow: { to: [{ type: "infrastructure" }] },
-                            message: "Controllers must not import infrastructure directly; use use-cases.",
+                            message:
+                                "Controllers must not import infrastructure directly; use use-cases.",
                         },
                     ],
                 },

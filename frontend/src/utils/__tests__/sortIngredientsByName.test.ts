@@ -4,9 +4,13 @@ import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 const make = (id: number, name: string): Ingredient => ({
     id,
+    slug: name.toLowerCase(),
     name,
+    category: "vegetables",
     unit_name: "g",
-    allergens: null,
+    allergens: [],
+    days_to_expire: null,
+    calories_per_unit: null,
 });
 
 describe("sortIngredientsByName", () => {

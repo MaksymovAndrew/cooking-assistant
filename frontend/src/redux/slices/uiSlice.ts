@@ -1,6 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
+import type { ExpiringIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
 
 import type { ThemeChoice } from "redux/slices/themeSlice";
@@ -13,6 +14,7 @@ export const MODAL_TYPE = {
     deleteIngredient: "deleteIngredient",
     logout: "logout",
     themeChange: "themeChange",
+    expiredIngredients: "expiredIngredients",
 } as const;
 
 export interface IngredientHistoryModalInput {
@@ -71,20 +73,31 @@ export interface ThemeChangeModal extends ThemeChangeModalInput {
     id: string;
 }
 
+export interface ExpiredIngredientsModalInput {
+    type: typeof MODAL_TYPE.expiredIngredients;
+    ingredients: ExpiringIngredient[];
+}
+
+export interface ExpiredIngredientsModal extends ExpiredIngredientsModalInput {
+    id: string;
+}
+
 export type ModalInput =
     | IngredientHistoryModalInput
     | DeleteRecipeModalInput
     | DeleteMenuModalInput
     | DeleteIngredientModalInput
     | LogoutModalInput
-    | ThemeChangeModalInput;
+    | ThemeChangeModalInput
+    | ExpiredIngredientsModalInput;
 export type ActiveModal =
     | IngredientHistoryModal
     | DeleteRecipeModal
     | DeleteMenuModal
     | DeleteIngredientModal
     | LogoutModal
-    | ThemeChangeModal;
+    | ThemeChangeModal
+    | ExpiredIngredientsModal;
 
 interface UiState {
     modal: ActiveModal | null;

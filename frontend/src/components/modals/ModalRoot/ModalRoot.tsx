@@ -5,6 +5,7 @@ import { closeModal, MODAL_TYPE } from "redux/slices/uiSlice";
 import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
 import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
+import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
@@ -67,6 +68,15 @@ export const ModalRoot = () => {
             <ThemeChangeConfirmModal
                 modalId={modal.id}
                 nextMode={modal.nextMode}
+            />
+        );
+    }
+
+    if (modal?.type === MODAL_TYPE.expiredIngredients) {
+        return (
+            <ExpiredIngredientsModal
+                modalId={modal.id}
+                ingredients={modal.ingredients}
             />
         );
     }

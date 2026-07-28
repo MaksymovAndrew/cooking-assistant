@@ -17,16 +17,6 @@ interface RecipeDetailRow extends RecipeListRow {
     isOwner: boolean;
 }
 
-interface IngredientRow {
-    id: number;
-    name: string;
-    allergens: string | null;
-    days_to_expire: number | null;
-    seasonality: string | null;
-    storage_condition: string | null;
-    unit_name: string | null;
-}
-
 export async function findAllRecipes(pool: Pool): Promise<unknown[]> {
     const result = await pool.query<RecipeListRow>(
         `SELECT r.*, rt.type_name, array_agg(i.name) AS ingredients
@@ -51,7 +41,9 @@ export async function findRecipeByIdWithIngredients(
                   json_agg(
                       json_build_object(
                           'id', i.id,
+                          'slug', i.slug,
                           'name', i.name,
+                          'category', i.category,
                           'quantity_recipe_ingredients', ri.quantity_recipe_ingredients,
                           'unit_name', um.unit_name,
                           'allergens', i.allergens
@@ -69,14 +61,4 @@ export async function findRecipeByIdWithIngredients(
     );
 
     return result.rows[0] ?? null;
-}
-
-export async function findAllRecipeIngredients(pool: Pool): Promise<unknown[]> {
-    const result = await pool.query<IngredientRow>(
-        `SELECT i.*, um.unit_name
-           FROM ingredients i
-                  LEFT JOIN unit_measurement um ON i.id_unit_measurement = um.id`,
-    );
-
-    return result.rows;
 }

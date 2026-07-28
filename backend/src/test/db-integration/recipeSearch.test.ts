@@ -18,10 +18,10 @@ interface RecipeSearchRow {
     id: number;
     title: string;
     cooking_time: number | null;
-    ingredients: { id: number; name: string; allergens: string | null }[];
+    ingredients: { id: number; name: string; allergens: string[] }[];
 }
 
-// targets the hand-built SQL in PgRecipeRepository.search.ts (ILIKE/ANY filters, GROUP BY + COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
+// targets the hand-built SQL in PgRecipeRepository.search.ts (EXISTS/ANY filters, GROUP BY + COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
 describe("PgRecipeRepository search (real Postgres)", () => {
     let pool: Pool;
     let repository: PgRecipeRepository;
@@ -39,7 +39,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         await pool.end();
     });
 
-    // each test scopes its search by a fresh unique ingredient name, so tests never see each other's recipes in the shared database
+    // each test scopes its search by a fresh unique ingredient, so tests never see each other's recipes in the shared database
     async function createNamedIngredient(): Promise<{
         id: number;
         name: string;
@@ -53,9 +53,9 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         return { id, name: result.rows[0].name };
     }
 
-    async function createRecipeWithIngredient(
+    async function createRecipeWithIngredients(
         title: string,
-        ingredientId: number,
+        ingredientIds: number[],
         cookingTime: number,
         typeId?: number,
     ): Promise<number> {
@@ -65,25 +65,28 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             person_id: ownerId,
             type_id: typeId,
             cooking_time: cookingTime,
-            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
+            ingredients: ingredientIds.map((id) => ({
+                id,
+                quantity_recipe_ingredients: 1,
+            })),
         });
         const created = (await repository.create(recipe)) as { id: number };
 
         return created.id;
     }
 
-    it("should filter by ingredient name, scoped by the unique fixture ingredient", async () => {
+    it("should filter by ingredient_ids, scoped by the unique fixture ingredient", async () => {
         const ingredient = await createNamedIngredient();
-        const recipeId = await createRecipeWithIngredient(
+        const recipeId = await createRecipeWithIngredients(
             "Ingredient filter recipe",
-            ingredient.id,
+            [ingredient.id],
             10,
         );
         const filters: RecipeFilters = {
-            ingredient_name: ingredient.name,
+            ingredient_ids: String(ingredient.id),
         };
 
-        const result = await repository.search(filters);
+        const result = await repository.search(ownerId, filters);
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: recipeId }),
@@ -91,21 +94,59 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         expect(result.total).toBe(1);
     });
 
+    it("should match a recipe containing any one of several requested ingredient_ids", async () => {
+        const first = await createNamedIngredient();
+        const second = await createNamedIngredient();
+        const recipeId = await createRecipeWithIngredients(
+            "Or-semantics recipe",
+            [first.id],
+            10,
+        );
+
+        const result = await repository.search(ownerId, {
+            ingredient_ids: `${first.id},${second.id}`,
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: recipeId }),
+        ]);
+    });
+
+    it("should list every ingredient of a matched recipe, not just the one that matched the filter", async () => {
+        const matched = await createNamedIngredient();
+        const other = await createNamedIngredient();
+        const recipeId = await createRecipeWithIngredients(
+            "Full ingredient list recipe",
+            [matched.id, other.id],
+            10,
+        );
+
+        const result = (await repository.search(ownerId, {
+            ingredient_ids: String(matched.id),
+        })) as { items: RecipeSearchRow[] };
+        const recipe = result.items.find((item) => item.id === recipeId);
+
+        expect(recipe?.ingredients).toHaveLength(2);
+        expect(recipe?.ingredients.map((i) => i.id).sort()).toEqual(
+            [matched.id, other.id].sort(),
+        );
+    });
+
     it("should filter by type_ids", async () => {
         const ingredient = await createNamedIngredient();
         const typeId = await createRecipeType(pool);
-        const recipeId = await createRecipeWithIngredient(
+        const recipeId = await createRecipeWithIngredients(
             "Type filter recipe",
-            ingredient.id,
+            [ingredient.id],
             10,
             typeId,
         );
         const filters: RecipeFilters = {
-            ingredient_name: ingredient.name,
+            ingredient_ids: String(ingredient.id),
             type_ids: String(typeId),
         };
 
-        const result = await repository.search(filters);
+        const result = await repository.search(ownerId, filters);
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: recipeId }),
@@ -114,22 +155,30 @@ describe("PgRecipeRepository search (real Postgres)", () => {
 
     it("should filter by a cooking-time range", async () => {
         const ingredient = await createNamedIngredient();
-        const inRangeId = await createRecipeWithIngredient(
+        const inRangeId = await createRecipeWithIngredients(
             "In-range recipe",
-            ingredient.id,
+            [ingredient.id],
             30,
         );
 
-        await createRecipeWithIngredient("Too-fast recipe", ingredient.id, 5);
-        await createRecipeWithIngredient("Too-slow recipe", ingredient.id, 90);
+        await createRecipeWithIngredients(
+            "Too-fast recipe",
+            [ingredient.id],
+            5,
+        );
+        await createRecipeWithIngredients(
+            "Too-slow recipe",
+            [ingredient.id],
+            90,
+        );
 
         const filters: RecipeFilters = {
-            ingredient_name: ingredient.name,
+            ingredient_ids: String(ingredient.id),
             min_cooking_time: 20,
             max_cooking_time: 60,
         };
 
-        const result = await repository.search(filters);
+        const result = await repository.search(ownerId, filters);
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: inRangeId }),
@@ -138,23 +187,23 @@ describe("PgRecipeRepository search (real Postgres)", () => {
 
     it("should sort by cooking time in the requested order", async () => {
         const ingredient = await createNamedIngredient();
-        const fastId = await createRecipeWithIngredient(
+        const fastId = await createRecipeWithIngredients(
             "Fast sort recipe",
-            ingredient.id,
+            [ingredient.id],
             5,
         );
-        const slowId = await createRecipeWithIngredient(
+        const slowId = await createRecipeWithIngredients(
             "Slow sort recipe",
-            ingredient.id,
+            [ingredient.id],
             50,
         );
 
-        const ascending = (await repository.search({
-            ingredient_name: ingredient.name,
+        const ascending = (await repository.search(ownerId, {
+            ingredient_ids: String(ingredient.id),
             sort_order: "asc",
         })) as { items: RecipeSearchRow[] };
-        const descending = (await repository.search({
-            ingredient_name: ingredient.name,
+        const descending = (await repository.search(ownerId, {
+            ingredient_ids: String(ingredient.id),
             sort_order: "desc",
         })) as { items: RecipeSearchRow[] };
 
@@ -166,20 +215,20 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         const ingredient = await createNamedIngredient();
 
         for (let i = 0; i < 3; i += 1) {
-            await createRecipeWithIngredient(
+            await createRecipeWithIngredients(
                 `Pagination recipe ${i}`,
-                ingredient.id,
+                [ingredient.id],
                 10 + i,
             );
         }
 
-        const firstPage = await repository.search({
-            ingredient_name: ingredient.name,
+        const firstPage = await repository.search(ownerId, {
+            ingredient_ids: String(ingredient.id),
             limit: 2,
             offset: 0,
         });
-        const secondPage = await repository.search({
-            ingredient_name: ingredient.name,
+        const secondPage = await repository.search(ownerId, {
+            ingredient_ids: String(ingredient.id),
             limit: 2,
             offset: 2,
         });
@@ -191,20 +240,20 @@ describe("PgRecipeRepository search (real Postgres)", () => {
     });
 
     it("should include each ingredient's allergens in the search results", async () => {
-        const glutenId = await createIngredient(pool, unitId, "Gluten");
+        const glutenId = await createIngredient(pool, unitId, ["gluten"]);
         const result = await pool.query<{ name: string }>(
             `SELECT name FROM ingredients WHERE id = $1`,
             [glutenId],
         );
         const glutenName = result.rows[0].name;
-        const recipeId = await createRecipeWithIngredient(
+        const recipeId = await createRecipeWithIngredients(
             "Allergen search recipe",
-            glutenId,
+            [glutenId],
             10,
         );
 
-        const search = (await repository.search({
-            ingredient_name: glutenName,
+        const search = (await repository.search(ownerId, {
+            ingredient_ids: String(glutenId),
         })) as { items: RecipeSearchRow[] };
 
         expect(search.items).toEqual([
@@ -213,7 +262,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
                 ingredients: [
                     expect.objectContaining({
                         name: glutenName,
-                        allergens: "Gluten",
+                        allergens: ["gluten"],
                     }),
                 ],
             }),
@@ -223,9 +272,9 @@ describe("PgRecipeRepository search (real Postgres)", () => {
     it("should scope searchByPerson to only that person's recipes", async () => {
         const otherPersonId = await createPerson(pool);
         const ingredient = await createNamedIngredient();
-        const ownRecipeId = await createRecipeWithIngredient(
+        const ownRecipeId = await createRecipeWithIngredients(
             "Own recipe",
-            ingredient.id,
+            [ingredient.id],
             10,
         );
 
@@ -242,7 +291,130 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         await repository.create(otherRecipe);
 
         const result = await repository.searchByPerson(ownerId, {
-            ingredient_name: ingredient.name,
+            ingredient_ids: String(ingredient.id),
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: ownRecipeId }),
+        ]);
+    });
+
+    it("should only return recipes whose every ingredient is in the requester's pantry when in_pantry is set", async () => {
+        const requesterId = await createPerson(pool);
+        const inPantry = await createNamedIngredient();
+        const notInPantry = await createNamedIngredient();
+        const fullyStockedId = await createRecipeWithIngredients(
+            "Fully stocked recipe",
+            [inPantry.id],
+            10,
+        );
+
+        await createRecipeWithIngredients(
+            "Missing an ingredient recipe",
+            [inPantry.id, notInPantry.id],
+            10,
+        );
+        await pool.query(
+            `INSERT INTO person_ingredients (person_id, ingredient_id) VALUES ($1, $2)`,
+            [requesterId, inPantry.id],
+        );
+
+        const result = await repository.search(requesterId, {
+            ingredient_ids: `${inPantry.id},${notInPantry.id}`,
+            in_pantry: true,
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: fullyStockedId }),
+        ]);
+    });
+
+    it("should exclude a recipe when the pantry has the ingredient but not enough of it", async () => {
+        const requesterId = await createPerson(pool);
+        const ingredient = await createNamedIngredient();
+        const recipe = Recipe.forCreation({
+            title: "Needs half a kilo recipe",
+            content: "Quantity fixture.",
+            person_id: ownerId,
+            cooking_time: 10,
+            ingredients: [
+                { id: ingredient.id, quantity_recipe_ingredients: 0.5 },
+            ],
+        });
+        const created = (await repository.create(recipe)) as { id: number };
+
+        await pool.query(
+            `INSERT INTO person_ingredients (person_id, ingredient_id, quantity_person_ingradient) VALUES ($1, $2, $3)`,
+            [requesterId, ingredient.id, 0.2],
+        );
+
+        const shortOnStock = await repository.search(requesterId, {
+            ingredient_ids: String(ingredient.id),
+            in_pantry: true,
+        });
+
+        expect(
+            shortOnStock.items.some(
+                (item) => (item as { id: number }).id === created.id,
+            ),
+        ).toBe(false);
+
+        await pool.query(
+            `UPDATE person_ingredients SET quantity_person_ingradient = $1 WHERE person_id = $2 AND ingredient_id = $3`,
+            [0.5, requesterId, ingredient.id],
+        );
+
+        const fullyStocked = await repository.search(requesterId, {
+            ingredient_ids: String(ingredient.id),
+            in_pantry: true,
+        });
+
+        expect(fullyStocked.items).toEqual([
+            expect.objectContaining({ id: created.id }),
+        ]);
+    });
+
+    it("should not match a recipe with no ingredients when in_pantry is set", async () => {
+        const requesterId = await createPerson(pool);
+
+        // Recipe.forCreation enforces non-empty ingredients, so insert directly to reach the edge case the second EXISTS guards against
+        const created = await pool.query<{ id: number }>(
+            `INSERT INTO recipes (title, content, person_id, cooking_time) VALUES ($1, $2, $3, $4) RETURNING id`,
+            [
+                "Ingredient-less recipe",
+                "Should never pass an all-ingredients-in-pantry check.",
+                ownerId,
+                10,
+            ],
+        );
+
+        const result = await repository.search(requesterId, {
+            in_pantry: true,
+        });
+
+        expect(
+            result.items.some(
+                (item) => (item as { id: number }).id === created.rows[0].id,
+            ),
+        ).toBe(false);
+    });
+
+    it("should keep the in_pantry filter scoped to the requesting person in searchByPerson", async () => {
+        const inPantry = await createNamedIngredient();
+        const ownRecipeId = await createRecipeWithIngredients(
+            "Own fully stocked recipe",
+            [inPantry.id],
+            10,
+        );
+
+        await pool.query(
+            `INSERT INTO person_ingredients (person_id, ingredient_id) VALUES ($1, $2)`,
+            [ownerId, inPantry.id],
+        );
+
+        const result = await repository.searchByPerson(ownerId, {
+            ingredient_ids: String(inPantry.id),
+            in_pantry: true,
         });
 
         expect(result.items).toEqual([

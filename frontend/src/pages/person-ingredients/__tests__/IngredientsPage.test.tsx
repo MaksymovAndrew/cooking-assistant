@@ -19,23 +19,45 @@ const INGREDIENT_NAME = "Potato";
 const SEARCH_INGREDIENTS_PLACEHOLDER = "Search ingredients...";
 const SAVE_QUANTITY = "Save";
 const EDIT_QUANTITIES = "Edit quantities";
+const SALMON_NAME = "Salmon fillet";
 const USER_INGREDIENTS: UserIngredient[] = [
     {
         ingredient_id: 5,
+        ingredient_slug: "potato",
         ingredient_name: INGREDIENT_NAME,
+        category: "vegetables",
         unit_name: "g",
         quantity_person_ingradient: 100,
+        allergens: [],
     },
 ];
 const ALL_INGREDIENTS: Ingredient[] = [
-    { id: 5, name: INGREDIENT_NAME, unit_name: "g", allergens: null },
-    { id: 6, name: "Tomato", unit_name: "kg", allergens: null },
+    {
+        id: 5,
+        slug: "potato",
+        name: INGREDIENT_NAME,
+        category: "vegetables",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 30,
+        calories_per_unit: null,
+    },
+    {
+        id: 6,
+        slug: "tomato",
+        name: "Tomato",
+        category: "vegetables",
+        unit_name: "kg",
+        allergens: [],
+        days_to_expire: 7,
+        calories_per_unit: null,
+    },
 ];
 
 let pantry: UserIngredient[];
 
-const setup = () => {
-    pantry = USER_INGREDIENTS;
+const setup = (initialPantry: UserIngredient[] = USER_INGREDIENTS) => {
+    pantry = initialPantry;
     mockedGet.mockImplementation((url: string) => {
         if (url === API_ROUTES.ingredients.list) {
             return Promise.resolve({ data: ALL_INGREDIENTS });
@@ -224,5 +246,31 @@ describe("IngredientsPage", () => {
         expect(
             screen.getByText("No ingredients match your search."),
         ).toBeInTheDocument();
+    });
+
+    it("should filter the pantry by category using the category select", async () => {
+        setup([
+            ...USER_INGREDIENTS,
+            {
+                ingredient_id: 6,
+                ingredient_slug: "salmon",
+                ingredient_name: SALMON_NAME,
+                category: "fish",
+                unit_name: "g",
+                quantity_person_ingradient: 200,
+                allergens: ["fish"],
+            },
+        ]);
+
+        await screen.findByText(INGREDIENT_NAME);
+        expect(screen.getByText(SALMON_NAME)).toBeInTheDocument();
+
+        await userEvent.selectOptions(
+            screen.getByRole("combobox", { name: "Filter by category" }),
+            "fish",
+        );
+
+        expect(screen.queryByText(INGREDIENT_NAME)).not.toBeInTheDocument();
+        expect(screen.getByText(SALMON_NAME)).toBeInTheDocument();
     });
 });

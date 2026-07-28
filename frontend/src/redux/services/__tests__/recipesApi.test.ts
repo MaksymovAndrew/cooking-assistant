@@ -28,11 +28,11 @@ const LIST: RecipeSearchResultItem[] = [
         type_name: "Hot",
         creation_date: "2024-01-01",
         cooking_time: 30,
-        ingredients: [{ id: 1, name: "Tomato", allergens: null }],
+        ingredients: [{ id: 1, name: "Tomato", allergens: [] }],
     },
 ];
 const PAGE = { items: LIST, total: LIST.length };
-const FILTERS: RecipeFilterParams = { ingredient_name: "", sort_order: "asc" };
+const FILTERS: RecipeFilterParams = { sort_order: "asc" };
 const CREATE: CreateRecipeRequest = {
     title: "Soup",
     content: "boil",

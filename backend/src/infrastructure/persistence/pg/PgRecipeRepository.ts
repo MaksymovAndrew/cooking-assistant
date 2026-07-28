@@ -9,7 +9,6 @@ import {
     updateRecipeInDb,
 } from "./PgRecipeRepository.mutations";
 import {
-    findAllRecipeIngredients,
     findAllRecipes,
     findRecipeByIdWithIngredients,
 } from "./PgRecipeRepository.reads";
@@ -53,8 +52,11 @@ export default class PgRecipeRepository implements RecipeRepository {
         return updateRecipeInDb(this.pool, recipeId, personId, data);
     }
 
-    async search(filters: unknown): Promise<PaginatedResult<unknown>> {
-        return searchRecipes(this.pool, filters);
+    async search(
+        userId: number,
+        filters: unknown,
+    ): Promise<PaginatedResult<unknown>> {
+        return searchRecipes(this.pool, userId, filters);
     }
 
     async searchByPerson(
@@ -116,10 +118,6 @@ export default class PgRecipeRepository implements RecipeRepository {
         } finally {
             client.release();
         }
-    }
-
-    async findAllIngredients(): Promise<unknown[]> {
-        return findAllRecipeIngredients(this.pool);
     }
 
     async getStats(): Promise<unknown> {

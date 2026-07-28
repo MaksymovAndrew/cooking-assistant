@@ -10,15 +10,18 @@ import {
     flattenPages,
     getPaginatedTotal,
 } from "redux/services/infiniteQueryHelpers";
+import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 import {
     useGetRecipesByFiltersInfiniteQuery,
     useGetRecipesByPersonInfiniteQuery,
 } from "redux/services/recipesApi";
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
+import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
 import {
     RECIPE_DEFAULT_SORT_ORDER,
     type RecipeFiltersState,
     setRecipeEndDate,
+    setRecipeInPantry,
     setRecipeMaxCookingTime,
     setRecipeMinCookingTime,
     setRecipeSelectedTypes,
@@ -30,7 +33,15 @@ import { getQueryErrorMessage } from "utils/queryError";
 import {
     buildRecipeFilterParams,
     hasActiveRecipeFilters,
+    matchIngredientIds,
 } from "utils/recipeFilterParams";
+
+import {
+    hasUnmatchedIngredientSearch,
+    isPantryFilterEmpty,
+    isRecipeListEmpty,
+    shouldSkipRecipesRequest,
+} from "./recipeListViewHelpers";
 
 export interface RecipeFilterState extends RecipeFiltersState {
     ingredientName: string | null;
@@ -51,17 +62,39 @@ export const useRecipeListView = (source: RecipeSource) => {
     const ingredientName = searchParams.get(SEARCH_PARAM_INGREDIENT_NAME);
     const filters = { ...recipeFilters, ingredientName };
 
+    // the catalog is already cached by the ingredient picker/pantry pages - this is a read, not a new request
+    const { data: catalog = [] } = useGetIngredientsQuery(null);
+    const matchedIngredientIds = useMemo(
+        () => matchIngredientIds(ingredientName, catalog),
+        [ingredientName, catalog],
+    );
+    const hasUnmatchedSearch = hasUnmatchedIngredientSearch(
+        ingredientName,
+        matchedIngredientIds,
+    );
+
+    // already fetched by the pantry page/home dashboard - a cache read, not a new request
+    const { data: pantry = [] } = useGetUserIngredientsQuery(null);
+    const isPantryEmpty = isPantryFilterEmpty(
+        recipeFilters.inPantry,
+        pantry.length,
+    );
+    const skipRecipesRequest = shouldSkipRecipesRequest(
+        hasUnmatchedSearch,
+        isPantryEmpty,
+    );
+
     const params = useMemo(
-        () => buildRecipeFilterParams(recipeFilters, ingredientName),
-        [recipeFilters, ingredientName],
+        () => buildRecipeFilterParams(recipeFilters, matchedIngredientIds),
+        [recipeFilters, matchedIngredientIds],
     );
 
     const isPerson = source === RECIPE_SOURCE.person;
     const byFilters = useGetRecipesByFiltersInfiniteQuery(params, {
-        skip: isPerson,
+        skip: isPerson || skipRecipesRequest,
     });
     const byPerson = useGetRecipesByPersonInfiniteQuery(params, {
-        skip: !isPerson,
+        skip: !isPerson || skipRecipesRequest,
     });
     const active = isPerson ? byPerson : byFilters;
 
@@ -94,6 +127,7 @@ export const useRecipeListView = (source: RecipeSource) => {
         dispatch(setRecipeMinCookingTime(""));
         dispatch(setRecipeMaxCookingTime(""));
         dispatch(setRecipeSortOrder(RECIPE_DEFAULT_SORT_ORDER));
+        dispatch(setRecipeInPantry(false));
     };
 
     return {
@@ -107,13 +141,20 @@ export const useRecipeListView = (source: RecipeSource) => {
         setMaxCookingTime: (time: string) =>
             dispatch(setRecipeMaxCookingTime(time)),
         setSortOrder: (order: string) => dispatch(setRecipeSortOrder(order)),
+        setInPantry: (value: boolean) => dispatch(setRecipeInPantry(value)),
         clearFilters,
         hasActiveFilters: hasActiveRecipeFilters(filters),
         types: allTypes,
         recipes,
         currentUserId: currentUser?.id ?? null,
         error: !hasLoadedRecipes ? errorMessage : null,
-        noRecipes: active.isSuccess && !hasLoadedRecipes,
+        noRecipes: isRecipeListEmpty(
+            hasUnmatchedSearch,
+            isPantryEmpty,
+            active.isSuccess,
+            hasLoadedRecipes,
+        ),
+        isPantryEmpty,
         descriptions,
         typesHeader,
         total,

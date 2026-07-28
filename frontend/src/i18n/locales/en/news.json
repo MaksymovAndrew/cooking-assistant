@@ -3,6 +3,11 @@
     "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "newIngredientCatalog": {
+            "date": "2026-07-28",
+            "title": "A bigger pantry, smarter recipes",
+            "description": "The ingredient catalog has been rebuilt with over 700 items, including meat and fish, all in metric units and browsable by category. Recipes now have a \"From my pantry\" filter that shows only what you can make right now, plus a heads-up popup if anything in your pantry has expired. This rebuild reset existing ingredients, recipes, menus, and pantry contents - your account itself is unaffected."
+        },
         "profileControls": {
             "date": "2026-07-24",
             "title": "Make your profile yours",

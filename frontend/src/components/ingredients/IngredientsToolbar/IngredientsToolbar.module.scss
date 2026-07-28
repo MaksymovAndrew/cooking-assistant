@@ -45,6 +45,12 @@
         }
     }
 
+    &__category-select {
+        flex: none;
+        width: auto;
+        min-width: 180px;
+    }
+
     &__filter-pill {
         flex: none;
         height: 44px;

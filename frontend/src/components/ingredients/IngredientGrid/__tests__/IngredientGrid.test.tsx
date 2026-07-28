@@ -7,15 +7,21 @@ import { IngredientGrid } from "components/ingredients/IngredientGrid";
 const INGREDIENTS: PantryIngredient[] = [
     {
         id: 1,
+        slug: "carrot",
         ingredient_name: "Carrot",
+        category: "vegetables",
         unit_name: "kg",
         quantity_person_ingradient: 2,
+        allergens: [],
     },
     {
         id: 2,
+        slug: "onion",
         ingredient_name: "Onion",
+        category: "vegetables",
         unit_name: "kg",
         quantity_person_ingradient: 1,
+        allergens: [],
     },
 ];
 

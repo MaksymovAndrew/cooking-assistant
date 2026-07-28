@@ -4,12 +4,14 @@ import { getRecipeAllergens } from "utils/recipeAllergens";
 
 const ingredient = (
     name: string,
-    allergens: string | null,
+    allergens: string[],
 ): RecipeDetailIngredient => ({
     id: 1,
+    slug: name.toLowerCase(),
     name,
+    category: "vegetables",
     quantity_recipe_ingredients: 1,
-    unit_name: "pcs",
+    unit_name: "piece",
     allergens,
 });
 
@@ -17,8 +19,8 @@ describe("getRecipeAllergens", () => {
     it("should return an empty list when no ingredient has an allergen", () => {
         expect(
             getRecipeAllergens([
-                ingredient("Potato", "None"),
-                ingredient("Water", null),
+                ingredient("Potato", []),
+                ingredient("Water", []),
             ]),
         ).toEqual([]);
     });
@@ -26,11 +28,11 @@ describe("getRecipeAllergens", () => {
     it("should return the unique allergens across all ingredients", () => {
         expect(
             getRecipeAllergens([
-                ingredient("Flour", "Gluten"),
-                ingredient("Pasta", "Gluten"),
-                ingredient("Milk", "Dairy"),
-                ingredient("Water", "None"),
+                ingredient("Flour", ["gluten"]),
+                ingredient("Pasta", ["gluten"]),
+                ingredient("Milk", ["milk"]),
+                ingredient("Water", []),
             ]),
-        ).toEqual(["Gluten", "Dairy"]);
+        ).toEqual(["gluten", "milk"]);
     });
 });

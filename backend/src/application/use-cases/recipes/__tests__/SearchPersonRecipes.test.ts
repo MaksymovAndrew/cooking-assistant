@@ -14,7 +14,7 @@ function setup() {
 describe("SearchPersonRecipes", () => {
     it("should search person recipes with filters and return the repository result", async () => {
         const { useCase, recipeRepository } = setup();
-        const filters = { ingredient_name: "tomato", type_ids: "2" };
+        const filters = { ingredient_ids: "3", type_ids: "2" };
         const paginated = {
             items: [{ id: 1, title: "Tomato soup" }],
             total: 1,
@@ -71,5 +71,18 @@ describe("SearchPersonRecipes", () => {
             400,
         );
         expect(recipeRepository.searchByPerson).not.toHaveBeenCalled();
+    });
+
+    it("should pass through the in_pantry filter as a boolean", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.searchByPerson.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { in_pantry: "true" });
+
+        expect(recipeRepository.searchByPerson).toHaveBeenCalledWith(7, {
+            in_pantry: true,
+        });
     });
 });

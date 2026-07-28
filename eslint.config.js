@@ -5,7 +5,16 @@ const playwright = require("eslint-plugin-playwright");
 const prettier = require("eslint-config-prettier");
 
 module.exports = tseslint.config(
-    { ignores: ["backend", "frontend", "node_modules", "test-results", "playwright-report"] },
+    {
+        ignores: [
+            "backend",
+            "frontend",
+            "node_modules",
+            "test-results",
+            "playwright-report",
+            "coverage",
+        ],
+    },
     {
         files: ["playwright.config.ts", "e2e/**/*.ts"],
         extends: [

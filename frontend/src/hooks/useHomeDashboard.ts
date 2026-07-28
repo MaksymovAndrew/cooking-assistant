@@ -16,8 +16,8 @@ import { getExpiryStatus } from "utils/expiry";
 // fetched once at the desktop count (3x3); tablet/mobile crop the same 9 down to 4/2 via CSS (nth-child), so there's only ever one request
 const RECENT_RECIPES_LIMIT = 9;
 const EXPIRING_SOON_LIMIT = 5;
-// omitting sort_order (not "") falls back to the backend's creation_date DESC
-const RECENT_RECIPES_PARAMS = { ingredient_name: "" };
+// omitting sort_order falls back to the backend's creation_date DESC
+const RECENT_RECIPES_PARAMS = {};
 
 const byNearestExpiry = (a: ExpiringIngredient, b: ExpiringIngredient) =>
     a.status.days - b.status.days;
@@ -50,6 +50,7 @@ export const useHomeDashboard = () => {
                 return status && status.tone !== "ok"
                     ? {
                           ingredientId: ingredient.ingredient_id,
+                          slug: ingredient.ingredient_slug,
                           name: ingredient.ingredient_name,
                           status,
                       }

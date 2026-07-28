@@ -8,10 +8,12 @@ import {
     nonEmptyStringSchema,
     numberSchema,
     offsetSchema,
-    optionalStringSchema,
     positiveIntegerSchema,
     toNumber,
 } from "./common.schemas";
+
+// caps how many ids this filter accepts, since the catalog has hundreds of entries and a search match can surface many
+const MAX_INGREDIENT_FILTER_IDS = 20;
 
 // both quantity field names are accepted and unified into quantity_recipe_ingredients
 const recipeIngredientSchema = z
@@ -53,7 +55,12 @@ export const updateRecipeSchema = createRecipeSchema.omit({
 });
 
 export const recipeFiltersSchema = z.object({
-    ingredient_name: optionalStringSchema("Ingredient name"),
+    ingredient_ids: idListStringSchema("Ingredient IDs")
+        .refine(
+            (value) => value.split(",").length <= MAX_INGREDIENT_FILTER_IDS,
+            `Ingredient IDs must be at most ${MAX_INGREDIENT_FILTER_IDS} items`,
+        )
+        .optional(),
     type_ids: idListStringSchema("Type IDs").optional(),
     start_date: z
         .string({ invalid_type_error: "Start date must be a string" })
@@ -72,6 +79,13 @@ export const recipeFiltersSchema = z.object({
         positiveIntegerSchema("Max cooking time").optional(),
     ),
     sort_order: z.enum(["asc", "desc"]).optional(),
+    in_pantry: z
+        .string({ invalid_type_error: "In pantry must be true or false" })
+        .refine((value) => value === "true" || value === "false", {
+            message: "In pantry must be true or false",
+        })
+        .transform((value) => value === "true")
+        .optional(),
     limit: limitSchema,
     offset: offsetSchema,
 });

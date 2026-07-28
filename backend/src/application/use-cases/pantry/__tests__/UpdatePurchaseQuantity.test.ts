@@ -40,14 +40,14 @@ describe("UpdatePurchaseQuantity", () => {
         );
     });
 
-    it("should throw a 400 ValidationError when quantity is below 1", async () => {
+    it("should throw a 400 ValidationError when quantity is not greater than 0", async () => {
         const { useCase, pantryRepository } = setup();
 
         const error = await catchError(useCase.execute(7, 12, 0));
 
         expect(error).toBeAppError(
             ValidationError,
-            "Quantity must be at least 1",
+            "Quantity must be greater than 0",
             400,
         );
         expect(pantryRepository.updatePurchaseQuantity).not.toHaveBeenCalled();

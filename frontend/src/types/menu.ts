@@ -19,6 +19,8 @@ export interface MenuCategory {
 }
 
 export interface MissingIngredient {
+    ingredient_id: number;
+    ingredient_slug: string;
     ingredient_name: string;
     needed_quantity: number;
     missing_quantity: number;
@@ -45,7 +47,7 @@ export interface MenuDetails {
         isOwner: boolean;
     };
     recipes: MenuDetailRecipe[];
-    // distinct raw allergen values across every recipe of the menu ("None" included)
+    // distinct allergen slugs across every recipe of the menu
     allergens: string[];
 }
 

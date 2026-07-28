@@ -43,7 +43,7 @@ const MENU: Menu = {
     recipe_count: 3,
 };
 
-const RECIPES_PARAMS = { ingredient_name: "" };
+const RECIPES_PARAMS = {};
 const MENUS_PARAMS = { menu_name: "" };
 
 const setup = async () => {

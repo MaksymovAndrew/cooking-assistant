@@ -25,7 +25,16 @@ const TITLE = "Mashed potatoes";
 const DESCRIPTION = "Boil and mash";
 const SAMPLE_TYPES = [{ id: TYPE_ID, type_name: "Soup", description: "" }];
 const SAMPLE_INGREDIENTS = [
-    { id: INGREDIENT_ID, name: "Potato", unit_name: "g", allergens: null },
+    {
+        id: INGREDIENT_ID,
+        slug: "potato",
+        name: "Potato",
+        category: "vegetables",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 30,
+        calories_per_unit: null,
+    },
 ];
 
 // pre-seed the cache by awaiting the real query thunks before the hook mounts, so the reference-data queries read already-fulfilled data on first render

@@ -10,6 +10,7 @@ import { EmailVerificationBanner } from "components/home/EmailVerificationBanner
 import { ExpiringSoon } from "components/home/ExpiringSoon";
 import { GreetingHeader } from "components/home/GreetingHeader";
 import { HomeActions } from "components/home/HomeActions";
+import { PantryRecipesCard } from "components/home/PantryRecipesCard";
 import { RecentRecipes } from "components/home/RecentRecipes";
 import { StatStrip } from "components/home/StatStrip";
 import { WhatsNewCard } from "components/home/WhatsNewCard";
@@ -61,6 +62,7 @@ export const HomeDashboard: React.FC = () => {
             <div className={styles["home-dashboard__panels"]}>
                 <RecentRecipes recipes={dashboard.recentRecipes} />
                 <div className={styles["home-dashboard__rail"]}>
+                    <PantryRecipesCard />
                     <ExpiringSoon items={dashboard.expiringSoon} />
                     <WhatsNewCard
                         onOpenAll={openNews}

@@ -9,7 +9,9 @@ describe("MenuMissingIngredientsPanel", () => {
         renderWithProviders(
             <MenuMissingIngredientsPanel
                 ingredients={{
-                    Tomato: {
+                    1: {
+                        slug: "tomato",
+                        name: "Tomato",
                         quantity: 2,
                         missingQuantity: 2,
                         unit: "kg",
@@ -23,7 +25,7 @@ describe("MenuMissingIngredientsPanel", () => {
         expect(screen.getByText("Ingredients")).toBeInTheDocument();
         expect(screen.getByText("1")).toBeInTheDocument();
         expect(screen.getByText("Tomato")).toBeInTheDocument();
-        expect(screen.getByText("2 kg")).toBeInTheDocument();
+        expect(screen.getByText("2 kilogram")).toBeInTheDocument();
         expect(
             screen.getByRole("link", { name: "Go to pantry" }),
         ).toHaveAttribute("href", "/ingredients");
@@ -33,10 +35,12 @@ describe("MenuMissingIngredientsPanel", () => {
         renderWithProviders(
             <MenuMissingIngredientsPanel
                 ingredients={{
-                    Onion: {
+                    2: {
+                        slug: "onion",
+                        name: "Onion",
                         quantity: 3,
                         missingQuantity: 0,
-                        unit: "pcs",
+                        unit: "piece",
                         sufficient: true,
                     },
                 }}
@@ -46,7 +50,7 @@ describe("MenuMissingIngredientsPanel", () => {
 
         expect(screen.queryByText("1")).not.toBeInTheDocument();
         expect(screen.getByText("Onion")).toBeInTheDocument();
-        expect(screen.getByText("3 pcs")).toBeInTheDocument();
+        expect(screen.getByText("3 piece")).toBeInTheDocument();
         expect(screen.getByLabelText("You have enough")).toBeInTheDocument();
     });
 
@@ -65,7 +69,7 @@ describe("MenuMissingIngredientsPanel", () => {
         renderWithProviders(
             <MenuMissingIngredientsPanel
                 ingredients={{}}
-                allergens={["Gluten", "Milk"]}
+                allergens={["gluten", "milk"]}
             />,
         );
 

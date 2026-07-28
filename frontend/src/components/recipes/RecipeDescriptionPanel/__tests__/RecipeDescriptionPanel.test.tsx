@@ -26,7 +26,7 @@ describe("RecipeDescriptionPanel", () => {
         render(
             <RecipeDescriptionPanel
                 content="Tasty."
-                allergens={["Gluten", "Milk"]}
+                allergens={["gluten", "milk"]}
             />,
         );
 

@@ -1,3 +1,4 @@
+import type { ExpiringIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
 
 import type { ActiveModal, ModalInput } from "redux/slices/uiSlice";
@@ -17,9 +18,12 @@ const MODAL: ActiveModal = { id: "modal-1", ...MODAL_INPUT };
 
 const PANTRY_INGREDIENT: PantryIngredient = {
     id: 9,
+    slug: "salt",
     ingredient_name: "Salt",
+    category: "spices",
     unit_name: "g",
     quantity_person_ingradient: 100,
+    allergens: [],
 };
 
 describe("uiSlice", () => {
@@ -94,6 +98,28 @@ describe("uiSlice", () => {
         expect(state.modal).toMatchObject({
             type: "deleteIngredient",
             ingredient: PANTRY_INGREDIENT,
+        });
+        expect(state.modal?.id.length).toBeGreaterThan(0);
+    });
+
+    it("should open an expired-ingredients modal carrying the ingredient list", () => {
+        const ingredients: ExpiringIngredient[] = [
+            {
+                ingredientId: 1,
+                slug: "milk",
+                name: "Milk",
+                status: { tone: "expired", days: -2 },
+            },
+        ];
+
+        const state = uiReducer(
+            undefined,
+            openModal({ type: MODAL_TYPE.expiredIngredients, ingredients }),
+        );
+
+        expect(state.modal).toMatchObject({
+            type: "expiredIngredients",
+            ingredients,
         });
         expect(state.modal?.id.length).toBeGreaterThan(0);
     });

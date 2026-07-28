@@ -20,6 +20,8 @@ interface PurchaseItemProps {
 }
 
 const EDIT_ICON_SIZE = 15;
+// matches the backend's positive-quantity floor now that purchases can be fractional (kg, l)
+const MIN_PURCHASE_QUANTITY = 0.01;
 
 export const PurchaseItem: React.FC<PurchaseItemProps> = ({
     purchase,
@@ -28,8 +30,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
 }) => {
     const { t } = useTranslation("ingredients");
     const expired = isExpired(purchase.purchase_date, purchase.days_to_expire);
-    // the quantity is read-only until the edit button is pressed, so an accidental scroll or
-    // stray tap over the row can never change a saved purchase
+    // read-only until the edit button is pressed, so an accidental scroll or stray tap over the row can never change a saved purchase
     const [isEditing, setIsEditing] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const quantity = useEditableQuantity(
@@ -37,7 +38,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
         (value) => {
             onQuantityChange(purchase.id, value);
         },
-        1,
+        MIN_PURCHASE_QUANTITY,
     );
 
     useEffect(() => {
@@ -60,7 +61,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
                 {isEditing ? (
                     <NumberInput
                         ref={inputRef}
-                        min={1}
+                        min={MIN_PURCHASE_QUANTITY}
                         className={styles["purchase-item__quantity"]}
                         value={quantity.text}
                         onChange={quantity.onChange}

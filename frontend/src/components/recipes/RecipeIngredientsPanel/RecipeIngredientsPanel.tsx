@@ -3,6 +3,8 @@ import React from "react";
 
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
+import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+
 import { RecipeIngredientsBanner } from "./RecipeIngredientsBanner";
 import { RecipeIngredientsHeader } from "./RecipeIngredientsHeader";
 import styles from "./RecipeIngredientsPanel.module.scss";
@@ -37,7 +39,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     onDecrement,
 }) => {
     const sorted = [...availability].sort((a, b) =>
-        a.name.localeCompare(b.name),
+        resolveIngredientName(a).localeCompare(resolveIngredientName(b)),
     );
 
     return (
@@ -87,7 +89,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                         <span
                             className={styles["recipe-ingredients-panel__name"]}
                         >
-                            {ingredient.name}
+                            {resolveIngredientName(ingredient)}
                         </span>
                         <span
                             className={styles["recipe-ingredients-panel__qty"]}
@@ -96,7 +98,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                                 ingredient.quantity_recipe_ingredients,
                                 scaleFactor,
                             )}{" "}
-                            {ingredient.unit_name}
+                            {resolveUnit(ingredient.unit_name)}
                         </span>
                     </li>
                 ))}

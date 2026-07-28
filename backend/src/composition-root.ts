@@ -1,4 +1,5 @@
 import { config } from "config/env";
+import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
@@ -9,6 +10,7 @@ import type { UserRepository } from "domain/repositories/UserRepository";
 import type { EmailSender } from "application/ports/EmailSender";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
+import GetAllIngredients from "application/use-cases/ingredients/GetAllIngredients";
 import GetAllMenuCategories from "application/use-cases/menu-categories/GetAllMenuCategories";
 import CreateMenu from "application/use-cases/menus/CreateMenu";
 import DeleteMenu from "application/use-cases/menus/DeleteMenu";
@@ -24,17 +26,9 @@ import GetUserIngredients from "application/use-cases/pantry/GetUserIngredients"
 import UpdateIngredientQuantities from "application/use-cases/pantry/UpdateIngredientQuantities";
 import UpdatePurchaseQuantity from "application/use-cases/pantry/UpdatePurchaseQuantity";
 import GetAllRecipeTypes from "application/use-cases/recipe-types/GetAllRecipeTypes";
-import CreateRecipe from "application/use-cases/recipes/CreateRecipe";
-import DeleteRecipe from "application/use-cases/recipes/DeleteRecipe";
-import GetAllIngredients from "application/use-cases/recipes/GetAllIngredients";
-import GetAllRecipes from "application/use-cases/recipes/GetAllRecipes";
-import GetRecipeById from "application/use-cases/recipes/GetRecipeById";
-import GetRecipeStats from "application/use-cases/recipes/GetRecipeStats";
-import SearchPersonRecipes from "application/use-cases/recipes/SearchPersonRecipes";
-import SearchRecipes from "application/use-cases/recipes/SearchRecipes";
-import UpdateRecipe from "application/use-cases/recipes/UpdateRecipe";
 
 import { createEmailSender } from "infrastructure/email/createEmailSender";
+import PgIngredientRepository from "infrastructure/persistence/pg/PgIngredientRepository";
 import PgMenuCategoryRepository from "infrastructure/persistence/pg/PgMenuCategoryRepository";
 import PgMenuRepository from "infrastructure/persistence/pg/PgMenuRepository";
 import PgPantryRepository from "infrastructure/persistence/pg/PgPantryRepository";
@@ -44,17 +38,20 @@ import PgUserRepository from "infrastructure/persistence/pg/PgUserRepository";
 import BcryptPasswordHasher from "infrastructure/security/BcryptPasswordHasher";
 import JwtTokenService from "infrastructure/security/JwtTokenService";
 
+import IngredientController from "controller/ingredient.controller";
 import MenuController from "controller/menu.controller";
 import MenuCategoryController from "controller/menuCategory.controller";
-import RecipeController from "controller/recipe.controller";
+import type RecipeController from "controller/recipe.controller";
 import RecipeTypeController from "controller/type.controller";
 import type UserController from "controller/user.controller";
 import UserIngredientsController from "controller/userIngredients.controller";
 
+import { buildRecipeController } from "./composition-root.recipe";
 import { buildUserController } from "./composition-root.user";
 import pool from "./db";
 
 export interface RepositoryDeps {
+    ingredientRepository: IngredientRepository;
     recipeRepository: RecipeRepository;
     recipeTypeRepository: RecipeTypeRepository;
     menuRepository: MenuRepository;
@@ -69,6 +66,7 @@ export interface RepositoryDeps {
 
 export interface Controllers {
     userController: UserController;
+    ingredientController: IngredientController;
     recipeController: RecipeController;
     recipeTypeController: RecipeTypeController;
     userIngredientsController: UserIngredientsController;
@@ -77,6 +75,7 @@ export interface Controllers {
 }
 
 export function buildControllers({
+    ingredientRepository,
     recipeRepository,
     recipeTypeRepository,
     menuRepository,
@@ -88,20 +87,17 @@ export function buildControllers({
     emailSender,
     frontendOrigin,
 }: RepositoryDeps): Controllers {
+    const ingredientController = new IngredientController({
+        getAllIngredients: new GetAllIngredients(ingredientRepository),
+    });
+
     const recipeTypeController = new RecipeTypeController({
         getAllRecipeTypes: new GetAllRecipeTypes(recipeTypeRepository),
     });
 
-    const recipeController = new RecipeController({
-        createRecipe: new CreateRecipe(recipeRepository),
-        getAllRecipes: new GetAllRecipes(recipeRepository),
-        getRecipeById: new GetRecipeById(recipeRepository),
-        updateRecipe: new UpdateRecipe(recipeRepository),
-        deleteRecipe: new DeleteRecipe(recipeRepository),
-        searchRecipes: new SearchRecipes(recipeRepository),
-        searchPersonRecipes: new SearchPersonRecipes(recipeRepository),
-        getRecipeStats: new GetRecipeStats(recipeRepository),
-        getAllIngredients: new GetAllIngredients(recipeRepository),
+    const recipeController = buildRecipeController({
+        recipeRepository,
+        ingredientRepository,
     });
 
     const menuController = new MenuController({
@@ -139,6 +135,7 @@ export function buildControllers({
 
     return {
         userController,
+        ingredientController,
         recipeController,
         recipeTypeController,
         userIngredientsController,
@@ -148,6 +145,7 @@ export function buildControllers({
 }
 
 const controllers = buildControllers({
+    ingredientRepository: new PgIngredientRepository(pool),
     recipeRepository: new PgRecipeRepository(pool),
     recipeTypeRepository: new PgRecipeTypeRepository(pool),
     menuRepository: new PgMenuRepository(pool),

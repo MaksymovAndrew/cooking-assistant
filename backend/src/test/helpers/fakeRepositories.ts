@@ -1,5 +1,6 @@
 import type { RepositoryDeps } from "composition-root";
 
+import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
@@ -14,6 +15,7 @@ import type { TokenService } from "application/ports/TokenService";
 import { TEST_FRONTEND_ORIGIN } from "test/helpers/testConstants";
 
 export interface FakeRepositoryDeps extends RepositoryDeps {
+    ingredientRepository: jest.Mocked<IngredientRepository>;
     recipeRepository: jest.Mocked<RecipeRepository>;
     recipeTypeRepository: jest.Mocked<RecipeTypeRepository>;
     menuRepository: jest.Mocked<MenuRepository>;
@@ -23,6 +25,13 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     passwordHasher: jest.Mocked<PasswordHasher>;
     tokenService: jest.Mocked<TokenService>;
     emailSender: jest.Mocked<EmailSender>;
+}
+
+function createIngredientRepository(): jest.Mocked<IngredientRepository> {
+    return {
+        findAll: jest.fn(),
+        findExistingIds: jest.fn(),
+    };
 }
 
 function createRecipeRepository(): jest.Mocked<RecipeRepository> {
@@ -35,7 +44,6 @@ function createRecipeRepository(): jest.Mocked<RecipeRepository> {
         search: jest.fn(),
         searchByPerson: jest.fn(),
         getStats: jest.fn(),
-        findAllIngredients: jest.fn(),
         findExistingIds: jest.fn(),
     };
 }
@@ -104,6 +112,7 @@ function createEmailSender(): jest.Mocked<EmailSender> {
 
 export function buildFakeDeps(): FakeRepositoryDeps {
     return {
+        ingredientRepository: createIngredientRepository(),
         recipeRepository: createRecipeRepository(),
         recipeTypeRepository: { findAll: jest.fn() },
         menuRepository: createMenuRepository(),

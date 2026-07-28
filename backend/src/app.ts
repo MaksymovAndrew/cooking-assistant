@@ -17,6 +17,7 @@ import { ERROR_MESSAGES } from "constants/errorMessages";
 import errorHandler from "middleware/errorHandler";
 import { createGlobalLimiter } from "middleware/rateLimit";
 import createHealthRouter from "routes/health.routes";
+import createIngredientRouter from "routes/ingredient.routes";
 import createMenuRouter from "routes/menu.routes";
 import createMenuCategoryRouter from "routes/menuCategory.routes";
 import createRecipeRouter from "routes/recipe.routes";
@@ -51,6 +52,7 @@ export function createApp(controllers: Controllers): Express {
     app.use("/api", createHealthRouter());
     app.use(createGlobalLimiter());
     app.use("/api", createUserRouter(controllers.userController));
+    app.use("/api", createIngredientRouter(controllers.ingredientController));
     app.use("/api", createRecipeRouter(controllers.recipeController));
     app.use("/api", createTypeRouter(controllers.recipeTypeController));
     app.use(

@@ -35,6 +35,7 @@ describe("recipe routes", () => {
         const { app, deps } = buildTestApp();
         const createdRecipe = { id: 12, title: RECIPE_TITLE };
 
+        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.recipeRepository.create.mockResolvedValue(createdRecipe);
 
         const res = await request(app)
@@ -78,24 +79,11 @@ describe("recipe routes", () => {
         expect(res.body).toEqual(recipe);
     });
 
-    it("should return all known ingredients", async () => {
-        const { app, deps } = buildTestApp();
-        const ingredients = [{ id: 3, name: "tomato" }];
-
-        deps.recipeRepository.findAllIngredients.mockResolvedValue(ingredients);
-
-        const res = await request(app)
-            .get("/api/ingredients")
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual(ingredients);
-    });
-
     it("should update a recipe owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
         const updatedRecipe = { id: 12, title: RECIPE_TITLE };
 
+        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.recipeRepository.update.mockResolvedValue(updatedRecipe);
 
         const res = await request(app)
@@ -112,6 +100,7 @@ describe("recipe routes", () => {
     it("should return 404 when updating a recipe of another user", async () => {
         const { app, deps } = buildTestApp();
 
+        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.recipeRepository.update.mockResolvedValue(null);
 
         const res = await request(app)
@@ -147,7 +136,7 @@ describe("recipe routes", () => {
         deps.recipeRepository.search.mockResolvedValue(paginated);
 
         const res = await request(app)
-            .get("/api/recipes-by-filters?ingredient_name=tomato")
+            .get("/api/recipes-by-filters?ingredient_ids=3")
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
@@ -164,9 +153,24 @@ describe("recipe routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(deps.recipeRepository.search).toHaveBeenCalledWith({
+        expect(deps.recipeRepository.search).toHaveBeenCalledWith(1, {
             limit: 10,
             offset: 20,
+        });
+    });
+
+    it("should pass the in_pantry filter through to the repository", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.recipeRepository.search.mockResolvedValue({ items: [], total: 0 });
+
+        const res = await request(app)
+            .get("/api/recipes-by-filters?in_pantry=true")
+            .set("Cookie", authCookie(7));
+
+        expect(res.status).toBe(200);
+        expect(deps.recipeRepository.search).toHaveBeenCalledWith(7, {
+            in_pantry: true,
         });
     });
 
@@ -180,6 +184,22 @@ describe("recipe routes", () => {
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
             error: "type_ids: Type IDs must be a comma-separated list of IDs",
+            code: ERROR_CODES.VALIDATION_ERROR,
+        });
+        expect(deps.recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should return a 400 error body for too many ingredient_ids", async () => {
+        const { app, deps } = buildTestApp();
+        const tooMany = Array.from({ length: 21 }, (_, i) => i + 1).join(",");
+
+        const res = await request(app)
+            .get(`/api/recipes-by-filters?ingredient_ids=${tooMany}`)
+            .set("Cookie", authCookie());
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({
+            error: "ingredient_ids: Ingredient IDs must be at most 20 items",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(deps.recipeRepository.search).not.toHaveBeenCalled();
@@ -210,13 +230,13 @@ describe("recipe routes", () => {
         deps.recipeRepository.searchByPerson.mockResolvedValue(paginated);
 
         const res = await request(app)
-            .get("/api/recipes-filters-person?ingredient_name=tomato")
+            .get("/api/recipes-filters-person?ingredient_ids=3")
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual(paginated);
         expect(deps.recipeRepository.searchByPerson).toHaveBeenCalledWith(7, {
-            ingredient_name: "tomato",
+            ingredient_ids: "3",
         });
     });
 

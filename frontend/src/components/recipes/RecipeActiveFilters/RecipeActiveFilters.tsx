@@ -17,6 +17,7 @@ interface RecipeActiveFiltersProps {
     setMinCookingTime: (time: string) => void;
     setMaxCookingTime: (time: string) => void;
     setSortOrder: (order: string) => void;
+    setInPantry: (value: boolean) => void;
     clearFilters: () => void;
 }
 
@@ -44,6 +45,7 @@ export const RecipeActiveFilters: React.FC<RecipeActiveFiltersProps> = ({
     setMinCookingTime,
     setMaxCookingTime,
     setSortOrder,
+    setInPantry,
     clearFilters,
 }) => {
     const { t } = useTranslation("recipes");
@@ -74,6 +76,9 @@ export const RecipeActiveFilters: React.FC<RecipeActiveFiltersProps> = ({
     };
     const removeSort = () => {
         setSortOrder(RECIPE_DEFAULT_SORT_ORDER);
+    };
+    const removeInPantry = () => {
+        setInPantry(false);
     };
 
     return (
@@ -110,6 +115,12 @@ export const RecipeActiveFilters: React.FC<RecipeActiveFiltersProps> = ({
                         sort: t("filterPanel.longToFast"),
                     })}
                     <RemoveFilterButton onRemove={removeSort} />
+                </span>
+            )}
+            {filters.inPantry && (
+                <span className={styles["recipe-active-filters__chip"]}>
+                    {t("filterPanel.inPantryChip")}
+                    <RemoveFilterButton onRemove={removeInPantry} />
                 </span>
             )}
             <button

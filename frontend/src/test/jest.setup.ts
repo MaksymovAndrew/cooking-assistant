@@ -17,4 +17,5 @@ jest.setTimeout(TEST_TIMEOUT_MS);
 // keep tests isolated from each other's auth-token / pantry state
 afterEach(() => {
     localStorage.clear();
+    sessionStorage.clear();
 });

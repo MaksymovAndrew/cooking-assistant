@@ -20,6 +20,24 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 3.8 - 2026-07-28
+
+### Backend
+
+- Added: The ingredient catalog has been rebuilt from 22 items to 739, covering meat, fish, dairy, grains, spices, sauces, and more, each with calorie data and Russian/Ukrainian/Polish name translations ready for future use.
+- Changed: Ingredient units now follow the metric system (grams, kilograms, milliliters, liters, cloves, bunches, and more) instead of the old, partly imperial set.
+- Changed: Pantry and purchase quantities can now be fractional (e.g. 0.5 kg), not just whole numbers.
+- Removed: Old ingredients, recipes, menus, and pantry contents have been cleared to make room for the new catalog. Accounts, recipe types, and menu categories are unaffected.
+- Fixed: Searching recipes by ingredient could show a recipe with only the matching ingredient listed instead of its full ingredient list.
+- Added: Recipes can now be filtered to only the ones you can make right now with what's in your pantry.
+
+### Frontend
+
+- Added: The ingredient search in recipes and your pantry now lets you browse by category (Vegetables, Meat, Fish, and so on) instead of only searching by name - handy now that the catalog has hundreds of items.
+- Added: Your pantry has a category filter, so you can quickly narrow the list down to just what you have in, say, Dairy or Spices.
+- Added: A "From my pantry" filter on the recipe list shows only recipes you can make right now with what's already in your pantry, with a shortcut card on the home page.
+- Added: A popup now lets you know when you sign in if anything in your pantry has expired, listing what needs attention with a shortcut to your pantry.
+
 ## 3.7 - 2026-07-24
 
 ### Backend

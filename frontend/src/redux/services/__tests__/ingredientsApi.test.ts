@@ -10,7 +10,16 @@ import { makeTestStore } from "test/store";
 jest.mock("api/client");
 
 const SAMPLE: Ingredient[] = [
-    { id: 1, name: "Salt", unit_name: "g", allergens: null },
+    {
+        id: 1,
+        slug: "salt",
+        name: "Salt",
+        category: "spices",
+        unit_name: "g",
+        allergens: [],
+        days_to_expire: 1825,
+        calories_per_unit: null,
+    },
 ];
 
 describe("ingredientsApi", () => {

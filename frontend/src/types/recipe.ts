@@ -1,3 +1,5 @@
+import type { CatalogIngredientRef } from "types/catalogIngredientRef";
+
 export interface RecipeListItem {
     id: number;
     title: string;
@@ -16,7 +18,7 @@ export interface RecipeWithIngredientNames extends RecipeListItem {
 export interface RecipeSearchIngredient {
     id: number;
     name: string;
-    allergens: string | null;
+    allergens: string[];
 }
 
 // shape returned by GET /api/recipes-by-filters and /api/recipes-filters-person/:id (different ingredient shape from RecipeWithIngredientNames)
@@ -24,12 +26,13 @@ export interface RecipeSearchResultItem extends RecipeListItem {
     ingredients: RecipeSearchIngredient[];
 }
 
-export interface RecipeDetailIngredient {
+export interface RecipeDetailIngredient extends CatalogIngredientRef {
     id: number;
     name: string;
+    category: string;
     quantity_recipe_ingredients: number;
     unit_name: string;
-    allergens: string | null;
+    allergens: string[];
 }
 
 // shape returned by GET /api/recipe/:id (superset of what RecipeDetailsPage + ChangeRecipePage use)
@@ -49,7 +52,7 @@ export interface RecipeDetails {
 }
 
 export interface RecipeFilterParams {
-    ingredient_name: string;
+    ingredient_ids?: string;
     type_ids?: string;
     start_date?: string;
     end_date?: string;
@@ -57,6 +60,7 @@ export interface RecipeFilterParams {
     max_cooking_time?: string;
     // omitted (not empty string - the backend enum-validates "asc"/"desc") falls back to creation_date DESC server-side
     sort_order?: string;
+    in_pantry?: boolean;
 }
 
 export interface CreateRecipeIngredient {
@@ -87,7 +91,7 @@ export interface UpdateRecipeRequest {
     ingredients: UpdateRecipeIngredient[];
 }
 
-export interface RecipeFormIngredient {
+export interface RecipeFormIngredient extends CatalogIngredientRef {
     id: number;
     name: string;
     quantity: number;

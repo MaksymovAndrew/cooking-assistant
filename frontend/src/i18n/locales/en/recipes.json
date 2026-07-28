@@ -59,7 +59,14 @@
         "maxChip": "Max time: {{minutes}} min",
         "sortChip": "Sort: {{sort}}",
         "removeFilter": "Remove",
-        "clearAll": "Clear all"
+        "clearAll": "Clear all",
+        "inPantryLabel": "Only what I can make",
+        "inPantryChip": "From my pantry",
+        "pantryBanner_one": "Showing only recipes you can make right now — {{count}} recipe",
+        "pantryBanner_other": "Showing only recipes you can make right now — {{count}} recipes",
+        "pantryEmptyTitle": "Your pantry is empty",
+        "pantryEmptyDescription": "Add ingredients to your pantry to see which recipes you can make right now.",
+        "pantryEmptyAction": "Go to pantry"
     },
     "mainPage": {
         "allRecipes": "All Recipes",

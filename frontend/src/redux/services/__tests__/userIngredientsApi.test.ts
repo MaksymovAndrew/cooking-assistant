@@ -18,9 +18,12 @@ jest.mock("api/client");
 const PANTRY: UserIngredient[] = [
     {
         ingredient_id: 1,
+        ingredient_slug: "salt",
         ingredient_name: "Salt",
+        category: "spices",
         unit_name: "g",
         quantity_person_ingradient: 5,
+        allergens: [],
     },
 ];
 const HISTORY: Purchase[] = [
@@ -41,8 +44,11 @@ const QUANTITIES: UpdateQuantitiesRequest = {
     updatedIngredients: [
         {
             id: 1,
+            slug: "salt",
+            category: "spices",
             unit_name: "g",
             quantity_person_ingradient: 3,
+            allergens: [],
         },
     ],
 };

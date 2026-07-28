@@ -2,6 +2,7 @@ import {
     filtersReducer,
     setMenuSelectedCategories,
     setRecipeEndDate,
+    setRecipeInPantry,
     setRecipeMaxCookingTime,
     setRecipeMinCookingTime,
     setRecipeSelectedTypes,
@@ -21,6 +22,7 @@ describe("filtersSlice", () => {
                 minCookingTime: "",
                 maxCookingTime: "",
                 sortOrder: "asc",
+                inPantry: false,
             },
             menu: { selectedCategories: [] },
         });
@@ -66,6 +68,12 @@ describe("filtersSlice", () => {
             filtersReducer(undefined, setRecipeSortOrder("desc")).recipe
                 .sortOrder,
         ).toBe("desc");
+    });
+
+    it("should set the recipe in-pantry filter", () => {
+        expect(
+            filtersReducer(undefined, setRecipeInPantry(true)).recipe.inPantry,
+        ).toBe(true);
     });
 
     it("should set the menu selected categories", () => {

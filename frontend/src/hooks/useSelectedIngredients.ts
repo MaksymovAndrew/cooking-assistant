@@ -20,6 +20,7 @@ export const useSelectedIngredients = () => {
                 ...prev,
                 {
                     id: ingredient.id,
+                    slug: ingredient.slug,
                     name: ingredient.name,
                     quantity: 1,
                     unit_name: ingredient.unit_name,

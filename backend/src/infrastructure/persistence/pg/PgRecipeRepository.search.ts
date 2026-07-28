@@ -38,21 +38,27 @@ function applyRecipeFilters(
     params: QueryParam[],
     startIndex: number,
     filters: RecipeFilters,
+    userId: number,
 ): string {
     let query = baseQuery;
     let paramIndex = startIndex;
     const {
-        ingredient_name,
+        ingredient_ids,
         type_ids,
         start_date,
         end_date,
         min_cooking_time,
         max_cooking_time,
+        in_pantry,
     } = filters;
 
-    if (ingredient_name) {
-        query += ` AND i.name ILIKE $${paramIndex}`;
-        params.push(`%${ingredient_name}%`);
+    if (ingredient_ids) {
+        // a separate EXISTS (not a WHERE on the outer join) so a match doesn't strip the recipe's other ingredients out of the json_agg below - OR semantics: any id matches
+        query += ` AND EXISTS (
+        SELECT 1 FROM recipe_ingredients ri2
+        WHERE ri2.recipe_id = r.id AND ri2.ingredient_id = ANY($${paramIndex}::int[])
+      )`;
+        params.push(ingredient_ids.split(",").map(Number));
         paramIndex++;
     }
 
@@ -85,6 +91,21 @@ function applyRecipeFilters(
     if (max_cooking_time) {
         query += ` AND r.cooking_time <= $${paramIndex}`;
         params.push(max_cooking_time);
+        paramIndex++;
+    }
+
+    if (in_pantry) {
+        // a recipe qualifies only if the pantry covers every ingredient in sufficient quantity (ROUND avoids float noise, see PgPantryRepository.queries.ts); the second EXISTS rules out ingredient-less recipes, which would pass the NOT EXISTS trivially otherwise
+        query += ` AND NOT EXISTS (
+        SELECT 1 FROM recipe_ingredients ri2
+        LEFT JOIN person_ingredients pi
+          ON pi.ingredient_id = ri2.ingredient_id AND pi.person_id = $${paramIndex}
+        WHERE ri2.recipe_id = r.id AND (pi.ingredient_id IS NULL
+          OR ROUND(pi.quantity_person_ingradient::numeric, 3)
+             < ROUND(ri2.quantity_recipe_ingredients::numeric, 3))
+      )
+      AND EXISTS (SELECT 1 FROM recipe_ingredients WHERE recipe_id = r.id)`;
+        params.push(userId);
     }
 
     return query;
@@ -106,12 +127,14 @@ async function runRecipeSearch(
     params: QueryParam[],
     startIndex: number,
     parsed: RecipeFilters,
+    userId: number,
 ): Promise<PaginatedResult<unknown>> {
     let query = applyRecipeFilters(
         `${BASE_RECIPE_SELECT} ${whereSeed}`,
         params,
         startIndex,
         parsed,
+        userId,
     );
 
     query += ` GROUP BY r.id, rt.type_name`;
@@ -129,11 +152,12 @@ async function runRecipeSearch(
 
 export async function searchRecipes(
     pool: Pool,
+    userId: number,
     filters: unknown,
 ): Promise<PaginatedResult<unknown>> {
     const parsed: RecipeFilters = filters ?? {};
 
-    return runRecipeSearch(pool, `WHERE 1=1`, [], 1, parsed);
+    return runRecipeSearch(pool, `WHERE 1=1`, [], 1, parsed, userId);
 }
 
 export async function searchPersonRecipes(
@@ -149,5 +173,6 @@ export async function searchPersonRecipes(
         [personId],
         2,
         parsed,
+        personId,
     );
 }

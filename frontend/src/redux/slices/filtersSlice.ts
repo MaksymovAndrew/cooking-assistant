@@ -12,6 +12,7 @@ export interface RecipeFiltersState {
     minCookingTime: string;
     maxCookingTime: string;
     sortOrder: string;
+    inPantry: boolean;
 }
 
 export interface MenuFiltersState {
@@ -31,6 +32,7 @@ const initialState: FiltersState = {
         minCookingTime: "",
         maxCookingTime: "",
         sortOrder: RECIPE_DEFAULT_SORT_ORDER,
+        inPantry: false,
     },
     menu: { selectedCategories: [] },
 };
@@ -57,6 +59,9 @@ const filtersSlice = createSlice({
         setRecipeSortOrder: (state, action: PayloadAction<string>) => {
             state.recipe.sortOrder = action.payload;
         },
+        setRecipeInPantry: (state, action: PayloadAction<boolean>) => {
+            state.recipe.inPantry = action.payload;
+        },
         setMenuSelectedCategories: (state, action: PayloadAction<number[]>) => {
             state.menu.selectedCategories = action.payload;
         },
@@ -70,6 +75,7 @@ export const {
     setRecipeMinCookingTime,
     setRecipeMaxCookingTime,
     setRecipeSortOrder,
+    setRecipeInPantry,
     setMenuSelectedCategories,
 } = filtersSlice.actions;
 export const filtersReducer = filtersSlice.reducer;

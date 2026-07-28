@@ -29,6 +29,7 @@ export const useIngredientCatalog = () => {
             (rawUserIngredients ?? []).map((item) => ({
                 ...item,
                 id: item.ingredient_id,
+                slug: item.ingredient_slug,
             })),
         [rawUserIngredients],
     );

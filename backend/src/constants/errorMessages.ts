@@ -9,6 +9,7 @@ export const ERROR_MESSAGES = {
     RECIPE_NOT_FOUND: "Recipe not found",
     RECIPE_INGREDIENTS_EMPTY: "Ingredients cannot be empty",
     RECIPE_INGREDIENTS_NO_ID: "All ingredients must have id",
+    RECIPE_INGREDIENTS_NOT_EXIST: "One or more ingredients do not exist",
     RECIPE_TITLE_CONTENT_EMPTY: "Title and content cannot be empty",
 
     MENU_NOT_FOUND: "Menu not found",

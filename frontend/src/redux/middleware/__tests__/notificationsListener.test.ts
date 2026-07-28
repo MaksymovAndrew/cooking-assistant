@@ -384,7 +384,14 @@ describe("notificationsListener success toasts", () => {
         await store.dispatch(
             userIngredientsApi.endpoints.updateQuantities.initiate({
                 updatedIngredients: [
-                    { id: 1, unit_name: "g", quantity_person_ingradient: 3 },
+                    {
+                        id: 1,
+                        slug: "salt",
+                        category: "spices",
+                        unit_name: "g",
+                        quantity_person_ingradient: 3,
+                        allergens: [],
+                    },
                 ],
             }),
         );

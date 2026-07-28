@@ -6,6 +6,8 @@
         "itemCount_one": "{{count}} item in your pantry",
         "itemCount_other": "{{count}} items in your pantry",
         "searchPlaceholder": "Search your pantry...",
+        "categoryFilterLabel": "Filter by category",
+        "categoryFilterAll": "All categories",
         "expiringSoonFilter_one": "Expiring soon ({{count}})",
         "expiringSoonFilter_other": "Expiring soon ({{count}})",
         "allergens": "Allergens:",
@@ -35,6 +37,9 @@
         "daysLeft_one": "{{count}} day",
         "daysLeft_other": "{{count}} days"
     },
+    "categoryBrowser": {
+        "backTo": "Back to categories: {{category}}"
+    },
     "addIngredientModal": {
         "title": "Add ingredient",
         "searchPlaceholder": "Search ingredients...",
@@ -48,5 +53,12 @@
         "noHistory": "No purchase history available.",
         "closeButton": "Close",
         "editButton": "Edit quantity"
+    },
+    "expiredNoticeModal": {
+        "title": "Expired ingredients",
+        "message_one": "{{count}} ingredient in your pantry has expired:",
+        "message_other": "{{count}} ingredients in your pantry have expired:",
+        "close": "Close",
+        "goToPantry": "Go to my pantry"
     }
 }

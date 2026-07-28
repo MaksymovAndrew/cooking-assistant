@@ -1,3 +1,5 @@
+import type { CatalogIngredientRef } from "types/catalogIngredientRef";
+
 export type ExpiryTone = "expired" | "warning" | "ok";
 
 export interface ExpiryStatus {
@@ -5,7 +7,7 @@ export interface ExpiryStatus {
     days: number;
 }
 
-export interface ExpiringIngredient {
+export interface ExpiringIngredient extends CatalogIngredientRef {
     ingredientId: number;
     name: string;
     status: ExpiryStatus;

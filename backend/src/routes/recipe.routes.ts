@@ -20,12 +20,6 @@ export default function createRecipeRouter(
         recipeController.getRecipeWithIngredients,
     );
 
-    router.get(
-        "/ingredients",
-        authenticateToken,
-        recipeController.getAllIngredients,
-    );
-
     router.put(
         RECIPE_BY_ID_PATH,
         authenticateToken,

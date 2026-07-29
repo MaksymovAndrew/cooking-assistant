@@ -321,7 +321,7 @@ export default tseslint.config(
                 { type: "types", pattern: "src/types/*" },
                 { type: "constants", pattern: "src/constants/*" },
                 { type: "i18n", pattern: "src/i18n/**" },
-                { type: "utils", pattern: "src/utils/*" },
+                { type: "utils", pattern: "src/utils/**" },
                 { type: "api", pattern: "src/api/**" },
                 { type: "redux", pattern: "src/redux/**" },
                 { type: "hooks", pattern: "src/hooks/*" },

@@ -11,7 +11,7 @@ const UserRecipesPage: React.FC = () => {
     const list = useRecipeListView(RECIPE_SOURCE.person);
 
     const heading =
-        list.filters.selectedTypes.length > 0
+        list.filters.types.length > 0
             ? t("userRecipesPage.recipesBy", { types: list.typesHeader })
             : t("userRecipesPage.myRecipes");
 

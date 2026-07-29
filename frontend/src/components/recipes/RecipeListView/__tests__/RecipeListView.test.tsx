@@ -4,9 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { PAGE_SIZE } from "constants/pagination";
 import type { RecipeListItem } from "types/recipe";
 
-import type { RecipeFilterState } from "hooks/useRecipeListView";
-
 import { RecipeListView } from "components/recipes/RecipeListView";
+
+import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
 import { renderWithRouter } from "test/router";
 
@@ -24,23 +24,19 @@ const RECIPES: RecipeListItem[] = [
 ];
 
 const FILTERS: RecipeFilterState = {
-    selectedTypes: [],
-    startDate: "",
-    endDate: "",
-    minCookingTime: "",
-    maxCookingTime: "",
-    sortOrder: "asc",
+    search: "",
+    types: [],
+    cookingTime: { min: "", max: "" },
+    sort: null,
     inPantry: false,
-    ingredientName: null,
 };
 
 const baseProps = {
     filters: FILTERS,
-    setSelectedTypes: jest.fn(),
-    setMinCookingTime: jest.fn(),
-    setMaxCookingTime: jest.fn(),
-    setSortOrder: jest.fn(),
-    setInPantry: jest.fn(),
+    setValue: jest.fn(),
+    resetFilters: jest.fn(),
+    activeCount: 0,
+    activeFilters: [],
     isPantryEmpty: false,
     types: [],
     descriptions: [],
@@ -49,7 +45,6 @@ const baseProps = {
     emptyTitle: "No recipes yet",
     emptyDescription: "Your cookbook is empty.",
     hasActiveFilters: false,
-    clearFilters: jest.fn(),
     searchPlaceholder: "ingredient name",
     onRetry: jest.fn(),
     total: RECIPES.length,
@@ -110,7 +105,7 @@ describe("RecipeListView", () => {
     });
 
     it("should render the no-matches state and a working Clear filters button when filters are active", async () => {
-        const clearFilters = jest.fn();
+        const resetFilters = jest.fn();
 
         renderWithRouter(
             <RecipeListView
@@ -119,8 +114,8 @@ describe("RecipeListView", () => {
                 noRecipes={true}
                 error={null}
                 hasActiveFilters={true}
-                filters={{ ...FILTERS, ingredientName: "cauliflower" }}
-                clearFilters={clearFilters}
+                filters={{ ...FILTERS, search: "cauliflower" }}
+                resetFilters={resetFilters}
             />,
         );
 
@@ -137,7 +132,7 @@ describe("RecipeListView", () => {
             screen.getByRole("button", { name: "Clear filters" }),
         );
 
-        expect(clearFilters).toHaveBeenCalledTimes(1);
+        expect(resetFilters).toHaveBeenCalledTimes(1);
     });
 
     it("should render the error state and call onRetry when Try again is clicked", async () => {

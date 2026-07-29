@@ -1,5 +1,4 @@
 import { act } from "@testing-library/react";
-import type * as ReactRouterDom from "react-router-dom";
 
 import { PAGE_SIZE } from "constants/pagination";
 import type { CurrentUser } from "types/auth";
@@ -15,20 +14,9 @@ import { recipeTypesApi } from "redux/services/recipeTypesApi";
 
 import { RECIPE_SOURCE, useRecipeListView } from "hooks/useRecipeListView";
 
-import { buildRecipeFilterParams } from "utils/recipeFilterParams";
-
 import { byOffset, makeAxiosError, mockedGet } from "test/apiClientMock";
-import { makeTestStore, renderHookWithStore } from "test/store";
+import { makeTestStore, renderHookWithRouter } from "test/store";
 
-const mockSearchParams = jest.fn((): [URLSearchParams, jest.Mock] => [
-    new URLSearchParams(),
-    jest.fn(),
-]);
-
-jest.mock("react-router-dom", () => ({
-    ...jest.requireActual<typeof ReactRouterDom>("react-router-dom"),
-    useSearchParams: () => mockSearchParams(),
-}));
 jest.mock("api/client");
 
 const RECIPE_DATE = "2024-01-01";
@@ -68,19 +56,9 @@ const MILK: Ingredient = {
     calories_per_unit: null,
 };
 
-// matches the default filters slice state + no URL ingredient search, so the pre-seeded cache key lines up with what the hook itself requests
-const DEFAULT_PARAMS = buildRecipeFilterParams(
-    {
-        selectedTypes: [],
-        startDate: "",
-        endDate: "",
-        minCookingTime: "",
-        maxCookingTime: "",
-        sortOrder: "asc",
-        inPantry: false,
-    },
-    undefined,
-);
+// matches what the hook sends with no filters active in the URL: sort_order is
+// omitted (server default: newest first), same for every other filter
+const DEFAULT_PARAMS = { ingredient_ids: undefined };
 
 const FAILURE_MESSAGE = "Recipes failed";
 const FAILURE = makeAxiosError(500, FAILURE_MESSAGE);
@@ -88,6 +66,8 @@ const FAILURE = makeAxiosError(500, FAILURE_MESSAGE);
 // pre-seed the cache by awaiting the real query thunks before the hook mounts, so the hook reads already-fulfilled data on first render instead of racing a guessed number of promise ticks
 const setup = async (
     source: (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE] = RECIPE_SOURCE.all,
+    initialEntries: string[] = ["/test"],
+    params = DEFAULT_PARAMS,
 ) => {
     const store = makeTestStore();
     const endpoint =
@@ -96,23 +76,18 @@ const setup = async (
             : recipesApi.endpoints.getRecipesByFilters;
 
     await Promise.all([
-        store.dispatch(endpoint.initiate(DEFAULT_PARAMS)),
+        store.dispatch(endpoint.initiate(params)),
         store.dispatch(recipeTypesApi.endpoints.getRecipeTypes.initiate(null)),
         store.dispatch(authApi.endpoints.getMe.initiate(null)),
     ]);
 
-    return renderHookWithStore(() => useRecipeListView(source), store);
+    return renderHookWithRouter(() => useRecipeListView(source), {
+        store,
+        initialEntries,
+    });
 };
 
 describe("useRecipeListView", () => {
-    afterEach(() => {
-        mockSearchParams.mockReset();
-        mockSearchParams.mockImplementation(() => [
-            new URLSearchParams(),
-            jest.fn(),
-        ]);
-    });
-
     it("should flatten the loaded page, report the total and keep the server order", async () => {
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
@@ -303,9 +278,9 @@ describe("useRecipeListView", () => {
             ),
         ]);
 
-        const { result } = renderHookWithStore(
+        const { result } = renderHookWithRouter(
             () => useRecipeListView(RECIPE_SOURCE.all),
-            store,
+            { store },
         );
 
         await act(async () => {
@@ -355,7 +330,7 @@ describe("useRecipeListView", () => {
         expect(result.current.error).toBeNull();
     });
 
-    it("should dispatch filter changes through the store setters", async () => {
+    it("should update the URL-backed filters when setValue is called", async () => {
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
                 return Promise.resolve({ data: CURRENT_USER });
@@ -379,29 +354,23 @@ describe("useRecipeListView", () => {
         const { result } = await setup();
 
         act(() => {
-            result.current.setSelectedTypes([1]);
-            result.current.setStartDate(RECIPE_DATE);
-            result.current.setEndDate("2024-01-31");
-            result.current.setMinCookingTime("10");
-            result.current.setMaxCookingTime("60");
-            result.current.setSortOrder("desc");
+            result.current.setValue("types", [1]);
+        });
+        act(() => {
+            result.current.setValue("cookingTime", { min: "10", max: "60" });
+        });
+        act(() => {
+            result.current.setValue("sort", "desc");
         });
 
         expect(result.current.filters).toMatchObject({
-            selectedTypes: [1],
-            startDate: RECIPE_DATE,
-            endDate: "2024-01-31",
-            minCookingTime: "10",
-            maxCookingTime: "60",
-            sortOrder: "desc",
+            types: [1],
+            cookingTime: { min: "10", max: "60" },
+            sort: "desc",
         });
     });
 
     it("should send matched ingredient_ids in the request, not the raw search text", async () => {
-        mockSearchParams.mockImplementation(() => [
-            new URLSearchParams({ ingredient_name: "milk" }),
-            jest.fn(),
-        ]);
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
                 return Promise.resolve({ data: CURRENT_USER });
@@ -425,18 +394,7 @@ describe("useRecipeListView", () => {
         });
 
         const store = makeTestStore();
-        const paramsWithMatchedId = buildRecipeFilterParams(
-            {
-                selectedTypes: [],
-                startDate: "",
-                endDate: "",
-                minCookingTime: "",
-                maxCookingTime: "",
-                sortOrder: "asc",
-                inPantry: false,
-            },
-            String(MILK.id),
-        );
+        const paramsWithMatchedId = { ingredient_ids: String(MILK.id) };
 
         await Promise.all([
             store.dispatch(
@@ -453,9 +411,9 @@ describe("useRecipeListView", () => {
             ),
         ]);
 
-        const { result } = renderHookWithStore(
+        const { result } = renderHookWithRouter(
             () => useRecipeListView(RECIPE_SOURCE.all),
-            store,
+            { store, initialEntries: ["/test?ingredient_name=milk"] },
         );
 
         expect(result.current.recipes).toEqual([RECIPE_1]);
@@ -466,10 +424,6 @@ describe("useRecipeListView", () => {
     });
 
     it("should skip the request and report noRecipes when the search text matches no ingredient", async () => {
-        mockSearchParams.mockImplementation(() => [
-            new URLSearchParams({ ingredient_name: "zzz" }),
-            jest.fn(),
-        ]);
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
                 return Promise.resolve({ data: CURRENT_USER });
@@ -499,9 +453,9 @@ describe("useRecipeListView", () => {
             ),
         ]);
 
-        const { result } = renderHookWithStore(
+        const { result } = renderHookWithRouter(
             () => useRecipeListView(RECIPE_SOURCE.all),
-            store,
+            { store, initialEntries: ["/test?ingredient_name=zzz"] },
         );
 
         expect(result.current.noRecipes).toBe(true);

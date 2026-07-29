@@ -1,9 +1,9 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { RecipeFilterState } from "hooks/useRecipeListView";
-
 import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
+
+import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
 import { renderWithRouter } from "test/router";
 
@@ -11,44 +11,30 @@ const SOUP_TYPE = { id: 1, type_name: "Soup", description: "" };
 const DESSERT_TYPE = { id: 2, type_name: "Dessert", description: "" };
 
 const BASE_FILTERS: RecipeFilterState = {
-    selectedTypes: [],
-    startDate: "",
-    endDate: "",
-    minCookingTime: "",
-    maxCookingTime: "",
-    sortOrder: "asc",
+    search: "",
+    types: [],
+    cookingTime: { min: "", max: "" },
+    sort: null,
     inPantry: false,
-    ingredientName: null,
 };
 
-const setup = (overrides: Partial<RecipeFilterState> = {}) => {
-    const setSelectedTypes = jest.fn();
-    const setMinCookingTime = jest.fn();
-    const setMaxCookingTime = jest.fn();
-    const setSortOrder = jest.fn();
-    const setInPantry = jest.fn();
+const setup = (overrides: Partial<RecipeFilterState> = {}, activeCount = 0) => {
+    const setValue = jest.fn();
+    const resetFilters = jest.fn();
 
     renderWithRouter(
         <RecipeFilterPanel
             filters={{ ...BASE_FILTERS, ...overrides }}
-            setSelectedTypes={setSelectedTypes}
-            setMinCookingTime={setMinCookingTime}
-            setMaxCookingTime={setMaxCookingTime}
-            setSortOrder={setSortOrder}
-            setInPantry={setInPantry}
+            setValue={setValue}
+            resetFilters={resetFilters}
+            activeCount={activeCount}
             types={[SOUP_TYPE, DESSERT_TYPE]}
             searchPlaceholder="Search recipes"
             total={5}
         />,
     );
 
-    return {
-        setSelectedTypes,
-        setMinCookingTime,
-        setMaxCookingTime,
-        setSortOrder,
-        setInPantry,
-    };
+    return { setValue, resetFilters };
 };
 
 const openPanel = async () => {
@@ -78,82 +64,62 @@ describe("RecipeFilterPanel", () => {
         expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
 
-    it("should show a badge with the active filter count", () => {
-        setup({ selectedTypes: [1], maxCookingTime: "90" });
+    it("should show a badge with the given active filter count", () => {
+        setup({}, 2);
 
         expect(screen.getByText("2")).toBeInTheDocument();
     });
 
-    it("should call setMinCookingTime and setMaxCookingTime when the time inputs change", async () => {
-        const { setMinCookingTime, setMaxCookingTime } = setup();
+    it("should call setValue with the updated range when the time inputs change", async () => {
+        const { setValue } = setup();
 
         await openPanel();
         await userEvent.type(screen.getByLabelText("Min"), "5");
-        await userEvent.type(screen.getByLabelText("Max"), "9");
 
-        expect(setMinCookingTime).toHaveBeenCalled();
-        expect(setMaxCookingTime).toHaveBeenCalled();
+        expect(setValue).toHaveBeenCalledWith("cookingTime", {
+            min: "5",
+            max: "",
+        });
     });
 
-    it("should call setSortOrder when a sort segment is clicked", async () => {
-        const { setSortOrder } = setup();
+    it("should call setValue with the sort direction when a sort segment is clicked", async () => {
+        const { setValue } = setup();
 
         await openPanel();
         await userEvent.click(
             screen.getByRole("radio", { name: "Long → fast" }),
         );
 
-        expect(setSortOrder).toHaveBeenCalledWith("desc");
+        expect(setValue).toHaveBeenCalledWith("sort", "desc");
     });
 
-    it("should toggle a type when its chip is clicked", async () => {
-        const { setSelectedTypes } = setup();
+    it("should call setValue with the toggled type list when a type chip is clicked", async () => {
+        const { setValue } = setup();
 
         await openPanel();
         await userEvent.click(screen.getByRole("checkbox", { name: "Soup" }));
 
-        expect(setSelectedTypes).toHaveBeenCalledWith([1]);
+        expect(setValue).toHaveBeenCalledWith("types", [1]);
     });
 
-    it("should call setInPantry when the pantry toggle is clicked", async () => {
-        const { setInPantry } = setup();
+    it("should call setValue with true when the pantry toggle is clicked", async () => {
+        const { setValue } = setup();
 
         await openPanel();
         await userEvent.click(screen.getByRole("switch"));
 
-        expect(setInPantry).toHaveBeenCalledWith(true);
+        expect(setValue).toHaveBeenCalledWith("inPantry", true);
     });
 
-    it("should count the pantry filter in the active filter badge", () => {
-        setup({ inPantry: true });
-
-        expect(screen.getByText("1")).toBeInTheDocument();
-    });
-
-    it("should reset every filter when Reset filters is clicked", async () => {
-        const {
-            setSelectedTypes,
-            setMinCookingTime,
-            setMaxCookingTime,
-            setSortOrder,
-            setInPantry,
-        } = setup({
-            selectedTypes: [1],
-            minCookingTime: "5",
-            maxCookingTime: "90",
-            inPantry: true,
-        });
+    it("should call resetFilters when Reset filters is clicked", async () => {
+        const { resetFilters } = setup({ types: [1], inPantry: true }, 2);
 
         await openPanel();
         await userEvent.click(
             screen.getByRole("button", { name: "Reset filters" }),
         );
 
-        expect(setSelectedTypes).toHaveBeenCalledWith([]);
-        expect(setMinCookingTime).toHaveBeenCalledWith("");
-        expect(setMaxCookingTime).toHaveBeenCalledWith("");
-        expect(setSortOrder).toHaveBeenCalledWith("asc");
-        expect(setInPantry).toHaveBeenCalledWith(false);
+        expect(resetFilters).toHaveBeenCalledTimes(1);
     });
 
     it("should close the popover when Apply is clicked", async () => {
@@ -172,11 +138,9 @@ describe("RecipeFilterPanel", () => {
             <div>
                 <RecipeFilterPanel
                     filters={BASE_FILTERS}
-                    setSelectedTypes={jest.fn()}
-                    setMinCookingTime={jest.fn()}
-                    setMaxCookingTime={jest.fn()}
-                    setSortOrder={jest.fn()}
-                    setInPantry={jest.fn()}
+                    setValue={jest.fn()}
+                    resetFilters={jest.fn()}
+                    activeCount={0}
                     types={[]}
                     searchPlaceholder="Search recipes"
                     total={5}

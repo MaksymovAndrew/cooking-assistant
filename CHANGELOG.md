@@ -20,6 +20,11 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Frontend
+
+- Changed: The recipe list now sorts by newest first by default (previously fastest cooking time first); both "Fast → long" and "Long → fast" are now optional sort chips you can apply and remove from the filter bar.
+- Added: A recipe list filtered by type, cooking time, sort order, or pantry can now be shared or bookmarked - copying the page URL and opening it elsewhere restores the exact same filters.
+
 ### Project
 
 - Changed: Routine dependency maintenance - updated to the latest safe major versions across backend and frontend (including Zod 4 and Recharts 3); TypeScript and ESLint majors stay pinned for now due to peer-dependency conflicts in their own plugin ecosystems.

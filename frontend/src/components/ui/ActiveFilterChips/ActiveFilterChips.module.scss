@@ -1,6 +1,6 @@
 @use "styles/abstracts" as *;
 
-.recipe-active-filters {
+.active-filter-chips {
     display: flex;
     align-items: center;
     gap: var(--s-2);

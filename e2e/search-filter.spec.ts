@@ -93,14 +93,26 @@ test("should filter My Recipes by ingredient name", async () => {
 test("should filter My Recipes by recipe type", async () => {
     await page.goto("/my-recipes");
     await page.getByRole("button", { name: "Filters", exact: true }).click();
-    await page.getByLabel(recipeAType).check();
+    // a plain click + web-first assertion (not .check()) - the checkbox's
+    // aria-checked comes from URL-driven app state after a client-side
+    // navigation, not a native input, so it needs the assertion's own retry
+    // rather than .check()'s single click-then-verify
+    await page.getByLabel(recipeAType).click();
+    await expect(page.getByLabel(recipeAType)).toHaveAttribute(
+        "aria-checked",
+        "true",
+    );
 
     await expect(page.getByText(recipeATitle)).toBeVisible();
     await expect(page.getByText(recipeBTitle)).toBeHidden();
 
     // the panel stays open after Reset filters (only Apply/close/outside-click close it)
     await page.getByRole("button", { name: "Reset filters" }).click();
-    await page.getByLabel(recipeBType).check();
+    await page.getByLabel(recipeBType).click();
+    await expect(page.getByLabel(recipeBType)).toHaveAttribute(
+        "aria-checked",
+        "true",
+    );
 
     await expect(page.getByText(recipeBTitle)).toBeVisible();
     await expect(page.getByText(recipeATitle)).toBeHidden();
@@ -180,7 +192,7 @@ test("should filter My Recipes to only what's in the pantry", async () => {
     await expect(page.getByText(recipeATitle)).toBeVisible();
     await expect(page.getByText(recipeBTitle)).toBeHidden();
 
-    // cleanup: leave the shared account's pantry empty for other specs (the goto below already resets the plain-Redux pantry filter state)
+    // cleanup: leave the shared account's pantry empty for other specs (the goto below already drops the pantry filter, since it's URL-scoped to /my-recipes)
     await page.goto("/ingredients");
     await page
         .getByRole("heading", { name: "Tomato", level: 3 })

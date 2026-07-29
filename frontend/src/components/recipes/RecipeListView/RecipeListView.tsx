@@ -1,8 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeFilterParams, RecipeListItem } from "types/recipe";
 import type { RecipeTypeSummary } from "types/recipeType";
+
+import type { ActiveFilterEntry } from "hooks/useListFilters";
 
 import { RecipeCard } from "components/cards/RecipeCard";
 import { AppShell } from "components/layout/AppShell";
@@ -30,7 +32,7 @@ interface RecipeListViewProps extends RecipeFilterPanelProps {
     emptyTitle: string;
     emptyDescription: string;
     hasActiveFilters: boolean;
-    clearFilters: () => void;
+    activeFilters: ActiveFilterEntry<RecipeFilterParams>[];
     mine?: boolean;
     currentUserId?: number | null;
     loadedCount: number;
@@ -42,11 +44,9 @@ interface RecipeListViewProps extends RecipeFilterPanelProps {
 
 export const RecipeListView: React.FC<RecipeListViewProps> = ({
     filters,
-    setSelectedTypes,
-    setMinCookingTime,
-    setMaxCookingTime,
-    setSortOrder,
-    setInPantry,
+    setValue,
+    resetFilters,
+    activeCount,
     types,
     recipes,
     noRecipes,
@@ -59,7 +59,7 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     emptyTitle,
     emptyDescription,
     hasActiveFilters,
-    clearFilters,
+    activeFilters,
     mine = false,
     currentUserId = null,
     searchPlaceholder,
@@ -79,23 +79,18 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                 <RecipeTypeDescriptions descriptions={descriptions} />
                 <RecipeFilterPanel
                     filters={filters}
-                    setSelectedTypes={setSelectedTypes}
-                    setMinCookingTime={setMinCookingTime}
-                    setMaxCookingTime={setMaxCookingTime}
-                    setSortOrder={setSortOrder}
-                    setInPantry={setInPantry}
+                    setValue={setValue}
+                    resetFilters={resetFilters}
+                    activeCount={activeCount}
                     types={types}
                     searchPlaceholder={searchPlaceholder}
                     total={total}
                 />
                 <RecipeActiveFilters
                     total={total}
-                    filters={filters}
-                    setMinCookingTime={setMinCookingTime}
-                    setMaxCookingTime={setMaxCookingTime}
-                    setSortOrder={setSortOrder}
-                    setInPantry={setInPantry}
-                    clearFilters={clearFilters}
+                    activeFilters={activeFilters}
+                    hasActiveFilters={hasActiveFilters}
+                    resetFilters={resetFilters}
                 />
                 {filters.inPantry && !isPantryEmpty && !error && (
                     <RecipePantryBanner total={total} />
@@ -114,8 +109,8 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                         isPantryEmpty={isPantryEmpty}
                         emptyTitle={emptyTitle}
                         emptyDescription={emptyDescription}
-                        searchQuery={filters.ingredientName}
-                        clearFilters={clearFilters}
+                        searchQuery={filters.search || null}
+                        clearFilters={resetFilters}
                     />
                 )}
                 {!error && !noRecipes && (

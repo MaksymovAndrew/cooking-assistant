@@ -52,13 +52,13 @@ describe("MainPage", () => {
         expect(screen.getByText(RECIPE_TITLE_2)).toBeInTheDocument();
     });
 
-    it("should record the selected type in the store and show the filtered heading", async () => {
+    it("should filter by the selected type and show the filtered heading", async () => {
         mockGetByUrl({
             [API_ROUTES.recipes.byFilters]: { items: [], total: 0 },
             [API_ROUTES.recipeTypes.list]: SAMPLE_TYPES,
         });
 
-        const { store } = renderWithProviders(<MainPage />, {
+        renderWithProviders(<MainPage />, {
             initialEntries: [ROUTE_ALL_RECIPES],
         });
 
@@ -73,8 +73,5 @@ describe("MainPage", () => {
         expect(
             screen.getByText("No recipes match your search"),
         ).toBeInTheDocument();
-        expect(store.getState().filters.recipe.selectedTypes).toEqual([
-            TYPE_ID,
-        ]);
     });
 });

@@ -1,21 +1,6 @@
 import type { Ingredient } from "types/ingredient";
 
-import type { RecipeFiltersState } from "redux/slices/filtersSlice";
-
-import {
-    buildRecipeFilterParams,
-    matchIngredientIds,
-} from "utils/recipeFilterParams";
-
-const EMPTY: RecipeFiltersState = {
-    selectedTypes: [],
-    startDate: "",
-    endDate: "",
-    minCookingTime: "",
-    maxCookingTime: "",
-    sortOrder: "asc",
-    inPantry: false,
-};
+import { matchIngredientIds } from "utils/recipeFilterParams";
 
 const CATALOG: Ingredient[] = [
     {
@@ -53,43 +38,5 @@ describe("matchIngredientIds", () => {
 
     it("should return undefined when the text matches no catalog ingredient", () => {
         expect(matchIngredientIds("zzz", CATALOG)).toBeUndefined();
-    });
-});
-
-describe("buildRecipeFilterParams", () => {
-    it("should build minimal params with no ingredient_ids when none are given", () => {
-        expect(buildRecipeFilterParams(EMPTY, undefined)).toEqual({
-            ingredient_ids: undefined,
-            sort_order: "asc",
-            type_ids: undefined,
-            start_date: undefined,
-            end_date: undefined,
-            min_cooking_time: undefined,
-            max_cooking_time: undefined,
-            in_pantry: undefined,
-        });
-    });
-
-    it("should map all set fields into the query params", () => {
-        const filters: RecipeFiltersState = {
-            selectedTypes: [1, 2],
-            startDate: "2024-01-01",
-            endDate: "2024-02-01",
-            minCookingTime: "10",
-            maxCookingTime: "90",
-            sortOrder: "desc",
-            inPantry: true,
-        };
-
-        expect(buildRecipeFilterParams(filters, "1,2")).toEqual({
-            ingredient_ids: "1,2",
-            sort_order: "desc",
-            type_ids: "1,2",
-            start_date: "2024-01-01",
-            end_date: "2024-02-01",
-            min_cooking_time: "10",
-            max_cooking_time: "90",
-            in_pantry: true,
-        });
     });
 });

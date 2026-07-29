@@ -46,13 +46,13 @@ describe("UserRecipesPage", () => {
         expect(await screen.findByText(TITLE)).toBeInTheDocument();
     });
 
-    it("should record the selected type in the store and show the by-type heading", async () => {
+    it("should filter by the selected type and show the by-type heading", async () => {
         mockGetByUrl({
             [API_ROUTES.recipes.byPerson]: { items: [], total: 0 },
             [API_ROUTES.recipeTypes.list]: [SOUP_TYPE],
         });
 
-        const { store } = renderWithProviders(<UserRecipesPage />, {
+        renderWithProviders(<UserRecipesPage />, {
             initialEntries: ["/my-recipes"],
         });
 
@@ -63,6 +63,5 @@ describe("UserRecipesPage", () => {
         expect(
             screen.getByText("No recipes match your search"),
         ).toBeInTheDocument();
-        expect(store.getState().filters.recipe.selectedTypes).toEqual([1]);
     });
 });

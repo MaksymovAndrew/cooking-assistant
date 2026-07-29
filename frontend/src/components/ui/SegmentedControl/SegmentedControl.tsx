@@ -9,7 +9,7 @@ export interface SegmentedOption<T extends string> {
 
 interface SegmentedControlProps<T extends string> {
     options: readonly SegmentedOption<T>[];
-    value: T;
+    value: T | null;
     onChange: (value: T) => void;
     label: string;
 }

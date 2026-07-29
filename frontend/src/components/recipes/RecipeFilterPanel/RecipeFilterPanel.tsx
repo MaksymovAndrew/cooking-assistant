@@ -1,104 +1,59 @@
-import { ListFilter } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
-import { RECIPE_DEFAULT_SORT_ORDER } from "redux/slices/filtersSlice";
+import type { SetFilterValue } from "hooks/useListFilters";
 
-import { usePopoverDismiss } from "hooks/usePopoverDismiss";
-import type { RecipeFilterState } from "hooks/useRecipeListView";
-import { useScrollLock } from "hooks/useScrollLock";
-
+import { FilterPanel } from "components/ui/FilterPanel";
 import { SearchComponent } from "components/ui/SearchComponent";
+
+import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
 import styles from "./RecipeFilterPanel.module.scss";
 import { RecipeFilterPopover } from "./RecipeFilterPopover";
 
 export interface RecipeFilterPanelProps {
     filters: RecipeFilterState;
-    setSelectedTypes: (types: number[]) => void;
-    setMinCookingTime: (time: string) => void;
-    setMaxCookingTime: (time: string) => void;
-    setSortOrder: (order: string) => void;
-    setInPantry: (value: boolean) => void;
+    setValue: SetFilterValue<RecipeFilterState>;
+    resetFilters: () => void;
+    activeCount: number;
     types: RecipeTypeSummary[];
     searchPlaceholder: string;
     total: number;
 }
 
-const FILTER_ICON_SIZE = 17;
-
 export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
     filters,
-    setSelectedTypes,
-    setMinCookingTime,
-    setMaxCookingTime,
-    setSortOrder,
-    setInPantry,
+    setValue,
+    resetFilters,
+    activeCount,
     types,
     searchPlaceholder,
     total,
 }) => {
     const { t } = useTranslation("recipes");
-    const [isOpen, setIsOpen] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const activeCount =
-        filters.selectedTypes.length +
-        (filters.minCookingTime ? 1 : 0) +
-        (filters.maxCookingTime ? 1 : 0) +
-        (filters.sortOrder !== RECIPE_DEFAULT_SORT_ORDER ? 1 : 0) +
-        (filters.inPantry ? 1 : 0);
-
-    const closePopover = () => {
-        setIsOpen(false);
-    };
-
-    usePopoverDismiss(containerRef, isOpen, closePopover);
-    useScrollLock(isOpen);
+    const showResultsLabel = t("filterPanel.showResults", { count: total });
 
     return (
-        <div ref={containerRef} className={styles["recipe-filter-panel"]}>
+        <div className={styles["recipe-filter-panel"]}>
             <SearchComponent placeholder={searchPlaceholder} />
-            <button
-                type="button"
-                onClick={() => {
-                    setIsOpen((prev) => !prev);
-                }}
-                aria-haspopup="dialog"
-                aria-expanded={isOpen}
-                className={[
-                    styles["recipe-filter-panel__trigger"],
-                    activeCount > 0 &&
-                        styles["recipe-filter-panel__trigger--active"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
+            <FilterPanel
+                title={t("filterPanel.title")}
+                closeLabel={t("filterPanel.close")}
+                resetLabel={t("filterPanel.reset")}
+                applyAriaLabel={showResultsLabel}
+                applyMobileLabel={showResultsLabel}
+                applyDesktopLabel={t("filterPanel.apply")}
+                activeCount={activeCount}
+                onReset={resetFilters}
             >
-                <ListFilter size={FILTER_ICON_SIZE} aria-hidden="true" />
-                {t("filterPanel.title")}
-                {activeCount > 0 && (
-                    <span className={styles["recipe-filter-panel__badge"]}>
-                        {activeCount}
-                    </span>
-                )}
-            </button>
-            {isOpen && (
                 <RecipeFilterPopover
                     filters={filters}
-                    setSelectedTypes={setSelectedTypes}
-                    setMinCookingTime={setMinCookingTime}
-                    setMaxCookingTime={setMaxCookingTime}
-                    setSortOrder={setSortOrder}
-                    setInPantry={setInPantry}
+                    setValue={setValue}
                     types={types}
-                    total={total}
-                    onClose={() => {
-                        setIsOpen(false);
-                    }}
                 />
-            )}
+            </FilterPanel>
         </div>
     );
 };

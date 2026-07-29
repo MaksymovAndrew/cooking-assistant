@@ -1,89 +1,54 @@
-import { X } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
-import { RECIPE_DEFAULT_SORT_ORDER } from "redux/slices/filtersSlice";
-
-import type { RecipeFilterState } from "hooks/useRecipeListView";
+import type { SetFilterValue } from "hooks/useListFilters";
 
 import styles from "components/recipes/RecipeFilterPanel/RecipeFilterPanel.module.scss";
 import { RecipeTypeToggle } from "components/recipes/RecipeFilterPanel/RecipeTypeToggle";
 import type { SegmentedOption } from "components/ui/SegmentedControl";
 import { SegmentedControl } from "components/ui/SegmentedControl";
 
+import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
+
 import { RecipePantryToggle } from "./RecipePantryToggle";
 import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
 
 interface RecipeFilterPopoverProps {
     filters: RecipeFilterState;
-    setSelectedTypes: (types: number[]) => void;
-    setMinCookingTime: (time: string) => void;
-    setMaxCookingTime: (time: string) => void;
-    setSortOrder: (order: string) => void;
-    setInPantry: (value: boolean) => void;
+    setValue: SetFilterValue<RecipeFilterState>;
     types: RecipeTypeSummary[];
-    total: number;
-    onClose: () => void;
 }
 
-const CLOSE_ICON_SIZE = 14;
-const SORT_OPTIONS: readonly SegmentedOption<string>[] = [
+const SORT_OPTIONS: readonly SegmentedOption<"asc" | "desc">[] = [
     { value: "asc", label: "filterPanel.fastToLong" },
     { value: "desc", label: "filterPanel.longToFast" },
 ];
 
 export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
     filters,
-    setSelectedTypes,
-    setMinCookingTime,
-    setMaxCookingTime,
-    setSortOrder,
-    setInPantry,
+    setValue,
     types,
-    total,
-    onClose,
 }) => {
     const { t } = useTranslation("recipes");
 
     const toggleType = (id: number) => {
-        setSelectedTypes(
-            filters.selectedTypes.includes(id)
-                ? filters.selectedTypes.filter((value) => value !== id)
-                : [...filters.selectedTypes, id],
+        setValue(
+            "types",
+            filters.types.includes(id)
+                ? filters.types.filter((value) => value !== id)
+                : [...filters.types, id],
         );
     };
 
-    const resetAll = () => {
-        setSelectedTypes([]);
-        setMinCookingTime("");
-        setMaxCookingTime("");
-        setSortOrder(RECIPE_DEFAULT_SORT_ORDER);
-        setInPantry(false);
-    };
-
     return (
-        <div
-            role="dialog"
-            aria-label={t("filterPanel.title")}
-            className={styles["recipe-filter-panel__popover"]}
-        >
-            <div className={styles["recipe-filter-panel__header"]}>
-                <span>{t("filterPanel.title")}</span>
-                <button
-                    type="button"
-                    aria-label={t("filterPanel.close")}
-                    onClick={onClose}
-                    className={styles["recipe-filter-panel__close"]}
-                >
-                    <X size={CLOSE_ICON_SIZE} aria-hidden="true" />
-                </button>
-            </div>
-
+        <>
             <RecipePantryToggle
                 checked={filters.inPantry}
-                onChange={setInPantry}
+                onChange={(value) => {
+                    setValue("inPantry", value);
+                }}
             />
 
             <div className={styles["recipe-filter-panel__section"]}>
@@ -91,10 +56,20 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                     {t("filterPanel.cookingTimeLabel")}
                 </span>
                 <RecipeTimeRangeFields
-                    minCookingTime={filters.minCookingTime}
-                    maxCookingTime={filters.maxCookingTime}
-                    setMinCookingTime={setMinCookingTime}
-                    setMaxCookingTime={setMaxCookingTime}
+                    minCookingTime={filters.cookingTime.min}
+                    maxCookingTime={filters.cookingTime.max}
+                    setMinCookingTime={(time) => {
+                        setValue("cookingTime", {
+                            ...filters.cookingTime,
+                            min: time,
+                        });
+                    }}
+                    setMaxCookingTime={(time) => {
+                        setValue("cookingTime", {
+                            ...filters.cookingTime,
+                            max: time,
+                        });
+                    }}
                 />
             </div>
 
@@ -104,8 +79,10 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                 </span>
                 <SegmentedControl
                     label={t("filterPanel.sortLabel")}
-                    value={filters.sortOrder}
-                    onChange={setSortOrder}
+                    value={filters.sort}
+                    onChange={(value) => {
+                        setValue("sort", value);
+                    }}
                     options={SORT_OPTIONS.map((option) => ({
                         ...option,
                         label: t(option.label),
@@ -122,7 +99,7 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                         <RecipeTypeToggle
                             key={type.id}
                             label={type.type_name}
-                            selected={filters.selectedTypes.includes(type.id)}
+                            selected={filters.types.includes(type.id)}
                             onToggle={() => {
                                 toggleType(type.id);
                             }}
@@ -130,35 +107,6 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                     ))}
                 </div>
             </div>
-
-            <div className={styles["recipe-filter-panel__footer"]}>
-                <button
-                    type="button"
-                    onClick={resetAll}
-                    className={styles["recipe-filter-panel__reset-button"]}
-                >
-                    {t("filterPanel.reset")}
-                </button>
-                <button
-                    type="button"
-                    onClick={onClose}
-                    aria-label={t("filterPanel.showResults", { count: total })}
-                    className={styles["recipe-filter-panel__apply-button"]}
-                >
-                    <span
-                        aria-hidden="true"
-                        className={styles["recipe-filter-panel__apply-mobile"]}
-                    >
-                        {t("filterPanel.showResults", { count: total })}
-                    </span>
-                    <span
-                        aria-hidden="true"
-                        className={styles["recipe-filter-panel__apply-desktop"]}
-                    >
-                        {t("filterPanel.apply")}
-                    </span>
-                </button>
-            </div>
-        </div>
+        </>
     );
 };

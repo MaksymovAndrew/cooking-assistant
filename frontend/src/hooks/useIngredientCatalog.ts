@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import type { PantryIngredient } from "types/userIngredient";
+import type { PantryIngredient, UserIngredient } from "types/userIngredient";
 
 import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 import {
@@ -12,6 +12,9 @@ import {
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 const todayIso = () => new Date().toISOString().split("T")[0];
+
+// distinct from any real RTK Query result (including undefined pre-load), so the first render always resyncs regardless of whether the query already resolved before mount
+const NOT_SYNCED = Symbol("not-synced");
 
 // pantry view model: data comes from RTK Query (the Pantry tag refetches the list after every write), the editing/selection state stays local UI state
 export const useIngredientCatalog = () => {
@@ -42,10 +45,15 @@ export const useIngredientCatalog = () => {
     const [updatedIngredients, setUpdatedIngredients] = useState<
         PantryIngredient[]
     >([]);
+    const [syncedUserIngredients, setSyncedUserIngredients] = useState<
+        UserIngredient[] | undefined | typeof NOT_SYNCED
+    >(NOT_SYNCED);
 
-    useEffect(() => {
+    // every fresh load of the pantry (mount, or a refetch after a write elsewhere) starts the selection at everything already owned - adjusted during render, not via an effect
+    if (rawUserIngredients !== syncedUserIngredients) {
+        setSyncedUserIngredients(rawUserIngredients);
         setSelectedIngredients(personIngredients.map((item) => item.id));
-    }, [personIngredients]);
+    }
 
     const toggleIngredientSelection = (ingredientId: number) => {
         setSelectedIngredients((prev) =>

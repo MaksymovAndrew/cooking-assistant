@@ -25,13 +25,13 @@ const catalogMapEntrySchema = z
         seasonality: z.string().min(1),
         storageCondition: z.string().min(1),
     })
-    .refine(
-        (entry) =>
-            !isCountedUnit(entry.unit) || (entry.unitGrams ?? null) !== null,
-        (entry) => ({
-            message: `${entry.slug}: counted unit "${entry.unit}" requires unitGrams`,
-        }),
-    );
+    .superRefine((entry, ctx) => {
+        if (isCountedUnit(entry.unit) && (entry.unitGrams ?? null) === null) {
+            ctx.addIssue(
+                `${entry.slug}: counted unit "${entry.unit}" requires unitGrams`,
+            );
+        }
+    });
 
 // validates the raw JSON at build time - a bad category/unit/allergen slug or a missing unitGrams on a counted unit fails loudly here instead of silently producing bad catalog data
 export function parseCatalogMap(raw: unknown): CatalogMapEntry[] {

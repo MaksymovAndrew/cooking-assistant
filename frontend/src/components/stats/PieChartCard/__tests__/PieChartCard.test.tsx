@@ -10,21 +10,21 @@ jest.mock("recharts", () => ({
     PieChart: ({ children }: { children: React.ReactNode }) => (
         <svg data-testid="pie-chart">{children}</svg>
     ),
+    // real recharts 3 invokes Pie's shape prop once per datum instead of taking Cell children
     Pie: ({
-        children,
         data,
+        shape,
     }: {
-        children: React.ReactNode;
         data: { name: string; value: number }[];
+        shape: (props: { index: number }) => React.ReactNode;
     }) => (
         <g data-testid="pie">
-            {data.map((d) => (
-                <circle key={d.name} data-name={d.name} />
+            {data.map((d, index) => (
+                <g key={d.name}>{shape({ index })}</g>
             ))}
-            {children}
         </g>
     ),
-    Cell: ({ fill }: { fill: string }) => (
+    Sector: ({ fill }: { fill: string }) => (
         <rect data-testid="cell" data-fill={fill} />
     ),
     Tooltip: () => null,

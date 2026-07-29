@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { PantryIngredient } from "types/userIngredient";
@@ -34,15 +34,13 @@ export const usePantryFilters = ({
     const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
     const categories = useIngredientCategories(personIngredients);
 
-    // drops a stale category filter (its last item just got deleted) rather than silently matching nothing forever
-    useEffect(() => {
-        if (
-            categoryFilter &&
-            !categories.some((category) => category.key === categoryFilter)
-        ) {
-            setCategoryFilter(null);
-        }
-    }, [categoryFilter, categories]);
+    // drops a stale category filter (its last item just got deleted) rather than silently matching nothing forever - adjusted during render, not via an effect, since it's already a conditional, idempotent correction
+    if (
+        categoryFilter &&
+        !categories.some((category) => category.key === categoryFilter)
+    ) {
+        setCategoryFilter(null);
+    }
 
     const expiringSoonCount = useMemo(
         () =>

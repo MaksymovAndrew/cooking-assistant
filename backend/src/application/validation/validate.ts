@@ -4,7 +4,7 @@ import { ERROR_CODES } from "constants/errorMessages";
 import { ValidationError } from "domain/errors/AppError";
 
 export function validate<Output, Input>(
-    schema: z.ZodType<Output, z.ZodTypeDef, Input>,
+    schema: z.ZodType<Output, Input>,
     data: unknown,
 ): Output {
     const result = schema.safeParse(data);

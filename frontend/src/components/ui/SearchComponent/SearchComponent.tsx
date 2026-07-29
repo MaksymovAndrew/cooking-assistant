@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
@@ -16,17 +16,18 @@ const SEARCH_ICON_SIZE = 18;
 export const SearchComponent: React.FC<SearchComponentProps> = ({
     placeholder,
 }) => {
-    const [searchTerm, setSearchTerm] = useState<string>("");
     const [searchParams, setSearchParams] = useSearchParams();
+    const urlSearchTerm = searchParams.get(SEARCH_PARAM_INGREDIENT_NAME) ?? "";
+    const [searchTerm, setSearchTerm] = useState(urlSearchTerm);
+    const [syncedSearchTerm, setSyncedSearchTerm] = useState(urlSearchTerm);
     const inputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
 
-    useEffect(() => {
-        const initialSearchTerm =
-            searchParams.get(SEARCH_PARAM_INGREDIENT_NAME) ?? "";
-
-        setSearchTerm(initialSearchTerm);
-    }, [searchParams]);
+    // stays local while typing, resyncs when the URL changes from elsewhere (Enter here, or a chip/reset removing it) - adjusted during render, not via an effect
+    if (urlSearchTerm !== syncedSearchTerm) {
+        setSyncedSearchTerm(urlSearchTerm);
+        setSearchTerm(urlSearchTerm);
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);

@@ -20,7 +20,7 @@ const envNumberSchema = (fallback: number) =>
         emptyToUndefined,
         z.coerce
             .number({
-                invalid_type_error: "must be a number",
+                error: "must be a number",
             })
             .int("must be an integer")
             .positive("must be positive")
@@ -51,7 +51,7 @@ const envOptionalBooleanSchema = z.preprocess(
 const envOptionalHopsSchema = z.preprocess(
     emptyToUndefined,
     z.coerce
-        .number({ invalid_type_error: "must be a number" })
+        .number({ error: "must be a number" })
         .int("must be an integer")
         .nonnegative("must be zero or greater")
         .optional(),

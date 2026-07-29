@@ -262,35 +262,49 @@ module.exports = tseslint.config(
                 {
                     checkAllOrigins: true,
                     default: "allow",
-                    rules: [
+                    policies: [
                         {
-                            from: [{ type: "domain" }],
+                            from: { element: { type: "domain" } },
                             disallow: {
-                                to: [
-                                    { type: "application" },
-                                    { type: "infrastructure" },
-                                    { type: "controller" },
-                                    { type: "routes" },
-                                    { type: "middleware" },
-                                ],
+                                to: {
+                                    element: {
+                                        types: {
+                                            anyOf: [
+                                                "application",
+                                                "infrastructure",
+                                                "controller",
+                                                "routes",
+                                                "middleware",
+                                            ],
+                                        },
+                                    },
+                                },
                             },
                             message: "Domain must not import outer layers.",
                         },
                         {
-                            from: [{ type: "application" }],
+                            from: { element: { type: "application" } },
                             disallow: {
-                                to: [
-                                    { type: "infrastructure" },
-                                    { type: "controller" },
-                                    { type: "routes" },
-                                ],
+                                to: {
+                                    element: {
+                                        types: {
+                                            anyOf: [
+                                                "infrastructure",
+                                                "controller",
+                                                "routes",
+                                            ],
+                                        },
+                                    },
+                                },
                             },
                             message:
                                 "Application must not import infrastructure or HTTP layers.",
                         },
                         {
-                            from: [{ type: "controller" }],
-                            disallow: { to: [{ type: "infrastructure" }] },
+                            from: { element: { type: "controller" } },
+                            disallow: {
+                                to: { element: { type: "infrastructure" } },
+                            },
                             message:
                                 "Controllers must not import infrastructure directly; use use-cases.",
                         },

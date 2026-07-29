@@ -14,6 +14,17 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # typescript-eslint's latest stable (8.65.0) peers on typescript <6.1.0;
+      # only 8.65.1-alpha.* exists beyond that, so TS 7 cannot be adopted yet
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # eslint-plugin-import@2.32.0 and eslint-plugin-jsx-a11y@6.10.2 are the
+      # latest releases and both peer on eslint <=9; ESLint 10 crashes at runtime
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"

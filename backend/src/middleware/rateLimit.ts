@@ -1,5 +1,6 @@
 import type { Request, RequestHandler } from "express";
 import rateLimit, {
+    ipKeyGenerator,
     type Options as RateLimitOptions,
 } from "express-rate-limit";
 
@@ -11,6 +12,11 @@ import {
     REGISTER_IP_RATE_LIMIT,
 } from "config/security";
 
+// collapses an IPv6 address to its /56 subnet before use as a rate-limit key, so rotating within one subnet cannot bypass the limit (express-rate-limit v8 requirement)
+function normalizedIp(req: Request): string {
+    return req.ip ? ipKeyGenerator(req.ip) : "";
+}
+
 // combines the client IP with a request-body field, so people sharing a network never share one account's quota
 function bodyFieldLimiterKey(field: string) {
     return (req: Request): string => {
@@ -18,7 +24,7 @@ function bodyFieldLimiterKey(field: string) {
             field
         ];
 
-        return `${req.ip}:${typeof value === "string" ? value : ""}`;
+        return `${normalizedIp(req)}:${typeof value === "string" ? value : ""}`;
     };
 }
 
@@ -27,12 +33,12 @@ export const emailLimiterKey = bodyFieldLimiterKey("email");
 
 // keyed by the authenticated user, not IP - the threat here is a stolen session cookie, not a shared network
 export function userIdLimiterKey(req: Request): string {
-    return String(req.user?.id ?? req.ip);
+    return req.user ? String(req.user.id) : normalizedIp(req);
 }
 
 // the coarse per-IP backstop's key - deliberately ignores any account identifier
 export function ipLimiterKey(req: Request): string {
-    return req.ip ?? "";
+    return normalizedIp(req);
 }
 
 export function createLimiter(

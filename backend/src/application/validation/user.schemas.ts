@@ -2,7 +2,11 @@ import { z } from "zod";
 
 import { AVATAR_KEYS } from "constants/avatarKeys";
 
-import { nonEmptyStringSchema, trimmedStringSchema } from "./common.schemas";
+import {
+    nonEmptyStringSchema,
+    requiredOrInvalidType,
+    trimmedStringSchema,
+} from "./common.schemas";
 
 const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_HAS_LETTER = /[A-Za-z]/;
@@ -22,19 +26,23 @@ function meetsPasswordRequirements(value: string): boolean {
 export function emailSchema(field = "Email") {
     return z
         .string({
-            required_error: `${field} is required`,
-            invalid_type_error: `${field} must be a string`,
+            error: requiredOrInvalidType(
+                `${field} is required`,
+                `${field} must be a string`,
+            ),
         })
         .transform((value) => value.trim())
-        .pipe(z.string().email(`${field} must be a valid email address`))
+        .pipe(z.email(`${field} must be a valid email address`))
         .transform((value) => value.toLowerCase());
 }
 
 export function passwordSchema(field = "Password") {
     return z
         .string({
-            required_error: `${field} is required`,
-            invalid_type_error: `${field} must be a string`,
+            error: requiredOrInvalidType(
+                `${field} is required`,
+                `${field} must be a string`,
+            ),
         })
         .refine(meetsPasswordRequirements, {
             message: `${field} must be at least ${PASSWORD_MIN_LENGTH} characters and include a letter, a number, and a special character`,

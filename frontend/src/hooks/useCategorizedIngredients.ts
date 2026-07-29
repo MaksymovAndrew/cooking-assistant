@@ -1,5 +1,5 @@
 import i18next from "i18next";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { Ingredient } from "types/ingredient";
 
@@ -92,15 +92,13 @@ export const useCategorizedIngredients = ({
 
     const categories = useIngredientCategories(ingredients);
 
-    // drops a stale category selection (its last addable item just got picked) rather than showing a "back" panel for a category that no longer exists
-    useEffect(() => {
-        if (
-            activeCategory &&
-            !categories.some((category) => category.key === activeCategory)
-        ) {
-            setActiveCategory(null);
-        }
-    }, [activeCategory, categories]);
+    // drops a stale category selection (its last addable item just got picked) rather than showing a "back" panel for a category that no longer exists - adjusted during render, not via an effect, since it's already a conditional, idempotent correction
+    if (
+        activeCategory &&
+        !categories.some((category) => category.key === activeCategory)
+    ) {
+        setActiveCategory(null);
+    }
 
     const visibleIngredients = useMemo(() => {
         if (trimmedQuery) {

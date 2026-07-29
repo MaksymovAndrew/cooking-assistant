@@ -1,8 +1,12 @@
 import type { Menu } from "domain/entities/Menu";
+import type {
+    MenuFilters,
+    MenuSearchRow,
+} from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
 export interface MenuRepository {
-    findAll(filters: unknown): Promise<PaginatedResult<unknown>>;
+    findAll(filters: MenuFilters): Promise<PaginatedResult<MenuSearchRow>>;
     findAllUnpaginated(): Promise<unknown[]>;
     create(menu: Menu, recipeIds: number[]): Promise<unknown>;
     findByIdWithRecipes(
@@ -18,6 +22,6 @@ export interface MenuRepository {
     deleteById(id: string | number, personId: number): Promise<unknown>;
     searchByPerson(
         personId: number,
-        filters: unknown,
-    ): Promise<PaginatedResult<unknown>>;
+        filters: MenuFilters,
+    ): Promise<PaginatedResult<MenuSearchRow>>;
 }

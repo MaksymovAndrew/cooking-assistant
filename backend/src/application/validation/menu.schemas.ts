@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { MenuFilters } from "domain/repositories/menu.filters";
+
 import {
     hasUniqueItems,
     idListStringSchema,
@@ -36,9 +38,10 @@ export const updateMenuSchema = createMenuSchema.omit({
     personId: true,
 });
 
+// output shape is checked against the domain's MenuFilters below - the repository interface is typed against that, not against this schema
 export const menuFiltersSchema = z.object({
     menu_name: optionalStringSchema("Menu name"),
     category_ids: idListStringSchema("Category IDs").optional(),
     limit: limitSchema,
     offset: offsetSchema,
-});
+}) satisfies z.ZodType<MenuFilters>;

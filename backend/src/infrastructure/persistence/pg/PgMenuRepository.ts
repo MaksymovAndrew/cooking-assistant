@@ -1,6 +1,10 @@
 import type { Pool } from "pg";
 
 import type { Menu } from "domain/entities/Menu";
+import type {
+    MenuFilters,
+    MenuSearchRow,
+} from "domain/repositories/menu.filters";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
@@ -31,7 +35,9 @@ export default class PgMenuRepository implements MenuRepository {
         return { placeholders, params };
     }
 
-    async findAll(filters: unknown): Promise<PaginatedResult<unknown>> {
+    async findAll(
+        filters: MenuFilters,
+    ): Promise<PaginatedResult<MenuSearchRow>> {
         return findAllMenus(this.pool, filters);
     }
 
@@ -143,8 +149,8 @@ export default class PgMenuRepository implements MenuRepository {
 
     async searchByPerson(
         personId: number,
-        filters: unknown,
-    ): Promise<PaginatedResult<unknown>> {
+        filters: MenuFilters,
+    ): Promise<PaginatedResult<MenuSearchRow>> {
         return searchPersonMenus(this.pool, personId, filters);
     }
 }

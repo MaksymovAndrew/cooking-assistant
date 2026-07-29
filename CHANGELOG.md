@@ -20,6 +20,11 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Project
+
+- Changed: Routine dependency maintenance - updated to the latest safe major versions across backend and frontend (including Zod 4 and Recharts 3); TypeScript and ESLint majors stay pinned for now due to peer-dependency conflicts in their own plugin ecosystems.
+- Security: Closed a gap where the login rate limiter could be bypassed by rotating IPv6 addresses within the same subnet.
+
 ## 3.8 - 2026-07-28
 
 ### Backend

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { RecipeFilters } from "domain/repositories/recipe.filters";
+
 import {
     hasUniqueItems,
     idListStringSchema,
@@ -59,6 +61,7 @@ export const updateRecipeSchema = createRecipeSchema.omit({
     person_id: true,
 });
 
+// output shape is checked against the domain's RecipeFilters below - the repository interface is typed against that, not against this schema
 export const recipeFiltersSchema = z.object({
     ingredient_ids: idListStringSchema("Ingredient IDs")
         .refine(
@@ -111,4 +114,4 @@ export const recipeFiltersSchema = z.object({
         .optional(),
     limit: limitSchema,
     offset: offsetSchema,
-});
+}) satisfies z.ZodType<RecipeFilters>;

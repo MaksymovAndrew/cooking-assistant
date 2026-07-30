@@ -164,9 +164,14 @@ test("should filter My Menus by title", async () => {
 
 test("should filter My Menus by category", async () => {
     await page.goto("/my-menus");
-    // the list page's category filter is a checkbox dropdown, not a <select> - reuse the category text captured from the create-menu form instead
+    // the list page's category filter is a chip group, not a <select> - reuse the category text captured from the create-menu form instead
     await page.getByRole("button", { name: "Filter", exact: true }).click();
-    await page.getByLabel(menuXCategory).check();
+    // click + web-first assertion, not .check() - same reason as the recipe type filter above
+    await page.getByLabel(menuXCategory).click();
+    await expect(page.getByLabel(menuXCategory)).toHaveAttribute(
+        "aria-checked",
+        "true",
+    );
 
     await expect(page.getByText(menuXTitle)).toBeVisible();
     await expect(page.getByText(menuYTitle)).toBeHidden();

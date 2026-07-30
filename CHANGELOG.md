@@ -24,6 +24,9 @@ changelogs and the tags and now track everything here against one shared version
 
 - Changed: The recipe list now sorts by newest first by default (previously fastest cooking time first); both "Fast → long" and "Long → fast" are now optional sort chips you can apply and remove from the filter bar.
 - Added: A recipe list filtered by type, cooking time, sort order, or pantry can now be shared or bookmarked - copying the page URL and opening it elsewhere restores the exact same filters.
+- Added: Menu lists are now shareable and bookmarkable the same way, and the menu filter panel gained the same layout as the recipe one, with a removable chip for the active title search and a counter badge on the trigger.
+- Fixed: Searching a list no longer clears the filters you already applied - a title, type, cooking time, sort order, or pantry filter now survives a search, and vice versa.
+- Fixed: Filters no longer leak between pages - the recipe and menu lists each keep their own, so a menu title search can never be mistaken for a recipe ingredient search.
 
 ### Project
 

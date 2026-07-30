@@ -1,32 +1,21 @@
-import { screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useSearchParams } from "react-router-dom";
-
-import { SEARCH_PARAM_INGREDIENT_NAME } from "constants/queryParams";
 
 import { SearchComponent } from "components/ui/SearchComponent";
-
-import { ROUTE_ALL_MENUS } from "test/constants";
-import { renderWithRouter } from "test/router";
 
 const PLACEHOLDER = "ingredient";
 const QUERY = "egg";
 const RESET_SEARCH = "Reset Search";
 
-// probes the URL search param the component writes, so a test can assert the search was actually applied (not merely that the input kept its value)
-const ActiveFilter = () => {
-    const [params] = useSearchParams();
-
-    return (
-        <div>{`filter:${params.get(SEARCH_PARAM_INGREDIENT_NAME) ?? ""}`}</div>
-    );
-};
-
 describe("SearchComponent", () => {
     it("should show the reset button after typing a search term", async () => {
-        renderWithRouter(<SearchComponent placeholder={PLACEHOLDER} />, [
-            ROUTE_ALL_MENUS,
-        ]);
+        render(
+            <SearchComponent
+                placeholder={PLACEHOLDER}
+                value=""
+                onSubmit={jest.fn()}
+            />,
+        );
 
         const input = screen.getByPlaceholderText(`Search by ${PLACEHOLDER}`);
 
@@ -38,13 +27,15 @@ describe("SearchComponent", () => {
         ).toBeInTheDocument();
     });
 
-    it("should write the search term to the URL on Enter", async () => {
-        renderWithRouter(
-            <>
-                <SearchComponent placeholder={PLACEHOLDER} />
-                <ActiveFilter />
-            </>,
-            [ROUTE_ALL_MENUS],
+    it("should submit the typed search term on Enter", async () => {
+        const onSubmit = jest.fn();
+
+        render(
+            <SearchComponent
+                placeholder={PLACEHOLDER}
+                value=""
+                onSubmit={onSubmit}
+            />,
         );
 
         await userEvent.type(
@@ -52,13 +43,19 @@ describe("SearchComponent", () => {
             `${QUERY}{Enter}`,
         );
 
-        expect(screen.getByText(`filter:${QUERY}`)).toBeInTheDocument();
+        expect(onSubmit).toHaveBeenCalledWith(QUERY);
     });
 
-    it("should clear the search term when the reset button is clicked", async () => {
-        renderWithRouter(<SearchComponent placeholder={PLACEHOLDER} />, [
-            ROUTE_ALL_MENUS,
-        ]);
+    it("should submit an empty term when the reset button is clicked", async () => {
+        const onSubmit = jest.fn();
+
+        render(
+            <SearchComponent
+                placeholder={PLACEHOLDER}
+                value=""
+                onSubmit={onSubmit}
+            />,
+        );
 
         const input = screen.getByPlaceholderText(`Search by ${PLACEHOLDER}`);
 
@@ -68,8 +65,33 @@ describe("SearchComponent", () => {
         );
 
         expect(input).toHaveValue("");
+        expect(onSubmit).toHaveBeenLastCalledWith("");
         expect(
             screen.queryByRole("button", { name: RESET_SEARCH }),
         ).not.toBeInTheDocument();
+    });
+
+    it("should resync the input when the committed value is cleared from outside", () => {
+        const { rerender } = render(
+            <SearchComponent
+                placeholder={PLACEHOLDER}
+                value={QUERY}
+                onSubmit={jest.fn()}
+            />,
+        );
+
+        const input = screen.getByPlaceholderText(`Search by ${PLACEHOLDER}`);
+
+        expect(input).toHaveValue(QUERY);
+
+        rerender(
+            <SearchComponent
+                placeholder={PLACEHOLDER}
+                value=""
+                onSubmit={jest.fn()}
+            />,
+        );
+
+        expect(input).toHaveValue("");
     });
 });

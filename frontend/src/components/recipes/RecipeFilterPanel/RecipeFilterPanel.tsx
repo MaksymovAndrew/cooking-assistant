@@ -37,7 +37,13 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
 
     return (
         <div className={styles["recipe-filter-panel"]}>
-            <SearchComponent placeholder={searchPlaceholder} />
+            <SearchComponent
+                placeholder={searchPlaceholder}
+                value={filters.search}
+                onSubmit={(value) => {
+                    setValue("search", value);
+                }}
+            />
             <FilterPanel
                 title={t("filterPanel.title")}
                 closeLabel={t("filterPanel.close")}

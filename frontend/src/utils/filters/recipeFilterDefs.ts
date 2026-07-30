@@ -1,6 +1,6 @@
-import { SEARCH_PARAM_INGREDIENT_NAME } from "constants/queryParams";
 import type { RecipeFilterParams } from "types/recipe";
 
+import type { FilterDef } from "./filterDef";
 import {
     idListFilter,
     numericRangeFilter,
@@ -19,10 +19,13 @@ export interface RecipeFilterState {
 // shared with links that pre-set the filter before navigating (see PantryRecipesCard)
 export const RECIPE_PANTRY_URL_PARAM = "pantry";
 
-export const RECIPE_FILTER_DEFS = [
+export const RECIPE_FILTER_DEFS: readonly FilterDef<
+    unknown,
+    RecipeFilterParams
+>[] = [
     textFilter<RecipeFilterParams>({
         key: "search",
-        urlParam: SEARCH_PARAM_INGREDIENT_NAME,
+        urlParam: "q",
         chipLabel: (value, t) => t("filterPanel.searchChip", { query: value }),
     }),
     idListFilter<RecipeFilterParams>({

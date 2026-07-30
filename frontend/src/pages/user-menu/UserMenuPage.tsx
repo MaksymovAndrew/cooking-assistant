@@ -11,7 +11,7 @@ const UserMenuPage: React.FC = () => {
     const list = useMenuListView(MENU_SOURCE.person);
 
     const heading =
-        list.selectedCategories.length > 0
+        list.filters.categories.length > 0
             ? t("userMenuPage.menusByCategories", {
                   names: list.selectedCategoryNames,
               })

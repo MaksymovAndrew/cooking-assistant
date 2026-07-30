@@ -14,6 +14,11 @@
     "categoryFilter": {
         "filter": "Filter",
         "reset": "Reset filters",
+        "close": "Close filters",
+        "apply": "Apply",
+        "showResults_one": "Show {{count}} menu",
+        "showResults_other": "Show {{count}} menus",
+        "categoryLabel": "Category",
         "menuCount_one": "{{count}} menu",
         "menuCount_other": "{{count}} menus",
         "searchChip": "“{{query}}”",

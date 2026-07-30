@@ -6,6 +6,8 @@ import type { Menu } from "types/menu";
 
 import { MenuListView } from "components/menu/MenuListView";
 
+import type { MenuFilterState } from "utils/filters/menuFilterDefs";
+
 import { renderWithRouter } from "test/router";
 
 const MENU_TITLE = "Weekday menu";
@@ -21,19 +23,21 @@ const MENUS: Menu[] = [
     },
 ];
 
+const FILTERS: MenuFilterState = { search: "", categories: [] };
+
 const baseProps = {
-    selectedCategories: [],
-    setSelectedCategories: jest.fn(),
+    filters: FILTERS,
+    setValue: jest.fn(),
+    resetFilters: jest.fn(),
+    activeCount: 0,
+    activeFilters: [],
     categories: [],
     heading: "All menus",
     subtitle: "1 menu published",
     emptyTitle: "No menus yet",
     emptyDescription: "Your menu collection is empty.",
     hasActiveFilters: false,
-    clearFilters: jest.fn(),
-    searchQuery: null,
     searchPlaceholder: "menu title",
-    removeSearch: jest.fn(),
     onRetry: jest.fn(),
     total: MENUS.length,
     loadedCount: MENUS.length,
@@ -95,7 +99,7 @@ describe("MenuListView", () => {
     });
 
     it("should render the no-matches state and a working Clear filters button when filters are active", async () => {
-        const clearFilters = jest.fn();
+        const resetFilters = jest.fn();
 
         renderWithRouter(
             <MenuListView
@@ -104,21 +108,21 @@ describe("MenuListView", () => {
                 noMenus={true}
                 error={null}
                 hasActiveFilters={true}
-                searchQuery="brunch"
-                clearFilters={clearFilters}
+                filters={{ ...FILTERS, search: "brunch" }}
+                resetFilters={resetFilters}
             />,
         );
 
         expect(
             screen.getByText("No menus match your search"),
         ).toBeInTheDocument();
-        expect(screen.getAllByText(/“brunch”/)).toHaveLength(2);
+        expect(screen.getByText(/“brunch”/)).toBeInTheDocument();
 
         await userEvent.click(
             screen.getByRole("button", { name: "Clear filters" }),
         );
 
-        expect(clearFilters).toHaveBeenCalledTimes(1);
+        expect(resetFilters).toHaveBeenCalledTimes(1);
     });
 
     it("should render the error state and call onRetry when Try again is clicked", async () => {

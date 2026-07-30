@@ -6,7 +6,7 @@ import type { RecipeTypeSummary } from "types/recipeType";
 import type { SetFilterValue } from "hooks/useListFilters";
 
 import styles from "components/recipes/RecipeFilterPanel/RecipeFilterPanel.module.scss";
-import { RecipeTypeToggle } from "components/recipes/RecipeFilterPanel/RecipeTypeToggle";
+import { FilterChipGroup } from "components/ui/FilterChipGroup";
 import type { SegmentedOption } from "components/ui/SegmentedControl";
 import { SegmentedControl } from "components/ui/SegmentedControl";
 
@@ -32,15 +32,6 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
     types,
 }) => {
     const { t } = useTranslation("recipes");
-
-    const toggleType = (id: number) => {
-        setValue(
-            "types",
-            filters.types.includes(id)
-                ? filters.types.filter((value) => value !== id)
-                : [...filters.types, id],
-        );
-    };
 
     return (
         <>
@@ -94,18 +85,16 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                 <span className={styles["recipe-filter-panel__label"]}>
                     {t("filterPanel.typeLabel")}
                 </span>
-                <div className={styles["recipe-filter-panel__type-list"]}>
-                    {types.map((type) => (
-                        <RecipeTypeToggle
-                            key={type.id}
-                            label={type.type_name}
-                            selected={filters.types.includes(type.id)}
-                            onToggle={() => {
-                                toggleType(type.id);
-                            }}
-                        />
-                    ))}
-                </div>
+                <FilterChipGroup
+                    options={types.map((type) => ({
+                        id: type.id,
+                        label: type.type_name,
+                    }))}
+                    value={filters.types}
+                    onChange={(next) => {
+                        setValue("types", next);
+                    }}
+                />
             </div>
         </>
     );

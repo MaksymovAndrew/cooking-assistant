@@ -1,4 +1,4 @@
-import { act } from "@testing-library/react";
+﻿import { act } from "@testing-library/react";
 
 import { PAGE_SIZE } from "constants/pagination";
 import type { CurrentUser } from "types/auth";
@@ -413,7 +413,7 @@ describe("useRecipeListView", () => {
 
         const { result } = renderHookWithRouter(
             () => useRecipeListView(RECIPE_SOURCE.all),
-            { store, initialEntries: ["/test?ingredient_name=milk"] },
+            { store, initialEntries: ["/test?q=milk"] },
         );
 
         expect(result.current.recipes).toEqual([RECIPE_1]);
@@ -455,7 +455,7 @@ describe("useRecipeListView", () => {
 
         const { result } = renderHookWithRouter(
             () => useRecipeListView(RECIPE_SOURCE.all),
-            { store, initialEntries: ["/test?ingredient_name=zzz"] },
+            { store, initialEntries: ["/test?q=zzz"] },
         );
 
         expect(result.current.noRecipes).toBe(true);

@@ -1,6 +1,6 @@
-import { act } from "@testing-library/react";
-import type * as ReactRouterDom from "react-router-dom";
+﻿import { act } from "@testing-library/react";
 
+import { PAGE_SIZE } from "constants/pagination";
 import type { CurrentUser } from "types/auth";
 import type { Menu } from "types/menu";
 
@@ -12,15 +12,9 @@ import { menusApi } from "redux/services/menusApi";
 
 import { MENU_SOURCE, useMenuListView } from "hooks/useMenuListView";
 
-import { buildMenuFilterParams } from "utils/menuFilterParams";
-
 import { byOffset, makeAxiosError, mockedGet } from "test/apiClientMock";
-import { makeTestStore, renderHookWithStore } from "test/store";
+import { makeTestStore, renderHookWithRouter } from "test/store";
 
-jest.mock("react-router-dom", () => ({
-    ...jest.requireActual<typeof ReactRouterDom>("react-router-dom"),
-    useSearchParams: () => [new URLSearchParams(), jest.fn()],
-}));
 jest.mock("api/client");
 
 const MENU_1: Menu = {
@@ -48,15 +42,32 @@ const CURRENT_USER: CurrentUser = {
     avatar: null,
 };
 
-// matches the default filters slice state + no URL name search, so the pre-seeded cache key lines up with what the hook itself requests
-const DEFAULT_PARAMS = buildMenuFilterParams([], null);
+// matches what the hook sends with no filters active in the URL, so the pre-seeded cache key lines up with what the hook itself requests
+const DEFAULT_PARAMS = {};
 
 const FAILURE_MESSAGE = "Menus failed";
 const FAILURE = makeAxiosError(500, FAILURE_MESSAGE);
 
+const mockEmptyMenuList = () => {
+    mockedGet.mockImplementation((url: string) => {
+        if (url === API_ROUTES.auth.me) {
+            return Promise.resolve({ data: CURRENT_USER });
+        }
+        if (url === API_ROUTES.menuCategories.list) {
+            return Promise.resolve({ data: [] });
+        }
+        if (url === API_ROUTES.menu.list) {
+            return Promise.resolve({ data: { items: [], total: 0 } });
+        }
+
+        return Promise.reject(new Error(`unexpected GET ${url}`));
+    });
+};
+
 // pre-seed the cache by awaiting the real query thunks before the hook mounts, so the hook reads already-fulfilled data on first render instead of racing a guessed number of promise ticks
 const setup = async (
     source: (typeof MENU_SOURCE)[keyof typeof MENU_SOURCE] = MENU_SOURCE.all,
+    initialEntries: string[] = ["/test"],
 ) => {
     const store = makeTestStore();
     const endpoint =
@@ -72,7 +83,10 @@ const setup = async (
         store.dispatch(authApi.endpoints.getMe.initiate(null)),
     ]);
 
-    return renderHookWithStore(() => useMenuListView(source), store);
+    return renderHookWithRouter(() => useMenuListView(source), {
+        store,
+        initialEntries,
+    });
 };
 
 describe("useMenuListView", () => {
@@ -103,19 +117,7 @@ describe("useMenuListView", () => {
     });
 
     it("should expose the current user's id, for per-item ownership checks in the all-menus view", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.list) {
-                return Promise.resolve({ data: { items: [], total: 0 } });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
+        mockEmptyMenuList();
 
         const { result } = await setup();
 
@@ -123,19 +125,7 @@ describe("useMenuListView", () => {
     });
 
     it("should report noMenus once loading succeeds with zero results", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.list) {
-                return Promise.resolve({ data: { items: [], total: 0 } });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
+        mockEmptyMenuList();
 
         const { result } = await setup();
 
@@ -228,9 +218,9 @@ describe("useMenuListView", () => {
             ),
         ]);
 
-        const { result } = renderHookWithStore(
+        const { result } = renderHookWithRouter(
             () => useMenuListView(MENU_SOURCE.all),
-            store,
+            { store },
         );
 
         await act(async () => {
@@ -274,80 +264,73 @@ describe("useMenuListView", () => {
         expect(result.current.error).toBeNull();
     });
 
-    it("should dispatch the selected categories through the store setter", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.list) {
-                return Promise.resolve({ data: { items: [], total: 0 } });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
+    it("should write the selected categories into the URL-backed filter state", async () => {
+        mockEmptyMenuList();
 
         const { result } = await setup();
 
         act(() => {
-            result.current.setSelectedCategories([3]);
+            result.current.setValue("categories", [3]);
         });
 
-        expect(result.current.selectedCategories).toEqual([3]);
+        expect(result.current.filters.categories).toEqual([3]);
     });
 
     it("should report hasActiveFilters once a category is selected", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.list) {
-                return Promise.resolve({ data: { items: [], total: 0 } });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
+        mockEmptyMenuList();
 
         const { result } = await setup();
 
         expect(result.current.hasActiveFilters).toBe(false);
 
         act(() => {
-            result.current.setSelectedCategories([3]);
+            result.current.setValue("categories", [3]);
         });
 
         expect(result.current.hasActiveFilters).toBe(true);
     });
 
-    it("should reset the selected categories when clearFilters is called", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.list) {
-                return Promise.resolve({ data: { items: [], total: 0 } });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
+    it("should reset every filter back to its default when resetFilters is called", async () => {
+        mockEmptyMenuList();
 
         const { result } = await setup();
 
         act(() => {
-            result.current.setSelectedCategories([3]);
+            result.current.setValue("categories", [3]);
         });
         act(() => {
-            result.current.clearFilters();
+            result.current.resetFilters();
         });
 
-        expect(result.current.selectedCategories).toEqual([]);
+        expect(result.current.filters).toEqual({ search: "", categories: [] });
+    });
+
+    it("should read the name search and selected categories from the URL", async () => {
+        mockEmptyMenuList();
+
+        const { result } = await setup(MENU_SOURCE.all, [
+            "/test?q=brunch&cats=1,2",
+        ]);
+
+        expect(result.current.filters).toEqual({
+            search: "brunch",
+            categories: [1, 2],
+        });
+        expect(result.current.activeCount).toBe(2);
+    });
+
+    it("should send the name search as menu_name and the categories as category_ids", async () => {
+        mockEmptyMenuList();
+
+        await setup(MENU_SOURCE.all, ["/test?q=brunch&cats=1,2"]);
+
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.list, {
+            params: {
+                menu_name: "brunch",
+                category_ids: "1,2",
+                limit: PAGE_SIZE,
+                offset: 0,
+            },
+        });
     });
 });

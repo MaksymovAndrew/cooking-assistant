@@ -1,31 +1,43 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import type { MenuListParams } from "types/menu";
+
+import type { ActiveFilterEntry } from "hooks/useListFilters";
+
 import { MenuActiveFilters } from "components/menu/MenuActiveFilters";
+
+import { MENU_FILTER_DEFS } from "utils/filters/menuFilterDefs";
+
+const [SEARCH_DEF, CATEGORIES_DEF] = MENU_FILTER_DEFS;
+
+const makeEntry = (
+    def: typeof SEARCH_DEF,
+    value: unknown,
+    remove = jest.fn(),
+): ActiveFilterEntry<MenuListParams> => ({ def, value, remove });
 
 describe("MenuActiveFilters", () => {
     it("should show the menu count", () => {
         render(
             <MenuActiveFilters
                 total={3}
-                selectedCategories={[]}
-                setSelectedCategories={jest.fn()}
-                searchQuery={null}
-                removeSearch={jest.fn()}
+                activeFilters={[]}
+                hasActiveFilters={false}
+                resetFilters={jest.fn()}
             />,
         );
 
         expect(screen.getByText("3 menus")).toBeInTheDocument();
     });
 
-    it("should not show the clear button when no category is selected", () => {
+    it("should not show the clear button when no filter is active", () => {
         render(
             <MenuActiveFilters
                 total={3}
-                selectedCategories={[]}
-                setSelectedCategories={jest.fn()}
-                searchQuery={null}
-                removeSearch={jest.fn()}
+                activeFilters={[]}
+                hasActiveFilters={false}
+                resetFilters={jest.fn()}
             />,
         );
 
@@ -34,16 +46,15 @@ describe("MenuActiveFilters", () => {
         ).not.toBeInTheDocument();
     });
 
-    it("should clear the selected categories when the clear button is clicked", async () => {
-        const setSelectedCategories = jest.fn();
+    it("should reset every filter when the clear button is clicked", async () => {
+        const resetFilters = jest.fn();
 
         render(
             <MenuActiveFilters
                 total={3}
-                selectedCategories={[1]}
-                setSelectedCategories={setSelectedCategories}
-                searchQuery={null}
-                removeSearch={jest.fn()}
+                activeFilters={[makeEntry(CATEGORIES_DEF, [1])]}
+                hasActiveFilters
+                resetFilters={resetFilters}
             />,
         );
 
@@ -51,38 +62,51 @@ describe("MenuActiveFilters", () => {
             screen.getByRole("button", { name: "Reset filters" }),
         );
 
-        expect(setSelectedCategories).toHaveBeenCalledWith([]);
+        expect(resetFilters).toHaveBeenCalledTimes(1);
     });
 
     it("should show a removable chip for an active search query", () => {
         render(
             <MenuActiveFilters
                 total={3}
-                selectedCategories={[]}
-                setSelectedCategories={jest.fn()}
-                searchQuery="cauliflower"
-                removeSearch={jest.fn()}
+                activeFilters={[makeEntry(SEARCH_DEF, "cauliflower")]}
+                hasActiveFilters
+                resetFilters={jest.fn()}
             />,
         );
 
         expect(screen.getByText("“cauliflower”")).toBeInTheDocument();
     });
 
-    it("should call removeSearch when the search chip is dismissed", async () => {
-        const removeSearch = jest.fn();
+    it("should remove only the dismissed filter when its chip is clicked", async () => {
+        const remove = jest.fn();
 
         render(
             <MenuActiveFilters
                 total={3}
-                selectedCategories={[]}
-                setSelectedCategories={jest.fn()}
-                searchQuery="cauliflower"
-                removeSearch={removeSearch}
+                activeFilters={[makeEntry(SEARCH_DEF, "cauliflower", remove)]}
+                hasActiveFilters
+                resetFilters={jest.fn()}
             />,
         );
 
         await userEvent.click(screen.getByRole("button", { name: "Remove" }));
 
-        expect(removeSearch).toHaveBeenCalledTimes(1);
+        expect(remove).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not render a chip for the category filter, which is shown inside the popover instead", () => {
+        render(
+            <MenuActiveFilters
+                total={3}
+                activeFilters={[makeEntry(CATEGORIES_DEF, [1])]}
+                hasActiveFilters
+                resetFilters={jest.fn()}
+            />,
+        );
+
+        expect(
+            screen.queryByRole("button", { name: "Remove" }),
+        ).not.toBeInTheDocument();
     });
 });

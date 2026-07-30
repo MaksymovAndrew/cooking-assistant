@@ -14,20 +14,22 @@ export function setOrDelete(
     }
 }
 
-interface TextFilterConfig {
+interface TextFilterConfig<TParams> {
     key: string;
     urlParam: string;
+    param?: keyof TParams & string;
     chipLabel?: (value: string, t: TFunction) => string;
 }
 
-// value never contributes to toParams on its own - a text filter's meaning (a direct
-// "name contains" match, an ingredient-id lookup, ...) is page-specific, so the caller
-// folds it into request params itself, same as documented in the plan
+// param is optional because a text filter's meaning is page-specific: menus map the
+// text straight onto a "name contains" param, recipes first resolve it to ingredient
+// ids against the catalog and fold that in themselves
 export function textFilter<TParams>({
     key,
     urlParam,
+    param,
     chipLabel,
-}: TextFilterConfig): FilterDef<string, TParams> {
+}: TextFilterConfig<TParams>): FilterDef<string, TParams> {
     return {
         key,
         defaultValue: "",
@@ -35,7 +37,10 @@ export function textFilter<TParams>({
         write(searchParams, value) {
             setOrDelete(searchParams, urlParam, value === "" ? null : value);
         },
-        toParams: () => ({}),
+        toParams: (value) =>
+            param && value !== ""
+                ? ({ [param]: value } as Partial<TParams>)
+                : {},
         isActive: (value) => value !== "",
         chipLabel,
     };

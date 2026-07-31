@@ -12,8 +12,10 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  BACKEND_IMAGE: ghcr.io/pershynamilana/cooking-backend
-  FRONTEND_IMAGE: ghcr.io/pershynamilana/cooking-frontend
+  # resolved from the current repo owner (not hardcoded) so a repo transfer/rename can't silently
+  # break this again - GITHUB_TOKEN only has packages:write for the current owner's namespace
+  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/cooking-backend
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/cooking-frontend
 
 jobs:
   build-backend:
@@ -22,9 +24,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: docker/login-action@v4
+      - uses: docker/login-action@v4.5.2
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -49,9 +51,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: docker/login-action@v4
+      - uses: docker/login-action@v4.5.2
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 

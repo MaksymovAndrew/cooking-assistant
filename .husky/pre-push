@@ -6,8 +6,9 @@ while read local_ref local_sha remote_ref remote_sha; do
   fi
 done
 
-# escape hatch: SKIP_CHECKS=1 (or legacy SKIP_HOOKS=1) skips the frontend build
-if [ "$SKIP_CHECKS" = "1" ] || [ "$SKIP_HOOKS" = "1" ]; then
+# escape hatch: SKIP_CHECKS=1 (or legacy SKIP_HOOKS=1) skips the frontend build - hotfix/X.Y.Z
+# branches get the same treatment automatically (typecheck already covers them, see pre-commit)
+if [ "$SKIP_CHECKS" = "1" ] || [ "$SKIP_HOOKS" = "1" ] || git rev-parse --abbrev-ref HEAD | grep -qE '^hotfix/[0-9]+\.[0-9]+\.[0-9]+$'; then
   echo "skip flag set - skipping frontend build"
   exit 0
 fi

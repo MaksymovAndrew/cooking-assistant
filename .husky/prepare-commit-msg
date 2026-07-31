@@ -1,8 +1,14 @@
-# bridge the local skip to CI: when SKIP_CHECKS=1, stamp [skip-checks] onto the
-# commit subject so GitHub Actions skips the heavy jobs too. idempotent, and only
-# for -m/-F commits (source "message") so merges/amends/editor commits are left
-# untouched. GNU sed ships with Git for Windows, so sed -i is safe here.
-if [ "$SKIP_CHECKS" = "1" ] && [ "$2" = "message" ]; then
+# bridge the local skip to CI: when SKIP_CHECKS=1, or when on a hotfix/X.Y.Z branch (which only
+# runs typecheck locally - see pre-commit), stamp [skip-checks] onto the commit subject so GitHub
+# Actions skips the heavy jobs too. idempotent, and only for -m/-F commits (source "message") so
+# merges/amends/editor commits are left untouched. GNU sed ships with Git for Windows, so sed -i
+# is safe here.
+SHOULD_STAMP="$SKIP_CHECKS"
+if [ "$SHOULD_STAMP" != "1" ] && git rev-parse --abbrev-ref HEAD | grep -qE '^hotfix/[0-9]+\.[0-9]+\.[0-9]+$'; then
+  SHOULD_STAMP=1
+fi
+
+if [ "$SHOULD_STAMP" = "1" ] && [ "$2" = "message" ]; then
   if ! grep -q '\[skip-checks\]' "$1"; then
     sed -i '1 s/$/ [skip-checks]/' "$1"
   fi

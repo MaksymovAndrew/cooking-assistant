@@ -1,3 +1,7 @@
+# on release/X.Y (or hotfix/X.Y.Z) branches the shared version is bumped automatically and the
+# rewritten package files are staged into this same commit - runs even under SKIP_CHECKS=1
+node scripts/release-version.mjs precommit
+
 # escape hatch: SKIP_CHECKS=1 git commit ... skips all local pre-commit checks.
 # read the env var, NOT .git/COMMIT_EDITMSG - at pre-commit time that file still
 # holds the PREVIOUS commit's message, which caused false skips.
@@ -6,9 +10,14 @@ if [ "$SKIP_CHECKS" = "1" ]; then
   exit 0
 fi
 
-# on release/X.Y branches the shared version is bumped automatically and the
-# rewritten package files are staged into this same commit
-node scripts/release-version.mjs precommit
+# hotfix/X.Y.Z branches only run typecheck - fast, targeted confidence for an already-scoped fix
+if git rev-parse --abbrev-ref HEAD | grep -qE '^hotfix/[0-9]+\.[0-9]+\.[0-9]+$'; then
+  echo "hotfix/* branch - running typecheck only"
+  npm --prefix backend run typecheck
+  npm --prefix frontend run typecheck
+  npm run typecheck:e2e
+  exit 0
+fi
 
 npx lint-staged
 npm --prefix backend run typecheck

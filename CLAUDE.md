@@ -84,7 +84,7 @@ Worked example:
 - `1.3` changed both: both went to `1.3`.
 - A later `1.5` that changes only the backend takes `backend` straight to `1.5` (skipping `1.4`, which it was not part of); `frontend` stays where it was.
 
-Rule of thumb: the version takes care of itself. The pre-commit hook runs [scripts/release-version.mjs](scripts/release-version.mjs) in `precommit` mode: on a `release/X.Y` branch it reads the target from the branch name, sets the root `package.json`, raises only the side(s) with changes vs `main`, syncs the lockfile `version` fields, and `git add`s whatever it rewrote so the bump rides along in that same commit (silent no-op when everything already matches; skipped by `SKIP_CHECKS=1` like the other checks; a manual mid-release patch like `3.3.1` in the root wins over the branch default). `npm run bump` (optionally `-- 3.4`) runs the same logic manually. Do not use `npm version` or edit version fields by hand.
+Rule of thumb: the version takes care of itself. The pre-commit hook runs [scripts/release-version.mjs](scripts/release-version.mjs) in `precommit` mode: on a `release/X.Y` branch it reads the target from the branch name, sets the root `package.json`, raises only the side(s) with changes vs `main`, syncs the lockfile `version` fields, and `git add`s whatever it rewrote so the bump rides along in that same commit (silent no-op when everything already matches; runs even under `SKIP_CHECKS=1`, unlike the other checks; a manual mid-release patch like `3.3.1` in the root wins over the branch default). A `hotfix/X.Y.Z` branch (see "Hotfix flow" below) is the same mechanism with the exact patch version already in the branch name, so there's nothing to guess. `npm run bump` (optionally `-- 3.4` or `-- 3.9.1`) runs the same logic manually. Do not use `npm version` or edit version fields by hand.
 
 ## Changelog
 
@@ -152,6 +152,15 @@ CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and o
 - Under the hood, `SKIP_CHECKS=1` on a commit skips all local pre-commit checks AND, via the `prepare-commit-msg` hook, auto-stamps `[skip-checks]` onto the commit subject so all 11 CI jobs skip too; `ci-success` still passes (`skipped != failed`), so the PR can merge. On a push it also skips the pre-push frontend build (`SKIP_HOOKS=1` stays as a backward-compat alias). The direct-push-to-main block in `.husky/pre-push` is a policy guard and is NOT bypassed by either flag.
 - In CI a `gate` job reads the head commit message (it checks out the PR head sha, since `pull_request` events carry no `head_commit`) and the other jobs skip when it finds `[skip-checks]`. So the commit marker is authoritative on both `push` and PR - the PR title does not need it. The PR title is still honored as a fallback. CI re-evaluates per push, so the tip commit of the latest push decides.
 
+**Hotfix flow (`hotfix/X.Y.Z` branch):** for an urgent patch where the fix is small and well-understood, branch as `hotfix/3.9.1` (exact three-part version, matched by regex in both the hooks and [scripts/release-version.mjs](scripts/release-version.mjs)) instead of `release/X.Y`. This is fully automatic - no `SKIP_CHECKS`/`git skip-checks` needed:
+
+- `pre-commit` still auto-bumps the version (the branch name already is the exact target, nothing to guess), but runs **only typecheck** (backend, frontend, `typecheck:e2e`) instead of the full lint/test/stylelint suite - a real check still blocks a broken commit, just a fast, narrow one.
+- `prepare-commit-msg` auto-stamps `[skip-checks]` on the commit, so CI's heavy jobs skip the same way they would under the manual escape hatch.
+- `pre-push` auto-skips the frontend build.
+- Everything else is unchanged: still a PR into `main` (the `pre-push` direct-to-main block is not bypassed), still no tags from Claude.
+
+This is a narrower, unconditional trigger than the ops-only escape hatch above - it fires on branch name alone, with no file-path check. That's a deliberate trade: typecheck is the one guardrail kept in every case, on the reasoning that a genuine hotfix is small enough for that to be a meaningful signal. Don't use a `hotfix/*` branch to sneak untested application logic past review - if the change is more than a narrowly-scoped, already-understood fix, use a normal `release/X.Y` branch and get the full gate.
+
 ## Required configuration
 
 1. PostgreSQL connection in [backend/src/config/env.ts](backend/src/config/env.ts) reads the `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, `DB_NAME` environment variables, falling back to conventional local-Postgres defaults when unset (the literals live in `env.ts`). Those defaults are dev-only: `assertSecureProductionDb` refuses to start in production if the password is still the default. Env values are parsed with zod on startup, so invalid ports or logger levels fail fast with a clear configuration error. `JWT_SECRET_KEY` stays optional at startup (but must be at least 32 characters when set) and is still checked lazily by JWT code. [backend/src/db.ts](backend/src/db.ts) consumes that typed config.
@@ -178,7 +187,7 @@ CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every PR and o
 - Frontend Container App: `cooking-frontend`
 - Migration Job: `cooking-migration-job`
 - DB: Neon PostgreSQL 16 (Frankfurt, free tier) - connection via `DB_*` env vars
-- Images: `ghcr.io/pershynamilana/cooking-{backend,frontend}`
+- Images: `ghcr.io/<repo-owner>/cooking-{backend,frontend}` (owner resolved from `github.repository_owner` in the workflow, not hardcoded - it must track whoever currently owns the GitHub repo)
 - SSL: Azure managed certificates on both custom domains
 
 **Config at runtime** (Azure Container App env vars, never in repo): `JWT_SECRET_KEY`, `DB_*`,

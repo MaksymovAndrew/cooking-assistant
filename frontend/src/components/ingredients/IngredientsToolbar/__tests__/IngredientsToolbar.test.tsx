@@ -1,33 +1,47 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { IngredientsToolbar } from "components/ingredients/IngredientsToolbar";
 
 const NO_CATEGORIES: never[] = [];
+const DEBOUNCE_MS = 300;
 
 describe("IngredientsToolbar", () => {
-    it("should call onQueryChange as the search box is typed into", async () => {
+    it("should call onQueryChange once the debounce settles after typing", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
         const onQueryChange = jest.fn();
 
-        render(
-            <IngredientsToolbar
-                query=""
-                onQueryChange={onQueryChange}
-                expiringSoonCount={0}
-                expiringSoonOnly={false}
-                onToggleExpiringSoon={jest.fn()}
-                categories={NO_CATEGORIES}
-                categoryFilter={null}
-                onCategoryFilterChange={jest.fn()}
-            />,
-        );
+        try {
+            render(
+                <IngredientsToolbar
+                    query=""
+                    onQueryChange={onQueryChange}
+                    expiringSoonCount={0}
+                    expiringSoonOnly={false}
+                    onToggleExpiringSoon={jest.fn()}
+                    categories={NO_CATEGORIES}
+                    categoryFilter={null}
+                    onCategoryFilterChange={jest.fn()}
+                />,
+            );
 
-        await userEvent.type(
-            screen.getByPlaceholderText("Search your pantry..."),
-            "p",
-        );
+            await user.type(
+                screen.getByPlaceholderText("Search your pantry..."),
+                "p",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
 
-        expect(onQueryChange).toHaveBeenCalledWith("p");
+            expect(onQueryChange).toHaveBeenCalledWith("p");
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should not show the expiring-soon filter pill when the count is zero", () => {

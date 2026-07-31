@@ -1,4 +1,3 @@
-import { Search } from "lucide-react";
 import React, { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,6 +10,7 @@ import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
+import { SearchField } from "components/ui/SearchField";
 
 import { resolveIngredientName } from "utils/ingredientName";
 
@@ -26,7 +26,6 @@ interface AddIngredientModalProps {
     onClose: () => void;
 }
 
-const SEARCH_ICON_SIZE = 17;
 const MAX_RESULTS = 8;
 
 export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
@@ -87,30 +86,33 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
         setQuery("");
     };
 
+    // reopens the dropdown on typing after it's been dismissed with Escape - Escape doesn't blur the
+    // input, so onFocus alone never fires again and results would stay hidden until a manual re-click
+    const handleQueryChange = (value: string) => {
+        setQuery(value);
+        setIsOpen(true);
+    };
+
     return (
         <BaseModal
             size="md"
             title={t("addIngredientModal.title")}
             onClose={onClose}
+            // while the dropdown is open, its own Escape handler (usePopoverDismiss below) should close
+            // just the dropdown - BaseModal's document-level listener is registered first (at mount) and
+            // would otherwise fire first and close the whole modal on the same keypress
+            closeOnEscape={!isOpen}
         >
             <div ref={containerRef}>
-                <div className={styles["add-ingredient-modal__search"]}>
-                    <Search size={SEARCH_ICON_SIZE} aria-hidden="true" />
-                    <input
-                        type="text"
-                        autoComplete="off"
-                        value={query}
-                        onFocus={() => {
-                            setIsOpen(true);
-                        }}
-                        onChange={(e) => {
-                            setQuery(e.target.value);
-                            setIsOpen(true);
-                        }}
-                        placeholder={t("addIngredientModal.searchPlaceholder")}
-                        className={styles["add-ingredient-modal__input"]}
-                    />
-                </div>
+                <SearchField
+                    value={query}
+                    onChange={handleQueryChange}
+                    onFocus={() => {
+                        setIsOpen(true);
+                    }}
+                    placeholder={t("addIngredientModal.searchPlaceholder")}
+                    className={styles["add-ingredient-modal__search"]}
+                />
                 {isOpen && (
                     <AddIngredientDropdown
                         trimmedQuery={trimmedQuery}

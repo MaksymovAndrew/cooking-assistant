@@ -11,6 +11,13 @@ import { authCookie, buildTestApp } from "test/helpers/testApp";
 const MENU_TITLE = "Weekly menu";
 const MENU_9_PATH = "/api/menu/9";
 
+const MENU_ROW_EXTRAS = {
+    categoryName: "Dinner",
+    menuContent: "Simple dinners",
+    person_id: 7,
+    recipe_count: 2,
+};
+
 function makeMenuBody() {
     return {
         menuTitle: MENU_TITLE,
@@ -32,7 +39,7 @@ describe("menu routes", () => {
     it("should return menus", async () => {
         const { app, deps } = buildTestApp();
         const paginated = {
-            items: [{ id: 9, title: MENU_TITLE }],
+            items: [{ id: 9, title: MENU_TITLE, ...MENU_ROW_EXTRAS }],
             total: 1,
         };
 
@@ -234,7 +241,7 @@ describe("menu routes", () => {
     it("should search person menus by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
         const paginated = {
-            items: [{ id: 9, title: MENU_TITLE }],
+            items: [{ id: 9, title: MENU_TITLE, ...MENU_ROW_EXTRAS }],
             total: 1,
         };
 

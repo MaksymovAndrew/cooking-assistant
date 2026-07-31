@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { MenuFilters } from "domain/repositories/menu.filters";
+
 import {
     hasUniqueItems,
     idListStringSchema,
@@ -9,6 +11,7 @@ import {
     offsetSchema,
     optionalStringSchema,
     positiveIntegerSchema,
+    requiredOrInvalidType,
 } from "./common.schemas";
 
 const recipeIdSchema = positiveIntegerSchema("Recipe ID");
@@ -20,8 +23,10 @@ export const createMenuSchema = z.object({
     personId: idSchema,
     recipeIds: z
         .array(recipeIdSchema, {
-            required_error: "Recipe IDs are required",
-            invalid_type_error: "Recipe IDs must be an array",
+            error: requiredOrInvalidType(
+                "Recipe IDs are required",
+                "Recipe IDs must be an array",
+            ),
         })
         .max(500, { message: "Menu cannot contain more than 500 recipes" })
         .refine((ids) => hasUniqueItems(ids), {
@@ -33,9 +38,10 @@ export const updateMenuSchema = createMenuSchema.omit({
     personId: true,
 });
 
+// output shape is checked against the domain's MenuFilters below - the repository interface is typed against that, not against this schema
 export const menuFiltersSchema = z.object({
     menu_name: optionalStringSchema("Menu name"),
     category_ids: idListStringSchema("Category IDs").optional(),
     limit: limitSchema,
     offset: offsetSchema,
-});
+}) satisfies z.ZodType<MenuFilters>;

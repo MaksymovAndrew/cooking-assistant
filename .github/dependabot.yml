@@ -14,6 +14,21 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # typescript-eslint peers on typescript <6.1.0 (stable 8.65.0 and canary
+      # 8.65.1-alpha.* alike), so TS 7 would cost every type-aware lint rule
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # ESLint 10 is blocked by one plugin only: eslint-plugin-jsx-a11y@6.10.2
+      # peers on <=9 (upstream issue #1075, open since Feb 2026, no fork).
+      # eslint-plugin-import is also capped at ^9 but has a ready replacement in
+      # eslint-plugin-import-x; typescript-eslint already allows ^10. So when
+      # jsx-a11y ships support, move all three packages in one maintenance
+      # release and drop these two ignores.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"

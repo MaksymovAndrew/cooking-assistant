@@ -1,0 +1,59 @@
+@use "styles/abstracts" as *;
+
+.search-field {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text-muted);
+
+    &:focus-within {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px var(--brand-subtle);
+    }
+
+    &__icon {
+        flex: none;
+    }
+
+    &__input {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        background: none;
+        color: var(--text);
+        font:
+            400 16px Inter,
+            sans-serif;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__clear {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border: none;
+        background: none;
+        color: var(--text-muted);
+        cursor: pointer;
+
+        @include focus-ring;
+    }
+}

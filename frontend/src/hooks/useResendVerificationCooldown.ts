@@ -17,9 +17,9 @@ export const useResendVerificationCooldown = () => {
     const dispatch = useAppDispatch();
     const [requestEmailVerification] = useRequestEmailVerificationMutation();
     const cooldownUntil = useAppSelector(selectResendCooldownUntil);
-    const isOnCooldown = cooldownUntil !== null && Date.now() < cooldownUntil;
+    const isOnCooldown = cooldownUntil !== null;
 
-    // re-arms the auto-clear against whatever cooldown is already in the store, so mounting mid-cooldown (e.g. after navigating pages) still ends it on time
+    // re-arms the auto-clear against whatever cooldown is already in the store, so mounting mid-cooldown (e.g. after navigating pages) still ends it on time - also self-corrects a stale cooldownUntil already in the past (immediately dispatches expiry instead of waiting out a negative timeout)
     useEffect(() => {
         if (cooldownUntil === null) {
             return undefined;

@@ -201,7 +201,8 @@ export default tseslint.config(
                         "Hardcoded API path. Add a builder to API_ROUTES in api/endpoints.ts and import it.",
                 },
                 {
-                    selector: "JSXAttribute[name.name='to'] Literal[value=/^\\u002F/]",
+                    selector:
+                        "JSXAttribute[name.name='to'] Literal[value=/^\\u002F/]",
                     message:
                         "Hardcoded route path. Use ROUTES from constants/routes.ts.",
                 },
@@ -274,7 +275,10 @@ export default tseslint.config(
                     "no-complex-condition": {
                         meta: {
                             type: "suggestion",
-                            messages: { complex: "Condition has 3+ operands: extract it into a named constant." },
+                            messages: {
+                                complex:
+                                    "Condition has 3+ operands: extract it into a named constant.",
+                            },
                         },
                         create(context) {
                             const count = (n) =>
@@ -282,8 +286,15 @@ export default tseslint.config(
                                     ? count(n.left) + count(n.right)
                                     : 1;
                             const check = (t) => {
-                                if (t && t.type === "LogicalExpression" && count(t) >= 3)
-                                    context.report({ node: t, messageId: "complex" });
+                                if (
+                                    t &&
+                                    t.type === "LogicalExpression" &&
+                                    count(t) >= 3
+                                )
+                                    context.report({
+                                        node: t,
+                                        messageId: "complex",
+                                    });
                             };
                             return {
                                 IfStatement: (n) => check(n.test),
@@ -310,7 +321,7 @@ export default tseslint.config(
                 { type: "types", pattern: "src/types/*" },
                 { type: "constants", pattern: "src/constants/*" },
                 { type: "i18n", pattern: "src/i18n/**" },
-                { type: "utils", pattern: "src/utils/*" },
+                { type: "utils", pattern: "src/utils/**" },
                 { type: "api", pattern: "src/api/**" },
                 { type: "redux", pattern: "src/redux/**" },
                 { type: "hooks", pattern: "src/hooks/*" },
@@ -324,25 +335,35 @@ export default tseslint.config(
                 {
                     checkAllOrigins: true,
                     default: "allow",
-                    rules: [
+                    policies: [
                         {
-                            from: [{ type: "components" }],
+                            from: { element: { type: "components" } },
                             disallow: {
-                                to: [{ type: "pages" }],
+                                to: { element: { type: "pages" } },
                             },
                             message: "Components must not import pages.",
                         },
                         {
-                            from: [
-                                { type: "components" },
-                                { type: "pages" },
-                                { type: "hooks" },
-                                { type: "utils" },
-                                { type: "redux" },
-                            ],
+                            from: {
+                                element: {
+                                    types: {
+                                        anyOf: [
+                                            "components",
+                                            "pages",
+                                            "hooks",
+                                            "utils",
+                                            "redux",
+                                        ],
+                                    },
+                                },
+                            },
                             disallow: {
-                                to: [{ origin: "external" }],
-                                dependency: { module: "axios" },
+                                to: {
+                                    module: {
+                                        origin: "external",
+                                        source: "axios",
+                                    },
+                                },
                             },
                             message:
                                 "Use the api layer instead of importing axios directly.",

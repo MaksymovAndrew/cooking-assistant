@@ -1,54 +1,59 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { RecipeFilterState } from "hooks/useRecipeListView";
+import type { Ingredient } from "types/ingredient";
 
 import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
+
+import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
 import { renderWithRouter } from "test/router";
 
 const SOUP_TYPE = { id: 1, type_name: "Soup", description: "" };
 const DESSERT_TYPE = { id: 2, type_name: "Dessert", description: "" };
 
-const BASE_FILTERS: RecipeFilterState = {
-    selectedTypes: [],
-    startDate: "",
-    endDate: "",
-    minCookingTime: "",
-    maxCookingTime: "",
-    sortOrder: "asc",
-    inPantry: false,
-    ingredientName: null,
+const TOMATO: Ingredient = {
+    id: 9,
+    slug: "tomato",
+    name: "Tomato",
+    category: "vegetables",
+    unit_name: "pcs",
+    allergens: [],
+    days_to_expire: 7,
+    calories_per_unit: null,
 };
 
-const setup = (overrides: Partial<RecipeFilterState> = {}) => {
-    const setSelectedTypes = jest.fn();
-    const setMinCookingTime = jest.fn();
-    const setMaxCookingTime = jest.fn();
-    const setSortOrder = jest.fn();
-    const setInPantry = jest.fn();
+const BASE_FILTERS: RecipeFilterState = {
+    search: "",
+    types: [],
+    ingredients: [],
+    cookingTime: { min: "", max: "" },
+    sort: null,
+    inPantry: false,
+};
+
+const setup = (
+    overrides: Partial<RecipeFilterState> = {},
+    activeCount = 0,
+    ingredientCatalog: Ingredient[] = [],
+) => {
+    const setValue = jest.fn();
+    const setValues = jest.fn();
 
     renderWithRouter(
         <RecipeFilterPanel
             filters={{ ...BASE_FILTERS, ...overrides }}
-            setSelectedTypes={setSelectedTypes}
-            setMinCookingTime={setMinCookingTime}
-            setMaxCookingTime={setMaxCookingTime}
-            setSortOrder={setSortOrder}
-            setInPantry={setInPantry}
+            setValue={setValue}
+            setValues={setValues}
+            activeCount={activeCount}
             types={[SOUP_TYPE, DESSERT_TYPE]}
+            ingredients={ingredientCatalog}
             searchPlaceholder="Search recipes"
             total={5}
         />,
     );
 
-    return {
-        setSelectedTypes,
-        setMinCookingTime,
-        setMaxCookingTime,
-        setSortOrder,
-        setInPantry,
-    };
+    return { setValue, setValues };
 };
 
 const openPanel = async () => {
@@ -78,82 +83,219 @@ describe("RecipeFilterPanel", () => {
         expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
 
-    it("should show a badge with the active filter count", () => {
-        setup({ selectedTypes: [1], maxCookingTime: "90" });
+    it("should show a badge with the given active filter count", () => {
+        setup({}, 2);
 
         expect(screen.getByText("2")).toBeInTheDocument();
     });
 
-    it("should call setMinCookingTime and setMaxCookingTime when the time inputs change", async () => {
-        const { setMinCookingTime, setMaxCookingTime } = setup();
+    it("should call setValue with the typed term, debounced, when the search field changes", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
 
-        await openPanel();
-        await userEvent.type(screen.getByLabelText("Min"), "5");
-        await userEvent.type(screen.getByLabelText("Max"), "9");
+        try {
+            const { setValue } = setup();
 
-        expect(setMinCookingTime).toHaveBeenCalled();
-        expect(setMaxCookingTime).toHaveBeenCalled();
+            await user.type(
+                screen.getByPlaceholderText(/search recipes/i),
+                "Tomato",
+            );
+
+            // still debouncing - not committed to the URL yet
+            expect(setValue).not.toHaveBeenCalled();
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).toHaveBeenCalledWith("search", "Tomato", {
+                replace: true,
+            });
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
-    it("should call setSortOrder when a sort segment is clicked", async () => {
-        const { setSortOrder } = setup();
+    it("should call setValue with the updated range, debounced, when the time inputs change", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            const { setValue } = setup();
+
+            await user.click(screen.getByRole("button", { name: /Filters/ }));
+            await user.type(screen.getByLabelText("Min"), "5");
+
+            // still debouncing - not committed to the URL yet
+            expect(setValue).not.toHaveBeenCalled();
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).toHaveBeenCalledWith(
+                "cookingTime",
+                { min: "5", max: "" },
+                { replace: true },
+            );
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it("should call setValue with the updated range, debounced, when the max time input changes", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            const { setValue } = setup();
+
+            await user.click(screen.getByRole("button", { name: /Filters/ }));
+            await user.type(screen.getByLabelText("Max"), "45");
+
+            expect(setValue).not.toHaveBeenCalled();
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).toHaveBeenCalledWith(
+                "cookingTime",
+                { min: "", max: "45" },
+                { replace: true },
+            );
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it("should call setValue with the sort direction when a sort segment is clicked", async () => {
+        const { setValue } = setup();
 
         await openPanel();
         await userEvent.click(
             screen.getByRole("radio", { name: "Long → fast" }),
         );
 
-        expect(setSortOrder).toHaveBeenCalledWith("desc");
+        expect(setValue).toHaveBeenCalledWith("sort", "desc");
     });
 
-    it("should toggle a type when its chip is clicked", async () => {
-        const { setSelectedTypes } = setup();
+    it("should call setValue with the toggled type list when a type chip is clicked", async () => {
+        const { setValue } = setup();
 
         await openPanel();
         await userEvent.click(screen.getByRole("checkbox", { name: "Soup" }));
 
-        expect(setSelectedTypes).toHaveBeenCalledWith([1]);
+        expect(setValue).toHaveBeenCalledWith("types", [1]);
     });
 
-    it("should call setInPantry when the pantry toggle is clicked", async () => {
-        const { setInPantry } = setup();
+    it("should call setValue with the selected ingredient id when one is picked in the popover", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            const { setValue } = setup({}, 0, [TOMATO]);
+
+            await user.click(screen.getByRole("button", { name: /Filters/ }));
+            await user.type(
+                screen.getByPlaceholderText(/ingredient/i),
+                "Tomato",
+            );
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            await user.click(screen.getByRole("button", { name: "Tomato" }));
+
+            expect(setValue).toHaveBeenCalledWith("ingredients", [TOMATO.id]);
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it("should call setValue with true when the pantry toggle is clicked", async () => {
+        const { setValue } = setup();
 
         await openPanel();
         await userEvent.click(screen.getByRole("switch"));
 
-        expect(setInPantry).toHaveBeenCalledWith(true);
+        expect(setValue).toHaveBeenCalledWith("inPantry", true);
     });
 
-    it("should count the pantry filter in the active filter badge", () => {
-        setup({ inPantry: true });
-
-        expect(screen.getByText("1")).toBeInTheDocument();
-    });
-
-    it("should reset every filter when Reset filters is clicked", async () => {
-        const {
-            setSelectedTypes,
-            setMinCookingTime,
-            setMaxCookingTime,
-            setSortOrder,
-            setInPantry,
-        } = setup({
-            selectedTypes: [1],
-            minCookingTime: "5",
-            maxCookingTime: "90",
-            inPantry: true,
-        });
+    it("should reset only the popover's own fields when Reset filters is clicked, leaving search alone", async () => {
+        const { setValue, setValues } = setup(
+            { types: [1], inPantry: true },
+            2,
+        );
 
         await openPanel();
         await userEvent.click(
             screen.getByRole("button", { name: "Reset filters" }),
         );
 
-        expect(setSelectedTypes).toHaveBeenCalledWith([]);
-        expect(setMinCookingTime).toHaveBeenCalledWith("");
-        expect(setMaxCookingTime).toHaveBeenCalledWith("");
-        expect(setSortOrder).toHaveBeenCalledWith("asc");
-        expect(setInPantry).toHaveBeenCalledWith(false);
+        // one combined call, not five separate setValue() calls - each of those would
+        // read the same pre-reset URL state, so only the last one would actually stick
+        expect(setValues).toHaveBeenCalledWith({
+            types: [],
+            ingredients: [],
+            cookingTime: { min: "", max: "" },
+            sort: null,
+            inPantry: false,
+        });
+        expect(setValue).not.toHaveBeenCalledWith(
+            "search",
+            expect.anything(),
+            expect.anything(),
+        );
+    });
+
+    it("should not let a pending, uncommitted Min edit commit after Reset filters is clicked", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            const { setValue } = setup();
+
+            await user.click(screen.getByRole("button", { name: /Filters/ }));
+            await user.type(screen.getByLabelText("Min"), "5");
+            // debounce still pending - Reset filters doesn't close the popover
+            await user.click(
+                screen.getByRole("button", { name: "Reset filters" }),
+            );
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).not.toHaveBeenCalledWith(
+                "cookingTime",
+                expect.anything(),
+                expect.anything(),
+            );
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should close the popover when Apply is clicked", async () => {
@@ -172,12 +314,11 @@ describe("RecipeFilterPanel", () => {
             <div>
                 <RecipeFilterPanel
                     filters={BASE_FILTERS}
-                    setSelectedTypes={jest.fn()}
-                    setMinCookingTime={jest.fn()}
-                    setMaxCookingTime={jest.fn()}
-                    setSortOrder={jest.fn()}
-                    setInPantry={jest.fn()}
+                    setValue={jest.fn()}
+                    setValues={jest.fn()}
+                    activeCount={0}
                     types={[]}
+                    ingredients={[]}
                     searchPlaceholder="Search recipes"
                     total={5}
                 />

@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { Ingredient } from "types/ingredient";
@@ -116,19 +116,35 @@ describe("RecipeForm", () => {
     });
 
     it("should search and toggle an ingredient on click", async () => {
-        const form = makeForm();
+        const DEBOUNCE_MS = 300;
 
-        renderForm(form);
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
 
-        await userEvent.type(
-            screen.getByPlaceholderText("Search ingredients..."),
-            "egg",
-        );
-        await userEvent.click(screen.getByRole("button", { name: /egg/i }));
+        try {
+            const form = makeForm();
 
-        expect(form.toggleIngredientSelection).toHaveBeenCalledWith(
-            INGREDIENTS[0],
-        );
+            renderForm(form);
+
+            await user.type(
+                screen.getByPlaceholderText("Search ingredients..."),
+                "egg",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+            await user.click(screen.getByRole("button", { name: /egg/i }));
+
+            expect(form.toggleIngredientSelection).toHaveBeenCalledWith(
+                INGREDIENTS[0],
+            );
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should show the title error under the title field", () => {

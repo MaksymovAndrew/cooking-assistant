@@ -116,10 +116,14 @@ export function buildControllers({
 
     const userIngredientsController = new UserIngredientsController({
         getUserIngredients: new GetUserIngredients(pantryRepository),
-        addUserIngredients: new AddUserIngredients(pantryRepository),
+        addUserIngredients: new AddUserIngredients(
+            pantryRepository,
+            ingredientRepository,
+        ),
         deleteUserIngredient: new DeleteUserIngredient(pantryRepository),
         updateIngredientQuantities: new UpdateIngredientQuantities(
             pantryRepository,
+            ingredientRepository,
         ),
         updatePurchaseQuantity: new UpdatePurchaseQuantity(pantryRepository),
         getPurchaseHistory: new GetPurchaseHistory(pantryRepository),

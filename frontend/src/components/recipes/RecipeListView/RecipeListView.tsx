@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeFilterParams, RecipeListItem } from "types/recipe";
 import type { RecipeTypeSummary } from "types/recipeType";
+
+import type { ActiveFilterEntry } from "hooks/useListFilters";
 
 import { RecipeCard } from "components/cards/RecipeCard";
 import { AppShell } from "components/layout/AppShell";
@@ -21,6 +23,9 @@ import { RecipePantryBanner } from "./RecipePantryBanner";
 interface RecipeListViewProps extends RecipeFilterPanelProps {
     recipes: RecipeListItem[];
     noRecipes: boolean;
+    // the full reset, used by RecipeActiveFilters ("Clear all") and the empty state -
+    // RecipeFilterPanel now owns a narrower reset scoped to just its own popover fields
+    resetFilters: () => void;
     isPantryEmpty: boolean;
     error: string | null;
     onRetry: () => void;
@@ -30,7 +35,7 @@ interface RecipeListViewProps extends RecipeFilterPanelProps {
     emptyTitle: string;
     emptyDescription: string;
     hasActiveFilters: boolean;
-    clearFilters: () => void;
+    activeFilters: ActiveFilterEntry<RecipeFilterParams>[];
     mine?: boolean;
     currentUserId?: number | null;
     loadedCount: number;
@@ -42,12 +47,12 @@ interface RecipeListViewProps extends RecipeFilterPanelProps {
 
 export const RecipeListView: React.FC<RecipeListViewProps> = ({
     filters,
-    setSelectedTypes,
-    setMinCookingTime,
-    setMaxCookingTime,
-    setSortOrder,
-    setInPantry,
+    setValue,
+    setValues,
+    resetFilters,
+    activeCount,
     types,
+    ingredients,
     recipes,
     noRecipes,
     isPantryEmpty,
@@ -59,7 +64,7 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     emptyTitle,
     emptyDescription,
     hasActiveFilters,
-    clearFilters,
+    activeFilters,
     mine = false,
     currentUserId = null,
     searchPlaceholder,
@@ -71,6 +76,16 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     loadMoreError,
 }) => {
     const { t } = useTranslation();
+    // bumped on every full reset so SearchField remounts and drops any pending, uncommitted
+    // debounce - otherwise a search typed just before "Clear all" can commit moments later and
+    // silently re-apply a filter the user explicitly just cleared (the prop value alone can't
+    // signal this: it was already "" before the reset too, so SearchField sees no change)
+    const [searchResetKey, setSearchResetKey] = useState(0);
+
+    const handleResetFilters = () => {
+        resetFilters();
+        setSearchResetKey((key) => key + 1);
+    };
 
     return (
         <AppShell>
@@ -79,23 +94,20 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                 <RecipeTypeDescriptions descriptions={descriptions} />
                 <RecipeFilterPanel
                     filters={filters}
-                    setSelectedTypes={setSelectedTypes}
-                    setMinCookingTime={setMinCookingTime}
-                    setMaxCookingTime={setMaxCookingTime}
-                    setSortOrder={setSortOrder}
-                    setInPantry={setInPantry}
+                    setValue={setValue}
+                    setValues={setValues}
+                    activeCount={activeCount}
                     types={types}
+                    ingredients={ingredients}
                     searchPlaceholder={searchPlaceholder}
                     total={total}
+                    searchResetKey={searchResetKey}
                 />
                 <RecipeActiveFilters
                     total={total}
-                    filters={filters}
-                    setMinCookingTime={setMinCookingTime}
-                    setMaxCookingTime={setMaxCookingTime}
-                    setSortOrder={setSortOrder}
-                    setInPantry={setInPantry}
-                    clearFilters={clearFilters}
+                    activeFilters={activeFilters}
+                    hasActiveFilters={hasActiveFilters}
+                    resetFilters={handleResetFilters}
                 />
                 {filters.inPantry && !isPantryEmpty && !error && (
                     <RecipePantryBanner total={total} />
@@ -114,8 +126,8 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                         isPantryEmpty={isPantryEmpty}
                         emptyTitle={emptyTitle}
                         emptyDescription={emptyDescription}
-                        searchQuery={filters.ingredientName}
-                        clearFilters={clearFilters}
+                        searchQuery={filters.search || null}
+                        clearFilters={handleResetFilters}
                     />
                 )}
                 {!error && !noRecipes && (

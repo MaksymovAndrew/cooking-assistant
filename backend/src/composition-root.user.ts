@@ -8,7 +8,6 @@ import ConfirmEmailVerification from "application/use-cases/users/ConfirmEmailVe
 import ConfirmPasswordReset from "application/use-cases/users/ConfirmPasswordReset";
 import DeleteAccount from "application/use-cases/users/DeleteAccount";
 import GetCurrentUser from "application/use-cases/users/GetCurrentUser";
-import GetUsers from "application/use-cases/users/GetUsers";
 import LoginUser from "application/use-cases/users/LoginUser";
 import RegisterUser from "application/use-cases/users/RegisterUser";
 import RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
@@ -40,7 +39,6 @@ export function buildUserController({
             tokenService,
         ),
         loginUser: new LoginUser(userRepository, passwordHasher, tokenService),
-        getUsers: new GetUsers(userRepository),
         getCurrentUser: new GetCurrentUser(userRepository),
         requestPasswordReset: new RequestPasswordReset(
             userRepository,

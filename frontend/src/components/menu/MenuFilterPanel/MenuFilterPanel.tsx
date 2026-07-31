@@ -1,108 +1,84 @@
-import { ListFilter } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { MenuCategory } from "types/menu";
 
-import { usePopoverDismiss } from "hooks/usePopoverDismiss";
-import { useScrollLock } from "hooks/useScrollLock";
+import type { SetFilterValue } from "hooks/useListFilters";
 
-import { SearchComponent } from "components/ui/SearchComponent";
+import { FilterChipGroup } from "components/ui/FilterChipGroup";
+import { FilterPanel } from "components/ui/FilterPanel";
+import { SearchField } from "components/ui/SearchField";
 
-import { MenuCategoryToggle } from "./MenuCategoryToggle";
+import type { MenuFilterState } from "utils/filters/menuFilterDefs";
+
 import styles from "./MenuFilterPanel.module.scss";
 
-interface MenuFilterPanelProps {
+export interface MenuFilterPanelProps {
+    filters: MenuFilterState;
+    setValue: SetFilterValue<MenuFilterState>;
+    activeCount: number;
     categories: MenuCategory[];
-    selectedCategories: number[];
-    setSelectedCategories: (categories: number[]) => void;
     searchPlaceholder: string;
+    total: number;
+    // bumped by the caller on a full reset ("Clear all") - remounts SearchField so it can't
+    // commit a debounce that was still pending when the reset happened
+    searchResetKey?: number;
 }
 
-const FILTER_ICON_SIZE = 17;
-
 export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
+    filters,
+    setValue,
+    activeCount,
     categories,
-    selectedCategories,
-    setSelectedCategories,
     searchPlaceholder,
+    total,
+    searchResetKey,
 }) => {
     const { t } = useTranslation("menu");
-    const [isOpen, setIsOpen] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const showResultsLabel = t("categoryFilter.showResults", { count: total });
 
-    const closePopover = () => {
-        setIsOpen(false);
-    };
-
-    usePopoverDismiss(containerRef, isOpen, closePopover);
-    useScrollLock(isOpen);
-
-    const toggleCategory = (id: number) => {
-        setSelectedCategories(
-            selectedCategories.includes(id)
-                ? selectedCategories.filter((value) => value !== id)
-                : [...selectedCategories, id],
-        );
+    // resets only the fields the popover itself controls, leaving the search box (rendered
+    // outside the popover) untouched - resetFilters is the full reset, used by "Clear all"
+    const resetPanelFields = () => {
+        setValue("categories", []);
     };
 
     return (
-        <div ref={containerRef} className={styles["menu-filter-panel"]}>
-            <SearchComponent placeholder={searchPlaceholder} />
-            <button
-                type="button"
-                onClick={() => {
-                    setIsOpen((prev) => !prev);
+        <div className={styles["menu-filter-panel"]}>
+            <SearchField
+                key={searchResetKey}
+                placeholder={`${t("common:search.placeholderPrefix")} ${searchPlaceholder}`}
+                value={filters.search}
+                onChange={(value) => {
+                    setValue("search", value, { replace: true });
                 }}
-                aria-haspopup="dialog"
-                aria-expanded={isOpen}
-                className={[
-                    styles["menu-filter-panel__trigger"],
-                    selectedCategories.length > 0 &&
-                        styles["menu-filter-panel__trigger--active"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
+            />
+            <FilterPanel
+                title={t("categoryFilter.filter")}
+                closeLabel={t("categoryFilter.close")}
+                resetLabel={t("categoryFilter.reset")}
+                applyAriaLabel={showResultsLabel}
+                applyMobileLabel={showResultsLabel}
+                applyDesktopLabel={t("categoryFilter.apply")}
+                activeCount={activeCount}
+                onReset={resetPanelFields}
             >
-                <ListFilter size={FILTER_ICON_SIZE} aria-hidden="true" />
-                {t("categoryFilter.filter")}
-                {selectedCategories.length > 0 && (
-                    <span className={styles["menu-filter-panel__badge"]}>
-                        {selectedCategories.length}
+                <div className={styles["menu-filter-panel__section"]}>
+                    <span className={styles["menu-filter-panel__label"]}>
+                        {t("categoryFilter.categoryLabel")}
                     </span>
-                )}
-            </button>
-            {isOpen && (
-                <div
-                    role="dialog"
-                    aria-label={t("categoryFilter.filter")}
-                    className={styles["menu-filter-panel__popover"]}
-                >
-                    <div className={styles["menu-filter-panel__categories"]}>
-                        {categories.map((category) => (
-                            <MenuCategoryToggle
-                                key={category.menu_category_id}
-                                label={category.category_name}
-                                selected={selectedCategories.includes(
-                                    category.menu_category_id,
-                                )}
-                                onToggle={() => {
-                                    toggleCategory(category.menu_category_id);
-                                }}
-                            />
-                        ))}
-                    </div>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setSelectedCategories([]);
+                    <FilterChipGroup
+                        options={categories.map((category) => ({
+                            id: category.menu_category_id,
+                            label: category.category_name,
+                        }))}
+                        value={filters.categories}
+                        onChange={(next) => {
+                            setValue("categories", next);
                         }}
-                        className={styles["menu-filter-panel__reset-button"]}
-                    >
-                        {t("categoryFilter.reset")}
-                    </button>
+                    />
                 </div>
-            )}
+            </FilterPanel>
         </div>
     );
 };

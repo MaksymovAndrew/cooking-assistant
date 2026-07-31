@@ -20,14 +20,6 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-interface PublicUserRow {
-    id: number;
-    name: string;
-    surname: string;
-    login: string;
-    password?: unknown;
-}
-
 const PASSWORD = "hashed-password";
 const uniqueEmail = (prefix: string) => `${unique(prefix)}@example.com`;
 
@@ -188,26 +180,6 @@ describe("PgUserRepository (real Postgres)", () => {
         const missing = await repository.findByEmail(uniqueEmail("missing"));
 
         expect(missing).toBeNull();
-    });
-
-    it("should list users without exposing passwords", async () => {
-        const login = unique("listed");
-
-        await repository.create({
-            name: "Katherine",
-            surname: "Johnson",
-            login,
-            password: PASSWORD,
-            email: uniqueEmail("katherine"),
-        });
-
-        const all = (await repository.findAll()) as PublicUserRow[];
-        const match = all.find((row) => row.login === login);
-
-        expect(match).toEqual(expect.objectContaining({ login }));
-        all.forEach((row) => {
-            expect(row).not.toHaveProperty("password");
-        });
     });
 
     it("should find credentials by id including the password hash, and null for an unknown id", async () => {

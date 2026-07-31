@@ -6,9 +6,13 @@ import { catchError } from "test/helpers/assertions";
 
 function setup() {
     const pantryRepository = { addIngredients: jest.fn() };
-    const useCase = new AddUserIngredients(pantryRepository);
+    const ingredientRepository = { findExistingIds: jest.fn() };
+    const useCase = new AddUserIngredients(
+        pantryRepository,
+        ingredientRepository,
+    );
 
-    return { useCase, pantryRepository };
+    return { useCase, pantryRepository, ingredientRepository };
 }
 
 describe("AddUserIngredients", () => {
@@ -43,8 +47,10 @@ describe("AddUserIngredients", () => {
     });
 
     it("should add a fractional quantity", async () => {
-        const { useCase, pantryRepository } = setup();
+        const { useCase, pantryRepository, ingredientRepository } = setup();
         const ingredients = [{ id: 3, quantity_person_ingradient: 1.5 }];
+
+        ingredientRepository.findExistingIds.mockResolvedValue([3]);
 
         await useCase.execute(7, ingredients);
 
@@ -73,8 +79,10 @@ describe("AddUserIngredients", () => {
     });
 
     it("should add user ingredients when ingredients are an array", async () => {
-        const { useCase, pantryRepository } = setup();
+        const { useCase, pantryRepository, ingredientRepository } = setup();
         const ingredients = [{ id: 3, quantity_person_ingradient: 2 }];
+
+        ingredientRepository.findExistingIds.mockResolvedValue([3]);
 
         await useCase.execute(7, ingredients);
 
@@ -82,5 +90,22 @@ describe("AddUserIngredients", () => {
             7,
             ingredients,
         );
+    });
+
+    it("should throw a 400 ValidationError when an ingredient id does not exist", async () => {
+        const { useCase, pantryRepository, ingredientRepository } = setup();
+
+        ingredientRepository.findExistingIds.mockResolvedValue([]);
+
+        const error = await catchError(
+            useCase.execute(7, [{ id: 999, quantity_person_ingradient: 2 }]),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            "One or more ingredients do not exist",
+            400,
+        );
+        expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
 });

@@ -1,21 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { PantryIngredient } from "types/userIngredient";
 
 import { useIngredientCategories } from "hooks/useIngredientCategories";
 
-import { getExpiryStatus } from "utils/expiry";
-import { resolvePantryIngredientName } from "utils/ingredientName";
+import {
+    isUrgent,
+    PANTRY_FILTER_DEFS,
+    type PantryFilterState,
+} from "utils/filters/pantryFilterDefs";
 
-const isUrgent = (
-    daysToExpire: number | null | undefined,
-    purchaseDate: string | undefined,
-): boolean => {
-    const status = getExpiryStatus(daysToExpire, purchaseDate);
-
-    return status !== null && status.tone !== "ok";
-};
+import { useClientFilters } from "./useClientFilters";
 
 interface UsePantryFiltersOptions {
     personIngredients: PantryIngredient[];
@@ -29,20 +25,23 @@ export const usePantryFilters = ({
     sourceIngredients,
 }: UsePantryFiltersOptions) => {
     const { t } = useTranslation("ingredients");
-    const [query, setQuery] = useState("");
-    const [expiringSoonOnly, setExpiringSoonOnly] = useState(false);
-    const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
     const categories = useIngredientCategories(personIngredients);
+    const {
+        values: filters,
+        setValue,
+        visibleItems: visibleIngredients,
+    } = useClientFilters<PantryIngredient, PantryFilterState>(
+        PANTRY_FILTER_DEFS,
+        sourceIngredients,
+    );
 
-    // drops a stale category filter (its last item just got deleted) rather than silently matching nothing forever
-    useEffect(() => {
-        if (
-            categoryFilter &&
-            !categories.some((category) => category.key === categoryFilter)
-        ) {
-            setCategoryFilter(null);
-        }
-    }, [categoryFilter, categories]);
+    // drops a stale category filter (its last item just got deleted) rather than silently matching nothing forever - adjusted during render, not via an effect, since it's already a conditional, idempotent correction
+    if (
+        filters.category &&
+        !categories.some((category) => category.key === filters.category)
+    ) {
+        setValue("category", null);
+    }
 
     const expiringSoonCount = useMemo(
         () =>
@@ -52,37 +51,24 @@ export const usePantryFilters = ({
         [personIngredients],
     );
 
-    const visibleIngredients = sourceIngredients.filter((ingredient) => {
-        const matchesQuery = resolvePantryIngredientName(ingredient)
-            .toLowerCase()
-            .includes(query.trim().toLowerCase());
-
-        if (!matchesQuery) {
-            return false;
-        }
-
-        if (categoryFilter && ingredient.category !== categoryFilter) {
-            return false;
-        }
-
-        return (
-            !expiringSoonOnly ||
-            isUrgent(ingredient.days_to_expire, ingredient.purchase_date)
-        );
-    });
-
     const emptyMessage =
         personIngredients.length === 0
             ? t("page.noIngredients")
             : t("page.noSearchResults");
 
     return {
-        query,
-        setQuery,
-        expiringSoonOnly,
-        setExpiringSoonOnly,
-        categoryFilter,
-        setCategoryFilter,
+        query: filters.query,
+        setQuery: (query: string) => {
+            setValue("query", query);
+        },
+        expiringSoonOnly: filters.expiringSoonOnly,
+        setExpiringSoonOnly: (expiringSoonOnly: boolean) => {
+            setValue("expiringSoonOnly", expiringSoonOnly);
+        },
+        categoryFilter: filters.category,
+        setCategoryFilter: (categoryFilter: string | null) => {
+            setValue("category", categoryFilter);
+        },
         categories,
         expiringSoonCount,
         visibleIngredients,

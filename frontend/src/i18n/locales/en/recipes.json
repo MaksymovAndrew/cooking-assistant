@@ -28,14 +28,12 @@
     },
     "ingredientPicker": {
         "searchPlaceholder": "Search ingredients...",
-        "clear": "Clear",
         "noMatches": "No ingredients found"
     },
     "recipeCard": {
         "recipeType": "Recipe type: ",
         "cookingTime": "Cooking time: ",
         "creationDate": "Creation date: ",
-        "learnMore": "Learn more",
         "cookingTimeValue": "{{hours}} hr : {{minutes}} min"
     },
     "filterPanel": {
@@ -48,6 +46,7 @@
         "fastToLong": "Fast → long",
         "longToFast": "Long → fast",
         "typeLabel": "Type",
+        "ingredientsLabel": "Ingredients",
         "reset": "Reset filters",
         "apply": "Apply",
         "showResults_one": "Show {{count}} recipe",
@@ -55,8 +54,13 @@
         "recipeCount_one": "{{count}} recipe",
         "recipeCount_other": "{{count}} recipes",
         "searchChip": "“{{query}}”",
-        "minChip": "Min time: {{minutes}} min",
-        "maxChip": "Max time: {{minutes}} min",
+        "typeChip_one": "{{count}} type",
+        "typeChip_other": "{{count}} types",
+        "ingredientsChip_one": "{{count}} ingredient",
+        "ingredientsChip_other": "{{count}} ingredients",
+        "timeChipRange": "{{min}}–{{max}} min",
+        "timeChipMin": "From {{minutes}} min",
+        "timeChipMax": "Up to {{minutes}} min",
         "sortChip": "Sort: {{sort}}",
         "removeFilter": "Remove",
         "clearAll": "Clear all",
@@ -74,7 +78,7 @@
         "subtitle": "Browse your cookbook",
         "emptyTitle": "No recipes yet",
         "emptyDescription": "Your cookbook is empty. Add your first recipe and it'll show up here.",
-        "searchPlaceholder": "ingredient"
+        "searchPlaceholder": "recipe title"
     },
     "userRecipesPage": {
         "myRecipes": "My Recipes",
@@ -83,7 +87,7 @@
         "subtitle_other": "{{count}} recipes in your cookbook",
         "emptyTitle": "No recipes yet",
         "emptyDescription": "You haven't added any recipes yet. Create your first one and it'll show up here.",
-        "searchPlaceholder": "ingredient"
+        "searchPlaceholder": "recipe title"
     },
     "createRecipePage": {
         "heading": "Create recipe",
@@ -153,7 +157,6 @@
         "cookingTimeMinutes": "{{minutes}} min",
         "visitorBanner": "Viewing someone else's recipe — Edit & Delete not available",
         "yourRating": "Your rating",
-        "avgRating": "avg {{value}} ({{count}})",
         "allergens": "Allergens"
     }
 }

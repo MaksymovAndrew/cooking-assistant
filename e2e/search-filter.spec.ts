@@ -68,39 +68,80 @@ test.afterAll(async () => {
     await context.close();
 });
 
-test("should filter My Recipes by ingredient name", async () => {
+test("should filter My Recipes by recipe title", async () => {
     await page.goto("/my-recipes");
-    await page.getByPlaceholder("Search by ingredient").fill("Tomato");
 
-    // the search box stays a text field/URL param, but it must resolve to ingredient_ids before hitting the API
-    const [request] = await Promise.all([
-        page.waitForRequest((req) =>
-            req.url().includes("/api/recipes-filters-person"),
-        ),
-        page.getByPlaceholder("Search by ingredient").press("Enter"),
-    ]);
+    // search is live now (debounced, no Enter needed); it matches the recipe's own
+    // title - ingredient filtering moved to the picker inside the Filters popover
+    const requestPromise = page.waitForRequest(
+        (req) =>
+            req.url().includes("/api/recipes-filters-person") &&
+            req.url().includes("recipe_name="),
+    );
 
-    expect(request.url()).toContain("ingredient_ids=");
-    expect(request.url()).not.toContain("ingredient_name=");
+    await page.getByPlaceholder("Search by recipe title").fill(recipeATitle);
+
+    const request = await requestPromise;
+
+    expect(request.url()).not.toContain("ingredient_ids=");
+
+    // the search chip echoes the query text, which collides with a plain getByText
+    // lookup once the query is the recipe's own full title - scope to the card heading
+    await expect(
+        page.getByRole("heading", { name: recipeATitle }),
+    ).toBeVisible();
+    await expect(page.getByText(recipeBTitle)).toBeHidden();
+
+    await page.getByRole("button", { name: "Clear", exact: true }).click();
+    await expect(page.getByText(recipeBTitle)).toBeVisible();
+});
+
+test("should filter My Recipes by ingredient via the filter popover picker", async () => {
+    await page.goto("/my-recipes");
+    await page.getByRole("button", { name: "Filters", exact: true }).click();
+
+    const requestPromise = page.waitForRequest(
+        (req) =>
+            req.url().includes("/api/recipes-filters-person") &&
+            req.url().includes("ingredient_ids="),
+    );
+
+    await page.getByPlaceholder("Search ingredients...").fill("Tomato");
+    await page.getByRole("button", { name: "Tomato", exact: true }).click();
+
+    const request = await requestPromise;
+
+    expect(request.url()).not.toContain("recipe_name=");
 
     await expect(page.getByText(recipeATitle)).toBeVisible();
     await expect(page.getByText(recipeBTitle)).toBeHidden();
 
-    await page.getByRole("button", { name: "Reset Search" }).click();
-    await expect(page.getByText(recipeBTitle)).toBeVisible();
+    await page.getByRole("button", { name: "Reset filters" }).click();
 });
 
 test("should filter My Recipes by recipe type", async () => {
     await page.goto("/my-recipes");
     await page.getByRole("button", { name: "Filters", exact: true }).click();
-    await page.getByLabel(recipeAType).check();
+    // a plain click + web-first assertion (not .check()) - the checkbox's
+    // aria-checked comes from URL-driven app state after a client-side
+    // navigation, not a native input, so it needs the assertion's own retry
+    // rather than .check()'s single click-then-verify
+    await page.getByLabel(recipeAType).click();
+    await expect(page.getByLabel(recipeAType)).toHaveAttribute(
+        "aria-checked",
+        "true",
+    );
 
     await expect(page.getByText(recipeATitle)).toBeVisible();
     await expect(page.getByText(recipeBTitle)).toBeHidden();
 
     // the panel stays open after Reset filters (only Apply/close/outside-click close it)
     await page.getByRole("button", { name: "Reset filters" }).click();
-    await page.getByLabel(recipeBType).check();
+    await page.getByLabel(recipeBType).click();
+    await expect(page.getByLabel(recipeBType)).toHaveAttribute(
+        "aria-checked",
+        "true",
+    );
 
     await expect(page.getByText(recipeBTitle)).toBeVisible();
     await expect(page.getByText(recipeATitle)).toBeHidden();
@@ -140,21 +181,26 @@ test("should sort My Recipes by cooking time", async () => {
 
 test("should filter My Menus by title", async () => {
     await page.goto("/my-menus");
+    // live search is debounced, no Enter needed - the web-first assertion below already retries until the debounce settles
     await page.getByPlaceholder("Search by menu title").fill(menuXTitle);
-    await page.getByPlaceholder("Search by menu title").press("Enter");
 
     await expect(page.getByRole("heading", { name: menuXTitle })).toBeVisible();
     await expect(page.getByText(menuYTitle)).toBeHidden();
 
-    await page.getByRole("button", { name: "Reset Search" }).click();
+    await page.getByRole("button", { name: "Clear", exact: true }).click();
     await expect(page.getByText(menuYTitle)).toBeVisible();
 });
 
 test("should filter My Menus by category", async () => {
     await page.goto("/my-menus");
-    // the list page's category filter is a checkbox dropdown, not a <select> - reuse the category text captured from the create-menu form instead
+    // the list page's category filter is a chip group, not a <select> - reuse the category text captured from the create-menu form instead
     await page.getByRole("button", { name: "Filter", exact: true }).click();
-    await page.getByLabel(menuXCategory).check();
+    // click + web-first assertion, not .check() - same reason as the recipe type filter above
+    await page.getByLabel(menuXCategory).click();
+    await expect(page.getByLabel(menuXCategory)).toHaveAttribute(
+        "aria-checked",
+        "true",
+    );
 
     await expect(page.getByText(menuXTitle)).toBeVisible();
     await expect(page.getByText(menuYTitle)).toBeHidden();
@@ -180,7 +226,7 @@ test("should filter My Recipes to only what's in the pantry", async () => {
     await expect(page.getByText(recipeATitle)).toBeVisible();
     await expect(page.getByText(recipeBTitle)).toBeHidden();
 
-    // cleanup: leave the shared account's pantry empty for other specs (the goto below already resets the plain-Redux pantry filter state)
+    // cleanup: leave the shared account's pantry empty for other specs (the goto below already drops the pantry filter, since it's URL-scoped to /my-recipes)
     await page.goto("/ingredients");
     await page
         .getByRole("heading", { name: "Tomato", level: 3 })

@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { MenuDetailRecipe } from "types/menu";
@@ -6,6 +6,15 @@ import type { MenuDetailRecipe } from "types/menu";
 import { MenuRecipesPanel } from "components/menu/MenuRecipesPanel";
 
 import { renderWithRouter } from "test/router";
+
+const DEBOUNCE_MS = 300;
+
+const setupUser = () =>
+    userEvent.setup({
+        advanceTimers: (ms) => {
+            jest.advanceTimersByTime(ms);
+        },
+    });
 
 const RECIPES: MenuDetailRecipe[] = [
     {
@@ -40,40 +49,60 @@ describe("MenuRecipesPanel", () => {
     });
 
     it("should filter recipes by the search query", async () => {
-        renderWithRouter(
-            <MenuRecipesPanel
-                recipes={RECIPES}
-                isOwner={false}
-                addRecipesTo="/change-menu/1"
-            />,
-        );
+        jest.useFakeTimers();
+        const user = setupUser();
 
-        await userEvent.type(
-            screen.getByPlaceholderText("Search in this menu…"),
-            "borscht",
-        );
+        try {
+            renderWithRouter(
+                <MenuRecipesPanel
+                    recipes={RECIPES}
+                    isOwner={false}
+                    addRecipesTo="/change-menu/1"
+                />,
+            );
 
-        expect(screen.getByText("Borscht")).toBeInTheDocument();
-        expect(screen.queryByText("Pancakes")).not.toBeInTheDocument();
+            await user.type(
+                screen.getByPlaceholderText("Search in this menu…"),
+                "borscht",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+
+            expect(screen.getByText("Borscht")).toBeInTheDocument();
+            expect(screen.queryByText("Pancakes")).not.toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should show a no-results message when the search matches nothing", async () => {
-        renderWithRouter(
-            <MenuRecipesPanel
-                recipes={RECIPES}
-                isOwner={false}
-                addRecipesTo="/change-menu/1"
-            />,
-        );
+        jest.useFakeTimers();
+        const user = setupUser();
 
-        await userEvent.type(
-            screen.getByPlaceholderText("Search in this menu…"),
-            "zzz",
-        );
+        try {
+            renderWithRouter(
+                <MenuRecipesPanel
+                    recipes={RECIPES}
+                    isOwner={false}
+                    addRecipesTo="/change-menu/1"
+                />,
+            );
 
-        expect(
-            screen.getByText("No recipes match your search."),
-        ).toBeInTheDocument();
+            await user.type(
+                screen.getByPlaceholderText("Search in this menu…"),
+                "zzz",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+
+            expect(
+                screen.getByText("No recipes match your search."),
+            ).toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should show an empty state with an add-recipes link for the owner when there are no recipes", () => {

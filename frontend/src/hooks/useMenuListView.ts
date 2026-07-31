@@ -1,10 +1,7 @@
 import { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
 
-import { SEARCH_PARAM_INGREDIENT_NAME } from "constants/queryParams";
+import type { MenuListParams } from "types/menu";
 
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { selectMenuFilters } from "redux/selectors/filtersSelectors";
 import { useGetMeQuery } from "redux/services/authApi";
 import {
     flattenPages,
@@ -15,10 +12,14 @@ import {
     useGetMenusByPersonInfiniteQuery,
     useGetMenusInfiniteQuery,
 } from "redux/services/menusApi";
-import { setMenuSelectedCategories } from "redux/slices/filtersSlice";
 
-import { buildMenuFilterParams } from "utils/menuFilterParams";
+import type { MenuFilterState } from "utils/filters/menuFilterDefs";
+import { MENU_FILTER_DEFS } from "utils/filters/menuFilterDefs";
 import { getQueryErrorMessage } from "utils/queryError";
+
+import { useListFilters } from "./useListFilters";
+
+export type { MenuFilterState } from "utils/filters/menuFilterDefs";
 
 export const MENU_SOURCE = {
     all: "all",
@@ -27,18 +28,18 @@ export const MENU_SOURCE = {
 
 export type MenuSource = (typeof MENU_SOURCE)[keyof typeof MENU_SOURCE];
 
-// view model for the two menu lists: the category filter comes from the store, the name search from the URL, the menus from RTK Query
+// view model for the two menu lists: the URL is the single source of truth for
+// filters, pages come from RTK Query's infiniteQuery
 export const useMenuListView = (source: MenuSource) => {
-    const dispatch = useAppDispatch();
-    const { selectedCategories } = useAppSelector(selectMenuFilters);
-    const [searchParams, setSearchParams] = useSearchParams();
-    // known quirk: the menu name search reuses the ingredient_name URL key
-    const menuName = searchParams.get(SEARCH_PARAM_INGREDIENT_NAME);
-
-    const params = useMemo(
-        () => buildMenuFilterParams(selectedCategories, menuName),
-        [selectedCategories, menuName],
-    );
+    const {
+        values: filters,
+        setValue,
+        reset: resetFilters,
+        params,
+        activeFilters,
+        activeCount,
+        hasActiveFilters,
+    } = useListFilters<MenuFilterState, MenuListParams>(MENU_FILTER_DEFS);
 
     const isPerson = source === MENU_SOURCE.person;
     const all = useGetMenusInfiniteQuery(params, { skip: isPerson });
@@ -59,34 +60,24 @@ export const useMenuListView = (source: MenuSource) => {
 
     const selectedCategoryNames = categories
         .filter((category) =>
-            selectedCategories.includes(category.menu_category_id),
+            filters.categories.includes(category.menu_category_id),
         )
         .map((category) => category.category_name)
         .join(", ");
 
-    const hasActiveFilters = Boolean(menuName) || selectedCategories.length > 0;
-    const clearFilters = () => {
-        setSearchParams({});
-        dispatch(setMenuSelectedCategories([]));
-    };
-    const removeSearch = () => {
-        setSearchParams({});
-    };
-
     return {
-        selectedCategories,
-        setSelectedCategories: (next: number[]) =>
-            dispatch(setMenuSelectedCategories(next)),
+        filters,
+        setValue,
+        resetFilters,
+        activeFilters,
+        activeCount,
+        hasActiveFilters,
         categories,
         menus,
         currentUserId: currentUser?.id ?? null,
         noMenus: active.isSuccess && !hasLoadedMenus,
         error: !hasLoadedMenus ? errorMessage : null,
         selectedCategoryNames,
-        searchQuery: menuName,
-        hasActiveFilters,
-        clearFilters,
-        removeSearch,
         total,
         loadedCount: menus.length,
         hasNextPage: active.hasNextPage,

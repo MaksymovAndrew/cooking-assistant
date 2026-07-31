@@ -2,23 +2,16 @@ import type { Pool } from "pg";
 
 import { PAGINATION } from "constants/pagination";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
-
-import type { RecipeFilters } from "application/use-cases/recipes/recipe.types";
+import type {
+    RecipeFilters,
+    RecipeSearchRow,
+} from "domain/repositories/recipe.filters";
 
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
+import { RECIPE_FILTER_CLAUSES } from "infrastructure/persistence/pg/recipeFilterClauses";
+import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
 
-type QueryParam = string | number | number[];
-
-interface RecipeSearchRow {
-    id: number;
-    title: string;
-    content: string;
-    person_id: number;
-    type_id: number | null;
-    creation_date: Date;
-    cooking_time: number | null;
-    type_name: string | null;
-    ingredients: unknown;
+interface RecipeSearchQueryRow extends RecipeSearchRow {
     total_count: number;
 }
 
@@ -33,84 +26,6 @@ const BASE_RECIPE_SELECT = `
                LEFT JOIN recipe_types rt ON r.type_id = rt.id
       `;
 
-function applyRecipeFilters(
-    baseQuery: string,
-    params: QueryParam[],
-    startIndex: number,
-    filters: RecipeFilters,
-    userId: number,
-): string {
-    let query = baseQuery;
-    let paramIndex = startIndex;
-    const {
-        ingredient_ids,
-        type_ids,
-        start_date,
-        end_date,
-        min_cooking_time,
-        max_cooking_time,
-        in_pantry,
-    } = filters;
-
-    if (ingredient_ids) {
-        // a separate EXISTS (not a WHERE on the outer join) so a match doesn't strip the recipe's other ingredients out of the json_agg below - OR semantics: any id matches
-        query += ` AND EXISTS (
-        SELECT 1 FROM recipe_ingredients ri2
-        WHERE ri2.recipe_id = r.id AND ri2.ingredient_id = ANY($${paramIndex}::int[])
-      )`;
-        params.push(ingredient_ids.split(",").map(Number));
-        paramIndex++;
-    }
-
-    if (type_ids) {
-        query += ` AND r.type_id = ANY($${paramIndex}::int[])`;
-        params.push(type_ids.split(",").map(Number));
-        paramIndex++;
-    }
-
-    if (start_date && end_date) {
-        query += ` AND r.creation_date BETWEEN $${paramIndex} AND $${paramIndex + 1}`;
-        params.push(start_date, end_date);
-        paramIndex += 2;
-    } else if (start_date) {
-        query += ` AND r.creation_date >= $${paramIndex}`;
-        params.push(start_date);
-        paramIndex++;
-    } else if (end_date) {
-        query += ` AND r.creation_date <= $${paramIndex}`;
-        params.push(end_date);
-        paramIndex++;
-    }
-
-    if (min_cooking_time) {
-        query += ` AND r.cooking_time >= $${paramIndex}`;
-        params.push(min_cooking_time);
-        paramIndex++;
-    }
-
-    if (max_cooking_time) {
-        query += ` AND r.cooking_time <= $${paramIndex}`;
-        params.push(max_cooking_time);
-        paramIndex++;
-    }
-
-    if (in_pantry) {
-        // a recipe qualifies only if the pantry covers every ingredient in sufficient quantity (ROUND avoids float noise, see PgPantryRepository.queries.ts); the second EXISTS rules out ingredient-less recipes, which would pass the NOT EXISTS trivially otherwise
-        query += ` AND NOT EXISTS (
-        SELECT 1 FROM recipe_ingredients ri2
-        LEFT JOIN person_ingredients pi
-          ON pi.ingredient_id = ri2.ingredient_id AND pi.person_id = $${paramIndex}
-        WHERE ri2.recipe_id = r.id AND (pi.ingredient_id IS NULL
-          OR ROUND(pi.quantity_person_ingradient::numeric, 3)
-             < ROUND(ri2.quantity_recipe_ingredients::numeric, 3))
-      )
-      AND EXISTS (SELECT 1 FROM recipe_ingredients WHERE recipe_id = r.id)`;
-        params.push(userId);
-    }
-
-    return query;
-}
-
 // every branch ends with the ", id" tie-breaker so OFFSET pagination never duplicates or skips rows
 function buildRecipeOrderBy(sortOrder?: "asc" | "desc"): string {
     if (sortOrder) {
@@ -123,29 +38,31 @@ function buildRecipeOrderBy(sortOrder?: "asc" | "desc"): string {
 // shared tail of both searches: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed
 async function runRecipeSearch(
     pool: Pool,
-    whereSeed: string,
-    params: QueryParam[],
-    startIndex: number,
-    parsed: RecipeFilters,
+    builder: SqlFilterBuilder,
+    filters: RecipeFilters,
     userId: number,
-): Promise<PaginatedResult<unknown>> {
-    let query = applyRecipeFilters(
-        `${BASE_RECIPE_SELECT} ${whereSeed}`,
-        params,
-        startIndex,
-        parsed,
-        userId,
+): Promise<PaginatedResult<RecipeSearchRow>> {
+    for (const clause of RECIPE_FILTER_CLAUSES) {
+        if (clause.applies(filters)) {
+            clause.apply(builder, filters, { userId });
+        }
+    }
+
+    let query = `${BASE_RECIPE_SELECT}${builder.whereClause()} GROUP BY r.id, rt.type_name`;
+
+    query += buildRecipeOrderBy(filters.sort_order);
+
+    const [limitPlaceholder, offsetPlaceholder] = builder.bindTail(
+        filters.limit ?? PAGINATION.DEFAULT_LIMIT,
+        filters.offset ?? PAGINATION.DEFAULT_OFFSET,
     );
 
-    query += ` GROUP BY r.id, rt.type_name`;
-    query += buildRecipeOrderBy(parsed.sort_order);
-    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-    params.push(
-        parsed.limit ?? PAGINATION.DEFAULT_LIMIT,
-        parsed.offset ?? PAGINATION.DEFAULT_OFFSET,
-    );
+    query += ` LIMIT ${limitPlaceholder} OFFSET ${offsetPlaceholder}`;
 
-    const result = await pool.query<RecipeSearchRow>(query, params);
+    const result = await pool.query<RecipeSearchQueryRow>(
+        query,
+        builder.values(),
+    );
 
     return extractPaginatedRows(result.rows);
 }
@@ -153,26 +70,20 @@ async function runRecipeSearch(
 export async function searchRecipes(
     pool: Pool,
     userId: number,
-    filters: unknown,
-): Promise<PaginatedResult<unknown>> {
-    const parsed: RecipeFilters = filters ?? {};
-
-    return runRecipeSearch(pool, `WHERE 1=1`, [], 1, parsed, userId);
+    filters: RecipeFilters,
+): Promise<PaginatedResult<RecipeSearchRow>> {
+    return runRecipeSearch(pool, new SqlFilterBuilder(), filters, userId);
 }
 
 export async function searchPersonRecipes(
     pool: Pool,
     personId: number,
-    filters: unknown,
-): Promise<PaginatedResult<unknown>> {
-    const parsed: RecipeFilters = filters ?? {};
-
+    filters: RecipeFilters,
+): Promise<PaginatedResult<RecipeSearchRow>> {
     return runRecipeSearch(
         pool,
-        `WHERE r.person_id = $1`,
-        [personId],
-        2,
-        parsed,
+        new SqlFilterBuilder("r.person_id = $1", [personId]),
+        filters,
         personId,
     );
 }

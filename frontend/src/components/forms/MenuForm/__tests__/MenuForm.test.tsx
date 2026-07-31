@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { MenuCategory } from "types/menu";
@@ -98,17 +98,33 @@ describe("MenuForm", () => {
     });
 
     it("should search and select a recipe", async () => {
-        const form = makeForm();
+        const DEBOUNCE_MS = 300;
 
-        renderForm(form);
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
 
-        await userEvent.type(
-            screen.getByPlaceholderText("Search recipes..."),
-            "borscht",
-        );
-        await userEvent.click(screen.getByRole("button", { name: /borscht/i }));
+        try {
+            const form = makeForm();
 
-        expect(form.toggleRecipeSelection).toHaveBeenCalledWith(1);
+            renderForm(form);
+
+            await user.type(
+                screen.getByPlaceholderText("Search recipes..."),
+                "borscht",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+            await user.click(screen.getByRole("button", { name: /borscht/i }));
+
+            expect(form.toggleRecipeSelection).toHaveBeenCalledWith(1);
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should show selected recipes as removable rows", async () => {

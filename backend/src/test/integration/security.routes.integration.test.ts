@@ -14,7 +14,7 @@ describe("security hardening", () => {
     it("should include RateLimit-Limit header on domain routes", async () => {
         const { app } = buildTestApp();
 
-        const res = await request(app).get("/api/user");
+        const res = await request(app).get("/api/me");
 
         expect(res.headers["ratelimit-limit"]).toBe(
             String(config.rateLimitMax),

@@ -11,6 +11,16 @@ import { authCookie, buildTestApp } from "test/helpers/testApp";
 const RECIPE_TITLE = "Tomato soup";
 const RECIPE_12_PATH = "/api/recipe/12";
 
+const RECIPE_ROW_EXTRAS = {
+    content: "Boil tomatoes",
+    person_id: 7,
+    type_id: 1,
+    creation_date: new Date("2026-01-01T00:00:00.000Z"),
+    cooking_time: 30,
+    type_name: "Soup",
+    ingredients: [],
+};
+
 function makeRecipeBody() {
     return {
         title: RECIPE_TITLE,
@@ -129,7 +139,7 @@ describe("recipe routes", () => {
     it("should search recipes by filters", async () => {
         const { app, deps } = buildTestApp();
         const paginated = {
-            items: [{ id: 12, title: RECIPE_TITLE }],
+            items: [{ id: 12, title: RECIPE_TITLE, ...RECIPE_ROW_EXTRAS }],
             total: 1,
         };
 
@@ -140,7 +150,8 @@ describe("recipe routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(paginated);
+        // creation_date round-trips through res.json() as an ISO string, not a Date instance
+        expect(res.body).toEqual(JSON.parse(JSON.stringify(paginated)));
     });
 
     it("should pass limit and offset through to the repository", async () => {
@@ -223,7 +234,7 @@ describe("recipe routes", () => {
     it("should search person recipes by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
         const paginated = {
-            items: [{ id: 12, title: RECIPE_TITLE }],
+            items: [{ id: 12, title: RECIPE_TITLE, ...RECIPE_ROW_EXTRAS }],
             total: 1,
         };
 
@@ -234,7 +245,8 @@ describe("recipe routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(paginated);
+        // creation_date round-trips through res.json() as an ISO string, not a Date instance
+        expect(res.body).toEqual(JSON.parse(JSON.stringify(paginated)));
         expect(deps.recipeRepository.searchByPerson).toHaveBeenCalledWith(7, {
             ingredient_ids: "3",
         });

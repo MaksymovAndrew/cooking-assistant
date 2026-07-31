@@ -38,6 +38,19 @@ describe("SearchRecipes", () => {
         expect(result).toEqual(paginated);
     });
 
+    it("should pass through recipe_name unchanged", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { recipe_name: "Borscht" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
+            recipe_name: "Borscht",
+        });
+    });
+
     it("should pass through valid limit and offset as numbers", async () => {
         const { useCase, recipeRepository } = setup();
         const paginated = { items: [], total: 0 };

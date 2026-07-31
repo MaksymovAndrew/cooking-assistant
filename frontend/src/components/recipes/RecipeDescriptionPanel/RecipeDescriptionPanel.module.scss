@@ -27,6 +27,12 @@
         align-items: center;
         gap: 7px;
         margin-bottom: 11px;
+
+        // the shared &__label class carries a margin-bottom meant for standalone section
+        // headers - inside this flex row it throws off align-items: center against the dot
+        .recipe-description-panel__label {
+            margin-bottom: 0;
+        }
     }
 
     &__dot {

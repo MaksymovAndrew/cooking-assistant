@@ -33,6 +33,7 @@ describe("user ingredient routes", () => {
     it("should update user ingredients", async () => {
         const { app, deps } = buildTestApp();
 
+        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.pantryRepository.addIngredients.mockResolvedValue(undefined);
 
         const res = await request(app)
@@ -71,6 +72,7 @@ describe("user ingredient routes", () => {
     it("should update ingredient quantities", async () => {
         const { app, deps } = buildTestApp();
 
+        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.pantryRepository.updateQuantities.mockResolvedValue(undefined);
 
         const res = await request(app)

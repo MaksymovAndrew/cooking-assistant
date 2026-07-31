@@ -75,7 +75,6 @@ export const RecipeListEmptyState: React.FC<RecipeListEmptyStateProps> = ({
             }
             action={
                 <>
-                    {createFirstButton}
                     <Button
                         variant="secondary"
                         size="lg"
@@ -83,6 +82,7 @@ export const RecipeListEmptyState: React.FC<RecipeListEmptyStateProps> = ({
                     >
                         {t("recipeListView.clearFilters")}
                     </Button>
+                    {createFirstButton}
                 </>
             }
         />

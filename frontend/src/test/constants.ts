@@ -8,8 +8,6 @@ export const ROUTE_ALL_MENUS = ROUTES.allMenus;
 
 export const LABEL_COOKING_TIME = "Cooking time *";
 
-export const BTN_RESET_FILTERS = "Reset filters";
-
 export const BTN_DELETE_RECIPE = "Delete recipe";
 export const BTN_EDIT_RECIPE = "Edit recipe";
 
@@ -21,7 +19,4 @@ export const BTN_ADD_INGREDIENT = "Add ingredient";
 export const ERROR_RECIPES_REQUIRED = "Please select at least one recipe.";
 export const ERROR_COOKING_TIME_FORMAT = "Enter hours and minutes.";
 
-export const MOCK_ERROR_NETWORK = "Network error";
 export const MOCK_ERROR_SERVER = "Server error";
-export const MOCK_ERROR_INGREDIENTS = "Ingredients unavailable";
-export const MOCK_ERROR_TYPES = "Types unavailable";

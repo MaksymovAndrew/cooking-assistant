@@ -61,8 +61,12 @@ export const useSelectedIngredients = () => {
 
             const next = [...prev];
             const [moved] = next.splice(fromIndex, 1);
+            // removing `moved` shifts every later index left by one, so a forward move must
+            // land one slot earlier than the target's pre-removal index or it overshoots past
+            // the drop target instead of landing right before it
+            const insertAt = fromIndex < toIndex ? toIndex - 1 : toIndex;
 
-            next.splice(toIndex, 0, moved);
+            next.splice(insertAt, 0, moved);
 
             return next;
         });

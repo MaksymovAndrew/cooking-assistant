@@ -34,6 +34,16 @@ interface MissingIngredientRow {
     coefficient: number;
 }
 
+interface MissingIngredient {
+    ingredient_id: number;
+    ingredient_slug: string;
+    ingredient_name: string;
+    needed_quantity: number;
+    missing_quantity: number;
+    unit_name: string;
+    coefficient: number;
+}
+
 export async function findMenuByIdWithRecipes(
     pool: Pool,
     id: string | number,
@@ -85,7 +95,7 @@ export async function findMenuByIdWithRecipes(
     const recipeIds = recipeResult.rows.map((recipe) => recipe.recipe_id);
 
     // fetch missing ingredients for every recipe of the menu in one query, then group in memory
-    const missingByRecipe = new Map<number, unknown[]>();
+    const missingByRecipe = new Map<number, MissingIngredient[]>();
 
     if (recipeIds.length > 0) {
         const missingResult = await pool.query<MissingIngredientRow>(
@@ -126,6 +136,8 @@ export async function findMenuByIdWithRecipes(
         }
     }
 
+    // despite the name, this carries every ingredient requirement, not only shortfalls -
+    // fully-stocked ones come back with missing_quantity: 0 so the client can render both states
     const recipesWithDetails = recipeResult.rows.map((recipe) => ({
         ...recipe,
         missingIngredients: missingByRecipe.get(recipe.recipe_id) ?? [],

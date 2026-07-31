@@ -34,7 +34,6 @@ export default function createUserRouter(
     );
     router.post("/logout", userController.logout);
     router.get("/me", authenticateToken, userController.me);
-    router.get("/user", authenticateToken, userController.getUsers);
     router.post(
         "/forgot-password",
         forgotPasswordLimiter,

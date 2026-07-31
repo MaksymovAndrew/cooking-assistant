@@ -1,6 +1,6 @@
 # Cooking Assistant - Frontend
 
-React 18 + TypeScript + Vite client for the [Cooking Assistant](../README.md) platform. It talks to the
+React 19 + TypeScript + Vite client for the [Cooking Assistant](../README.md) platform. It talks to the
 [backend](../backend/README.md) API under `/api`. Authentication is a server-set **httpOnly cookie**, so
 the client never sees or stores a token - it just sends requests with credentials and lets the browser
 carry the cookie.
@@ -9,18 +9,22 @@ carry the cookie.
 
 ## Tech stack
 
-- **React 18 + TypeScript** - UI
-- **Vite 5** - dev server, HMR, production bundler (`vite-plugin-svgr` for SVG-as-component imports)
-- **React Router DOM v6** - routing, with `React.lazy` + `Suspense` code splitting (one chunk per page)
-- **Tailwind CSS + PostCSS + Autoprefixer** - styling (brand colours/fonts in `tailwind.config.js`)
+- **React 19 + TypeScript** - UI
+- **Vite 8** - dev server, HMR, production bundler
+- **React Router DOM v7** - a data router (`createBrowserRouter`), with `React.lazy` + `Suspense`
+  code splitting (one chunk per page) and `useBlocker` support for unsaved-edit guards on forms
+- **Redux Toolkit + RTK Query** - server-state caching. A single `baseApi` built on a custom
+  `axiosBaseQuery` (routes every request through the shared `apiClient`, never `fetch`, so the auth
+  cookie and 401/403 interceptor still apply), with one injected endpoint file per domain under
+  `src/redux/services/`. Client/UI state (session, the modal manager, toasts, theme) lives in slices
+  under `src/redux/slices/`
+- **SCSS modules** - styling, one `.module.scss` per component; no Tailwind
 - **axios** - HTTP client, wrapped behind a single shared instance in `src/api/`
 - **i18next + react-i18next** - all user-facing strings (one namespace per domain, `en` locale today)
-- **ApexCharts + react-apexcharts** - charts on the stats page (lazy-loaded)
-- **@react-pdf/renderer** - PDF report export (lazy-loaded on click)
-- **Jest 30 + @swc/jest + React Testing Library + jsdom** - test suite (~108 files, 80% coverage gate)
-
-> No `jwt-decode`, no Redux/RTK, no global state library. State lives in custom hooks; auth lives in the
-> cookie. (RTK is planned for a later release but is intentionally not here yet.)
+- **Recharts** - charts on the stats page (lazy-loaded)
+- **lucide-react** + hand-authored SVG icon components (`src/components/icons/`) - iconography
+- **Jest 30 + @swc/jest + React Testing Library + jsdom** - test suite (~224 co-located test files,
+  80% coverage gate)
 
 ## Running locally
 
@@ -46,13 +50,13 @@ one of them before opening a PR.
 
 ## Production (Docker + nginx)
 
-In production the frontend is a static bundle served by nginx. The [Dockerfile](Dockerfile) two stages:
+In production the frontend is a static bundle served by nginx. The [Dockerfile](Dockerfile) has two stages:
 
 1. **builder** - sets `ARG VITE_API_URL` (baked into the Vite bundle at build time), runs `npm run build`,
    produces `dist/`.
 2. **runner** - copies `dist/` into `nginx:alpine`, uses [nginx.conf](nginx.conf) which sets the SPA
-   fallback (`try_files $uri $uri/ /index.html`) so React Router deep-links work, plus 1-year
-   cache headers for content-hashed assets.
+   fallback (`try_files $uri $uri/ /index.html`) so React Router deep-links work, 1-year cache headers
+   for content-hashed assets, and serves `public/robots.txt` as a real static file at that path.
 
 `VITE_API_URL` is passed as a Docker build-arg from GitHub Actions (value: `https://api.cooking-assistant.app`).
 Once baked in it cannot be changed at runtime - to point the bundle at a different API, rebuild the image.
@@ -79,168 +83,190 @@ Auth is a **server-set httpOnly cookie** (`authToken`). The client cannot read i
 - The single shared axios instance ([src/api/client.ts](src/api/client.ts)) is created with
   `withCredentials: true`, so the browser sends/receives the cookie automatically. There is **no**
   `Authorization: Bearer` header and **no** `localStorage` token anywhere.
-- **Login** ([src/hooks/useLoginForm.ts](src/hooks/useLoginForm.ts) -> [src/api/authApi.ts](src/api/authApi.ts))
-  POSTs `/api/login`; the server sets the cookie and responds `{ message: "Logged in" }`. The hook then
-  navigates to `/main`. On a `429` (too many attempts) it reads `retry-after` and soft-locks the submit
-  button until the window passes.
+- **Login** (`useLoginForm` -> `useLoginMutation` in [src/redux/services/authApi.ts](src/redux/services/authApi.ts)) POSTs `/api/login`; the server
+  sets the cookie and responds `{ message: "Logged in" }`. On a `429` (too many attempts) it reads
+  `retry-after` and soft-locks the submit button until the window passes (escalating lockout, see
+  `useLoginLockout`).
 - **Logout** POSTs `/api/logout`; the server clears the cookie. Nothing to clean up client-side.
-- **Route gating** ([src/components/layout/PrivateRoute/PrivateRoute.tsx](src/components/layout/PrivateRoute/PrivateRoute.tsx))
-  is server-verified: on mount it calls `getMe()` (`GET /api/me`). While the check is pending it renders a
-  blank screen; on `200` it renders the route; on `401/403` it redirects to `/login`; on any other error it
-  shows a session-error message. It does **not** read `localStorage` and does **not** inspect a token.
+- **Password reset** (`/forgot-password` -> `/reset-password`) and **email verification**
+  (`/verify-email`, plus in-app resend/confirm) reuse the same session-token machinery as short-lived,
+  purpose-scoped links. Both flows are public routes (see `PUBLIC_PATHS` below).
+- **Route gating** (`PrivateRoute`) is server-verified: on mount it fires `useGetMeQuery` (`GET /api/me`).
+  While the check is pending it renders a blank screen; on `200` it renders the route; on `401/403` it
+  redirects to `/login`; on any other error it shows a session-error message. It does **not** read
+  `localStorage` and does **not** inspect a token.
 - **401/403 handling** is centralized in the axios response interceptor (`handleAuthError` in
   [src/api/client.ts](src/api/client.ts)): a 401/403 on a protected request hard-redirects to `/login`
   (via `window.location.assign`, since it runs outside React Router - see [src/api/redirect.ts](src/api/redirect.ts)).
-  `GET /api/me` is exempt (`SKIP_REDIRECT_URLS`) so `PrivateRoute` can handle its own 401 without a double
-  redirect, and the public paths (`/login`, `/registration`) are exempt too.
+  `GET /api/me` and `POST /api/change-password` are exempt (`SKIP_REDIRECT_URLS` - a 401 on
+  change-password means "wrong current password", not an expired session), and the public paths are
+  exempt too.
 
 ## Source structure
 
 ```
 src/
-├── main.tsx                 ReactDOM root (mounts <AppWrapper/>, imports i18n + index.css)
-├── App.tsx                  Router + Suspense + React.lazy pages + PrivateRoute layout route
-├── index.css                global Tailwind + custom CSS
+├── main.tsx        ReactDOM root (mounts <AppWrapper/>, imports i18n + global styles)
+├── App.tsx         data router (createBrowserRouter) + Suspense + PrivateRoute layout route
 │
-├── api/                     the ONLY place axios is touched
-│   ├── client.ts            shared axios instance (withCredentials) + 401/403 interceptor
-│   ├── endpoints.ts         API_ROUTES - typed map of every backend path (param routes are builders)
-│   ├── httpError.ts         getApiErrorMessage(err) - normalize any error to a user string
-│   ├── redirect.ts          redirectToLogin() - hard navigation used by the interceptor
-│   ├── authApi.ts           login / getMe / register / logout
-│   ├── recipesApi.ts, menusApi.ts, recipeTypesApi.ts, ingredientsApi.ts,
-│   ├── userIngredientsApi.ts, menuCategoriesApi.ts, statsApi.ts   per-domain wrappers
-│   └── __mocks__/client.ts  manual jest mock of the axios instance
+├── api/            the ONLY place axios is touched
+│   ├── client.ts      shared axios instance (withCredentials) + 401/403 interceptor
+│   ├── endpoints.ts   API_ROUTES - typed map of every backend path (param routes are builders)
+│   ├── httpError.ts   getApiErrorMessage/Code/Status/RetryAfter(err) - normalize any error
+│   └── redirect.ts    redirectToLogin() - hard navigation used by the interceptor
 │
-├── components/              reusable UI, grouped by domain (each is a folder + index.ts barrel)
-│   ├── layout/              Header, PrivateRoute, PageSpinner, ListPageLayout
-│   ├── ui/                  Card, Modal, SearchComponent, CheckboxFilterDropdown, DateFilterDropdown,
-│   │                        OwnerActions, ToggleButtonGroup
-│   ├── forms/               RecipeForm, MenuFormFields, auth/{LoginForm,RegisterForm}, shared fields/
-│   ├── recipes/             RecipeCard, RecipeFilterPanel, IngredientPicker, CookingTimeField, ...
-│   ├── menu/                MenuCard, MenuListView, MissingIngredientsList, GroupedRecipesList, ...
-│   ├── ingredients/         IngredientList, QuantityEditor, PurchaseHistoryModal, DeleteConfirmModal, ...
-│   ├── recipe-types/        TypeListItem (read-only)
-│   └── stats/               RecipeTypeChart (+ LazyChart), RecipeTypesSummary, ReportDownloadButtons, ...
+├── redux/          Redux Toolkit store
+│   ├── store.ts       setupStore factory shared by the app and tests
+│   ├── hooks.ts       typed useAppDispatch / useAppSelector
+│   ├── services/      baseApi + axiosBaseQuery + one injected endpoint file per domain
+│   │                  (recipesApi, menusApi, authApi, ingredientsApi, ...)
+│   ├── slices/        client/UI state: session, ui (modal manager), notifications, theme,
+│   │                  emailVerification
+│   └── selectors/     one <domain>Selectors.ts per slice (never inline in components)
 │
-├── hooks/                   all data fetching + stateful logic (50+ hooks, composed; no global store)
+├── components/     reusable UI, grouped by domain (each is a folder + index.ts barrel)
+│   ├── layout/        AppShell, AppHeader, MainNav, BottomNav, Logo, PrivateRoute, PageSpinner,
+│   │                  RouteErrorBoundary, MobileSubpageHeader, ScrollToTopButton
+│   ├── ui/            SearchField, FilterPanel, ActiveFilterChips, Button, Chip, Select, ...
+│   ├── icons/         hand-authored SVG icon components (design-mockup-traced)
+│   ├── forms/         RecipeForm, MenuForm, auth forms, shared fields
+│   └── recipes/, menu/, ingredients/, profile/, settings/, stats/, home/, cards/, modals/,
+│       theme/, avatars/, connectivity/, auth/   domain-specific components
 │
-├── pages/                   one folder per domain (route components, lazy-loaded)
-│   ├── auth/                LoginPage, RegisterPage
-│   ├── recipes/             MainPage, CreateRecipePage, RecipeDetailsPage, ChangeRecipePage
+├── hooks/          all data fetching + stateful logic (50+ hooks, composed)
+│
+├── pages/          one folder per domain (route components, lazy-loaded)
+│   ├── auth/                LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage,
+│   │                        VerifyEmailPage
+│   ├── home/                HomePage (dashboard at "/")
+│   ├── recipes/             MainPage (all recipes), CreateRecipePage, RecipeDetailsPage,
+│   │                        ChangeRecipePage
 │   ├── user-recipes/        UserRecipesPage ("my recipes")
-│   ├── recipe-types/        TypesPage (read-only list; add/edit/delete were removed in 1.40)
 │   ├── person-ingredients/  IngredientsPage (the pantry)
 │   ├── menu/                MenuPage, CreateMenuPage, MenuDetailsPage, ChangeMenuPage
 │   ├── user-menu/           UserMenuPage ("my menus")
-│   ├── statistics/          StatsPage + the PDF report components (StatsReport, Pdf*, reportStyles)
+│   ├── statistics/          StatsPage (charts)
+│   ├── profile/, settings/  ProfilePage, SettingsPage
 │   └── not-found/           NotFoundPage (404)
 │
-├── constants/               routes.ts (ROUTES + path builders + PUBLIC_PATHS), languages, queryParams
-├── config/                  env.ts (API_BASE_URL), logger.ts (dev-only console wrapper)
-├── i18n/                    index.ts (i18next init) + locales/en/<namespace>.json
-├── types/                   shared TypeScript types (recipe, menu, ingredient, stats, auth, api, ...)
-├── utils/                   pure helpers (cookingTimeUtils, dateUtils, ingredientExpirationUtils, ...)
-├── test/                    Jest setup + shared test helpers (router, mocks, constants)
-└── assets/                  fonts (Kharkiv Tone, Montserrat) + searchIcon.png
+├── constants/      routes.ts (ROUTES + path builders + PUBLIC_PATHS), pagination, theme, ...
+├── config/         env.ts (API_BASE_URL), logger.ts (dev-only console wrapper)
+├── i18n/           index.ts (i18next init) + locales/en/<namespace>.json
+├── types/          shared TypeScript types (recipe, menu, ingredient, userIngredient, stats, auth, ...)
+├── utils/          pure helpers (cookingTimeUtils, dateUtils, filters/ - the URL and
+│                   client-side filter framework, ...)
+├── styles/         SCSS abstracts (breakpoints, mixins) shared by every module
+├── test/           Jest setup + shared test helpers (router, store, mocks, constants)
+└── assets/         fonts (Kharkiv Tone, Montserrat)
 ```
 
-## The api/ layer
+## The api/ layer and RTK Query
 
-Pages and hooks never import `axios` - they call typed functions from `src/api/*`, and the ESLint
-boundaries rule blocks any direct `axios` import outside `src/api/`.
+Pages/hooks never import `axios` directly - the ESLint boundaries rule blocks it outside `src/api/`.
+Data flow: page/hook -> RTK Query hook (`redux/services/*`) -> `axiosBaseQuery` -> `apiClient`.
 
 - **[client.ts](src/api/client.ts)** - one `apiClient = axios.create({ baseURL, withCredentials: true })`
-  with a single response interceptor that redirects to `/login` on 401/403. Re-exports `isAxiosError` so
-  feature code never imports axios for that either.
+  with the single response interceptor described above.
 - **[endpoints.ts](src/api/endpoints.ts)** - `API_ROUTES`, a single typed source of truth for every path,
   grouped by domain; parameterized routes are builder functions, e.g. `API_ROUTES.recipes.byId(id)`.
-- **[httpError.ts](src/api/httpError.ts)** - `getApiErrorMessage(err)` turns any error into a user-facing
-  string by reading the backend's unified `{ error }` body, falling back to `error.message`.
-- **Per-domain modules** (`recipesApi.ts`, `menusApi.ts`, ...) - thin async functions wrapping
-  `apiClient.get/post/put/delete` with typed request/response generics, returning `response.data`.
+- **[httpError.ts](src/api/httpError.ts)** - normalizes any axios error into a user-facing message, a
+  stable error `code` (see the backend's `ERROR_CODES`), a `Retry-After` value, and an HTTP status.
+- **`redux/services/baseApi.ts`** - the single RTK Query API slice; each domain file
+  (`recipesApi.ts`, `menusApi.ts`, ...) injects its own `useGet*Query` / `use*Mutation` hooks off it.
+  Cache invalidation runs off `tagTypes` - a mutation invalidates the tags its queries provide, so
+  lists refetch automatically.
 
 ## Routing and code splitting
 
-- [App.tsx](src/App.tsx) loads every page with `React.lazy(() => import("pages/..."))` and wraps the whole
-  tree in one `<Suspense fallback={<PageSpinner/>}>`. Each page is its own bundle chunk.
+- [App.tsx](src/App.tsx) builds a data router (`createBrowserRouter`, not `<BrowserRouter>`) so forms
+  can block in-app navigation away from unsaved edits via `useBlocker`. Every page is
+  `React.lazy(() => import("pages/..."))`, wrapped in one `<Suspense fallback={<PageSpinner/>}>` inside
+  the shared `RootLayout` (which also mounts the theme manager, modal root, offline modal, and toaster).
 - Private routes are a data-driven `PRIVATE_ROUTES` array rendered as children of a single
-  `<Route element={<PrivateRoute/>}>` layout route (PrivateRoute renders `<Outlet/>`). Public routes
-  (`/login`, `/registration`), the `/` -> `/main` redirect, and the `*` 404 sit outside the guard.
+  `<Route element={<PrivateRoute/>}>` layout route. Public routes (login, registration, forgot/reset
+  password, verify email), and the `*` 404 sit outside the guard.
 - All paths come from [src/constants/routes.ts](src/constants/routes.ts) (`ROUTES`, path builders like
-  `recipeDetailsPath(id)`, and `PUBLIC_PATHS`). Heavy libs are lazy too: ApexCharts via
-  `RecipeTypeChart/LazyChart`, and `@react-pdf/renderer` via a dynamic `import()` on the download click.
+  `recipeDetailsPath(id)`, and `PUBLIC_PATHS`).
 
 ### Routes
 
-Public: `/login`, `/registration`. Everything else is wrapped in `<PrivateRoute>`.
+| Path                                                   | Page                                | Access  |
+| ------------------------------------------------------ | ----------------------------------- | ------- |
+| `/`                                                    | HomePage - dashboard                | private |
+| `/login`, `/registration`                              | LoginPage, RegisterPage             | public  |
+| `/forgot-password`, `/reset-password`, `/verify-email` | password reset / email verification | public  |
+| `/all-recipes`                                         | MainPage - all recipes              | private |
+| `/my-recipes`                                          | UserRecipesPage                     | private |
+| `/add-recipe`, `/recipe/:id`, `/change-recipe/:id`     | Recipe create / details / edit      | private |
+| `/all-menus`                                           | MenuPage                            | private |
+| `/my-menus`                                            | UserMenuPage                        | private |
+| `/add-menu`, `/menu/:id`, `/change-menu/:id`           | Menu create / details / edit        | private |
+| `/ingredients`                                         | IngredientsPage (pantry)            | private |
+| `/stats`                                               | StatsPage (charts)                  | private |
+| `/profile`, `/settings`                                | ProfilePage, SettingsPage           | private |
+| `*`                                                    | NotFoundPage                        | public  |
 
-| Path | Page | Access |
-|------|------|--------|
-| `/` -> `/main` | redirect | public |
-| `/login`, `/registration` | LoginPage, RegisterPage | public |
-| `/main` | MainPage - recipe feed | private |
-| `/my-recipes` | UserRecipesPage | private |
-| `/my-menus` | UserMenuPage | private |
-| `/types` | TypesPage (read-only list) | private |
-| `/add-recipe`, `/recipe/:id`, `/change-recipe/:id` | Recipe create / details / edit | private |
-| `/menu`, `/add-menu`, `/menu/:id`, `/change-menu/:id` | Menu list / create / details / edit | private |
-| `/ingredients` | IngredientsPage (pantry) | private |
-| `/stats` | StatsPage (charts + PDF export) | private |
-| `*` | NotFoundPage | public |
+## State
 
-## State and hooks
-
-There is no global state library. Every fetch and piece of stateful logic is a custom hook in
-[src/hooks/](src/hooks/), composed from smaller hooks (e.g. `useRecipeList` combines `useRecipes`,
-`useRecipeFilters`, and reference-data hooks). Each hook calls the `api/` layer, never axios directly.
+Server data is cached with RTK Query (see above). Everything else - local UI state, one-off derived
+values - lives in custom hooks under [src/hooks/](src/hooks/), composed from smaller hooks. Client/UI
+state that needs to be shared across the tree (session, the modal manager, toasts, theme) lives in
+Redux slices instead. Filtering/search on list pages goes through a shared declarative registry
+(`utils/filters/`, `hooks/useListFilters.ts` for URL-backed lists, `hooks/useClientFilters.ts` for
+local-state lists) rather than ad hoc component state.
 
 ## Internationalization
 
 [src/i18n/index.ts](src/i18n/index.ts) initializes i18next with inlined JSON resources (synchronous,
 `useSuspense: false`), `lng: "en"`, `defaultNS: "common"`. One namespace file per domain lives under
-`src/i18n/locales/en/` (`common`, `recipes`, `recipeTypes`, `menu`, `ingredients`, `stats`, `auth`).
-Components/hooks read strings via `useTranslation("<namespace>")`. ESLint enforces translated strings on
-the shared `components/ui`, `components/layout`, and `i18n` layers.
+`src/i18n/locales/en/` (`common`, `auth`, `recipes`, `menu`, `ingredients`, `stats`, `profile`,
+`settings`, `home`, `catalog`, `news`). Components/hooks read strings via `useTranslation("<namespace>")`;
+non-React code (Redux middleware, utilities) uses `i18next.t()` directly. Every user-visible string must
+go through i18n - no hardcoded English in components, hooks, or Redux middleware.
 
 ## Layering, ESLint boundaries, path aliases
 
 - **Bare path aliases**, never `../` across folders: `api/`, `components/`, `hooks/`, `pages/`, `utils/`,
-  `types/`, `constants/`, `config/`, `i18n/`, `assets/`, `test/` (defined in `tsconfig.app.json`, mirrored
-  in `vite.config.ts`, `jest.config.cjs`, and the ESLint resolver).
-- **`eslint-plugin-boundaries`** declares the layers (config, types, constants, i18n, utils, api, hooks,
-  components, pages) and enforces (as errors): components may not import pages, and only the `api/` layer
-  may import `axios`. (The default is permissive; the plan is to tighten it later.)
+  `types/`, `constants/`, `config/`, `redux/`, `i18n/`, `assets/`, `styles/`, `test/` (defined in
+  `tsconfig.app.json`, mirrored in `vite.config.ts` and `jest.config.cjs`).
+- **`eslint-plugin-boundaries`** declares the layers and enforces (as errors): components may not import
+  pages, and only the `api/` layer may import `axios`.
 - Other guards: `simple-import-sort` (layer-aware order), `import/no-cycle`, `no-restricted-imports`
-  banning `../`, a local `no-complex-condition` rule (3+ logical operands must be a named constant),
-  `max-lines` (150 global, 120 for pages), and `complexity` 15.
+  banning `../`, a local rule requiring a named constant for any 3+ part logical condition, `max-lines`,
+  and `complexity`.
 
 ## Testing
 
-Jest 30 + `@swc/jest` + React Testing Library + jsdom. ~108 co-located `__tests__/` files across `api/`,
-`hooks/`, `components/`, `pages/`, `utils/`, and `constants/`; `npm run test:coverage` enforces an 80%
-global threshold (branches/functions/lines/statements).
+Jest 30 + `@swc/jest` + React Testing Library + jsdom. ~224 co-located `__tests__/` files across `api/`,
+`redux/`, `hooks/`, `components/`, `pages/`, `utils/`, and `constants/`; `npm run test:coverage` enforces
+an 80% global threshold (branches/functions/lines/statements).
 
 Read [src/test/jest.setup.ts](src/test/jest.setup.ts) and [jest.config.cjs](jest.config.cjs) before
 writing tests. Conventions:
 
 - Co-located `__tests__/`, named `<Unit>.test.ts(x)`; `it("should ...")` names.
 - Prefer `act` over `waitFor` (per the repo rule); render hooks with `renderHook`.
-- Use `renderWithRouter` from [src/test/router.tsx](src/test/router.tsx) (it defaults to a non-root route
-  because `SearchComponent` special-cases `/`); assert navigation against the shared `mockNavigate`.
-- **Mocking**: api-layer tests `jest.mock("../client")` and assert against `mockedGet/Post/...` (via
-  [src/test/apiClientMock.ts](src/test/apiClientMock.ts)). Component/page/hook tests mock the higher-level
-  api wrapper (`jest.mock("api/recipesApi")`), not the axios client. `config/env` and `config/logger` are
-  mocked globally through `moduleNameMapper`.
-- No `as any` casts; `jest.requireActual` is given an explicit type parameter.
+- Use `renderWithRouter` from [src/test/router.tsx](src/test/router.tsx) (defaults to a non-root route
+  so tests aren't coupled to whatever page currently lives at `/`); assert navigation against the
+  shared `mockNavigate`.
+- **Mocking**: both RTK Query service tests and component/page/hook tests `jest.mock("api/client")`
+  and drive real RTK Query hooks through a real store (`makeTestStore`/`setupStore`), asserting
+  against the typed mocks in [src/test/apiClientMock.ts](src/test/apiClientMock.ts)
+  (`mockedGet`/`mockedPost`/...) - there's no separate per-domain wrapper to mock instead. `config/env`
+  and `config/logger` are mocked globally through `moduleNameMapper`.
+- No `as any` casts; real domain types from `types/*` for fixtures.
 
 ## Conventions
 
-- Talk to the backend only through `src/api/*`; never import `axios` in a page, hook, or component.
+- Talk to the backend only through `redux/services/*` (RTK Query) or `src/api/*`; never import `axios`
+  in a page, hook, or component.
 - All user-facing copy goes through i18n (`useTranslation`), not string literals.
-- Tailwind for layout/spacing; custom CSS in [src/index.css](src/index.css). Stylelint guards CSS/SCSS.
+- SCSS modules for styling, one per component; shared breakpoints/mixins live in `src/styles/`.
+  Stylelint guards CSS/SCSS.
 - New routes go in [src/constants/routes.ts](src/constants/routes.ts) and the `PRIVATE_ROUTES` array
-  (or the public set) in [App.tsx](src/App.tsx); add the page as a `React.lazy` import.
+  (or the public route list) in [App.tsx](src/App.tsx); add the page as a `React.lazy` import.
+- Hand-authored SVG icons (not from `lucide-react`) live in `src/components/icons/`, one component per
+  file, path data traced verbatim from the design mockups.
 
 ## Known oddities (not bugs to fix in unrelated changes)
 

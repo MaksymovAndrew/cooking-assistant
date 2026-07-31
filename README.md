@@ -13,7 +13,7 @@ shopping list of what you are missing. React + TypeScript on the front, Express 
 - Menus: bundle recipes by meal type; the app computes which ingredients you are missing
 - Home dashboard: recipe/menu/pantry counts, ingredients expiring soon, recent recipes
 - Stats: charts of your cooking patterns (Recharts)
-- Filters: by type, ingredient, cooking time, or date
+- Search and filters: by name, recipe type, specific ingredients, cooking time, or "what I can cook right now" from the pantry - all held in the URL, so a filtered view is shareable and bookmarkable
 - Dark/light theme, follows your system preference by default
 
 ## Quick start
@@ -135,8 +135,12 @@ configuration - never in the repo.
 - Infra: Docker multi-stage builds, GHCR, GitHub Actions, Azure Container Apps, Azure managed SSL
 - Tests: Jest on both sides (backend ts-jest + Supertest, frontend @swc/jest + React Testing Library + jsdom, 80% coverage gate each) plus a Playwright e2e suite and a Testcontainers real-Postgres repository suite
 
-Both sides have a Jest test suite with an 80% coverage gate: backend (`npm --prefix backend test`) uses ts-jest + Supertest with fake repositories; frontend (`npm --prefix frontend test`) uses @swc/jest + React Testing Library + jsdom (~150 test files). Run `npm test` from the root to run both. The e2e suite (`npm run test:e2e`) drives real login/CRUD flows through Chromium; the db-integration suite (`npm run test:db`) runs backend repositories against a real Postgres started by Testcontainers - Docker must be running locally for that one (GitHub-hosted CI runners already have Docker running, so nothing to configure there).
+Both sides have a Jest test suite with an 80% coverage gate: backend (`npm --prefix backend test`) uses ts-jest + Supertest with fake repositories; frontend (`npm --prefix frontend test`) uses @swc/jest + React Testing Library + jsdom (~220 test files). Run `npm test` from the root to run both. The e2e suite (`npm run test:e2e`) drives real login/CRUD flows through Chromium; the db-integration suite (`npm run test:db`) runs backend repositories against a real Postgres started by Testcontainers - Docker must be running locally for that one (GitHub-hosted CI runners already have Docker running, so nothing to configure there).
 
 ## License
 
-MIT - see [LICENSE](LICENSE).
+[GNU AGPLv3](LICENSE). You're free to use, modify, and self-host this project. The one condition:
+if you run a modified version as a network service (e.g. your own hosted copy), you must make that
+modified source available to its users too - the AGPL closes the loophole plain GPL leaves for
+software running behind a server rather than being distributed. Copyright (c) 2026 Andrew Maksymov,
+Milana Pershyna.

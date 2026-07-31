@@ -1,13 +1,16 @@
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
-import type { Menu, MenuCategory } from "types/menu";
+import type { Menu, MenuListParams } from "types/menu";
+
+import type { ActiveFilterEntry } from "hooks/useListFilters";
 
 import { AppShell } from "components/layout/AppShell";
 import { MenuActiveFilters } from "components/menu/MenuActiveFilters";
 import { MenuCard } from "components/menu/MenuCard";
+import type { MenuFilterPanelProps } from "components/menu/MenuFilterPanel";
 import { MenuFilterPanel } from "components/menu/MenuFilterPanel";
 import { ErrorState } from "components/ui/ErrorState";
 import { LinkButton } from "components/ui/LinkButton";
@@ -16,12 +19,12 @@ import { ListLoadMoreFooter } from "components/ui/LoadMore";
 import { MenuListEmptyState } from "./MenuListEmptyState";
 import styles from "./MenuListView.module.scss";
 
-interface MenuListViewProps {
-    selectedCategories: number[];
-    setSelectedCategories: (categories: number[]) => void;
-    categories: MenuCategory[];
+interface MenuListViewProps extends MenuFilterPanelProps {
     menus: Menu[];
     noMenus: boolean;
+    // the full reset, used by MenuActiveFilters ("Clear all") and the empty state -
+    // MenuFilterPanel now owns a narrower reset scoped to just its own popover fields
+    resetFilters: () => void;
     error: string | null;
     onRetry: () => void;
     heading: string;
@@ -29,13 +32,9 @@ interface MenuListViewProps {
     emptyTitle: string;
     emptyDescription: string;
     hasActiveFilters: boolean;
-    clearFilters: () => void;
-    searchQuery: string | null;
-    searchPlaceholder: string;
-    removeSearch: () => void;
+    activeFilters: ActiveFilterEntry<MenuListParams>[];
     mine?: boolean;
     currentUserId?: number | null;
-    total: number;
     loadedCount: number;
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
@@ -46,8 +45,10 @@ interface MenuListViewProps {
 const NEW_MENU_ICON_SIZE = 18;
 
 export const MenuListView: React.FC<MenuListViewProps> = ({
-    selectedCategories,
-    setSelectedCategories,
+    filters,
+    setValue,
+    resetFilters,
+    activeCount,
     categories,
     menus,
     noMenus,
@@ -58,10 +59,8 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
     emptyTitle,
     emptyDescription,
     hasActiveFilters,
-    clearFilters,
-    searchQuery,
+    activeFilters,
     searchPlaceholder,
-    removeSearch,
     mine = false,
     currentUserId = null,
     total,
@@ -72,6 +71,14 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
     loadMoreError,
 }) => {
     const { t } = useTranslation();
+    // bumped on every full reset so SearchField remounts and drops any pending, uncommitted
+    // debounce - see the matching comment in RecipeListView for the full failure scenario
+    const [searchResetKey, setSearchResetKey] = useState(0);
+
+    const handleResetFilters = () => {
+        resetFilters();
+        setSearchResetKey((key) => key + 1);
+    };
 
     return (
         <AppShell>
@@ -91,17 +98,19 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
                     </LinkButton>
                 </div>
                 <MenuFilterPanel
+                    filters={filters}
+                    setValue={setValue}
+                    activeCount={activeCount}
                     categories={categories}
-                    selectedCategories={selectedCategories}
-                    setSelectedCategories={setSelectedCategories}
                     searchPlaceholder={searchPlaceholder}
+                    total={total}
+                    searchResetKey={searchResetKey}
                 />
                 <MenuActiveFilters
                     total={total}
-                    selectedCategories={selectedCategories}
-                    setSelectedCategories={setSelectedCategories}
-                    searchQuery={searchQuery}
-                    removeSearch={removeSearch}
+                    activeFilters={activeFilters}
+                    hasActiveFilters={hasActiveFilters}
+                    resetFilters={handleResetFilters}
                 />
                 {error && (
                     <ErrorState
@@ -116,8 +125,8 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
                         hasActiveFilters={hasActiveFilters}
                         emptyTitle={emptyTitle}
                         emptyDescription={emptyDescription}
-                        searchQuery={searchQuery}
-                        clearFilters={clearFilters}
+                        searchQuery={filters.search || null}
+                        clearFilters={handleResetFilters}
                     />
                 )}
                 {!error && !noMenus && (

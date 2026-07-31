@@ -4,6 +4,7 @@ import {
     hasUniqueItems,
     numberSchema,
     positiveIntegerSchema,
+    requiredOrInvalidType,
 } from "./common.schemas";
 
 const INCORRECT_FORMAT_MESSAGE = "Incorrect data format";
@@ -16,10 +17,7 @@ const buildPantryIngredientsSchema = (quantitySchema: z.ZodNumber) =>
                 id: positiveIntegerSchema("Ingredient ID"),
                 quantity_person_ingradient: quantitySchema,
             }),
-            {
-                required_error: INCORRECT_FORMAT_MESSAGE,
-                invalid_type_error: INCORRECT_FORMAT_MESSAGE,
-            },
+            { error: INCORRECT_FORMAT_MESSAGE },
         )
         .refine((items) => hasUniqueItems(items, (item) => item.id), {
             message: "Ingredient IDs must be unique",
@@ -35,7 +33,9 @@ export const pantryUpdateIngredientsSchema = buildPantryIngredientsSchema(
 
 export const purchaseQuantitySchema = z
     .number({
-        required_error: "Quantity cannot be empty.",
-        invalid_type_error: "Quantity must be a number",
+        error: requiredOrInvalidType(
+            "Quantity cannot be empty.",
+            "Quantity must be a number",
+        ),
     })
     .positive("Quantity must be greater than 0");

@@ -48,7 +48,7 @@ describe("MenuPage", () => {
             [API_ROUTES.menuCategories.list]: CATEGORIES,
         });
 
-        const { store } = renderWithProviders(<MenuPage />, {
+        renderWithProviders(<MenuPage />, {
             initialEntries: [ROUTE_ALL_MENUS],
         });
 
@@ -58,6 +58,8 @@ describe("MenuPage", () => {
         expect(
             await screen.findByText(`Menus by categories: ${CATEGORY_NAME}`),
         ).toBeInTheDocument();
-        expect(store.getState().filters.menu.selectedCategories).toEqual([3]);
+        expect(
+            screen.getByRole("checkbox", { name: CATEGORY_NAME }),
+        ).toHaveAttribute("aria-checked", "true");
     });
 });

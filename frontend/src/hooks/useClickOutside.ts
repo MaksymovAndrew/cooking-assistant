@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 export const useClickOutside = <T extends HTMLElement>(
     ref: RefObject<T | null>,
@@ -9,7 +9,9 @@ export const useClickOutside = <T extends HTMLElement>(
     // read through a ref so a fresh handler each render doesn't re-subscribe
     const handlerRef = useRef(handler);
 
-    handlerRef.current = handler;
+    useLayoutEffect(() => {
+        handlerRef.current = handler;
+    });
 
     useEffect(() => {
         if (!enabled) {

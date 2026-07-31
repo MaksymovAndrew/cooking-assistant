@@ -68,9 +68,14 @@ DB_PASSWORD=<your postgres password>
 DB_HOST=<db host>
 DB_PORT=<db port>
 DB_NAME=<your database name>
+DB_SSL=<true | false; defaults to on in production, off otherwise>
+DB_SSL_REJECT_UNAUTHORIZED=<set false for managed Postgres with a private/self-signed CA>
 NODE_ENV=<development | production>
 PORT=<backend port>
 LOG_LEVEL=<pino log level, e.g. info>
+TRUST_PROXY_HOPS=<trusted reverse-proxy hops for req.ip; default 1 in production, 0 otherwise>
+RATE_LIMIT_MAX=<global per-client request cap per window; default 300>
+RATE_LIMIT_WINDOW_MS=<global rate-limit window in ms; default 60000>
 CORS_ORIGIN=<allowed frontend origin>
 COOKIE_DOMAIN=<empty in dev; shared parent domain in production>
 RESEND_API_KEY=<Resend API key; leave empty to use the logging fallback>
@@ -212,10 +217,14 @@ backend/
     ├── app.ts                createApp(controllers); mounts middleware, health, and routers without listening
     ├── index.ts              runtime entry; listens on 3000 and shuts down server + pg pool cleanly
     ├── composition-root.ts   dependency injection: buildControllers(deps), plus real pg wiring
+    ├── composition-root.recipe.ts / .user.ts   companion files for the two largest controllers
     ├── db.ts                 pg.Pool connection (reads DB_* env via config/env.ts)
     ├── config/env.ts         typed env loading and JWT secret guard (isProduction, cookieDomain, corsOrigin)
     ├── config/logger.ts      shared pino logger, LOG_LEVEL-aware and silent in tests
     ├── config/cookie.ts      AUTH_COOKIE_NAME + AUTH_COOKIE_OPTIONS (httpOnly, sameSite, secure, maxAge)
+    ├── config/security.ts    rate-limit configs, purpose-token TTLs, SESSION_TOKEN_TYPE, DUMMY_PASSWORD_HASH
+    ├── constants/             errorMessages.ts (ERROR_CODES/ERROR_MESSAGES), pagination.ts, avatarKeys.ts
+    ├── i18n/locales/en/       transactional-email copy (email.json), read by ResendEmailService
     │
     ├── domain/               innermost layer (no framework/db deps)
     │   ├── entities/         Recipe, Menu (only entities that enforce an invariant)
@@ -234,7 +243,9 @@ backend/
     │
     ├── middleware/
     │   ├── jwtMiddleware.ts  authenticateToken - verifies the JWT from the authToken cookie, attaches req.user
-    │   ├── rateLimit.ts      loginLimiter/registerLimiter/forgotPasswordLimiter/changePasswordLimiter/resendVerificationLimiter
+    │   ├── rateLimit.ts      createGlobalLimiter + per-route limiters: login/register (each with a
+    │   │                     stricter per-login limiter and a looser per-IP one), forgotPassword,
+    │   │                     resetPassword, changePassword, resendVerification, confirmEmail, deleteAccount
     │   └── errorHandler.ts   turns thrown errors into { error, code? } responses (mounted last)
     │
     ├── routes/               route factories (controller) => router, all under /api
@@ -244,21 +255,22 @@ backend/
     │   ├── *.controller.ts
     │   └── requestUser.ts    getUserId(req) helper - returns req.user.id (never body/params)
     │
-    ├── types/                ambient .d.ts files (express.d.ts req.user, env.d.ts, node-pg-migrate.d.ts)
+    ├── types/                ambient .d.ts files (express.d.ts req.user, env.d.ts)
     └── test/                 Jest setup, fake deps/test app helpers, and HTTP integration tests
 ```
 
 ## Architecture - clean (layered)
 
 Dependencies point inward (Dependency Rule). The real graph is built in
-[src/composition-root.ts](src/composition-root.ts) and consumed by [src/index.ts](src/index.ts). Tests can
-reuse `buildControllers(deps)` with fakes and pass the result to [src/app.ts](src/app.ts). The app factory
-mounts `helmet`, pino request logging, CORS (with credentials), `cookie-parser`, the 100kb JSON body
-parser, the public health check, domain routers, and then the error handler in that order.
+[src/composition-root.ts](src/composition-root.ts) (split into `.recipe.ts` and `.user.ts` companions for
+the two largest controllers) and consumed by [src/index.ts](src/index.ts). Tests can reuse
+`buildControllers(deps)` with fakes and pass the result to [src/app.ts](src/app.ts). The app factory mounts
+`helmet`, pino request logging, CORS (with credentials), `cookie-parser`, the 100kb JSON body parser, the
+public health check, a global rate limiter, then the seven domain routers, and finally the error handler.
 
 - **routes/** - factory functions `(controller) => router`; map `METHOD /path` directly to a
-  controller handler, guard with `authenticateToken` (the only public routes are `/health`, `/register`,
-  `/login`, and `/logout`).
+  controller handler, guard with `authenticateToken` (the public routes are `/health`, `/register`,
+  `/login`, `/logout`, `/forgot-password`, `/reset-password`, and `/confirm-email`).
 - **controller/** - thin classes; a handler reads `req`, calls a use case, sends the response. No try/catch.
 - **application/validation/** - zod request schemas and the shared `validate()` helper. Schemas describe
   request shape only (types, required scalars, formats, ranges, array item shape).
@@ -269,6 +281,14 @@ parser, the public health check, domain routers, and then the error handler in t
   each validation rule lives in one layer only.
 - **infrastructure/persistence/pg/** - concrete repositories; ALL SQL; constructor takes the `pg.Pool`.
   **infrastructure/security/** - bcryptjs + jwt adapters.
+
+Search/filter SQL is built by a shared [`SqlFilterBuilder`](src/infrastructure/persistence/pg/sqlFilterBuilder.ts)
+rather than by hand. Each filter is one entry in a clause registry (`recipeFilterClauses.ts`,
+`menuFilterClauses.ts`) declaring when it applies and what SQL it contributes; the builder hands out
+`$n` placeholders through a `bind()` callback, so parameter indices can never drift out of sync with the
+values array (the old hand-rolled `paramIndex` counter had exactly that bug). `escapeLikePattern()`
+escapes `\`, `%`, and `_` before any `ILIKE` interpolation so literal wildcards in user input stay
+literal. Adding a filter means one clause entry plus one zod field - no changes to the query assembly.
 
 Errors: a use case throws a domain error -> Express 5 forwards the rejected promise -> `errorHandler`
 logs through pino and replies `{ error: <msg> }` with `err.status || 500`. Every error body uses
@@ -283,7 +303,11 @@ controller handler, and wire the new pieces in [src/composition-root.ts](src/com
 Run `npm test` or `npm run test:coverage` from this folder. Unit tests are co-located in `__tests__/`:
 use cases/entities use fake repositories, and middleware tests call `req`/`res`/`next` directly. HTTP
 integration tests live in [src/test/integration/](src/test/integration/) and use supertest with
-`buildTestApp`. Pg-repository tests are deferred until a future real-DB suite with Testcontainers.
+`buildTestApp`. Pg repositories are covered by a separate real-Postgres suite in
+[src/test/db-integration/](src/test/db-integration/), run with `npm run test:db` - it has its own
+`jest.db.config.js` and a `globalSetup`/`globalTeardown` pair that starts one shared Testcontainers
+Postgres and applies the migrations. It needs Docker, so it is kept out of `npm test` and the pre-commit
+hook and runs as its own CI job instead. Do not add mock-pool SQL-string tests as a substitute for it.
 
 ## Auth flow
 
@@ -406,12 +430,19 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | POST   | `/login`                     | Authenticate, set the `authToken` cookie, return `{ message: "Logged in" }`; rate-limited per account + per IP            |
 | POST   | `/logout`                    | Clear the `authToken` cookie, return `{ message: "Logged out" }` (public)                                                 |
 | GET    | `/me`                        | Return the current user (including `email`, `email_verified_at`) from the cookie (session check)                          |
-| GET    | `/user`                      | List all users                                                                                                            |
+| PATCH  | `/me`                        | Update the current user's profile (`name`, `surname`, `avatar`)                                                           |
+| DELETE | `/me`                        | Delete the current user's account; rate-limited by user id                                                                |
 | POST   | `/forgot-password`           | Request a password reset link by `email`; always a generic response; rate-limited by email, every request counts (public) |
 | POST   | `/reset-password`            | Set a new password from a `{ token, newPassword }` reset link (public)                                                    |
 | POST   | `/change-password`           | Change the signed-in user's password (`{ currentPassword, newPassword }`); rate-limited by user id                        |
 | POST   | `/resend-verification-email` | Re-send the verification link for the email on file; rate-limited by user id, every request counts                        |
 | POST   | `/confirm-email`             | Verify an email from a `{ token }` verification link (public)                                                             |
+
+### Ingredients ([src/routes/ingredient.routes.ts](src/routes/ingredient.routes.ts))
+
+| Method | Path           | Purpose                          |
+| ------ | -------------- | -------------------------------- |
+| GET    | `/ingredients` | List the full ingredient catalog |
 
 ### Recipes ([src/routes/recipe.routes.ts](src/routes/recipe.routes.ts))
 
@@ -422,8 +453,7 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | GET    | `/recipe/:id`             | Single recipe with ingredients                       |
 | PUT    | `/recipe/:id`             | Update a recipe                                      |
 | DELETE | `/recipe/:id`             | Delete a recipe                                      |
-| GET    | `/ingredients`            | List all known ingredients                           |
-| GET    | `/recipes-by-filters`     | Filter (type, ingredients, time, date)               |
+| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry) |
 | GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie) |
 | GET    | `/recipes-stats`          | Aggregated stats for the analytics page              |
 
@@ -448,14 +478,15 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 
-| Method | Path                   | Purpose                                     |
-| ------ | ---------------------- | ------------------------------------------- |
-| GET    | `/menu`                | All menus (also accepts category filter)    |
-| POST   | `/create-menu`         | Create a menu with recipes                  |
-| GET    | `/menu/:id`            | Menu details + recipes                      |
-| PUT    | `/menu/:id`            | Update a menu                               |
-| DELETE | `/menu/:id`            | Delete a menu                               |
-| GET    | `/menu-filters-person` | The current user's menus (user from cookie) |
+| Method | Path                   | Purpose                                              |
+| ------ | ---------------------- | ---------------------------------------------------- |
+| GET    | `/menu`                | All menus, paginated (also accepts category filter)  |
+| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page) |
+| POST   | `/create-menu`         | Create a menu with recipes                           |
+| GET    | `/menu/:id`            | Menu details + recipes                               |
+| PUT    | `/menu/:id`            | Update a menu                                        |
+| DELETE | `/menu/:id`            | Delete a menu                                        |
+| GET    | `/menu-filters-person` | The current user's menus (user from cookie)          |
 
 ### Menu categories ([src/routes/menuCategory.routes.ts](src/routes/menuCategory.routes.ts))
 
@@ -486,9 +517,11 @@ The "ingredients you are missing for a menu" query joins `menu_recipe` -> `recip
 - Controllers, use cases, and repositories are classes wired via the composition root (constructor DI).
   Repositories implement an interface from `src/domain/repositories/` and hold all SQL - match the
   pattern.
-- Cross-folder backend imports use bare path aliases from [tsconfig.json](tsconfig.json) (`baseUrl: "./src"`): `domain/*`,
-  `application/*`, `infrastructure/*`, `controller/*`, `routes/*`, `middleware/*`, `config/*`,
-  and `test/*`. Keep same-folder imports relative with `./`; never use `../` across folders.
+- Cross-folder backend imports use bare path aliases from [tsconfig.json](tsconfig.json) `paths` (no
+  `baseUrl` - it's deprecated in TypeScript 6): `constants/*`, `domain/*`, `application/*`,
+  `infrastructure/*`, `controller/*`, `routes/*`, `middleware/*`, `config/*`, `i18n/*`, `test/*`, plus
+  the singleton aliases `app` and `composition-root`. Keep same-folder imports relative with `./`; never
+  use `../` across folders.
 - Comments are plain `//` with a single space and a lowercase first letter (acronyms keep their case, e.g. `// JWT login`). The old `//?` / `//!` prefixes were removed.
 - Raw SQL with `$1`, `$2`, ... parameters via `db.query(text, values)` - never string-concatenate
   user input.

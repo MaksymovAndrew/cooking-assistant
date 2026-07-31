@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { RecipeFilters } from "domain/repositories/recipe.filters";
+
 import {
     hasUniqueItems,
     idListStringSchema,
@@ -8,12 +10,16 @@ import {
     nonEmptyStringSchema,
     numberSchema,
     offsetSchema,
+    optionalStringSchema,
     positiveIntegerSchema,
+    requiredOrInvalidType,
     toNumber,
 } from "./common.schemas";
 
 // caps how many ids this filter accepts, since the catalog has hundreds of entries and a search match can surface many
 const MAX_INGREDIENT_FILTER_IDS = 20;
+
+const quote = (value: string): string => `'${value}'`;
 
 // both quantity field names are accepted and unified into quantity_recipe_ingredients
 const recipeIngredientSchema = z
@@ -38,8 +44,10 @@ export const createRecipeSchema = z.object({
     person_id: idSchema,
     ingredients: z
         .array(recipeIngredientSchema, {
-            required_error: "Ingredients are required",
-            invalid_type_error: "Ingredients must be an array",
+            error: requiredOrInvalidType(
+                "Ingredients are required",
+                "Ingredients must be an array",
+            ),
         })
         .refine((items) => hasUniqueItems(items, (item) => item.id), {
             message: "Ingredient IDs must be unique",
@@ -54,7 +62,9 @@ export const updateRecipeSchema = createRecipeSchema.omit({
     person_id: true,
 });
 
+// output shape is checked against the domain's RecipeFilters below - the repository interface is typed against that, not against this schema
 export const recipeFiltersSchema = z.object({
+    recipe_name: optionalStringSchema("Recipe name"),
     ingredient_ids: idListStringSchema("Ingredient IDs")
         .refine(
             (value) => value.split(",").length <= MAX_INGREDIENT_FILTER_IDS,
@@ -62,13 +72,21 @@ export const recipeFiltersSchema = z.object({
         )
         .optional(),
     type_ids: idListStringSchema("Type IDs").optional(),
-    start_date: z
-        .string({ invalid_type_error: "Start date must be a string" })
-        .date("Start date must be a YYYY-MM-DD date")
+    start_date: z.iso
+        .date({
+            error: (issue) =>
+                issue.code === "invalid_type"
+                    ? "Start date must be a string"
+                    : "Start date must be a YYYY-MM-DD date",
+        })
         .optional(),
-    end_date: z
-        .string({ invalid_type_error: "End date must be a string" })
-        .date("End date must be a YYYY-MM-DD date")
+    end_date: z.iso
+        .date({
+            error: (issue) =>
+                issue.code === "invalid_type"
+                    ? "End date must be a string"
+                    : "End date must be a YYYY-MM-DD date",
+        })
         .optional(),
     min_cooking_time: z.preprocess(
         toNumber,
@@ -78,9 +96,19 @@ export const recipeFiltersSchema = z.object({
         toNumber,
         positiveIntegerSchema("Max cooking time").optional(),
     ),
-    sort_order: z.enum(["asc", "desc"]).optional(),
+    sort_order: z
+        .enum(["asc", "desc"], {
+            error: (issue) => {
+                const expected = issue.values
+                    .map((value) => quote(String(value)))
+                    .join(" | ");
+
+                return `Invalid enum value. Expected ${expected}, received ${quote(String(issue.input))}`;
+            },
+        })
+        .optional(),
     in_pantry: z
-        .string({ invalid_type_error: "In pantry must be true or false" })
+        .string({ error: "In pantry must be true or false" })
         .refine((value) => value === "true" || value === "false", {
             message: "In pantry must be true or false",
         })
@@ -88,4 +116,4 @@ export const recipeFiltersSchema = z.object({
         .optional(),
     limit: limitSchema,
     offset: offsetSchema,
-});
+}) satisfies z.ZodType<RecipeFilters>;

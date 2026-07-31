@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 
 import { requireJwtSecret } from "config/env";
+import { SESSION_TOKEN_TYPE } from "config/security";
 
 import type {
     TokenPurpose,
@@ -41,7 +42,7 @@ function fingerprintBinding(bindingSource: string): string {
 
 export default class JwtTokenService implements TokenService {
     generate(id: number): string {
-        return jwt.sign({ id }, requireJwtSecret(), {
+        return jwt.sign({ id, typ: SESSION_TOKEN_TYPE }, requireJwtSecret(), {
             expiresIn: "24h",
             algorithm: "HS256",
         });

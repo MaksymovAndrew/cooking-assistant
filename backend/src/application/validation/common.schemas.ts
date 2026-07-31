@@ -16,12 +16,25 @@ export function toNumber(value: unknown): unknown {
     return value;
 }
 
+// zod 4 unifies required/invalid-type into one error callback; issue.input is undefined exactly for a missing field
+export function requiredOrInvalidType(
+    requiredMessage: string,
+    invalidTypeMessage: string,
+) {
+    return (issue: { input?: unknown }): string =>
+        typeof issue.input === "undefined"
+            ? requiredMessage
+            : invalidTypeMessage;
+}
+
 export const idSchema = z.preprocess(
     toNumber,
     z
         .number({
-            required_error: "ID is required",
-            invalid_type_error: "ID must be a number",
+            error: requiredOrInvalidType(
+                "ID is required",
+                "ID must be a number",
+            ),
         })
         .int("ID must be an integer")
         .positive("ID must be positive"),
@@ -30,8 +43,10 @@ export const idSchema = z.preprocess(
 export function nonEmptyStringSchema(field: string) {
     return z
         .string({
-            required_error: `${field} is required`,
-            invalid_type_error: `${field} must be a string`,
+            error: requiredOrInvalidType(
+                `${field} is required`,
+                `${field} must be a string`,
+            ),
         })
         .refine((value) => value.trim().length > 0, {
             message: `${field} cannot be empty`,
@@ -44,15 +59,17 @@ export function trimmedStringSchema(field: string) {
 export function optionalStringSchema(field: string) {
     return z
         .string({
-            invalid_type_error: `${field} must be a string`,
+            error: `${field} must be a string`,
         })
         .optional();
 }
 
 export function numberSchema(field: string) {
     return z.number({
-        required_error: `${field} is required`,
-        invalid_type_error: `${field} must be a number`,
+        error: requiredOrInvalidType(
+            `${field} is required`,
+            `${field} must be a number`,
+        ),
     });
 }
 
@@ -74,7 +91,7 @@ export function hasUniqueItems<T>(
 export function idListStringSchema(field: string) {
     return z
         .string({
-            invalid_type_error: `${field} must be a string`,
+            error: `${field} must be a string`,
         })
         .regex(
             /^\d+(,\d+)*$/,

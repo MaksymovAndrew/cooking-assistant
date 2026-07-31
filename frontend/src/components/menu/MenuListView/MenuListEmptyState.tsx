@@ -58,7 +58,6 @@ export const MenuListEmptyState: React.FC<MenuListEmptyStateProps> = ({
             }
             action={
                 <>
-                    {createFirstButton}
                     <Button
                         variant="secondary"
                         size="lg"
@@ -66,6 +65,7 @@ export const MenuListEmptyState: React.FC<MenuListEmptyStateProps> = ({
                     >
                         {t("menuListView.clearFilters")}
                     </Button>
+                    {createFirstButton}
                 </>
             }
         />

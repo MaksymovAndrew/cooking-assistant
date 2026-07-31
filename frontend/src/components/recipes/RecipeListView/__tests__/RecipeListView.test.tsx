@@ -1,12 +1,12 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { PAGE_SIZE } from "constants/pagination";
 import type { RecipeListItem } from "types/recipe";
 
-import type { RecipeFilterState } from "hooks/useRecipeListView";
-
 import { RecipeListView } from "components/recipes/RecipeListView";
+
+import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
 import { renderWithRouter } from "test/router";
 
@@ -24,32 +24,30 @@ const RECIPES: RecipeListItem[] = [
 ];
 
 const FILTERS: RecipeFilterState = {
-    selectedTypes: [],
-    startDate: "",
-    endDate: "",
-    minCookingTime: "",
-    maxCookingTime: "",
-    sortOrder: "asc",
+    search: "",
+    types: [],
+    ingredients: [],
+    cookingTime: { min: "", max: "" },
+    sort: null,
     inPantry: false,
-    ingredientName: null,
 };
 
 const baseProps = {
     filters: FILTERS,
-    setSelectedTypes: jest.fn(),
-    setMinCookingTime: jest.fn(),
-    setMaxCookingTime: jest.fn(),
-    setSortOrder: jest.fn(),
-    setInPantry: jest.fn(),
+    setValue: jest.fn(),
+    setValues: jest.fn(),
+    resetFilters: jest.fn(),
+    activeCount: 0,
+    activeFilters: [],
     isPantryEmpty: false,
     types: [],
+    ingredients: [],
     descriptions: [],
     heading: "All recipes",
     subtitle: "Browse your cookbook",
     emptyTitle: "No recipes yet",
     emptyDescription: "Your cookbook is empty.",
     hasActiveFilters: false,
-    clearFilters: jest.fn(),
     searchPlaceholder: "ingredient name",
     onRetry: jest.fn(),
     total: RECIPES.length,
@@ -110,7 +108,7 @@ describe("RecipeListView", () => {
     });
 
     it("should render the no-matches state and a working Clear filters button when filters are active", async () => {
-        const clearFilters = jest.fn();
+        const resetFilters = jest.fn();
 
         renderWithRouter(
             <RecipeListView
@@ -119,8 +117,8 @@ describe("RecipeListView", () => {
                 noRecipes={true}
                 error={null}
                 hasActiveFilters={true}
-                filters={{ ...FILTERS, ingredientName: "cauliflower" }}
-                clearFilters={clearFilters}
+                filters={{ ...FILTERS, search: "cauliflower" }}
+                resetFilters={resetFilters}
             />,
         );
 
@@ -137,7 +135,50 @@ describe("RecipeListView", () => {
             screen.getByRole("button", { name: "Clear filters" }),
         );
 
-        expect(clearFilters).toHaveBeenCalledTimes(1);
+        expect(resetFilters).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not let a pending, uncommitted search re-apply itself after Clear all is clicked", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+        const setValue = jest.fn();
+        const resetFilters = jest.fn();
+
+        try {
+            renderWithRouter(
+                <RecipeListView
+                    {...baseProps}
+                    recipes={RECIPES}
+                    noRecipes={false}
+                    error={null}
+                    hasActiveFilters={true}
+                    setValue={setValue}
+                    resetFilters={resetFilters}
+                />,
+            );
+
+            await user.type(
+                screen.getByPlaceholderText(/ingredient name/i),
+                "chick",
+            );
+            // debounce still pending - nothing committed yet
+            expect(setValue).not.toHaveBeenCalled();
+
+            await user.click(screen.getByRole("button", { name: "Clear all" }));
+            expect(resetFilters).toHaveBeenCalledTimes(1);
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).not.toHaveBeenCalled();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should render the error state and call onRetry when Try again is clicked", async () => {

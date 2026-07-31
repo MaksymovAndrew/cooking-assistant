@@ -1,5 +1,5 @@
-import { Plus, Search } from "lucide-react";
-import React, { useState } from "react";
+import { Plus } from "lucide-react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { MenuDetailRecipe } from "types/menu";
@@ -8,6 +8,7 @@ import { UtensilsMarkSimple } from "components/icons";
 import { MenuRecipeCard } from "components/menu/MenuRecipeCard";
 import { EmptyState } from "components/ui/EmptyState";
 import { LinkButton } from "components/ui/LinkButton";
+import { SearchField } from "components/ui/SearchField";
 
 import styles from "./MenuRecipesPanel.module.scss";
 
@@ -17,7 +18,7 @@ interface MenuRecipesPanelProps {
     addRecipesTo: string;
 }
 
-const SEARCH_ICON_SIZE = 16;
+const ICON_SIZE = 16;
 
 export const MenuRecipesPanel: React.FC<MenuRecipesPanelProps> = ({
     recipes,
@@ -28,11 +29,15 @@ export const MenuRecipesPanel: React.FC<MenuRecipesPanelProps> = ({
     const [query, setQuery] = useState("");
     const trimmedQuery = query.trim().toLowerCase();
 
-    const visibleRecipes = trimmedQuery
-        ? recipes.filter((recipe) =>
-              recipe.title.toLowerCase().includes(trimmedQuery),
-          )
-        : recipes;
+    const visibleRecipes = useMemo(
+        () =>
+            trimmedQuery
+                ? recipes.filter((recipe) =>
+                      recipe.title.toLowerCase().includes(trimmedQuery),
+                  )
+                : recipes,
+        [recipes, trimmedQuery],
+    );
 
     if (recipes.length === 0) {
         return (
@@ -43,7 +48,7 @@ export const MenuRecipesPanel: React.FC<MenuRecipesPanelProps> = ({
                 action={
                     isOwner && (
                         <LinkButton to={addRecipesTo} size="lg">
-                            <Plus size={SEARCH_ICON_SIZE} aria-hidden="true" />
+                            <Plus size={ICON_SIZE} aria-hidden="true" />
                             {t("menuDetailsPage.addRecipes")}
                         </LinkButton>
                     )
@@ -61,18 +66,12 @@ export const MenuRecipesPanel: React.FC<MenuRecipesPanelProps> = ({
                         {recipes.length}
                     </span>
                 </span>
-                <div className={styles["menu-recipes-panel__search"]}>
-                    <Search size={SEARCH_ICON_SIZE} aria-hidden="true" />
-                    <input
-                        type="text"
-                        value={query}
-                        onChange={(e) => {
-                            setQuery(e.target.value);
-                        }}
-                        placeholder={t("menuDetailsPage.searchPlaceholder")}
-                        className={styles["menu-recipes-panel__search-input"]}
-                    />
-                </div>
+                <SearchField
+                    value={query}
+                    onChange={setQuery}
+                    placeholder={t("menuDetailsPage.searchPlaceholder")}
+                    className={styles["menu-recipes-panel__search"]}
+                />
             </div>
             {visibleRecipes.length === 0 ? (
                 <p className={styles["menu-recipes-panel__no-results"]}>

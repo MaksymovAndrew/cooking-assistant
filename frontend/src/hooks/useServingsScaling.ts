@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 const LEADING_NUMBER = /^\d+/;
 const MIN_SERVINGS = 1;
@@ -18,14 +18,14 @@ export const useServingsScaling = (servings: string | null) => {
             : null;
     }, [servings]);
 
-    const [current, setCurrent] = useState(parsed?.base ?? MIN_SERVINGS);
+    const [syncedBase, setSyncedBase] = useState<number | null>(null);
+    const [current, setCurrent] = useState(MIN_SERVINGS);
 
-    // servings resolve after the recipe query loads, so the useState initializer above only sees the real base once this effect runs
-    useEffect(() => {
-        if (parsed) {
-            setCurrent(parsed.base);
-        }
-    }, [parsed]);
+    // servings resolve after the recipe query loads, so this catches up `current` the render the real base arrives (and again for a later recipe swap) without a flash of the stale value - adjusting state during render, not via an effect, keeps it in the same render pass
+    if (parsed && parsed.base !== syncedBase) {
+        setSyncedBase(parsed.base);
+        setCurrent(parsed.base);
+    }
 
     if (!parsed) {
         return {

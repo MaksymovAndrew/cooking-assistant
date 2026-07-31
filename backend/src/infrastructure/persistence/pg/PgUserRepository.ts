@@ -95,14 +95,6 @@ export default class PgUserRepository implements UserRepository {
         }
     }
 
-    async findAll(): Promise<unknown[]> {
-        const result = await this.pool.query<UserRecord>(
-            `SELECT id, name, surname, login FROM person`,
-        );
-
-        return result.rows;
-    }
-
     async updatePassword(id: number, hashedPassword: string): Promise<void> {
         await this.pool.query(`UPDATE person SET password = $1 WHERE id = $2`, [
             hashedPassword,

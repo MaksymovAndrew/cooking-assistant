@@ -3,20 +3,21 @@ import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
 
-import { useAppDispatch } from "redux/hooks";
-import { setRecipeInPantry } from "redux/slices/filtersSlice";
-
 import { BasketMark } from "components/icons";
 import { LinkButton } from "components/ui/LinkButton";
+
+import { BOOLEAN_URL_TRUE } from "utils/filters/filterDefFactories.scalar";
+import { RECIPE_PANTRY_URL_PARAM } from "utils/filters/recipeFilterDefs";
 
 import styles from "./PantryRecipesCard.module.scss";
 
 const ICON_SIZE = 20;
+const PANTRY_LINK = `${ROUTES.allRecipes}?${RECIPE_PANTRY_URL_PARAM}=${BOOLEAN_URL_TRUE}`;
 
-// clicking the CTA turns on the recipe list's "in my pantry" filter before navigating there, so the list opens already filtered
+// the CTA links straight to the recipe list with the "in my pantry" filter already
+// set in the URL, so the list opens already filtered
 export const PantryRecipesCard: React.FC = () => {
     const { t } = useTranslation("home");
-    const dispatch = useAppDispatch();
 
     return (
         <section className={styles["pantry-recipes-card"]}>
@@ -32,11 +33,8 @@ export const PantryRecipesCard: React.FC = () => {
                 </p>
             </div>
             <LinkButton
-                to={ROUTES.allRecipes}
+                to={PANTRY_LINK}
                 variant="secondary"
-                onClick={() => {
-                    dispatch(setRecipeInPantry(true));
-                }}
                 className={styles["pantry-recipes-card__cta"]}
             >
                 {t("pantryRecipes.cta")}

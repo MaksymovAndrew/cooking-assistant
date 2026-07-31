@@ -81,6 +81,25 @@ describe("PgMenuRepository search (real Postgres)", () => {
         expect(result.total).toBe(1);
     });
 
+    it("should treat literal % and _ in menu_name as text, not SQL LIKE wildcards", async () => {
+        const categoryId = await createMenuCategory(pool);
+        const tag = unique("wildcard");
+        // if the % below were sent unescaped to ILIKE, "week 1%" would become the wildcard
+        // pattern %week 1%% (equivalent to %week 1%) and match this decoy too
+        const literalTitle = `${tag} week 1% off`;
+        const decoyTitle = `${tag} week 1X off`;
+        const menuId = await createOwnedMenu(literalTitle, categoryId);
+
+        await createOwnedMenu(decoyTitle, categoryId);
+
+        const result = await menuRepository.findAll({
+            menu_name: `${tag} week 1%`,
+        });
+
+        expect(result.items).toEqual([expect.objectContaining({ id: menuId })]);
+        expect(result.total).toBe(1);
+    });
+
     it("should filter by category_ids", async () => {
         const categoryId = await createMenuCategory(pool);
         const menuId = await createOwnedMenu(

@@ -1,6 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useDebouncedFieldSync } from "hooks/useDebouncedFieldSync";
+
 import styles from "components/recipes/RecipeFilterPanel/RecipeFilterPanel.module.scss";
 
 interface RecipeTimeRangeFieldsProps {
@@ -10,6 +12,10 @@ interface RecipeTimeRangeFieldsProps {
     setMaxCookingTime: (time: string) => void;
 }
 
+// debounced like SearchField: instant typing feedback locally, one URL write (via
+// setMin/MaxCookingTime, which the caller wires with { replace: true }) after typing settles -
+// otherwise every keystroke on these free-text number fields pushed its own history entry and
+// fired its own request
 export const RecipeTimeRangeFields: React.FC<RecipeTimeRangeFieldsProps> = ({
     minCookingTime,
     maxCookingTime,
@@ -17,6 +23,14 @@ export const RecipeTimeRangeFields: React.FC<RecipeTimeRangeFieldsProps> = ({
     setMaxCookingTime,
 }) => {
     const { t } = useTranslation("recipes");
+    const [localMin, setLocalMin] = useDebouncedFieldSync(
+        minCookingTime,
+        setMinCookingTime,
+    );
+    const [localMax, setLocalMax] = useDebouncedFieldSync(
+        maxCookingTime,
+        setMaxCookingTime,
+    );
 
     return (
         <div className={styles["recipe-filter-panel__time-row"]}>
@@ -25,9 +39,9 @@ export const RecipeTimeRangeFields: React.FC<RecipeTimeRangeFieldsProps> = ({
                 <input
                     type="number"
                     min="0"
-                    value={minCookingTime}
+                    value={localMin}
                     onChange={(e) => {
-                        setMinCookingTime(e.target.value);
+                        setLocalMin(e.target.value);
                     }}
                     className={styles["recipe-filter-panel__time-input"]}
                 />
@@ -37,9 +51,9 @@ export const RecipeTimeRangeFields: React.FC<RecipeTimeRangeFieldsProps> = ({
                 <input
                     type="number"
                     min="1"
-                    value={maxCookingTime}
+                    value={localMax}
                     onChange={(e) => {
-                        setMaxCookingTime(e.target.value);
+                        setLocalMax(e.target.value);
                     }}
                     className={styles["recipe-filter-panel__time-input"]}
                 />

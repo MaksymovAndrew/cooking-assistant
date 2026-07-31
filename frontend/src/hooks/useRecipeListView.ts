@@ -1,10 +1,7 @@
 import { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
 
-import { SEARCH_PARAM_INGREDIENT_NAME } from "constants/queryParams";
+import type { RecipeFilterParams } from "types/recipe";
 
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { selectRecipeFilters } from "redux/selectors/filtersSelectors";
 import { useGetMeQuery } from "redux/services/authApi";
 import {
     flattenPages,
@@ -17,35 +14,18 @@ import {
 } from "redux/services/recipesApi";
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
 import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
-import {
-    RECIPE_DEFAULT_SORT_ORDER,
-    type RecipeFiltersState,
-    setRecipeEndDate,
-    setRecipeInPantry,
-    setRecipeMaxCookingTime,
-    setRecipeMinCookingTime,
-    setRecipeSelectedTypes,
-    setRecipeSortOrder,
-    setRecipeStartDate,
-} from "redux/slices/filtersSlice";
 
+import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
+import { RECIPE_FILTER_DEFS } from "utils/filters/recipeFilterDefs";
 import { getQueryErrorMessage } from "utils/queryError";
-import {
-    buildRecipeFilterParams,
-    hasActiveRecipeFilters,
-    matchIngredientIds,
-} from "utils/recipeFilterParams";
 
 import {
-    hasUnmatchedIngredientSearch,
     isPantryFilterEmpty,
     isRecipeListEmpty,
-    shouldSkipRecipesRequest,
 } from "./recipeListViewHelpers";
+import { useListFilters } from "./useListFilters";
 
-export interface RecipeFilterState extends RecipeFiltersState {
-    ingredientName: string | null;
-}
+export type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
 export const RECIPE_SOURCE = {
     all: "all",
@@ -54,47 +34,44 @@ export const RECIPE_SOURCE = {
 
 export type RecipeSource = (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE];
 
-// view model for the two recipe lists: filters come from the store + the URL search, pages come from RTK Query's infiniteQuery, sorting is server-side
+// view model for the two recipe lists: the URL is the single source of truth for
+// filters, pages come from RTK Query's infiniteQuery, sorting is server-side
 export const useRecipeListView = (source: RecipeSource) => {
-    const dispatch = useAppDispatch();
-    const recipeFilters = useAppSelector(selectRecipeFilters);
-    const [searchParams, setSearchParams] = useSearchParams();
-    const ingredientName = searchParams.get(SEARCH_PARAM_INGREDIENT_NAME);
-    const filters = { ...recipeFilters, ingredientName };
+    const {
+        values: filters,
+        setValue,
+        setValues,
+        reset: resetFilters,
+        params,
+        activeFilters,
+        activeCount,
+        hasActiveFilters,
+    } = useListFilters<RecipeFilterState, RecipeFilterParams>(
+        RECIPE_FILTER_DEFS,
+    );
 
-    // the catalog is already cached by the ingredient picker/pantry pages - this is a read, not a new request
-    const { data: catalog = [] } = useGetIngredientsQuery(null);
-    const matchedIngredientIds = useMemo(
-        () => matchIngredientIds(ingredientName, catalog),
-        [ingredientName, catalog],
-    );
-    const hasUnmatchedSearch = hasUnmatchedIngredientSearch(
-        ingredientName,
-        matchedIngredientIds,
-    );
+    // feeds the ingredients filter's search-and-pick UI - already cached by the ingredient picker/pantry pages, so this is a read, not a new request
+    const { data: ingredientCatalog = [] } = useGetIngredientsQuery(null);
 
     // already fetched by the pantry page/home dashboard - a cache read, not a new request
-    const { data: pantry = [] } = useGetUserIngredientsQuery(null);
+    const {
+        data: pantry = [],
+        isLoading: isPantryLoading,
+        isUninitialized: isPantryUninitialized,
+    } = useGetUserIngredientsQuery(null);
     const isPantryEmpty = isPantryFilterEmpty(
-        recipeFilters.inPantry,
+        filters.inPantry,
         pantry.length,
-    );
-    const skipRecipesRequest = shouldSkipRecipesRequest(
-        hasUnmatchedSearch,
-        isPantryEmpty,
-    );
-
-    const params = useMemo(
-        () => buildRecipeFilterParams(recipeFilters, matchedIngredientIds),
-        [recipeFilters, matchedIngredientIds],
+        isPantryLoading,
+        isPantryUninitialized,
     );
 
     const isPerson = source === RECIPE_SOURCE.person;
     const byFilters = useGetRecipesByFiltersInfiniteQuery(params, {
-        skip: isPerson || skipRecipesRequest,
+        skip: isPerson || isPantryEmpty,
     });
     const byPerson = useGetRecipesByPersonInfiniteQuery(params, {
-        skip: !isPerson || skipRecipesRequest,
+        skip: !isPerson || isPantryEmpty,
     });
     const active = isPerson ? byPerson : byFilters;
 
@@ -109,47 +86,30 @@ export const useRecipeListView = (source: RecipeSource) => {
 
     const { data: allTypes = [] } = useGetRecipeTypesQuery(null);
 
-    const hasSelectedTypes = recipeFilters.selectedTypes.length > 0;
+    const hasSelectedTypes = filters.types.length > 0;
     const { data: descriptionTypes = [] } = useGetRecipeTypesQuery(
-        hasSelectedTypes
-            ? { ids: recipeFilters.selectedTypes.join(",") }
-            : null,
+        hasSelectedTypes ? { ids: filters.types.join(",") } : null,
         { skip: !hasSelectedTypes },
     );
     const descriptions = descriptionTypes.filter((type) =>
-        recipeFilters.selectedTypes.includes(type.id),
+        filters.types.includes(type.id),
     );
     const typesHeader = descriptions.map((type) => type.type_name).join(", ");
 
-    const clearFilters = () => {
-        setSearchParams({});
-        dispatch(setRecipeSelectedTypes([]));
-        dispatch(setRecipeMinCookingTime(""));
-        dispatch(setRecipeMaxCookingTime(""));
-        dispatch(setRecipeSortOrder(RECIPE_DEFAULT_SORT_ORDER));
-        dispatch(setRecipeInPantry(false));
-    };
-
     return {
         filters,
-        setSelectedTypes: (types: number[]) =>
-            dispatch(setRecipeSelectedTypes(types)),
-        setStartDate: (date: string) => dispatch(setRecipeStartDate(date)),
-        setEndDate: (date: string) => dispatch(setRecipeEndDate(date)),
-        setMinCookingTime: (time: string) =>
-            dispatch(setRecipeMinCookingTime(time)),
-        setMaxCookingTime: (time: string) =>
-            dispatch(setRecipeMaxCookingTime(time)),
-        setSortOrder: (order: string) => dispatch(setRecipeSortOrder(order)),
-        setInPantry: (value: boolean) => dispatch(setRecipeInPantry(value)),
-        clearFilters,
-        hasActiveFilters: hasActiveRecipeFilters(filters),
+        setValue,
+        setValues,
+        resetFilters,
+        activeFilters,
+        activeCount,
+        hasActiveFilters,
         types: allTypes,
+        ingredients: ingredientCatalog,
         recipes,
         currentUserId: currentUser?.id ?? null,
         error: !hasLoadedRecipes ? errorMessage : null,
         noRecipes: isRecipeListEmpty(
-            hasUnmatchedSearch,
             isPantryEmpty,
             active.isSuccess,
             hasLoadedRecipes,

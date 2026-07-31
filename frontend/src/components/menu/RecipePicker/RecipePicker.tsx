@@ -1,10 +1,15 @@
-import { Search, X } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeListItem } from "types/recipe";
 
+import { useClientFilters } from "hooks/useClientFilters";
+
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
+import { SearchField } from "components/ui/SearchField";
+
+import type { RecipePickerFilterState } from "utils/filters/recipePickerFilterDefs";
+import { RECIPE_PICKER_FILTER_DEFS } from "utils/filters/recipePickerFilterDefs";
 
 import styles from "./RecipePicker.module.scss";
 
@@ -15,8 +20,6 @@ interface RecipePickerProps {
     onToggle: (recipe: RecipeListItem) => void;
 }
 
-const SEARCH_ICON_SIZE = 17;
-const CLEAR_ICON_SIZE = 13;
 const MAX_RESULTS = 8;
 
 export const RecipePicker: React.FC<RecipePickerProps> = ({
@@ -26,25 +29,30 @@ export const RecipePicker: React.FC<RecipePickerProps> = ({
     onToggle,
 }) => {
     const { t } = useTranslation("menu");
-    const [query, setQuery] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
-    const trimmedQuery = query.trim();
+    const {
+        values: filters,
+        setValue,
+        visibleItems,
+    } = useClientFilters<RecipeListItem, RecipePickerFilterState>(
+        RECIPE_PICKER_FILTER_DEFS,
+        allRecipes,
+    );
+    const trimmedQuery = filters.query.trim();
 
-    const matches = trimmedQuery
-        ? allRecipes
-              .filter(
-                  (recipe) =>
-                      !selectedIds.includes(recipe.id) &&
-                      recipe.title
-                          .toLowerCase()
-                          .includes(trimmedQuery.toLowerCase()),
-              )
-              .slice(0, MAX_RESULTS)
-        : [];
+    const matches = useMemo(
+        () =>
+            trimmedQuery
+                ? visibleItems
+                      .filter((recipe) => !selectedIds.includes(recipe.id))
+                      .slice(0, MAX_RESULTS)
+                : [],
+        [trimmedQuery, visibleItems, selectedIds],
+    );
 
     const handleSelect = (recipe: RecipeListItem) => {
         onToggle(recipe);
-        setQuery("");
+        setValue("query", "");
         inputRef.current?.focus();
     };
 
@@ -56,33 +64,16 @@ export const RecipePicker: React.FC<RecipePickerProps> = ({
             >
                 {label}
             </label>
-            <div className={styles["recipe-picker__search"]}>
-                <Search size={SEARCH_ICON_SIZE} aria-hidden="true" />
-                <input
-                    id="recipe-picker-search"
-                    ref={inputRef}
-                    type="text"
-                    autoComplete="off"
-                    value={query}
-                    onChange={(e) => {
-                        setQuery(e.target.value);
-                    }}
-                    placeholder={t("recipePicker.searchPlaceholder")}
-                    className={styles["recipe-picker__input"]}
-                />
-                {query && (
-                    <button
-                        type="button"
-                        aria-label={t("recipePicker.clear")}
-                        onClick={() => {
-                            setQuery("");
-                            inputRef.current?.focus();
-                        }}
-                    >
-                        <X size={CLEAR_ICON_SIZE} aria-hidden="true" />
-                    </button>
-                )}
-            </div>
+            <SearchField
+                ref={inputRef}
+                id="recipe-picker-search"
+                value={filters.query}
+                onChange={(value) => {
+                    setValue("query", value);
+                }}
+                placeholder={t("recipePicker.searchPlaceholder")}
+                className={styles["recipe-picker__search"]}
+            />
             {trimmedQuery && (
                 <div className={styles["recipe-picker__results-wrapper"]}>
                     <ul className={styles["recipe-picker__results"]}>

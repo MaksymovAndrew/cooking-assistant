@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 export const useEscapeKey = (onEscape: () => void, enabled = true): void => {
     // read through a ref so a fresh onEscape each render doesn't re-subscribe
     const onEscapeRef = useRef(onEscape);
 
-    onEscapeRef.current = onEscape;
+    useLayoutEffect(() => {
+        onEscapeRef.current = onEscape;
+    });
 
     useEffect(() => {
         if (!enabled) {

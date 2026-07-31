@@ -89,9 +89,14 @@ export const recipesApi = baseApi.injectEndpoints({
                 url: API_ROUTES.recipes.byId(id),
                 method: "DELETE",
             }),
+            // the backend cascades the delete into every menu_recipe row that referenced this
+            // recipe, so any menu that contained it changes too - a plain { type: "Menu" } tag
+            // (no id) invalidates every cached menu list and every menu detail, since the client
+            // has no way to know in advance which specific menus were affected
             invalidatesTags: (_result, _error, id) => [
                 { type: RECIPE, id },
                 RECIPE_LIST,
+                { type: "Menu" },
             ],
         }),
     }),

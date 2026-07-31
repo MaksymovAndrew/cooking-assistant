@@ -1,21 +1,17 @@
 import type { RefObject } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
-import { MS_PER_MINUTE } from "constants/time";
 import type { LoginRequest } from "types/auth";
 
 import { useLoginMutation } from "redux/services/authApi";
 
 import { isValidEmail } from "utils/authValidation";
 import {
-    ATTEMPTS_PER_LOCK,
     clearLockout,
-    LOCKOUT_LADDER_MINUTES,
     mergeServerRetryAfter,
-    readLockout,
     registerFailure,
     writeLockout,
 } from "utils/loginLockout";
@@ -25,10 +21,11 @@ import {
     isServerError,
 } from "utils/queryError";
 
+import { useLoginLockout } from "./useLoginLockout";
+
 export type LoginMode = "username" | "email";
 
 const EMPTY_FORM: LoginRequest = { login: "", password: "" };
-const TICK_INTERVAL_MS = 1000;
 
 // runs `update` only if `login` is still the identifier on screen, guarding against a stale response overwriting a since-changed account's state
 function applyIfCurrent(
@@ -50,43 +47,17 @@ export const useLoginForm = () => {
     const [values, setValues] = useState<LoginRequest>(EMPTY_FORM);
     const [loginMode, setLoginMode] = useState<LoginMode>("username");
     const [error, setError] = useState<string | null>(null);
-    const [lockout, setLockout] = useState(() => readLockout(EMPTY_FORM.login));
-    const [now, setNow] = useState(() => Date.now());
 
-    const { lockedUntil } = lockout;
-    // tracks the identifier actually on screen so a slow response for a since-changed login doesn't clobber it
-    const currentLoginRef = useRef(values.login);
-
-    // lockout is scoped per identifier, so switching which account is typed re-reads that account's own state
-    useEffect(() => {
-        currentLoginRef.current = values.login;
-        setLockout(readLockout(values.login));
-    }, [values.login]);
-
-    // ticks once a second while locked, both to drive a live countdown and to auto-unlock the moment the lock expires
-    useEffect(() => {
-        if (lockedUntil === null) {
-            return undefined;
-        }
-
-        const tick = () => {
-            const currentNow = Date.now();
-
-            setNow(currentNow);
-
-            if (currentNow >= lockedUntil) {
-                setLockout((prev) => ({ ...prev, lockedUntil: null }));
-                setError(null);
-            }
-        };
-
-        tick();
-        const interval = setInterval(tick, TICK_INTERVAL_MS);
-
-        return () => {
-            clearInterval(interval);
-        };
-    }, [lockedUntil]);
+    const {
+        lockout,
+        setLockout,
+        currentLoginRef,
+        isLocked,
+        lockoutRemainingMs,
+        lockoutTotalMs,
+    } = useLoginLockout(values.login, () => {
+        setError(null);
+    });
 
     const setField = useCallback((field: keyof LoginRequest, value: string) => {
         setValues((prev) => ({ ...prev, [field]: value }));
@@ -98,19 +69,6 @@ export const useLoginForm = () => {
         setValues((prev) => ({ ...prev, login: "" }));
         setError(null);
     }, []);
-
-    const isLocked = lockedUntil !== null && now < lockedUntil;
-    const lockoutRemainingMs = isLocked ? lockedUntil - now : null;
-    // derived from the same ladder registerFailure climbs, purely for the countdown progress bar
-    const lockoutTotalMs =
-        isLocked && lockout.failures >= ATTEMPTS_PER_LOCK
-            ? LOCKOUT_LADDER_MINUTES[
-                  Math.min(
-                      Math.floor(lockout.failures / ATTEMPTS_PER_LOCK) - 1,
-                      LOCKOUT_LADDER_MINUTES.length - 1,
-                  )
-              ] * MS_PER_MINUTE
-            : null;
 
     const handleSubmit = useCallback(async () => {
         if (isLocked) return;
@@ -177,7 +135,17 @@ export const useLoginForm = () => {
                 setError(t("errors.invalidCredentials"));
             });
         }
-    }, [isLocked, loginMode, lockout, login, navigate, t, values]);
+    }, [
+        currentLoginRef,
+        isLocked,
+        loginMode,
+        lockout,
+        login,
+        navigate,
+        setLockout,
+        t,
+        values,
+    ]);
 
     return {
         values,

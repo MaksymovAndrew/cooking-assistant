@@ -1,4 +1,5 @@
-import { Cell, Pie, PieChart as RechartsPieChart, Tooltip } from "recharts";
+import type { PieSectorShapeProps } from "recharts";
+import { Pie, PieChart as RechartsPieChart, Sector, Tooltip } from "recharts";
 
 import { getChartColor } from "./chartColors";
 import {
@@ -20,6 +21,11 @@ interface PieChartCardProps {
     data: PieChartDatum[];
     centerLabel: string;
 }
+
+// Cell is deprecated in recharts 3 in favor of a custom shape per sector - https://recharts.github.io/en-US/guide/cell
+const PieSlice = (props: PieSectorShapeProps) => (
+    <Sector {...props} fill={getChartColor(props.index)} />
+);
 
 const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
     const total = data.reduce((sum, d) => sum + d.value, 0);
@@ -51,14 +57,8 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                         strokeWidth={0}
                         cursor={PIE_CURSOR}
                         isAnimationActive={false}
-                    >
-                        {data.map((entry, index) => (
-                            <Cell
-                                key={entry.name}
-                                fill={getChartColor(index)}
-                            />
-                        ))}
-                    </Pie>
+                        shape={PieSlice}
+                    />
                     <Tooltip
                         contentStyle={TOOLTIP_CONTENT_STYLE}
                         wrapperStyle={TOOLTIP_WRAPPER_STYLE}

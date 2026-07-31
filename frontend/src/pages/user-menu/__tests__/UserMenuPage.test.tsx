@@ -47,7 +47,7 @@ describe("UserMenuPage", () => {
             [API_ROUTES.menuCategories.list]: CATEGORIES,
         });
 
-        const { store } = renderWithProviders(<UserMenuPage />, {
+        renderWithProviders(<UserMenuPage />, {
             initialEntries: ["/my-menus"],
         });
 
@@ -57,6 +57,8 @@ describe("UserMenuPage", () => {
         expect(
             await screen.findByText(`Menus by categories: ${CATEGORY_NAME}`),
         ).toBeInTheDocument();
-        expect(store.getState().filters.menu.selectedCategories).toEqual([3]);
+        expect(
+            screen.getByRole("checkbox", { name: CATEGORY_NAME }),
+        ).toHaveAttribute("aria-checked", "true");
     });
 });

@@ -11,7 +11,7 @@ import { makeTestStore } from "test/store";
 export const mockNavigate = jest.fn();
 
 interface RenderOptions {
-    // neutral non-root default: SearchComponent infinite-loops at pathname "/"
+    // neutral non-root default: avoids coupling tests to whatever page currently lives at "/"
     initialEntries?: string[];
     store?: AppStore;
 }

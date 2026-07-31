@@ -82,6 +82,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Docker/OCI image paths must be lowercase; docker/metadata-action already lowercases
+      # for the build jobs above, but this job interpolates BACKEND_IMAGE/FRONTEND_IMAGE
+      # straight into az CLI commands, so it needs the same normalization done explicitly
+      - name: Compute lowercase image refs
+        run: |
+          echo "BACKEND_IMAGE_LC=$(echo '${{ env.BACKEND_IMAGE }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+          echo "FRONTEND_IMAGE_LC=$(echo '${{ env.FRONTEND_IMAGE }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
       - uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -90,7 +98,7 @@ jobs:
 
       - name: Run database migrations
         env:
-          BACKEND_TAG: ${{ env.BACKEND_IMAGE }}:${{ github.ref_name }}
+          BACKEND_TAG: ${{ env.BACKEND_IMAGE_LC }}:${{ github.ref_name }}
         run: |
           # point the migration Job at the freshly built image before starting it
           az containerapp job update \
@@ -124,11 +132,11 @@ jobs:
           az containerapp update \
             --name "${{ vars.BACKEND_APP }}" \
             --resource-group "${{ vars.AZURE_RG }}" \
-            --image "${{ env.BACKEND_IMAGE }}:${{ github.ref_name }}"
+            --image "${{ env.BACKEND_IMAGE_LC }}:${{ github.ref_name }}"
 
       - name: Update frontend container app
         run: |
           az containerapp update \
             --name "${{ vars.FRONTEND_APP }}" \
             --resource-group "${{ vars.AZURE_RG }}" \
-            --image "${{ env.FRONTEND_IMAGE }}:${{ github.ref_name }}"
+            --image "${{ env.FRONTEND_IMAGE_LC }}:${{ github.ref_name }}"

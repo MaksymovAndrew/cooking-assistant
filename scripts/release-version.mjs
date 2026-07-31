@@ -14,9 +14,15 @@ function fail(message) {
   process.exit(1);
 }
 
+// release/X.Y branches bump to the branch's own X.Y (patch guessed/overridden via targetVersion);
+// hotfix/X.Y.Z branches carry the exact target version already, nothing to guess
 function releaseBranchVersion() {
-  const match = git("rev-parse", "--abbrev-ref", "HEAD").match(/^release\/(\d+\.\d+)$/);
-  return match ? match[1] : null;
+  const branch = git("rev-parse", "--abbrev-ref", "HEAD");
+  const release = branch.match(/^release\/(\d+\.\d+)$/);
+  if (release) return { kind: "release", value: release[1] };
+  const hotfix = branch.match(/^hotfix\/(\d+\.\d+\.\d+)$/);
+  if (hotfix) return { kind: "hotfix", value: hotfix[1] };
+  return null;
 }
 
 function changedSides() {
@@ -55,10 +61,12 @@ function setVersion(dir, version) {
   return written;
 }
 
-// a mid-release manual patch (e.g. 3.3.1) must win over the branch default 3.3.0
-function targetVersion(branchVersion) {
+// a mid-release manual patch (e.g. 3.3.1) must win over the branch default 3.3.0;
+// a hotfix/X.Y.Z branch name already IS the exact target version
+function targetVersion(branchInfo) {
+  if (branchInfo.kind === "hotfix") return branchInfo.value;
   const rootVersion = readPackage(".").json.version;
-  return rootVersion.startsWith(`${branchVersion}.`) ? rootVersion : `${branchVersion}.0`;
+  return rootVersion.startsWith(`${branchInfo.value}.`) ? rootVersion : `${branchInfo.value}.0`;
 }
 
 function applyVersion(version) {
@@ -68,11 +76,13 @@ function applyVersion(version) {
 function bump(explicitVersion) {
   let version = explicitVersion;
   if (!version) {
-    const branchVersion = releaseBranchVersion();
-    if (!branchVersion) {
-      fail("not on a release/X.Y branch - pass the version explicitly: npm run bump -- 3.4");
+    const branchInfo = releaseBranchVersion();
+    if (!branchInfo) {
+      fail(
+        "not on a release/X.Y or hotfix/X.Y.Z branch - pass the version explicitly: npm run bump -- 3.4",
+      );
     }
-    version = targetVersion(branchVersion);
+    version = targetVersion(branchInfo);
   }
   if (/^\d+\.\d+$/.test(version)) version = `${version}.0`;
   if (!/^\d+\.\d+\.\d+$/.test(version)) {
@@ -90,9 +100,9 @@ function bump(explicitVersion) {
 }
 
 function precommit() {
-  const branchVersion = releaseBranchVersion();
-  if (!branchVersion) return;
-  const written = applyVersion(targetVersion(branchVersion));
+  const branchInfo = releaseBranchVersion();
+  if (!branchInfo) return;
+  const written = applyVersion(targetVersion(branchInfo));
   if (written.length === 0) return;
   execFileSync("git", ["add", ...written]);
   console.log(`release version auto-bumped and staged: ${written.join(", ")}`);

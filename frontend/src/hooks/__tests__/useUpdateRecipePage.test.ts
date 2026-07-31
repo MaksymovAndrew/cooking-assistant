@@ -38,10 +38,25 @@ const SAMPLE: RecipeDetails = {
     isOwner: true,
 };
 
+const SAMPLE_WITH_INGREDIENT: RecipeDetails = {
+    ...SAMPLE,
+    ingredients: [
+        {
+            id: 7,
+            slug: "beet",
+            name: "Beet",
+            category: "vegetables",
+            quantity_recipe_ingredients: 3,
+            unit_name: "pcs",
+            allergens: [],
+        },
+    ],
+};
+
 // pre-seed the cache by awaiting the real query thunks before the hook mounts, so useGetRecipeByIdQuery/etc. read already-fulfilled data on first render
-const setup = async () => {
+const setup = async (recipe: RecipeDetails = SAMPLE) => {
     mockGetByUrl({
-        [API_ROUTES.recipes.byId("1")]: SAMPLE,
+        [API_ROUTES.recipes.byId("1")]: recipe,
         [API_ROUTES.ingredients.list]: [],
         [API_ROUTES.recipeTypes.list]: [],
     });
@@ -63,6 +78,39 @@ describe("useUpdateRecipePage", () => {
 
         expect(result.current.form.title).toBe(TITLE);
         expect(result.current.isLoading).toBe(false);
+    });
+
+    it("should round-trip an existing ingredient's quantity field between the recipe and update shapes", async () => {
+        mockedPut.mockResolvedValue({ data: null });
+        const { result } = await setup(SAMPLE_WITH_INGREDIENT);
+        const [loadedIngredient] = SAMPLE_WITH_INGREDIENT.ingredients;
+
+        expect(result.current.form.selectedIngredients).toEqual([
+            {
+                id: loadedIngredient.id,
+                slug: loadedIngredient.slug,
+                name: loadedIngredient.name,
+                quantity: loadedIngredient.quantity_recipe_ingredients,
+                unit_name: loadedIngredient.unit_name,
+            },
+        ]);
+
+        await act(async () => {
+            await result.current.handleSubmit();
+        });
+
+        expect(mockedPut).toHaveBeenCalledWith(
+            API_ROUTES.recipes.byId("1"),
+            expect.objectContaining({
+                ingredients: [
+                    {
+                        id: loadedIngredient.id,
+                        quantity_recipe_ingredients:
+                            loadedIngredient.quantity_recipe_ingredients,
+                    },
+                ],
+            }),
+        );
     });
 
     it("should update the recipe and navigate home on valid submit", async () => {

@@ -1,6 +1,8 @@
 import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import type { Ingredient } from "types/ingredient";
+
 import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
 
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
@@ -9,6 +11,17 @@ import { renderWithRouter } from "test/router";
 
 const SOUP_TYPE = { id: 1, type_name: "Soup", description: "" };
 const DESSERT_TYPE = { id: 2, type_name: "Dessert", description: "" };
+
+const TOMATO: Ingredient = {
+    id: 9,
+    slug: "tomato",
+    name: "Tomato",
+    category: "vegetables",
+    unit_name: "pcs",
+    allergens: [],
+    days_to_expire: 7,
+    calories_per_unit: null,
+};
 
 const BASE_FILTERS: RecipeFilterState = {
     search: "",
@@ -19,7 +32,11 @@ const BASE_FILTERS: RecipeFilterState = {
     inPantry: false,
 };
 
-const setup = (overrides: Partial<RecipeFilterState> = {}, activeCount = 0) => {
+const setup = (
+    overrides: Partial<RecipeFilterState> = {},
+    activeCount = 0,
+    ingredientCatalog: Ingredient[] = [],
+) => {
     const setValue = jest.fn();
     const setValues = jest.fn();
 
@@ -30,7 +47,7 @@ const setup = (overrides: Partial<RecipeFilterState> = {}, activeCount = 0) => {
             setValues={setValues}
             activeCount={activeCount}
             types={[SOUP_TYPE, DESSERT_TYPE]}
-            ingredients={[]}
+            ingredients={ingredientCatalog}
             searchPlaceholder="Search recipes"
             total={5}
         />,
@@ -72,6 +89,37 @@ describe("RecipeFilterPanel", () => {
         expect(screen.getByText("2")).toBeInTheDocument();
     });
 
+    it("should call setValue with the typed term, debounced, when the search field changes", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            const { setValue } = setup();
+
+            await user.type(
+                screen.getByPlaceholderText(/search recipes/i),
+                "Tomato",
+            );
+
+            // still debouncing - not committed to the URL yet
+            expect(setValue).not.toHaveBeenCalled();
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).toHaveBeenCalledWith("search", "Tomato", {
+                replace: true,
+            });
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
     it("should call setValue with the updated range, debounced, when the time inputs change", async () => {
         jest.useFakeTimers();
         const user = userEvent.setup({
@@ -103,6 +151,36 @@ describe("RecipeFilterPanel", () => {
         }
     });
 
+    it("should call setValue with the updated range, debounced, when the max time input changes", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            const { setValue } = setup();
+
+            await user.click(screen.getByRole("button", { name: /Filters/ }));
+            await user.type(screen.getByLabelText("Max"), "45");
+
+            expect(setValue).not.toHaveBeenCalled();
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).toHaveBeenCalledWith(
+                "cookingTime",
+                { min: "", max: "45" },
+                { replace: true },
+            );
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
     it("should call setValue with the sort direction when a sort segment is clicked", async () => {
         const { setValue } = setup();
 
@@ -121,6 +199,35 @@ describe("RecipeFilterPanel", () => {
         await userEvent.click(screen.getByRole("checkbox", { name: "Soup" }));
 
         expect(setValue).toHaveBeenCalledWith("types", [1]);
+    });
+
+    it("should call setValue with the selected ingredient id when one is picked in the popover", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            const { setValue } = setup({}, 0, [TOMATO]);
+
+            await user.click(screen.getByRole("button", { name: /Filters/ }));
+            await user.type(
+                screen.getByPlaceholderText(/ingredient/i),
+                "Tomato",
+            );
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            await user.click(screen.getByRole("button", { name: "Tomato" }));
+
+            expect(setValue).toHaveBeenCalledWith("ingredients", [TOMATO.id]);
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should call setValue with true when the pantry toggle is clicked", async () => {

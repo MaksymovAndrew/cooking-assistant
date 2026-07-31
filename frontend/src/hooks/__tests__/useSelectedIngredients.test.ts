@@ -22,6 +22,28 @@ const ING_B = {
     days_to_expire: 14,
     calories_per_unit: null,
 };
+const ING_C = {
+    id: 3,
+    slug: "onion",
+    name: "Onion",
+    category: "vegetables",
+    unit_name: "g",
+    allergens: [],
+    days_to_expire: 20,
+    calories_per_unit: null,
+};
+const ING_D = {
+    id: 4,
+    slug: "garlic",
+    name: "Garlic",
+    category: "vegetables",
+    unit_name: "g",
+    allergens: [],
+    days_to_expire: 60,
+    calories_per_unit: null,
+};
+
+const idsOf = (ingredients: { id: number }[]) => ingredients.map((i) => i.id);
 
 describe("useSelectedIngredients", () => {
     it("should start with empty selection", () => {
@@ -138,5 +160,99 @@ describe("useSelectedIngredients", () => {
         );
 
         expect(b?.quantity).toBe(1);
+    });
+
+    it("should remove only the targeted ingredient", () => {
+        const { result } = renderHook(() => useSelectedIngredients());
+
+        act(() => {
+            result.current.toggleIngredientSelection(ING_A);
+            result.current.toggleIngredientSelection(ING_B);
+        });
+
+        act(() => {
+            result.current.removeIngredient(ING_A.id);
+        });
+
+        expect(idsOf(result.current.selectedIngredients)).toEqual([ING_B.id]);
+    });
+
+    it("should do nothing when removing an id that isn't selected", () => {
+        const { result } = renderHook(() => useSelectedIngredients());
+
+        act(() => {
+            result.current.toggleIngredientSelection(ING_A);
+        });
+
+        act(() => {
+            result.current.removeIngredient(999);
+        });
+
+        expect(idsOf(result.current.selectedIngredients)).toEqual([ING_A.id]);
+    });
+
+    // the dragged ingredient always ends up immediately before the drop target - moving it
+    // forward past other rows must land it there too, not one slot further (a splice-based
+    // reorder has to adjust the target index for the shift caused by removing the dragged item)
+    it("should move an ingredient to land right before a target further down the list", () => {
+        const { result } = renderHook(() => useSelectedIngredients());
+
+        act(() => {
+            result.current.toggleIngredientSelection(ING_A);
+            result.current.toggleIngredientSelection(ING_B);
+            result.current.toggleIngredientSelection(ING_C);
+            result.current.toggleIngredientSelection(ING_D);
+        });
+
+        act(() => {
+            result.current.reorderIngredients(ING_A.id, ING_D.id);
+        });
+
+        expect(idsOf(result.current.selectedIngredients)).toEqual([
+            ING_B.id,
+            ING_C.id,
+            ING_A.id,
+            ING_D.id,
+        ]);
+    });
+
+    it("should move an ingredient to land right before a target further up the list", () => {
+        const { result } = renderHook(() => useSelectedIngredients());
+
+        act(() => {
+            result.current.toggleIngredientSelection(ING_A);
+            result.current.toggleIngredientSelection(ING_B);
+            result.current.toggleIngredientSelection(ING_C);
+            result.current.toggleIngredientSelection(ING_D);
+        });
+
+        act(() => {
+            result.current.reorderIngredients(ING_D.id, ING_A.id);
+        });
+
+        expect(idsOf(result.current.selectedIngredients)).toEqual([
+            ING_D.id,
+            ING_A.id,
+            ING_B.id,
+            ING_C.id,
+        ]);
+    });
+
+    it("should do nothing when reordering an unknown id", () => {
+        const { result } = renderHook(() => useSelectedIngredients());
+
+        act(() => {
+            result.current.toggleIngredientSelection(ING_A);
+            result.current.toggleIngredientSelection(ING_B);
+        });
+
+        act(() => {
+            result.current.reorderIngredients(999, ING_B.id);
+        });
+
+        expect(idsOf(result.current.selectedIngredients)).toEqual([
+            ING_A.id,
+            ING_B.id,
+        ]);
     });
 });

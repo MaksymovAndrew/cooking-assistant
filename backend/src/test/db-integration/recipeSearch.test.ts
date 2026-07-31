@@ -101,6 +101,31 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         expect(result.total).toBe(1);
     });
 
+    it("should treat literal % and _ in recipe_name as text, not SQL LIKE wildcards", async () => {
+        const ingredient = await createNamedIngredient();
+        const tag = unique("wildcard");
+        // if the % below were sent unescaped to ILIKE, "50%" would become the wildcard pattern
+        // %50%% (equivalent to %50%) and match this decoy too, since it also contains "50"
+        const literalTitle = `${tag} 50% Whole Wheat`;
+        const decoyTitle = `${tag} 50X Whole Wheat`;
+        const recipeId = await createRecipeWithIngredients(
+            literalTitle,
+            [ingredient.id],
+            10,
+        );
+
+        await createRecipeWithIngredients(decoyTitle, [ingredient.id], 10);
+
+        const result = await repository.search(ownerId, {
+            recipe_name: `${tag} 50%`,
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: recipeId }),
+        ]);
+        expect(result.total).toBe(1);
+    });
+
     it("should filter by ingredient_ids, scoped by the unique fixture ingredient", async () => {
         const ingredient = await createNamedIngredient();
         const recipeId = await createRecipeWithIngredients(

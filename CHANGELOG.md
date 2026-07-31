@@ -41,6 +41,7 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: An empty "no results" screen with two buttons could overflow off the edge of the screen on mobile.
 - Fixed: Allergen labels on a recipe's page were slightly misaligned; they're now centered correctly.
 - Added: The site now has a proper meta description, Open Graph and Twitter Card tags (including a preview image), and a `robots.txt`, so shared links (social media, job listings, etc.) show a real title, description, and preview instead of nothing.
+- Fixed: Dragging an ingredient or recipe forward past other rows in the recipe/menu builder could drop it one position further than where you released it.
 
 ### Project
 

@@ -194,4 +194,62 @@ describe("useMenuForm", () => {
         expect(result.current.errors.categoryError).toBeNull();
         expect(result.current.errors.recipesError).toBeNull();
     });
+
+    // the dragged recipe always ends up immediately before the drop target - moving it forward
+    // past other rows must land it there too, not one slot further (a splice-based reorder has
+    // to adjust the target index for the shift caused by removing the dragged item)
+    it("should move a recipe to land right before a target further down the list", () => {
+        const { result } = renderHook(() =>
+            useMenuForm({ errorMessages: ERROR_MESSAGES }),
+        );
+
+        act(() => {
+            result.current.toggleRecipeSelection(1);
+            result.current.toggleRecipeSelection(2);
+            result.current.toggleRecipeSelection(3);
+            result.current.toggleRecipeSelection(4);
+        });
+
+        act(() => {
+            result.current.reorderSelectedRecipes(1, 4);
+        });
+
+        expect(result.current.selectedRecipes).toEqual([2, 3, 1, 4]);
+    });
+
+    it("should move a recipe to land right before a target further up the list", () => {
+        const { result } = renderHook(() =>
+            useMenuForm({ errorMessages: ERROR_MESSAGES }),
+        );
+
+        act(() => {
+            result.current.toggleRecipeSelection(1);
+            result.current.toggleRecipeSelection(2);
+            result.current.toggleRecipeSelection(3);
+            result.current.toggleRecipeSelection(4);
+        });
+
+        act(() => {
+            result.current.reorderSelectedRecipes(4, 1);
+        });
+
+        expect(result.current.selectedRecipes).toEqual([4, 1, 2, 3]);
+    });
+
+    it("should do nothing when reordering an unknown recipe id", () => {
+        const { result } = renderHook(() =>
+            useMenuForm({ errorMessages: ERROR_MESSAGES }),
+        );
+
+        act(() => {
+            result.current.toggleRecipeSelection(1);
+            result.current.toggleRecipeSelection(2);
+        });
+
+        act(() => {
+            result.current.reorderSelectedRecipes(999, 2);
+        });
+
+        expect(result.current.selectedRecipes).toEqual([1, 2]);
+    });
 });

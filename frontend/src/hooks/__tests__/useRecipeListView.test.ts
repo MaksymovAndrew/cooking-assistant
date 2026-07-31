@@ -58,7 +58,7 @@ const MILK: Ingredient = {
 
 // matches what the hook sends with no filters active in the URL: sort_order is
 // omitted (server default: newest first), same for every other filter
-const DEFAULT_PARAMS = { ingredient_ids: undefined };
+const DEFAULT_PARAMS = {};
 
 const FAILURE_MESSAGE = "Recipes failed";
 const FAILURE = makeAxiosError(500, FAILURE_MESSAGE);
@@ -370,7 +370,59 @@ describe("useRecipeListView", () => {
         });
     });
 
-    it("should send matched ingredient_ids in the request, not the raw search text", async () => {
+    it("should send the search text as recipe_name in the request", async () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: CURRENT_USER });
+            }
+            if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.recipes.byFilters) {
+                return Promise.resolve({
+                    data: { items: [RECIPE_1], total: 1 },
+                });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const store = makeTestStore();
+        const paramsWithSearch = { recipe_name: "Borscht" };
+
+        await Promise.all([
+            store.dispatch(
+                recipesApi.endpoints.getRecipesByFilters.initiate(
+                    paramsWithSearch,
+                ),
+            ),
+            store.dispatch(
+                recipeTypesApi.endpoints.getRecipeTypes.initiate(null),
+            ),
+            store.dispatch(authApi.endpoints.getMe.initiate(null)),
+            store.dispatch(
+                ingredientsApi.endpoints.getIngredients.initiate(null),
+            ),
+        ]);
+
+        const { result } = renderHookWithRouter(
+            () => useRecipeListView(RECIPE_SOURCE.all),
+            { store, initialEntries: ["/test?q=Borscht"] },
+        );
+
+        expect(result.current.recipes).toEqual([RECIPE_1]);
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byFilters, {
+            params: { ...paramsWithSearch, limit: PAGE_SIZE, offset: 0 },
+        });
+    });
+
+    it("should send the picked ingredients as ingredient_ids in the request", async () => {
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
                 return Promise.resolve({ data: CURRENT_USER });
@@ -394,12 +446,12 @@ describe("useRecipeListView", () => {
         });
 
         const store = makeTestStore();
-        const paramsWithMatchedId = { ingredient_ids: String(MILK.id) };
+        const paramsWithIngredientIds = { ingredient_ids: String(MILK.id) };
 
         await Promise.all([
             store.dispatch(
                 recipesApi.endpoints.getRecipesByFilters.initiate(
-                    paramsWithMatchedId,
+                    paramsWithIngredientIds,
                 ),
             ),
             store.dispatch(
@@ -413,17 +465,26 @@ describe("useRecipeListView", () => {
 
         const { result } = renderHookWithRouter(
             () => useRecipeListView(RECIPE_SOURCE.all),
-            { store, initialEntries: ["/test?q=milk"] },
+            { store, initialEntries: [`/test?ingredients=${MILK.id}`] },
         );
 
         expect(result.current.recipes).toEqual([RECIPE_1]);
-        // exact match, not objectContaining - proves ingredient_ids was sent instead of ingredient_name, not alongside it
+        expect(result.current.ingredients).toEqual([MILK]);
         expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byFilters, {
-            params: { ...paramsWithMatchedId, limit: PAGE_SIZE, offset: 0 },
+            params: {
+                ...paramsWithIngredientIds,
+                limit: PAGE_SIZE,
+                offset: 0,
+            },
         });
     });
 
-    it("should skip the request and report noRecipes when the search text matches no ingredient", async () => {
+    it("should not report the pantry as empty while the pantry query is still loading", async () => {
+        let resolvePantry: (value: { data: unknown[] }) => void;
+        const pendingPantry = new Promise<{ data: unknown[] }>((resolve) => {
+            resolvePantry = resolve;
+        });
+
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
                 return Promise.resolve({ data: CURRENT_USER });
@@ -432,37 +493,30 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.ingredients.list) {
-                return Promise.resolve({ data: [MILK] });
-            }
-            if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
+            }
+            // stays unresolved until the test settles it, simulating a cold-cache visit to a shared ?pantry=1 link
+            if (url === API_ROUTES.userIngredients.list) {
+                return pendingPantry;
+            }
+            if (url === API_ROUTES.recipes.byFilters) {
+                return Promise.resolve({
+                    data: { items: [RECIPE_1], total: 1 },
+                });
             }
 
             return Promise.reject(new Error(`unexpected GET ${url}`));
         });
 
-        const store = makeTestStore();
+        const { result } = await setup(RECIPE_SOURCE.all, ["/test?pantry=1"]);
 
-        await Promise.all([
-            store.dispatch(
-                recipeTypesApi.endpoints.getRecipeTypes.initiate(null),
-            ),
-            store.dispatch(authApi.endpoints.getMe.initiate(null)),
-            store.dispatch(
-                ingredientsApi.endpoints.getIngredients.initiate(null),
-            ),
-        ]);
+        expect(result.current.isPantryEmpty).toBe(false);
 
-        const { result } = renderHookWithRouter(
-            () => useRecipeListView(RECIPE_SOURCE.all),
-            { store, initialEntries: ["/test?q=zzz"] },
-        );
+        await act(async () => {
+            resolvePantry({ data: [] });
+            await pendingPantry;
+        });
 
-        expect(result.current.noRecipes).toBe(true);
-        expect(result.current.recipes).toEqual([]);
-        expect(mockedGet).not.toHaveBeenCalledWith(
-            API_ROUTES.recipes.byFilters,
-            expect.anything(),
-        );
+        expect(result.current.isPantryEmpty).toBe(true);
     });
 });

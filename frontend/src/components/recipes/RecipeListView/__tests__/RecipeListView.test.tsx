@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { PAGE_SIZE } from "constants/pagination";
@@ -26,6 +26,7 @@ const RECIPES: RecipeListItem[] = [
 const FILTERS: RecipeFilterState = {
     search: "",
     types: [],
+    ingredients: [],
     cookingTime: { min: "", max: "" },
     sort: null,
     inPantry: false,
@@ -34,11 +35,13 @@ const FILTERS: RecipeFilterState = {
 const baseProps = {
     filters: FILTERS,
     setValue: jest.fn(),
+    setValues: jest.fn(),
     resetFilters: jest.fn(),
     activeCount: 0,
     activeFilters: [],
     isPantryEmpty: false,
     types: [],
+    ingredients: [],
     descriptions: [],
     heading: "All recipes",
     subtitle: "Browse your cookbook",
@@ -133,6 +136,49 @@ describe("RecipeListView", () => {
         );
 
         expect(resetFilters).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not let a pending, uncommitted search re-apply itself after Clear all is clicked", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+        const setValue = jest.fn();
+        const resetFilters = jest.fn();
+
+        try {
+            renderWithRouter(
+                <RecipeListView
+                    {...baseProps}
+                    recipes={RECIPES}
+                    noRecipes={false}
+                    error={null}
+                    hasActiveFilters={true}
+                    setValue={setValue}
+                    resetFilters={resetFilters}
+                />,
+            );
+
+            await user.type(
+                screen.getByPlaceholderText(/ingredient name/i),
+                "chick",
+            );
+            // debounce still pending - nothing committed yet
+            expect(setValue).not.toHaveBeenCalled();
+
+            await user.click(screen.getByRole("button", { name: "Clear all" }));
+            expect(resetFilters).toHaveBeenCalledTimes(1);
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).not.toHaveBeenCalled();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should render the error state and call onRetry when Try again is clicked", async () => {

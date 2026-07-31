@@ -24,7 +24,7 @@ describe("user routes", () => {
     it("should return 401 without a token", async () => {
         const { app } = buildTestApp();
 
-        const res = await request(app).get("/api/user");
+        const res = await request(app).get("/api/me");
 
         expect(res.status).toBe(401);
     });
@@ -167,20 +167,6 @@ describe("user routes", () => {
 
         expect(res.status).toBe(404);
         expect(res.body).toEqual({ error: ERROR_MESSAGES.USER_NOT_FOUND });
-    });
-
-    it("should return users for an authenticated request", async () => {
-        const { app, deps } = buildTestApp();
-        const users = [{ id: 7, name: "Bob", surname: "Cook", login: "bob" }];
-
-        deps.userRepository.findAll.mockResolvedValue(users);
-
-        const res = await request(app)
-            .get("/api/user")
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual(users);
     });
 
     it("should map a login domain error to the response status", async () => {

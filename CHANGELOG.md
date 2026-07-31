@@ -20,18 +20,36 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 3.9 - 2026-07-30
+
+### Backend
+
+- Added: Recipes can now be filtered by matching their name, not just by ingredient.
+
 ### Frontend
 
+- Changed: The recipe search box now searches by recipe name instead of ingredient; searching by ingredient moved into the filter panel, where you can pick one or more specific ingredients from a searchable list.
 - Changed: The recipe list now sorts by newest first by default (previously fastest cooking time first); both "Fast → long" and "Long → fast" are now optional sort chips you can apply and remove from the filter bar.
 - Added: A recipe list filtered by type, cooking time, sort order, or pantry can now be shared or bookmarked - copying the page URL and opening it elsewhere restores the exact same filters.
 - Added: Menu lists are now shareable and bookmarkable the same way, and the menu filter panel gained the same layout as the recipe one, with a removable chip for the active title search and a counter badge on the trigger.
 - Fixed: Searching a list no longer clears the filters you already applied - a title, type, cooking time, sort order, or pantry filter now survives a search, and vice versa.
 - Fixed: Filters no longer leak between pages - the recipe and menu lists each keep their own, so a menu title search can never be mistaken for a recipe ingredient search.
+- Changed: Every search box in the app - recipes, menus, your pantry, the ingredient/recipe pickers on the recipe and menu forms, and the in-menu recipe search - now searches live as you type instead of requiring Enter, and shares the same look and a single "clear" (✕) button.
+- Added: The add-to-pantry ingredient search now has a clear button, matching every other search box in the app.
+- Added: Selected recipe types and ingredients (and, on menus, categories) now also show as removable chips next to your results, not just inside the filter panel.
+- Fixed: Cramped spacing between the search bar and the row of active-filter chips below it.
+- Fixed: An empty "no results" screen with two buttons could overflow off the edge of the screen on mobile.
+- Fixed: Allergen labels on a recipe's page were slightly misaligned; they're now centered correctly.
+- Added: The site now has a proper meta description, Open Graph and Twitter Card tags (including a preview image), and a `robots.txt`, so shared links (social media, job listings, etc.) show a real title, description, and preview instead of nothing.
 
 ### Project
 
-- Changed: Routine dependency maintenance - updated to the latest safe major versions across backend and frontend (including Zod 4 and Recharts 3); TypeScript and ESLint majors stay pinned for now due to peer-dependency conflicts in their own plugin ecosystems.
+- Changed: Routine dependency maintenance - updated to the latest safe major versions across backend and frontend (including Zod 4 and Recharts 3); TypeScript and ESLint majors stay pinned for now due to peer-dependency conflicts in their own plugin ecosystems. A follow-up pass picked up a further round of safe patch/minor updates (axios, lucide-react, @swc/core, @vitejs/plugin-react-swc, and the Docker build action used by the deploy pipeline).
 - Security: Closed a gap where the login rate limiter could be bypassed by rotating IPv6 addresses within the same subnet.
+- Security: Pinned the patched releases of a nested build-tool dependency (`brace-expansion`) affected by a denial-of-service advisory. It only ever reached the development toolchain, never the deployed app.
+- Security: The backend container now runs as an unprivileged user instead of root.
+- Changed: The project is now licensed under the GNU AGPLv3 (previously the repository carried a GPLv3 license file while the README claimed MIT). The license file, the README, and all three package manifests now agree.
+- Removed: Housekeeping - deleted code left orphaned by earlier refactors (a duplicated set of transactional-email strings, the validation schema for the removed recipe-type editor, an unused date-range helper and its translations, and an unreferenced image asset), and brought the developer documentation back in line with the current architecture.
 
 ## 3.8 - 2026-07-28
 

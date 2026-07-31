@@ -26,9 +26,15 @@ export type SetFilterValue<TState> = <K extends keyof TState & string>(
     options?: SetFilterValueOptions,
 ) => void;
 
+export type SetFilterValues<TState> = (
+    partial: Partial<TState>,
+    options?: SetFilterValueOptions,
+) => void;
+
 export interface UseListFiltersResult<TState, TParams> {
     values: TState;
     setValue: SetFilterValue<TState>;
+    setValues: SetFilterValues<TState>;
     reset: () => void;
     params: TParams;
     activeFilters: ActiveFilterEntry<TParams>[];
@@ -72,6 +78,19 @@ export function useListFilters<TState extends object, TParams>(
         [setRaw],
     );
 
+    // updates several keys in one URL write - setValue() called several times in a row
+    // would each read the same pre-update searchParams from this closure, so only the
+    // last call would actually stick; this merges them all before writing once
+    const setValues = useCallback(
+        (partial: Partial<TState>, options?: SetFilterValueOptions) => {
+            const nextValues = { ...rawValues, ...partial };
+            const next = writeState<TParams>(defs, nextValues, searchParams);
+
+            setSearchParams(next, { replace: options?.replace });
+        },
+        [defs, rawValues, searchParams, setSearchParams],
+    );
+
     const reset = useCallback(() => {
         const next = writeState<TParams>(
             defs,
@@ -94,6 +113,7 @@ export function useListFilters<TState extends object, TParams>(
     return {
         values,
         setValue,
+        setValues,
         reset,
         params,
         activeFilters,

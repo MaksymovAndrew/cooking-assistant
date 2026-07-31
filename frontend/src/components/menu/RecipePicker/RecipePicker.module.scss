@@ -7,53 +7,9 @@
         @include sr-only;
     }
 
+    // overrides SearchField's default surface for the slightly recessed look pickers use
     &__search {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        height: 48px;
-        padding: 0 14px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
         background: var(--surface-2);
-        color: var(--text-muted);
-
-        &:focus-within {
-            border-color: var(--brand);
-            box-shadow: 0 0 0 3px var(--brand-subtle);
-        }
-
-        button {
-            display: flex;
-            flex: none;
-            align-items: center;
-            justify-content: center;
-            width: 20px;
-            height: 20px;
-            border: none;
-            background: none;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-    }
-
-    &__input {
-        flex: 1;
-        min-width: 0;
-        border: none;
-        background: none;
-        color: var(--text);
-        font:
-            400 16px Inter,
-            sans-serif;
-
-        &::placeholder {
-            color: var(--text-muted);
-        }
-
-        &:focus {
-            outline: none;
-        }
     }
 
     // wrapper owns the border/radius/overflow:hidden so the list's scrollbar (on __results below) can't poke past the rounded corner

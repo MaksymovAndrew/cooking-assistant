@@ -3,8 +3,9 @@
 .active-filter-chips {
     display: flex;
     align-items: center;
-    gap: var(--s-2);
+    gap: 10px;
     flex-wrap: wrap;
+    margin-top: 14px;
     margin-bottom: var(--s-5);
 
     &__count {

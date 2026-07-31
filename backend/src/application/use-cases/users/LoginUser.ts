@@ -1,3 +1,4 @@
+import { LOGIN_TIMING_DECOY_HASH } from "config/security";
 import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
 import { UnauthorizedError } from "domain/errors/AppError";
 import type { UserRepository } from "domain/repositories/UserRepository";
@@ -29,19 +30,15 @@ export default class LoginUser {
             ? await this.userRepository.findCredentialsByEmail(asEmail.data)
             : await this.userRepository.findByLogin(data.login);
 
-        if (!user) {
-            throw new UnauthorizedError(
-                ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
-                ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
-            );
-        }
-
+        // when the login doesn't exist, compare against a fixed dummy hash anyway so the response
+        // takes the same time as a wrong-password rejection - otherwise the timing difference alone
+        // (no bcrypt run vs. one) lets an attacker enumerate real logins despite the identical error
         const isPasswordValid = await this.passwordHasher.compare(
             data.password,
-            user.password,
+            user?.password ?? LOGIN_TIMING_DECOY_HASH,
         );
 
-        if (!isPasswordValid) {
+        if (!user || !isPasswordValid) {
             throw new UnauthorizedError(
                 ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
                 ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,

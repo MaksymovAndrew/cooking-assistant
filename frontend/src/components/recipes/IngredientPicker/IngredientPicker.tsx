@@ -1,4 +1,3 @@
-import { Search, X } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,6 +8,7 @@ import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 
 import { IngredientCategoryPanel } from "components/ingredients/IngredientCategoryPanel";
 import { IngredientResultRow } from "components/ingredients/IngredientResultRow";
+import { SearchField } from "components/ui/SearchField";
 
 import styles from "./IngredientPicker.module.scss";
 
@@ -19,8 +19,6 @@ interface IngredientPickerProps {
     onToggle: (ingredient: Ingredient) => void;
 }
 
-const SEARCH_ICON_SIZE = 17;
-const CLEAR_ICON_SIZE = 13;
 const MAX_RESULTS = 8;
 
 export const IngredientPicker: React.FC<IngredientPickerProps> = ({
@@ -56,6 +54,13 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
         inputRef.current?.focus();
     };
 
+    // reopens the dropdown on typing after it's been dismissed with Escape - Escape doesn't blur the
+    // input, so onFocus alone never fires again and results would stay hidden until a manual re-click
+    const handleQueryChange = (value: string) => {
+        setQuery(value);
+        setIsOpen(true);
+    };
+
     return (
         <div ref={containerRef} className={styles["ingredient-picker"]}>
             <label
@@ -64,37 +69,17 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
             >
                 {label}
             </label>
-            <div className={styles["ingredient-picker__search"]}>
-                <Search size={SEARCH_ICON_SIZE} aria-hidden="true" />
-                <input
-                    id="ingredient-picker-search"
-                    ref={inputRef}
-                    type="text"
-                    autoComplete="off"
-                    value={query}
-                    onFocus={() => {
-                        setIsOpen(true);
-                    }}
-                    onChange={(e) => {
-                        setQuery(e.target.value);
-                        setIsOpen(true);
-                    }}
-                    placeholder={t("ingredientPicker.searchPlaceholder")}
-                    className={styles["ingredient-picker__input"]}
-                />
-                {query && (
-                    <button
-                        type="button"
-                        aria-label={t("ingredientPicker.clear")}
-                        onClick={() => {
-                            setQuery("");
-                            inputRef.current?.focus();
-                        }}
-                    >
-                        <X size={CLEAR_ICON_SIZE} aria-hidden="true" />
-                    </button>
-                )}
-            </div>
+            <SearchField
+                ref={inputRef}
+                id="ingredient-picker-search"
+                value={query}
+                onChange={handleQueryChange}
+                onFocus={() => {
+                    setIsOpen(true);
+                }}
+                placeholder={t("ingredientPicker.searchPlaceholder")}
+                className={styles["ingredient-picker__search"]}
+            />
             {isOpen && (
                 <div className={styles["ingredient-picker__results-wrapper"]}>
                     {!trimmedQuery && (

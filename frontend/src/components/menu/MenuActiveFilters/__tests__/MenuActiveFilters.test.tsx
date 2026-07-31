@@ -90,23 +90,31 @@ describe("MenuActiveFilters", () => {
             />,
         );
 
-        await userEvent.click(screen.getByRole("button", { name: "Remove" }));
+        await userEvent.click(
+            screen.getByRole("button", { name: "Remove “cauliflower”" }),
+        );
 
         expect(remove).toHaveBeenCalledTimes(1);
     });
 
-    it("should not render a chip for the category filter, which is shown inside the popover instead", () => {
+    it("should show a removable chip summarizing the selected categories", async () => {
+        const remove = jest.fn();
+
         render(
             <MenuActiveFilters
                 total={3}
-                activeFilters={[makeEntry(CATEGORIES_DEF, [1])]}
+                activeFilters={[makeEntry(CATEGORIES_DEF, [1, 2], remove)]}
                 hasActiveFilters
                 resetFilters={jest.fn()}
             />,
         );
 
-        expect(
-            screen.queryByRole("button", { name: "Remove" }),
-        ).not.toBeInTheDocument();
+        expect(screen.getByText("2 categories")).toBeInTheDocument();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Remove 2 categories" }),
+        );
+
+        expect(remove).toHaveBeenCalledTimes(1);
     });
 });

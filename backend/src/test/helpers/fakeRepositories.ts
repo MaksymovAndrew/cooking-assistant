@@ -80,7 +80,6 @@ function createUserRepository(): jest.Mocked<UserRepository> {
         findCredentialsByEmail: jest.fn(),
         findPasswordResetCandidateByEmail: jest.fn(),
         create: jest.fn(),
-        findAll: jest.fn(),
         updatePassword: jest.fn(),
         updateProfile: jest.fn(),
         markEmailVerified: jest.fn(),

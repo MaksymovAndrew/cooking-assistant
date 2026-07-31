@@ -11,6 +11,7 @@ import { booleanFilter, enumFilter } from "./filterDefFactories.scalar";
 export interface RecipeFilterState {
     search: string;
     types: number[];
+    ingredients: number[];
     cookingTime: { min: string; max: string };
     sort: "asc" | "desc" | null;
     inPantry: boolean;
@@ -26,12 +27,22 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
     textFilter<RecipeFilterParams>({
         key: "search",
         urlParam: "q",
+        param: "recipe_name",
         chipLabel: (value, t) => t("filterPanel.searchChip", { query: value }),
     }),
     idListFilter<RecipeFilterParams>({
         key: "types",
         urlParam: "types",
         param: "type_ids",
+        chipLabel: (value, t) =>
+            t("filterPanel.typeChip", { count: value.length }),
+    }),
+    idListFilter<RecipeFilterParams>({
+        key: "ingredients",
+        urlParam: "ingredients",
+        param: "ingredient_ids",
+        chipLabel: (value, t) =>
+            t("filterPanel.ingredientsChip", { count: value.length }),
     }),
     numericRangeFilter<RecipeFilterParams>({
         key: "cookingTime",

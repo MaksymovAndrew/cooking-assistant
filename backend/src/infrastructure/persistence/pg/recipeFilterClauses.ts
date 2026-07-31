@@ -1,11 +1,17 @@
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
-import type { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import {
+    escapeLikePattern,
+    type SqlFilterBuilder,
+} from "infrastructure/persistence/pg/sqlFilterBuilder";
 
 interface RecipeClauseContext {
     userId: number;
 }
 
+// apply() re-checks the same condition applies() already gated on - applies() is a plain boolean
+// predicate, so TypeScript can't narrow filters inside apply() from it; this isn't redundant, it's
+// how each clause gets its field back as a non-undefined value without an unsafe cast
 interface RecipeFilterClause {
     applies: (filters: RecipeFilters) => boolean;
     apply: (
@@ -16,6 +22,20 @@ interface RecipeFilterClause {
 }
 
 export const RECIPE_FILTER_CLAUSES: readonly RecipeFilterClause[] = [
+    {
+        applies: (filters) => typeof filters.recipe_name !== "undefined",
+        apply: (builder, filters) => {
+            const { recipe_name } = filters;
+
+            if (typeof recipe_name === "undefined") {
+                return;
+            }
+
+            const likePattern = `%${escapeLikePattern(recipe_name)}%`;
+
+            builder.add((bind) => `r.title ILIKE ${bind(likePattern)}`);
+        },
+    },
     {
         applies: (filters) => typeof filters.ingredient_ids !== "undefined",
         apply: (builder, filters) => {

@@ -1,17 +1,18 @@
 @use "styles/abstracts" as *;
 
-.search-component {
+.search-field {
     position: relative;
     display: flex;
     flex: 1;
     min-width: 0;
     align-items: center;
-    gap: var(--s-2);
-    height: 46px;
-    padding: 0 15px;
+    gap: 10px;
+    height: 48px;
+    padding: 0 14px;
     border: 1px solid var(--border);
     border-radius: 10px;
     background: var(--surface);
+    color: var(--text-muted);
 
     &:focus-within {
         border-color: var(--brand);
@@ -20,7 +21,6 @@
 
     &__icon {
         flex: none;
-        color: var(--text-muted);
     }
 
     &__input {
@@ -42,17 +42,16 @@
         }
     }
 
-    &__reset {
+    &__clear {
+        display: flex;
         flex: none;
-        height: 30px;
-        padding: 0 12px;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
         border: none;
-        border-radius: var(--r-pill);
-        background: var(--brand-strong);
-        color: var(--on-brand);
-        font:
-            600 12px Inter,
-            sans-serif;
+        background: none;
+        color: var(--text-muted);
         cursor: pointer;
 
         @include focus-ring;

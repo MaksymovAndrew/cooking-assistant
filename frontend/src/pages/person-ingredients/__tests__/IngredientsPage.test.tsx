@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { Ingredient } from "types/ingredient";
@@ -17,6 +17,14 @@ jest.mock("api/client");
 
 const INGREDIENT_NAME = "Potato";
 const SEARCH_INGREDIENTS_PLACEHOLDER = "Search ingredients...";
+const DEBOUNCE_MS = 300;
+
+const setupUser = () =>
+    userEvent.setup({
+        advanceTimers: (ms) => {
+            jest.advanceTimersByTime(ms);
+        },
+    });
 const SAVE_QUANTITY = "Save";
 const EDIT_QUANTITIES = "Edit quantities";
 const SALMON_NAME = "Salmon fillet";
@@ -95,14 +103,25 @@ describe("IngredientsPage", () => {
         await userEvent.click(
             screen.getByRole("button", { name: BTN_ADD_INGREDIENT }),
         );
-        await userEvent.type(
-            screen.getByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
-            "tom",
-        );
 
-        expect(
-            screen.getByRole("button", { name: /tom/i }),
-        ).toBeInTheDocument();
+        jest.useFakeTimers();
+        const user = setupUser();
+
+        try {
+            await user.type(
+                screen.getByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
+                "tom",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+
+            expect(
+                screen.getByRole("button", { name: /tom/i }),
+            ).toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should close the add-ingredient modal after saving", async () => {
@@ -237,15 +256,25 @@ describe("IngredientsPage", () => {
 
         await screen.findByText(INGREDIENT_NAME);
 
-        await userEvent.type(
-            screen.getByPlaceholderText("Search your pantry..."),
-            "zzz",
-        );
+        jest.useFakeTimers();
+        const user = setupUser();
 
-        expect(screen.queryByText(INGREDIENT_NAME)).not.toBeInTheDocument();
-        expect(
-            screen.getByText("No ingredients match your search."),
-        ).toBeInTheDocument();
+        try {
+            await user.type(
+                screen.getByPlaceholderText("Search your pantry..."),
+                "zzz",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+
+            expect(screen.queryByText(INGREDIENT_NAME)).not.toBeInTheDocument();
+            expect(
+                screen.getByText("No ingredients match your search."),
+            ).toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should filter the pantry by category using the category select", async () => {

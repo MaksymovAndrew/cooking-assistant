@@ -71,6 +71,7 @@ export function idListFilter<TParams>({
 
             return raw
                 .split(",")
+                .filter((segment) => segment !== "")
                 .map(Number)
                 .filter((id) => !Number.isNaN(id));
         },

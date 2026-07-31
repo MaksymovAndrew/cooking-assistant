@@ -1,4 +1,5 @@
 export interface RecipeFilters {
+    recipe_name?: string;
     ingredient_ids?: string;
     type_ids?: string;
     start_date?: string;

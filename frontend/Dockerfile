@@ -11,7 +11,7 @@ ENV VITE_API_URL=$VITE_API_URL
 # Copy manifests first to cache the npm ci layer independently of source changes.
 COPY package*.json ./
 
-# Install all deps (vite, tailwind, typescript etc. are devDeps needed for the build).
+# Install all deps (vite, typescript, sass etc. are devDeps needed for the build).
 RUN npm ci
 
 COPY . .

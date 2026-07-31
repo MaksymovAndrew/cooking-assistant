@@ -1,52 +1,56 @@
 {
-  "name": "cooking-assistant",
-  "version": "3.9.0",
-  "private": true,
-  "engines": {
-    "node": ">=22"
-  },
-  "scripts": {
-    "prepare": "husky && node scripts/setup-skip-alias.mjs",
-    "postinstall": "npm --prefix backend install && npm --prefix frontend install",
-    "start": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
-    "dev": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
-    "start:backend": "npm --prefix backend run dev",
-    "start:frontend": "npm --prefix frontend run dev",
-    "migrate": "npm --prefix backend run migrate",
-    "seed": "npm --prefix backend run seed",
-    "format": "prettier --write \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" \"playwright.config.ts\"",
-    "format:check": "prettier --check \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" \"playwright.config.ts\"",
-    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint && eslint .",
-    "lint:fix": "npm --prefix backend run lint:fix && npm --prefix frontend run lint:fix && eslint . --fix",
-    "lint:sonarjs": "npm --prefix backend run lint:sonarjs && npm --prefix frontend run lint:sonarjs",
-    "stylelint": "npm --prefix frontend run stylelint",
-    "stylelint:fix": "npm --prefix frontend run stylelint:fix",
-    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck && npm run typecheck:e2e",
-    "typecheck:e2e": "tsc --noEmit -p tsconfig.json",
-    "test": "npm --prefix backend run test && npm --prefix frontend run test",
-    "test:coverage": "npm --prefix backend run test:coverage && npm --prefix frontend run test:coverage",
-    "test:e2e": "playwright test",
-    "test:db": "npm --prefix backend run test:db",
-    "build": "npm --prefix frontend run build",
-    "build:backend": "npm --prefix backend run build",
-    "verify": "npm run format:check && npm run lint && npm run lint:sonarjs && npm run stylelint && npm run typecheck && npm run test && npm run build",
-    "bump": "node scripts/release-version.mjs bump"
-  },
-  "overrides": {
-    "shell-quote": "^1.8.4"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.5",
-    "@playwright/test": "^1.62.0",
-    "@types/node": "^26.1.2",
-    "concurrently": "^10.0.4",
-    "eslint": "^9.39.5",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-playwright": "^2.11.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.2.0",
-    "prettier": "^3.9.6",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.65.0"
-  }
+    "name": "cooking-assistant",
+    "version": "3.9.0",
+    "private": true,
+    "license": "AGPL-3.0-or-later",
+    "engines": {
+        "node": ">=22"
+    },
+    "scripts": {
+        "prepare": "husky && node scripts/setup-skip-alias.mjs",
+        "postinstall": "npm --prefix backend install && npm --prefix frontend install",
+        "start": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+        "dev": "concurrently -n backend,frontend -c blue,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+        "start:backend": "npm --prefix backend run dev",
+        "start:frontend": "npm --prefix frontend run dev",
+        "migrate": "npm --prefix backend run migrate",
+        "seed": "npm --prefix backend run seed",
+        "format": "prettier --write \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" \"playwright.config.ts\"",
+        "format:check": "prettier --check \"backend/**/*.ts\" \"frontend/src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" \"playwright.config.ts\"",
+        "lint": "npm --prefix backend run lint && npm --prefix frontend run lint && eslint .",
+        "lint:fix": "npm --prefix backend run lint:fix && npm --prefix frontend run lint:fix && eslint . --fix",
+        "lint:sonarjs": "npm --prefix backend run lint:sonarjs && npm --prefix frontend run lint:sonarjs",
+        "stylelint": "npm --prefix frontend run stylelint",
+        "stylelint:fix": "npm --prefix frontend run stylelint:fix",
+        "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck && npm run typecheck:e2e",
+        "typecheck:e2e": "tsc --noEmit -p tsconfig.json",
+        "test": "npm --prefix backend run test && npm --prefix frontend run test",
+        "test:coverage": "npm --prefix backend run test:coverage && npm --prefix frontend run test:coverage",
+        "test:e2e": "playwright test",
+        "test:db": "npm --prefix backend run test:db",
+        "build": "npm --prefix frontend run build",
+        "build:backend": "npm --prefix backend run build",
+        "verify": "npm run format:check && npm run lint && npm run lint:sonarjs && npm run stylelint && npm run typecheck && npm run test && npm run build",
+        "bump": "node scripts/release-version.mjs bump"
+    },
+    "overrides": {
+        "shell-quote": "^1.8.4",
+        "brace-expansion@1": "^1.1.18",
+        "brace-expansion@2": "^2.1.4",
+        "brace-expansion@3": "^3.0.6"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.5",
+        "@playwright/test": "^1.62.0",
+        "@types/node": "^26.1.2",
+        "concurrently": "^10.0.4",
+        "eslint": "^9.39.5",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-playwright": "^2.11.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.2.0",
+        "prettier": "^3.9.6",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.65.0"
+    }
 }

@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
@@ -22,6 +22,9 @@ import styles from "./MenuListView.module.scss";
 interface MenuListViewProps extends MenuFilterPanelProps {
     menus: Menu[];
     noMenus: boolean;
+    // the full reset, used by MenuActiveFilters ("Clear all") and the empty state -
+    // MenuFilterPanel now owns a narrower reset scoped to just its own popover fields
+    resetFilters: () => void;
     error: string | null;
     onRetry: () => void;
     heading: string;
@@ -68,6 +71,14 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
     loadMoreError,
 }) => {
     const { t } = useTranslation();
+    // bumped on every full reset so SearchField remounts and drops any pending, uncommitted
+    // debounce - see the matching comment in RecipeListView for the full failure scenario
+    const [searchResetKey, setSearchResetKey] = useState(0);
+
+    const handleResetFilters = () => {
+        resetFilters();
+        setSearchResetKey((key) => key + 1);
+    };
 
     return (
         <AppShell>
@@ -89,17 +100,17 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
                 <MenuFilterPanel
                     filters={filters}
                     setValue={setValue}
-                    resetFilters={resetFilters}
                     activeCount={activeCount}
                     categories={categories}
                     searchPlaceholder={searchPlaceholder}
                     total={total}
+                    searchResetKey={searchResetKey}
                 />
                 <MenuActiveFilters
                     total={total}
                     activeFilters={activeFilters}
                     hasActiveFilters={hasActiveFilters}
-                    resetFilters={resetFilters}
+                    resetFilters={handleResetFilters}
                 />
                 {error && (
                     <ErrorState
@@ -115,7 +126,7 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
                         emptyTitle={emptyTitle}
                         emptyDescription={emptyDescription}
                         searchQuery={filters.search || null}
-                        clearFilters={resetFilters}
+                        clearFilters={handleResetFilters}
                     />
                 )}
                 {!error && !noMenus && (

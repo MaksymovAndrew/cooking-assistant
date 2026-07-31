@@ -18,13 +18,10 @@ import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 import { RECIPE_FILTER_DEFS } from "utils/filters/recipeFilterDefs";
 import { getQueryErrorMessage } from "utils/queryError";
-import { matchIngredientIds } from "utils/recipeFilterParams";
 
 import {
-    hasUnmatchedIngredientSearch,
     isPantryFilterEmpty,
     isRecipeListEmpty,
-    shouldSkipRecipesRequest,
 } from "./recipeListViewHelpers";
 import { useListFilters } from "./useListFilters";
 
@@ -43,8 +40,9 @@ export const useRecipeListView = (source: RecipeSource) => {
     const {
         values: filters,
         setValue,
+        setValues,
         reset: resetFilters,
-        params: filterParams,
+        params,
         activeFilters,
         activeCount,
         hasActiveFilters,
@@ -52,39 +50,28 @@ export const useRecipeListView = (source: RecipeSource) => {
         RECIPE_FILTER_DEFS,
     );
 
-    // the catalog is already cached by the ingredient picker/pantry pages - this is a read, not a new request
-    const { data: catalog = [] } = useGetIngredientsQuery(null);
-    const matchedIngredientIds = useMemo(
-        () => matchIngredientIds(filters.search, catalog),
-        [filters.search, catalog],
-    );
-    const hasUnmatchedSearch = hasUnmatchedIngredientSearch(
-        filters.search,
-        matchedIngredientIds,
-    );
+    // feeds the ingredients filter's search-and-pick UI - already cached by the ingredient picker/pantry pages, so this is a read, not a new request
+    const { data: ingredientCatalog = [] } = useGetIngredientsQuery(null);
 
     // already fetched by the pantry page/home dashboard - a cache read, not a new request
-    const { data: pantry = [] } = useGetUserIngredientsQuery(null);
-    const isPantryEmpty = isPantryFilterEmpty(filters.inPantry, pantry.length);
-    const skipRecipesRequest = shouldSkipRecipesRequest(
-        hasUnmatchedSearch,
-        isPantryEmpty,
-    );
-
-    const params = useMemo(
-        (): RecipeFilterParams => ({
-            ...filterParams,
-            ingredient_ids: matchedIngredientIds,
-        }),
-        [filterParams, matchedIngredientIds],
+    const {
+        data: pantry = [],
+        isLoading: isPantryLoading,
+        isUninitialized: isPantryUninitialized,
+    } = useGetUserIngredientsQuery(null);
+    const isPantryEmpty = isPantryFilterEmpty(
+        filters.inPantry,
+        pantry.length,
+        isPantryLoading,
+        isPantryUninitialized,
     );
 
     const isPerson = source === RECIPE_SOURCE.person;
     const byFilters = useGetRecipesByFiltersInfiniteQuery(params, {
-        skip: isPerson || skipRecipesRequest,
+        skip: isPerson || isPantryEmpty,
     });
     const byPerson = useGetRecipesByPersonInfiniteQuery(params, {
-        skip: !isPerson || skipRecipesRequest,
+        skip: !isPerson || isPantryEmpty,
     });
     const active = isPerson ? byPerson : byFilters;
 
@@ -112,16 +99,17 @@ export const useRecipeListView = (source: RecipeSource) => {
     return {
         filters,
         setValue,
+        setValues,
         resetFilters,
         activeFilters,
         activeCount,
         hasActiveFilters,
         types: allTypes,
+        ingredients: ingredientCatalog,
         recipes,
         currentUserId: currentUser?.id ?? null,
         error: !hasLoadedRecipes ? errorMessage : null,
         noRecipes: isRecipeListEmpty(
-            hasUnmatchedSearch,
             isPantryEmpty,
             active.isSuccess,
             hasLoadedRecipes,

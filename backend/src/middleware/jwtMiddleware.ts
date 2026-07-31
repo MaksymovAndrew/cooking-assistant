@@ -3,8 +3,11 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 
 import { AUTH_COOKIE_NAME } from "config/cookie";
 import { requireJwtSecret } from "config/env";
+import { SESSION_TOKEN_TYPE } from "config/security";
 import { ERROR_MESSAGES } from "constants/errorMessages";
 
+// the typ claim must be checked positively: purpose tokens (password-reset, verify-email) are signed
+// with the same secret, so accepting any well-formed { id } would let an emailed link act as a session
 function isUserPayload(
     decoded: string | JwtPayload | undefined,
 ): decoded is JwtPayload & {
@@ -15,6 +18,7 @@ function isUserPayload(
     }
 
     return (
+        decoded.typ === SESSION_TOKEN_TYPE &&
         typeof decoded.id === "number" &&
         Number.isInteger(decoded.id) &&
         decoded.id > 0

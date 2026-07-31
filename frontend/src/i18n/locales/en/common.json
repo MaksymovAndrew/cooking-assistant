@@ -62,15 +62,7 @@
     },
     "search": {
         "placeholderPrefix": "Search by",
-        "reset": "Reset Search"
-    },
-    "dateFilter": {
-        "sortByDates": "Sort by dates",
-        "startDate": "Start date:",
-        "endDate": "End date:",
-        "reset": "Reset filters",
-        "startAfterEnd": "Start date cannot be later than end date.",
-        "invalidRange": "Please select a valid date range."
+        "clear": "Clear"
     },
     "notFound": {
         "heading": "Page not found",

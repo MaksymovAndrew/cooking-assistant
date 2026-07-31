@@ -1,3 +1,4 @@
+import { LOGIN_TIMING_DECOY_HASH } from "config/security";
 import { ERROR_MESSAGES } from "constants/errorMessages";
 import { UnauthorizedError } from "domain/errors/AppError";
 
@@ -42,6 +43,22 @@ describe("LoginUser", () => {
             UnauthorizedError,
             ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
             401,
+        );
+    });
+
+    // an unknown login must still pay bcrypt's cost, or the response-time difference alone lets an
+    // attacker tell real logins from fake ones despite the identical error message and status
+    it("should still run a password comparison against a dummy hash when the login does not exist", async () => {
+        const { useCase, userRepository, passwordHasher } = setup();
+
+        userRepository.findByLogin.mockResolvedValue(null);
+        passwordHasher.compare.mockResolvedValue(false);
+
+        await catchError(useCase.execute(makeCredentials({ password: "x" })));
+
+        expect(passwordHasher.compare).toHaveBeenCalledWith(
+            "x",
+            LOGIN_TIMING_DECOY_HASH,
         );
     });
 
@@ -135,6 +152,24 @@ describe("LoginUser", () => {
             UnauthorizedError,
             ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
             401,
+        );
+    });
+
+    it("should still run a password comparison against a dummy hash when no account matches the email identifier", async () => {
+        const { useCase, userRepository, passwordHasher } = setup();
+
+        userRepository.findCredentialsByEmail.mockResolvedValue(null);
+        passwordHasher.compare.mockResolvedValue(false);
+
+        await catchError(
+            useCase.execute(
+                makeCredentials({ login: "nobody@example.com", password: "x" }),
+            ),
+        );
+
+        expect(passwordHasher.compare).toHaveBeenCalledWith(
+            "x",
+            LOGIN_TIMING_DECOY_HASH,
         );
     });
 });

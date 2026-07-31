@@ -1,9 +1,17 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { IngredientPicker } from "components/recipes/IngredientPicker";
 
 const SEARCH_PLACEHOLDER = "Search ingredients...";
+const DEBOUNCE_MS = 300;
+
+const setupUser = () =>
+    userEvent.setup({
+        advanceTimers: (ms) => {
+            jest.advanceTimersByTime(ms);
+        },
+    });
 
 const INGREDIENTS = [
     {
@@ -55,88 +63,131 @@ describe("IngredientPicker", () => {
     });
 
     it("should show matching ingredients as the query is typed", async () => {
-        render(
-            <IngredientPicker
-                allIngredients={INGREDIENTS}
-                selectedIds={[]}
-                label="Ingredients"
-                onToggle={jest.fn()}
-            />,
-        );
+        jest.useFakeTimers();
+        const user = setupUser();
 
-        await userEvent.type(
-            screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
-            "pot",
-        );
+        try {
+            render(
+                <IngredientPicker
+                    allIngredients={INGREDIENTS}
+                    selectedIds={[]}
+                    label="Ingredients"
+                    onToggle={jest.fn()}
+                />,
+            );
 
-        // the matched substring is wrapped in its own <strong>, which the accessible name computation separates with a space (e.g. "Pot ato")
-        expect(
-            screen.getByRole("button", { name: /pot/i }),
-        ).toBeInTheDocument();
-        expect(
-            screen.queryByRole("button", { name: /onion/i }),
-        ).not.toBeInTheDocument();
+            await user.type(
+                screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
+                "pot",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+
+            // the matched substring is wrapped in its own <strong>, which the accessible name computation separates with a space (e.g. "Pot ato")
+            expect(
+                screen.getByRole("button", { name: /pot/i }),
+            ).toBeInTheDocument();
+            expect(
+                screen.queryByRole("button", { name: /onion/i }),
+            ).not.toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should show already-selected ingredients as a disabled match", async () => {
-        render(
-            <IngredientPicker
-                allIngredients={INGREDIENTS}
-                selectedIds={[1]}
-                label="Ingredients"
-                onToggle={jest.fn()}
-            />,
-        );
+        jest.useFakeTimers();
+        const user = setupUser();
 
-        await userEvent.type(
-            screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
-            "o",
-        );
+        try {
+            render(
+                <IngredientPicker
+                    allIngredients={INGREDIENTS}
+                    selectedIds={[1]}
+                    label="Ingredients"
+                    onToggle={jest.fn()}
+                />,
+            );
 
-        // the matched "o" is highlighted separately, so match the unhighlighted remainder
-        expect(screen.getByRole("button", { name: /tato/i })).toBeDisabled();
-        expect(
-            screen.getByRole("button", { name: /nion/i }),
-        ).not.toBeDisabled();
+            await user.type(
+                screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
+                "o",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+
+            // the matched "o" is highlighted separately, so match the unhighlighted remainder
+            expect(
+                screen.getByRole("button", { name: /tato/i }),
+            ).toBeDisabled();
+            expect(
+                screen.getByRole("button", { name: /nion/i }),
+            ).not.toBeDisabled();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should show a no-matches message when nothing matches", async () => {
-        render(
-            <IngredientPicker
-                allIngredients={INGREDIENTS}
-                selectedIds={[]}
-                label="Ingredients"
-                onToggle={jest.fn()}
-            />,
-        );
+        jest.useFakeTimers();
+        const user = setupUser();
 
-        await userEvent.type(
-            screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
-            "zzz",
-        );
+        try {
+            render(
+                <IngredientPicker
+                    allIngredients={INGREDIENTS}
+                    selectedIds={[]}
+                    label="Ingredients"
+                    onToggle={jest.fn()}
+                />,
+            );
 
-        expect(screen.getByText("No ingredients found")).toBeInTheDocument();
+            await user.type(
+                screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
+                "zzz",
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+
+            expect(
+                screen.getByText("No ingredients found"),
+            ).toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should call onToggle and clear the query when a result is selected", async () => {
+        jest.useFakeTimers();
+        const user = setupUser();
         const onToggle = jest.fn();
 
-        render(
-            <IngredientPicker
-                allIngredients={INGREDIENTS}
-                selectedIds={[]}
-                label="Ingredients"
-                onToggle={onToggle}
-            />,
-        );
+        try {
+            render(
+                <IngredientPicker
+                    allIngredients={INGREDIENTS}
+                    selectedIds={[]}
+                    label="Ingredients"
+                    onToggle={onToggle}
+                />,
+            );
 
-        const input = screen.getByPlaceholderText(SEARCH_PLACEHOLDER);
+            const input = screen.getByPlaceholderText(SEARCH_PLACEHOLDER);
 
-        await userEvent.type(input, "pot");
-        await userEvent.click(screen.getByRole("button", { name: /pot/i }));
+            await user.type(input, "pot");
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+            await user.click(screen.getByRole("button", { name: /pot/i }));
 
-        expect(onToggle).toHaveBeenCalledWith(INGREDIENTS[0]);
-        expect(input).toHaveValue("");
+            expect(onToggle).toHaveBeenCalledWith(INGREDIENTS[0]);
+            expect(input).toHaveValue("");
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should clear the query when the clear button is clicked", async () => {
@@ -175,6 +226,45 @@ describe("IngredientPicker", () => {
         expect(
             screen.getByRole("button", { name: /^Fish/ }),
         ).toBeInTheDocument();
+    });
+
+    it("should reopen the dropdown when typing after it was dismissed with Escape", async () => {
+        jest.useFakeTimers();
+        const user = setupUser();
+
+        try {
+            render(
+                <IngredientPicker
+                    allIngredients={INGREDIENTS}
+                    selectedIds={[]}
+                    label="Ingredients"
+                    onToggle={jest.fn()}
+                />,
+            );
+
+            const input = screen.getByPlaceholderText(SEARCH_PLACEHOLDER);
+
+            await user.click(input);
+            expect(
+                screen.getByRole("button", { name: /^Vegetables/ }),
+            ).toBeInTheDocument();
+
+            await user.keyboard("{Escape}");
+            expect(
+                screen.queryByRole("button", { name: /^Vegetables/ }),
+            ).not.toBeInTheDocument();
+
+            await user.type(input, "pot");
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+
+            expect(
+                screen.getByRole("button", { name: /pot/i }),
+            ).toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should show a category's ingredients after clicking it, then go back to the category list", async () => {

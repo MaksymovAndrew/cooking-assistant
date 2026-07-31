@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type * as ReactRouterDom from "react-router-dom";
 
@@ -57,13 +57,33 @@ describe("CreateMenuPage", () => {
             screen.getByLabelText("Menu category *"),
             String(CATEGORY_ID),
         );
-        await userEvent.type(
-            screen.getByPlaceholderText("Search recipes..."),
-            RECIPE_TITLE,
-        );
-        await userEvent.click(
-            screen.getByRole("button", { name: new RegExp(RECIPE_TITLE, "i") }),
-        );
+
+        const DEBOUNCE_MS = 300;
+
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            await user.type(
+                screen.getByPlaceholderText("Search recipes..."),
+                RECIPE_TITLE,
+            );
+            act(() => {
+                jest.advanceTimersByTime(DEBOUNCE_MS);
+            });
+            await user.click(
+                screen.getByRole("button", {
+                    name: new RegExp(RECIPE_TITLE, "i"),
+                }),
+            );
+        } finally {
+            jest.useRealTimers();
+        }
+
         await userEvent.click(
             screen.getByRole("button", { name: "Create menu" }),
         );

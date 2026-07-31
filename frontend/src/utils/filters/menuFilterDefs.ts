@@ -20,5 +20,7 @@ export const MENU_FILTER_DEFS: readonly FilterDef<unknown, MenuListParams>[] = [
         key: "categories",
         urlParam: "cats",
         param: "category_ids",
+        chipLabel: (value, t) =>
+            t("categoryFilter.categoryChip", { count: value.length }),
     }),
 ];

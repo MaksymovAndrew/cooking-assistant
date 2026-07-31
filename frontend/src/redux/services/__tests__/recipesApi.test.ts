@@ -9,6 +9,7 @@ import type {
 
 import { API_ROUTES } from "api/endpoints";
 
+import { menusApi } from "redux/services/menusApi";
 import { recipesApi } from "redux/services/recipesApi";
 
 import {
@@ -158,6 +159,31 @@ describe("recipesApi", () => {
             {
                 params: undefined,
             },
+        );
+    });
+
+    it("should invalidate a cached menu after deleting a recipe, since the backend cascades the delete into that menu's recipes", async () => {
+        mockedDelete.mockResolvedValue({ data: null });
+        mockedGet.mockResolvedValue({
+            data: {
+                id: 9,
+                title: "Sunday dinner",
+                recipes: [],
+                category_id: 1,
+                categoryname: "Dinner",
+                isOwner: true,
+            },
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(menusApi.endpoints.getMenuById.initiate(9));
+        const callsAfterFirstFetch = mockedGet.mock.calls.length;
+
+        await store.dispatch(recipesApi.endpoints.deleteRecipe.initiate("1"));
+        await store.dispatch(menusApi.endpoints.getMenuById.initiate(9));
+
+        expect(mockedGet.mock.calls.length).toBeGreaterThan(
+            callsAfterFirstFetch,
         );
     });
 });

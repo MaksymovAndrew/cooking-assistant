@@ -63,6 +63,11 @@ describe("idListFilter", () => {
         expect(def.read(new URLSearchParams("types=1,2,3"))).toEqual([1, 2, 3]);
     });
 
+    it("should ignore empty segments instead of reading them as id 0", () => {
+        expect(def.read(new URLSearchParams("types=1,,3"))).toEqual([1, 3]);
+        expect(def.read(new URLSearchParams("types=1,2,"))).toEqual([1, 2]);
+    });
+
     it("should write a comma-joined list and delete the key when empty", () => {
         const params = new URLSearchParams();
 

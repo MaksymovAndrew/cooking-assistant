@@ -53,7 +53,7 @@ export const ActiveFilterChips: React.FC<ActiveFilterChipsProps> = ({
                     {chip.label}
                     <button
                         type="button"
-                        aria-label={removeLabel}
+                        aria-label={`${removeLabel} ${chip.label}`}
                         onClick={chip.onRemove}
                     >
                         <X size={REMOVE_ICON_SIZE} aria-hidden="true" />

@@ -41,6 +41,11 @@ export async function selectFromPicker(
     const exactIngredientOption = page.getByRole("button", {
         name: new RegExp(`^${escapeRegExp(query)}\\s(${unitPattern})\\b`, "i"),
     });
+    const substringOption = page.getByRole("button", { name: query });
+
+    // the picker's search is debounced, so results only render a beat after fill() -
+    // wait for whichever option shows up before counting, instead of counting immediately
+    await exactIngredientOption.or(substringOption).first().waitFor();
 
     // ingredient options resolve through the unit anchor above; the recipe picker (no unit
     // suffix) falls back to the original substring match, which stays unambiguous for the
@@ -51,7 +56,7 @@ export async function selectFromPicker(
         return;
     }
 
-    await page.getByRole("button", { name: query }).click();
+    await substringOption.click();
 }
 
 interface RecipeFormInput {

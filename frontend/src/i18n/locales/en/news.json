@@ -3,6 +3,11 @@
     "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "smarterSearch": {
+            "date": "2026-07-30",
+            "title": "Smarter search and shareable filters",
+            "description": "Recipe and menu filters now live in the page URL, so you can share or bookmark a filtered view and it'll look exactly the same when you open it. Search is live as you type everywhere in the app, recipes can be found by name or by specific ingredients, and every active filter shows as a chip you can remove with one click."
+        },
         "newIngredientCatalog": {
             "date": "2026-07-28",
             "title": "A bigger pantry, smarter recipes",

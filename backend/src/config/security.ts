@@ -14,6 +14,16 @@ const ONE_HOUR_IN_SECONDS = 60 * ONE_MINUTE_IN_SECONDS;
 export const PASSWORD_RESET_TOKEN_TTL_SECONDS = 30 * ONE_MINUTE_IN_SECONDS;
 export const EMAIL_VERIFICATION_TOKEN_TTL_SECONDS = 24 * ONE_HOUR_IN_SECONDS;
 
+// session tokens must be identified positively, not as "the token without a purpose" - otherwise an
+// emailed reset/verify link, signed with the same secret, would pass as a session cookie
+export const SESSION_TOKEN_TYPE = "session";
+
+// a fixed bcrypt hash (cost 10, matching BcryptPasswordHasher) with no known plaintext - login runs a
+// compare against this when the account doesn't exist, so an unknown-login response costs the same
+// ~60ms as a wrong-credential one and a timing attack can't distinguish real logins from guesses
+export const LOGIN_TIMING_DECOY_HASH =
+    "$2b$10$O4WKafxctEpIILFgblljtOaqxP0VV45UqReyQZS6ECNrj8NeX0qJ2";
+
 // trusted reverse-proxy / load-balancer hops (env TRUST_PROXY_HOPS; 0 in dev, 1 in prod)
 export const TRUST_PROXY_HOPS = config.trustProxyHops;
 

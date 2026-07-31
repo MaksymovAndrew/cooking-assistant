@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { Ingredient } from "types/ingredient";
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { SetFilterValue } from "hooks/useListFilters";
@@ -12,6 +13,7 @@ import { SegmentedControl } from "components/ui/SegmentedControl";
 
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
+import { RecipeIngredientsFilter } from "./RecipeIngredientsFilter";
 import { RecipePantryToggle } from "./RecipePantryToggle";
 import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
 
@@ -19,6 +21,10 @@ interface RecipeFilterPopoverProps {
     filters: RecipeFilterState;
     setValue: SetFilterValue<RecipeFilterState>;
     types: RecipeTypeSummary[];
+    ingredients: Ingredient[];
+    // bumped by RecipeFilterPanel's "Reset filters" - remounts the cooking-time fields so a
+    // pending, still-debouncing edit can't commit after the reset (see RecipeFilterPanel)
+    fieldsResetKey?: number;
 }
 
 const SORT_OPTIONS: readonly SegmentedOption<"asc" | "desc">[] = [
@@ -30,6 +36,8 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
     filters,
     setValue,
     types,
+    ingredients,
+    fieldsResetKey,
 }) => {
     const { t } = useTranslation("recipes");
 
@@ -47,19 +55,22 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                     {t("filterPanel.cookingTimeLabel")}
                 </span>
                 <RecipeTimeRangeFields
+                    key={fieldsResetKey}
                     minCookingTime={filters.cookingTime.min}
                     maxCookingTime={filters.cookingTime.max}
                     setMinCookingTime={(time) => {
-                        setValue("cookingTime", {
-                            ...filters.cookingTime,
-                            min: time,
-                        });
+                        setValue(
+                            "cookingTime",
+                            { ...filters.cookingTime, min: time },
+                            { replace: true },
+                        );
                     }}
                     setMaxCookingTime={(time) => {
-                        setValue("cookingTime", {
-                            ...filters.cookingTime,
-                            max: time,
-                        });
+                        setValue(
+                            "cookingTime",
+                            { ...filters.cookingTime, max: time },
+                            { replace: true },
+                        );
                     }}
                 />
             </div>
@@ -96,6 +107,14 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                     }}
                 />
             </div>
+
+            <RecipeIngredientsFilter
+                allIngredients={ingredients}
+                selectedIds={filters.ingredients}
+                onChange={(next) => {
+                    setValue("ingredients", next);
+                }}
+            />
         </>
     );
 };

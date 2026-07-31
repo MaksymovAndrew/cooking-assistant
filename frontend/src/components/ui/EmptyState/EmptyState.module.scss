@@ -37,8 +37,8 @@
     }
 
     &__action {
-        display: flex;
-        gap: var(--s-3);
+        @include mobile-stacked-actions;
+
         margin-top: var(--s-2);
     }
 }

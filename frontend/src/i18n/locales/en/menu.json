@@ -22,11 +22,12 @@
         "menuCount_one": "{{count}} menu",
         "menuCount_other": "{{count}} menus",
         "searchChip": "“{{query}}”",
+        "categoryChip_one": "{{count}} category",
+        "categoryChip_other": "{{count}} categories",
         "removeFilter": "Remove"
     },
     "recipePicker": {
         "searchPlaceholder": "Search recipes...",
-        "clear": "Clear",
         "noMatches": "No recipes found"
     },
     "menuPage": {

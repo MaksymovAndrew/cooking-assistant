@@ -8,7 +8,6 @@ import type ConfirmEmailVerification from "application/use-cases/users/ConfirmEm
 import type ConfirmPasswordReset from "application/use-cases/users/ConfirmPasswordReset";
 import type DeleteAccount from "application/use-cases/users/DeleteAccount";
 import type GetCurrentUser from "application/use-cases/users/GetCurrentUser";
-import type GetUsers from "application/use-cases/users/GetUsers";
 import type LoginUser from "application/use-cases/users/LoginUser";
 import type RegisterUser from "application/use-cases/users/RegisterUser";
 import type RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
@@ -20,7 +19,6 @@ import { getUserId } from "controller/requestUser";
 interface UserControllerDependencies {
     registerUser: RegisterUser;
     loginUser: LoginUser;
-    getUsers: GetUsers;
     getCurrentUser: GetCurrentUser;
     requestPasswordReset: RequestPasswordReset;
     confirmPasswordReset: ConfirmPasswordReset;
@@ -34,7 +32,6 @@ interface UserControllerDependencies {
 export default class UserController {
     private registerUserUseCase: RegisterUser;
     private loginUserUseCase: LoginUser;
-    private getUsersUseCase: GetUsers;
     private getCurrentUserUseCase: GetCurrentUser;
     private requestPasswordResetUseCase: RequestPasswordReset;
     private confirmPasswordResetUseCase: ConfirmPasswordReset;
@@ -47,7 +44,6 @@ export default class UserController {
     constructor({
         registerUser,
         loginUser,
-        getUsers,
         getCurrentUser,
         requestPasswordReset,
         confirmPasswordReset,
@@ -59,7 +55,6 @@ export default class UserController {
     }: UserControllerDependencies) {
         this.registerUserUseCase = registerUser;
         this.loginUserUseCase = loginUser;
-        this.getUsersUseCase = getUsers;
         this.getCurrentUserUseCase = getCurrentUser;
         this.requestPasswordResetUseCase = requestPasswordReset;
         this.confirmPasswordResetUseCase = confirmPasswordReset;
@@ -97,12 +92,6 @@ export default class UserController {
         const user = await this.getCurrentUserUseCase.execute(getUserId(req));
 
         res.json(user);
-    };
-
-    getUsers: RequestHandler = async (_req, res) => {
-        const users = await this.getUsersUseCase.execute();
-
-        res.json(users);
     };
 
     requestPasswordReset: RequestHandler = async (req, res) => {

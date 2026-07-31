@@ -17,7 +17,7 @@ COPY tsconfig.json tsup.config.ts ./
 COPY src/ ./src/
 
 # Compile TS → JS and resolve bare path aliases via esbuild.
-# Outputs: dist/index.js, dist/scripts/migrate.js, dist/scripts/seed.js
+# Outputs: dist/index.js plus dist/scripts/{migrate,seed,deploy-db}.js
 RUN npm run build
 
 # ── Stage 2: runner ─────────────────────────────────────────────────────────
@@ -39,6 +39,10 @@ COPY --from=builder /app/dist ./dist
 COPY migrations/ ./migrations/
 
 EXPOSE 3000
+
+# Drop root: the official node images ship an unprivileged `node` user, and the app
+# only ever reads from disk (it logs to stdout), so nothing needs write access.
+USER node
 
 # Exec form (JSON array) so SIGTERM reaches node directly — enables graceful shutdown.
 CMD ["node", "dist/index.js"]

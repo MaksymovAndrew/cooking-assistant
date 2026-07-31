@@ -16,9 +16,11 @@ describe("NewsModal", () => {
         render(<NewsModal isOpen onClose={jest.fn()} />);
 
         expect(screen.getByText("What's new")).toBeInTheDocument();
+        expect(
+            screen.getByText("Smarter search and shareable filters"),
+        ).toBeInTheDocument();
         expect(screen.getByText("A brand-new look")).toBeInTheDocument();
         expect(screen.getByText("Pantry-aware recipes")).toBeInTheDocument();
-        expect(screen.getByText("Richer statistics")).toBeInTheDocument();
     });
 
     it("should call onClose when the close button is clicked", async () => {

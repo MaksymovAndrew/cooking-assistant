@@ -1,9 +1,9 @@
-import { Search } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { IngredientCategoryOption } from "hooks/useIngredientCategories";
 
+import { SearchField } from "components/ui/SearchField";
 import { Select } from "components/ui/Select";
 
 import styles from "./IngredientsToolbar.module.scss";
@@ -19,8 +19,6 @@ interface IngredientsToolbarProps {
     onCategoryFilterChange: (category: string | null) => void;
 }
 
-const SEARCH_ICON_SIZE = 17;
-
 export const IngredientsToolbar: React.FC<IngredientsToolbarProps> = ({
     query,
     onQueryChange,
@@ -35,18 +33,12 @@ export const IngredientsToolbar: React.FC<IngredientsToolbarProps> = ({
 
     return (
         <div className={styles["ingredients-toolbar"]}>
-            <div className={styles["ingredients-toolbar__search"]}>
-                <Search size={SEARCH_ICON_SIZE} aria-hidden="true" />
-                <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => {
-                        onQueryChange(e.target.value);
-                    }}
-                    placeholder={t("page.searchPlaceholder")}
-                    className={styles["ingredients-toolbar__search-input"]}
-                />
-            </div>
+            <SearchField
+                value={query}
+                onChange={onQueryChange}
+                placeholder={t("page.searchPlaceholder")}
+                className={styles["ingredients-toolbar__search"]}
+            />
             {categories.length > 0 && (
                 <Select
                     aria-label={t("page.categoryFilterLabel")}

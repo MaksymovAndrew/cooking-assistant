@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
@@ -13,6 +13,7 @@ const DESSERT_TYPE = { id: 2, type_name: "Dessert", description: "" };
 const BASE_FILTERS: RecipeFilterState = {
     search: "",
     types: [],
+    ingredients: [],
     cookingTime: { min: "", max: "" },
     sort: null,
     inPantry: false,
@@ -20,21 +21,22 @@ const BASE_FILTERS: RecipeFilterState = {
 
 const setup = (overrides: Partial<RecipeFilterState> = {}, activeCount = 0) => {
     const setValue = jest.fn();
-    const resetFilters = jest.fn();
+    const setValues = jest.fn();
 
     renderWithRouter(
         <RecipeFilterPanel
             filters={{ ...BASE_FILTERS, ...overrides }}
             setValue={setValue}
-            resetFilters={resetFilters}
+            setValues={setValues}
             activeCount={activeCount}
             types={[SOUP_TYPE, DESSERT_TYPE]}
+            ingredients={[]}
             searchPlaceholder="Search recipes"
             total={5}
         />,
     );
 
-    return { setValue, resetFilters };
+    return { setValue, setValues };
 };
 
 const openPanel = async () => {
@@ -70,16 +72,35 @@ describe("RecipeFilterPanel", () => {
         expect(screen.getByText("2")).toBeInTheDocument();
     });
 
-    it("should call setValue with the updated range when the time inputs change", async () => {
-        const { setValue } = setup();
-
-        await openPanel();
-        await userEvent.type(screen.getByLabelText("Min"), "5");
-
-        expect(setValue).toHaveBeenCalledWith("cookingTime", {
-            min: "5",
-            max: "",
+    it("should call setValue with the updated range, debounced, when the time inputs change", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
         });
+
+        try {
+            const { setValue } = setup();
+
+            await user.click(screen.getByRole("button", { name: /Filters/ }));
+            await user.type(screen.getByLabelText("Min"), "5");
+
+            // still debouncing - not committed to the URL yet
+            expect(setValue).not.toHaveBeenCalled();
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).toHaveBeenCalledWith(
+                "cookingTime",
+                { min: "5", max: "" },
+                { replace: true },
+            );
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should call setValue with the sort direction when a sort segment is clicked", async () => {
@@ -111,15 +132,63 @@ describe("RecipeFilterPanel", () => {
         expect(setValue).toHaveBeenCalledWith("inPantry", true);
     });
 
-    it("should call resetFilters when Reset filters is clicked", async () => {
-        const { resetFilters } = setup({ types: [1], inPantry: true }, 2);
+    it("should reset only the popover's own fields when Reset filters is clicked, leaving search alone", async () => {
+        const { setValue, setValues } = setup(
+            { types: [1], inPantry: true },
+            2,
+        );
 
         await openPanel();
         await userEvent.click(
             screen.getByRole("button", { name: "Reset filters" }),
         );
 
-        expect(resetFilters).toHaveBeenCalledTimes(1);
+        // one combined call, not five separate setValue() calls - each of those would
+        // read the same pre-reset URL state, so only the last one would actually stick
+        expect(setValues).toHaveBeenCalledWith({
+            types: [],
+            ingredients: [],
+            cookingTime: { min: "", max: "" },
+            sort: null,
+            inPantry: false,
+        });
+        expect(setValue).not.toHaveBeenCalledWith(
+            "search",
+            expect.anything(),
+            expect.anything(),
+        );
+    });
+
+    it("should not let a pending, uncommitted Min edit commit after Reset filters is clicked", async () => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({
+            advanceTimers: (ms) => {
+                jest.advanceTimersByTime(ms);
+            },
+        });
+
+        try {
+            const { setValue } = setup();
+
+            await user.click(screen.getByRole("button", { name: /Filters/ }));
+            await user.type(screen.getByLabelText("Min"), "5");
+            // debounce still pending - Reset filters doesn't close the popover
+            await user.click(
+                screen.getByRole("button", { name: "Reset filters" }),
+            );
+
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(setValue).not.toHaveBeenCalledWith(
+                "cookingTime",
+                expect.anything(),
+                expect.anything(),
+            );
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it("should close the popover when Apply is clicked", async () => {
@@ -139,9 +208,10 @@ describe("RecipeFilterPanel", () => {
                 <RecipeFilterPanel
                     filters={BASE_FILTERS}
                     setValue={jest.fn()}
-                    resetFilters={jest.fn()}
+                    setValues={jest.fn()}
                     activeCount={0}
                     types={[]}
+                    ingredients={[]}
                     searchPlaceholder="Search recipes"
                     total={5}
                 />

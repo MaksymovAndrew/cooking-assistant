@@ -1,3 +1,5 @@
+@use "styles/abstracts" as *;
+
 .recipe-filter-panel {
     position: relative;
     display: flex;
@@ -73,5 +75,53 @@
         font:
             600 14px Inter,
             sans-serif;
+    }
+
+    &__ingredients-results {
+        max-height: 200px;
+        margin: 8px 0 0;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        list-style: none;
+        padding-inline-start: 0;
+    }
+
+    &__ingredients-empty {
+        padding: var(--s-2) var(--s-3);
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    &__ingredients-result {
+        display: block;
+        width: 100%;
+        padding: var(--s-2) var(--s-3);
+        border: none;
+        border-top: 1px solid var(--border);
+        background: none;
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+        font:
+            500 13px Inter,
+            sans-serif;
+
+        &:first-child {
+            border-top: none;
+        }
+
+        @include on-hover {
+            background: var(--brand-subtle);
+        }
+    }
+
+    &__ingredients-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
     }
 }

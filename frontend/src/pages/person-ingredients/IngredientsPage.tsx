@@ -44,7 +44,7 @@ const IngredientsPage: React.FC = () => {
                     expiringSoonCount={filters.expiringSoonCount}
                     expiringSoonOnly={filters.expiringSoonOnly}
                     onToggleExpiringSoon={() => {
-                        filters.setExpiringSoonOnly((prev) => !prev);
+                        filters.setExpiringSoonOnly(!filters.expiringSoonOnly);
                     }}
                     categories={filters.categories}
                     categoryFilter={filters.categoryFilter}

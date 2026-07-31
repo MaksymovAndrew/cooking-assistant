@@ -83,6 +83,38 @@ describe("useListFilters", () => {
         expect(result.current.params).toEqual({ type_ids: "3" });
     });
 
+    it("should update several URL-backed values in one write when setValues is called", () => {
+        const { result } = setup(["/test?q=milk"]);
+
+        act(() => {
+            result.current.setValues({ types: [3], inStock: true });
+        });
+
+        expect(result.current.values).toEqual({
+            search: "milk",
+            types: [3],
+            inStock: true,
+        });
+    });
+
+    it("should lose all but the last update when setValue is called several times in the same tick, unlike setValues", () => {
+        const { result } = setup(["/test?types=1"]);
+
+        // each setValue() call reads the same pre-update searchParams from this render's
+        // closure, so - unlike setValues() - calling it repeatedly in one go only keeps
+        // the last call's effect; this pins that known limitation, not a desired behavior
+        act(() => {
+            result.current.setValue("types", []);
+            result.current.setValue("inStock", true);
+        });
+
+        expect(result.current.values).toEqual({
+            search: "",
+            types: [1],
+            inStock: true,
+        });
+    });
+
     it("should reset every filter back to its default", () => {
         const { result } = setup(["/test?q=milk&types=1&stock=1"]);
 

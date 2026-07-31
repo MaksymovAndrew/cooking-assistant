@@ -56,7 +56,6 @@ export interface UserRepository {
         email: string,
     ): Promise<PasswordResetCandidate | null>;
     create(user: NewUser): Promise<{ id: number }>;
-    findAll(): Promise<unknown[]>;
     updatePassword(id: number, hashedPassword: string): Promise<void>;
     updateProfile(id: number, data: ProfileUpdate): Promise<void>;
     markEmailVerified(id: number): Promise<void>;

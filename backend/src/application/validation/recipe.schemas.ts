@@ -10,6 +10,7 @@ import {
     nonEmptyStringSchema,
     numberSchema,
     offsetSchema,
+    optionalStringSchema,
     positiveIntegerSchema,
     requiredOrInvalidType,
     toNumber,
@@ -63,6 +64,7 @@ export const updateRecipeSchema = createRecipeSchema.omit({
 
 // output shape is checked against the domain's RecipeFilters below - the repository interface is typed against that, not against this schema
 export const recipeFiltersSchema = z.object({
+    recipe_name: optionalStringSchema("Recipe name"),
     ingredient_ids: idListStringSchema("Ingredient IDs")
         .refine(
             (value) => value.split(",").length <= MAX_INGREDIENT_FILTER_IDS,

@@ -1,4 +1,7 @@
-import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import {
+    escapeLikePattern,
+    SqlFilterBuilder,
+} from "infrastructure/persistence/pg/sqlFilterBuilder";
 
 describe("SqlFilterBuilder", () => {
     it("should produce an empty where clause when nothing was added", () => {
@@ -61,5 +64,20 @@ describe("SqlFilterBuilder", () => {
         expect(limitPlaceholder).toBe("$2");
         expect(offsetPlaceholder).toBe("$3");
         expect(builder.values()).toEqual([10, 20, 0]);
+    });
+});
+
+describe("escapeLikePattern", () => {
+    it("should escape LIKE wildcards so they match literally", () => {
+        expect(escapeLikePattern("50%")).toBe("50\\%");
+        expect(escapeLikePattern("mac_n_cheese")).toBe("mac\\_n\\_cheese");
+    });
+
+    it("should escape a literal backslash before wildcard-escaping runs into it", () => {
+        expect(escapeLikePattern("a\\b")).toBe("a\\\\b");
+    });
+
+    it("should leave plain text untouched", () => {
+        expect(escapeLikePattern("borscht")).toBe("borscht");
     });
 });

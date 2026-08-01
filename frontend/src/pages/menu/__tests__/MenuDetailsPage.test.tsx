@@ -47,6 +47,7 @@ const SAMPLE: MenuDetails = {
             type_name: "Soup",
             cooking_time: 30,
             creation_date: "2024-01-01",
+            calories_per_portion: null,
             missingIngredients: [
                 {
                     ingredient_id: 7,

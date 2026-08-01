@@ -1,17 +1,19 @@
 import { screen } from "@testing-library/react";
 
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecentRecipes } from "components/home/RecentRecipes";
 
 import { renderWithRouter } from "test/router";
 
-const RECIPE: RecipeListItem = {
+const RECIPE: RecipeSearchResultItem = {
     id: 7,
     title: "Borscht",
     type_name: "Soup",
     creation_date: "2024-01-01",
     cooking_time: 30,
+    ingredients: [],
+    calories_per_portion: null,
 };
 
 describe("RecentRecipes", () => {

@@ -11,9 +11,10 @@ import { useGetRecipeByIdQuery } from "redux/services/recipesApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { useIngredientAvailability } from "hooks/useIngredientAvailability";
-import { useServingsScaling } from "hooks/useServingsScaling";
+import { usePortionScaling } from "hooks/usePortionScaling";
 
 import { AppShell } from "components/layout/AppShell";
+import { CalorieDisclaimer } from "components/recipes/CalorieDisclaimer";
 import { RecipeDescriptionPanel } from "components/recipes/RecipeDescriptionPanel";
 import { RecipeHero } from "components/recipes/RecipeHero";
 import { RecipeIngredientsPanel } from "components/recipes/RecipeIngredientsPanel";
@@ -33,7 +34,7 @@ const RecipeDetailsPage: React.FC = () => {
         refetch,
     } = useGetRecipeByIdQuery(id ?? skipToken);
 
-    const servings = useServingsScaling(recipe?.servings ?? null);
+    const portions = usePortionScaling();
     const { availability, haveCount, missingCount } = useIngredientAvailability(
         recipe?.ingredients ?? [],
     );
@@ -80,9 +81,7 @@ const RecipeDetailsPage: React.FC = () => {
                     <div className={styles["recipe-details-page__hero-area"]}>
                         <RecipeHero
                             recipe={recipe}
-                            canScaleServings={servings.canScale}
-                            servingsCount={servings.current}
-                            servingsDisplay={servings.displayValue}
+                            portionCount={portions.count}
                             editTo={changeRecipePath(recipe.id)}
                             onDelete={() => {
                                 dispatch(
@@ -105,12 +104,11 @@ const RecipeDetailsPage: React.FC = () => {
                             haveCount={haveCount}
                             missingCount={missingCount}
                             isOwner={recipe.isOwner}
-                            canScale={servings.canScale}
-                            servingsCount={servings.current}
-                            scaleFactor={servings.scaleFactor}
-                            onIncrement={servings.increment}
-                            onDecrement={servings.decrement}
+                            portionCount={portions.count}
+                            onIncrement={portions.increment}
+                            onDecrement={portions.decrement}
                         />
+                        <CalorieDisclaimer />
                     </div>
                     <div
                         className={

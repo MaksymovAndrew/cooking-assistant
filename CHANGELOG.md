@@ -25,6 +25,14 @@ changelogs and the tags and now track everything here against one shared version
 - Added: Ingredients now carry a calorie value, and every recipe automatically totals its calories from its ingredients - you can also set your own value by hand instead of the automatic total.
 - Removed: The "servings" field on recipes, which never held a real value.
 
+### Frontend
+
+- Added: Recipes now show their calorie count per portion (and the total for however many portions you're making), plus a calorie breakdown for each ingredient. The recipe form lets you set your own calorie value instead of the automatic total.
+- Added: A "portions" stepper on the recipe page now scales both ingredient amounts and calories together.
+- Added: A note reminding you that calorie values are estimates and you're responsible for checking accuracy.
+- Changed: The old "portions" field on the recipe page has been replaced by a live calorie count.
+- Changed: Recipe cards now show cooking time and calories instead of cooking time and creation date.
+
 ## 3.9 - 2026-07-30
 
 ### Backend

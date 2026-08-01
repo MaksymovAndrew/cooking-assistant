@@ -1,4 +1,4 @@
-import { Calendar, Clock } from "lucide-react";
+import { Clock, Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,8 +8,8 @@ import type { ContentCardVariant } from "components/cards/ContentCard";
 import { ContentCard } from "components/cards/ContentCard";
 import { UtensilsMark } from "components/icons";
 
+import { roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
-import { formatShortDate } from "utils/dateUtils";
 import { filterAllergens } from "utils/recipeAllergens";
 
 interface RecipeCardIngredient {
@@ -21,7 +21,7 @@ interface RecipeCardRecipe {
     title: string;
     type_name: string;
     cooking_time: number;
-    creation_date: string;
+    calories_per_portion: number | null;
     ingredients?: RecipeCardIngredient[];
 }
 
@@ -56,10 +56,18 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
                     icon: Clock,
                     label: t("recipeCard.cookingTimeValue", { hours, minutes }),
                 },
-                {
-                    icon: Calendar,
-                    label: formatShortDate(recipe.creation_date),
-                },
+                ...(recipe.calories_per_portion === null
+                    ? []
+                    : [
+                          {
+                              icon: Flame,
+                              label: t("recipeCard.caloriesValue", {
+                                  count: roundCalories(
+                                      recipe.calories_per_portion,
+                                  ),
+                              }),
+                          },
+                      ]),
             ]}
         />
     );

@@ -13,9 +13,6 @@ import { useRecipeForm } from "hooks/useRecipeForm";
 
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
-// the form has no servings field (amounts are per portion); every new recipe starts at 1 portion, adjustable later from the recipe detail page
-const DEFAULT_SERVINGS = "1";
-
 export const useCreateRecipePage = () => {
     const { t } = useTranslation("recipes");
     const form = useRecipeForm();
@@ -59,7 +56,10 @@ export const useCreateRecipePage = () => {
             cooking_time:
                 Number(form.cookingHours) * MINUTES_PER_HOUR +
                 Number(form.cookingMinutes),
-            servings: DEFAULT_SERVINGS,
+            calories_override:
+                form.caloriesOverride === ""
+                    ? null
+                    : Number(form.caloriesOverride),
         });
 
         if ("data" in result) {

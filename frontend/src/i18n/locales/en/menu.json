@@ -102,6 +102,7 @@
         "totalTime": "Total time",
         "totalTimeHoursMinutes": "{{hours}}h {{minutes}}m",
         "totalTimeMinutes": "{{minutes}} min",
+        "caloriesValue": "{{count}} kcal",
         "yourRating": "Your rating",
         "recipes": "Recipes",
         "recipesCaption_one": "{{count}} recipe",

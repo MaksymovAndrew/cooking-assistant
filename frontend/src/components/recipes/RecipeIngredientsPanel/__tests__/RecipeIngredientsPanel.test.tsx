@@ -15,6 +15,7 @@ const TOMATO: IngredientAvailability = {
     quantity_recipe_ingredients: 2,
     unit_name: "piece",
     allergens: [],
+    calories_per_unit: null,
     have: true,
 };
 const ONION: IngredientAvailability = {
@@ -25,6 +26,7 @@ const ONION: IngredientAvailability = {
     quantity_recipe_ingredients: 1,
     unit_name: "piece",
     allergens: [],
+    calories_per_unit: null,
     have: false,
 };
 
@@ -33,9 +35,7 @@ const baseProps = {
     haveCount: 1,
     missingCount: 1,
     isOwner: true,
-    canScale: false,
-    servingsCount: null,
-    scaleFactor: 1,
+    portionCount: 1,
     onIncrement: jest.fn(),
     onDecrement: jest.fn(),
 };
@@ -91,30 +91,28 @@ describe("RecipeIngredientsPanel", () => {
         ).not.toBeInTheDocument();
     });
 
-    it("should not show the portions stepper when the recipe can't be scaled", () => {
+    it("should always show the portions stepper", () => {
         renderWithRouter(<RecipeIngredientsPanel {...baseProps} />);
 
         expect(
-            screen.queryByRole("button", { name: "More portions" }),
-        ).not.toBeInTheDocument();
+            screen.getByRole("button", { name: "More portions" }),
+        ).toBeInTheDocument();
     });
 
-    it("should show the scaled quantity and call onIncrement/onDecrement when scaling is available", async () => {
+    it("should show the scaled quantity and call onIncrement/onDecrement", async () => {
         const onIncrement = jest.fn();
         const onDecrement = jest.fn();
 
         renderWithRouter(
             <RecipeIngredientsPanel
                 {...baseProps}
-                canScale
-                servingsCount={4}
-                scaleFactor={1.5}
+                portionCount={3}
                 onIncrement={onIncrement}
                 onDecrement={onDecrement}
             />,
         );
 
-        expect(screen.getByText("3 piece")).toBeInTheDocument();
+        expect(screen.getByText("6 piece")).toBeInTheDocument();
 
         await userEvent.click(
             screen.getByRole("button", { name: "More portions" }),
@@ -125,5 +123,37 @@ describe("RecipeIngredientsPanel", () => {
 
         expect(onIncrement).toHaveBeenCalledTimes(1);
         expect(onDecrement).toHaveBeenCalledTimes(1);
+    });
+
+    it("should show each ingredient's scaled calorie total", () => {
+        renderWithRouter(
+            <RecipeIngredientsPanel
+                {...baseProps}
+                portionCount={2}
+                availability={[{ ...TOMATO, calories_per_unit: 20 }]}
+            />,
+        );
+
+        expect(screen.getByText("80 kcal")).toBeInTheDocument();
+    });
+
+    it("should scale a non-integer per-portion calorie value as a clean multiple, not an independently rounded total", () => {
+        renderWithRouter(
+            <RecipeIngredientsPanel
+                {...baseProps}
+                portionCount={2}
+                availability={[
+                    {
+                        ...TOMATO,
+                        quantity_recipe_ingredients: 1,
+                        calories_per_unit: 21.6,
+                    },
+                ]}
+            />,
+        );
+
+        // 1 * 21.6 = 21.6, rounds to 22 kcal for one portion - two portions must read
+        // 44 (22 * 2), not 43 (round(21.6 * 2) = round(43.2))
+        expect(screen.getByText("44 kcal")).toBeInTheDocument();
     });
 });

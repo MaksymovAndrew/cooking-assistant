@@ -33,6 +33,7 @@ const RECIPE: RecipeSearchResultItem = {
     type_name: "Soup",
     creation_date: "2024-01-01",
     cooking_time: 60,
+    calories_per_portion: null,
     ingredients: [],
 };
 const MENU: Menu = {

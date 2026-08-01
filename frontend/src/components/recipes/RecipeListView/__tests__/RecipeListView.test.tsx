@@ -2,7 +2,7 @@ import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { PAGE_SIZE } from "constants/pagination";
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecipeListView } from "components/recipes/RecipeListView";
 
@@ -13,13 +13,15 @@ import { renderWithRouter } from "test/router";
 const RECIPE_TITLE = "Borscht";
 const MINE_CLASS = "content-card--mine";
 
-const RECIPES: RecipeListItem[] = [
+const RECIPES: RecipeSearchResultItem[] = [
     {
         id: 1,
         title: RECIPE_TITLE,
         type_name: "Soup",
         creation_date: "2024-01-01",
         cooking_time: 60,
+        ingredients: [],
+        calories_per_portion: null,
     },
 ];
 

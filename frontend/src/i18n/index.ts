@@ -4,6 +4,7 @@ import { initReactI18next } from "react-i18next";
 import { logger } from "config/logger";
 
 import auth from "i18n/locales/en/auth.json";
+import calories from "i18n/locales/en/calories.json";
 import catalog from "i18n/locales/en/catalog.json";
 import common from "i18n/locales/en/common.json";
 import home from "i18n/locales/en/home.json";
@@ -31,6 +32,7 @@ i18n.use(initReactI18next)
                 profile,
                 settings,
                 catalog,
+                calories,
             },
         },
         lng: "en",

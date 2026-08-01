@@ -33,6 +33,8 @@ export interface MenuDetailRecipe {
     type_name: string;
     cooking_time: number;
     creation_date: string;
+    // COALESCE(calories_override, calories_computed)
+    calories_per_portion: number | null;
     missingIngredients?: MissingIngredient[];
 }
 

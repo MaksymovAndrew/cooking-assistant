@@ -148,8 +148,18 @@
         flex: none;
         color: var(--text-2);
         white-space: nowrap;
+        text-align: right;
         font:
             500 13px "Geist Mono",
+            monospace;
+    }
+
+    &__qty-calories {
+        display: block;
+        margin-top: 1px;
+        color: var(--text-muted);
+        font:
+            400 11px "Geist Mono",
             monospace;
     }
 

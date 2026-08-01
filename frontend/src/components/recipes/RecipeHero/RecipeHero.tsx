@@ -1,4 +1,4 @@
-import { Calendar, Clock, Heart, Users } from "lucide-react";
+import { Calendar, Clock, Flame, Heart } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +10,7 @@ import { RecipeRatingStars } from "components/recipes/RecipeRatingStars";
 import { Chip } from "components/ui/Chip";
 import { OwnerActions } from "components/ui/OwnerActions";
 
+import { roundCalories, scaleCaloriesForPortions } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { formatFullDate } from "utils/dateUtils";
 
@@ -17,9 +18,7 @@ import styles from "./RecipeHero.module.scss";
 
 interface RecipeHeroProps {
     recipe: RecipeDetails;
-    canScaleServings: boolean;
-    servingsCount: number | null;
-    servingsDisplay: string;
+    portionCount: number;
     editTo: string;
     onDelete: () => void;
 }
@@ -27,12 +26,11 @@ interface RecipeHeroProps {
 const IMAGE_ICON_SIZE = 56;
 const FAVOURITE_ICON_SIZE = 20;
 const STAT_ICON_SIZE = 16;
+const SECONDARY_STAT_CLASS = `${styles["recipe-hero__stat"]} ${styles["recipe-hero__stat--secondary"]}`;
 
 export const RecipeHero: React.FC<RecipeHeroProps> = ({
     recipe,
-    canScaleServings,
-    servingsCount,
-    servingsDisplay,
+    portionCount,
     editTo,
     onDelete,
 }) => {
@@ -47,9 +45,21 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
               })
             : t("recipeDetailsPage.cookingTimeMinutes", { minutes });
     const formattedDate = formatFullDate(recipe.creation_date);
-    const formattedServings = canScaleServings
-        ? t("recipeDetailsPage.portionsValue", { count: servingsCount })
-        : servingsDisplay;
+    const formattedCalories =
+        recipe.calories_per_portion === null
+            ? t("recipeDetailsPage.caloriesUnavailable")
+            : t("recipeDetailsPage.caloriesPerPortion", {
+                  count: roundCalories(recipe.calories_per_portion),
+              });
+    const totalCalories =
+        recipe.calories_per_portion === null || portionCount === 1
+            ? null
+            : t("recipeDetailsPage.caloriesTotal", {
+                  count: scaleCaloriesForPortions(
+                      recipe.calories_per_portion,
+                      portionCount,
+                  ),
+              });
 
     return (
         <div className={styles["recipe-hero"]}>
@@ -85,19 +95,19 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 </div>
                 <div className={styles["recipe-hero__stat"]}>
                     <span className={styles["recipe-hero__stat-label"]}>
-                        {t("recipeDetailsPage.servings")}
+                        {t("recipeDetailsPage.calories")}
                     </span>
                     <span className={styles["recipe-hero__stat-value"]}>
-                        <Users size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {formattedServings}
+                        <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
+                        {formattedCalories}
                     </span>
+                    {totalCalories && (
+                        <span className={styles["recipe-hero__stat-secondary"]}>
+                            {totalCalories}
+                        </span>
+                    )}
                 </div>
-                <div
-                    className={[
-                        styles["recipe-hero__stat"],
-                        styles["recipe-hero__stat--secondary"],
-                    ].join(" ")}
-                >
+                <div className={SECONDARY_STAT_CLASS}>
                     <span className={styles["recipe-hero__stat-label"]}>
                         {t("recipeDetailsPage.creationDate")}
                     </span>
@@ -107,12 +117,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                     </span>
                 </div>
                 {recipe.isOwner && (
-                    <div
-                        className={[
-                            styles["recipe-hero__stat"],
-                            styles["recipe-hero__stat--secondary"],
-                        ].join(" ")}
-                    >
+                    <div className={SECONDARY_STAT_CLASS}>
                         <span className={styles["recipe-hero__stat-label"]}>
                             {t("recipeDetailsPage.yourRating")}
                         </span>

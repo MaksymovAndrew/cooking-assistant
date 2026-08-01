@@ -110,6 +110,13 @@
         }
     }
 
+    &__calories {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: 3px;
+    }
+
     &__rating {
         display: inline-flex;
         flex: none;

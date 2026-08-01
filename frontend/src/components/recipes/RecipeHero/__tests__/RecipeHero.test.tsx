@@ -16,16 +16,15 @@ const BASE_RECIPE: RecipeDetails = {
     type_name: "Main course",
     cooking_time: 85,
     creation_date: "2024-01-01",
-    servings: "4 servings",
     person_id: 1,
     isOwner: false,
+    calories_per_portion: 420,
+    calories_override: null,
 };
 
 const baseProps = {
     recipe: BASE_RECIPE,
-    canScaleServings: false,
-    servingsCount: null,
-    servingsDisplay: "4 servings",
+    portionCount: 1,
     editTo: "/change-recipe/1",
     onDelete: jest.fn(),
 };
@@ -40,12 +39,33 @@ describe("RecipeHero", () => {
         expect(screen.getByText("Main course")).toBeInTheDocument();
     });
 
-    it("should show the given servings display value", () => {
+    it("should show calories per portion", () => {
+        renderWithRouter(<RecipeHero {...baseProps} />);
+
+        expect(screen.getByText("420 kcal / portion")).toBeInTheDocument();
+    });
+
+    it("should show a total for multiple portions", () => {
+        renderWithRouter(<RecipeHero {...baseProps} portionCount={3} />);
+
+        expect(screen.getByText("≈ 1260 kcal total")).toBeInTheDocument();
+    });
+
+    it("should not show a total for a single portion", () => {
+        renderWithRouter(<RecipeHero {...baseProps} portionCount={1} />);
+
+        expect(screen.queryByText(/kcal total/)).not.toBeInTheDocument();
+    });
+
+    it("should show a placeholder when the recipe has no calorie data", () => {
         renderWithRouter(
-            <RecipeHero {...baseProps} servingsDisplay="8 servings" />,
+            <RecipeHero
+                {...baseProps}
+                recipe={{ ...BASE_RECIPE, calories_per_portion: null }}
+            />,
         );
 
-        expect(screen.getByText("8 servings")).toBeInTheDocument();
+        expect(screen.getByText("—")).toBeInTheDocument();
     });
 
     it("should show a visitor banner and not owner actions when the viewer does not own the recipe", () => {

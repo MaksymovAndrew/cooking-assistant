@@ -1,20 +1,21 @@
-import { Star } from "lucide-react";
+import { Flame, Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { RECIPE_RATING } from "constants/ratings";
 import { recipeDetailsPath } from "constants/routes";
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { DonburiMarkCompact } from "components/icons";
 
+import { roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 
 import styles from "./RecentRecipeCard.module.scss";
 
 interface RecentRecipeCardProps {
-    recipe: RecipeListItem;
+    recipe: RecipeSearchResultItem;
 }
 
 const IMAGE_ICON_SIZE = 22;
@@ -50,6 +51,18 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
                 </div>
                 <div className={styles["recent-recipe-card__meta"]}>
                     <span>{timeLabel}</span>
+                    {recipe.calories_per_portion !== null && (
+                        <span
+                            className={styles["recent-recipe-card__calories"]}
+                        >
+                            <Flame size={STAR_ICON_SIZE} aria-hidden="true" />
+                            {t("recentRecipes.caloriesValue", {
+                                count: roundCalories(
+                                    recipe.calories_per_portion,
+                                ),
+                            })}
+                        </span>
+                    )}
                     <span
                         className={styles["recent-recipe-card__rating"]}
                         aria-hidden="true"

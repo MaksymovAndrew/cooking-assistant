@@ -39,9 +39,10 @@ const SAMPLE: RecipeDetails = {
     type_name: "Soup",
     cooking_time: 60,
     creation_date: "2024-01-01",
-    servings: "4",
     person_id: OWNER_ID,
     isOwner: true,
+    calories_per_portion: null,
+    calories_override: null,
 };
 
 const mockRecipe = (recipe: RecipeDetails = SAMPLE) => {

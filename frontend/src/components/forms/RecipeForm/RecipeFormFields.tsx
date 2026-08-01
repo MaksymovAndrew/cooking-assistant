@@ -1,5 +1,5 @@
 import { ImageOff } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
@@ -10,8 +10,11 @@ import { CookingTimeField } from "components/recipes/CookingTimeField";
 import { RecipeTypeSelect } from "components/recipes/RecipeTypeSelect";
 import { FormCard } from "components/ui/FormCard";
 import { FormField } from "components/ui/FormField";
+import { NumberInput } from "components/ui/NumberInput";
 import { Textarea } from "components/ui/Textarea";
 import { TextInput } from "components/ui/TextInput";
+
+import { roundCalories, sumIngredientCalories } from "utils/calories";
 
 import styles from "./RecipeForm.module.scss";
 
@@ -33,6 +36,12 @@ export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
     idPrefix,
 }) => {
     const { t } = useTranslation("recipes");
+
+    // so the field's hint matches what an empty override would actually compute to server-side
+    const autoCalories = useMemo(
+        () => sumIngredientCalories(form.selectedIngredients),
+        [form.selectedIngredients],
+    );
 
     return (
         <>
@@ -105,6 +114,29 @@ export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
                             form.setContent(e.target.value);
                         }}
                     />
+                </FormField>
+            </FormCard>
+
+            <FormCard>
+                <FormField
+                    htmlFor={`${idPrefix}-calories`}
+                    label={t("recipeForm.caloriesOverrideLabel")}
+                >
+                    <NumberInput
+                        id={`${idPrefix}-calories`}
+                        min={0}
+                        value={form.caloriesOverride}
+                        onChange={(e) => {
+                            form.setCaloriesOverride(e.target.value);
+                        }}
+                    />
+                    <p className={styles["recipe-form__calories-hint"]}>
+                        {form.selectedIngredients.length > 0
+                            ? t("recipeForm.caloriesAutoHint", {
+                                  count: roundCalories(autoCalories),
+                              })
+                            : t("recipeForm.caloriesAutoHintEmpty")}
+                    </p>
                 </FormField>
             </FormCard>
         </>

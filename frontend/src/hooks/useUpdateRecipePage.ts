@@ -53,7 +53,12 @@ export const useUpdateRecipePage = () => {
                 name: i.name,
                 quantity: i.quantity_recipe_ingredients,
                 unit_name: i.unit_name,
+                calories_per_unit: i.calories_per_unit,
             })),
+            caloriesOverride:
+                recipe.calories_override === null
+                    ? ""
+                    : String(recipe.calories_override),
         });
     }, [recipe, setInitialValues]);
 
@@ -85,8 +90,10 @@ export const useUpdateRecipePage = () => {
                 cooking_time:
                     Number(form.cookingHours) * MINUTES_PER_HOUR +
                     Number(form.cookingMinutes),
-                // no servings field in the form - resend the recipe's current value unchanged (the backend treats an omitted field as NULL, not "leave as is")
-                servings: recipe?.servings ?? undefined,
+                calories_override:
+                    form.caloriesOverride === ""
+                        ? null
+                        : Number(form.caloriesOverride),
                 ingredients: form.selectedIngredients.map(
                     ({ id: recipeId, quantity }) => ({
                         id: recipeId,

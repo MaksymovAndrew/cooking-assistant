@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import type { ExpiringIngredient } from "types/expiry";
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { flattenPages } from "redux/services/infiniteQueryHelpers";
 import { useGetAllMenusQuery } from "redux/services/menusApi";
@@ -32,7 +32,7 @@ export const useHomeDashboard = () => {
     const pantry = useGetUserIngredientsQuery(null);
     const recent = useGetRecipesByPersonInfiniteQuery(RECENT_RECIPES_PARAMS);
 
-    const recentRecipes = useMemo<RecipeListItem[]>(
+    const recentRecipes = useMemo<RecipeSearchResultItem[]>(
         () => flattenPages(recent.data).slice(0, RECENT_RECIPES_LIMIT),
         [recent.data],
     );

@@ -3,14 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecentRecipeCard } from "components/home/RecentRecipes/RecentRecipeCard";
 
 import styles from "./RecentRecipes.module.scss";
 
 interface RecentRecipesProps {
-    recipes: RecipeListItem[];
+    recipes: RecipeSearchResultItem[];
 }
 
 export const RecentRecipes: React.FC<RecentRecipesProps> = ({ recipes }) => {

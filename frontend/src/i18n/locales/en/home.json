@@ -21,7 +21,8 @@
         "viewAll": "View all →",
         "empty": "No recipes yet - add your first one.",
         "cookingTimeHoursMinutes": "{{hours}}h {{minutes}}m",
-        "cookingTimeMinutesOnly": "{{minutes}}m"
+        "cookingTimeMinutesOnly": "{{minutes}}m",
+        "caloriesValue": "{{count}} kcal"
     },
     "expiringSoon": {
         "title": "Expiring soon",

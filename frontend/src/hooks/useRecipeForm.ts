@@ -17,6 +17,7 @@ const BLANK_SNAPSHOT: RecipeFormInitialValues = {
     cookingMinutes: "",
     selectedTypeId: null,
     selectedIngredients: [],
+    caloriesOverride: "",
 };
 
 export const useRecipeForm = () => {
@@ -25,6 +26,7 @@ export const useRecipeForm = () => {
     const [cookingHours, setCookingHours] = useState("");
     const [cookingMinutes, setCookingMinutes] = useState("");
     const [selectedTypeId, setSelectedTypeId] = useState<number | null>(null);
+    const [caloriesOverride, setCaloriesOverride] = useState("");
     const [initialSnapshot, setInitialSnapshot] =
         useState<RecipeFormInitialValues>(BLANK_SNAPSHOT);
 
@@ -85,6 +87,7 @@ export const useRecipeForm = () => {
             setCookingMinutes(values.cookingMinutes);
             setSelectedTypeId(values.selectedTypeId);
             setSelectedIngredients(values.selectedIngredients);
+            setCaloriesOverride(values.caloriesOverride);
             setInitialSnapshot(values);
         },
         [setSelectedIngredients],
@@ -98,6 +101,7 @@ export const useRecipeForm = () => {
             cookingMinutes,
             selectedTypeId,
             selectedIngredients,
+            caloriesOverride,
         };
 
         return JSON.stringify(current) !== JSON.stringify(initialSnapshot);
@@ -108,6 +112,7 @@ export const useRecipeForm = () => {
         cookingMinutes,
         selectedTypeId,
         selectedIngredients,
+        caloriesOverride,
         initialSnapshot,
     ]);
 
@@ -125,6 +130,8 @@ export const useRecipeForm = () => {
         selectedIngredients,
         selectedTypeId,
         setSelectedTypeId,
+        caloriesOverride,
+        setCaloriesOverride,
         titleError,
         descriptionError,
         ingredientsError,

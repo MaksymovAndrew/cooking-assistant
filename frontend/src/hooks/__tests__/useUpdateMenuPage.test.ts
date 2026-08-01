@@ -33,6 +33,7 @@ const MENU_RECIPE = {
     type_name: "Soup",
     cooking_time: 60,
     creation_date: "2024-01-01",
+    calories_per_portion: null,
 };
 const CATEGORIES = [{ menu_category_id: CATEGORY_ID, category_name: "Lunch" }];
 

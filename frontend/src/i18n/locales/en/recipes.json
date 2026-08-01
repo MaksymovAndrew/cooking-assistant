@@ -21,6 +21,9 @@
         "reorderHint": "Drag handle to reorder · unit auto-filled from catalog",
         "summary_one": "{{count}} ingredient · {{hours}} hr : {{minutes}} min",
         "summary_other": "{{count}} ingredients · {{hours}} hr : {{minutes}} min",
+        "caloriesOverrideLabel": "Calories per portion",
+        "caloriesAutoHint": "Leave empty to use the calculated total: {{count}} kcal",
+        "caloriesAutoHintEmpty": "Leave empty to calculate automatically from the ingredients.",
         "discardTitle": "Discard changes?",
         "discardMessage": "You have unsaved changes. Are you sure you want to leave this page?",
         "discardConfirm": "Discard changes",
@@ -34,7 +37,8 @@
         "recipeType": "Recipe type: ",
         "cookingTime": "Cooking time: ",
         "creationDate": "Creation date: ",
-        "cookingTimeValue": "{{hours}} hr : {{minutes}} min"
+        "cookingTimeValue": "{{hours}} hr : {{minutes}} min",
+        "caloriesValue": "{{count}} kcal"
     },
     "filterPanel": {
         "title": "Filters",
@@ -136,8 +140,11 @@
         "cookingTime": "Cooking time",
         "creationDate": "Creation date",
         "servings": "Portions",
-        "portionsValue_one": "{{count}} portion",
-        "portionsValue_other": "{{count}} portions",
+        "calories": "Calories",
+        "caloriesPerPortion": "{{count}} kcal / portion",
+        "caloriesTotal": "≈ {{count}} kcal total",
+        "caloriesUnavailable": "—",
+        "ingredientCalories": "{{count}} kcal",
         "favourite": "Favourite",
         "fewerPortions": "Fewer portions",
         "morePortions": "More portions",

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { RecipeFilterParams, RecipeListItem } from "types/recipe";
+import type { RecipeFilterParams, RecipeSearchResultItem } from "types/recipe";
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { ActiveFilterEntry } from "hooks/useListFilters";
@@ -21,7 +21,7 @@ import styles from "./RecipeListView.module.scss";
 import { RecipePantryBanner } from "./RecipePantryBanner";
 
 interface RecipeListViewProps extends RecipeFilterPanelProps {
-    recipes: RecipeListItem[];
+    recipes: RecipeSearchResultItem[];
     noRecipes: boolean;
     // the full reset, used by RecipeActiveFilters ("Clear all") and the empty state -
     // RecipeFilterPanel now owns a narrower reset scoped to just its own popover fields

@@ -118,6 +118,15 @@
         }
     }
 
+    &__stat-secondary {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-muted);
+        font:
+            500 11px "Geist Mono",
+            monospace;
+    }
+
     &__actions {
         margin-bottom: var(--s-6);
     }

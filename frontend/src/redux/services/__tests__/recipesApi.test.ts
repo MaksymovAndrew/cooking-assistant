@@ -29,6 +29,7 @@ const LIST: RecipeSearchResultItem[] = [
         type_name: "Hot",
         creation_date: "2024-01-01",
         cooking_time: 30,
+        calories_per_portion: null,
         ingredients: [{ id: 1, name: "Tomato", allergens: [] }],
     },
 ];
@@ -40,14 +41,14 @@ const CREATE: CreateRecipeRequest = {
     ingredients: [{ id: 1, quantity: 2 }],
     type_id: 1,
     cooking_time: 30,
-    servings: "2",
+    calories_override: null,
 };
 const UPDATE: UpdateRecipeRequest = {
     title: "Soup",
     content: "boil",
     type_id: 1,
     cooking_time: 30,
-    servings: "2",
+    calories_override: null,
     ingredients: [{ id: 1, quantity_recipe_ingredients: 2 }],
 };
 const DETAIL: RecipeDetails = {
@@ -59,9 +60,10 @@ const DETAIL: RecipeDetails = {
     type_name: "Hot",
     cooking_time: 30,
     creation_date: "2024-01-01",
-    servings: "2",
     person_id: 1,
     isOwner: true,
+    calories_per_portion: null,
+    calories_override: null,
 };
 
 describe("recipesApi", () => {

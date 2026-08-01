@@ -16,12 +16,14 @@ interface RecipeDetail {
     id: number;
     title: string;
     isOwner: boolean;
+    calories_per_portion: number | null;
     ingredients: {
         id: number;
         name: string;
         quantity_recipe_ingredients: number;
         unit_name: string;
         allergens: string[];
+        calories_per_unit: number | null;
     }[];
 }
 
@@ -51,8 +53,6 @@ describe("PgRecipeRepository (real Postgres)", () => {
             person_id: ownerId,
             type_id: typeId,
             cooking_time: 90,
-            // free-form text, not a number - the column is VARCHAR
-            servings: "a full pot",
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 2 }],
         });
 
@@ -60,10 +60,9 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const detail = (await repository.findByIdWithIngredients(
             created.id,
             ownerId,
-        )) as RecipeDetail & { servings: string };
+        )) as RecipeDetail;
 
         expect(detail.title).toBe("Borscht");
-        expect(detail.servings).toBe("a full pot");
         expect(detail.ingredients).toEqual([
             expect.objectContaining({
                 id: ingredientId,
@@ -71,6 +70,41 @@ describe("PgRecipeRepository (real Postgres)", () => {
                 allergens: ["gluten"],
             }),
         ]);
+    });
+
+    it("should compute calories from ingredient quantities and let a manual override win", async () => {
+        const ingredientId = await createIngredient(pool, unitId, [], 50);
+        const recipe = Recipe.forCreation({
+            title: "Rice bowl",
+            content: "Steamed rice.",
+            person_id: ownerId,
+            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 4 }],
+        });
+
+        const created = (await repository.create(recipe)) as { id: number };
+        const computed = (await repository.findByIdWithIngredients(
+            created.id,
+            ownerId,
+        )) as RecipeDetail;
+
+        expect(computed.calories_per_portion).toBe(200);
+        expect(computed.ingredients[0].calories_per_unit).toBe(50);
+
+        const update = Recipe.forUpdate({
+            title: "Rice bowl",
+            content: "Steamed rice.",
+            calories_override: 999,
+            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 4 }],
+        });
+
+        await repository.update(created.id, ownerId, update);
+
+        const overridden = (await repository.findByIdWithIngredients(
+            created.id,
+            ownerId,
+        )) as RecipeDetail;
+
+        expect(overridden.calories_per_portion).toBe(999);
     });
 
     it("should report isOwner true for the creator and false for another person", async () => {

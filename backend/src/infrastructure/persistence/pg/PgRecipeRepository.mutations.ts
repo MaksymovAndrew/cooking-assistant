@@ -1,4 +1,4 @@
-import type { Pool } from "pg";
+import type { Pool, PoolClient } from "pg";
 
 import type { Recipe } from "domain/entities/Recipe";
 
@@ -10,7 +10,28 @@ interface RecipeRow {
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
-    servings: number | null;
+    calories_override: number | null;
+    calories_computed: number | null;
+}
+
+// keeps calories_computed in sync with the ingredients just written, so lists/filters can read
+// it as a plain column instead of aggregating recipe_ingredients on every query; RETURNING * here
+// (not on the earlier INSERT/UPDATE) is what makes the row handed back to the caller accurate
+async function recomputeRecipeCalories(
+    client: PoolClient,
+    recipeId: number,
+): Promise<RecipeRow> {
+    const result = await client.query<RecipeRow>(
+        `UPDATE recipes SET calories_computed = (
+             SELECT SUM(ri.quantity_recipe_ingredients * i.calories_per_unit)
+             FROM recipe_ingredients ri
+                      JOIN ingredients i ON i.id = ri.ingredient_id
+             WHERE ri.recipe_id = $1
+         ) WHERE id = $1 RETURNING *`,
+        [recipeId],
+    );
+
+    return result.rows[0];
 }
 
 export async function createRecipeInDb(
@@ -22,7 +43,7 @@ export async function createRecipeInDb(
         ingredients,
         type_id,
         cooking_time,
-        servings,
+        calories_override,
     }: Recipe,
 ): Promise<unknown> {
     const client = await pool.connect();
@@ -31,9 +52,16 @@ export async function createRecipeInDb(
         await client.query("BEGIN");
 
         const newRecipe = await client.query<RecipeRow>(
-            `INSERT INTO recipes (title, content, person_id, type_id, cooking_time, servings)
+            `INSERT INTO recipes (title, content, person_id, type_id, cooking_time, calories_override)
          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [title, content, person_id, type_id, cooking_time, servings],
+            [
+                title,
+                content,
+                person_id,
+                type_id,
+                cooking_time,
+                calories_override,
+            ],
         );
 
         const recipeId = newRecipe.rows[0].id;
@@ -46,9 +74,11 @@ export async function createRecipeInDb(
             );
         }
 
+        const finalRecipe = await recomputeRecipeCalories(client, recipeId);
+
         await client.query("COMMIT");
 
-        return newRecipe.rows[0];
+        return finalRecipe;
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;
@@ -67,7 +97,7 @@ export async function updateRecipeInDb(
         ingredients: newIngredients,
         type_id,
         cooking_time,
-        servings,
+        calories_override,
     }: Recipe,
 ): Promise<unknown> {
     const client = await pool.connect();
@@ -76,14 +106,14 @@ export async function updateRecipeInDb(
         await client.query("BEGIN");
 
         const result = await client.query<RecipeRow>(
-            `UPDATE recipes SET title = $1, content = $2, type_id = $3, cooking_time = $4, servings = $5
+            `UPDATE recipes SET title = $1, content = $2, type_id = $3, cooking_time = $4, calories_override = $5
          WHERE id = $6 AND person_id = $7 RETURNING *`,
             [
                 title,
                 content,
                 type_id,
                 cooking_time,
-                servings,
+                calories_override,
                 recipeId,
                 personId,
             ],
@@ -108,9 +138,14 @@ export async function updateRecipeInDb(
             );
         }
 
+        const finalRecipe = await recomputeRecipeCalories(
+            client,
+            Number(recipeId),
+        );
+
         await client.query("COMMIT");
 
-        return result.rows[0];
+        return finalRecipe;
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;

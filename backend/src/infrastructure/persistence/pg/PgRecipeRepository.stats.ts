@@ -7,7 +7,6 @@ interface RecipeStatRow {
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
-    servings: number | null;
     typeName: string | null;
 }
 
@@ -23,7 +22,6 @@ interface IngredientCountRow {
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
-    servings: number | null;
     ingredient_count: number;
 }
 

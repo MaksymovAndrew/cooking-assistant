@@ -18,7 +18,7 @@ interface MenuRecipeRow {
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
-    servings: number | null;
+    calories_per_portion: number | null;
     type_name: string | null;
     ingredients: string[];
 }
@@ -79,7 +79,7 @@ export async function findMenuByIdWithRecipes(
         r.type_id,
         r.creation_date,
         r.cooking_time,
-        r.servings,
+        COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
         rt.type_name AS type_name,
         ARRAY_AGG(i.name) AS ingredients
       FROM recipes r

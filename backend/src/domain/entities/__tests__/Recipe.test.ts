@@ -14,7 +14,7 @@ function makeCreationInput(overrides: Record<string, unknown> = {}) {
         ingredients: [{ id: 3, quantity_recipe_ingredients: 2 }],
         type_id: 1,
         cooking_time: 30,
-        servings: "4",
+        calories_override: 500,
         ...overrides,
     };
 }
@@ -77,7 +77,7 @@ describe("Recipe", () => {
             "ingredients",
             "type_id",
             "cooking_time",
-            "servings",
+            "calories_override",
         ]);
         expect(recipe).toMatchObject(input);
     });
@@ -144,7 +144,7 @@ describe("Recipe", () => {
             "ingredients",
             "type_id",
             "cooking_time",
-            "servings",
+            "calories_override",
         ]);
         expect(recipe).toMatchObject({
             title: input.title,
@@ -152,7 +152,7 @@ describe("Recipe", () => {
             ingredients: input.ingredients,
             type_id: input.type_id,
             cooking_time: input.cooking_time,
-            servings: input.servings,
+            calories_override: input.calories_override,
         });
         expect(recipe).not.toHaveProperty("person_id");
     });

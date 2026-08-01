@@ -20,6 +20,11 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Backend
+
+- Added: Ingredients now carry a calorie value, and every recipe automatically totals its calories from its ingredients - you can also set your own value by hand instead of the automatic total.
+- Removed: The "servings" field on recipes, which never held a real value.
+
 ## 3.9 - 2026-07-30
 
 ### Backend

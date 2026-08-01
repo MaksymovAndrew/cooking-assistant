@@ -20,6 +20,7 @@ export interface RecipeSearchRow {
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
+    calories_per_portion: number | null;
     type_name: string | null;
     ingredients: unknown;
 }

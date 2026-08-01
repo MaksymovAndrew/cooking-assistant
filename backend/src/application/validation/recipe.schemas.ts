@@ -54,8 +54,11 @@ export const createRecipeSchema = z.object({
         }),
     type_id: positiveIntegerSchema("Recipe type ID").optional(),
     cooking_time: positiveIntegerSchema("Cooking time").optional(),
-    // free-form text (e.g. "4" or "a full pot") - matches the VARCHAR column, not a count
-    servings: nonEmptyStringSchema("Servings").optional(),
+    // manual per-portion calorie value; null clears it back to the computed total
+    calories_override: numberSchema("Calories override")
+        .nonnegative("Calories override must not be negative")
+        .nullable()
+        .optional(),
 });
 
 export const updateRecipeSchema = createRecipeSchema.omit({

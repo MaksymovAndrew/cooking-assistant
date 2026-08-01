@@ -1,3 +1,5 @@
+import type { CalorieGoalPeriod } from "domain/repositories/CalorieRepository";
+
 export interface UserRecord {
     id: number;
     password: string;
@@ -23,6 +25,9 @@ export interface PublicUser {
     email: string;
     email_verified_at: string | null;
     avatar: string | null;
+    calorie_goal: number | null;
+    calorie_goal_period: CalorieGoalPeriod | null;
+    meal_calorie_limit: number | null;
 }
 
 // the editable profile fields; avatar is a preset key or null (no avatar - fall back to initials)

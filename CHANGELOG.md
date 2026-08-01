@@ -23,6 +23,7 @@ changelogs and the tags and now track everything here against one shared version
 ### Backend
 
 - Added: Ingredients now carry a calorie value, and every recipe automatically totals its calories from its ingredients - you can also set your own value by hand instead of the automatic total.
+- Added: You can set a personal calorie goal (daily, weekly, or monthly) and an optional per-meal limit, and log what you've eaten from a recipe or menu to track it against that goal.
 - Removed: The "servings" field on recipes, which never held a real value.
 
 ### Frontend

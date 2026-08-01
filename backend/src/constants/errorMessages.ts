@@ -20,6 +20,9 @@ export const ERROR_MESSAGES = {
     INGREDIENT_NOT_FOUND_FOR_USER: "Ingredient not found for this user",
     PURCHASE_NOT_FOUND: "Purchase not found.",
 
+    INTAKE_NOT_FOUND: "Intake entry not found",
+    CALORIES_NOT_AVAILABLE: "Calories are not available for this item",
+
     EMAIL_ALREADY_TAKEN: "Email already taken",
     CURRENT_PASSWORD_INCORRECT: "Current password is incorrect",
     INVALID_OR_EXPIRED_TOKEN: "This link is invalid or has expired",
@@ -59,6 +62,9 @@ export const SUCCESS_MESSAGES = {
     INGREDIENT_DELETED: "Ingredient and its history successfully deleted",
     QUANTITIES_UPDATED: "Ingredient quantities and purchase history updated",
     PURCHASE_UPDATED: "Purchase quantity updated successfully.",
+
+    INTAKE_DELETED: "Intake entry successfully deleted",
+    CALORIE_GOAL_UPDATED: "Calorie goal updated successfully",
 
     PASSWORD_RESET_EMAIL_SENT:
         "If an account with that email exists and is verified, a password reset link has been sent.",

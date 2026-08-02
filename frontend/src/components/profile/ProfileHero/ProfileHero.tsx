@@ -22,6 +22,7 @@ interface ProfileHeroProps {
     avatar?: string | null;
     recipesCount: number;
     menusCount: number;
+    kcalToday: number;
     onLogout: () => void;
     onEditProfile: () => void;
 }
@@ -38,6 +39,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
     avatar,
     recipesCount,
     menusCount,
+    kcalToday,
     onLogout,
     onEditProfile,
 }) => {
@@ -90,6 +92,14 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
                     </span>
                     <span className={styles["profile-hero__stat-label"]}>
                         {t("profilePage.favouritesStat")}
+                    </span>
+                </div>
+                <div className={styles["profile-hero__stat"]}>
+                    <span className={styles["profile-hero__stat-value"]}>
+                        {kcalToday}
+                    </span>
+                    <span className={styles["profile-hero__stat-label"]}>
+                        {t("profilePage.kcalTodayStat")}
                     </span>
                 </div>
             </div>

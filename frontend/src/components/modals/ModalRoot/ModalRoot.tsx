@@ -1,7 +1,10 @@
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { selectActiveModal } from "redux/selectors/uiSelectors";
+import type { ActiveModal } from "redux/slices/uiSlice";
 import { closeModal, MODAL_TYPE } from "redux/slices/uiSlice";
 
+import { CalorieLimitModal } from "components/modals/CalorieLimitModal";
+import { DeleteCalorieIntakeModal } from "components/modals/DeleteCalorieIntakeModal";
 import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
 import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
@@ -9,6 +12,31 @@ import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsMod
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
+
+// the calorie-feature modals manage their own dispatch/close internally (like DeleteIngredientModal), so they only need the modal itself
+const renderCalorieModal = (modal: ActiveModal | null) => {
+    if (modal?.type === MODAL_TYPE.deleteCalorieIntake) {
+        return (
+            <DeleteCalorieIntakeModal
+                modalId={modal.id}
+                intakeId={modal.intakeId}
+                title={modal.title}
+            />
+        );
+    }
+
+    if (modal?.type === MODAL_TYPE.calorieLimit) {
+        return (
+            <CalorieLimitModal
+                modalId={modal.id}
+                consumed={modal.consumed}
+                goal={modal.goal}
+            />
+        );
+    }
+
+    return null;
+};
 
 export const ModalRoot = () => {
     const modal = useAppSelector(selectActiveModal);
@@ -81,5 +109,5 @@ export const ModalRoot = () => {
         );
     }
 
-    return null;
+    return renderCalorieModal(modal);
 };

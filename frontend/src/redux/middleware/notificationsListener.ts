@@ -8,6 +8,7 @@ import i18next from "i18next";
 
 import { authApi } from "redux/services/authApi";
 import type { AxiosBaseQueryError } from "redux/services/axiosBaseQuery";
+import { caloriesApi } from "redux/services/caloriesApi";
 import { menusApi } from "redux/services/menusApi";
 import { recipesApi } from "redux/services/recipesApi";
 import { userIngredientsApi } from "redux/services/userIngredientsApi";
@@ -89,6 +90,10 @@ registerSuccessToast(
 registerSuccessToast(
     userIngredientsApi.endpoints.deleteUserIngredient.matchFulfilled,
     "notifications.ingredientDeleted",
+);
+registerSuccessToast(
+    caloriesApi.endpoints.deleteCalorieIntake.matchFulfilled,
+    "notifications.calorieIntakeDeleted",
 );
 registerSuccessToast(
     userIngredientsApi.endpoints.saveUserIngredient.matchFulfilled,

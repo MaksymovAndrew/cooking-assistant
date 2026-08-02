@@ -22,6 +22,8 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: null,
+    calorie_goal: null,
+    meal_calorie_limit: null,
 };
 const RECIPE: RecipeSearchResultItem = {
     id: 1,
@@ -45,6 +47,7 @@ const setup = () => {
         [API_ROUTES.auth.me]: CURRENT_USER,
         [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
         [API_ROUTES.menu.byPerson]: { items: [MENU], total: 1 },
+        [API_ROUTES.calories.intake]: [],
     });
 
     return renderWithProviders(<ProfilePage />);
@@ -78,5 +81,15 @@ describe("ProfilePage", () => {
         expect(
             screen.getByText("Coming in a future release."),
         ).toBeInTheDocument();
+    });
+
+    it("should show the calorie goal form on the Dietary tab", async () => {
+        setup();
+
+        await screen.findByText("Borscht");
+
+        await userEvent.click(screen.getByRole("tab", { name: "Dietary" }));
+
+        expect(await screen.findByText("Calorie goal")).toBeInTheDocument();
     });
 });

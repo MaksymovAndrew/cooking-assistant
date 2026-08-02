@@ -23,7 +23,7 @@ changelogs and the tags and now track everything here against one shared version
 ### Backend
 
 - Added: Ingredients now carry a calorie value, and every recipe automatically totals its calories from its ingredients - you can also set your own value by hand instead of the automatic total.
-- Added: You can set a personal calorie goal (daily, weekly, or monthly) and an optional per-meal limit, and log what you've eaten from a recipe or menu to track it against that goal.
+- Added: You can set a personal daily calorie goal and an optional per-meal limit, and log what you've eaten from a recipe or menu to track it against that goal.
 - Removed: The "servings" field on recipes, which never held a real value.
 
 ### Frontend
@@ -33,6 +33,11 @@ changelogs and the tags and now track everything here against one shared version
 - Added: A note reminding you that calorie values are estimates and you're responsible for checking accuracy.
 - Changed: The old "portions" field on the recipe page has been replaced by a live calorie count.
 - Changed: Recipe cards now show cooking time and calories instead of cooking time and creation date.
+- Added: A new "Dietary" tab on your profile - set a daily calorie goal and an optional per-meal limit, see today's progress on a colour-coded ring (on track / close to your goal / over goal), review and delete today's logged entries, and browse a 7- or 30-day history chart with a streak counter for days you stayed on target.
+- Added: A 5th "Kcal today" tile on the home dashboard shows today's progress at a glance and warns when you're close to or over your goal; crossing your goal also shows a one-time reminder for the day.
+- Added: Your profile header now shows how many calories you've logged today.
+- Fixed: Saving your profile no longer briefly flashes the page and resets you to the "My recipes" tab.
+- Changed: Calorie numbers throughout the app now show thousands separators (e.g. "1,180 kcal").
 
 ## 3.9 - 2026-07-30
 

@@ -1,0 +1,130 @@
+import React from "react";
+import { useTranslation } from "react-i18next";
+
+import { formatKcal } from "utils/calories";
+import {
+    calorieToneFor,
+    computeCalorieSummary,
+} from "utils/computeCalorieSummary";
+import type { DailyIntakeDay } from "utils/computeDailyIntake";
+
+import styles from "./CalorieHistoryChart.module.scss";
+
+interface CalorieHistoryBarsProps {
+    days: DailyIntakeDay[];
+    goal: number;
+    range: "7" | "30";
+    average: number;
+    daysOnGoal: number;
+}
+
+const WEEKDAY_FORMAT = new Intl.DateTimeFormat("en-US", { weekday: "short" });
+const PERCENT_MULTIPLIER = 100;
+
+const barClass = (day: DailyIntakeDay, goal: number, isToday: boolean) => {
+    const tone = calorieToneFor(
+        computeCalorieSummary([{ calories: day.consumed }], goal),
+    );
+
+    return [
+        styles["calorie-history-chart__bar"],
+        styles[`calorie-history-chart__bar--${tone}`],
+        isToday && styles["calorie-history-chart__bar--today"],
+    ]
+        .filter(Boolean)
+        .join(" ");
+};
+
+export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
+    days,
+    goal,
+    range,
+    average,
+    daysOnGoal,
+}) => {
+    const { t } = useTranslation("calories");
+    const hasHistory = days.some((day) => day.consumed > 0);
+
+    if (!hasHistory) {
+        return (
+            <p className={styles["calorie-history-chart__empty"]}>
+                {t("dietaryTab.historyEmpty")}
+            </p>
+        );
+    }
+
+    const maxValue = Math.max(goal, ...days.map((day) => day.consumed), 1);
+    const goalLinePercent = Math.min(
+        (goal / maxValue) * PERCENT_MULTIPLIER,
+        PERCENT_MULTIPLIER,
+    );
+
+    return (
+        <>
+            <div
+                className={styles["calorie-history-chart__goal-line"]}
+                style={{ bottom: `${goalLinePercent}%` }}
+            >
+                <span>
+                    {t("dietaryTab.historyGoalLine", {
+                        goal: formatKcal(goal),
+                    })}
+                </span>
+            </div>
+            <div className={styles["calorie-history-chart__bars"]}>
+                {days.map((day, index) => (
+                    <div
+                        key={day.date}
+                        className={styles["calorie-history-chart__column"]}
+                    >
+                        {range === "7" && (
+                            <span
+                                className={
+                                    styles["calorie-history-chart__value"]
+                                }
+                            >
+                                {formatKcal(day.consumed)}
+                            </span>
+                        )}
+                        <div
+                            className={barClass(
+                                day,
+                                goal,
+                                index === days.length - 1,
+                            )}
+                            style={{
+                                height: `${(day.consumed / maxValue) * PERCENT_MULTIPLIER}%`,
+                            }}
+                        />
+                    </div>
+                ))}
+            </div>
+            {range === "7" && (
+                <div className={styles["calorie-history-chart__days"]}>
+                    {days.map((day, index) => (
+                        <span key={day.date}>
+                            {index === days.length - 1
+                                ? t("dietaryTab.todayLabel")
+                                : WEEKDAY_FORMAT.format(new Date(day.date))}
+                        </span>
+                    ))}
+                </div>
+            )}
+            {range === "30" && (
+                <div className={styles["calorie-history-chart__footer"]}>
+                    <span>
+                        {t("dietaryTab.avgLabel", {
+                            count: formatKcal(average),
+                        })}
+                    </span>
+                    <span>
+                        {t("dietaryTab.daysOnGoalLabel", {
+                            onGoal: daysOnGoal,
+                            total: days.length,
+                        })}
+                    </span>
+                </div>
+            )}
+        </>
+    );
+};

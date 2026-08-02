@@ -12,6 +12,8 @@ export interface CurrentUser {
     email: string;
     email_verified_at: string | null;
     avatar: string | null;
+    calorie_goal: number | null;
+    meal_calorie_limit: number | null;
 }
 
 export interface RegisterRequest {

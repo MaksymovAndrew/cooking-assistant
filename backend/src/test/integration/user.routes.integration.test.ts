@@ -136,7 +136,6 @@ describe("user routes", () => {
             email_verified_at: null,
             avatar: null,
             calorie_goal: null,
-            calorie_goal_period: null,
             meal_calorie_limit: null,
         };
 
@@ -363,7 +362,6 @@ describe("user routes", () => {
             email_verified_at: null,
             avatar: null,
             calorie_goal: null,
-            calorie_goal_period: null,
             meal_calorie_limit: null,
         });
         deps.tokenService.generatePurposeToken.mockReturnValue(VERIFY_TOKEN);

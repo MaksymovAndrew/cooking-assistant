@@ -1,0 +1,28 @@
+@use "styles/abstracts" as *;
+
+.calorie-limit-modal {
+    &__title {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        color: var(--warning);
+    }
+
+    &__message {
+        margin: 0 0 var(--s-3);
+    }
+
+    &__note {
+        margin: 0 0 var(--s-4);
+        color: var(--text-muted);
+        font:
+            400 12.5px Inter,
+            sans-serif;
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--s-2);
+    }
+}

@@ -48,7 +48,7 @@ describe("RecipeHero", () => {
     it("should show a total for multiple portions", () => {
         renderWithRouter(<RecipeHero {...baseProps} portionCount={3} />);
 
-        expect(screen.getByText("≈ 1260 kcal total")).toBeInTheDocument();
+        expect(screen.getByText("≈ 1,260 kcal total")).toBeInTheDocument();
     });
 
     it("should not show a total for a single portion", () => {

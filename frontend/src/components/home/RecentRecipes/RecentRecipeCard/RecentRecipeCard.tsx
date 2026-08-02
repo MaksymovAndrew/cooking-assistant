@@ -9,7 +9,7 @@ import type { RecipeSearchResultItem } from "types/recipe";
 
 import { DonburiMarkCompact } from "components/icons";
 
-import { roundCalories } from "utils/calories";
+import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 
 import styles from "./RecentRecipeCard.module.scss";
@@ -57,8 +57,8 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
                         >
                             <Flame size={STAR_ICON_SIZE} aria-hidden="true" />
                             {t("recentRecipes.caloriesValue", {
-                                count: roundCalories(
-                                    recipe.calories_per_portion,
+                                count: formatKcal(
+                                    roundCalories(recipe.calories_per_portion),
                                 ),
                             })}
                         </span>

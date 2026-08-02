@@ -1,5 +1,6 @@
 import { getErrorMessage } from "redux/middleware/notificationsListener";
 import { authApi } from "redux/services/authApi";
+import { caloriesApi } from "redux/services/caloriesApi";
 import { menusApi } from "redux/services/menusApi";
 import { recipesApi } from "redux/services/recipesApi";
 import { userIngredientsApi } from "redux/services/userIngredientsApi";
@@ -349,6 +350,23 @@ describe("notificationsListener success toasts", () => {
         expect(items[0]).toMatchObject({
             type: "success",
             message: "Ingredient deleted",
+        });
+    });
+
+    it("should add a success notification when a calorie intake entry is deleted", async () => {
+        mockedDelete.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            caloriesApi.endpoints.deleteCalorieIntake.initiate(9),
+        );
+
+        const { items } = store.getState().notifications;
+
+        expect(items).toHaveLength(1);
+        expect(items[0]).toMatchObject({
+            type: "success",
+            message: "Entry deleted",
         });
     });
 

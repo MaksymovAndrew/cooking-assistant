@@ -13,7 +13,7 @@ import { recipesApi } from "redux/services/recipesApi";
 import { useProfilePage } from "hooks/useProfilePage";
 
 import { mockGetByUrl } from "test/apiClientMock";
-import { makeTestStore, renderHookWithStore } from "test/store";
+import { makeTestStore, renderHookWithRouter } from "test/store";
 
 jest.mock("api/client");
 
@@ -26,6 +26,8 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: null,
+    calorie_goal: null,
+    meal_calorie_limit: null,
 };
 const RECIPE: RecipeSearchResultItem = {
     id: 1,
@@ -47,11 +49,12 @@ const MENU: Menu = {
 const RECIPES_PARAMS = {};
 const MENUS_PARAMS = { menu_name: "" };
 
-const setup = async () => {
+const setup = async (initialEntries?: string[]) => {
     mockGetByUrl({
         [API_ROUTES.auth.me]: CURRENT_USER,
         [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
         [API_ROUTES.menu.byPerson]: { items: [MENU], total: 1 },
+        [API_ROUTES.calories.intake]: [],
     });
 
     const store = makeTestStore();
@@ -66,7 +69,10 @@ const setup = async () => {
         ),
     ]);
 
-    return renderHookWithStore(() => useProfilePage(), store);
+    return renderHookWithRouter(() => useProfilePage(), {
+        store,
+        initialEntries,
+    });
 };
 
 describe("useProfilePage", () => {
@@ -78,6 +84,7 @@ describe("useProfilePage", () => {
         expect(result.current.recipesCount).toBe(1);
         expect(result.current.menus).toEqual([MENU]);
         expect(result.current.menusCount).toBe(1);
+        expect(result.current.kcalToday).toBe(0);
     });
 
     it("should default the active tab to recipes and allow switching", async () => {
@@ -90,5 +97,17 @@ describe("useProfilePage", () => {
         });
 
         expect(result.current.activeTab).toBe("menus");
+    });
+
+    it("should deep-link into the dietary tab via the tab query param", async () => {
+        const { result } = await setup(["/profile?tab=dietary"]);
+
+        expect(result.current.activeTab).toBe("dietary");
+    });
+
+    it("should ignore an unknown tab query param and default to recipes", async () => {
+        const { result } = await setup(["/profile?tab=bogus"]);
+
+        expect(result.current.activeTab).toBe("recipes");
     });
 });

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
-import { scaleCaloriesForPortions } from "utils/calories";
+import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
 import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
 
 import { RecipeIngredientsBanner } from "./RecipeIngredientsBanner";
@@ -106,10 +106,12 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                                     }
                                 >
                                     {t("recipeDetailsPage.ingredientCalories", {
-                                        count: scaleCaloriesForPortions(
-                                            ingredient.quantity_recipe_ingredients *
-                                                ingredient.calories_per_unit,
-                                            portionCount,
+                                        count: formatKcal(
+                                            scaleCaloriesForPortions(
+                                                ingredient.quantity_recipe_ingredients *
+                                                    ingredient.calories_per_unit,
+                                                portionCount,
+                                            ),
                                         ),
                                     })}
                                 </span>

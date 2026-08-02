@@ -1,0 +1,196 @@
+@use "styles/abstracts" as *;
+
+.calorie-history-chart {
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+        margin-bottom: var(--s-4);
+    }
+
+    &__heading {
+        margin: 0;
+        color: var(--text);
+        font:
+            600 18px Fraunces,
+            serif;
+    }
+
+    &__body {
+        display: flex;
+        align-items: stretch;
+        gap: var(--s-4);
+    }
+
+    &__chart {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__goal-line {
+        position: absolute;
+        right: 0;
+        left: 0;
+        border-top: 1px dashed
+            color-mix(in srgb, var(--text-muted) 50%, transparent);
+
+        span {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            padding: 0 0 2px;
+            color: var(--text-muted);
+            font:
+                500 10px "Geist Mono",
+                monospace;
+        }
+    }
+
+    &__bars {
+        display: flex;
+        align-items: flex-end;
+        gap: var(--s-2);
+        height: 176px;
+    }
+
+    &__column {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--s-1);
+        min-width: 0;
+        height: 100%;
+    }
+
+    &__value {
+        color: var(--text-muted);
+        font:
+            500 10px "Geist Mono",
+            monospace;
+    }
+
+    &__bar {
+        width: 100%;
+        min-height: 2px;
+        border-radius: 6px 6px 3px 3px;
+        background: color-mix(in srgb, var(--brand-strong) 80%, transparent);
+
+        &--near {
+            background: color-mix(in srgb, var(--warning) 78%, transparent);
+        }
+
+        &--over {
+            background: color-mix(in srgb, var(--danger) 78%, transparent);
+        }
+
+        &--today {
+            border: 1px dashed
+                color-mix(in srgb, var(--brand-strong) 70%, transparent);
+            background: color-mix(
+                in srgb,
+                var(--brand-strong) 22%,
+                transparent
+            );
+        }
+
+        &--today.calorie-history-chart__bar--near {
+            border-color: color-mix(in srgb, var(--warning) 70%, transparent);
+            background: color-mix(in srgb, var(--warning) 22%, transparent);
+        }
+
+        &--today.calorie-history-chart__bar--over {
+            border-color: color-mix(in srgb, var(--danger) 70%, transparent);
+            background: color-mix(in srgb, var(--danger) 22%, transparent);
+        }
+    }
+
+    &__days {
+        display: flex;
+        gap: var(--s-2);
+        margin-top: var(--s-2);
+
+        span {
+            flex: 1;
+            text-align: center;
+            color: var(--text-muted);
+            font:
+                400 11px Inter,
+                sans-serif;
+        }
+
+        span:last-child {
+            color: var(--text-2);
+            font-weight: 600;
+        }
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--s-3);
+        margin-top: var(--s-3);
+        padding-top: var(--s-3);
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+
+        span {
+            font-weight: 600;
+        }
+    }
+
+    &__empty {
+        margin: 0;
+        padding: var(--s-6) 0;
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+        text-align: center;
+    }
+
+    &__streak {
+        display: flex;
+        flex: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 140px;
+        padding: var(--s-4) var(--s-3);
+        border-radius: var(--r-md);
+        background: var(--surface-2);
+        text-align: center;
+
+        &-value {
+            color: var(--text);
+            font:
+                600 28px "Geist Mono",
+                monospace;
+        }
+
+        &-label {
+            margin-top: var(--s-1);
+            color: var(--text-2);
+            font:
+                400 12px Inter,
+                sans-serif;
+        }
+
+        &-best {
+            margin-top: var(--s-3);
+            padding-top: var(--s-3);
+            border-top: 1px solid var(--border);
+            width: 100%;
+            color: var(--text-muted);
+            font:
+                400 11.5px Inter,
+                sans-serif;
+        }
+    }
+}

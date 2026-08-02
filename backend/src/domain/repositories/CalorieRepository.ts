@@ -17,11 +17,8 @@ export interface CalorieIntakeEntry {
     calories: number;
 }
 
-export type CalorieGoalPeriod = "day" | "week" | "month";
-
 export interface CalorieGoal {
     calorie_goal: number | null;
-    calorie_goal_period: CalorieGoalPeriod | null;
     meal_calorie_limit: number | null;
 }
 

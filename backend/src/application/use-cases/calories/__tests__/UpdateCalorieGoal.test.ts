@@ -12,13 +12,12 @@ function setup() {
 }
 
 describe("UpdateCalorieGoal", () => {
-    it("should reject an invalid calorie_goal_period", async () => {
+    it("should reject an invalid calorie_goal", async () => {
         const { useCase } = setup();
 
         const error = await catchError(
             useCase.execute(7, {
-                calorie_goal: 2000,
-                calorie_goal_period: "year",
+                calorie_goal: -5,
                 meal_calorie_limit: null,
             }),
         );
@@ -31,13 +30,11 @@ describe("UpdateCalorieGoal", () => {
 
         await useCase.execute(7, {
             calorie_goal: 2000,
-            calorie_goal_period: "day",
             meal_calorie_limit: 800,
         });
 
         expect(calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
             calorie_goal: 2000,
-            calorie_goal_period: "day",
             meal_calorie_limit: 800,
         });
     });
@@ -47,13 +44,11 @@ describe("UpdateCalorieGoal", () => {
 
         await useCase.execute(7, {
             calorie_goal: null,
-            calorie_goal_period: null,
             meal_calorie_limit: null,
         });
 
         expect(calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
             calorie_goal: null,
-            calorie_goal_period: null,
             meal_calorie_limit: null,
         });
     });

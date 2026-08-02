@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useCalorieLimitNotice } from "hooks/useCalorieLimitNotice";
 import { useExpiredIngredientsNotice } from "hooks/useExpiredIngredientsNotice";
 
 import { AppHeader } from "components/layout/AppHeader";
@@ -24,6 +25,7 @@ export const AppShell: React.FC<AppShellProps> = ({
     mobileEditTo,
 }) => {
     useExpiredIngredientsNotice();
+    useCalorieLimitNotice();
 
     return (
         <div className={styles["app-shell"]}>

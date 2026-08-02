@@ -14,7 +14,11 @@ import { NumberInput } from "components/ui/NumberInput";
 import { Textarea } from "components/ui/Textarea";
 import { TextInput } from "components/ui/TextInput";
 
-import { roundCalories, sumIngredientCalories } from "utils/calories";
+import {
+    formatKcal,
+    roundCalories,
+    sumIngredientCalories,
+} from "utils/calories";
 
 import styles from "./RecipeForm.module.scss";
 
@@ -133,7 +137,9 @@ export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
                     <p className={styles["recipe-form__calories-hint"]}>
                         {form.selectedIngredients.length > 0
                             ? t("recipeForm.caloriesAutoHint", {
-                                  count: roundCalories(autoCalories),
+                                  count: formatKcal(
+                                      roundCalories(autoCalories),
+                                  ),
                               })
                             : t("recipeForm.caloriesAutoHintEmpty")}
                     </p>

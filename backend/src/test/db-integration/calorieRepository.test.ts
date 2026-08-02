@@ -185,7 +185,6 @@ describe("PgCalorieRepository (real Postgres)", () => {
     it("should update and clear the calorie goal", async () => {
         await repository.updateGoal(personId, {
             calorie_goal: 2000,
-            calorie_goal_period: "day",
             meal_calorie_limit: 800,
         });
 
@@ -194,14 +193,12 @@ describe("PgCalorieRepository (real Postgres)", () => {
         expect(withGoal).toEqual(
             expect.objectContaining({
                 calorie_goal: 2000,
-                calorie_goal_period: "day",
                 meal_calorie_limit: 800,
             }),
         );
 
         await repository.updateGoal(personId, {
             calorie_goal: null,
-            calorie_goal_period: null,
             meal_calorie_limit: null,
         });
 
@@ -210,7 +207,6 @@ describe("PgCalorieRepository (real Postgres)", () => {
         expect(cleared).toEqual(
             expect.objectContaining({
                 calorie_goal: null,
-                calorie_goal_period: null,
                 meal_calorie_limit: null,
             }),
         );

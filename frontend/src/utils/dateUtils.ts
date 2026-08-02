@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 import { dateLocaleFor, DEFAULT_LANGUAGE } from "constants/languages";
 
 // pass the active i18n language (component code uses `i18n.language`); non-React callers fall back to the default
@@ -56,3 +58,36 @@ export const formatJoinedDate = (date: Date | string): string =>
     new Intl.DateTimeFormat("en-US", JOINED_DATE_OPTIONS).format(
         new Date(date),
     );
+
+const MS_PER_SECOND = 1000;
+const SECONDS_PER_MINUTE = 60;
+const MINUTES_PER_HOUR = 60;
+const HOURS_PER_DAY = 24;
+
+// a single translated string ("7 h ago"), never split across separate elements - a shared gap/flex
+// wrapper around individually-rendered words is what produces uneven spacing between them
+export const formatRelativeTime = (date: Date | string): string => {
+    const elapsedSeconds = Math.max(
+        0,
+        (Date.now() - new Date(date).getTime()) / MS_PER_SECOND,
+    );
+    const minutes = Math.floor(elapsedSeconds / SECONDS_PER_MINUTE);
+
+    if (minutes < 1) {
+        return i18next.t("timeAgo.justNow");
+    }
+
+    const hours = Math.floor(minutes / MINUTES_PER_HOUR);
+
+    if (hours < 1) {
+        return i18next.t("timeAgo.minutes", { count: minutes });
+    }
+
+    const days = Math.floor(hours / HOURS_PER_DAY);
+
+    if (days < 1) {
+        return i18next.t("timeAgo.hours", { count: hours });
+    }
+
+    return i18next.t("timeAgo.days", { count: days });
+};

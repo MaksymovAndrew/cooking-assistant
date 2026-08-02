@@ -19,13 +19,26 @@ describe("sessionSlice", () => {
         expect(state.status).toBe("unauthed");
     });
 
-    it("should go checking while the session check is pending then authed on success", async () => {
+    it("should go checking while the initial session check is pending then authed on success", async () => {
+        mockedGet.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+
+        const pending = store.dispatch(authApi.endpoints.getMe.initiate(null));
+
+        expect(store.getState().session.status).toBe("checking");
+
+        await pending;
+
+        expect(store.getState().session.status).toBe("authed");
+    });
+
+    it("should stay authed while a background getMe refetch is pending, not flash back to checking", async () => {
         mockedGet.mockResolvedValue({ data: null });
         const store = makeTestStore({ session: { status: "authed" } });
 
         const pending = store.dispatch(authApi.endpoints.getMe.initiate(null));
 
-        expect(store.getState().session.status).toBe("checking");
+        expect(store.getState().session.status).toBe("authed");
 
         await pending;
 

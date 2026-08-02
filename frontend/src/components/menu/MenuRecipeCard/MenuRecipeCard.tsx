@@ -8,7 +8,7 @@ import { recipeDetailsPath } from "constants/routes";
 
 import { UtensilsMark } from "components/icons";
 
-import { roundCalories } from "utils/calories";
+import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 
 import styles from "./MenuRecipeCard.module.scss";
@@ -39,7 +39,7 @@ export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
         recipe.calories_per_portion === null
             ? null
             : t("menuDetailsPage.caloriesValue", {
-                  count: roundCalories(recipe.calories_per_portion),
+                  count: formatKcal(roundCalories(recipe.calories_per_portion)),
               });
 
     return (

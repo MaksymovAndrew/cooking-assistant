@@ -21,8 +21,13 @@ const sessionSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            // a background refetch (any Me-touching mutation invalidates this) must not flip an
+            // already-authed session back to "checking" - PrivateRoute unmounts its Outlet while
+            // checking, which would reset every page's local state (e.g. the active profile tab)
             .addMatcher(authApi.endpoints.getMe.matchPending, (state) => {
-                state.status = "checking";
+                if (state.status !== "authed") {
+                    state.status = "checking";
+                }
             })
             .addMatcher(authApi.endpoints.getMe.matchFulfilled, (state) => {
                 state.status = "authed";

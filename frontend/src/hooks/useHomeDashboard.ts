@@ -11,6 +11,9 @@ import {
 } from "redux/services/recipesApi";
 import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
 
+import { useCalorieBudget } from "hooks/useCalorieBudget";
+
+import { roundCalories } from "utils/calories";
 import { getExpiryStatus } from "utils/expiry";
 
 // fetched once at the desktop count (3x3); tablet/mobile crop the same 9 down to 4/2 via CSS (nth-child), so there's only ever one request
@@ -31,6 +34,7 @@ export const useHomeDashboard = () => {
     const allMenus = useGetAllMenusQuery(null);
     const pantry = useGetUserIngredientsQuery(null);
     const recent = useGetRecipesByPersonInfiniteQuery(RECENT_RECIPES_PARAMS);
+    const calorieBudget = useCalorieBudget();
 
     const recentRecipes = useMemo<RecipeSearchResultItem[]>(
         () => flattenPages(recent.data).slice(0, RECENT_RECIPES_LIMIT),
@@ -78,6 +82,8 @@ export const useHomeDashboard = () => {
         pantryCount: pantry.data?.length ?? 0,
         expiringSoonCount: urgentIngredients.length,
         expiringSoon: urgentIngredients.slice(0, EXPIRING_SOON_LIMIT),
+        kcalToday: roundCalories(calorieBudget.consumed),
+        kcalGoal: calorieBudget.goal,
         recentRecipes,
         isLoading,
         isError,

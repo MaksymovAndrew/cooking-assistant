@@ -20,6 +20,8 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: "tomato",
+    calorie_goal: null,
+    meal_calorie_limit: null,
 };
 
 const renderEditProfileForm = (

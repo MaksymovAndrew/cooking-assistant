@@ -1,0 +1,122 @@
+@use "styles/abstracts" as *;
+
+.calorie-today-card {
+    &__title {
+        margin: 0 0 var(--s-4);
+        color: var(--text);
+        font:
+            600 20px Fraunces,
+            serif;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--s-5);
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--s-3);
+        min-width: 0;
+        width: 100%;
+
+        @include respond-to(tablet) {
+            align-items: flex-start;
+        }
+    }
+
+    &__tone-pill {
+        display: inline-flex;
+        align-items: center;
+        height: 26px;
+        padding: 0 var(--s-3);
+        border-radius: var(--r-pill);
+        background: var(--brand-subtle);
+        color: var(--brand);
+        font:
+            600 11.5px Inter,
+            sans-serif;
+
+        &--near {
+            background: color-mix(in srgb, var(--warning) 15%, transparent);
+            color: var(--warning);
+        }
+
+        &--over {
+            background: color-mix(in srgb, var(--danger) 14%, transparent);
+            color: var(--danger);
+        }
+    }
+
+    &__summary {
+        margin: 0;
+        color: var(--text-2);
+        text-align: center;
+        font:
+            400 15px/1.6 Inter,
+            sans-serif;
+
+        @include respond-to(tablet) {
+            text-align: left;
+        }
+    }
+
+    &__legend {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
+        width: 100%;
+    }
+
+    &__legend-row {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+    }
+
+    &__legend-dot {
+        flex: none;
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        background: var(--brand-strong);
+
+        &--near {
+            background: var(--warning);
+        }
+
+        &--over,
+        &--danger {
+            background: var(--danger);
+        }
+
+        &--muted {
+            background: var(--border);
+        }
+    }
+
+    &__legend-name {
+        flex: 1;
+        color: var(--text-2);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__legend-value {
+        color: var(--text);
+        font:
+            500 13px "Geist Mono",
+            monospace;
+    }
+}

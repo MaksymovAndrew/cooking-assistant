@@ -20,11 +20,8 @@ export const logIntakeSchema = z
         { message: EXACTLY_ONE_SOURCE_MESSAGE, path: ["recipe_id"] },
     );
 
-const calorieGoalPeriodSchema = z.enum(["day", "week", "month"]);
-
 export const updateCalorieGoalSchema = z.object({
     calorie_goal: positiveIntegerSchema("Calorie goal").nullable(),
-    calorie_goal_period: calorieGoalPeriodSchema.nullable(),
     meal_calorie_limit: positiveIntegerSchema("Meal calorie limit").nullable(),
 });
 

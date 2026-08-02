@@ -1,0 +1,90 @@
+@use "styles/abstracts" as *;
+
+.profile-dietary-tab {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-5);
+
+        @include respond-to(desktop) {
+            grid-template-columns: 1.35fr 1fr;
+            align-items: start;
+        }
+    }
+
+    &__col {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-5);
+        min-width: 0;
+    }
+
+    &__empty {
+        display: flex;
+        justify-content: center;
+
+        > * {
+            width: 100%;
+            max-width: 560px;
+        }
+    }
+
+    &__card-heading {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        color: var(--brand);
+    }
+
+    &__card-title {
+        margin: 0;
+        color: var(--text);
+        font:
+            600 18px Fraunces,
+            serif;
+    }
+
+    &__helper {
+        margin: var(--s-1) 0 var(--s-4);
+        color: var(--text-2);
+        font:
+            400 13px Inter,
+            sans-serif;
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-4);
+    }
+
+    &__form-fields {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-4);
+
+        @include respond-to(tablet) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    &__form-footer {
+        display: flex;
+        align-items: center;
+        gap: var(--s-3);
+        flex-wrap: wrap;
+    }
+
+    &__saved {
+        display: inline-flex;
+        align-items: center;
+        color: var(--success);
+        font:
+            400 12.5px Inter,
+            sans-serif;
+    }
+}

@@ -58,6 +58,8 @@ export const HomeDashboard: React.FC = () => {
                 menusCount={dashboard.menusCount}
                 pantryCount={dashboard.pantryCount}
                 expiringCount={dashboard.expiringSoonCount}
+                kcalToday={dashboard.kcalToday}
+                kcalGoal={dashboard.kcalGoal}
             />
             <div className={styles["home-dashboard__panels"]}>
                 <RecentRecipes recipes={dashboard.recentRecipes} />

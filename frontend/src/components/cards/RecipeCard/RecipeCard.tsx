@@ -8,7 +8,7 @@ import type { ContentCardVariant } from "components/cards/ContentCard";
 import { ContentCard } from "components/cards/ContentCard";
 import { UtensilsMark } from "components/icons";
 
-import { roundCalories } from "utils/calories";
+import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { filterAllergens } from "utils/recipeAllergens";
 
@@ -62,8 +62,10 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
                           {
                               icon: Flame,
                               label: t("recipeCard.caloriesValue", {
-                                  count: roundCalories(
-                                      recipe.calories_per_portion,
+                                  count: formatKcal(
+                                      roundCalories(
+                                          recipe.calories_per_portion,
+                                      ),
                                   ),
                               }),
                           },

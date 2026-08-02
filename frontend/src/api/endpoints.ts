@@ -41,4 +41,9 @@ export const API_ROUTES = {
     menuCategories: {
         list: "/api/menu-categories",
     },
+    calories: {
+        intake: "/api/calorie-intake",
+        intakeById: (id: string | number) => `/api/calorie-intake/${id}`,
+        goal: "/api/calorie-goal",
+    },
 } as const;

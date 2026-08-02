@@ -1,4 +1,4 @@
-import { Heart, Salad } from "lucide-react";
+import { Heart } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -7,6 +7,7 @@ import { PROFILE_TAB, useProfilePage } from "hooks/useProfilePage";
 import { AppShell } from "components/layout/AppShell";
 import { EditProfileModal } from "components/profile/EditProfileModal";
 import { ProfileComingSoon } from "components/profile/ProfileComingSoon";
+import { ProfileDietaryTab } from "components/profile/ProfileDietaryTab";
 import { ProfileHero } from "components/profile/ProfileHero";
 import { ProfileMenusTab } from "components/profile/ProfileMenusTab";
 import { ProfileRecipesTab } from "components/profile/ProfileRecipesTab";
@@ -30,6 +31,7 @@ const ProfilePage: React.FC = () => {
                     avatar={profile.currentUser?.avatar}
                     recipesCount={profile.recipesCount}
                     menusCount={profile.menusCount}
+                    kcalToday={profile.kcalToday}
                     onLogout={profile.openLogoutModal}
                     onEditProfile={() => {
                         setIsEditProfileOpen(true);
@@ -72,10 +74,7 @@ const ProfilePage: React.FC = () => {
                     />
                 )}
                 {profile.activeTab === PROFILE_TAB.dietary && (
-                    <ProfileComingSoon
-                        icon={Salad}
-                        title={t("profilePage.dietaryTitle")}
-                    />
+                    <ProfileDietaryTab currentUser={profile.currentUser} />
                 )}
             </div>
 

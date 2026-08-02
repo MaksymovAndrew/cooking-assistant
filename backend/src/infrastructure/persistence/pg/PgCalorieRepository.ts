@@ -87,14 +87,9 @@ export default class PgCalorieRepository implements CalorieRepository {
     async updateGoal(personId: number, goal: CalorieGoal): Promise<void> {
         await this.pool.query(
             `UPDATE person
-             SET calorie_goal = $1, calorie_goal_period = $2, meal_calorie_limit = $3
-             WHERE id = $4`,
-            [
-                goal.calorie_goal,
-                goal.calorie_goal_period,
-                goal.meal_calorie_limit,
-                personId,
-            ],
+             SET calorie_goal = $1, meal_calorie_limit = $2
+             WHERE id = $3`,
+            [goal.calorie_goal, goal.meal_calorie_limit, personId],
         );
     }
 }

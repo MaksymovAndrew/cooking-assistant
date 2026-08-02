@@ -1,4 +1,5 @@
 import {
+    formatKcal,
     roundCalories,
     scaleCaloriesForPortions,
     sumIngredientCalories,
@@ -48,5 +49,15 @@ describe("sumIngredientCalories", () => {
 
     it("should return 0 for an empty list", () => {
         expect(sumIngredientCalories([])).toBe(0);
+    });
+});
+
+describe("formatKcal", () => {
+    it("should add a thousands separator", () => {
+        expect(formatKcal(1180)).toBe("1,180");
+    });
+
+    it("should leave a small number unchanged", () => {
+        expect(formatKcal(320)).toBe("320");
     });
 });

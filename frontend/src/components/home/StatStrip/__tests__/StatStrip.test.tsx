@@ -10,6 +10,8 @@ describe("StatStrip", () => {
                 menusCount={2}
                 pantryCount={10}
                 expiringCount={1}
+                kcalToday={500}
+                kcalGoal={2000}
             />,
         );
 
@@ -21,5 +23,7 @@ describe("StatStrip", () => {
         expect(screen.getByText("Pantry items")).toBeInTheDocument();
         expect(screen.getByText("1")).toBeInTheDocument();
         expect(screen.getByText("Expiring soon")).toBeInTheDocument();
+        expect(screen.getByText("500")).toBeInTheDocument();
+        expect(screen.getByText("Kcal today")).toBeInTheDocument();
     });
 });

@@ -75,6 +75,7 @@
     &__form-footer {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: var(--s-3);
         flex-wrap: wrap;
     }

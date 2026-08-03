@@ -10,6 +10,8 @@ import { useAppDispatch } from "redux/hooks";
 import { useGetMenuByIdQuery } from "redux/services/menusApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
+import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
+
 import { AppShell } from "components/layout/AppShell";
 import { MenuHero } from "components/menu/MenuHero";
 import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
@@ -30,6 +32,18 @@ const MenuDetailsPage: React.FC = () => {
         isError,
         refetch,
     } = useGetMenuByIdQuery(id ?? skipToken);
+    // sum of each recipe's own per-portion calories - null recipes contribute nothing, matching the backend's SUM(COALESCE(...)) in findMenuCalories
+    const menuCaloriesPerPortion = (menu?.recipes ?? []).reduce(
+        (total, recipe) => total + (recipe.calories_per_portion ?? 0),
+        0,
+    );
+    const menuCalories =
+        menuCaloriesPerPortion > 0 ? menuCaloriesPerPortion : null;
+    const handleLogIntake = useLogIntakeHandler({
+        menuId: menu?.menu.id,
+        title: menu?.menu.title ?? "",
+        caloriesPerPortion: menuCalories,
+    });
 
     if (isError) {
         return (
@@ -85,6 +99,7 @@ const MenuDetailsPage: React.FC = () => {
                     menu={menu.menu}
                     totalCookingTime={totalCookingTime}
                     recipeCount={menu.recipes.length}
+                    caloriesPerPortion={menuCalories}
                     editTo={changeMenuPath(menu.menu.id)}
                     onDelete={() => {
                         dispatch(
@@ -95,6 +110,7 @@ const MenuDetailsPage: React.FC = () => {
                             }),
                         );
                     }}
+                    onLogIntake={handleLogIntake}
                 />
                 <div className={gridClassName}>
                     <MenuRecipesPanel

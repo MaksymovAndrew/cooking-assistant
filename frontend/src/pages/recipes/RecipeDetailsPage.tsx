@@ -11,13 +11,12 @@ import { useGetRecipeByIdQuery } from "redux/services/recipesApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { useIngredientAvailability } from "hooks/useIngredientAvailability";
+import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
 import { usePortionScaling } from "hooks/usePortionScaling";
 
 import { AppShell } from "components/layout/AppShell";
-import { CalorieDisclaimer } from "components/recipes/CalorieDisclaimer";
-import { RecipeDescriptionPanel } from "components/recipes/RecipeDescriptionPanel";
+import { RecipeDetailsSecondary } from "components/recipes/RecipeDetailsSecondary";
 import { RecipeHero } from "components/recipes/RecipeHero";
-import { RecipeIngredientsPanel } from "components/recipes/RecipeIngredientsPanel";
 import { ErrorState } from "components/ui/ErrorState";
 
 import { getRecipeAllergens } from "utils/recipeAllergens";
@@ -39,6 +38,11 @@ const RecipeDetailsPage: React.FC = () => {
         recipe?.ingredients ?? [],
     );
     const allergens = getRecipeAllergens(recipe?.ingredients ?? []);
+    const handleLogIntake = useLogIntakeHandler({
+        recipeId: recipe?.id,
+        title: recipe?.title ?? "",
+        caloriesPerPortion: recipe?.calories_per_portion ?? null,
+    });
 
     if (isError) {
         return (
@@ -92,34 +96,27 @@ const RecipeDetailsPage: React.FC = () => {
                                     }),
                                 );
                             }}
+                            onLogIntake={handleLogIntake}
                         />
                     </div>
-                    <div
-                        className={
+                    <RecipeDetailsSecondary
+                        ingredientsAreaClassName={
                             styles["recipe-details-page__ingredients-area"]
                         }
-                    >
-                        <RecipeIngredientsPanel
-                            availability={availability}
-                            haveCount={haveCount}
-                            missingCount={missingCount}
-                            isOwner={recipe.isOwner}
-                            portionCount={portions.count}
-                            onIncrement={portions.increment}
-                            onDecrement={portions.decrement}
-                        />
-                        <CalorieDisclaimer />
-                    </div>
-                    <div
-                        className={
+                        descriptionAreaClassName={
                             styles["recipe-details-page__description-area"]
                         }
-                    >
-                        <RecipeDescriptionPanel
-                            content={recipe.content}
-                            allergens={allergens}
-                        />
-                    </div>
+                        availability={availability}
+                        haveCount={haveCount}
+                        missingCount={missingCount}
+                        isOwner={recipe.isOwner}
+                        portionCount={portions.count}
+                        onIncrement={portions.increment}
+                        onDecrement={portions.decrement}
+                        hasCustomCalories={recipe.calories_override !== null}
+                        content={recipe.content}
+                        allergens={allergens}
+                    />
                 </div>
             </div>
         </AppShell>

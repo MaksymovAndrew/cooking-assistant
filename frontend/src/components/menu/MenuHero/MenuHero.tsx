@@ -1,15 +1,16 @@
-import { Clock, Heart, Star } from "lucide-react";
+import { Flame, Heart, Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
 import type { MenuDetails } from "types/menu";
 
-import { BookMark } from "components/icons";
+import { MenuHeroStats } from "components/menu/MenuHero/MenuHeroStats";
 import { MenuHeroActions } from "components/menu/MenuHeroActions";
-import { RecipeRatingStars } from "components/recipes/RecipeRatingStars";
+import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
 
+import { formatKcal } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 
 import styles from "./MenuHero.module.scss";
@@ -18,8 +19,10 @@ interface MenuHeroProps {
     menu: MenuDetails["menu"];
     totalCookingTime: number;
     recipeCount: number;
+    caloriesPerPortion: number | null;
     editTo: string;
     onDelete: () => void;
+    onLogIntake?: () => void;
 }
 
 const FAVOURITE_ICON_SIZE = 17;
@@ -30,16 +33,25 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
     menu,
     totalCookingTime,
     recipeCount,
+    caloriesPerPortion,
     editTo,
     onDelete,
+    onLogIntake,
 }) => {
     const { t } = useTranslation("menu");
     const favouriteLabel = t("menuDetailsPage.favourite");
+    const logIntakeLabel = t("menuDetailsPage.logIntake");
     const { hours, minutes } = splitCookingTime(totalCookingTime);
     const formattedTotalTime =
         hours > 0
             ? t("menuDetailsPage.totalTimeHoursMinutes", { hours, minutes })
             : t("menuDetailsPage.totalTimeMinutes", { minutes });
+    const formattedCalories =
+        caloriesPerPortion === null
+            ? null
+            : t("menuDetailsPage.caloriesValue", {
+                  count: formatKcal(Math.round(caloriesPerPortion)),
+              });
 
     return (
         <div className={styles["menu-hero"]}>
@@ -66,6 +78,8 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                         editLabel={t("menuDetailsPage.editButton")}
                         deleteLabel={t("menuDetailsPage.deleteButton")}
                         favouriteLabel={favouriteLabel}
+                        onLogIntake={onLogIntake}
+                        logIntakeLabel={logIntakeLabel}
                     />
                 )}
             </div>
@@ -77,7 +91,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
             )}
 
             {!menu.isOwner && (
-                <div className={styles["menu-hero__visitor-banner"]}>
+                <div className={styles["menu-hero__visitor-actions"]}>
                     <button
                         type="button"
                         disabled
@@ -87,59 +101,36 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                         <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
                         {favouriteLabel}
                     </button>
-                    <span>{t("menuDetailsPage.visitorBanner")}</span>
+                    {onLogIntake && (
+                        <Button
+                            variant="secondary"
+                            className={styles["menu-hero__visitor-log-intake"]}
+                            onClick={onLogIntake}
+                        >
+                            <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
+                            {logIntakeLabel}
+                        </Button>
+                    )}
                 </div>
             )}
 
-            <div className={styles["menu-hero__stats"]}>
-                <div className={styles["menu-hero__stat"]}>
-                    <span className={styles["menu-hero__stat-label"]}>
-                        {t("menuDetailsPage.totalTime")}
-                    </span>
-                    <span className={styles["menu-hero__stat-value"]}>
-                        <Clock size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {formattedTotalTime}
-                    </span>
-                </div>
-                {menu.isOwner && (
-                    <div
-                        className={[
-                            styles["menu-hero__stat"],
-                            styles["menu-hero__stat--secondary"],
-                        ].join(" ")}
-                    >
-                        <span className={styles["menu-hero__stat-label"]}>
-                            {t("menuDetailsPage.yourRating")}
-                        </span>
-                        <RecipeRatingStars
-                            rating={MENU_RATING}
-                            ratingCount={MENU_RATING_COUNT}
-                        />
-                    </div>
-                )}
-                <div className={styles["menu-hero__stat"]}>
-                    <span className={styles["menu-hero__stat-label"]}>
-                        {t("menuDetailsPage.recipes")}
-                    </span>
-                    <span className={styles["menu-hero__stat-value"]}>
-                        <BookMark size={STAT_ICON_SIZE} />
-                        {recipeCount}
-                    </span>
-                </div>
-            </div>
+            <MenuHeroStats
+                formattedTotalTime={formattedTotalTime}
+                recipeCount={recipeCount}
+                formattedCalories={formattedCalories}
+                isOwner={menu.isOwner}
+            />
 
-            <div className={styles["menu-hero__mobile-meta"]}>
-                <span className={styles["menu-hero__mobile-meta-item"]}>
-                    <Clock size={STAT_ICON_SIZE} aria-hidden="true" />
-                    {formattedTotalTime}
-                </span>
-                <span className={styles["menu-hero__mobile-meta-item"]}>
-                    <BookMark size={STAT_ICON_SIZE} />
-                    {t("menuDetailsPage.recipesCaption", {
-                        count: recipeCount,
-                    })}
-                </span>
-            </div>
+            {menu.isOwner && onLogIntake && (
+                <Button
+                    variant="secondary"
+                    className={styles["menu-hero__owner-log-intake-mobile"]}
+                    onClick={onLogIntake}
+                >
+                    <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
+                    {logIntakeLabel}
+                </Button>
+            )}
         </div>
     );
 };

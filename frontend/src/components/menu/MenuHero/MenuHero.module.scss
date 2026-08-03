@@ -69,20 +69,12 @@
         }
     }
 
-    &__visitor-banner {
+    &__visitor-actions {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         gap: var(--s-3);
         margin-bottom: var(--s-5);
-        padding: 13px 14px;
-        border: 1px solid var(--brand-subtle);
-        border-radius: var(--r-md);
-        background: var(--brand-subtle);
-        color: var(--text-muted);
-        font:
-            400 13px Inter,
-            sans-serif;
     }
 
     &__favourite {
@@ -102,6 +94,14 @@
 
         svg {
             color: var(--brand);
+        }
+    }
+
+    &__visitor-log-intake {
+        flex: 1;
+
+        @include respond-to(tablet) {
+            flex: none;
         }
     }
 
@@ -177,6 +177,17 @@
 
         svg {
             color: var(--brand);
+        }
+    }
+
+    // MenuHeroActions (the owner's Edit/Favourite/LogIntake/Delete row) is tablet+ only
+    // (mobile owner-actions live in the subpage header's edit-pencil icon instead), so the
+    // owner still needs a reachable Log intake trigger below the fold on mobile
+    &__owner-log-intake-mobile {
+        width: 100%;
+
+        @include respond-to(tablet) {
+            display: none;
         }
     }
 }

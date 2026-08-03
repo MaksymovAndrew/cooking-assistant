@@ -92,7 +92,8 @@
         "verificationEmailSent": "Verification link sent",
         "profileUpdated": "Profile updated",
         "accountDeleted": "Account deleted",
-        "calorieIntakeDeleted": "Entry deleted"
+        "calorieIntakeDeleted": "Entry deleted",
+        "intakeLogged": "Logged to today's intake"
     },
     "timeAgo": {
         "justNow": "Just now",

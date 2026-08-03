@@ -163,6 +163,14 @@
             monospace;
     }
 
+    &__custom-calories-note {
+        margin: var(--s-3) 0 0;
+        color: var(--text-muted);
+        font:
+            400 12px/1.5 Inter,
+            sans-serif;
+    }
+
     &__banner {
         display: flex;
         align-items: center;

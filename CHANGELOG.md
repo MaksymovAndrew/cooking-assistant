@@ -38,6 +38,13 @@ changelogs and the tags and now track everything here against one shared version
 - Added: Your profile header now shows how many calories you've logged today.
 - Fixed: Saving your profile no longer briefly flashes the page and resets you to the "My recipes" tab.
 - Changed: Calorie numbers throughout the app now show thousands separators (e.g. "1,180 kcal").
+- Added: A "Log intake" button on recipe and menu pages - log what you ate (with a portions stepper and a live running total) straight against today's goal, with a warning if it would put you over your per-meal limit.
+- Changed: If a recipe's calories were set by hand, the ingredient list no longer shows a per-ingredient calorie breakdown that could conflict with that total - just a note that the total above is the one that counts.
+- Changed: Cleaned up the recipe and menu pages - Favourite, Log intake, Edit and Delete now sit together in one row, and the "Viewing someone else's..." message was removed since it's no longer needed.
+- Added: Menu pages now show total calories alongside cooking time and recipe count.
+- Fixed: The calorie history chart (7/30 days) no longer looks squeezed or broken on smaller screens - it now scrolls smoothly with a visible drag handle when there isn't room to show every day at once.
+- Changed: Scrollbars across the app now have a subtle, polished look instead of being invisible.
+- Changed: The calorie-estimate disclaimer on the Dietary tab now sits at the top of the page, above the goal and history cards, so you see it first.
 
 ## 3.9 - 2026-07-30
 

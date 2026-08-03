@@ -68,6 +68,7 @@ describe("CalorieHistoryChart", () => {
         expect(screen.getByText("2,600")).toBeInTheDocument();
         expect(screen.getByText("1")).toBeInTheDocument();
         expect(screen.getByText("Today")).toBeInTheDocument();
+        expect(screen.getByText("Goal 2,000 kcal")).toBeInTheDocument();
     });
 
     it("should show the empty state when there is no history", async () => {
@@ -102,5 +103,6 @@ describe("CalorieHistoryChart", () => {
         await userEvent.click(screen.getByRole("radio", { name: "30 days" }));
 
         expect(await screen.findByText(/Days on goal/)).toBeInTheDocument();
+        expect(screen.getByText("Goal 2,000 kcal")).toBeInTheDocument();
     });
 });

@@ -13,6 +13,7 @@ import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
 import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
 import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
+import { LogIntakeModal } from "components/modals/LogIntakeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
@@ -47,6 +48,9 @@ jest.mock("components/modals/DeleteCalorieIntakeModal", () => ({
 jest.mock("components/modals/CalorieLimitModal", () => ({
     CalorieLimitModal: jest.fn(() => null),
 }));
+jest.mock("components/modals/LogIntakeModal", () => ({
+    LogIntakeModal: jest.fn(() => null),
+}));
 
 const mockedModal = jest.mocked(PurchaseHistoryModal);
 const mockedDeleteRecipe = jest.mocked(DeleteRecipeModal);
@@ -57,6 +61,7 @@ const mockedThemeChange = jest.mocked(ThemeChangeConfirmModal);
 const mockedExpiredIngredients = jest.mocked(ExpiredIngredientsModal);
 const mockedDeleteCalorieIntake = jest.mocked(DeleteCalorieIntakeModal);
 const mockedCalorieLimit = jest.mocked(CalorieLimitModal);
+const mockedLogIntake = jest.mocked(LogIntakeModal);
 
 const INGREDIENT: PantryIngredient = {
     id: 9,
@@ -271,5 +276,28 @@ describe("ModalRoot", () => {
         expect(props.modalId).toBe("modal-9");
         expect(props.consumed).toBe(2520);
         expect(props.goal).toBe(2200);
+    });
+
+    it("should render the log-intake modal with its id, recipe/menu ids, title and calories", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: {
+                    modal: {
+                        id: "modal-10",
+                        type: MODAL_TYPE.logIntake,
+                        recipeId: 7,
+                        title: "Chicken teriyaki don",
+                        caloriesPerPortion: 620,
+                    },
+                },
+            }),
+        });
+
+        const props = mockedLogIntake.mock.calls[0][0];
+
+        expect(props.modalId).toBe("modal-10");
+        expect(props.recipeId).toBe(7);
+        expect(props.title).toBe("Chicken teriyaki don");
+        expect(props.caloriesPerPortion).toBe(620);
     });
 });

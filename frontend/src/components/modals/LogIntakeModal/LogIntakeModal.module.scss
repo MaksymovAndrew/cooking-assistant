@@ -1,0 +1,95 @@
+@use "styles/abstracts" as *;
+
+.log-intake-modal {
+    &__title {
+        margin: 0 0 var(--s-4);
+        color: var(--text);
+        font:
+            600 16px Inter,
+            sans-serif;
+    }
+
+    &__stepper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--s-4);
+    }
+
+    &__stepper-label {
+        color: var(--text-muted);
+        font:
+            500 12px Inter,
+            sans-serif;
+    }
+
+    &__stepper-control {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        padding: 3px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-2);
+
+        span {
+            min-width: 30px;
+            text-align: center;
+            color: var(--text);
+            font:
+                600 15px "Geist Mono",
+                monospace;
+        }
+
+        button {
+            display: flex;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 7px;
+            background: transparent;
+            color: var(--text);
+            font:
+                600 18px Inter,
+                sans-serif;
+            cursor: pointer;
+
+            @include focus-ring;
+
+            &:last-child {
+                background: var(--brand-strong);
+                color: var(--on-brand);
+            }
+        }
+    }
+
+    &__total {
+        margin: 0 0 var(--s-4);
+        color: var(--text);
+        font:
+            600 18px "Geist Mono",
+            monospace;
+    }
+
+    &__warning {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        margin: 0 0 var(--s-4);
+        padding: var(--s-3);
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--warning) 12%, transparent);
+        color: var(--warning);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--s-2);
+    }
+}

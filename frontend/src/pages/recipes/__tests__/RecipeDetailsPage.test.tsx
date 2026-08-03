@@ -169,4 +169,34 @@ describe("RecipeDetailsPage", () => {
 
         expect(store.getState().ui.modal).toBeNull();
     });
+
+    it("should not show the log-intake button when the recipe has no calorie data", async () => {
+        mockRecipe();
+
+        renderPage();
+        await screen.findByRole("heading", { name: TITLE });
+
+        expect(
+            screen.queryByRole("button", { name: "Log intake" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should open the log-intake modal with the recipe's calories per portion", async () => {
+        mockRecipe({ ...SAMPLE, calories_per_portion: 420 });
+
+        const { store } = renderPage();
+
+        await screen.findByRole("heading", { name: TITLE });
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Log intake" }),
+        );
+
+        expect(store.getState().ui.modal).toMatchObject({
+            type: MODAL_TYPE.logIntake,
+            recipeId: 1,
+            title: TITLE,
+            caloriesPerPortion: 420,
+        });
+    });
 });

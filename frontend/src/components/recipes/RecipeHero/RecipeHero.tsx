@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Flame, Heart } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -6,6 +6,7 @@ import type { RecipeDetails } from "types/recipe";
 
 import { UtensilsMarkSimple } from "components/icons";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
+import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
 import { OwnerActions } from "components/ui/OwnerActions";
 
@@ -24,6 +25,7 @@ interface RecipeHeroProps {
     portionCount: number;
     editTo: string;
     onDelete: () => void;
+    onLogIntake?: () => void;
 }
 
 const IMAGE_ICON_SIZE = 56;
@@ -34,6 +36,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     portionCount,
     editTo,
     onDelete,
+    onLogIntake,
 }) => {
     const { t } = useTranslation("recipes");
     const favouriteLabel = t("recipeDetailsPage.favourite");
@@ -102,10 +105,12 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                         editLabel={t("recipeDetailsPage.editButton")}
                         deleteLabel={t("recipeDetailsPage.deleteButton")}
                         favouriteLabel={favouriteLabel}
+                        onLogIntake={onLogIntake}
+                        logIntakeLabel={t("recipeDetailsPage.logIntake")}
                     />
                 </div>
             ) : (
-                <div className={styles["recipe-hero__visitor-banner"]}>
+                <div className={styles["recipe-hero__visitor-actions"]}>
                     <button
                         type="button"
                         disabled
@@ -115,7 +120,21 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                         <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
                         {favouriteLabel}
                     </button>
-                    <span>{t("recipeDetailsPage.visitorBanner")}</span>
+                    {onLogIntake && (
+                        <Button
+                            variant="secondary"
+                            className={
+                                styles["recipe-hero__visitor-log-intake"]
+                            }
+                            onClick={onLogIntake}
+                        >
+                            <Flame
+                                size={FAVOURITE_ICON_SIZE}
+                                aria-hidden="true"
+                            />
+                            {t("recipeDetailsPage.logIntake")}
+                        </Button>
+                    )}
                 </div>
             )}
         </div>

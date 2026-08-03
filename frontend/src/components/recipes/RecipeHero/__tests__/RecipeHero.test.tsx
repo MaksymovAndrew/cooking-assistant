@@ -7,6 +7,8 @@ import { RecipeHero } from "components/recipes/RecipeHero";
 
 import { renderWithRouter } from "test/router";
 
+const LOG_INTAKE_BUTTON = "Log intake";
+
 const BASE_RECIPE: RecipeDetails = {
     id: 1,
     title: "Slow-roasted ragù",
@@ -68,16 +70,17 @@ describe("RecipeHero", () => {
         expect(screen.getByText("—")).toBeInTheDocument();
     });
 
-    it("should show a visitor banner and not owner actions when the viewer does not own the recipe", () => {
+    it("should show just the Favourite button and no explanatory text for a visitor", () => {
         renderWithRouter(<RecipeHero {...baseProps} />);
 
         expect(
             screen.queryByRole("link", { name: /Edit recipe/ }),
         ).not.toBeInTheDocument();
         expect(
-            screen.getByText(
-                "Viewing someone else's recipe — Edit & Delete not available",
-            ),
+            screen.queryByText(/Viewing someone else's recipe/),
+        ).not.toBeInTheDocument();
+        expect(
+            screen.getAllByRole("button", { name: "Favourite" })[1],
         ).toBeInTheDocument();
     });
 
@@ -116,5 +119,45 @@ describe("RecipeHero", () => {
         expect(
             screen.getAllByRole("button", { name: "Favourite" })[0],
         ).toBeDisabled();
+    });
+
+    it("should show the log-intake button and call onLogIntake when calories are available", async () => {
+        const onLogIntake = jest.fn();
+
+        renderWithRouter(
+            <RecipeHero {...baseProps} onLogIntake={onLogIntake} />,
+        );
+
+        await userEvent.click(
+            screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
+        );
+
+        expect(onLogIntake).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not show the log-intake button when onLogIntake is not provided", () => {
+        renderWithRouter(<RecipeHero {...baseProps} />);
+
+        expect(
+            screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should show the log-intake button in the owner actions row and call onLogIntake", async () => {
+        const onLogIntake = jest.fn();
+
+        renderWithRouter(
+            <RecipeHero
+                {...baseProps}
+                recipe={{ ...BASE_RECIPE, isOwner: true }}
+                onLogIntake={onLogIntake}
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
+        );
+
+        expect(onLogIntake).toHaveBeenCalledTimes(1);
     });
 });

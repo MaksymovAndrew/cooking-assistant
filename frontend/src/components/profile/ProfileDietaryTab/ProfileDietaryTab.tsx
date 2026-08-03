@@ -119,6 +119,8 @@ export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
 
     return (
         <div className={styles["profile-dietary-tab"]}>
+            <CalorieDisclaimer />
+
             {hasGoal ? (
                 <div className={styles["profile-dietary-tab__grid"]}>
                     <div className={styles["profile-dietary-tab__col"]}>
@@ -151,8 +153,6 @@ export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
                     {goalCard}
                 </div>
             )}
-
-            <CalorieDisclaimer />
         </div>
     );
 };

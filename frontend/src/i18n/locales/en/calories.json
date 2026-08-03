@@ -40,7 +40,7 @@
         "historyRange7": "7 days",
         "historyRange30": "30 days",
         "historyEmpty": "No history yet.",
-        "historyGoalLine": "GOAL {{goal}}",
+        "historyGoalLine": "Goal {{goal}} kcal",
         "streakLabel": "day streak",
         "streakBest": "Best {{count}} days",
         "avgLabel": "Daily average {{count}}",
@@ -65,5 +65,16 @@
     "deleteModal": {
         "title": "Delete entry",
         "message": "Are you sure you want to delete \"{{title}}\"?"
-    }
+    },
+    "logIntakeModal": {
+        "title": "Log intake",
+        "portionsLabel": "Portions",
+        "fewerPortions": "Fewer portions",
+        "morePortions": "More portions",
+        "totalLabel": "{{total}} kcal total",
+        "overMealLimit": "That's {{over}} kcal over your per-meal limit.",
+        "cancel": "Cancel",
+        "confirm": "Log it"
+    },
+    "triggerButton": "Log intake"
 }

@@ -370,6 +370,37 @@ describe("notificationsListener success toasts", () => {
         });
     });
 
+    it("should add a success notification when intake is logged", async () => {
+        mockedPost.mockResolvedValue({
+            data: {
+                id: 1,
+                person_id: 1,
+                recipe_id: 7,
+                menu_id: null,
+                title: "Chicken teriyaki don",
+                portions: 1,
+                calories: 620,
+                eaten_at: new Date().toISOString(),
+            },
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            caloriesApi.endpoints.logCalorieIntake.initiate({
+                recipe_id: 7,
+                portions: 1,
+            }),
+        );
+
+        const { items } = store.getState().notifications;
+
+        expect(items).toHaveLength(1);
+        expect(items[0]).toMatchObject({
+            type: "success",
+            message: "Logged to today's intake",
+        });
+    });
+
     it("should add a success notification when user ingredients are saved", async () => {
         mockedPut.mockResolvedValue({ data: null });
         const store = makeTestStore();

@@ -38,6 +38,7 @@ const baseProps = {
     portionCount: 1,
     onIncrement: jest.fn(),
     onDecrement: jest.fn(),
+    hasCustomCalories: false,
 };
 
 describe("RecipeIngredientsPanel", () => {
@@ -155,5 +156,28 @@ describe("RecipeIngredientsPanel", () => {
         // 1 * 21.6 = 21.6, rounds to 22 kcal for one portion - two portions must read
         // 44 (22 * 2), not 43 (round(21.6 * 2) = round(43.2))
         expect(screen.getByText("44 kcal")).toBeInTheDocument();
+    });
+
+    it("should hide per-ingredient calories and show a note when calories were manually overridden", () => {
+        renderWithRouter(
+            <RecipeIngredientsPanel
+                {...baseProps}
+                hasCustomCalories
+                availability={[{ ...TOMATO, calories_per_unit: 20 }]}
+            />,
+        );
+
+        expect(screen.queryByText("20 kcal")).not.toBeInTheDocument();
+        expect(
+            screen.getByText(/The creator set a custom calorie total/),
+        ).toBeInTheDocument();
+    });
+
+    it("should not show the custom-calories note when calories are auto-computed", () => {
+        renderWithRouter(<RecipeIngredientsPanel {...baseProps} />);
+
+        expect(
+            screen.queryByText(/The creator set a custom calorie total/),
+        ).not.toBeInTheDocument();
     });
 });

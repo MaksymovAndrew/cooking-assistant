@@ -103,6 +103,7 @@
         "totalTimeHoursMinutes": "{{hours}}h {{minutes}}m",
         "totalTimeMinutes": "{{minutes}} min",
         "caloriesValue": "{{count}} kcal",
+        "calories": "Calories",
         "yourRating": "Your rating",
         "recipes": "Recipes",
         "recipesCaption_one": "{{count}} recipe",
@@ -118,13 +119,13 @@
         "goToPantry": "Go to pantry",
         "allergensAcrossMenu": "Allergens across menu",
         "favourite": "Favourite",
-        "visitorBanner": "Viewing someone else's menu — Edit & Delete not available",
         "editButton": "Edit menu",
         "deleteButton": "Delete menu",
         "loading": "Loading...",
         "deleteTitle": "Delete menu?",
         "deleteMessage": "Are you sure you want to delete \"{{title}}\"? Recipes inside won't be deleted. This action can't be undone.",
         "error": "Error: {{message}}",
-        "errorFetch": "Error fetching menu details"
+        "errorFetch": "Error fetching menu details",
+        "logIntake": "Log intake"
     }
 }

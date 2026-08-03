@@ -9,6 +9,7 @@ import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
 import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
 import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
+import { LogIntakeModal } from "components/modals/LogIntakeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
@@ -31,6 +32,18 @@ const renderCalorieModal = (modal: ActiveModal | null) => {
                 modalId={modal.id}
                 consumed={modal.consumed}
                 goal={modal.goal}
+            />
+        );
+    }
+
+    if (modal?.type === MODAL_TYPE.logIntake) {
+        return (
+            <LogIntakeModal
+                modalId={modal.id}
+                recipeId={modal.recipeId}
+                menuId={modal.menuId}
+                title={modal.title}
+                caloriesPerPortion={modal.caloriesPerPortion}
             />
         );
     }

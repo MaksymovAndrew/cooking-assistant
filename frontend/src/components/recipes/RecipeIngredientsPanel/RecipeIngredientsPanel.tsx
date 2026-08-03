@@ -19,6 +19,7 @@ interface RecipeIngredientsPanelProps {
     portionCount: number;
     onIncrement: () => void;
     onDecrement: () => void;
+    hasCustomCalories: boolean;
 }
 
 const CHECK_ICON_SIZE = 16;
@@ -35,6 +36,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     portionCount,
     onIncrement,
     onDecrement,
+    hasCustomCalories,
 }) => {
     const { t } = useTranslation("recipes");
     const sorted = [...availability].sort((a, b) =>
@@ -97,29 +99,44 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                                 portionCount,
                             )}{" "}
                             {resolveUnit(ingredient.unit_name)}
-                            {ingredient.calories_per_unit !== null && (
-                                <span
-                                    className={
-                                        styles[
-                                            "recipe-ingredients-panel__qty-calories"
-                                        ]
-                                    }
-                                >
-                                    {t("recipeDetailsPage.ingredientCalories", {
-                                        count: formatKcal(
-                                            scaleCaloriesForPortions(
-                                                ingredient.quantity_recipe_ingredients *
-                                                    ingredient.calories_per_unit,
-                                                portionCount,
-                                            ),
-                                        ),
-                                    })}
-                                </span>
-                            )}
+                            {!hasCustomCalories &&
+                                ingredient.calories_per_unit !== null && (
+                                    <span
+                                        className={
+                                            styles[
+                                                "recipe-ingredients-panel__qty-calories"
+                                            ]
+                                        }
+                                    >
+                                        {t(
+                                            "recipeDetailsPage.ingredientCalories",
+                                            {
+                                                count: formatKcal(
+                                                    scaleCaloriesForPortions(
+                                                        ingredient.quantity_recipe_ingredients *
+                                                            ingredient.calories_per_unit,
+                                                        portionCount,
+                                                    ),
+                                                ),
+                                            },
+                                        )}
+                                    </span>
+                                )}
                         </span>
                     </li>
                 ))}
             </ul>
+
+            {hasCustomCalories && (
+                <p
+                    className={
+                        styles["recipe-ingredients-panel__custom-calories-note"]
+                    }
+                    role="note"
+                >
+                    {t("recipeDetailsPage.customCaloriesNote")}
+                </p>
+            )}
 
             {missingCount > 0 && (
                 <RecipeIngredientsBanner

@@ -17,10 +17,18 @@
             serif;
     }
 
+    // a fixed-width streak box next to the bars leaves too little room for 7
+    // columns on mobile (each bar's value label + weekday label need real
+    // space) - stack the streak below the chart until there's room for both
     &__body {
         display: flex;
+        flex-direction: column;
         align-items: stretch;
         gap: var(--s-4);
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+        }
     }
 
     &__chart {
@@ -29,40 +37,43 @@
         min-width: 0;
     }
 
+    // purely decorative now - the "Goal X kcal" text lives in the footer below
+    // instead of floating on the line, where a tall bar could crowd it
     &__goal-line {
         position: absolute;
         right: 0;
         left: 0;
         border-top: 1px dashed
             color-mix(in srgb, var(--text-muted) 50%, transparent);
-
-        span {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            padding: 0 0 2px;
-            color: var(--text-muted);
-            font:
-                500 10px "Geist Mono",
-                monospace;
-        }
     }
 
+    // columns never shrink below a readable 44px (a flexible width crushes 30
+    // columns to invisible slivers), but they DO grow to fill extra space, so
+    // 7 columns stretch edge-to-edge whenever the panel is wide enough and
+    // only fall back to horizontal scroll once the minimum width is hit. The
+    // native scrollbar stays hidden - components/ui/HorizontalScrollbar
+    // renders a custom track+thumb below instead, so the same affordance
+    // and drag-to-scroll work identically on touch and mouse alike
     &__bars {
         display: flex;
         align-items: flex-end;
         gap: var(--s-2);
         height: 176px;
+        overflow-x: auto;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     &__column {
         display: flex;
-        flex: 1;
+        flex: 1 0 44px;
         flex-direction: column;
         align-items: center;
         justify-content: flex-end;
         gap: var(--s-1);
-        min-width: 0;
         height: 100%;
     }
 
@@ -108,21 +119,14 @@
         }
     }
 
-    &__days {
-        display: flex;
-        gap: var(--s-2);
-        margin-top: var(--s-2);
+    // lives inside each __column (not a separate row) so it scrolls with its bar
+    &__day-label {
+        color: var(--text-muted);
+        font:
+            400 11px Inter,
+            sans-serif;
 
-        span {
-            flex: 1;
-            text-align: center;
-            color: var(--text-muted);
-            font:
-                400 11px Inter,
-                sans-serif;
-        }
-
-        span:last-child {
+        &--today {
             color: var(--text-2);
             font-weight: 600;
         }
@@ -161,11 +165,15 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 140px;
+        width: 100%;
         padding: var(--s-4) var(--s-3);
         border-radius: var(--r-md);
         background: var(--surface-2);
         text-align: center;
+
+        @include respond-to(tablet) {
+            width: 140px;
+        }
 
         &-value {
             color: var(--text);

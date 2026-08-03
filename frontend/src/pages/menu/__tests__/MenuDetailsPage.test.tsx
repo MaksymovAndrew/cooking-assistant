@@ -63,6 +63,21 @@ const SAMPLE: MenuDetails = {
     allergens: [],
 };
 
+const SAMPLE_WITH_CALORIES: MenuDetails = {
+    ...SAMPLE,
+    recipes: [
+        { ...SAMPLE.recipes[0], calories_per_portion: 420 },
+        {
+            recipe_id: 11,
+            title: "Salad",
+            type_name: "Salad",
+            cooking_time: 10,
+            creation_date: "2024-01-01",
+            calories_per_portion: 180,
+        },
+    ],
+};
+
 // AppShell (via AppHeader/useExpiredIngredientsNotice) also hits getMe and the pantry list - scope every GET by url instead of blanket-resolving to the menu payload
 const mockMenuDetails = () => {
     mockGetByUrl({
@@ -189,5 +204,41 @@ describe("MenuDetailsPage", () => {
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
         expect(store.getState().ui.modal).toBeNull();
+    });
+
+    it("should not show the log-intake button when no recipe has calorie data", async () => {
+        mockMenuDetails();
+
+        renderPage();
+        await screen.findByRole("heading", { name: TITLE });
+
+        expect(
+            screen.queryByRole("button", { name: "Log intake" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should open the log-intake modal with the summed calories across recipes", async () => {
+        mockGetByUrl({
+            [API_ROUTES.menu.byId(1)]: SAMPLE_WITH_CALORIES,
+            [API_ROUTES.userIngredients.list]: [],
+            [API_ROUTES.auth.me]: null,
+        });
+
+        const { store } = renderPage();
+
+        await screen.findByRole("heading", { name: TITLE });
+
+        const triggers = screen.getAllByRole("button", {
+            name: "Log intake",
+        });
+
+        await userEvent.click(triggers[0]);
+
+        expect(store.getState().ui.modal).toMatchObject({
+            type: MODAL_TYPE.logIntake,
+            menuId: 1,
+            title: TITLE,
+            caloriesPerPortion: 600,
+        });
     });
 });

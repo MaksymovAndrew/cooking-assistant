@@ -162,8 +162,9 @@
         "error": "Error: {{message}}",
         "cookingTimeHoursMinutes": "{{hours}} hr {{minutes}} min",
         "cookingTimeMinutes": "{{minutes}} min",
-        "visitorBanner": "Viewing someone else's recipe — Edit & Delete not available",
         "yourRating": "Your rating",
-        "allergens": "Allergens"
+        "allergens": "Allergens",
+        "logIntake": "Log intake",
+        "customCaloriesNote": "The creator set a custom calorie total for this recipe, so per-ingredient calories aren't shown - only the total above applies."
     }
 }

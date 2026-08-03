@@ -96,6 +96,10 @@ registerSuccessToast(
     "notifications.calorieIntakeDeleted",
 );
 registerSuccessToast(
+    caloriesApi.endpoints.logCalorieIntake.matchFulfilled,
+    "notifications.intakeLogged",
+);
+registerSuccessToast(
     userIngredientsApi.endpoints.saveUserIngredient.matchFulfilled,
     "notifications.ingredientsSaved",
 );

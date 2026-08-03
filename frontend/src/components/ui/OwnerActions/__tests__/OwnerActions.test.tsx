@@ -43,4 +43,42 @@ describe("OwnerActions", () => {
 
         expect(onDelete).toHaveBeenCalledTimes(1);
     });
+
+    it("should not show a log-intake button when onLogIntake is not provided", () => {
+        renderWithRouter(
+            <OwnerActions
+                editTo="/change-recipe/5"
+                onDelete={jest.fn()}
+                editLabel="Edit"
+                deleteLabel="Delete"
+                favouriteLabel="Favourite"
+            />,
+        );
+
+        expect(
+            screen.queryByRole("button", { name: "Log intake" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should call onLogIntake when the log-intake button is clicked", async () => {
+        const onLogIntake = jest.fn();
+
+        renderWithRouter(
+            <OwnerActions
+                editTo="/change-recipe/5"
+                onDelete={jest.fn()}
+                editLabel="Edit"
+                deleteLabel="Delete"
+                favouriteLabel="Favourite"
+                onLogIntake={onLogIntake}
+                logIntakeLabel="Log intake"
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Log intake" }),
+        );
+
+        expect(onLogIntake).toHaveBeenCalledTimes(1);
+    });
 });

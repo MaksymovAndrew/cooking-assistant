@@ -5,14 +5,31 @@
     grid-template-columns: repeat(2, 1fr);
     gap: var(--s-3);
 
+    // the 5th (kcal) tile has no natural partner in a 2/4-column grid, so it spans the full row below
+    > :last-child {
+        grid-column: 1 / -1;
+    }
+
     @include respond-to(tablet) {
         grid-template-columns: repeat(4, 1fr);
         gap: var(--s-4);
+    }
+
+    @include respond-to(desktop) {
+        grid-template-columns: repeat(5, 1fr);
+
+        > :last-child {
+            grid-column: auto;
+        }
     }
 
     // a rotated phone stays 2x2 - the 4-across tablet layout doesn't fit the narrow left column of the landscape split
     @include respond-to-short-landscape {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--s-2);
+
+        > :last-child {
+            grid-column: 1 / -1;
+        }
     }
 }

@@ -1,0 +1,123 @@
+@use "styles/abstracts" as *;
+
+.kcal-stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    padding: 13px var(--s-4);
+
+    @include card-surface;
+
+    @include respond-to(desktop) {
+        padding: var(--s-4) var(--s-5);
+    }
+
+    &__ring {
+        display: none;
+
+        @include respond-to(desktop) {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+
+            svg {
+                width: 34px;
+                height: 34px;
+            }
+        }
+    }
+
+    &__ring-track {
+        stroke: var(--border);
+        stroke-width: 5px;
+    }
+
+    &__ring-arc {
+        stroke: var(--brand-strong);
+        stroke-width: 5px;
+        stroke-linecap: round;
+    }
+
+    &__value {
+        display: block;
+        color: var(--text);
+        font:
+            700 24px/1 "Geist Mono",
+            monospace;
+
+        @include respond-to(tablet) {
+            font-size: 26px;
+        }
+
+        @include respond-to(desktop) {
+            font-size: 30px;
+        }
+    }
+
+    &__label {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+}
+
+.kcal-stat-card--near {
+    border-color: color-mix(in srgb, var(--warning) 35%, var(--border));
+
+    .kcal-stat-card__ring-arc {
+        stroke: var(--warning);
+    }
+
+    .kcal-stat-card__value {
+        color: var(--warning);
+    }
+}
+
+.kcal-stat-card--over {
+    border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+
+    .kcal-stat-card__ring-arc {
+        stroke: var(--danger);
+    }
+
+    .kcal-stat-card__value {
+        color: var(--danger);
+    }
+}
+
+.kcal-stat-card--empty {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    padding: 13px var(--s-4);
+    border: 1px dashed var(--border);
+    border-radius: var(--r-md);
+    background: transparent;
+    text-decoration: none;
+
+    @include respond-to(desktop) {
+        padding: var(--s-4) var(--s-5);
+    }
+}
+
+.kcal-stat-card__empty-label {
+    color: var(--text-muted);
+    font:
+        400 12px Inter,
+        sans-serif;
+}
+
+.kcal-stat-card__empty-cta {
+    color: var(--brand);
+    font:
+        600 13px Inter,
+        sans-serif;
+}

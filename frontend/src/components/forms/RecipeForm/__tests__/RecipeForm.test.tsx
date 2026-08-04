@@ -24,6 +24,8 @@ const makeForm = (): Form => ({
     selectedIngredients: [],
     selectedTypeId: null,
     setSelectedTypeId: jest.fn(),
+    caloriesOverride: "",
+    setCaloriesOverride: jest.fn(),
     titleError: null,
     descriptionError: null,
     ingredientsError: null,
@@ -155,6 +157,41 @@ describe("RecipeForm", () => {
 
         expect(
             screen.getByText("Recipe title cannot be empty."),
+        ).toBeInTheDocument();
+    });
+
+    it("should call setCaloriesOverride when the calories field is edited", async () => {
+        const form = makeForm();
+
+        renderForm(form);
+
+        await userEvent.type(
+            screen.getByLabelText("Calories per portion"),
+            "5",
+        );
+
+        expect(form.setCaloriesOverride).toHaveBeenCalledWith("5");
+    });
+
+    it("should show the auto-computed calorie hint once ingredients are selected", () => {
+        const form = makeForm();
+
+        form.selectedIngredients = [
+            {
+                id: 1,
+                slug: "egg",
+                name: "Egg",
+                quantity: 2,
+                unit_name: "piece",
+                calories_per_unit: 70,
+            },
+        ];
+        renderForm(form);
+
+        expect(
+            screen.getByText(
+                "Leave empty to use the calculated total: 140 kcal",
+            ),
         ).toBeInTheDocument();
     });
 

@@ -7,10 +7,13 @@ import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { ModalRoot } from "components/modals";
+import { CalorieLimitModal } from "components/modals/CalorieLimitModal";
+import { DeleteCalorieIntakeModal } from "components/modals/DeleteCalorieIntakeModal";
 import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
 import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
 import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
+import { LogIntakeModal } from "components/modals/LogIntakeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
@@ -39,6 +42,15 @@ jest.mock("components/modals/ThemeChangeConfirmModal", () => ({
 jest.mock("components/modals/ExpiredIngredientsModal", () => ({
     ExpiredIngredientsModal: jest.fn(() => null),
 }));
+jest.mock("components/modals/DeleteCalorieIntakeModal", () => ({
+    DeleteCalorieIntakeModal: jest.fn(() => null),
+}));
+jest.mock("components/modals/CalorieLimitModal", () => ({
+    CalorieLimitModal: jest.fn(() => null),
+}));
+jest.mock("components/modals/LogIntakeModal", () => ({
+    LogIntakeModal: jest.fn(() => null),
+}));
 
 const mockedModal = jest.mocked(PurchaseHistoryModal);
 const mockedDeleteRecipe = jest.mocked(DeleteRecipeModal);
@@ -47,6 +59,9 @@ const mockedDeleteIngredient = jest.mocked(DeleteIngredientModal);
 const mockedLogout = jest.mocked(LogoutConfirmModal);
 const mockedThemeChange = jest.mocked(ThemeChangeConfirmModal);
 const mockedExpiredIngredients = jest.mocked(ExpiredIngredientsModal);
+const mockedDeleteCalorieIntake = jest.mocked(DeleteCalorieIntakeModal);
+const mockedCalorieLimit = jest.mocked(CalorieLimitModal);
+const mockedLogIntake = jest.mocked(LogIntakeModal);
 
 const INGREDIENT: PantryIngredient = {
     id: 9,
@@ -219,5 +234,70 @@ describe("ModalRoot", () => {
 
         expect(props.modalId).toBe("modal-7");
         expect(props.ingredients).toEqual(ingredients);
+    });
+
+    it("should render the delete-calorie-intake modal with its id, intake id and title", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: {
+                    modal: {
+                        id: "modal-8",
+                        type: MODAL_TYPE.deleteCalorieIntake,
+                        intakeId: 9,
+                        title: "Miso ramen",
+                    },
+                },
+            }),
+        });
+
+        const props = mockedDeleteCalorieIntake.mock.calls[0][0];
+
+        expect(props.modalId).toBe("modal-8");
+        expect(props.intakeId).toBe(9);
+        expect(props.title).toBe("Miso ramen");
+    });
+
+    it("should render the calorie-limit modal with its id, consumed and goal", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: {
+                    modal: {
+                        id: "modal-9",
+                        type: MODAL_TYPE.calorieLimit,
+                        consumed: 2520,
+                        goal: 2200,
+                    },
+                },
+            }),
+        });
+
+        const props = mockedCalorieLimit.mock.calls[0][0];
+
+        expect(props.modalId).toBe("modal-9");
+        expect(props.consumed).toBe(2520);
+        expect(props.goal).toBe(2200);
+    });
+
+    it("should render the log-intake modal with its id, recipe/menu ids, title and calories", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: {
+                    modal: {
+                        id: "modal-10",
+                        type: MODAL_TYPE.logIntake,
+                        recipeId: 7,
+                        title: "Chicken teriyaki don",
+                        caloriesPerPortion: 620,
+                    },
+                },
+            }),
+        });
+
+        const props = mockedLogIntake.mock.calls[0][0];
+
+        expect(props.modalId).toBe("modal-10");
+        expect(props.recipeId).toBe(7);
+        expect(props.title).toBe("Chicken teriyaki don");
+        expect(props.caloriesPerPortion).toBe(620);
     });
 });

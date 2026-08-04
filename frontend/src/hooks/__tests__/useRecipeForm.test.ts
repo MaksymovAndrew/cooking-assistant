@@ -32,8 +32,16 @@ const fillValid = (form: ReturnType<typeof useRecipeForm>) => {
         cookingMinutes: "30",
         selectedTypeId: 5,
         selectedIngredients: [
-            { id: 1, slug: "egg", name: "Egg", quantity: 1, unit_name: "pcs" },
+            {
+                id: 1,
+                slug: "egg",
+                name: "Egg",
+                quantity: 1,
+                unit_name: "pcs",
+                calories_per_unit: null,
+            },
         ],
+        caloriesOverride: "",
     });
 };
 

@@ -99,6 +99,14 @@
             monospace;
     }
 
+    &__calories-hint {
+        margin: var(--s-2) 0 0;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+
     &__ingredients-hint,
     &__reorder-hint {
         display: flex;

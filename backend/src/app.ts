@@ -16,6 +16,7 @@ import { ERROR_MESSAGES } from "constants/errorMessages";
 
 import errorHandler from "middleware/errorHandler";
 import { createGlobalLimiter } from "middleware/rateLimit";
+import createCalorieRouter from "routes/calorie.routes";
 import createHealthRouter from "routes/health.routes";
 import createIngredientRouter from "routes/ingredient.routes";
 import createMenuRouter from "routes/menu.routes";
@@ -64,6 +65,7 @@ export function createApp(controllers: Controllers): Express {
         "/api",
         createMenuCategoryRouter(controllers.menuCategoryController),
     );
+    app.use("/api", createCalorieRouter(controllers.calorieController));
 
     app.use((_req, res) => {
         res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });

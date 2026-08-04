@@ -1,0 +1,1 @@
+export { DeleteCalorieIntakeModal } from "./DeleteCalorieIntakeModal";

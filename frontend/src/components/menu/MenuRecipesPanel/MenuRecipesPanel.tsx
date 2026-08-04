@@ -87,6 +87,8 @@ export const MenuRecipesPanel: React.FC<MenuRecipesPanelProps> = ({
                                 title: recipe.title,
                                 type_name: recipe.type_name,
                                 cooking_time: recipe.cooking_time,
+                                calories_per_portion:
+                                    recipe.calories_per_portion,
                             }}
                         />
                     ))}

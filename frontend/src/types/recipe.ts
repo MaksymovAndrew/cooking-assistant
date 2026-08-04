@@ -24,6 +24,8 @@ export interface RecipeSearchIngredient {
 // shape returned by GET /api/recipes-by-filters and /api/recipes-filters-person/:id (different ingredient shape from RecipeWithIngredientNames)
 export interface RecipeSearchResultItem extends RecipeListItem {
     ingredients: RecipeSearchIngredient[];
+    // COALESCE(calories_override, calories_computed)
+    calories_per_portion: number | null;
 }
 
 export interface RecipeDetailIngredient extends CatalogIngredientRef {
@@ -33,6 +35,7 @@ export interface RecipeDetailIngredient extends CatalogIngredientRef {
     quantity_recipe_ingredients: number;
     unit_name: string;
     allergens: string[];
+    calories_per_unit: number | null;
 }
 
 // shape returned by GET /api/recipe/:id (superset of what RecipeDetailsPage + ChangeRecipePage use)
@@ -45,10 +48,13 @@ export interface RecipeDetails {
     type_name: string;
     cooking_time: number;
     creation_date: string;
-    servings: string | null;
     person_id: number;
     // computed by the backend (r.person_id = current user) so the client can gate Edit/Delete without decoding the session
     isOwner: boolean;
+    // COALESCE(calories_override, calories_computed)
+    calories_per_portion: number | null;
+    // the author's manual value; null means the total above is auto-computed from the ingredients
+    calories_override: number | null;
 }
 
 export interface RecipeFilterParams {
@@ -59,6 +65,8 @@ export interface RecipeFilterParams {
     end_date?: string;
     min_cooking_time?: string;
     max_cooking_time?: string;
+    min_calories?: string;
+    max_calories?: string;
     // omitted (not empty string - the backend enum-validates "asc"/"desc") falls back to creation_date DESC server-side
     sort_order?: string;
     in_pantry?: boolean;
@@ -75,7 +83,7 @@ export interface CreateRecipeRequest {
     ingredients: CreateRecipeIngredient[];
     type_id: number | null;
     cooking_time: number;
-    servings: string | undefined;
+    calories_override: number | null;
 }
 
 export interface UpdateRecipeIngredient {
@@ -88,7 +96,7 @@ export interface UpdateRecipeRequest {
     content: string;
     type_id: number | null;
     cooking_time: number;
-    servings: string | undefined;
+    calories_override: number | null;
     ingredients: UpdateRecipeIngredient[];
 }
 
@@ -97,6 +105,7 @@ export interface RecipeFormIngredient extends CatalogIngredientRef {
     name: string;
     quantity: number;
     unit_name: string;
+    calories_per_unit: number | null;
 }
 
 export interface RecipeFormInitialValues {
@@ -106,6 +115,8 @@ export interface RecipeFormInitialValues {
     cookingMinutes: string;
     selectedTypeId: number | null;
     selectedIngredients: RecipeFormIngredient[];
+    // text state, empty means "compute automatically"; matches cookingHours/cookingMinutes's convention of staying a string until submit
+    caloriesOverride: string;
 }
 
 export interface RecipeFormCreateMessages {

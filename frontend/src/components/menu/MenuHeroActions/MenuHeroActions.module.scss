@@ -36,6 +36,33 @@
         }
     }
 
+    &__log-intake {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--s-2);
+        height: 44px;
+        padding: 0 var(--s-4);
+        border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border));
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+        color: var(--brand);
+        cursor: pointer;
+        font:
+            600 13px Inter,
+            sans-serif;
+        white-space: nowrap;
+        transition:
+            background var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out);
+
+        @include focus-ring;
+
+        @include on-hover {
+            border-color: color-mix(in srgb, var(--brand) 50%, var(--border));
+            background: color-mix(in srgb, var(--brand) 14%, var(--surface));
+        }
+    }
+
     &__delete {
         display: flex;
         flex: none;

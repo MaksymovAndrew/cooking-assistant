@@ -22,7 +22,8 @@
     "contentCard": {
         "favourite": "Favourite",
         "allergens": "Allergens",
-        "containsAllergens": "Contains allergens"
+        "containsAllergens": "Contains allergens",
+        "overBudgetTooltip": "Exceeds your remaining calories for today"
     },
     "toast": {
         "dismiss": "Dismiss"
@@ -91,7 +92,18 @@
         "passwordChanged": "Password changed",
         "verificationEmailSent": "Verification link sent",
         "profileUpdated": "Profile updated",
-        "accountDeleted": "Account deleted"
+        "accountDeleted": "Account deleted",
+        "calorieIntakeDeleted": "Entry deleted",
+        "intakeLogged": "Logged to today's intake"
+    },
+    "timeAgo": {
+        "justNow": "Just now",
+        "minutes_one": "{{count}} min ago",
+        "minutes_other": "{{count}} min ago",
+        "hours_one": "{{count}} h ago",
+        "hours_other": "{{count}} h ago",
+        "days_one": "{{count}} d ago",
+        "days_other": "{{count}} d ago"
     },
     "loadMore": {
         "showing": "Showing {{loaded}} of {{total}}",

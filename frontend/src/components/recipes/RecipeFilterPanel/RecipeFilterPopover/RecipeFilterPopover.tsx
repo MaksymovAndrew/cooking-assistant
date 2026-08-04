@@ -13,6 +13,7 @@ import { SegmentedControl } from "components/ui/SegmentedControl";
 
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
+import { RecipeCalorieRangeFields } from "./RecipeCalorieRangeFields";
 import { RecipeIngredientsFilter } from "./RecipeIngredientsFilter";
 import { RecipePantryToggle } from "./RecipePantryToggle";
 import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
@@ -69,6 +70,31 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                         setValue(
                             "cookingTime",
                             { ...filters.cookingTime, max: time },
+                            { replace: true },
+                        );
+                    }}
+                />
+            </div>
+
+            <div className={styles["recipe-filter-panel__section"]}>
+                <span className={styles["recipe-filter-panel__label"]}>
+                    {t("filterPanel.caloriesLabel")}
+                </span>
+                <RecipeCalorieRangeFields
+                    key={fieldsResetKey}
+                    minCalories={filters.calories.min}
+                    maxCalories={filters.calories.max}
+                    setMinCalories={(calories) => {
+                        setValue(
+                            "calories",
+                            { ...filters.calories, min: calories },
+                            { replace: true },
+                        );
+                    }}
+                    setMaxCalories={(calories) => {
+                        setValue(
+                            "calories",
+                            { ...filters.calories, max: calories },
                             { replace: true },
                         );
                     }}

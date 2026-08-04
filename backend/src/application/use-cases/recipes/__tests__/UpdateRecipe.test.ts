@@ -13,7 +13,6 @@ function makeInput(overrides = {}) {
         ingredients: [{ id: 3, quantity: 2 }],
         type_id: 1,
         cooking_time: 30,
-        servings: "4",
         ...overrides,
     };
 }
@@ -48,25 +47,24 @@ describe("UpdateRecipe", () => {
             ingredients: [{ id: 3, quantity_recipe_ingredients: 2 }],
             type_id: input.type_id,
             cooking_time: input.cooking_time,
-            servings: input.servings,
         });
         expect(result).toEqual(updatedRecipe);
     });
 
-    it("should accept free-form text servings, not just a plain number", async () => {
+    it("should accept a manual calorie override", async () => {
         const { useCase, recipeRepository, ingredientRepository } = setup();
 
         ingredientRepository.findExistingIds.mockResolvedValue([3]);
         recipeRepository.update.mockResolvedValue({ id: 12 });
 
-        await useCase.execute(12, 7, makeInput({ servings: "a full pot" }));
+        await useCase.execute(12, 7, makeInput({ calories_override: 500 }));
         const [, , recipe] = recipeRepository.update.mock.calls[0] as [
             number,
             number,
             Recipe,
         ];
 
-        expect(recipe).toMatchObject({ servings: "a full pot" });
+        expect(recipe).toMatchObject({ calories_override: 500 });
     });
 
     it("should throw a 404 NotFoundError when the recipe does not belong to the user", async () => {

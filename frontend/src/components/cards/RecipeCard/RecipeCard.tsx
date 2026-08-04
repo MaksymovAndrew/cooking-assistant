@@ -1,15 +1,18 @@
-import { Calendar, Clock } from "lucide-react";
+import { Clock, Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { recipeDetailsPath } from "constants/routes";
 
 import type { ContentCardVariant } from "components/cards/ContentCard";
-import { ContentCard } from "components/cards/ContentCard";
+import {
+    ContentCard,
+    META_ITEM_TONE_CALORIE_OVER,
+} from "components/cards/ContentCard";
 import { UtensilsMark } from "components/icons";
 
+import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
-import { formatShortDate } from "utils/dateUtils";
 import { filterAllergens } from "utils/recipeAllergens";
 
 interface RecipeCardIngredient {
@@ -21,7 +24,7 @@ interface RecipeCardRecipe {
     title: string;
     type_name: string;
     cooking_time: number;
-    creation_date: string;
+    calories_per_portion: number | null;
     ingredients?: RecipeCardIngredient[];
 }
 
@@ -29,12 +32,14 @@ interface RecipeCardProps {
     recipe: RecipeCardRecipe;
     mine?: boolean;
     variant?: ContentCardVariant;
+    exceedsBudget?: boolean;
 }
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({
     recipe,
     mine = false,
     variant,
+    exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
@@ -51,15 +56,34 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             mine={mine}
             variant={variant}
             badge={hasAllergens}
+            calorieOver={exceedsBudget}
             metaItems={[
                 {
                     icon: Clock,
                     label: t("recipeCard.cookingTimeValue", { hours, minutes }),
                 },
-                {
-                    icon: Calendar,
-                    label: formatShortDate(recipe.creation_date),
-                },
+                ...(recipe.calories_per_portion === null
+                    ? []
+                    : [
+                          {
+                              icon: Flame,
+                              label: t("recipeCard.caloriesValue", {
+                                  count: formatKcal(
+                                      roundCalories(
+                                          recipe.calories_per_portion,
+                                      ),
+                                  ),
+                              }),
+                              ...(exceedsBudget
+                                  ? {
+                                        tone: META_ITEM_TONE_CALORIE_OVER,
+                                        title: t(
+                                            "common:contentCard.overBudgetTooltip",
+                                        ),
+                                    }
+                                  : {}),
+                          },
+                      ]),
             ]}
         />
     );

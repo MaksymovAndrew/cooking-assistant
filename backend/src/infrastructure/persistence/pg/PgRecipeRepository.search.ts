@@ -17,6 +17,7 @@ interface RecipeSearchQueryRow extends RecipeSearchRow {
 
 const BASE_RECIPE_SELECT = `
         SELECT r.id, r.title, r.content, r.person_id, r.type_id, r.creation_date, r.cooking_time,
+               COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name, 'allergens', i.allergens)) AS ingredients,
                -- cast: COUNT() is bigint, which pg returns as a string, not a number
                COUNT(*) OVER()::int AS total_count

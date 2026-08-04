@@ -1,0 +1,1 @@
+export { KcalStatCard } from "./KcalStatCard";

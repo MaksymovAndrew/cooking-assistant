@@ -1,17 +1,19 @@
 import { screen } from "@testing-library/react";
 
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecentRecipeCard } from "components/home/RecentRecipes/RecentRecipeCard";
 
 import { renderWithRouter } from "test/router";
 
-const RECIPE: RecipeListItem = {
+const RECIPE: RecipeSearchResultItem = {
     id: 7,
     title: "Borscht",
     type_name: "Soup",
     creation_date: "2024-01-01",
     cooking_time: 90,
+    ingredients: [],
+    calories_per_portion: null,
 };
 
 describe("RecentRecipeCard", () => {
@@ -34,5 +36,15 @@ describe("RecentRecipeCard", () => {
         );
 
         expect(screen.getByText("45m")).toBeInTheDocument();
+    });
+
+    it("should show the calorie total when the recipe has one", () => {
+        renderWithRouter(
+            <RecentRecipeCard
+                recipe={{ ...RECIPE, calories_per_portion: 180 }}
+            />,
+        );
+
+        expect(screen.getByText("180 kcal")).toBeInTheDocument();
     });
 });

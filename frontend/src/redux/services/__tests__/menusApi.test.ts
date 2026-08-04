@@ -9,6 +9,7 @@ import type {
 
 import { API_ROUTES } from "api/endpoints";
 
+import { caloriesApi } from "redux/services/caloriesApi";
 import { menusApi } from "redux/services/menusApi";
 
 import {
@@ -142,5 +143,29 @@ describe("menusApi", () => {
         expect(mockedDelete).toHaveBeenCalledWith(API_ROUTES.menu.byId(1), {
             params: undefined,
         });
+    });
+
+    it("should invalidate the cached calorie intake log after deleting a menu, since the backend cascades the delete into logged entries", async () => {
+        mockedDelete.mockResolvedValue({ data: null });
+        mockedGet.mockResolvedValue({ data: [] });
+        const store = makeTestStore();
+        const range = {
+            from: "2026-01-01T00:00:00.000Z",
+            to: "2026-01-01T23:59:59.999Z",
+        };
+
+        await store.dispatch(
+            caloriesApi.endpoints.getCalorieIntake.initiate(range),
+        );
+        const callsAfterFirstFetch = mockedGet.mock.calls.length;
+
+        await store.dispatch(menusApi.endpoints.deleteMenu.initiate(1));
+        await store.dispatch(
+            caloriesApi.endpoints.getCalorieIntake.initiate(range),
+        );
+
+        expect(mockedGet.mock.calls.length).toBeGreaterThan(
+            callsAfterFirstFetch,
+        );
     });
 });

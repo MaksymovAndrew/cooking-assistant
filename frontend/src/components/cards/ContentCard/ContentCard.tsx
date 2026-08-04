@@ -17,6 +17,7 @@ export type {
     ContentCardMetaItem,
     ContentCardVariant,
 } from "./ContentCard.types";
+export { META_ITEM_TONE_CALORIE_OVER } from "./ContentCard.types";
 
 interface ContentCardProps {
     to: string;
@@ -30,6 +31,10 @@ interface ContentCardProps {
     variant?: ContentCardVariant;
     mine?: boolean;
     badge?: boolean;
+    // border-only signal (the calorie icon/text itself is recolored via a metaItem's own `tone`,
+    // not through this prop) - kept as its own modifier so it can carry a different border color
+    // than the allergen badge, and both can be active on the same card at once
+    calorieOver?: boolean;
     favourite?: boolean;
     showFavourite?: boolean;
     rating?: string;
@@ -46,6 +51,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
     variant = "grid",
     mine = false,
     badge = false,
+    calorieOver = false,
     favourite = false,
     showFavourite = true,
     rating = RECIPE_RATING,
@@ -58,6 +64,9 @@ export const ContentCard: React.FC<ContentCardProps> = ({
         styles[`content-card--${variant}`],
         mine && styles["content-card--mine"],
         badge && styles["content-card--badge"],
+        // declared after --badge in both class order and SCSS source, so a card that's somehow
+        // both allergenic and over budget shows the calorie-over border - the more actionable cue
+        calorieOver && styles["content-card--calorie-over"],
     ]
         .filter(Boolean)
         .join(" ");

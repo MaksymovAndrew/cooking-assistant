@@ -4,6 +4,7 @@
         "recipesStat": "Recipes",
         "menusStat": "Menus",
         "favouritesStat": "Favourites",
+        "kcalTodayStat": "Kcal today",
         "editProfileButton": "Edit profile",
         "logoutButton": "Logout",
         "recipesTab": "My recipes",
@@ -14,8 +15,7 @@
         "noRecipes": "You haven't created any recipes yet.",
         "noMenus": "You haven't created any menus yet.",
         "comingSoonDescription": "Coming in a future release.",
-        "favouritesTitle": "Favourites",
-        "dietaryTitle": "Dietary preferences"
+        "favouritesTitle": "Favourites"
     },
     "editProfileModal": {
         "title": "Edit profile",

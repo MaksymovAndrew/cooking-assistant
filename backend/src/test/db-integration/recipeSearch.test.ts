@@ -236,6 +236,57 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         ]);
     });
 
+    it("should filter by a calorie range, excluding recipes with no calorie data", async () => {
+        const inRangeIngredient = await createIngredient(pool, unitId, [], 300);
+        const tooLightIngredient = await createIngredient(pool, unitId, [], 50);
+        const tooHeavyIngredient = await createIngredient(
+            pool,
+            unitId,
+            [],
+            900,
+        );
+        const noDataIngredient = await createIngredient(pool, unitId);
+
+        const inRangeId = await createRecipeWithIngredients(
+            "In-range calorie recipe",
+            [inRangeIngredient],
+            10,
+        );
+
+        await createRecipeWithIngredients(
+            "Too-light calorie recipe",
+            [tooLightIngredient],
+            10,
+        );
+        await createRecipeWithIngredients(
+            "Too-heavy calorie recipe",
+            [tooHeavyIngredient],
+            10,
+        );
+        await createRecipeWithIngredients(
+            "No-data calorie recipe",
+            [noDataIngredient],
+            10,
+        );
+
+        const filters: RecipeFilters = {
+            ingredient_ids: [
+                inRangeIngredient,
+                tooLightIngredient,
+                tooHeavyIngredient,
+                noDataIngredient,
+            ].join(","),
+            min_calories: 200,
+            max_calories: 500,
+        };
+
+        const result = await repository.search(ownerId, filters);
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: inRangeId }),
+        ]);
+    });
+
     it("should sort by cooking time in the requested order", async () => {
         const ingredient = await createNamedIngredient();
         const fastId = await createRecipeWithIngredients(

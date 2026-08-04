@@ -22,6 +22,7 @@ const UNVERIFIED_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: null,
+    calorie_goal: null,
 };
 const VERIFIED_USER: CurrentUser = {
     ...UNVERIFIED_USER,

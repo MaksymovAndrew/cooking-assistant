@@ -20,6 +20,7 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: "2026-01-01T00:00:00.000Z",
     avatar: null,
+    calorie_goal: null,
 };
 
 describe("VerifyEmailPage", () => {

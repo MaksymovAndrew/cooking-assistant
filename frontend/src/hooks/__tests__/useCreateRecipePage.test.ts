@@ -86,6 +86,32 @@ describe("useCreateRecipePage", () => {
         expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
     });
 
+    it("should send a manual calories override as a number", async () => {
+        mockedPost.mockResolvedValue({ data: null });
+        const { result } = await setup();
+
+        act(() => {
+            result.current.form.setTitle(TITLE);
+            result.current.form.setContent(DESCRIPTION);
+            result.current.form.setCookingHours("0");
+            result.current.form.setCookingMinutes("30");
+            result.current.form.setSelectedTypeId(TYPE_ID);
+            result.current.form.toggleIngredientSelection(
+                SAMPLE_INGREDIENTS[0],
+            );
+            result.current.form.setCaloriesOverride("450");
+        });
+
+        await act(async () => {
+            await result.current.handleSubmit();
+        });
+
+        expect(mockedPost).toHaveBeenCalledWith(
+            API_ROUTES.recipes.create,
+            expect.objectContaining({ calories_override: 450 }),
+        );
+    });
+
     it("should not call the mutation when required fields are empty", async () => {
         const { result } = await setup();
 

@@ -2,7 +2,7 @@ import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { PAGE_SIZE } from "constants/pagination";
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecipeListView } from "components/recipes/RecipeListView";
 
@@ -12,14 +12,18 @@ import { renderWithRouter } from "test/router";
 
 const RECIPE_TITLE = "Borscht";
 const MINE_CLASS = "content-card--mine";
+const CALORIES_OVER_BUDGET = 700;
+const CALORIES_OVER_BUDGET_LABEL = `${CALORIES_OVER_BUDGET} kcal`;
 
-const RECIPES: RecipeListItem[] = [
+const RECIPES: RecipeSearchResultItem[] = [
     {
         id: 1,
         title: RECIPE_TITLE,
         type_name: "Soup",
         creation_date: "2024-01-01",
         cooking_time: 60,
+        ingredients: [],
+        calories_per_portion: null,
     },
 ];
 
@@ -28,6 +32,7 @@ const FILTERS: RecipeFilterState = {
     types: [],
     ingredients: [],
     cookingTime: { min: "", max: "" },
+    calories: { min: "", max: "" },
     sort: null,
     inPantry: false,
 };
@@ -39,6 +44,8 @@ const baseProps = {
     resetFilters: jest.fn(),
     activeCount: 0,
     activeFilters: [],
+    calorieGoal: null,
+    calorieRemaining: null,
     isPantryEmpty: false,
     types: [],
     ingredients: [],
@@ -72,6 +79,48 @@ describe("RecipeListView", () => {
         expect(screen.getByText("All recipes")).toBeInTheDocument();
         expect(screen.getByText("Browse your cookbook")).toBeInTheDocument();
         expect(screen.getByText(RECIPE_TITLE)).toBeInTheDocument();
+    });
+
+    it("should recolor a card whose calories exceed what's left today", () => {
+        const pricierRecipe = {
+            ...RECIPES[0],
+            calories_per_portion: CALORIES_OVER_BUDGET,
+        };
+
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={[pricierRecipe]}
+                noRecipes={false}
+                error={null}
+                calorieGoal={2000}
+                calorieRemaining={500}
+            />,
+        );
+
+        expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).toHaveClass(
+            "content-card__meta-item--calorie-over",
+        );
+    });
+
+    it("should not recolor a card when there is no calorie goal", () => {
+        const pricierRecipe = {
+            ...RECIPES[0],
+            calories_per_portion: CALORIES_OVER_BUDGET,
+        };
+
+        renderWithRouter(
+            <RecipeListView
+                {...baseProps}
+                recipes={[pricierRecipe]}
+                noRecipes={false}
+                error={null}
+            />,
+        );
+
+        expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).not.toHaveClass(
+            "content-card__meta-item--calorie-over",
+        );
     });
 
     it("should render the translated New recipe button, not a raw i18n key", () => {

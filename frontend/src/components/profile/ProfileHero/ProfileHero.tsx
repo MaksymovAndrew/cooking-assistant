@@ -6,6 +6,7 @@ import { EditMark } from "components/icons";
 import { Avatar } from "components/ui/Avatar";
 import { Button } from "components/ui/Button";
 
+import { formatKcal } from "utils/calories";
 import { formatJoinedDate } from "utils/dateUtils";
 import { getInitials } from "utils/getInitials";
 
@@ -22,6 +23,7 @@ interface ProfileHeroProps {
     avatar?: string | null;
     recipesCount: number;
     menusCount: number;
+    kcalToday: number;
     onLogout: () => void;
     onEditProfile: () => void;
 }
@@ -38,6 +40,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
     avatar,
     recipesCount,
     menusCount,
+    kcalToday,
     onLogout,
     onEditProfile,
 }) => {
@@ -90,6 +93,14 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
                     </span>
                     <span className={styles["profile-hero__stat-label"]}>
                         {t("profilePage.favouritesStat")}
+                    </span>
+                </div>
+                <div className={styles["profile-hero__stat"]}>
+                    <span className={styles["profile-hero__stat-value"]}>
+                        {formatKcal(kcalToday)}
+                    </span>
+                    <span className={styles["profile-hero__stat-label"]}>
+                        {t("profilePage.kcalTodayStat")}
                     </span>
                 </div>
             </div>

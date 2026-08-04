@@ -9,6 +9,7 @@ const RECIPE = {
     title: "Slow-roasted ragù",
     type_name: "Main course",
     cooking_time: 85,
+    calories_per_portion: null,
 };
 
 describe("MenuRecipeCard", () => {
@@ -32,5 +33,17 @@ describe("MenuRecipeCard", () => {
         );
 
         expect(screen.getByText("Main course · 20 min")).toBeInTheDocument();
+    });
+
+    it("should append the calorie total to the meta text when available", () => {
+        renderWithRouter(
+            <MenuRecipeCard
+                recipe={{ ...RECIPE, calories_per_portion: 320 }}
+            />,
+        );
+
+        expect(
+            screen.getByText("Main course · 1h 25m · 320 kcal"),
+        ).toBeInTheDocument();
     });
 });

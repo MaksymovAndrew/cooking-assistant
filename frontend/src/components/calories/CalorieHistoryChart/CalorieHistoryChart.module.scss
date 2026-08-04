@@ -1,0 +1,204 @@
+@use "styles/abstracts" as *;
+
+.calorie-history-chart {
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+        margin-bottom: var(--s-4);
+    }
+
+    &__heading {
+        margin: 0;
+        color: var(--text);
+        font:
+            600 18px Fraunces,
+            serif;
+    }
+
+    // a fixed-width streak box next to the bars leaves too little room for 7
+    // columns on mobile (each bar's value label + weekday label need real
+    // space) - stack the streak below the chart until there's room for both
+    &__body {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--s-4);
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+        }
+    }
+
+    &__chart {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+    }
+
+    // purely decorative now - the "Goal X kcal" text lives in the footer below
+    // instead of floating on the line, where a tall bar could crowd it
+    &__goal-line {
+        position: absolute;
+        right: 0;
+        left: 0;
+        border-top: 1px dashed
+            color-mix(in srgb, var(--text-muted) 50%, transparent);
+    }
+
+    // columns never shrink below a readable 44px (a flexible width crushes 30
+    // columns to invisible slivers), but they DO grow to fill extra space, so
+    // 7 columns stretch edge-to-edge whenever the panel is wide enough and
+    // only fall back to horizontal scroll once the minimum width is hit. The
+    // native scrollbar stays hidden - components/ui/HorizontalScrollbar
+    // renders a custom track+thumb below instead, so the same affordance
+    // and drag-to-scroll work identically on touch and mouse alike
+    &__bars {
+        display: flex;
+        align-items: flex-end;
+        gap: var(--s-2);
+        height: 176px;
+        overflow-x: auto;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &__column {
+        display: flex;
+        flex: 1 0 44px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--s-1);
+        height: 100%;
+    }
+
+    &__value {
+        color: var(--text-muted);
+        font:
+            500 10px "Geist Mono",
+            monospace;
+    }
+
+    &__bar {
+        width: 100%;
+        min-height: 2px;
+        border-radius: 6px 6px 3px 3px;
+        background: color-mix(in srgb, var(--brand-strong) 80%, transparent);
+
+        &--near {
+            background: color-mix(in srgb, var(--warning) 78%, transparent);
+        }
+
+        &--over {
+            background: color-mix(in srgb, var(--danger) 78%, transparent);
+        }
+
+        &--today {
+            border: 1px dashed
+                color-mix(in srgb, var(--brand-strong) 70%, transparent);
+            background: color-mix(
+                in srgb,
+                var(--brand-strong) 22%,
+                transparent
+            );
+        }
+
+        &--today.calorie-history-chart__bar--near {
+            border-color: color-mix(in srgb, var(--warning) 70%, transparent);
+            background: color-mix(in srgb, var(--warning) 22%, transparent);
+        }
+
+        &--today.calorie-history-chart__bar--over {
+            border-color: color-mix(in srgb, var(--danger) 70%, transparent);
+            background: color-mix(in srgb, var(--danger) 22%, transparent);
+        }
+    }
+
+    // lives inside each __column (not a separate row) so it scrolls with its bar
+    &__day-label {
+        color: var(--text-muted);
+        font:
+            400 11px Inter,
+            sans-serif;
+
+        &--today {
+            color: var(--text-2);
+            font-weight: 600;
+        }
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--s-3);
+        margin-top: var(--s-3);
+        padding-top: var(--s-3);
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+
+        span {
+            font-weight: 600;
+        }
+    }
+
+    &__empty {
+        margin: 0;
+        padding: var(--s-6) 0;
+        color: var(--text-muted);
+        font:
+            400 13px Inter,
+            sans-serif;
+        text-align: center;
+    }
+
+    &__streak {
+        display: flex;
+        flex: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: var(--s-4) var(--s-3);
+        border-radius: var(--r-md);
+        background: var(--surface-2);
+        text-align: center;
+
+        @include respond-to(tablet) {
+            width: 140px;
+        }
+
+        &-value {
+            color: var(--text);
+            font:
+                600 28px "Geist Mono",
+                monospace;
+        }
+
+        &-label {
+            margin-top: var(--s-1);
+            color: var(--text-2);
+            font:
+                400 12px Inter,
+                sans-serif;
+        }
+
+        &-best {
+            margin-top: var(--s-3);
+            padding-top: var(--s-3);
+            border-top: 1px solid var(--border);
+            width: 100%;
+            color: var(--text-muted);
+            font:
+                400 11.5px Inter,
+                sans-serif;
+        }
+    }
+}

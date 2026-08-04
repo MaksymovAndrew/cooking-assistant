@@ -42,6 +42,9 @@ export const menuDetailsPath = (id: string | number): string =>
 export const changeMenuPath = (id: string | number): string =>
     withId(ROUTES.changeMenu, id);
 
+// deep-links into the Dietary tab of the profile page - kept in sync with the "dietary" tab id read in useProfilePage.ts
+export const profileDietaryPath = (): string => `${ROUTES.profile}?tab=dietary`;
+
 export const PUBLIC_PATHS: string[] = [
     ROUTES.login,
     ROUTES.registration,

@@ -1,5 +1,6 @@
 import type { RepositoryDeps } from "composition-root";
 
+import type { CalorieRepository } from "domain/repositories/CalorieRepository";
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
@@ -22,6 +23,7 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     menuCategoryRepository: jest.Mocked<MenuCategoryRepository>;
     pantryRepository: jest.Mocked<PantryRepository>;
     userRepository: jest.Mocked<UserRepository>;
+    calorieRepository: jest.Mocked<CalorieRepository>;
     passwordHasher: jest.Mocked<PasswordHasher>;
     tokenService: jest.Mocked<TokenService>;
     emailSender: jest.Mocked<EmailSender>;
@@ -87,6 +89,17 @@ function createUserRepository(): jest.Mocked<UserRepository> {
     };
 }
 
+function createCalorieRepository(): jest.Mocked<CalorieRepository> {
+    return {
+        findIntake: jest.fn(),
+        logIntake: jest.fn(),
+        deleteIntake: jest.fn(),
+        findRecipeCalories: jest.fn(),
+        findMenuCalories: jest.fn(),
+        updateGoal: jest.fn(),
+    };
+}
+
 function createPasswordHasher(): jest.Mocked<PasswordHasher> {
     return {
         hash: jest.fn(),
@@ -118,6 +131,7 @@ export function buildFakeDeps(): FakeRepositoryDeps {
         menuCategoryRepository: { findAll: jest.fn() },
         pantryRepository: createPantryRepository(),
         userRepository: createUserRepository(),
+        calorieRepository: createCalorieRepository(),
         passwordHasher: createPasswordHasher(),
         tokenService: createTokenService(),
         emailSender: createEmailSender(),

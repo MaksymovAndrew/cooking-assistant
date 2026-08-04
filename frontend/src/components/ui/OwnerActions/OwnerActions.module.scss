@@ -38,6 +38,41 @@
         }
     }
 
+    &__log-intake {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        gap: var(--s-2);
+        width: 46px;
+        height: 46px;
+        padding: 0;
+        border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border));
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+        color: var(--brand);
+        cursor: pointer;
+        transition:
+            background var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out);
+
+        svg {
+            flex: none;
+        }
+
+        @include focus-ring;
+
+        @include respond-to(tablet) {
+            width: auto;
+            padding: 0 var(--s-4);
+        }
+
+        @include on-hover {
+            border-color: color-mix(in srgb, var(--brand) 50%, var(--border));
+            background: color-mix(in srgb, var(--brand) 14%, var(--surface));
+        }
+    }
+
     &__label {
         display: none;
         color: inherit;

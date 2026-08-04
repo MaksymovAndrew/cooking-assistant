@@ -13,6 +13,7 @@ const RECIPE: RecipeSearchResultItem = {
     creation_date: "2024-01-01",
     cooking_time: 60,
     ingredients: [],
+    calories_per_portion: null,
 };
 
 describe("ProfileRecipesTab", () => {

@@ -4,7 +4,14 @@ import userEvent from "@testing-library/user-event";
 import { SelectedIngredientsList } from "components/recipes/SelectedIngredientsList";
 
 const INGREDIENTS = [
-    { id: 1, slug: "potato", name: "Potato", quantity: 3, unit_name: "g" },
+    {
+        id: 1,
+        slug: "potato",
+        name: "Potato",
+        quantity: 3,
+        unit_name: "g",
+        calories_per_unit: null,
+    },
 ];
 
 describe("SelectedIngredientsList", () => {

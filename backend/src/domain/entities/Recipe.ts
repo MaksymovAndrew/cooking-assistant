@@ -20,8 +20,8 @@ export interface RecipeCreationInput {
     ingredients: RecipeIngredientInput[];
     type_id?: number;
     cooking_time?: number;
-    // free-form text (e.g. "4" or "a full pot") - the column is VARCHAR, not numeric
-    servings?: string;
+    // manual per-portion calorie value; undefined/null means "compute it from the ingredients"
+    calories_override?: number | null;
 }
 
 export type RecipeUpdateInput = Omit<RecipeCreationInput, "person_id">;
@@ -51,7 +51,7 @@ export class Recipe {
     declare ingredients: RecipeIngredient[];
     declare type_id?: number;
     declare cooking_time?: number;
-    declare servings?: string;
+    declare calories_override?: number | null;
 
     static forCreation({
         title,
@@ -60,7 +60,7 @@ export class Recipe {
         ingredients,
         type_id,
         cooking_time,
-        servings,
+        calories_override,
     }: RecipeCreationData): Recipe {
         validateIngredients(ingredients);
 
@@ -71,7 +71,7 @@ export class Recipe {
             ingredients,
             type_id,
             cooking_time,
-            servings,
+            calories_override,
         });
     }
 
@@ -81,7 +81,7 @@ export class Recipe {
         ingredients,
         type_id,
         cooking_time,
-        servings,
+        calories_override,
     }: RecipeUpdateData): Recipe {
         if (!title || !content) {
             throw new ValidationError(
@@ -97,7 +97,7 @@ export class Recipe {
             ingredients,
             type_id,
             cooking_time,
-            servings,
+            calories_override,
         });
     }
 

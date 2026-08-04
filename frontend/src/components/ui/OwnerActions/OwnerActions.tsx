@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Flame, Heart } from "lucide-react";
 import React from "react";
 
 import { EditMark, TrashMark } from "components/icons";
@@ -12,6 +12,8 @@ interface OwnerActionsProps {
     editLabel: string;
     deleteLabel: string;
     favouriteLabel: string;
+    onLogIntake?: () => void;
+    logIntakeLabel?: string;
 }
 
 const ICON_SIZE = 16;
@@ -22,6 +24,8 @@ export const OwnerActions: React.FC<OwnerActionsProps> = ({
     editLabel,
     deleteLabel,
     favouriteLabel,
+    onLogIntake,
+    logIntakeLabel,
 }) => (
     <div className={styles["owner-actions"]}>
         <LinkButton to={editTo} className={styles["owner-actions__edit"]}>
@@ -39,6 +43,19 @@ export const OwnerActions: React.FC<OwnerActionsProps> = ({
                 {favouriteLabel}
             </span>
         </button>
+        {onLogIntake && (
+            <button
+                type="button"
+                onClick={onLogIntake}
+                aria-label={logIntakeLabel}
+                className={styles["owner-actions__log-intake"]}
+            >
+                <Flame size={ICON_SIZE} aria-hidden="true" />
+                <span className={styles["owner-actions__label"]}>
+                    {logIntakeLabel}
+                </span>
+            </button>
+        )}
         <button
             type="button"
             onClick={onDelete}

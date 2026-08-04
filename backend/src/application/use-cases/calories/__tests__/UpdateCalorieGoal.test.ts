@@ -1,0 +1,50 @@
+import { ValidationError } from "domain/errors/AppError";
+
+import UpdateCalorieGoal from "application/use-cases/calories/UpdateCalorieGoal";
+
+import { catchError } from "test/helpers/assertions";
+
+function setup() {
+    const calorieRepository = { updateGoal: jest.fn() };
+    const useCase = new UpdateCalorieGoal(calorieRepository);
+
+    return { useCase, calorieRepository };
+}
+
+describe("UpdateCalorieGoal", () => {
+    it("should reject an invalid calorie_goal", async () => {
+        const { useCase } = setup();
+
+        const error = await catchError(
+            useCase.execute(7, {
+                calorie_goal: -5,
+            }),
+        );
+
+        expect(error).toBeInstanceOf(ValidationError);
+    });
+
+    it("should update the goal with the validated value", async () => {
+        const { useCase, calorieRepository } = setup();
+
+        await useCase.execute(7, {
+            calorie_goal: 2000,
+        });
+
+        expect(calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
+            calorie_goal: 2000,
+        });
+    });
+
+    it("should allow clearing the goal back to null", async () => {
+        const { useCase, calorieRepository } = setup();
+
+        await useCase.execute(7, {
+            calorie_goal: null,
+        });
+
+        expect(calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
+            calorie_goal: null,
+        });
+    });
+});

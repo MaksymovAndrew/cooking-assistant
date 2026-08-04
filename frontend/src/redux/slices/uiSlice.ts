@@ -15,6 +15,9 @@ export const MODAL_TYPE = {
     logout: "logout",
     themeChange: "themeChange",
     expiredIngredients: "expiredIngredients",
+    deleteCalorieIntake: "deleteCalorieIntake",
+    calorieLimit: "calorieLimit",
+    logIntake: "logIntake",
 } as const;
 
 export interface IngredientHistoryModalInput {
@@ -82,6 +85,39 @@ export interface ExpiredIngredientsModal extends ExpiredIngredientsModalInput {
     id: string;
 }
 
+export interface DeleteCalorieIntakeModalInput {
+    type: typeof MODAL_TYPE.deleteCalorieIntake;
+    intakeId: number;
+    title: string;
+}
+
+export interface DeleteCalorieIntakeModal extends DeleteCalorieIntakeModalInput {
+    id: string;
+}
+
+export interface CalorieLimitModalInput {
+    type: typeof MODAL_TYPE.calorieLimit;
+    consumed: number;
+    goal: number;
+}
+
+export interface CalorieLimitModal extends CalorieLimitModalInput {
+    id: string;
+}
+
+export interface LogIntakeModalInput {
+    type: typeof MODAL_TYPE.logIntake;
+    recipeId?: number;
+    menuId?: number;
+    title: string;
+    caloriesPerPortion: number;
+    initialPortions?: number;
+}
+
+export interface LogIntakeModal extends LogIntakeModalInput {
+    id: string;
+}
+
 export type ModalInput =
     | IngredientHistoryModalInput
     | DeleteRecipeModalInput
@@ -89,7 +125,10 @@ export type ModalInput =
     | DeleteIngredientModalInput
     | LogoutModalInput
     | ThemeChangeModalInput
-    | ExpiredIngredientsModalInput;
+    | ExpiredIngredientsModalInput
+    | DeleteCalorieIntakeModalInput
+    | CalorieLimitModalInput
+    | LogIntakeModalInput;
 export type ActiveModal =
     | IngredientHistoryModal
     | DeleteRecipeModal
@@ -97,7 +136,10 @@ export type ActiveModal =
     | DeleteIngredientModal
     | LogoutModal
     | ThemeChangeModal
-    | ExpiredIngredientsModal;
+    | ExpiredIngredientsModal
+    | DeleteCalorieIntakeModal
+    | CalorieLimitModal
+    | LogIntakeModal;
 
 interface UiState {
     modal: ActiveModal | null;

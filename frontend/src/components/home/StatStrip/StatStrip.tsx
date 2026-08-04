@@ -7,6 +7,7 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { KcalStatCard } from "components/home/KcalStatCard";
 import { StatCard } from "components/home/StatCard";
 
 import styles from "./StatStrip.module.scss";
@@ -16,6 +17,8 @@ interface StatStripProps {
     menusCount: number;
     pantryCount: number;
     expiringCount: number;
+    kcalToday: number;
+    kcalGoal: number | null;
 }
 
 export const StatStrip: React.FC<StatStripProps> = ({
@@ -23,6 +26,8 @@ export const StatStrip: React.FC<StatStripProps> = ({
     menusCount,
     pantryCount,
     expiringCount,
+    kcalToday,
+    kcalGoal,
 }) => {
     const { t } = useTranslation("home");
 
@@ -51,6 +56,7 @@ export const StatStrip: React.FC<StatStripProps> = ({
                 shortLabel={t("stats.expiringSoonShort")}
                 tone="warning"
             />
+            <KcalStatCard consumed={kcalToday} goal={kcalGoal} />
         </div>
     );
 };

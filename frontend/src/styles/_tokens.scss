@@ -20,6 +20,11 @@
     --success: #46c988;
     --danger: #f06d6d;
     --warning: #e0a33e;
+
+    // distinct from --danger/--warning on purpose - flags "this item alone would put you over
+    // your remaining calories today", a lighter-weight per-item nudge than the app-wide --danger
+    // used for aggregate over-goal states (the Dietary tab's progress ring and history chart)
+    --calorie-over: #ff8a3d;
     --info: #7fa8e0;
     --accent: #b692c2;
     --e-1: 0 1px 2px rgb(0 0 0 / 40%);
@@ -45,6 +50,7 @@
     --success: #2e9e68;
     --danger: #d64545;
     --warning: #b9791f;
+    --calorie-over: #e2650c;
     --info: #4f7fbf;
     --accent: #b692c2;
     --e-1: 0 1px 2px rgb(20 16 30 / 6%);

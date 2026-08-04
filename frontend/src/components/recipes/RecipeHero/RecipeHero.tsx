@@ -1,15 +1,20 @@
-import { Calendar, Clock, Heart, Users } from "lucide-react";
+import { Flame, Heart } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { RECIPE_RATING, RECIPE_RATING_COUNT } from "constants/ratings";
 import type { RecipeDetails } from "types/recipe";
 
 import { UtensilsMarkSimple } from "components/icons";
-import { RecipeRatingStars } from "components/recipes/RecipeRatingStars";
+import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
+import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
 import { OwnerActions } from "components/ui/OwnerActions";
 
+import {
+    formatKcal,
+    roundCalories,
+    scaleCaloriesForPortions,
+} from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { formatFullDate } from "utils/dateUtils";
 
@@ -17,24 +22,23 @@ import styles from "./RecipeHero.module.scss";
 
 interface RecipeHeroProps {
     recipe: RecipeDetails;
-    canScaleServings: boolean;
-    servingsCount: number | null;
-    servingsDisplay: string;
+    portionCount: number;
     editTo: string;
     onDelete: () => void;
+    onLogIntake?: () => void;
+    exceedsBudget?: boolean;
 }
 
 const IMAGE_ICON_SIZE = 56;
 const FAVOURITE_ICON_SIZE = 20;
-const STAT_ICON_SIZE = 16;
 
 export const RecipeHero: React.FC<RecipeHeroProps> = ({
     recipe,
-    canScaleServings,
-    servingsCount,
-    servingsDisplay,
+    portionCount,
     editTo,
     onDelete,
+    onLogIntake,
+    exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
     const favouriteLabel = t("recipeDetailsPage.favourite");
@@ -47,9 +51,23 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
               })
             : t("recipeDetailsPage.cookingTimeMinutes", { minutes });
     const formattedDate = formatFullDate(recipe.creation_date);
-    const formattedServings = canScaleServings
-        ? t("recipeDetailsPage.portionsValue", { count: servingsCount })
-        : servingsDisplay;
+    const formattedCalories =
+        recipe.calories_per_portion === null
+            ? t("recipeDetailsPage.caloriesUnavailable")
+            : t("recipeDetailsPage.caloriesPerPortion", {
+                  count: formatKcal(roundCalories(recipe.calories_per_portion)),
+              });
+    const totalCalories =
+        recipe.calories_per_portion === null || portionCount === 1
+            ? null
+            : t("recipeDetailsPage.caloriesTotal", {
+                  count: formatKcal(
+                      scaleCaloriesForPortions(
+                          recipe.calories_per_portion,
+                          portionCount,
+                      ),
+                  ),
+              });
 
     return (
         <div className={styles["recipe-hero"]}>
@@ -73,56 +91,14 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
             </Chip>
             <h1 className={styles["recipe-hero__title"]}>{recipe.title}</h1>
 
-            <div className={styles["recipe-hero__stats"]}>
-                <div className={styles["recipe-hero__stat"]}>
-                    <span className={styles["recipe-hero__stat-label"]}>
-                        {t("recipeDetailsPage.cookingTime")}
-                    </span>
-                    <span className={styles["recipe-hero__stat-value"]}>
-                        <Clock size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {formattedCookingTime}
-                    </span>
-                </div>
-                <div className={styles["recipe-hero__stat"]}>
-                    <span className={styles["recipe-hero__stat-label"]}>
-                        {t("recipeDetailsPage.servings")}
-                    </span>
-                    <span className={styles["recipe-hero__stat-value"]}>
-                        <Users size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {formattedServings}
-                    </span>
-                </div>
-                <div
-                    className={[
-                        styles["recipe-hero__stat"],
-                        styles["recipe-hero__stat--secondary"],
-                    ].join(" ")}
-                >
-                    <span className={styles["recipe-hero__stat-label"]}>
-                        {t("recipeDetailsPage.creationDate")}
-                    </span>
-                    <span className={styles["recipe-hero__stat-value"]}>
-                        <Calendar size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {formattedDate}
-                    </span>
-                </div>
-                {recipe.isOwner && (
-                    <div
-                        className={[
-                            styles["recipe-hero__stat"],
-                            styles["recipe-hero__stat--secondary"],
-                        ].join(" ")}
-                    >
-                        <span className={styles["recipe-hero__stat-label"]}>
-                            {t("recipeDetailsPage.yourRating")}
-                        </span>
-                        <RecipeRatingStars
-                            rating={RECIPE_RATING}
-                            ratingCount={RECIPE_RATING_COUNT}
-                        />
-                    </div>
-                )}
-            </div>
+            <RecipeHeroStats
+                formattedCookingTime={formattedCookingTime}
+                formattedCalories={formattedCalories}
+                totalCalories={totalCalories}
+                formattedDate={formattedDate}
+                isOwner={recipe.isOwner}
+                exceedsBudget={exceedsBudget}
+            />
 
             {recipe.isOwner ? (
                 <div className={styles["recipe-hero__actions"]}>
@@ -132,10 +108,12 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                         editLabel={t("recipeDetailsPage.editButton")}
                         deleteLabel={t("recipeDetailsPage.deleteButton")}
                         favouriteLabel={favouriteLabel}
+                        onLogIntake={onLogIntake}
+                        logIntakeLabel={t("recipeDetailsPage.logIntake")}
                     />
                 </div>
             ) : (
-                <div className={styles["recipe-hero__visitor-banner"]}>
+                <div className={styles["recipe-hero__visitor-actions"]}>
                     <button
                         type="button"
                         disabled
@@ -145,7 +123,21 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                         <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
                         {favouriteLabel}
                     </button>
-                    <span>{t("recipeDetailsPage.visitorBanner")}</span>
+                    {onLogIntake && (
+                        <Button
+                            variant="secondary"
+                            className={
+                                styles["recipe-hero__visitor-log-intake"]
+                            }
+                            onClick={onLogIntake}
+                        >
+                            <Flame
+                                size={FAVOURITE_ICON_SIZE}
+                                aria-hidden="true"
+                            />
+                            {t("recipeDetailsPage.logIntake")}
+                        </Button>
+                    )}
                 </div>
             )}
         </div>

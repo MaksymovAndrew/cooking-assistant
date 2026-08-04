@@ -65,6 +65,20 @@ describe("SearchRecipes", () => {
         });
     });
 
+    it("should pass through min_calories and max_calories as numbers", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { min_calories: "200", max_calories: "600" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
+            min_calories: 200,
+            max_calories: 600,
+        });
+    });
+
     it("should pass through the in_pantry filter as a boolean", async () => {
         const { useCase, recipeRepository } = setup();
         const paginated = { items: [], total: 0 };

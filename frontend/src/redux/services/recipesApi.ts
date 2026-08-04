@@ -79,9 +79,12 @@ export const recipesApi = baseApi.injectEndpoints({
                 method: "PUT",
                 data,
             }),
+            // calories_computed can change along with the ingredients, so the calorie budget
+            // and over-budget badges (which read a recipe's current calories) must refetch too
             invalidatesTags: (_result, _error, { id }) => [
                 { type: RECIPE, id },
                 RECIPE_LIST,
+                "Calories",
             ],
         }),
         deleteRecipe: build.mutation<null, string>({
@@ -97,6 +100,7 @@ export const recipesApi = baseApi.injectEndpoints({
                 { type: RECIPE, id },
                 RECIPE_LIST,
                 { type: "Menu" },
+                "Calories",
             ],
         }),
     }),

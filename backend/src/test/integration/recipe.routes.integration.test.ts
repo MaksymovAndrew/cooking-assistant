@@ -17,6 +17,7 @@ const RECIPE_ROW_EXTRAS = {
     type_id: 1,
     creation_date: new Date("2026-01-01T00:00:00.000Z"),
     cooking_time: 30,
+    calories_per_portion: null,
     type_name: "Soup",
     ingredients: [],
 };
@@ -28,7 +29,6 @@ function makeRecipeBody() {
         ingredients: [{ id: 3, quantity: 2, quantity_recipe_ingredients: 2 }],
         type_id: 1,
         cooking_time: 30,
-        servings: "4",
     };
 }
 

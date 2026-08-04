@@ -1,5 +1,6 @@
 @use "styles/tokens";
 @use "styles/fonts";
+@use "styles/mixins";
 
 * {
     margin: 0;
@@ -12,16 +13,34 @@ svg {
     align-items: center;
 }
 
+// design-system spec: thin, semi-transparent pill thumb, transparent track -
+// never a bulky native bar overlaying content (see Design System.dc.html)
+* {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--text-muted) 45%, transparent)
+        transparent;
+}
+
 ::-webkit-scrollbar {
-    width: 7px;
-    opacity: 0;
-    background-color: transparent;
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--text-muted);
-    border-radius: 6px;
-    opacity: 0;
+    background-color: color-mix(in srgb, var(--text-muted) 45%, transparent);
+    border-radius: 999px;
+
+    @include mixins.on-hover {
+        background-color: color-mix(
+            in srgb,
+            var(--text-muted) 70%,
+            transparent
+        );
+    }
 }
 
 body {

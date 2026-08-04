@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { RecipeFilterParams, RecipeListItem } from "types/recipe";
+import type { RecipeFilterParams, RecipeSearchResultItem } from "types/recipe";
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { ActiveFilterEntry } from "hooks/useListFilters";
 
-import { RecipeCard } from "components/cards/RecipeCard";
 import { AppShell } from "components/layout/AppShell";
 import { RecipeActiveFilters } from "components/recipes/RecipeActiveFilters";
 import type { RecipeFilterPanelProps } from "components/recipes/RecipeFilterPanel";
@@ -16,12 +15,15 @@ import { ErrorState } from "components/ui/ErrorState";
 import { ListLoadMoreFooter } from "components/ui/LoadMore";
 
 import { RecipeListEmptyState } from "./RecipeListEmptyState";
+import { RecipeListGrid } from "./RecipeListGrid";
 import { RecipeListHeader } from "./RecipeListHeader";
 import styles from "./RecipeListView.module.scss";
 import { RecipePantryBanner } from "./RecipePantryBanner";
 
 interface RecipeListViewProps extends RecipeFilterPanelProps {
-    recipes: RecipeListItem[];
+    recipes: RecipeSearchResultItem[];
+    calorieGoal: number | null;
+    calorieRemaining: number | null;
     noRecipes: boolean;
     // the full reset, used by RecipeActiveFilters ("Clear all") and the empty state -
     // RecipeFilterPanel now owns a narrower reset scoped to just its own popover fields
@@ -54,6 +56,8 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     types,
     ingredients,
     recipes,
+    calorieGoal,
+    calorieRemaining,
     noRecipes,
     isPantryEmpty,
     error,
@@ -131,19 +135,13 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                     />
                 )}
                 {!error && !noRecipes && (
-                    <div className={styles["recipe-list-view__grid"]}>
-                        {recipes.map((recipe) => (
-                            <RecipeCard
-                                key={recipe.id}
-                                recipe={recipe}
-                                mine={
-                                    mine ||
-                                    (typeof recipe.person_id === "number" &&
-                                        recipe.person_id === currentUserId)
-                                }
-                            />
-                        ))}
-                    </div>
+                    <RecipeListGrid
+                        recipes={recipes}
+                        calorieGoal={calorieGoal}
+                        calorieRemaining={calorieRemaining}
+                        mine={mine}
+                        currentUserId={currentUserId}
+                    />
                 )}
                 {!error && !noRecipes && (
                     <ListLoadMoreFooter

@@ -23,6 +23,7 @@ const RECIPES: MenuDetailRecipe[] = [
         type_name: "Soup",
         cooking_time: 60,
         creation_date: "2024-01-01",
+        calories_per_portion: null,
     },
     {
         recipe_id: 2,
@@ -30,6 +31,7 @@ const RECIPES: MenuDetailRecipe[] = [
         type_name: "Breakfast",
         cooking_time: 20,
         creation_date: "2024-01-02",
+        calories_per_portion: null,
     },
 ];
 

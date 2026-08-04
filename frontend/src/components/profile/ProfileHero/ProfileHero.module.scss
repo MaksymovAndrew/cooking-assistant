@@ -75,7 +75,7 @@
     &__stats {
         display: grid;
         flex-basis: 100%;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: var(--s-2);
 
         @include respond-to(tablet) {

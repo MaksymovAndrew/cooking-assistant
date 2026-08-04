@@ -135,6 +135,7 @@ describe("user routes", () => {
             email: EMAIL,
             email_verified_at: null,
             avatar: null,
+            calorie_goal: null,
         };
 
         deps.userRepository.findById.mockResolvedValue(currentUser);
@@ -359,6 +360,7 @@ describe("user routes", () => {
             email: EMAIL,
             email_verified_at: null,
             avatar: null,
+            calorie_goal: null,
         });
         deps.tokenService.generatePurposeToken.mockReturnValue(VERIFY_TOKEN);
 

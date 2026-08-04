@@ -29,6 +29,7 @@ jest.mock("react-router-dom", () => ({
 jest.mock("api/client");
 
 const TITLE = "Borscht";
+const LOG_INTAKE_BUTTON = "Log intake";
 const OWNER_ID = 3;
 const SAMPLE: RecipeDetails = {
     id: 1,
@@ -39,9 +40,10 @@ const SAMPLE: RecipeDetails = {
     type_name: "Soup",
     cooking_time: 60,
     creation_date: "2024-01-01",
-    servings: "4",
     person_id: OWNER_ID,
     isOwner: true,
+    calories_per_portion: null,
+    calories_override: null,
 };
 
 const mockRecipe = (recipe: RecipeDetails = SAMPLE) => {
@@ -167,5 +169,56 @@ describe("RecipeDetailsPage", () => {
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
         expect(store.getState().ui.modal).toBeNull();
+    });
+
+    it("should not show the log-intake button when the recipe has no calorie data", async () => {
+        mockRecipe();
+
+        renderPage();
+        await screen.findByRole("heading", { name: TITLE });
+
+        expect(
+            screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should open the log-intake modal with the recipe's calories per portion", async () => {
+        mockRecipe({ ...SAMPLE, calories_per_portion: 420 });
+
+        const { store } = renderPage();
+
+        await screen.findByRole("heading", { name: TITLE });
+
+        await userEvent.click(
+            screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
+        );
+
+        expect(store.getState().ui.modal).toMatchObject({
+            type: MODAL_TYPE.logIntake,
+            recipeId: 1,
+            title: TITLE,
+            caloriesPerPortion: 420,
+            initialPortions: 1,
+        });
+    });
+
+    it("should open the log-intake modal pre-filled with the portions already selected on the page", async () => {
+        mockRecipe({ ...SAMPLE, calories_per_portion: 420 });
+
+        const { store } = renderPage();
+
+        await screen.findByRole("heading", { name: TITLE });
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "More portions" }),
+        );
+        await userEvent.click(
+            screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
+        );
+
+        expect(store.getState().ui.modal).toMatchObject({
+            type: MODAL_TYPE.logIntake,
+            initialPortions: 2,
+        });
     });
 });

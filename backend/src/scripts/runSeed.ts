@@ -46,6 +46,17 @@ const seedRecipeTypes = `
     );
 `;
 
+// re-syncs every recipe's stored calorie total with the catalog values the step above just
+// upserted, so a changed ingredient calorie value doesn't leave recipes' totals stale
+const recomputeRecipeCalories = `
+    UPDATE recipes r SET calories_computed = (
+        SELECT SUM(ri.quantity_recipe_ingredients * i.calories_per_unit)
+        FROM recipe_ingredients ri
+                 JOIN ingredients i ON i.id = ri.ingredient_id
+        WHERE ri.recipe_id = r.id
+    );
+`;
+
 const seedMenuCategories = `
     INSERT INTO menu_category (category_name, category_description)
     SELECT v.category_name, v.category_description
@@ -81,6 +92,13 @@ export async function runSeed(): Promise<void> {
         logger.info(
             { affected: ingredientsAffected },
             "Seeded ingredients from catalog",
+        );
+
+        const recomputeResult = await pool.query(recomputeRecipeCalories);
+
+        logger.info(
+            { affected: recomputeResult.rowCount },
+            "Recomputed recipe calorie totals",
         );
     } finally {
         await pool.end();

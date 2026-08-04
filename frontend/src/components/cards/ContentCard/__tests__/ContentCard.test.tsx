@@ -54,6 +54,39 @@ describe("ContentCard", () => {
         expect(screen.getByRole("link")).toHaveClass("content-card--badge");
     });
 
+    it("should apply the calorie-over class when calorieOver is true", () => {
+        renderCard({ calorieOver: true });
+
+        expect(screen.getByRole("link")).toHaveClass(
+            "content-card--calorie-over",
+        );
+    });
+
+    it("should apply both classes when badge and calorieOver are both true", () => {
+        renderCard({ badge: true, calorieOver: true });
+
+        const link = screen.getByRole("link");
+
+        expect(link).toHaveClass("content-card--badge");
+        expect(link).toHaveClass("content-card--calorie-over");
+    });
+
+    it("should recolor a meta item tagged with the calorieOver tone", () => {
+        renderCard({
+            metaItems: [
+                {
+                    icon: Clock,
+                    label: COOKING_TIME_LABEL,
+                    tone: "calorieOver",
+                },
+            ],
+        });
+
+        expect(screen.getByText(COOKING_TIME_LABEL)).toHaveClass(
+            "content-card__meta-item--calorie-over",
+        );
+    });
+
     it("should default to the grid variant", () => {
         renderCard();
 

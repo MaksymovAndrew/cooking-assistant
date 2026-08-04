@@ -3,17 +3,25 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
-import type { RecipeListItem } from "types/recipe";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecentRecipeCard } from "components/home/RecentRecipes/RecentRecipeCard";
+
+import { exceedsCalorieBudget } from "utils/calories";
 
 import styles from "./RecentRecipes.module.scss";
 
 interface RecentRecipesProps {
-    recipes: RecipeListItem[];
+    recipes: RecipeSearchResultItem[];
+    calorieGoal: number | null;
+    calorieRemaining: number | null;
 }
 
-export const RecentRecipes: React.FC<RecentRecipesProps> = ({ recipes }) => {
+export const RecentRecipes: React.FC<RecentRecipesProps> = ({
+    recipes,
+    calorieGoal,
+    calorieRemaining,
+}) => {
     const { t } = useTranslation("home");
 
     return (
@@ -32,7 +40,15 @@ export const RecentRecipes: React.FC<RecentRecipesProps> = ({ recipes }) => {
             {recipes.length > 0 ? (
                 <div className={styles["recent-recipes__grid"]}>
                     {recipes.map((recipe) => (
-                        <RecentRecipeCard key={recipe.id} recipe={recipe} />
+                        <RecentRecipeCard
+                            key={recipe.id}
+                            recipe={recipe}
+                            exceedsBudget={exceedsCalorieBudget(
+                                recipe.calories_per_portion,
+                                calorieGoal,
+                                calorieRemaining,
+                            )}
+                        />
                     ))}
                 </div>
             ) : (

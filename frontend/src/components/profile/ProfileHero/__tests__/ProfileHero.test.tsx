@@ -11,6 +11,7 @@ describe("ProfileHero", () => {
                 surname="Cook"
                 recipesCount={5}
                 menusCount={2}
+                kcalToday={340}
                 onLogout={jest.fn()}
                 onEditProfile={jest.fn()}
             />,
@@ -20,6 +21,7 @@ describe("ProfileHero", () => {
         expect(screen.getByText("5")).toBeInTheDocument();
         expect(screen.getByText("2")).toBeInTheDocument();
         expect(screen.getByText("15")).toBeInTheDocument();
+        expect(screen.getByText("340")).toBeInTheDocument();
     });
 
     it("should fall back to the login when name/surname are missing", () => {
@@ -28,6 +30,7 @@ describe("ProfileHero", () => {
                 login="claude"
                 recipesCount={0}
                 menusCount={0}
+                kcalToday={0}
                 onLogout={jest.fn()}
                 onEditProfile={jest.fn()}
             />,
@@ -44,6 +47,7 @@ describe("ProfileHero", () => {
                 createdAt="2025-06-15"
                 recipesCount={0}
                 menusCount={0}
+                kcalToday={0}
                 onLogout={jest.fn()}
                 onEditProfile={jest.fn()}
             />,
@@ -59,6 +63,7 @@ describe("ProfileHero", () => {
                 surname="Cook"
                 recipesCount={0}
                 menusCount={0}
+                kcalToday={0}
                 onLogout={jest.fn()}
                 onEditProfile={jest.fn()}
             />,
@@ -76,6 +81,7 @@ describe("ProfileHero", () => {
                 surname="Cook"
                 recipesCount={0}
                 menusCount={0}
+                kcalToday={0}
                 onLogout={jest.fn()}
                 onEditProfile={onEditProfile}
             />,
@@ -97,6 +103,7 @@ describe("ProfileHero", () => {
                 surname="Cook"
                 recipesCount={0}
                 menusCount={0}
+                kcalToday={0}
                 onLogout={onLogout}
                 onEditProfile={jest.fn()}
             />,

@@ -1,0 +1,22 @@
+@use "styles/abstracts" as *;
+
+.calorie-disclaimer {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    margin: var(--s-4) 0 0;
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid color-mix(in srgb, var(--info) 30%, var(--border));
+    border-radius: var(--r-sm);
+    background: color-mix(in srgb, var(--info) 8%, var(--surface));
+    color: var(--text-muted);
+    font:
+        400 12px Inter,
+        sans-serif;
+
+    svg {
+        flex: none;
+        margin-top: 1px;
+        color: var(--info);
+    }
+}

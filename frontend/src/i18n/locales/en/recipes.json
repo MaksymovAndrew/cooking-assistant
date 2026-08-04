@@ -21,6 +21,9 @@
         "reorderHint": "Drag handle to reorder · unit auto-filled from catalog",
         "summary_one": "{{count}} ingredient · {{hours}} hr : {{minutes}} min",
         "summary_other": "{{count}} ingredients · {{hours}} hr : {{minutes}} min",
+        "caloriesOverrideLabel": "Calories per portion",
+        "caloriesAutoHint": "Leave empty to use the calculated total: {{count}} kcal",
+        "caloriesAutoHintEmpty": "Leave empty to calculate automatically from the ingredients.",
         "discardTitle": "Discard changes?",
         "discardMessage": "You have unsaved changes. Are you sure you want to leave this page?",
         "discardConfirm": "Discard changes",
@@ -34,12 +37,14 @@
         "recipeType": "Recipe type: ",
         "cookingTime": "Cooking time: ",
         "creationDate": "Creation date: ",
-        "cookingTimeValue": "{{hours}} hr : {{minutes}} min"
+        "cookingTimeValue": "{{hours}} hr : {{minutes}} min",
+        "caloriesValue": "{{count}} kcal"
     },
     "filterPanel": {
         "title": "Filters",
         "close": "Close",
         "cookingTimeLabel": "Cooking time (min)",
+        "caloriesLabel": "Calories (kcal)",
         "min": "Min",
         "max": "Max",
         "sortLabel": "Sort by time",
@@ -61,6 +66,9 @@
         "timeChipRange": "{{min}}–{{max}} min",
         "timeChipMin": "From {{minutes}} min",
         "timeChipMax": "Up to {{minutes}} min",
+        "caloriesChipRange": "{{min}}–{{max}} kcal",
+        "caloriesChipMin": "From {{kcal}} kcal",
+        "caloriesChipMax": "Up to {{kcal}} kcal",
         "sortChip": "Sort: {{sort}}",
         "removeFilter": "Remove",
         "clearAll": "Clear all",
@@ -136,8 +144,11 @@
         "cookingTime": "Cooking time",
         "creationDate": "Creation date",
         "servings": "Portions",
-        "portionsValue_one": "{{count}} portion",
-        "portionsValue_other": "{{count}} portions",
+        "calories": "Calories",
+        "caloriesPerPortion": "{{count}} kcal / portion",
+        "caloriesTotal": "≈ {{count}} kcal total",
+        "caloriesUnavailable": "—",
+        "ingredientCalories": "{{count}} kcal",
         "favourite": "Favourite",
         "fewerPortions": "Fewer portions",
         "morePortions": "More portions",
@@ -155,8 +166,9 @@
         "error": "Error: {{message}}",
         "cookingTimeHoursMinutes": "{{hours}} hr {{minutes}} min",
         "cookingTimeMinutes": "{{minutes}} min",
-        "visitorBanner": "Viewing someone else's recipe — Edit & Delete not available",
         "yourRating": "Your rating",
-        "allergens": "Allergens"
+        "allergens": "Allergens",
+        "logIntake": "Log intake",
+        "customCaloriesNote": "The creator set a custom calorie total for this recipe, so per-ingredient calories aren't shown - only the total above applies."
     }
 }

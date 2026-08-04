@@ -18,6 +18,7 @@ const TOMATO: RecipeDetailIngredient = {
     quantity_recipe_ingredients: 2,
     unit_name: "piece",
     allergens: [],
+    calories_per_unit: null,
 };
 const ONION: RecipeDetailIngredient = {
     id: 2,
@@ -27,6 +28,7 @@ const ONION: RecipeDetailIngredient = {
     quantity_recipe_ingredients: 1,
     unit_name: "piece",
     allergens: [],
+    calories_per_unit: null,
 };
 
 const PANTRY_TOMATO: UserIngredient = {

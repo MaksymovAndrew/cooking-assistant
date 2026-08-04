@@ -5,8 +5,8 @@ import type {
     PantryRepository,
 } from "domain/repositories/PantryRepository";
 
+import { findIngredientPurchaseHistory } from "./PgPantryRepository.history";
 import {
-    findIngredientPurchaseHistory,
     findPantryByUser,
     updatePantryQuantities,
 } from "./PgPantryRepository.queries";

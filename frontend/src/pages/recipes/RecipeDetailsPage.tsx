@@ -6,17 +6,17 @@ import { Link, useParams } from "react-router-dom";
 
 import { changeRecipePath, ROUTES } from "constants/routes";
 
-import { useAppDispatch } from "redux/hooks";
 import { useGetRecipeByIdQuery } from "redux/services/recipesApi";
-import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
+import { useDeleteRecipeHandler } from "hooks/useDeleteRecipeHandler";
+import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 import { useIngredientAvailability } from "hooks/useIngredientAvailability";
-import { useServingsScaling } from "hooks/useServingsScaling";
+import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
+import { usePortionScaling } from "hooks/usePortionScaling";
 
 import { AppShell } from "components/layout/AppShell";
-import { RecipeDescriptionPanel } from "components/recipes/RecipeDescriptionPanel";
+import { RecipeDetailsSecondary } from "components/recipes/RecipeDetailsSecondary";
 import { RecipeHero } from "components/recipes/RecipeHero";
-import { RecipeIngredientsPanel } from "components/recipes/RecipeIngredientsPanel";
 import { ErrorState } from "components/ui/ErrorState";
 
 import { getRecipeAllergens } from "utils/recipeAllergens";
@@ -26,18 +26,28 @@ import styles from "./RecipeDetailsPage.module.scss";
 const RecipeDetailsPage: React.FC = () => {
     const { t } = useTranslation("recipes");
     const { id } = useParams<{ id: string }>();
-    const dispatch = useAppDispatch();
     const {
         data: recipe,
         isError,
         refetch,
     } = useGetRecipeByIdQuery(id ?? skipToken);
 
-    const servings = useServingsScaling(recipe?.servings ?? null);
+    const portions = usePortionScaling();
     const { availability, haveCount, missingCount } = useIngredientAvailability(
         recipe?.ingredients ?? [],
     );
     const allergens = getRecipeAllergens(recipe?.ingredients ?? []);
+    const handleDeleteRecipe = useDeleteRecipeHandler(recipe);
+    const handleLogIntake = useLogIntakeHandler({
+        recipeId: recipe?.id,
+        title: recipe?.title ?? "",
+        caloriesPerPortion: recipe?.calories_per_portion ?? null,
+        initialPortions: portions.count,
+    });
+    const exceedsBudget = useExceedsCalorieBudget(
+        recipe?.calories_per_portion ?? null,
+        portions.count,
+    );
 
     if (isError) {
         return (
@@ -80,48 +90,31 @@ const RecipeDetailsPage: React.FC = () => {
                     <div className={styles["recipe-details-page__hero-area"]}>
                         <RecipeHero
                             recipe={recipe}
-                            canScaleServings={servings.canScale}
-                            servingsCount={servings.current}
-                            servingsDisplay={servings.displayValue}
+                            portionCount={portions.count}
                             editTo={changeRecipePath(recipe.id)}
-                            onDelete={() => {
-                                dispatch(
-                                    openModal({
-                                        type: MODAL_TYPE.deleteRecipe,
-                                        recipeId: String(recipe.id),
-                                        recipeTitle: recipe.title,
-                                    }),
-                                );
-                            }}
+                            onDelete={handleDeleteRecipe}
+                            onLogIntake={handleLogIntake}
+                            exceedsBudget={exceedsBudget}
                         />
                     </div>
-                    <div
-                        className={
+                    <RecipeDetailsSecondary
+                        ingredientsAreaClassName={
                             styles["recipe-details-page__ingredients-area"]
                         }
-                    >
-                        <RecipeIngredientsPanel
-                            availability={availability}
-                            haveCount={haveCount}
-                            missingCount={missingCount}
-                            isOwner={recipe.isOwner}
-                            canScale={servings.canScale}
-                            servingsCount={servings.current}
-                            scaleFactor={servings.scaleFactor}
-                            onIncrement={servings.increment}
-                            onDecrement={servings.decrement}
-                        />
-                    </div>
-                    <div
-                        className={
+                        descriptionAreaClassName={
                             styles["recipe-details-page__description-area"]
                         }
-                    >
-                        <RecipeDescriptionPanel
-                            content={recipe.content}
-                            allergens={allergens}
-                        />
-                    </div>
+                        availability={availability}
+                        haveCount={haveCount}
+                        missingCount={missingCount}
+                        isOwner={recipe.isOwner}
+                        portionCount={portions.count}
+                        onIncrement={portions.increment}
+                        onDecrement={portions.decrement}
+                        hasCustomCalories={recipe.calories_override !== null}
+                        content={recipe.content}
+                        allergens={allergens}
+                    />
                 </div>
             </div>
         </AppShell>

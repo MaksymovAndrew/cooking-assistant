@@ -24,6 +24,7 @@ export const useSelectedIngredients = () => {
                     name: ingredient.name,
                     quantity: 1,
                     unit_name: ingredient.unit_name,
+                    calories_per_unit: ingredient.calories_per_unit,
                 },
             ];
         });

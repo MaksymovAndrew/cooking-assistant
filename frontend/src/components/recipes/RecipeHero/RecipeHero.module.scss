@@ -118,19 +118,40 @@
         }
     }
 
+    &__stat-secondary {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-muted);
+        font:
+            500 11px "Geist Mono",
+            monospace;
+    }
+
+    // recolors both the icon+value line and the "total for N portions" line together
+    &__stat--calorie-over {
+        .recipe-hero__stat-value {
+            color: var(--calorie-over);
+
+            svg {
+                color: var(--calorie-over);
+            }
+        }
+
+        .recipe-hero__stat-secondary {
+            color: var(--calorie-over);
+        }
+    }
+
     &__actions {
         margin-bottom: var(--s-6);
     }
 
-    &__visitor-banner {
+    &__visitor-actions {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: var(--s-4);
+        gap: var(--s-3);
         margin-bottom: var(--s-6);
-        color: var(--text-muted);
-        font:
-            500 13px Inter,
-            sans-serif;
     }
 
     &__visitor-favourite {
@@ -148,5 +169,13 @@
             600 14px Inter,
             sans-serif;
         cursor: default;
+    }
+
+    &__visitor-log-intake {
+        flex: 1;
+
+        @include respond-to(tablet) {
+            flex: none;
+        }
     }
 }

@@ -14,6 +14,7 @@ export const baseApi = createApi({
         "Menu",
         "Pantry",
         "Me",
+        "Calories",
     ],
     endpoints: () => ({}),
 });

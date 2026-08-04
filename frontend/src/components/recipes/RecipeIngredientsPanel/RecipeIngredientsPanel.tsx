@@ -1,8 +1,10 @@
 import { Check } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
+import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
 import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
 
 import { RecipeIngredientsBanner } from "./RecipeIngredientsBanner";
@@ -14,11 +16,10 @@ interface RecipeIngredientsPanelProps {
     haveCount: number;
     missingCount: number;
     isOwner: boolean;
-    canScale: boolean;
-    servingsCount: number | null;
-    scaleFactor: number;
+    portionCount: number;
     onIncrement: () => void;
     onDecrement: () => void;
+    hasCustomCalories: boolean;
 }
 
 const CHECK_ICON_SIZE = 16;
@@ -32,12 +33,12 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     haveCount,
     missingCount,
     isOwner,
-    canScale,
-    servingsCount,
-    scaleFactor,
+    portionCount,
     onIncrement,
     onDecrement,
+    hasCustomCalories,
 }) => {
+    const { t } = useTranslation("recipes");
     const sorted = [...availability].sort((a, b) =>
         resolveIngredientName(a).localeCompare(resolveIngredientName(b)),
     );
@@ -46,8 +47,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
         <div className={styles["recipe-ingredients-panel"]}>
             <RecipeIngredientsHeader
                 ingredientCount={availability.length}
-                canScale={canScale}
-                servingsCount={servingsCount}
+                portionCount={portionCount}
                 onIncrement={onIncrement}
                 onDecrement={onDecrement}
             />
@@ -96,13 +96,47 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                         >
                             {scaleQuantity(
                                 ingredient.quantity_recipe_ingredients,
-                                scaleFactor,
+                                portionCount,
                             )}{" "}
                             {resolveUnit(ingredient.unit_name)}
+                            {!hasCustomCalories &&
+                                ingredient.calories_per_unit !== null && (
+                                    <span
+                                        className={
+                                            styles[
+                                                "recipe-ingredients-panel__qty-calories"
+                                            ]
+                                        }
+                                    >
+                                        {t(
+                                            "recipeDetailsPage.ingredientCalories",
+                                            {
+                                                count: formatKcal(
+                                                    scaleCaloriesForPortions(
+                                                        ingredient.quantity_recipe_ingredients *
+                                                            ingredient.calories_per_unit,
+                                                        portionCount,
+                                                    ),
+                                                ),
+                                            },
+                                        )}
+                                    </span>
+                                )}
                         </span>
                     </li>
                 ))}
             </ul>
+
+            {hasCustomCalories && (
+                <p
+                    className={
+                        styles["recipe-ingredients-panel__custom-calories-note"]
+                    }
+                    role="note"
+                >
+                    {t("recipeDetailsPage.customCaloriesNote")}
+                </p>
+            )}
 
             {missingCount > 0 && (
                 <RecipeIngredientsBanner

@@ -1,5 +1,6 @@
 import { getErrorMessage } from "redux/middleware/notificationsListener";
 import { authApi } from "redux/services/authApi";
+import { caloriesApi } from "redux/services/caloriesApi";
 import { menusApi } from "redux/services/menusApi";
 import { recipesApi } from "redux/services/recipesApi";
 import { userIngredientsApi } from "redux/services/userIngredientsApi";
@@ -230,6 +231,23 @@ describe("notificationsListener", () => {
         expect(store.getState().notifications.items).toEqual([]);
     });
 
+    it("should not add a notification when an updateCalorieGoal request fails", async () => {
+        mockedPut.mockRejectedValue({
+            isAxiosError: true,
+            response: { status: 400, data: { error: "Invalid" } },
+            message: REQUEST_FAILED_MESSAGE,
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            caloriesApi.endpoints.updateCalorieGoal.initiate({
+                calorie_goal: 2200,
+            }),
+        );
+
+        expect(store.getState().notifications.items).toEqual([]);
+    });
+
     it("should add a success notification when logout succeeds", async () => {
         mockedPost.mockResolvedValue({ data: null });
         const store = makeTestStore();
@@ -349,6 +367,54 @@ describe("notificationsListener success toasts", () => {
         expect(items[0]).toMatchObject({
             type: "success",
             message: "Ingredient deleted",
+        });
+    });
+
+    it("should add a success notification when a calorie intake entry is deleted", async () => {
+        mockedDelete.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            caloriesApi.endpoints.deleteCalorieIntake.initiate(9),
+        );
+
+        const { items } = store.getState().notifications;
+
+        expect(items).toHaveLength(1);
+        expect(items[0]).toMatchObject({
+            type: "success",
+            message: "Entry deleted",
+        });
+    });
+
+    it("should add a success notification when intake is logged", async () => {
+        mockedPost.mockResolvedValue({
+            data: {
+                id: 1,
+                person_id: 1,
+                recipe_id: 7,
+                menu_id: null,
+                title: "Chicken teriyaki don",
+                portions: 1,
+                calories: 620,
+                eaten_at: new Date().toISOString(),
+            },
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            caloriesApi.endpoints.logCalorieIntake.initiate({
+                recipe_id: 7,
+                portions: 1,
+            }),
+        );
+
+        const { items } = store.getState().notifications;
+
+        expect(items).toHaveLength(1);
+        expect(items[0]).toMatchObject({
+            type: "success",
+            message: "Logged to today's intake",
         });
     });
 

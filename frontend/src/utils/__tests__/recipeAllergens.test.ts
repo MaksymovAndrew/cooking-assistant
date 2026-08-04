@@ -13,6 +13,7 @@ const ingredient = (
     quantity_recipe_ingredients: 1,
     unit_name: "piece",
     allergens,
+    calories_per_unit: null,
 });
 
 describe("getRecipeAllergens", () => {

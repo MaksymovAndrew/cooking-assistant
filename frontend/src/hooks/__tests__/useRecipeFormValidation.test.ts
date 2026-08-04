@@ -20,7 +20,14 @@ const VALID_CREATE = {
     title: "Borscht",
     content: "Boil beets.",
     selectedIngredients: [
-        { id: 1, slug: "beet", name: "Beet", quantity: 1, unit_name: "kg" },
+        {
+            id: 1,
+            slug: "beet",
+            name: "Beet",
+            quantity: 1,
+            unit_name: "kg",
+            calories_per_unit: null,
+        },
     ],
     selectedTypeId: 2,
     cookingHours: "1",

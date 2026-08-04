@@ -41,7 +41,7 @@ async function runRecipeSearch(
     pool: Pool,
     builder: SqlFilterBuilder,
     filters: RecipeFilters,
-    userId: number,
+    userId: number | null,
 ): Promise<PaginatedResult<RecipeSearchRow>> {
     for (const clause of RECIPE_FILTER_CLAUSES) {
         if (clause.applies(filters)) {
@@ -70,7 +70,7 @@ async function runRecipeSearch(
 
 export async function searchRecipes(
     pool: Pool,
-    userId: number,
+    userId: number | null,
     filters: RecipeFilters,
 ): Promise<PaginatedResult<RecipeSearchRow>> {
     return runRecipeSearch(pool, new SqlFilterBuilder(), filters, userId);

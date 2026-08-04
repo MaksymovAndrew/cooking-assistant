@@ -20,6 +20,11 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Backend
+
+- Added: Browsing recipes and menus, and their reference data (ingredients, recipe types, menu categories), no longer requires being logged in.
+- Changed: API responses are now compressed, making pages that load a lot of data noticeably faster.
+
 ## 4.0 - 2026-08-04
 
 ### Backend

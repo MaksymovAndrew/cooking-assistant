@@ -120,6 +120,28 @@ describe("PgMenuRepository (real Postgres)", () => {
         expect(asOtherViewer.menu.title).toBe("Shared plan");
     });
 
+    it("should report isOwner false and skip the missing-ingredients query for an anonymous (null) requester", async () => {
+        const { recipeId } = await createOwnedRecipe(5);
+        const menu = Menu.forCreation({
+            menuTitle: "Guest-visible plan",
+            menuContent: "Notes.",
+            categoryId,
+            personId: ownerId,
+            recipeIds: [recipeId],
+        });
+        const menuId = (await menuRepository.create(menu, [
+            recipeId,
+        ])) as number;
+
+        const asGuest = (await menuRepository.findByIdWithRecipes(
+            menuId,
+            null,
+        )) as MenuDetail;
+
+        expect(asGuest.menu.isOwner).toBe(false);
+        expect(asGuest.recipes[0].missingIngredients).toEqual([]);
+    });
+
     it("should compute missing ingredients against the viewer's own pantry, floored at zero", async () => {
         const { recipeId, ingredientId } = await createOwnedRecipe(5);
         const viewerId = await createPerson(pool);

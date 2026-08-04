@@ -138,7 +138,7 @@ export default class PgMenuRepository implements MenuRepository {
 
     async findByIdWithRecipes(
         id: string | number,
-        personId: number,
+        personId: number | null,
     ): Promise<unknown> {
         return findMenuByIdWithRecipes(this.pool, id, personId);
     }

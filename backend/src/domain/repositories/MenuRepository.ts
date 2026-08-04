@@ -11,7 +11,7 @@ export interface MenuRepository {
     create(menu: Menu, recipeIds: number[]): Promise<unknown>;
     findByIdWithRecipes(
         id: string | number,
-        personId: number,
+        personId: number | null,
     ): Promise<unknown>;
     update(
         id: string | number,

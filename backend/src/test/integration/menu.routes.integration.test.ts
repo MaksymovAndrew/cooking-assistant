@@ -10,6 +10,7 @@ import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const MENU_TITLE = "Weekly menu";
 const MENU_9_PATH = "/api/menu/9";
+const CREATE_MENU_PATH = "/api/create-menu";
 
 const MENU_ROW_EXTRAS = {
     categoryName: "Dinner",
@@ -28,13 +29,37 @@ function makeMenuBody() {
 }
 
 describe("menu routes", () => {
-    it("should return 401 without a token", async () => {
-        const { app } = buildTestApp();
+    it("should return menus for an anonymous request", async () => {
+        const { app, deps } = buildTestApp();
+        const paginated = {
+            items: [{ id: 9, title: MENU_TITLE, ...MENU_ROW_EXTRAS }],
+            total: 1,
+        };
 
-        const res = await request(app).get("/api/menu");
+        deps.menuRepository.findAll.mockResolvedValue(paginated);
 
-        expect(res.status).toBe(401);
+        const res = await request(app).get("/api/menu?menu_name=Weekly");
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(paginated);
     });
+
+    it.each([
+        ["get", "/api/menus"],
+        ["post", CREATE_MENU_PATH],
+        ["put", MENU_9_PATH],
+        ["delete", MENU_9_PATH],
+        ["get", "/api/menu-filters-person"],
+    ] as const)(
+        "should return 401 without a token for %s %s",
+        async (method, path) => {
+            const { app } = buildTestApp();
+
+            const res = await request(app)[method](path);
+
+            expect(res.status).toBe(401);
+        },
+    );
 
     it("should return menus", async () => {
         const { app, deps } = buildTestApp();
@@ -108,7 +133,7 @@ describe("menu routes", () => {
         deps.menuRepository.create.mockResolvedValue(9);
 
         const res = await request(app)
-            .post("/api/create-menu")
+            .post(CREATE_MENU_PATH)
             .set("Cookie", authCookie(7))
             .send(makeMenuBody());
 
@@ -132,7 +157,7 @@ describe("menu routes", () => {
         deps.recipeRepository.findExistingIds.mockResolvedValue([3]);
 
         const res = await request(app)
-            .post("/api/create-menu")
+            .post(CREATE_MENU_PATH)
             .set("Cookie", authCookie(7))
             .send(makeMenuBody());
 
@@ -189,6 +214,26 @@ describe("menu routes", () => {
         expect(deps.menuRepository.findByIdWithRecipes).toHaveBeenCalledWith(
             9,
             7,
+        );
+    });
+
+    it("should return menu details with isOwner:false and no missing-ingredients query for an anonymous request", async () => {
+        const { app, deps } = buildTestApp();
+        const menu = {
+            menu: { id: 9, isOwner: false },
+            recipes: [],
+            allergens: [],
+        };
+
+        deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
+
+        const res = await request(app).get(MENU_9_PATH);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(menu);
+        expect(deps.menuRepository.findByIdWithRecipes).toHaveBeenCalledWith(
+            9,
+            null,
         );
     });
 

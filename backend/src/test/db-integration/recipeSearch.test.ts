@@ -523,4 +523,21 @@ describe("PgRecipeRepository search (real Postgres)", () => {
             expect.objectContaining({ id: ownRecipeId }),
         ]);
     });
+
+    it("should search recipes for an anonymous (null) requester without in_pantry", async () => {
+        const ingredient = await createNamedIngredient();
+        const recipeId = await createRecipeWithIngredients(
+            "Anonymous search fixture",
+            [ingredient.id],
+            10,
+        );
+
+        const result = await repository.search(null, {
+            ingredient_ids: String(ingredient.id),
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: recipeId }),
+        ]);
+    });
 });

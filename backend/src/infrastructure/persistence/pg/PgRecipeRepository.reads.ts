@@ -35,11 +35,11 @@ export async function findAllRecipes(pool: Pool): Promise<unknown[]> {
 export async function findRecipeByIdWithIngredients(
     pool: Pool,
     recipeId: string | number,
-    currentUserId: number,
+    currentUserId: number | null,
 ): Promise<unknown> {
     const result = await pool.query<RecipeDetailRow>(
         `SELECT r.*,
-                  (r.person_id = $2) AS "isOwner",
+                  COALESCE(r.person_id = $2, false) AS "isOwner",
                   COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                   json_agg(
                       json_build_object(

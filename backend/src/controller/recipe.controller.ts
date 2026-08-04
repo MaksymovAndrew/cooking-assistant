@@ -11,7 +11,7 @@ import type SearchPersonRecipes from "application/use-cases/recipes/SearchPerson
 import type SearchRecipes from "application/use-cases/recipes/SearchRecipes";
 import type UpdateRecipe from "application/use-cases/recipes/UpdateRecipe";
 
-import { getUserId } from "./requestUser";
+import { getOptionalUserId, getUserId } from "./requestUser";
 
 interface RecipeControllerDependencies {
     createRecipe: CreateRecipe;
@@ -77,7 +77,7 @@ export default class RecipeController {
     ) => {
         const recipe = await this.getRecipeByIdUseCase.execute(
             req.params.id,
-            getUserId(req),
+            getOptionalUserId(req),
         );
 
         res.json(recipe);
@@ -97,7 +97,7 @@ export default class RecipeController {
 
     searchRecipes: RequestHandler = async (req, res) => {
         const recipes = await this.searchRecipesUseCase.execute(
-            getUserId(req),
+            getOptionalUserId(req),
             req.query,
         );
 

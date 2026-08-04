@@ -12,7 +12,7 @@ export default class GetMenuById {
 
     async execute(
         id: string | number | null,
-        personId: number,
+        personId: number | null,
     ): Promise<unknown> {
         const menuId = validate(idSchema, id);
         const menu = await this.menuRepository.findByIdWithRecipes(

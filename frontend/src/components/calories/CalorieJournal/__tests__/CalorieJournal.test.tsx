@@ -24,7 +24,7 @@ const ENTRY: CalorieIntakeItem = {
 
 describe("CalorieJournal", () => {
     it("should show the empty state when there are no entries", () => {
-        renderWithRouter(<CalorieJournal entries={[]} mealLimit={null} />);
+        renderWithRouter(<CalorieJournal entries={[]} />);
 
         expect(
             screen.getByText("You haven't logged anything today."),
@@ -35,7 +35,6 @@ describe("CalorieJournal", () => {
         renderWithRouter(
             <CalorieJournal
                 entries={[ENTRY, { ...ENTRY, id: 2, portions: 2 }]}
-                mealLimit={null}
             />,
         );
 
@@ -45,15 +44,9 @@ describe("CalorieJournal", () => {
         expect(screen.getByText("2 entries · 1,240 kcal")).toBeInTheDocument();
     });
 
-    it("should flag an entry that exceeds the per-meal limit", () => {
-        renderWithRouter(<CalorieJournal entries={[ENTRY]} mealLimit={500} />);
-
-        expect(screen.getByText(/over per-meal limit/)).toBeInTheDocument();
-    });
-
     it("should open the delete-confirmation modal when the trash button is clicked", async () => {
         const { store } = renderWithRouter(
-            <CalorieJournal entries={[ENTRY]} mealLimit={null} />,
+            <CalorieJournal entries={[ENTRY]} />,
         );
 
         await userEvent.click(

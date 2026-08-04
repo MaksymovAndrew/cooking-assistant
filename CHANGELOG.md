@@ -20,11 +20,15 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.0 - 2026-08-04
+
 ### Backend
 
 - Added: Ingredients now carry a calorie value, and every recipe automatically totals its calories from its ingredients - you can also set your own value by hand instead of the automatic total.
-- Added: You can set a personal daily calorie goal and an optional per-meal limit, and log what you've eaten from a recipe or menu to track it against that goal.
+- Added: You can set a personal daily calorie goal, and log what you've eaten from a recipe or menu to track it against that goal.
 - Removed: The "servings" field on recipes, which never held a real value.
+- Added: Filter recipes by a calorie range.
+- Fixed: A menu's total calories now correctly show as unavailable, instead of a silently undercounted number, when one of its recipes has no calorie data.
 
 ### Frontend
 
@@ -33,18 +37,25 @@ changelogs and the tags and now track everything here against one shared version
 - Added: A note reminding you that calorie values are estimates and you're responsible for checking accuracy.
 - Changed: The old "portions" field on the recipe page has been replaced by a live calorie count.
 - Changed: Recipe cards now show cooking time and calories instead of cooking time and creation date.
-- Added: A new "Dietary" tab on your profile - set a daily calorie goal and an optional per-meal limit, see today's progress on a colour-coded ring (on track / close to your goal / over goal), review and delete today's logged entries, and browse a 7- or 30-day history chart with a streak counter for days you stayed on target.
+- Added: A new "Dietary" tab on your profile - set a daily calorie goal, see today's progress on a colour-coded ring (on track / close to your goal / over goal), review and delete today's logged entries, and browse a 7- or 30-day history chart with a streak counter for days you stayed on target.
 - Added: A 5th "Kcal today" tile on the home dashboard shows today's progress at a glance and warns when you're close to or over your goal; crossing your goal also shows a one-time reminder for the day.
 - Added: Your profile header now shows how many calories you've logged today.
 - Fixed: Saving your profile no longer briefly flashes the page and resets you to the "My recipes" tab.
-- Changed: Calorie numbers throughout the app now show thousands separators (e.g. "1,180 kcal").
-- Added: A "Log intake" button on recipe and menu pages - log what you ate (with a portions stepper and a live running total) straight against today's goal, with a warning if it would put you over your per-meal limit.
+- Changed: Calorie numbers throughout the app now show thousands separators (e.g. "1,180 kcal"), including the "Kcal today" number on your profile.
+- Added: A "Log intake" button on recipe and menu pages - log what you ate (with a portions stepper and a live running total) straight against today's goal, showing how much you've eaten today and how much is left, with a warning if it would put you over.
+- Fixed: Logging intake from a recipe page now starts from however many portions you already had selected there, instead of always resetting to one.
 - Changed: If a recipe's calories were set by hand, the ingredient list no longer shows a per-ingredient calorie breakdown that could conflict with that total - just a note that the total above is the one that counts.
 - Changed: Cleaned up the recipe and menu pages - Favourite, Log intake, Edit and Delete now sit together in one row, and the "Viewing someone else's..." message was removed since it's no longer needed.
 - Added: Menu pages now show total calories alongside cooking time and recipe count.
 - Fixed: The calorie history chart (7/30 days) no longer looks squeezed or broken on smaller screens - it now scrolls smoothly with a visible drag handle when there isn't room to show every day at once.
+- Changed: Your best streak in the history chart no longer counts today until the day is over, matching how the current streak already works - a still-in-progress day can no longer briefly claim a "best" it hasn't earned yet.
 - Changed: Scrollbars across the app now have a subtle, polished look instead of being invisible.
 - Changed: The calorie-estimate disclaimer on the Dietary tab now sits at the top of the page, above the goal and history cards, so you see it first.
+- Fixed: Calorie totals and the history chart now roll over to the new day correctly if you leave a tab open across midnight, instead of staying stuck on the previous day until you reload.
+- Added: Filter recipes by a calorie range, and recipes or menus that would put you over your remaining calories for today are highlighted in orange, on cards and on their own detail page.
+- Fixed: The "you're over today's goal" reminder now reliably appears once per day instead of sometimes reappearing after restarting the app.
+- Fixed: Saving your calorie goal no longer occasionally shows a duplicate error message.
+- Fixed: A brief network hiccup while you're logged in no longer knocks you to an error screen.
 
 ## 3.9 - 2026-07-30
 

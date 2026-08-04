@@ -14,6 +14,7 @@ interface MenuHeroStatsProps {
     recipeCount: number;
     formattedCalories: string | null;
     isOwner: boolean;
+    exceedsBudget?: boolean;
 }
 
 const STAT_ICON_SIZE = 16;
@@ -23,8 +24,24 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
     recipeCount,
     formattedCalories,
     isOwner,
+    exceedsBudget = false,
 }) => {
     const { t } = useTranslation("menu");
+    const caloriesOverTooltip = exceedsBudget
+        ? t("common:contentCard.overBudgetTooltip")
+        : undefined;
+    const caloriesStatClassName = [
+        styles["menu-hero__stat"],
+        exceedsBudget && styles["menu-hero__stat--calorie-over"],
+    ]
+        .filter(Boolean)
+        .join(" ");
+    const caloriesMobileClassName = [
+        styles["menu-hero__mobile-meta-item"],
+        exceedsBudget && styles["menu-hero__mobile-meta-item--calorie-over"],
+    ]
+        .filter(Boolean)
+        .join(" ");
 
     return (
         <>
@@ -64,7 +81,10 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
                     </span>
                 </div>
                 {formattedCalories !== null && (
-                    <div className={styles["menu-hero__stat"]}>
+                    <div
+                        className={caloriesStatClassName}
+                        title={caloriesOverTooltip}
+                    >
                         <span className={styles["menu-hero__stat-label"]}>
                             {t("menuDetailsPage.calories")}
                         </span>
@@ -88,7 +108,10 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
                     })}
                 </span>
                 {formattedCalories !== null && (
-                    <span className={styles["menu-hero__mobile-meta-item"]}>
+                    <span
+                        className={caloriesMobileClassName}
+                        title={caloriesOverTooltip}
+                    >
                         <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
                         {formattedCalories}
                     </span>

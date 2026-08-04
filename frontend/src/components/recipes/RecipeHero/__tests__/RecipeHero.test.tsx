@@ -8,6 +8,8 @@ import { RecipeHero } from "components/recipes/RecipeHero";
 import { renderWithRouter } from "test/router";
 
 const LOG_INTAKE_BUTTON = "Log intake";
+const CALORIES_PER_PORTION_LABEL = "420 kcal / portion";
+const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 
 const BASE_RECIPE: RecipeDetails = {
     id: 1,
@@ -44,7 +46,9 @@ describe("RecipeHero", () => {
     it("should show calories per portion", () => {
         renderWithRouter(<RecipeHero {...baseProps} />);
 
-        expect(screen.getByText("420 kcal / portion")).toBeInTheDocument();
+        expect(
+            screen.getByText(CALORIES_PER_PORTION_LABEL),
+        ).toBeInTheDocument();
     });
 
     it("should show a total for multiple portions", () => {
@@ -68,6 +72,22 @@ describe("RecipeHero", () => {
         );
 
         expect(screen.getByText("—")).toBeInTheDocument();
+    });
+
+    it("should recolor the calories stat when exceedsBudget is true", () => {
+        renderWithRouter(<RecipeHero {...baseProps} exceedsBudget />);
+
+        expect(screen.getByTitle(OVER_BUDGET_TOOLTIP)).toHaveClass(
+            "recipe-hero__stat--calorie-over",
+        );
+    });
+
+    it("should not recolor the calories stat by default", () => {
+        renderWithRouter(<RecipeHero {...baseProps} />);
+
+        expect(
+            screen.queryByTitle(OVER_BUDGET_TOOLTIP),
+        ).not.toBeInTheDocument();
     });
 
     it("should show just the Favourite button and no explanatory text for a visitor", () => {

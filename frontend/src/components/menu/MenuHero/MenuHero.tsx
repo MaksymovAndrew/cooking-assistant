@@ -23,6 +23,7 @@ interface MenuHeroProps {
     editTo: string;
     onDelete: () => void;
     onLogIntake?: () => void;
+    exceedsBudget?: boolean;
 }
 
 const FAVOURITE_ICON_SIZE = 17;
@@ -37,6 +38,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
     editTo,
     onDelete,
     onLogIntake,
+    exceedsBudget = false,
 }) => {
     const { t } = useTranslation("menu");
     const favouriteLabel = t("menuDetailsPage.favourite");
@@ -119,6 +121,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                 recipeCount={recipeCount}
                 formattedCalories={formattedCalories}
                 isOwner={menu.isOwner}
+                exceedsBudget={exceedsBudget}
             />
 
             {menu.isOwner && onLogIntake && (

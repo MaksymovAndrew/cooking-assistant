@@ -55,6 +55,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
             types: [],
             ingredients: [],
             cookingTime: { min: "", max: "" },
+            calories: { min: "", max: "" },
             sort: null,
             inPantry: false,
         });

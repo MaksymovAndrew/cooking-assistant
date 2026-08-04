@@ -6,6 +6,7 @@ import { EditMark } from "components/icons";
 import { Avatar } from "components/ui/Avatar";
 import { Button } from "components/ui/Button";
 
+import { formatKcal } from "utils/calories";
 import { formatJoinedDate } from "utils/dateUtils";
 import { getInitials } from "utils/getInitials";
 
@@ -96,7 +97,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
                 </div>
                 <div className={styles["profile-hero__stat"]}>
                     <span className={styles["profile-hero__stat-value"]}>
-                        {kcalToday}
+                        {formatKcal(kcalToday)}
                     </span>
                     <span className={styles["profile-hero__stat-label"]}>
                         {t("profilePage.kcalTodayStat")}

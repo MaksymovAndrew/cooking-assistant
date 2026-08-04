@@ -231,6 +231,23 @@ describe("notificationsListener", () => {
         expect(store.getState().notifications.items).toEqual([]);
     });
 
+    it("should not add a notification when an updateCalorieGoal request fails", async () => {
+        mockedPut.mockRejectedValue({
+            isAxiosError: true,
+            response: { status: 400, data: { error: "Invalid" } },
+            message: REQUEST_FAILED_MESSAGE,
+        });
+        const store = makeTestStore();
+
+        await store.dispatch(
+            caloriesApi.endpoints.updateCalorieGoal.initiate({
+                calorie_goal: 2200,
+            }),
+        );
+
+        expect(store.getState().notifications.items).toEqual([]);
+    });
+
     it("should add a success notification when logout succeeds", async () => {
         mockedPost.mockResolvedValue({ data: null });
         const store = makeTestStore();

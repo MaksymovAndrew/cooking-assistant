@@ -8,6 +8,8 @@ import { MenuHero } from "components/menu/MenuHero";
 import { renderWithRouter } from "test/router";
 
 const LOG_INTAKE_BUTTON = "Log intake";
+const CALORIES_LABEL = "620 kcal";
+const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 
 const BASE_MENU: MenuDetails["menu"] = {
     id: 1,
@@ -52,7 +54,29 @@ describe("MenuHero", () => {
     it("should show the total calories stat when the menu has calorie data", () => {
         renderWithRouter(<MenuHero {...baseProps} caloriesPerPortion={620} />);
 
-        expect(screen.getAllByText("620 kcal")).toHaveLength(2);
+        expect(screen.getAllByText(CALORIES_LABEL)).toHaveLength(2);
+    });
+
+    it("should recolor both calorie stats when exceedsBudget is true", () => {
+        renderWithRouter(
+            <MenuHero {...baseProps} caloriesPerPortion={620} exceedsBudget />,
+        );
+
+        const [tabletStat, mobileStat] =
+            screen.getAllByTitle(OVER_BUDGET_TOOLTIP);
+
+        expect(tabletStat).toHaveClass("menu-hero__stat--calorie-over");
+        expect(mobileStat).toHaveClass(
+            "menu-hero__mobile-meta-item--calorie-over",
+        );
+    });
+
+    it("should not recolor the calorie stats by default", () => {
+        renderWithRouter(<MenuHero {...baseProps} caloriesPerPortion={620} />);
+
+        expect(
+            screen.queryByTitle(OVER_BUDGET_TOOLTIP),
+        ).not.toBeInTheDocument();
     });
 
     it("should not show a calories stat when the menu has no calorie data", () => {

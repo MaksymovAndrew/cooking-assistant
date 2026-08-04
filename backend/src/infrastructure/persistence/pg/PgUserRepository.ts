@@ -14,7 +14,7 @@ import { uniqueViolationError } from "./PgUserRepository.errors";
 
 const PUBLIC_USER_COLUMNS =
     "id, name, surname, login, created_at, email, email_verified_at, avatar, " +
-    "calorie_goal, meal_calorie_limit";
+    "calorie_goal";
 
 export default class PgUserRepository implements UserRepository {
     constructor(private pool: Pool) {}

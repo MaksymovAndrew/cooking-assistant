@@ -9,6 +9,8 @@ import { useGetMeQuery } from "redux/services/authApi";
 import { useGetCalorieIntakeQuery } from "redux/services/caloriesApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
+import { useTodayDateKey } from "hooks/useTodayDateKey";
+
 import { getTodayRange } from "utils/calorieDateRange";
 import {
     hasShownCalorieLimitNotice,
@@ -16,28 +18,32 @@ import {
 } from "utils/calorieLimitNoticeStorage";
 import { computeCalorieSummary } from "utils/computeCalorieSummary";
 
-// one-shot per tab session: opens the shared modal the first time today's intake crosses the goal
+// once per (user, calendar day): opens the shared modal the first time today's intake crosses
+// the goal, persisted in localStorage so it survives reloads/restarts, not just this tab session
 export const useCalorieLimitNotice = (): void => {
     const dispatch = useAppDispatch();
     const isChecking = useAppSelector(selectIsChecking);
     const isAuthed = useAppSelector(selectIsAuthed);
     const skip = isChecking || !isAuthed;
     const { data: currentUser } = useGetMeQuery(null, { skip });
-    const range = useMemo(() => getTodayRange(), []);
+    const todayKey = useTodayDateKey();
+    const range = useMemo(() => getTodayRange(todayKey), [todayKey]);
     const { data: entries = [] } = useGetCalorieIntakeQuery(range, { skip });
     const goal = currentUser?.calorie_goal ?? null;
     const summary = computeCalorieSummary(entries, goal);
-    const hasFired = useRef(false);
+    // stores the day it last fired for, not just a boolean - so a tab left open across midnight
+    // re-arms for the new day instead of staying silenced by yesterday's firing
+    const firedForDay = useRef<string | null>(null);
 
     useEffect(() => {
-        const notReady = skip || goal === null;
+        const notReady = skip || !currentUser || goal === null;
 
-        if (notReady || hasFired.current) {
+        if (notReady || firedForDay.current === todayKey) {
             return;
         }
 
-        if (hasShownCalorieLimitNotice()) {
-            hasFired.current = true;
+        if (hasShownCalorieLimitNotice(currentUser.id, todayKey)) {
+            firedForDay.current = todayKey;
 
             return;
         }
@@ -46,8 +52,8 @@ export const useCalorieLimitNotice = (): void => {
             return;
         }
 
-        hasFired.current = true;
-        markCalorieLimitNoticeShown();
+        firedForDay.current = todayKey;
+        markCalorieLimitNoticeShown(currentUser.id, todayKey);
         dispatch(
             openModal({
                 type: MODAL_TYPE.calorieLimit,
@@ -55,5 +61,13 @@ export const useCalorieLimitNotice = (): void => {
                 goal,
             }),
         );
-    }, [skip, goal, summary.isOverLimit, summary.consumed, dispatch]);
+    }, [
+        skip,
+        currentUser,
+        goal,
+        todayKey,
+        summary.isOverLimit,
+        summary.consumed,
+        dispatch,
+    ]);
 };

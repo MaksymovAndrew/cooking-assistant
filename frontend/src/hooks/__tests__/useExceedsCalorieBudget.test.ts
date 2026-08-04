@@ -5,7 +5,7 @@ import { API_ROUTES } from "api/endpoints";
 import { authApi } from "redux/services/authApi";
 import { caloriesApi } from "redux/services/caloriesApi";
 
-import { useCalorieBudget } from "hooks/useCalorieBudget";
+import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 
 import { getTodayRange } from "utils/calorieDateRange";
 
@@ -38,9 +38,13 @@ afterEach(() => {
     jest.useRealTimers();
 });
 
-const setup = async (user: CurrentUser, entries: { calories: number }[]) => {
+const setup = async (
+    caloriesPerPortion: number | null,
+    portionCount: number | undefined,
+    entries: { calories: number }[],
+) => {
     mockGetByUrl({
-        [API_ROUTES.auth.me]: user,
+        [API_ROUTES.auth.me]: CURRENT_USER,
         [API_ROUTES.calories.intake]: entries,
     });
 
@@ -52,25 +56,29 @@ const setup = async (user: CurrentUser, entries: { calories: number }[]) => {
         store.dispatch(caloriesApi.endpoints.getCalorieIntake.initiate(range)),
     ]);
 
-    return renderHookWithStore(() => useCalorieBudget(), store).result;
+    return renderHookWithStore(
+        () => useExceedsCalorieBudget(caloriesPerPortion, portionCount),
+        store,
+    ).result;
 };
 
-describe("useCalorieBudget", () => {
-    it("should compute consumed and remaining against the user's daily goal", async () => {
-        const result = await setup(CURRENT_USER, [{ calories: 300 }]);
+describe("useExceedsCalorieBudget", () => {
+    it("should be true when the scaled total exceeds what's left today", async () => {
+        // 300/portion * 2 portions = 600, only 500 left of a 2000 goal after 1500 consumed
+        const result = await setup(300, 2, [{ calories: 1500 }]);
 
-        expect(result.current.consumed).toBe(300);
-        expect(result.current.goal).toBe(2000);
-        expect(result.current.remaining).toBe(1700);
+        expect(result.current).toBe(true);
     });
 
-    it("should report null goal-relative fields when the user has no goal", async () => {
-        const result = await setup({ ...CURRENT_USER, calorie_goal: null }, [
-            { calories: 300 },
-        ]);
+    it("should be false when the scaled total fits within what's left today", async () => {
+        const result = await setup(200, 2, [{ calories: 1500 }]);
 
-        expect(result.current.consumed).toBe(300);
-        expect(result.current.goal).toBeNull();
-        expect(result.current.remaining).toBeNull();
+        expect(result.current).toBe(false);
+    });
+
+    it("should default the portion count to 1 when not given", async () => {
+        const result = await setup(600, undefined, [{ calories: 1500 }]);
+
+        expect(result.current).toBe(true);
     });
 });

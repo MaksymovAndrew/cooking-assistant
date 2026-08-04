@@ -18,24 +18,21 @@ describe("UpdateCalorieGoal", () => {
         const error = await catchError(
             useCase.execute(7, {
                 calorie_goal: -5,
-                meal_calorie_limit: null,
             }),
         );
 
         expect(error).toBeInstanceOf(ValidationError);
     });
 
-    it("should update the goal with the validated values", async () => {
+    it("should update the goal with the validated value", async () => {
         const { useCase, calorieRepository } = setup();
 
         await useCase.execute(7, {
             calorie_goal: 2000,
-            meal_calorie_limit: 800,
         });
 
         expect(calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
             calorie_goal: 2000,
-            meal_calorie_limit: 800,
         });
     });
 
@@ -44,12 +41,10 @@ describe("UpdateCalorieGoal", () => {
 
         await useCase.execute(7, {
             calorie_goal: null,
-            meal_calorie_limit: null,
         });
 
         expect(calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
             calorie_goal: null,
-            meal_calorie_limit: null,
         });
     });
 });

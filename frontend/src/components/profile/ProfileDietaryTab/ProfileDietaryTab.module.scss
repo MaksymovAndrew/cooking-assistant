@@ -67,9 +67,9 @@
         grid-template-columns: 1fr;
         gap: var(--s-4);
 
-        @include respond-to(tablet) {
-            grid-template-columns: 1fr 1fr;
-        }
+        // a single field (daily goal) - no side-by-side layout needed since the per-meal limit
+        // field was retired in favor of this one goal
+        max-width: 280px;
     }
 
     &__form-footer {

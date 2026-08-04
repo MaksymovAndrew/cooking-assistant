@@ -40,6 +40,8 @@ export const isSelfHandledRejection = isAnyOf(
     authApi.endpoints.updateProfile.matchRejected,
     // confirmEmail's page renders its own rich success/failure state - a toast would be redundant
     authApi.endpoints.confirmEmail.matchRejected,
+    // useCalorieGoalForm already renders its own inline error, same as updateProfile above
+    caloriesApi.endpoints.updateCalorieGoal.matchRejected,
 );
 
 export const notificationsListener = createListenerMiddleware();

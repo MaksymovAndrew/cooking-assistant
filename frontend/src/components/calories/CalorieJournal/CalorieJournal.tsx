@@ -15,16 +15,12 @@ import styles from "./CalorieJournal.module.scss";
 
 interface CalorieJournalProps {
     entries: CalorieIntakeItem[];
-    mealLimit: number | null;
 }
 
 const TRASH_ICON_SIZE = 15;
 const UTENSILS_ICON_SIZE = 16;
 
-export const CalorieJournal: React.FC<CalorieJournalProps> = ({
-    entries,
-    mealLimit,
-}) => {
+export const CalorieJournal: React.FC<CalorieJournalProps> = ({ entries }) => {
     const { t } = useTranslation("calories");
     const dispatch = useAppDispatch();
     const total = entries.reduce((sum, entry) => sum + entry.calories, 0);
@@ -60,12 +56,7 @@ export const CalorieJournal: React.FC<CalorieJournalProps> = ({
             ) : (
                 <ul className={styles["calorie-journal__list"]}>
                     {entries.map((entry) => {
-                        const isOverMealLimit =
-                            mealLimit !== null && entry.calories > mealLimit;
                         const time = formatRelativeTime(entry.eaten_at);
-                        const timeLabel = isOverMealLimit
-                            ? `${time} · ${t("dietaryTab.overMealLimitSuffix")}`
-                            : time;
 
                         return (
                             <li
@@ -94,17 +85,11 @@ export const CalorieJournal: React.FC<CalorieJournalProps> = ({
                                             : entry.title}
                                     </span>
                                     <span
-                                        className={[
-                                            styles["calorie-journal__time"],
-                                            isOverMealLimit &&
-                                                styles[
-                                                    "calorie-journal__time--warning"
-                                                ],
-                                        ]
-                                            .filter(Boolean)
-                                            .join(" ")}
+                                        className={
+                                            styles["calorie-journal__time"]
+                                        }
                                     >
-                                        {timeLabel}
+                                        {time}
                                     </span>
                                 </span>
                                 <span

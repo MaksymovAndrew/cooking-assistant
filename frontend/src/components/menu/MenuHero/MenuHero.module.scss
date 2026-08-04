@@ -156,6 +156,16 @@
         font-size: 12px;
     }
 
+    &__stat--calorie-over {
+        .menu-hero__stat-value {
+            color: var(--calorie-over);
+
+            svg {
+                color: var(--calorie-over);
+            }
+        }
+    }
+
     &__mobile-meta {
         display: flex;
         gap: var(--s-5);
@@ -177,6 +187,14 @@
 
         svg {
             color: var(--brand);
+        }
+    }
+
+    &__mobile-meta-item--calorie-over {
+        color: var(--calorie-over);
+
+        svg {
+            color: var(--calorie-over);
         }
     }
 

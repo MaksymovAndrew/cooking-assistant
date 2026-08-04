@@ -118,6 +118,40 @@ describe("PgCalorieRepository (real Postgres)", () => {
         expect(found).toEqual({ title: "Weekend menu", calories: 70 });
     });
 
+    it("should return calories null for a menu where one recipe's calories are unknown", async () => {
+        const knownRecipeId = await createRecipeWithCalories(10, 2);
+        const unknownIngredientId = await createIngredient(pool, unitId);
+        const unknownRecipe = Recipe.forCreation({
+            title: "Mystery dish",
+            content: "No calorie data on this ingredient.",
+            person_id: personId,
+            ingredients: [
+                {
+                    id: unknownIngredientId,
+                    quantity_recipe_ingredients: 1,
+                },
+            ],
+        });
+        const { id: unknownRecipeId } = (await recipeRepository.create(
+            unknownRecipe,
+        )) as { id: number };
+        const menu = Menu.forCreation({
+            menuTitle: "Mixed menu",
+            menuContent: "Notes.",
+            categoryId,
+            personId,
+            recipeIds: [knownRecipeId, unknownRecipeId],
+        });
+        const menuId = (await menuRepository.create(menu, [
+            knownRecipeId,
+            unknownRecipeId,
+        ])) as number;
+
+        const found = await repository.findMenuCalories(menuId);
+
+        expect(found).toEqual({ title: "Mixed menu", calories: null });
+    });
+
     it("should return calories null for a menu with no recipes, and null for a missing menu", async () => {
         const emptyMenu = await pool.query<{ menu_id: number }>(
             `INSERT INTO menu (menu_title, menu_content, category_id, person_id)
@@ -185,7 +219,6 @@ describe("PgCalorieRepository (real Postgres)", () => {
     it("should update and clear the calorie goal", async () => {
         await repository.updateGoal(personId, {
             calorie_goal: 2000,
-            meal_calorie_limit: 800,
         });
 
         const withGoal = await userRepository.findById(personId);
@@ -193,13 +226,11 @@ describe("PgCalorieRepository (real Postgres)", () => {
         expect(withGoal).toEqual(
             expect.objectContaining({
                 calorie_goal: 2000,
-                meal_calorie_limit: 800,
             }),
         );
 
         await repository.updateGoal(personId, {
             calorie_goal: null,
-            meal_calorie_limit: null,
         });
 
         const cleared = await userRepository.findById(personId);
@@ -207,7 +238,6 @@ describe("PgCalorieRepository (real Postgres)", () => {
         expect(cleared).toEqual(
             expect.objectContaining({
                 calorie_goal: null,
-                meal_calorie_limit: null,
             }),
         );
     });

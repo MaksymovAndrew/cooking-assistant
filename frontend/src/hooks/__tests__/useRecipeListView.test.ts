@@ -8,11 +8,14 @@ import type { RecipeListItem } from "types/recipe";
 import { API_ROUTES } from "api/endpoints";
 
 import { authApi } from "redux/services/authApi";
+import { caloriesApi } from "redux/services/caloriesApi";
 import { ingredientsApi } from "redux/services/ingredientsApi";
 import { recipesApi } from "redux/services/recipesApi";
 import { recipeTypesApi } from "redux/services/recipeTypesApi";
 
 import { RECIPE_SOURCE, useRecipeListView } from "hooks/useRecipeListView";
+
+import { getTodayRange } from "utils/calorieDateRange";
 
 import { byOffset, makeAxiosError, mockedGet } from "test/apiClientMock";
 import { makeTestStore, renderHookWithRouter } from "test/store";
@@ -45,7 +48,6 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: null,
     avatar: null,
     calorie_goal: null,
-    meal_calorie_limit: null,
 };
 const MILK: Ingredient = {
     id: 3,
@@ -104,6 +106,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.calories.intake) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 return Promise.resolve({
                     data: { items: [RECIPE_1, RECIPE_2], total: 2 },
@@ -122,6 +127,68 @@ describe("useRecipeListView", () => {
         expect(result.current.noRecipes).toBe(false);
     });
 
+    it("should expose the calorie goal and today's remaining budget, computed once for the whole list", async () => {
+        // fixed "now" so the range this test pre-dispatches exactly matches what the hook computes itself
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date(2026, 0, 14, 15, 30));
+
+        try {
+            mockedGet.mockImplementation((url: string) => {
+                if (url === API_ROUTES.auth.me) {
+                    return Promise.resolve({
+                        data: { ...CURRENT_USER, calorie_goal: 2000 },
+                    });
+                }
+                if (url === API_ROUTES.recipeTypes.list) {
+                    return Promise.resolve({ data: [] });
+                }
+                if (url === API_ROUTES.ingredients.list) {
+                    return Promise.resolve({ data: [] });
+                }
+                if (url === API_ROUTES.userIngredients.list) {
+                    return Promise.resolve({ data: [] });
+                }
+                if (url === API_ROUTES.calories.intake) {
+                    return Promise.resolve({ data: [{ calories: 300 }] });
+                }
+                if (url === API_ROUTES.recipes.byFilters) {
+                    return Promise.resolve({ data: { items: [], total: 0 } });
+                }
+
+                return Promise.reject(new Error(`unexpected GET ${url}`));
+            });
+
+            const store = makeTestStore();
+
+            await Promise.all([
+                store.dispatch(
+                    recipesApi.endpoints.getRecipesByFilters.initiate(
+                        DEFAULT_PARAMS,
+                    ),
+                ),
+                store.dispatch(
+                    recipeTypesApi.endpoints.getRecipeTypes.initiate(null),
+                ),
+                store.dispatch(authApi.endpoints.getMe.initiate(null)),
+                store.dispatch(
+                    caloriesApi.endpoints.getCalorieIntake.initiate(
+                        getTodayRange(),
+                    ),
+                ),
+            ]);
+
+            const { result } = renderHookWithRouter(
+                () => useRecipeListView(RECIPE_SOURCE.all),
+                { store },
+            );
+
+            expect(result.current.calorieGoal).toBe(2000);
+            expect(result.current.calorieRemaining).toBe(1700);
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
     it("should expose the current user's id, for per-item ownership checks in the all-recipes view", async () => {
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
@@ -134,6 +201,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.calories.intake) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -162,6 +232,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.calories.intake) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 return Promise.resolve({ data: { items: [], total: 0 } });
             }
@@ -187,6 +260,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.calories.intake) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byPerson) {
@@ -219,6 +295,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.calories.intake) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -265,6 +344,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.calories.intake) {
+                return Promise.resolve({ data: [] });
+            }
 
             return Promise.reject(FAILURE);
         });
@@ -308,6 +390,9 @@ describe("useRecipeListView", () => {
             if (url === API_ROUTES.userIngredients.list) {
                 return Promise.resolve({ data: [] });
             }
+            if (url === API_ROUTES.calories.intake) {
+                return Promise.resolve({ data: [] });
+            }
             if (url === API_ROUTES.recipes.byFilters) {
                 if (byOffset(config) === 0) {
                     return Promise.resolve({
@@ -344,6 +429,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.calories.intake) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -384,6 +472,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.calories.intake) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {
@@ -436,6 +527,9 @@ describe("useRecipeListView", () => {
                 return Promise.resolve({ data: [MILK] });
             }
             if (url === API_ROUTES.userIngredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.calories.intake) {
                 return Promise.resolve({ data: [] });
             }
             if (url === API_ROUTES.recipes.byFilters) {

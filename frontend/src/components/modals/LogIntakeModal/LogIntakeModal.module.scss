@@ -73,17 +73,32 @@
             monospace;
     }
 
+    &__budget {
+        margin: 0 0 var(--s-4);
+        padding: var(--s-3);
+        border-radius: var(--r-sm);
+        background: var(--surface-2);
+    }
+
+    &__budget-summary {
+        margin: 0;
+        color: var(--text-2);
+        font:
+            500 12.5px Inter,
+            sans-serif;
+    }
+
     &__warning {
         display: flex;
         align-items: center;
         gap: var(--s-2);
-        margin: 0 0 var(--s-4);
-        padding: var(--s-3);
+        margin: var(--s-2) 0 0;
+        padding: var(--s-2) var(--s-3);
         border-radius: var(--r-sm);
-        background: color-mix(in srgb, var(--warning) 12%, transparent);
-        color: var(--warning);
+        background: color-mix(in srgb, var(--calorie-over) 15%, transparent);
+        color: var(--calorie-over);
         font:
-            500 13px Inter,
+            600 13px Inter,
             sans-serif;
     }
 

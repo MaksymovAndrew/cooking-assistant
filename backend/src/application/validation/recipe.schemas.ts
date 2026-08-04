@@ -99,6 +99,14 @@ export const recipeFiltersSchema = z.object({
         toNumber,
         positiveIntegerSchema("Max cooking time").optional(),
     ),
+    min_calories: z.preprocess(
+        toNumber,
+        positiveIntegerSchema("Min calories").optional(),
+    ),
+    max_calories: z.preprocess(
+        toNumber,
+        positiveIntegerSchema("Max calories").optional(),
+    ),
     sort_order: z
         .enum(["asc", "desc"], {
             error: (issue) => {

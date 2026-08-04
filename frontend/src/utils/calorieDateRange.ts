@@ -6,19 +6,23 @@ export interface PeriodRange {
 const localMidnight = (date: Date): Date =>
     new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-// local-timezone "today" (the server has no notion of the user's day) - starts at local midnight, "to" is right now
-export const getTodayRange = (): PeriodRange => {
-    const now = new Date();
+// todayKey (from useTodayDateKey) anchors "from" - passing it explicitly, rather than reading Date.now() only internally, makes it a real useMemo dependency instead of a hidden one exhaustive-deps can't see
+export const getTodayRange = (
+    todayKey: string = new Date().toDateString(),
+): PeriodRange => {
+    const midnight = localMidnight(new Date(todayKey));
 
-    return { from: localMidnight(now).toISOString(), to: now.toISOString() };
+    return { from: midnight.toISOString(), to: new Date().toISOString() };
 };
 
 // the last `days` local calendar days including today, oldest-first once grouped - used by the history chart
-export const getLastNDaysRange = (days: number): PeriodRange => {
-    const now = new Date();
-    const start = localMidnight(now);
+export const getLastNDaysRange = (
+    days: number,
+    todayKey: string = new Date().toDateString(),
+): PeriodRange => {
+    const start = localMidnight(new Date(todayKey));
 
     start.setDate(start.getDate() - (days - 1));
 
-    return { from: start.toISOString(), to: now.toISOString() };
+    return { from: start.toISOString(), to: new Date().toISOString() };
 };

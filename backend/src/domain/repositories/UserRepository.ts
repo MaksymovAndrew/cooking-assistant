@@ -24,7 +24,6 @@ export interface PublicUser {
     email_verified_at: string | null;
     avatar: string | null;
     calorie_goal: number | null;
-    meal_calorie_limit: number | null;
 }
 
 // the editable profile fields; avatar is a preset key or null (no avatar - fall back to initials)

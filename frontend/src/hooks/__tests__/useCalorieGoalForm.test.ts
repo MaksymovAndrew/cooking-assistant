@@ -21,7 +21,6 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: null,
     avatar: null,
     calorie_goal: 2000,
-    meal_calorie_limit: 800,
 };
 
 const renderCalorieGoalForm = (
@@ -30,21 +29,19 @@ const renderCalorieGoalForm = (
 ) => renderHookWithStore(() => useCalorieGoalForm(currentUser, onSuccess));
 
 describe("useCalorieGoalForm", () => {
-    it("should prefill the goal and meal limit from the current user", () => {
+    it("should prefill the goal from the current user", () => {
         const { result } = renderCalorieGoalForm(CURRENT_USER, jest.fn());
 
         expect(result.current.goal).toBe("2000");
-        expect(result.current.mealLimit).toBe("800");
     });
 
-    it("should default to an empty goal and meal limit when there is no current user", () => {
+    it("should default to an empty goal when there is no current user", () => {
         const { result } = renderCalorieGoalForm(undefined, jest.fn());
 
         expect(result.current.goal).toBe("");
-        expect(result.current.mealLimit).toBe("");
     });
 
-    it("should submit the parsed goal and meal limit", async () => {
+    it("should submit the parsed goal", async () => {
         mockedPut.mockResolvedValue({ data: null });
         const onSuccess = jest.fn();
 
@@ -60,21 +57,17 @@ describe("useCalorieGoalForm", () => {
 
         expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.calories.goal, {
             calorie_goal: 2200,
-            meal_calorie_limit: 800,
         });
         expect(onSuccess).toHaveBeenCalledTimes(1);
     });
 
-    it("should submit null for a cleared goal or meal limit", async () => {
+    it("should submit null for a cleared goal", async () => {
         mockedPut.mockResolvedValue({ data: null });
 
         const { result } = renderCalorieGoalForm(CURRENT_USER, jest.fn());
 
         act(() => {
             result.current.setGoal("");
-        });
-        act(() => {
-            result.current.setMealLimit("");
         });
 
         await act(async () => {
@@ -83,7 +76,6 @@ describe("useCalorieGoalForm", () => {
 
         expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.calories.goal, {
             calorie_goal: null,
-            meal_calorie_limit: null,
         });
     });
 
@@ -102,11 +94,11 @@ describe("useCalorieGoalForm", () => {
         expect(result.current.error).toBe("Enter a valid calorie goal");
     });
 
-    it("should set an error for an invalid meal limit without submitting", async () => {
+    it("should set an error for a decimal goal without submitting", async () => {
         const { result } = renderCalorieGoalForm(CURRENT_USER, jest.fn());
 
         act(() => {
-            result.current.setMealLimit("not-a-number");
+            result.current.setGoal("2500.5");
         });
 
         await act(async () => {
@@ -114,7 +106,7 @@ describe("useCalorieGoalForm", () => {
         });
 
         expect(mockedPut).not.toHaveBeenCalled();
-        expect(result.current.error).toBe("Enter a valid per-meal limit");
+        expect(result.current.error).toBe("Enter a valid calorie goal");
     });
 
     it("should set a generic error when the request fails", async () => {

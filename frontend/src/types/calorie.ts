@@ -22,5 +22,4 @@ export interface LogIntakeRequest {
 
 export interface UpdateCalorieGoalRequest {
     calorie_goal: number | null;
-    meal_calorie_limit: number | null;
 }

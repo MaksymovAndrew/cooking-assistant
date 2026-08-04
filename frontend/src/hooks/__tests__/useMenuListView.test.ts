@@ -41,7 +41,6 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: null,
     avatar: null,
     calorie_goal: null,
-    meal_calorie_limit: null,
 };
 
 // matches what the hook sends with no filters active in the URL, so the pre-seeded cache key lines up with what the hook itself requests

@@ -84,6 +84,7 @@ export const useHomeDashboard = () => {
         expiringSoon: urgentIngredients.slice(0, EXPIRING_SOON_LIMIT),
         kcalToday: roundCalories(calorieBudget.consumed),
         kcalGoal: calorieBudget.goal,
+        calorieRemaining: calorieBudget.remaining,
         recentRecipes,
         isLoading,
         isError,

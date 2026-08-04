@@ -118,6 +118,39 @@ export const RECIPE_FILTER_CLAUSES: readonly RecipeFilterClause[] = [
         },
     },
     {
+        applies: (filters) => typeof filters.min_calories !== "undefined",
+        apply: (builder, filters) => {
+            const { min_calories } = filters;
+
+            if (typeof min_calories === "undefined") {
+                return;
+            }
+
+            // ROUND avoids float noise on the accumulated DOUBLE PRECISION sum, same reasoning as
+            // the in_pantry clause below - otherwise a "true" 200 landing at 199.999999999998
+            // would silently drop out of a min_calories=200 search
+            builder.add(
+                (bind) =>
+                    `ROUND(COALESCE(r.calories_override, r.calories_computed)::numeric, 2) >= ${bind(min_calories)}`,
+            );
+        },
+    },
+    {
+        applies: (filters) => typeof filters.max_calories !== "undefined",
+        apply: (builder, filters) => {
+            const { max_calories } = filters;
+
+            if (typeof max_calories === "undefined") {
+                return;
+            }
+
+            builder.add(
+                (bind) =>
+                    `ROUND(COALESCE(r.calories_override, r.calories_computed)::numeric, 2) <= ${bind(max_calories)}`,
+            );
+        },
+    },
+    {
         applies: (filters) => filters.in_pantry === true,
         apply: (builder, _filters, context) => {
             // a recipe qualifies only if the pantry covers every ingredient in sufficient quantity (ROUND avoids float noise, see PgPantryRepository.queries.ts); the second EXISTS rules out ingredient-less recipes, which would pass the NOT EXISTS trivially otherwise

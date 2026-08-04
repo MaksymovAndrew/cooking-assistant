@@ -84,7 +84,6 @@ describe("caloriesApi", () => {
         const store = makeTestStore();
         const goal: UpdateCalorieGoalRequest = {
             calorie_goal: 2000,
-            meal_calorie_limit: 800,
         };
 
         await store.dispatch(

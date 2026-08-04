@@ -27,7 +27,6 @@ interface ProfileDietaryTabProps {
 }
 
 const GOAL_ID = "dietary-calorie-goal";
-const MEAL_LIMIT_ID = "dietary-meal-limit";
 const ICON_SIZE = 18;
 
 export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
@@ -89,20 +88,6 @@ export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
                             }}
                         />
                     </FormField>
-                    <FormField
-                        htmlFor={MEAL_LIMIT_ID}
-                        label={`${t("dietaryTab.mealLimitLabel")} (${t("dietaryTab.mealLimitOptional")})`}
-                    >
-                        <NumberInput
-                            id={MEAL_LIMIT_ID}
-                            min={0}
-                            placeholder={t("dietaryTab.mealLimitPlaceholder")}
-                            value={form.mealLimit}
-                            onChange={(e) => {
-                                form.setMealLimit(e.target.value);
-                            }}
-                        />
-                    </FormField>
                 </div>
                 {form.error && <FormErrorBanner message={form.error} />}
                 <div className={styles["profile-dietary-tab__form-footer"]}>
@@ -141,10 +126,7 @@ export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
                     <div className={styles["profile-dietary-tab__col"]}>
                         {goalCard}
                         <FormCard>
-                            <CalorieJournal
-                                entries={budget.entries}
-                                mealLimit={budget.mealLimit}
-                            />
+                            <CalorieJournal entries={budget.entries} />
                         </FormCard>
                     </div>
                 </div>

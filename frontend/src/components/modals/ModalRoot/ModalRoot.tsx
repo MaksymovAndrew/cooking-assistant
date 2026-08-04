@@ -44,6 +44,7 @@ const renderCalorieModal = (modal: ActiveModal | null) => {
                 menuId={modal.menuId}
                 title={modal.title}
                 caloriesPerPortion={modal.caloriesPerPortion}
+                initialPortions={modal.initialPortions}
             />
         );
     }

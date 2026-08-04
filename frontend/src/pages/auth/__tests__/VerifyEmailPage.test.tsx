@@ -21,7 +21,6 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: "2026-01-01T00:00:00.000Z",
     avatar: null,
     calorie_goal: null,
-    meal_calorie_limit: null,
 };
 
 describe("VerifyEmailPage", () => {

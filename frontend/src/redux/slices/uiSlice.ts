@@ -111,6 +111,7 @@ export interface LogIntakeModalInput {
     menuId?: number;
     title: string;
     caloriesPerPortion: number;
+    initialPortions?: number;
 }
 
 export interface LogIntakeModal extends LogIntakeModalInput {

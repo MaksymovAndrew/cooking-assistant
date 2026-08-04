@@ -24,7 +24,6 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: null,
     avatar: null,
     calorie_goal: 2000,
-    meal_calorie_limit: 800,
 };
 
 const setup = (
@@ -45,9 +44,6 @@ describe("ProfileDietaryTab", () => {
 
         expect(screen.getAllByText("Calorie goal")[0]).toBeInTheDocument();
         expect(screen.getByLabelText(GOAL_LABEL)).toHaveValue(2000);
-        expect(
-            screen.getByLabelText("Per-meal limit (kcal) (optional)"),
-        ).toHaveValue(800);
     });
 
     it("should show the Today card once intake data has loaded", async () => {
@@ -96,7 +92,6 @@ describe("ProfileDietaryTab", () => {
 
         expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.calories.goal, {
             calorie_goal: 2200,
-            meal_calorie_limit: 800,
         });
         expect(await screen.findByText("Saved just now")).toBeInTheDocument();
     });

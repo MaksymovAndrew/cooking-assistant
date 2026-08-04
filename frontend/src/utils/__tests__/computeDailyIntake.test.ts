@@ -2,9 +2,11 @@ import {
     computeBestStreak,
     computeDailyIntake,
     computeStreak,
+    isDayInBudget,
 } from "utils/computeDailyIntake";
 
 const NOW = new Date(2026, 0, 14, 12, 0, 0);
+const TODAY_DATE_KEY = "2026-01-14";
 
 beforeEach(() => {
     jest.useFakeTimers();
@@ -33,13 +35,28 @@ describe("computeDailyIntake", () => {
         expect(days[0].consumed).toBe(0);
         expect(days[1].consumed).toBe(600);
         expect(days[2].consumed).toBe(300);
-        expect(days[2].date).toBe("2026-01-14");
+        expect(days[2].date).toBe(TODAY_DATE_KEY);
     });
 
     it("should return an empty-consumed bucket for a day with no entries", () => {
         const days = computeDailyIntake([], 2);
 
         expect(days.map((day) => day.consumed)).toEqual([0, 0]);
+    });
+
+    it("should anchor on an explicit day key instead of the current day", () => {
+        const days = computeDailyIntake(
+            [
+                {
+                    eaten_at: new Date(2026, 0, 10, 18).toISOString(),
+                    calories: 400,
+                },
+            ],
+            2,
+            new Date(2026, 0, 10).toDateString(),
+        );
+
+        expect(days.map((day) => day.consumed)).toEqual([0, 400]);
     });
 });
 
@@ -74,8 +91,28 @@ describe("computeStreak", () => {
     });
 });
 
+describe("isDayInBudget", () => {
+    it("should be true for a day with some consumption at or under the goal", () => {
+        expect(
+            isDayInBudget({ date: TODAY_DATE_KEY, consumed: 1800 }, 2000),
+        ).toBe(true);
+    });
+
+    it("should be false for a day over the goal", () => {
+        expect(
+            isDayInBudget({ date: TODAY_DATE_KEY, consumed: 2500 }, 2000),
+        ).toBe(false);
+    });
+
+    it("should be false for a day with nothing logged, even under the goal", () => {
+        expect(isDayInBudget({ date: TODAY_DATE_KEY, consumed: 0 }, 2000)).toBe(
+            false,
+        );
+    });
+});
+
 describe("computeBestStreak", () => {
-    it("should find the longest in-budget run in the window, including today", () => {
+    it("should find the longest in-budget run in the window, excluding today", () => {
         const days = computeDailyIntake(
             [
                 { eaten_at: isoOnDay(0), calories: 1800 },
@@ -89,5 +126,14 @@ describe("computeBestStreak", () => {
         );
 
         expect(computeBestStreak(days, 2000)).toBe(3);
+    });
+
+    it("should not let today's still-in-progress total claim a best streak on its own", () => {
+        const days = computeDailyIntake(
+            [{ eaten_at: isoOnDay(0), calories: 198 }],
+            7,
+        );
+
+        expect(computeBestStreak(days, 3000)).toBe(0);
     });
 });

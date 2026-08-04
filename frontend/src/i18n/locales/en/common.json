@@ -22,7 +22,8 @@
     "contentCard": {
         "favourite": "Favourite",
         "allergens": "Allergens",
-        "containsAllergens": "Contains allergens"
+        "containsAllergens": "Contains allergens",
+        "overBudgetTooltip": "Exceeds your remaining calories for today"
     },
     "toast": {
         "dismiss": "Dismiss"

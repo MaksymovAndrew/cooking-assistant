@@ -11,6 +11,7 @@ import { closeModal, MODAL_TYPE } from "redux/slices/uiSlice";
 import { useCalorieLimitNotice } from "hooks/useCalorieLimitNotice";
 
 import { getTodayRange } from "utils/calorieDateRange";
+import { markCalorieLimitNoticeShown } from "utils/calorieLimitNoticeStorage";
 
 import { mockGetByUrl } from "test/apiClientMock";
 import { makeTestStore, renderHookWithStore } from "test/store";
@@ -39,7 +40,6 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: null,
     avatar: null,
     calorie_goal: 2200,
-    meal_calorie_limit: null,
 };
 
 const setup = async (
@@ -100,6 +100,36 @@ describe("useCalorieLimitNotice", () => {
         const { store } = await setup([{ calories: 2500 }], "checking");
 
         expect(store.getState().ui.modal).toBeNull();
+    });
+
+    it("should not open the modal on a fresh page load if already shown earlier today", async () => {
+        markCalorieLimitNoticeShown(CURRENT_USER.id, NOW.toDateString());
+
+        const { store } = await setup([{ calories: 2500 }]);
+
+        expect(store.getState().ui.modal).toBeNull();
+    });
+
+    it("should open the modal again on a new day even if it already fired the day before", async () => {
+        const yesterday = new Date(2026, 0, 13);
+
+        markCalorieLimitNoticeShown(CURRENT_USER.id, yesterday.toDateString());
+
+        const { store } = await setup([{ calories: 2500 }]);
+
+        expect(store.getState().ui.modal).toMatchObject({
+            type: MODAL_TYPE.calorieLimit,
+        });
+    });
+
+    it("should open the modal for a different user even if today's notice already fired for someone else", async () => {
+        markCalorieLimitNoticeShown(999, NOW.toDateString());
+
+        const { store } = await setup([{ calories: 2500 }]);
+
+        expect(store.getState().ui.modal).toMatchObject({
+            type: MODAL_TYPE.calorieLimit,
+        });
     });
 
     it("should not reopen the modal on a later mount once already shown this session", async () => {

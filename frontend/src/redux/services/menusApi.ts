@@ -91,9 +91,13 @@ export const menusApi = baseApi.injectEndpoints({
                 url: API_ROUTES.menu.byId(id),
                 method: "DELETE",
             }),
+            // the backend cascades the delete into calorie_intake.menu_id (ON DELETE SET NULL),
+            // so any cached intake log holding an entry logged against this menu goes stale -
+            // same reasoning as recipesApi's deleteRecipe
             invalidatesTags: (_result, _error, id) => [
                 { type: MENU, id },
                 MENU_LIST,
+                "Calories",
             ],
         }),
     }),

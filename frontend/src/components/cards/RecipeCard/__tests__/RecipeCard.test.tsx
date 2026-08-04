@@ -12,6 +12,13 @@ const RECIPE = {
     calories_per_portion: null,
 };
 
+const CALORIES_OVER_BUDGET = 700;
+const CALORIES_OVER_BUDGET_LABEL = `${CALORIES_OVER_BUDGET} kcal`;
+const RECIPE_OVER_BUDGET = {
+    ...RECIPE,
+    calories_per_portion: CALORIES_OVER_BUDGET,
+};
+
 describe("RecipeCard", () => {
     it("should link to the recipe details page", () => {
         renderWithRouter(<RecipeCard recipe={RECIPE} />);
@@ -57,5 +64,29 @@ describe("RecipeCard", () => {
         renderWithRouter(<RecipeCard recipe={RECIPE} />);
 
         expect(screen.queryByText(/kcal/)).not.toBeInTheDocument();
+    });
+
+    it("should recolor the calorie border and meta item when exceedsBudget is true", () => {
+        renderWithRouter(
+            <RecipeCard recipe={RECIPE_OVER_BUDGET} exceedsBudget />,
+        );
+
+        expect(screen.getByRole("link")).toHaveClass(
+            "content-card--calorie-over",
+        );
+        expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).toHaveClass(
+            "content-card__meta-item--calorie-over",
+        );
+    });
+
+    it("should not recolor the calorie meta item by default", () => {
+        renderWithRouter(<RecipeCard recipe={RECIPE_OVER_BUDGET} />);
+
+        expect(screen.getByRole("link")).not.toHaveClass(
+            "content-card--calorie-over",
+        );
+        expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).not.toHaveClass(
+            "content-card__meta-item--calorie-over",
+        );
     });
 });

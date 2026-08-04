@@ -29,6 +29,7 @@ jest.mock("react-router-dom", () => ({
 jest.mock("api/client");
 
 const TITLE = "Borscht";
+const LOG_INTAKE_BUTTON = "Log intake";
 const OWNER_ID = 3;
 const SAMPLE: RecipeDetails = {
     id: 1,
@@ -177,7 +178,7 @@ describe("RecipeDetailsPage", () => {
         await screen.findByRole("heading", { name: TITLE });
 
         expect(
-            screen.queryByRole("button", { name: "Log intake" }),
+            screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
         ).not.toBeInTheDocument();
     });
 
@@ -189,7 +190,7 @@ describe("RecipeDetailsPage", () => {
         await screen.findByRole("heading", { name: TITLE });
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Log intake" }),
+            screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
         );
 
         expect(store.getState().ui.modal).toMatchObject({
@@ -197,6 +198,27 @@ describe("RecipeDetailsPage", () => {
             recipeId: 1,
             title: TITLE,
             caloriesPerPortion: 420,
+            initialPortions: 1,
+        });
+    });
+
+    it("should open the log-intake modal pre-filled with the portions already selected on the page", async () => {
+        mockRecipe({ ...SAMPLE, calories_per_portion: 420 });
+
+        const { store } = renderPage();
+
+        await screen.findByRole("heading", { name: TITLE });
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "More portions" }),
+        );
+        await userEvent.click(
+            screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
+        );
+
+        expect(store.getState().ui.modal).toMatchObject({
+            type: MODAL_TYPE.logIntake,
+            initialPortions: 2,
         });
     });
 });

@@ -65,6 +65,8 @@ export interface RecipeFilterParams {
     end_date?: string;
     min_cooking_time?: string;
     max_cooking_time?: string;
+    min_calories?: string;
+    max_calories?: string;
     // omitted (not empty string - the backend enum-validates "asc"/"desc") falls back to creation_date DESC server-side
     sort_order?: string;
     in_pantry?: boolean;

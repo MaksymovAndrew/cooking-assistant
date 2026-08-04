@@ -23,7 +23,6 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: null,
     avatar: null,
     calorie_goal: null,
-    meal_calorie_limit: null,
 };
 const RECIPE: RecipeSearchResultItem = {
     id: 1,

@@ -10,6 +10,7 @@ import { useAppDispatch } from "redux/hooks";
 import { useGetMenuByIdQuery } from "redux/services/menusApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
+import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
 
 import { AppShell } from "components/layout/AppShell";
@@ -32,18 +33,18 @@ const MenuDetailsPage: React.FC = () => {
         isError,
         refetch,
     } = useGetMenuByIdQuery(id ?? skipToken);
-    // sum of each recipe's own per-portion calories - null recipes contribute nothing, matching the backend's SUM(COALESCE(...)) in findMenuCalories
-    const menuCaloriesPerPortion = (menu?.recipes ?? []).reduce(
-        (total, recipe) => total + (recipe.calories_per_portion ?? 0),
-        0,
-    );
+    // sum of each recipe's own per-portion calories - null recipes contribute nothing, matching the backend's SUM(COALESCE(...)) in findMenuCalories; 0 is falsy, so an empty/zero-calorie menu also reads as "no calorie data" rather than a literal 0
     const menuCalories =
-        menuCaloriesPerPortion > 0 ? menuCaloriesPerPortion : null;
+        (menu?.recipes ?? []).reduce(
+            (total, recipe) => total + (recipe.calories_per_portion ?? 0),
+            0,
+        ) || null;
     const handleLogIntake = useLogIntakeHandler({
         menuId: menu?.menu.id,
         title: menu?.menu.title ?? "",
         caloriesPerPortion: menuCalories,
     });
+    const exceedsBudget = useExceedsCalorieBudget(menuCalories);
 
     if (isError) {
         return (
@@ -111,6 +112,7 @@ const MenuDetailsPage: React.FC = () => {
                         );
                     }}
                     onLogIntake={handleLogIntake}
+                    exceedsBudget={exceedsBudget}
                 />
                 <div className={gridClassName}>
                     <MenuRecipesPanel

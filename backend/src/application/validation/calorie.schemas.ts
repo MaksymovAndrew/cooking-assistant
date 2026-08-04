@@ -22,7 +22,6 @@ export const logIntakeSchema = z
 
 export const updateCalorieGoalSchema = z.object({
     calorie_goal: positiveIntegerSchema("Calorie goal").nullable(),
-    meal_calorie_limit: positiveIntegerSchema("Meal calorie limit").nullable(),
 });
 
 export const intakeRangeSchema = z.object({

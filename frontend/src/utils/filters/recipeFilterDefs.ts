@@ -13,6 +13,7 @@ export interface RecipeFilterState {
     types: number[];
     ingredients: number[];
     cookingTime: { min: string; max: string };
+    calories: { min: string; max: string };
     sort: "asc" | "desc" | null;
     inPantry: boolean;
 }
@@ -61,6 +62,25 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
             }
 
             return t("filterPanel.timeChipMax", { minutes: value.max });
+        },
+    }),
+    numericRangeFilter<RecipeFilterParams>({
+        key: "calories",
+        urlParam: "kcal",
+        minParam: "min_calories",
+        maxParam: "max_calories",
+        chipLabel: (value, t) => {
+            if (value.min !== "" && value.max !== "") {
+                return t("filterPanel.caloriesChipRange", {
+                    min: value.min,
+                    max: value.max,
+                });
+            }
+            if (value.min !== "") {
+                return t("filterPanel.caloriesChipMin", { kcal: value.min });
+            }
+
+            return t("filterPanel.caloriesChipMax", { kcal: value.max });
         },
     }),
     enumFilter<"asc" | "desc", RecipeFilterParams>({

@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 import { recipeDetailsPath } from "constants/routes";
 
 import type { ContentCardVariant } from "components/cards/ContentCard";
-import { ContentCard } from "components/cards/ContentCard";
+import {
+    ContentCard,
+    META_ITEM_TONE_CALORIE_OVER,
+} from "components/cards/ContentCard";
 import { UtensilsMark } from "components/icons";
 
 import { formatKcal, roundCalories } from "utils/calories";
@@ -29,12 +32,14 @@ interface RecipeCardProps {
     recipe: RecipeCardRecipe;
     mine?: boolean;
     variant?: ContentCardVariant;
+    exceedsBudget?: boolean;
 }
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({
     recipe,
     mine = false,
     variant,
+    exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
@@ -51,6 +56,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             mine={mine}
             variant={variant}
             badge={hasAllergens}
+            calorieOver={exceedsBudget}
             metaItems={[
                 {
                     icon: Clock,
@@ -68,6 +74,14 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
                                       ),
                                   ),
                               }),
+                              ...(exceedsBudget
+                                  ? {
+                                        tone: META_ITEM_TONE_CALORIE_OVER,
+                                        title: t(
+                                            "common:contentCard.overBudgetTooltip",
+                                        ),
+                                    }
+                                  : {}),
                           },
                       ]),
             ]}

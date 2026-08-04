@@ -6,10 +6,10 @@ import { Link, useParams } from "react-router-dom";
 
 import { changeRecipePath, ROUTES } from "constants/routes";
 
-import { useAppDispatch } from "redux/hooks";
 import { useGetRecipeByIdQuery } from "redux/services/recipesApi";
-import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
+import { useDeleteRecipeHandler } from "hooks/useDeleteRecipeHandler";
+import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 import { useIngredientAvailability } from "hooks/useIngredientAvailability";
 import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
 import { usePortionScaling } from "hooks/usePortionScaling";
@@ -26,7 +26,6 @@ import styles from "./RecipeDetailsPage.module.scss";
 const RecipeDetailsPage: React.FC = () => {
     const { t } = useTranslation("recipes");
     const { id } = useParams<{ id: string }>();
-    const dispatch = useAppDispatch();
     const {
         data: recipe,
         isError,
@@ -38,11 +37,17 @@ const RecipeDetailsPage: React.FC = () => {
         recipe?.ingredients ?? [],
     );
     const allergens = getRecipeAllergens(recipe?.ingredients ?? []);
+    const handleDeleteRecipe = useDeleteRecipeHandler(recipe);
     const handleLogIntake = useLogIntakeHandler({
         recipeId: recipe?.id,
         title: recipe?.title ?? "",
         caloriesPerPortion: recipe?.calories_per_portion ?? null,
+        initialPortions: portions.count,
     });
+    const exceedsBudget = useExceedsCalorieBudget(
+        recipe?.calories_per_portion ?? null,
+        portions.count,
+    );
 
     if (isError) {
         return (
@@ -87,16 +92,9 @@ const RecipeDetailsPage: React.FC = () => {
                             recipe={recipe}
                             portionCount={portions.count}
                             editTo={changeRecipePath(recipe.id)}
-                            onDelete={() => {
-                                dispatch(
-                                    openModal({
-                                        type: MODAL_TYPE.deleteRecipe,
-                                        recipeId: String(recipe.id),
-                                        recipeTitle: recipe.title,
-                                    }),
-                                );
-                            }}
+                            onDelete={handleDeleteRecipe}
                             onLogIntake={handleLogIntake}
+                            exceedsBudget={exceedsBudget}
                         />
                     </div>
                     <RecipeDetailsSecondary

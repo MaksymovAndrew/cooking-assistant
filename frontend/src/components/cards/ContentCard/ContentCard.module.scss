@@ -167,6 +167,10 @@
             monospace;
     }
 
+    &__meta-item--calorie-over {
+        color: var(--calorie-over);
+    }
+
     &__meta-text {
         margin-top: auto;
         color: var(--text-muted);
@@ -240,5 +244,16 @@
     // overrides the base hover's brand border-color so allergen cards stay amber
     @include on-hover {
         border-color: var(--warning);
+    }
+}
+
+// declared after --badge so it wins the cascade when a card is both allergenic and over budget
+.content-card--calorie-over {
+    border-color: color-mix(in srgb, var(--calorie-over) 55%, var(--border));
+    box-shadow: 0 0 0 3px
+        color-mix(in srgb, var(--calorie-over) 12%, transparent);
+
+    @include on-hover {
+        border-color: var(--calorie-over);
     }
 }

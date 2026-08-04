@@ -117,6 +117,10 @@
         gap: 3px;
     }
 
+    &__calories--over {
+        color: var(--calorie-over);
+    }
+
     &__rating {
         display: inline-flex;
         flex: none;

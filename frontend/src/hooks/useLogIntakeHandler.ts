@@ -6,10 +6,10 @@ interface LogIntakeTarget {
     menuId?: number;
     title: string;
     caloriesPerPortion: number | null;
+    initialPortions?: number;
 }
 
-// shared by the recipe and menu detail pages - a null caloriesPerPortion (nothing
-// loaded yet, or nothing to log) means the trigger button stays hidden
+// shared by the recipe and menu detail pages - a null caloriesPerPortion hides the trigger button
 export const useLogIntakeHandler = (
     target: LogIntakeTarget,
 ): (() => void) | undefined => {
@@ -19,7 +19,8 @@ export const useLogIntakeHandler = (
         return undefined;
     }
 
-    const { recipeId, menuId, title, caloriesPerPortion } = target;
+    const { recipeId, menuId, title, caloriesPerPortion, initialPortions } =
+        target;
 
     return () => {
         dispatch(
@@ -29,6 +30,7 @@ export const useLogIntakeHandler = (
                 menuId,
                 title,
                 caloriesPerPortion,
+                initialPortions,
             }),
         );
     };

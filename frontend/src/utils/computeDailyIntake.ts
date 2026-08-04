@@ -14,12 +14,15 @@ const toLocalDateKey = (date: Date): string =>
     `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(PAD_WIDTH, "0")}-${String(date.getDate()).padStart(PAD_WIDTH, "0")}`;
 
 // buckets the last `days` local calendar days (oldest first, today last), independent of how the
-// entries are ordered or which timezone `eaten_at` was written in on the server
+// entries are ordered or which timezone `eaten_at` was written in on the server. todayKey is
+// threaded in explicitly (see utils/calorieDateRange.ts) rather than calling Date.now() only
+// internally, so a caller memoizing on todayKey has a real dependency, not a hidden one
 export const computeDailyIntake = (
     entries: readonly DailyIntakeEntry[],
     days: number,
+    todayKey: string = new Date().toDateString(),
 ): DailyIntakeDay[] => {
-    const today = new Date();
+    const today = new Date(todayKey);
     const buckets: DailyIntakeDay[] = [];
 
     for (let offset = days - 1; offset >= 0; offset -= 1) {
@@ -45,6 +48,11 @@ export const computeDailyIntake = (
     return buckets;
 };
 
+// a day counts as "in budget" only once something was actually logged - an empty day (0 consumed)
+// isn't a win, it's no data
+export const isDayInBudget = (day: DailyIntakeDay, goal: number): boolean =>
+    day.consumed > 0 && day.consumed <= goal;
+
 // counts consecutive in-budget days ending yesterday, not today - today is still in progress, so
 // including it would make the streak flicker back to 0 every morning before the first entry lands
 export const computeStreak = (
@@ -58,7 +66,7 @@ export const computeStreak = (
     let streak = 0;
 
     for (let i = days.length - 2; i >= 0; i -= 1) {
-        if (days[i].consumed > 0 && days[i].consumed <= goal) {
+        if (isDayInBudget(days[i], goal)) {
             streak += 1;
         } else {
             break;
@@ -68,7 +76,9 @@ export const computeStreak = (
     return streak;
 };
 
-// longest in-budget run within the fetched window (not a lifetime record - bounded by the 7/30-day history query)
+// longest in-budget run within the fetched window (not a lifetime record - bounded by the 7/30-day
+// history query); excludes today for the same reason computeStreak does - today isn't over yet, so
+// counting it here would let a still-in-progress day briefly claim a new best before it's earned
 export const computeBestStreak = (
     days: readonly DailyIntakeDay[],
     goal: number | null,
@@ -80,8 +90,8 @@ export const computeBestStreak = (
     let best = 0;
     let current = 0;
 
-    for (const day of days) {
-        if (day.consumed > 0 && day.consumed <= goal) {
+    for (const day of days.slice(0, -1)) {
+        if (isDayInBudget(day, goal)) {
             current += 1;
             best = Math.max(best, current);
         } else {

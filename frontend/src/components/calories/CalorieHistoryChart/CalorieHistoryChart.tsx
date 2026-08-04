@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { useGetCalorieIntakeQuery } from "redux/services/caloriesApi";
 
+import { useTodayDateKey } from "hooks/useTodayDateKey";
+
 import { SegmentedControl } from "components/ui/SegmentedControl";
 
 import { getLastNDaysRange } from "utils/calorieDateRange";
@@ -10,6 +12,7 @@ import {
     computeBestStreak,
     computeDailyIntake,
     computeStreak,
+    isDayInBudget,
 } from "utils/computeDailyIntake";
 
 import { CalorieHistoryBars } from "./CalorieHistoryBars";
@@ -30,12 +33,16 @@ export const CalorieHistoryChart: React.FC<CalorieHistoryChartProps> = ({
     const { t } = useTranslation("calories");
     const [range, setRange] = useState<HistoryRange>("7");
     const dayCount = RANGE_VALUES[range];
-    const queryRange = useMemo(() => getLastNDaysRange(dayCount), [dayCount]);
+    const todayKey = useTodayDateKey();
+    const queryRange = useMemo(
+        () => getLastNDaysRange(dayCount, todayKey),
+        [dayCount, todayKey],
+    );
     const { data: entries = [] } = useGetCalorieIntakeQuery(queryRange);
 
     const days = useMemo(
-        () => computeDailyIntake(entries, dayCount),
-        [entries, dayCount],
+        () => computeDailyIntake(entries, dayCount, todayKey),
+        [entries, dayCount, todayKey],
     );
     const streak = computeStreak(days, goal);
     const best = computeBestStreak(days, goal);
@@ -46,9 +53,7 @@ export const CalorieHistoryChart: React.FC<CalorieHistoryChartProps> = ({
                       days.length,
               )
             : 0;
-    const daysOnGoal = days.filter(
-        (day) => day.consumed > 0 && day.consumed <= goal,
-    ).length;
+    const daysOnGoal = days.filter((day) => isDayInBudget(day, goal)).length;
 
     return (
         <div className={styles["calorie-history-chart"]}>

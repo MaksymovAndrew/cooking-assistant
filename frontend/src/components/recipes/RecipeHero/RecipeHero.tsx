@@ -26,6 +26,7 @@ interface RecipeHeroProps {
     editTo: string;
     onDelete: () => void;
     onLogIntake?: () => void;
+    exceedsBudget?: boolean;
 }
 
 const IMAGE_ICON_SIZE = 56;
@@ -37,6 +38,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     editTo,
     onDelete,
     onLogIntake,
+    exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
     const favouriteLabel = t("recipeDetailsPage.favourite");
@@ -95,6 +97,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 totalCalories={totalCalories}
                 formattedDate={formattedDate}
                 isOwner={recipe.isOwner}
+                exceedsBudget={exceedsBudget}
             />
 
             {recipe.isOwner ? (

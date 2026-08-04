@@ -17,6 +17,37 @@ export const scaleCaloriesForPortions = (
     portionCount: number,
 ): number => roundCalories(caloriesPerPortion) * portionCount;
 
+// no goal/remaining or no calorie data on the recipe means "can't tell", not "over budget"
+export const exceedsCalorieBudget = (
+    caloriesPerPortion: number | null,
+    goal: number | null,
+    remaining: number | null,
+): boolean => {
+    const hasBudgetData = goal !== null && remaining !== null;
+
+    if (!hasBudgetData || caloriesPerPortion === null) {
+        return false;
+    }
+
+    return caloriesPerPortion > remaining;
+};
+
+// same as exceedsCalorieBudget, but for however many portions are actually selected (a recipe
+// detail page scales per-portion calories by a stepper, unlike a list card which only ever shows one portion)
+export const exceedsCalorieBudgetForPortions = (
+    caloriesPerPortion: number | null,
+    portionCount: number,
+    goal: number | null,
+    remaining: number | null,
+): boolean =>
+    caloriesPerPortion === null
+        ? false
+        : exceedsCalorieBudget(
+              scaleCaloriesForPortions(caloriesPerPortion, portionCount),
+              goal,
+              remaining,
+          );
+
 export interface CalorieIngredient {
     quantity: number;
     calories_per_unit: number | null;

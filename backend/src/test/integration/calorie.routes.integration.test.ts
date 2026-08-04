@@ -138,7 +138,6 @@ describe("calorie routes", () => {
             .set("Cookie", authCookie(7))
             .send({
                 calorie_goal: 2000,
-                meal_calorie_limit: 800,
             });
 
         expect(res.status).toBe(200);
@@ -147,7 +146,6 @@ describe("calorie routes", () => {
         });
         expect(deps.calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
             calorie_goal: 2000,
-            meal_calorie_limit: 800,
         });
     });
 });

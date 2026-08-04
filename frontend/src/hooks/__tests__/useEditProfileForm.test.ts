@@ -21,7 +21,6 @@ const CURRENT_USER: CurrentUser = {
     email_verified_at: null,
     avatar: "tomato",
     calorie_goal: null,
-    meal_calorie_limit: null,
 };
 
 const renderEditProfileForm = (

@@ -3,6 +3,11 @@
     "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "calorieTracking": {
+            "date": "2026-08-04",
+            "title": "Calorie tracking is here",
+            "description": "See how many calories a recipe or menu has, set a daily goal on your new Dietary tab, and log what you eat straight from any recipe or menu page. Recipes and menus that would put you over your goal are highlighted, and you can filter your cookbook by calorie range too."
+        },
         "smarterSearch": {
             "date": "2026-07-30",
             "title": "Smarter search and shareable filters",

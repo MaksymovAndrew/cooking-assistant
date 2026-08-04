@@ -62,7 +62,11 @@ export const HomeDashboard: React.FC = () => {
                 kcalGoal={dashboard.kcalGoal}
             />
             <div className={styles["home-dashboard__panels"]}>
-                <RecentRecipes recipes={dashboard.recentRecipes} />
+                <RecentRecipes
+                    recipes={dashboard.recentRecipes}
+                    calorieGoal={dashboard.kcalGoal}
+                    calorieRemaining={dashboard.calorieRemaining}
+                />
                 <div className={styles["home-dashboard__rail"]}>
                     <PantryRecipesCard />
                     <ExpiringSoon items={dashboard.expiringSoon} />

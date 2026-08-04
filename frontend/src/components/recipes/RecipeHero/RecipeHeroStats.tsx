@@ -14,6 +14,7 @@ interface RecipeHeroStatsProps {
     totalCalories: string | null;
     formattedDate: string;
     isOwner: boolean;
+    exceedsBudget?: boolean;
 }
 
 const STAT_ICON_SIZE = 16;
@@ -25,8 +26,15 @@ export const RecipeHeroStats: React.FC<RecipeHeroStatsProps> = ({
     totalCalories,
     formattedDate,
     isOwner,
+    exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
+    const caloriesStatClassName = [
+        styles["recipe-hero__stat"],
+        exceedsBudget && styles["recipe-hero__stat--calorie-over"],
+    ]
+        .filter(Boolean)
+        .join(" ");
 
     return (
         <div className={styles["recipe-hero__stats"]}>
@@ -39,7 +47,14 @@ export const RecipeHeroStats: React.FC<RecipeHeroStatsProps> = ({
                     {formattedCookingTime}
                 </span>
             </div>
-            <div className={styles["recipe-hero__stat"]}>
+            <div
+                className={caloriesStatClassName}
+                title={
+                    exceedsBudget
+                        ? t("common:contentCard.overBudgetTooltip")
+                        : undefined
+                }
+            >
                 <span className={styles["recipe-hero__stat-label"]}>
                     {t("recipeDetailsPage.calories")}
                 </span>

@@ -16,6 +16,7 @@ import styles from "./RecentRecipeCard.module.scss";
 
 interface RecentRecipeCardProps {
     recipe: RecipeSearchResultItem;
+    exceedsBudget?: boolean;
 }
 
 const IMAGE_ICON_SIZE = 22;
@@ -23,6 +24,7 @@ const STAR_ICON_SIZE = 11;
 
 export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
     recipe,
+    exceedsBudget = false,
 }) => {
     const { t } = useTranslation("home");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
@@ -30,6 +32,12 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
         hours > 0
             ? t("recentRecipes.cookingTimeHoursMinutes", { hours, minutes })
             : t("recentRecipes.cookingTimeMinutesOnly", { minutes });
+    const caloriesClassName = [
+        styles["recent-recipe-card__calories"],
+        exceedsBudget && styles["recent-recipe-card__calories--over"],
+    ]
+        .filter(Boolean)
+        .join(" ");
 
     return (
         <Link
@@ -53,7 +61,12 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
                     <span>{timeLabel}</span>
                     {recipe.calories_per_portion !== null && (
                         <span
-                            className={styles["recent-recipe-card__calories"]}
+                            className={caloriesClassName}
+                            title={
+                                exceedsBudget
+                                    ? t("common:contentCard.overBudgetTooltip")
+                                    : undefined
+                            }
                         >
                             <Flame size={STAR_ICON_SIZE} aria-hidden="true" />
                             {t("recentRecipes.caloriesValue", {

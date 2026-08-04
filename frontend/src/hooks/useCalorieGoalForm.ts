@@ -5,14 +5,17 @@ import type { CurrentUser } from "types/auth";
 
 import { useUpdateCalorieGoalMutation } from "redux/services/caloriesApi";
 
-const parseOptionalPositiveNumber = (value: string): number | null | false => {
+// mirrors the backend's positiveIntegerSchema (calorie.schemas.ts) so a decimal like "2500.5"
+// fails client-side with the specific "Enter a valid calorie goal" message, instead of round-tripping
+// to the backend and surfacing as the unrelated generic "Something went wrong" error
+const parseOptionalPositiveInteger = (value: string): number | null | false => {
     if (value.trim() === "") {
         return null;
     }
 
     const parsed = Number(value);
 
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : false;
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : false;
 };
 
 export const useCalorieGoalForm = (
@@ -25,31 +28,21 @@ export const useCalorieGoalForm = (
     const [goal, setGoal] = useState(
         currentUser?.calorie_goal?.toString() ?? "",
     );
-    const [mealLimit, setMealLimit] = useState(
-        currentUser?.meal_calorie_limit?.toString() ?? "",
-    );
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = useCallback(async () => {
         setError(null);
 
-        const parsedGoal = parseOptionalPositiveNumber(goal);
-        const parsedMealLimit = parseOptionalPositiveNumber(mealLimit);
+        const parsedGoal = parseOptionalPositiveInteger(goal);
 
         if (parsedGoal === false) {
             setError(t("dietaryTab.errors.invalidGoal"));
 
             return;
         }
-        if (parsedMealLimit === false) {
-            setError(t("dietaryTab.errors.invalidMealLimit"));
-
-            return;
-        }
 
         const result = await updateCalorieGoal({
             calorie_goal: parsedGoal,
-            meal_calorie_limit: parsedMealLimit,
         });
 
         if ("data" in result) {
@@ -59,13 +52,11 @@ export const useCalorieGoalForm = (
         }
 
         setError(t("dietaryTab.errors.genericError"));
-    }, [goal, mealLimit, onSuccess, t, updateCalorieGoal]);
+    }, [goal, onSuccess, t, updateCalorieGoal]);
 
     return {
         goal,
         setGoal,
-        mealLimit,
-        setMealLimit,
         error,
         handleSubmit,
     };

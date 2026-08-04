@@ -2,15 +2,20 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppDispatch } from "redux/hooks";
-import { useGetMeQuery } from "redux/services/authApi";
 import { useLogCalorieIntakeMutation } from "redux/services/caloriesApi";
 import { closeModal } from "redux/slices/uiSlice";
+
+import { useCalorieBudget } from "hooks/useCalorieBudget";
 
 import { AlertTriangleMark } from "components/icons";
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
 
-import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
+import {
+    formatKcal,
+    roundCalories,
+    scaleCaloriesForPortions,
+} from "utils/calories";
 
 import styles from "./LogIntakeModal.module.scss";
 
@@ -20,6 +25,7 @@ interface LogIntakeModalProps {
     menuId?: number;
     title: string;
     caloriesPerPortion: number;
+    initialPortions?: number;
 }
 
 const MIN_PORTIONS = 1;
@@ -31,17 +37,21 @@ export const LogIntakeModal = ({
     menuId,
     title,
     caloriesPerPortion,
+    initialPortions,
 }: LogIntakeModalProps) => {
     const { t } = useTranslation("calories");
     const dispatch = useAppDispatch();
-    const { data: currentUser } = useGetMeQuery(null);
-    const [portions, setPortions] = useState(MIN_PORTIONS);
+    const [portions, setPortions] = useState(initialPortions ?? MIN_PORTIONS);
     const [logIntake, { isLoading }] = useLogCalorieIntakeMutation();
+    const budget = useCalorieBudget();
 
     const total = scaleCaloriesForPortions(caloriesPerPortion, portions);
-    const mealLimit = currentUser?.meal_calorie_limit ?? null;
-    const mealLimitOverage =
-        mealLimit !== null && total > mealLimit ? total - mealLimit : null;
+    const goal = budget.goal;
+    // raw (unclamped) remaining - a negative value here means already over today, which
+    // this entry's total only adds to, so the same "> remaining" check covers both cases
+    const remaining = budget.remaining;
+    const projectedOver =
+        remaining !== null && total > remaining ? total - remaining : null;
 
     const handleClose = () => dispatch(closeModal(modalId));
 
@@ -99,13 +109,36 @@ export const LogIntakeModal = ({
                 {t("logIntakeModal.totalLabel", { total: formatKcal(total) })}
             </p>
 
-            {mealLimitOverage !== null && (
-                <p className={styles["log-intake-modal__warning"]}>
-                    <AlertTriangleMark size={ICON_SIZE} />
-                    {t("logIntakeModal.overMealLimit", {
-                        over: formatKcal(mealLimitOverage),
-                    })}
-                </p>
+            {goal !== null && remaining !== null && (
+                <div className={styles["log-intake-modal__budget"]}>
+                    <p className={styles["log-intake-modal__budget-summary"]}>
+                        {remaining < 0
+                            ? t("dietaryTab.summaryOver", {
+                                  consumed: formatKcal(
+                                      roundCalories(budget.consumed),
+                                  ),
+                                  goal: formatKcal(goal),
+                                  over: formatKcal(-roundCalories(remaining)),
+                              })
+                            : t("dietaryTab.summaryRemaining", {
+                                  consumed: formatKcal(
+                                      roundCalories(budget.consumed),
+                                  ),
+                                  goal: formatKcal(goal),
+                                  remaining: formatKcal(
+                                      roundCalories(remaining),
+                                  ),
+                              })}
+                    </p>
+                    {projectedOver !== null && (
+                        <p className={styles["log-intake-modal__warning"]}>
+                            <AlertTriangleMark size={ICON_SIZE} />
+                            {t("logIntakeModal.projectedOver", {
+                                over: formatKcal(roundCalories(projectedOver)),
+                            })}
+                        </p>
+                    )}
+                </div>
             )}
 
             <div className={styles["log-intake-modal__footer"]}>

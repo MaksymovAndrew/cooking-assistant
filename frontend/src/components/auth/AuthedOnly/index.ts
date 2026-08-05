@@ -1,0 +1,1 @@
+export { AuthedOnly } from "./AuthedOnly";

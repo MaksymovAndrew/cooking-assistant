@@ -1,8 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 
 import { PrivateRoute } from "components/layout/PrivateRoute";
+
+import type { LoginRedirectState } from "utils/loginRedirect";
 
 import { mockedGet } from "test/apiClientMock";
 import { makeTestStore } from "test/store";
@@ -20,6 +22,14 @@ const makeAuthError = (status: number) =>
         isAxiosError: true,
         response: { status, data: { error: "Unauthorized" } },
     });
+
+// stands in for LoginPage to assert the redirect carries the guest's intended destination
+function LoginPageStub() {
+    const location = useLocation();
+    const state = location.state as LoginRedirectState | null;
+
+    return <div>{state?.from?.pathname ?? "none"}</div>;
+}
 
 const renderWithChildren = () =>
     render(
@@ -87,6 +97,30 @@ describe("PrivateRoute", () => {
 
         expect(await screen.findByText(LOGIN)).toBeInTheDocument();
         expect(screen.queryByText(PROTECTED)).not.toBeInTheDocument();
+    });
+
+    it("should carry the page the guest was trying to reach on the redirect to login", async () => {
+        mockedGet.mockRejectedValue(makeAuthError(401));
+
+        render(
+            <Provider store={makeTestStore()}>
+                <MemoryRouter initialEntries={[PROTECTED_PATH]}>
+                    <Routes>
+                        <Route
+                            path={PROTECTED_PATH}
+                            element={
+                                <PrivateRoute>
+                                    <div>{PROTECTED}</div>
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route path={LOGIN_PATH} element={<LoginPageStub />} />
+                    </Routes>
+                </MemoryRouter>
+            </Provider>,
+        );
+
+        expect(await screen.findByText(PROTECTED_PATH)).toBeInTheDocument();
     });
 
     it("should show a session error when getMe rejects with a non-auth error", async () => {

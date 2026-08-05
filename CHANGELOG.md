@@ -25,6 +25,10 @@ changelogs and the tags and now track everything here against one shared version
 - Added: Browsing recipes and menus, and their reference data (ingredients, recipe types, menu categories), no longer requires being logged in.
 - Changed: API responses are now compressed, making pages that load a lot of data noticeably faster.
 
+### Frontend
+
+- Changed: Logging in now returns you to the page you were trying to reach, instead of always sending you to the home dashboard.
+
 ## 4.0 - 2026-08-04
 
 ### Backend

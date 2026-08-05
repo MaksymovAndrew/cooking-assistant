@@ -6,9 +6,9 @@ import { API_ROUTES } from "api/endpoints";
 import { useLoginForm } from "hooks/useLoginForm";
 
 import { mockedPost } from "test/apiClientMock";
-import { ROUTE_HOME } from "test/constants";
+import { ROUTE_HOME, ROUTE_LOGIN } from "test/constants";
 import { mockNavigate } from "test/router";
-import { renderHookWithStore } from "test/store";
+import { renderHookWithRouter } from "test/store";
 
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual<typeof ReactRouterDom>("react-router-dom"),
@@ -29,7 +29,13 @@ const makeError = (status: number, retryAfter: number | null = null) =>
         },
     });
 
-const renderLoginForm = () => renderHookWithStore(() => useLoginForm());
+const renderLoginForm = (
+    initialEntries?: { pathname: string; state?: unknown }[],
+) =>
+    renderHookWithRouter(
+        () => useLoginForm(),
+        initialEntries ? { initialEntries } : undefined,
+    );
 
 const fillCredentials = (result: {
     current: ReturnType<typeof useLoginForm>;
@@ -58,7 +64,32 @@ describe("useLoginForm", () => {
             login: "tester",
             password: "secret1",
         });
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME, {
+            replace: true,
+        });
+    });
+
+    it("should navigate back to where the user came from on a successful login", async () => {
+        mockedPost.mockResolvedValue({ data: null });
+
+        const { result } = renderLoginForm([
+            {
+                pathname: ROUTE_LOGIN,
+                state: {
+                    from: { pathname: "/menu/9", search: "", hash: "" },
+                },
+            },
+        ]);
+
+        fillCredentials(result);
+
+        await act(async () => {
+            await result.current.handleSubmit();
+        });
+
+        expect(mockNavigate).toHaveBeenCalledWith("/menu/9", {
+            replace: true,
+        });
     });
 
     it("should trim leading and trailing whitespace from the login before submitting", async () => {
@@ -302,7 +333,9 @@ describe("useLoginForm", () => {
                 login: "bob@example.com",
                 password: "secret1",
             });
-            expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME);
+            expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME, {
+                replace: true,
+            });
         });
     });
 

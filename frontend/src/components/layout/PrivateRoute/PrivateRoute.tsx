@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
@@ -14,6 +14,7 @@ import { useGetMeQuery } from "redux/services/authApi";
 
 import { ErrorState } from "components/ui/ErrorState";
 
+import type { LoginRedirectState } from "utils/loginRedirect";
 import { getQueryErrorStatus } from "utils/queryError";
 import { reloadPage } from "utils/reloadPage";
 
@@ -27,7 +28,8 @@ interface PrivateRouteProps {
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     const { t } = useTranslation();
-    // drives the session matchers; the slice tracks checking/authed/error
+    const location = useLocation();
+    // drives the session matchers; the slice tracks checking/authed/guest/error
     const { error } = useGetMeQuery(null);
     const isChecking = useAppSelector(selectIsChecking);
     const isAuthed = useAppSelector(selectIsAuthed);
@@ -39,7 +41,13 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     const isUnauthorized =
         status !== null && UNAUTHORIZED_STATUSES.includes(status);
 
-    if (isUnauthorized) return <Navigate to={ROUTES.login} replace />;
+    if (isUnauthorized) {
+        // carries where the guest was trying to go, so a successful login returns them there
+        // instead of dropping them on the home dashboard - see utils/loginRedirect
+        const state: LoginRedirectState = { from: location };
+
+        return <Navigate to={ROUTES.login} state={state} replace />;
+    }
 
     return (
         <div className={styles["private-route-error"]}>

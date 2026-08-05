@@ -2,6 +2,8 @@ import { useMemo } from "react";
 
 import type { RecipeFilterParams } from "types/recipe";
 
+import { useAppSelector } from "redux/hooks";
+import { selectIsGuest } from "redux/selectors/viewerSelectors";
 import { useGetMeQuery } from "redux/services/authApi";
 import {
     flattenPages,
@@ -55,12 +57,15 @@ export const useRecipeListView = (source: RecipeSource) => {
     // feeds the ingredients filter's search-and-pick UI - already cached by the ingredient picker/pantry pages, so this is a read, not a new request
     const { data: ingredientCatalog = [] } = useGetIngredientsQuery(null);
 
+    // a guest has no pantry: skipped so this list stays reachable without a 401 tripping the
+    // global auth redirect on a page that's public now
+    const isGuest = useAppSelector(selectIsGuest);
     // already fetched by the pantry page/home dashboard - a cache read, not a new request
     const {
         data: pantry = [],
         isLoading: isPantryLoading,
         isUninitialized: isPantryUninitialized,
-    } = useGetUserIngredientsQuery(null);
+    } = useGetUserIngredientsQuery(null, { skip: isGuest });
     const isPantryEmpty = isPantryFilterEmpty(
         filters.inPantry,
         pantry.length,

@@ -32,6 +32,8 @@ describe("LoginPage", () => {
             login: USERNAME,
             password: PASSWORD,
         });
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME);
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME, {
+            replace: true,
+        });
     });
 });

@@ -1,11 +1,15 @@
-import { Flame, Heart, Star } from "lucide-react";
+import { Flame, Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
 import type { MenuDetails } from "types/menu";
 
+import { useAppSelector } from "redux/hooks";
+import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
+
 import { MenuHeroStats } from "components/menu/MenuHero/MenuHeroStats";
+import { MenuHeroVisitorActions } from "components/menu/MenuHero/MenuHeroVisitorActions";
 import { MenuHeroActions } from "components/menu/MenuHeroActions";
 import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
@@ -26,7 +30,6 @@ interface MenuHeroProps {
     exceedsBudget?: boolean;
 }
 
-const FAVOURITE_ICON_SIZE = 17;
 const STAT_ICON_SIZE = 16;
 const RATING_ICON_SIZE = 13;
 
@@ -41,6 +44,9 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("menu");
+    const { canFavourite, canTrackCalories } = useAppSelector(
+        selectViewerCapabilities,
+    );
     const favouriteLabel = t("menuDetailsPage.favourite");
     const logIntakeLabel = t("menuDetailsPage.logIntake");
     const { hours, minutes } = splitCookingTime(totalCookingTime);
@@ -93,27 +99,13 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
             )}
 
             {!menu.isOwner && (
-                <div className={styles["menu-hero__visitor-actions"]}>
-                    <button
-                        type="button"
-                        disabled
-                        aria-label={favouriteLabel}
-                        className={styles["menu-hero__favourite"]}
-                    >
-                        <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
-                        {favouriteLabel}
-                    </button>
-                    {onLogIntake && (
-                        <Button
-                            variant="secondary"
-                            className={styles["menu-hero__visitor-log-intake"]}
-                            onClick={onLogIntake}
-                        >
-                            <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
-                            {logIntakeLabel}
-                        </Button>
-                    )}
-                </div>
+                <MenuHeroVisitorActions
+                    canFavourite={canFavourite}
+                    canTrackCalories={canTrackCalories}
+                    favouriteLabel={favouriteLabel}
+                    logIntakeLabel={logIntakeLabel}
+                    onLogIntake={onLogIntake}
+                />
             )}
 
             <MenuHeroStats

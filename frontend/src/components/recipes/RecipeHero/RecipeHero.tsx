@@ -1,12 +1,15 @@
-import { Flame, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeDetails } from "types/recipe";
 
+import { useAppSelector } from "redux/hooks";
+import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
+
 import { UtensilsMarkSimple } from "components/icons";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
-import { Button } from "components/ui/Button";
+import { RecipeHeroVisitorActions } from "components/recipes/RecipeHero/RecipeHeroVisitorActions";
 import { Chip } from "components/ui/Chip";
 import { OwnerActions } from "components/ui/OwnerActions";
 
@@ -41,6 +44,9 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
+    const { canFavourite, canTrackCalories } = useAppSelector(
+        selectViewerCapabilities,
+    );
     const favouriteLabel = t("recipeDetailsPage.favourite");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const formattedCookingTime =
@@ -76,14 +82,16 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                     size={IMAGE_ICON_SIZE}
                     className={styles["recipe-hero__image-icon"]}
                 />
-                <button
-                    type="button"
-                    disabled
-                    aria-label={favouriteLabel}
-                    className={styles["recipe-hero__favourite"]}
-                >
-                    <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
-                </button>
+                {canFavourite && (
+                    <button
+                        type="button"
+                        disabled
+                        aria-label={favouriteLabel}
+                        className={styles["recipe-hero__favourite"]}
+                    >
+                        <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
+                    </button>
+                )}
             </div>
 
             <Chip variant="type" className={styles["recipe-hero__chip"]}>
@@ -113,32 +121,12 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                     />
                 </div>
             ) : (
-                <div className={styles["recipe-hero__visitor-actions"]}>
-                    <button
-                        type="button"
-                        disabled
-                        aria-label={favouriteLabel}
-                        className={styles["recipe-hero__visitor-favourite"]}
-                    >
-                        <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
-                        {favouriteLabel}
-                    </button>
-                    {onLogIntake && (
-                        <Button
-                            variant="secondary"
-                            className={
-                                styles["recipe-hero__visitor-log-intake"]
-                            }
-                            onClick={onLogIntake}
-                        >
-                            <Flame
-                                size={FAVOURITE_ICON_SIZE}
-                                aria-hidden="true"
-                            />
-                            {t("recipeDetailsPage.logIntake")}
-                        </Button>
-                    )}
-                </div>
+                <RecipeHeroVisitorActions
+                    canFavourite={canFavourite}
+                    canTrackCalories={canTrackCalories}
+                    favouriteLabel={favouriteLabel}
+                    onLogIntake={onLogIntake}
+                />
             )}
         </div>
     );

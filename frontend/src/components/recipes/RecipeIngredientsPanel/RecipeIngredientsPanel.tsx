@@ -2,6 +2,9 @@ import { Check } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppSelector } from "redux/hooks";
+import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
+
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
 import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
@@ -39,6 +42,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     hasCustomCalories,
 }) => {
     const { t } = useTranslation("recipes");
+    const { canUsePantry } = useAppSelector(selectViewerCapabilities);
     const sorted = [...availability].sort((a, b) =>
         resolveIngredientName(a).localeCompare(resolveIngredientName(b)),
     );
@@ -58,7 +62,8 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                         key={ingredient.id}
                         className={[
                             styles["recipe-ingredients-panel__row"],
-                            !ingredient.have &&
+                            canUsePantry &&
+                                !ingredient.have &&
                                 styles[
                                     "recipe-ingredients-panel__row--missing"
                                 ],
@@ -66,26 +71,27 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                             .filter(Boolean)
                             .join(" ")}
                     >
-                        {ingredient.have ? (
-                            <Check
-                                size={CHECK_ICON_SIZE}
-                                aria-hidden="true"
-                                className={
-                                    styles[
-                                        "recipe-ingredients-panel__have-icon"
-                                    ]
-                                }
-                            />
-                        ) : (
-                            <span
-                                aria-hidden="true"
-                                className={
-                                    styles[
-                                        "recipe-ingredients-panel__missing-dot"
-                                    ]
-                                }
-                            />
-                        )}
+                        {canUsePantry &&
+                            (ingredient.have ? (
+                                <Check
+                                    size={CHECK_ICON_SIZE}
+                                    aria-hidden="true"
+                                    className={
+                                        styles[
+                                            "recipe-ingredients-panel__have-icon"
+                                        ]
+                                    }
+                                />
+                            ) : (
+                                <span
+                                    aria-hidden="true"
+                                    className={
+                                        styles[
+                                            "recipe-ingredients-panel__missing-dot"
+                                        ]
+                                    }
+                                />
+                            ))}
                         <span
                             className={styles["recipe-ingredients-panel__name"]}
                         >
@@ -138,7 +144,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                 </p>
             )}
 
-            {missingCount > 0 && (
+            {canUsePantry && missingCount > 0 && (
                 <RecipeIngredientsBanner
                     isOwner={isOwner}
                     haveCount={haveCount}

@@ -29,6 +29,7 @@ changelogs and the tags and now track everything here against one shared version
 
 - Added: You can now browse the full recipe list, individual recipes, the full menu list, and individual menus without an account - look around before you decide to join.
 - Changed: Logging in now returns you to the page you were trying to reach, instead of always sending you to the home dashboard.
+- Changed: Browsing without an account now hides pantry- and calorie-tracking specific bits (the favourite button, ingredient availability, missing-ingredient reminders) and offers a "Log in" prompt in their place instead of a broken or misleading control.
 
 ## 4.0 - 2026-08-04
 

@@ -13,7 +13,12 @@ import { MODAL_TYPE } from "redux/slices/uiSlice";
 import { ModalRoot } from "components/modals";
 
 import MenuDetailsPage from "pages/menu/MenuDetailsPage";
-import { mockedDelete, mockedGet, mockGetByUrl } from "test/apiClientMock";
+import {
+    makeAxiosError,
+    mockedDelete,
+    mockedGet,
+    mockGetByUrl,
+} from "test/apiClientMock";
 import {
     BTN_DELETE_MENU,
     BTN_EDIT_MENU,
@@ -87,7 +92,9 @@ const mockMenuDetails = () => {
     });
 };
 
-const renderPage = (store = makeTestStore()) => {
+const renderPage = (
+    store = makeTestStore({ session: { status: "authed" } }),
+) => {
     const view = render(
         <Provider store={store}>
             <MemoryRouter initialEntries={["/menu/1"]}>
@@ -240,5 +247,30 @@ describe("MenuDetailsPage", () => {
             title: TITLE,
             caloriesPerPortion: 600,
         });
+    });
+
+    it("should not render the missing-ingredients aside for a guest when the menu has no allergens", async () => {
+        // /api/me must actually reject (not resolve with null) so the session stays "guest"
+        // instead of AppHeader/AppShell's own getMe call flipping it back to "authed"
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.reject(makeAxiosError(401, "Unauthorized"));
+            }
+
+            const handlers: Record<string, unknown> = {
+                [API_ROUTES.menu.byId(1)]: SAMPLE,
+                [API_ROUTES.userIngredients.list]: [],
+            };
+
+            return url in handlers
+                ? Promise.resolve({ data: handlers[url] })
+                : Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        renderPage(makeTestStore({ session: { status: "guest" } }));
+        await screen.findByRole("heading", { name: TITLE });
+
+        expect(screen.queryByText("Carrot")).not.toBeInTheDocument();
+        expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     });
 });

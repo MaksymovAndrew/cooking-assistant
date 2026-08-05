@@ -6,7 +6,6 @@ interface MenuRow {
     menuContent: string;
     categoryName: string;
     category_id: number;
-    personId: number;
     isOwner: boolean;
 }
 
@@ -14,7 +13,6 @@ interface MenuRecipeRow {
     recipe_id: number;
     title: string;
     content: string;
-    person_id: number;
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
@@ -56,7 +54,6 @@ export async function findMenuByIdWithRecipes(
         m.menu_content AS menuContent,
         mc.category_name AS categoryName,
         m.category_id,
-        m.person_id AS personId,
         COALESCE(m.person_id = $2, false) AS "isOwner"
       FROM menu m
       LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
@@ -75,7 +72,6 @@ export async function findMenuByIdWithRecipes(
         r.id AS recipe_id,
         r.title,
         r.content,
-        r.person_id,
         r.type_id,
         r.creation_date,
         r.cooking_time,

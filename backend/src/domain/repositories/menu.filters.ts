@@ -10,6 +10,6 @@ export interface MenuSearchRow {
     title: string;
     categoryName: string;
     menuContent: string;
-    person_id: number;
+    isOwner: boolean;
     recipe_count: number;
 }

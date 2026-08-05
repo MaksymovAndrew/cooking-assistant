@@ -37,8 +37,9 @@ export default class PgMenuRepository implements MenuRepository {
 
     async findAll(
         filters: MenuFilters,
+        userId: number | null,
     ): Promise<PaginatedResult<MenuSearchRow>> {
-        return findAllMenus(this.pool, filters);
+        return findAllMenus(this.pool, filters, userId);
     }
 
     async findAllUnpaginated(): Promise<unknown[]> {

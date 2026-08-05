@@ -11,6 +11,7 @@ import {
 import { ROUTES } from "constants/routes";
 
 import { OfflineModal } from "components/connectivity/OfflineModal";
+import { HomeRoute } from "components/layout/HomeRoute";
 import { PageSpinner } from "components/layout/PageSpinner";
 import { PrivateRoute } from "components/layout/PrivateRoute";
 import { RouteErrorBoundary } from "components/layout/RouteErrorBoundary";
@@ -28,6 +29,9 @@ const ResetPasswordPage = React.lazy(
 );
 const VerifyEmailPage = React.lazy(() => import("pages/auth/VerifyEmailPage"));
 const HomePage = React.lazy(() => import("pages/home/HomePage"));
+const GuestLandingPage = React.lazy(
+    () => import("pages/home/GuestLandingPage"),
+);
 const ChangeMenuPage = React.lazy(() => import("pages/menu/ChangeMenuPage"));
 const CreateMenuPage = React.lazy(() => import("pages/menu/CreateMenuPage"));
 const MenuDetailsPage = React.lazy(() => import("pages/menu/MenuDetailsPage"));
@@ -59,10 +63,7 @@ interface AppRoute {
     element: ReactElement;
 }
 
-// / stays private until the guest landing page lands (see PUBLIC_ROUTES) - logged-in / keeps
-// rendering the dashboard either way
 const PRIVATE_ROUTES: AppRoute[] = [
-    { path: ROUTES.home, element: <HomePage /> },
     { path: ROUTES.myRecipes, element: <UserRecipesPage /> },
     { path: ROUTES.myMenus, element: <UserMenuPage /> },
     { path: ROUTES.addRecipe, element: <CreateRecipePage /> },
@@ -112,6 +113,15 @@ const router = createBrowserRouter(
                 element={<ResetPasswordPage />}
             />
             <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
+            <Route
+                path={ROUTES.home}
+                element={
+                    <HomeRoute
+                        authedElement={<HomePage />}
+                        guestElement={<GuestLandingPage />}
+                    />
+                }
+            />
             {PUBLIC_ROUTES.map(({ path, element }) => (
                 <Route key={path} path={path} element={element} />
             ))}

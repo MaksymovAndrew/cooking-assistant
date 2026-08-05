@@ -1,9 +1,11 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { useAppDispatch } from "redux/hooks";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { useIngredientCatalog } from "hooks/useIngredientCatalog";
+import { usePageTitle } from "hooks/usePageTitle";
 import { usePantryFilters } from "hooks/usePantryFilters";
 
 import { AddIngredientModal } from "components/ingredients/AddIngredientModal";
@@ -17,8 +19,11 @@ import { resolvePantryIngredientName } from "utils/ingredientName";
 import styles from "./IngredientsPage.module.scss";
 
 const IngredientsPage: React.FC = () => {
+    const { t } = useTranslation("ingredients");
     const dispatch = useAppDispatch();
     const catalog = useIngredientCatalog();
+
+    usePageTitle(t("heading"));
     const filters = usePantryFilters({
         personIngredients: catalog.personIngredients,
         sourceIngredients: catalog.isEditingQuantity

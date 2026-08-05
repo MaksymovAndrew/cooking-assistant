@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
+import { usePageTitle } from "hooks/usePageTitle";
 import { useUpdateRecipePage } from "hooks/useUpdateRecipePage";
 
 import { RecipeForm } from "components/forms/RecipeForm";
@@ -16,6 +17,8 @@ const ChangeRecipePage: React.FC = () => {
     const { t } = useTranslation("recipes");
     const { form, allIngredients, allTypes, isLoading, handleSubmit } =
         useUpdateRecipePage();
+
+    usePageTitle(t("changeRecipePage.heading"));
 
     return (
         <AppShell>

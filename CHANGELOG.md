@@ -28,6 +28,7 @@ changelogs and the tags and now track everything here against one shared version
 ### Frontend
 
 - Added: You can now browse the full recipe list, individual recipes, the full menu list, and individual menus without an account - look around before you decide to join.
+- Added: Visiting the site without an account now shows a guest landing page with a quick search, recipe-type shortcuts, a preview of recent recipes, and a preview of menus, all linking into the full browsing experience.
 - Changed: Logging in now returns you to the page you were trying to reach, instead of always sending you to the home dashboard.
 - Changed: Browsing without an account now hides pantry- and calorie-tracking specific bits (the favourite button, ingredient availability, missing-ingredient reminders) and offers a "Log in" prompt in their place instead of a broken or misleading control.
 

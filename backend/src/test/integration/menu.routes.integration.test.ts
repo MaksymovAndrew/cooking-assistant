@@ -15,7 +15,7 @@ const CREATE_MENU_PATH = "/api/create-menu";
 const MENU_ROW_EXTRAS = {
     categoryName: "Dinner",
     menuContent: "Simple dinners",
-    person_id: 7,
+    isOwner: false,
     recipe_count: 2,
 };
 
@@ -88,10 +88,10 @@ describe("menu routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(deps.menuRepository.findAll).toHaveBeenCalledWith({
-            limit: 10,
-            offset: 20,
-        });
+        expect(deps.menuRepository.findAll).toHaveBeenCalledWith(
+            { limit: 10, offset: 20 },
+            1,
+        );
     });
 
     it("should return a 400 error body for an out-of-range limit", async () => {

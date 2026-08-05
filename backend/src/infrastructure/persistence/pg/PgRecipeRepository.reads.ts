@@ -14,7 +14,17 @@ interface RecipeListRow {
     ingredients: string[];
 }
 
-interface RecipeDetailRow extends RecipeListRow {
+interface RecipeDetailRow {
+    id: number;
+    title: string;
+    content: string;
+    type_id: number | null;
+    creation_date: Date;
+    cooking_time: number | null;
+    calories_override: number | null;
+    calories_computed: number | null;
+    type_name: string | null;
+    ingredients: string[];
     isOwner: boolean;
     calories_per_portion: number | null;
 }
@@ -38,7 +48,8 @@ export async function findRecipeByIdWithIngredients(
     currentUserId: number | null,
 ): Promise<unknown> {
     const result = await pool.query<RecipeDetailRow>(
-        `SELECT r.*,
+        `SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
+                  r.calories_override, r.calories_computed,
                   COALESCE(r.person_id = $2, false) AS "isOwner",
                   COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                   json_agg(

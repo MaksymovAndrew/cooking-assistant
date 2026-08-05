@@ -50,7 +50,10 @@ export default class MenuController {
     }
 
     getAll: RequestHandler = async (req, res) => {
-        const menus = await this.getAllMenusUseCase.execute(req.query);
+        const menus = await this.getAllMenusUseCase.execute(
+            getOptionalUserId(req),
+            req.query,
+        );
 
         res.status(200).json(menus);
     };

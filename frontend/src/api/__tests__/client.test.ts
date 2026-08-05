@@ -105,6 +105,15 @@ describe("handleAuthError", () => {
         expect(jest.mocked(redirectToLogin)).not.toHaveBeenCalled();
     });
 
+    it("should not redirect on a 401 from the home route (guest landing page)", async () => {
+        window.history.pushState({}, "", ROUTES.home);
+        const error = makeAuthError(401);
+
+        await expect(handleAuthError(error)).rejects.toBe(error);
+
+        expect(jest.mocked(redirectToLogin)).not.toHaveBeenCalled();
+    });
+
     it("should not redirect on a 401 from a recipe detail page - a dynamic :id route (public for guests)", async () => {
         window.history.pushState({}, "", "/recipe/236");
         const error = makeAuthError(401);

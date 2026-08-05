@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
 
+import { usePageTitle } from "hooks/usePageTitle";
 import { useVerifyEmail } from "hooks/useVerifyEmail";
 
 import { AuthLayout } from "components/auth/AuthLayout";
@@ -11,9 +12,16 @@ import { PageSpinner } from "components/layout/PageSpinner";
 import { EmptyState } from "components/ui/EmptyState";
 import { LinkButton } from "components/ui/LinkButton";
 
+const STATUS_TITLE_KEY = {
+    success: "verifyEmailPage.successHeading",
+    invalid: "verifyEmailPage.invalidHeading",
+} as const;
+
 const VerifyEmailPage: React.FC = () => {
     const { t } = useTranslation("auth");
     const { status, isAuthed } = useVerifyEmail();
+
+    usePageTitle(status === "loading" ? null : t(STATUS_TITLE_KEY[status]));
 
     return (
         <AuthLayout

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
+import { usePageTitle } from "hooks/usePageTitle";
 import { useRegisterForm } from "hooks/useRegisterForm";
 
 import { AuthLayout } from "components/auth/AuthLayout";
@@ -14,6 +15,8 @@ import styles from "./AuthPage.module.scss";
 const RegisterPage: React.FC = () => {
     const { t } = useTranslation("auth");
     const form = useRegisterForm();
+
+    usePageTitle(t("registerPage.heading"));
 
     return (
         <AuthLayout

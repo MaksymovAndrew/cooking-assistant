@@ -34,7 +34,6 @@ jest.mock("react-router-dom", () => ({
 jest.mock("api/client");
 
 const TITLE = "Weekday menu";
-const OWNER_ID = 5;
 const SAMPLE: MenuDetails = {
     menu: {
         id: 1,
@@ -42,7 +41,6 @@ const SAMPLE: MenuDetails = {
         categoryname: "Lunch",
         menucontent: "quick",
         category_id: 2,
-        personid: OWNER_ID,
         isOwner: true,
     },
     recipes: [

@@ -31,6 +31,7 @@ const LIST: RecipeSearchResultItem[] = [
         cooking_time: 30,
         calories_per_portion: null,
         ingredients: [{ id: 1, name: "Tomato", allergens: [] }],
+        isOwner: false,
     },
 ];
 const PAGE = { items: LIST, total: LIST.length };

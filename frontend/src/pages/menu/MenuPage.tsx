@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { MENU_SOURCE, useMenuListView } from "hooks/useMenuListView";
+import { usePageTitle } from "hooks/usePageTitle";
 
 import { MenuListView } from "components/menu/MenuListView";
 
@@ -15,6 +16,8 @@ const MenuPage: React.FC = () => {
                   names: list.selectedCategoryNames,
               })
             : t("menuPage.allMenus");
+
+    usePageTitle(heading);
 
     return (
         <MenuListView

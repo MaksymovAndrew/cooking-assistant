@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { useGetMeQuery } from "redux/services/authApi";
 
+import { usePageTitle } from "hooks/usePageTitle";
 import { useResendVerificationCooldown } from "hooks/useResendVerificationCooldown";
 
 import { AppShell } from "components/layout/AppShell";
@@ -22,6 +23,8 @@ const SettingsPage: React.FC = () => {
         useResendVerificationCooldown();
     const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
     const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
+
+    usePageTitle(t("settingsPage.heading"));
 
     return (
         <AppShell>

@@ -7,9 +7,12 @@ import { validate } from "application/validation/validate";
 export default class GetAllMenus {
     constructor(private menuRepository: Pick<MenuRepository, "findAll">) {}
 
-    async execute(filters: unknown): Promise<PaginatedResult<unknown>> {
+    async execute(
+        userId: number | null,
+        filters: unknown,
+    ): Promise<PaginatedResult<unknown>> {
         const validFilters = validate(menuFiltersSchema, filters);
 
-        return this.menuRepository.findAll(validFilters);
+        return this.menuRepository.findAll(validFilters, userId);
     }
 }

@@ -75,7 +75,7 @@ describe("PgMenuRepository search (real Postgres)", () => {
         await createOwnedMenu(unique("Unrelated menu"), categoryId);
 
         const filters: MenuFilters = { menu_name: uniqueTitle };
-        const result = await menuRepository.findAll(filters);
+        const result = await menuRepository.findAll(filters, null);
 
         expect(result.items).toEqual([expect.objectContaining({ id: menuId })]);
         expect(result.total).toBe(1);
@@ -92,9 +92,10 @@ describe("PgMenuRepository search (real Postgres)", () => {
 
         await createOwnedMenu(decoyTitle, categoryId);
 
-        const result = await menuRepository.findAll({
-            menu_name: `${tag} week 1%`,
-        });
+        const result = await menuRepository.findAll(
+            { menu_name: `${tag} week 1%` },
+            null,
+        );
 
         expect(result.items).toEqual([expect.objectContaining({ id: menuId })]);
         expect(result.total).toBe(1);
@@ -107,9 +108,10 @@ describe("PgMenuRepository search (real Postgres)", () => {
             categoryId,
         );
 
-        const result = await menuRepository.findAll({
-            category_ids: String(categoryId),
-        });
+        const result = await menuRepository.findAll(
+            { category_ids: String(categoryId) },
+            null,
+        );
 
         expect(result.items).toEqual([expect.objectContaining({ id: menuId })]);
         expect(result.total).toBe(1);
@@ -122,16 +124,14 @@ describe("PgMenuRepository search (real Postgres)", () => {
             await createOwnedMenu(unique(`Pagination menu ${i}`), categoryId);
         }
 
-        const firstPage = await menuRepository.findAll({
-            category_ids: String(categoryId),
-            limit: 2,
-            offset: 0,
-        });
-        const secondPage = await menuRepository.findAll({
-            category_ids: String(categoryId),
-            limit: 2,
-            offset: 2,
-        });
+        const firstPage = await menuRepository.findAll(
+            { category_ids: String(categoryId), limit: 2, offset: 0 },
+            null,
+        );
+        const secondPage = await menuRepository.findAll(
+            { category_ids: String(categoryId), limit: 2, offset: 2 },
+            null,
+        );
 
         expect(firstPage.items).toHaveLength(2);
         expect(firstPage.total).toBe(3);
@@ -171,9 +171,10 @@ describe("PgMenuRepository search (real Postgres)", () => {
             emptyMenuId,
         ]);
 
-        const result = (await menuRepository.findAll({
-            category_ids: String(categoryId),
-        })) as { items: { id: number; recipe_count: number }[] };
+        const result = (await menuRepository.findAll(
+            { category_ids: String(categoryId) },
+            null,
+        )) as { items: { id: number; recipe_count: number }[] };
 
         expect(result.items).toContainEqual(
             expect.objectContaining({

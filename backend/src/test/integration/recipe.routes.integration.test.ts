@@ -13,7 +13,7 @@ const RECIPE_12_PATH = "/api/recipe/12";
 
 const RECIPE_ROW_EXTRAS = {
     content: "Boil tomatoes",
-    person_id: 7,
+    isOwner: false,
     type_id: 1,
     creation_date: new Date("2026-01-01T00:00:00.000Z"),
     cooking_time: 30,

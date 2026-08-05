@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { ROUTES } from "constants/routes";
 
 import { useCreateRecipePage } from "hooks/useCreateRecipePage";
+import { usePageTitle } from "hooks/usePageTitle";
 
 import { RecipeForm } from "components/forms/RecipeForm";
 import { AppShell } from "components/layout/AppShell";
@@ -16,6 +17,8 @@ const CreateRecipePage: React.FC = () => {
     const { t } = useTranslation("recipes");
     const { form, allIngredients, allTypes, handleSubmit } =
         useCreateRecipePage();
+
+    usePageTitle(t("createRecipePage.heading"));
 
     return (
         <AppShell>

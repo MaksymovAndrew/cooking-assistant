@@ -1,0 +1,91 @@
+@use "styles/abstracts" as *;
+
+.guest-landing {
+    display: flex;
+    flex-direction: column;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--s-4) var(--s-6);
+
+    @include respond-to(tablet) {
+        padding: 0 var(--s-6) var(--s-7);
+    }
+}
+
+.guest-landing-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    padding: var(--s-5) 0;
+
+    &--menus {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: flex;
+        }
+    }
+
+    &__header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--s-3);
+    }
+
+    &__title {
+        margin: 0;
+        color: var(--text);
+        letter-spacing: -0.01em;
+        font:
+            600 19px Fraunces,
+            serif;
+
+        @include respond-to(tablet) {
+            font-size: 22px;
+        }
+    }
+
+    &__see-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--brand);
+        white-space: nowrap;
+        font:
+            600 14px Inter,
+            sans-serif;
+
+        @include focus-ring;
+    }
+
+    &__recipe-grid {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-3);
+
+        @include respond-to(tablet) {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--s-4);
+        }
+
+        @include respond-to(desktop) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    &__menu-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-4);
+
+        @include respond-to(tablet) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include respond-to(desktop) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}

@@ -32,6 +32,7 @@ const RECIPE: RecipeSearchResultItem = {
     cooking_time: 60,
     calories_per_portion: null,
     ingredients: [],
+    isOwner: true,
 };
 const MENU: Menu = {
     id: 1,

@@ -21,13 +21,16 @@ const MENU_LIST_GROUP_BY = ` GROUP BY m.menu_id, mc.category_name`;
 // menu_id is the primary key, so ordering by it is already a deterministic tie-breaker
 const MENU_ORDER_BY = ` ORDER BY m.menu_id DESC`;
 
-const MENU_LIST_SELECT = `
+// person_id itself never leaves the server - guests and other users have no business seeing an
+// internal owner id, only whether the current viewer owns it, so isOwner is computed here instead
+function buildMenuListSelect(ownerPlaceholder: string): string {
+    return `
       SELECT
         m.menu_id AS id,
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
-        m.person_id AS person_id,
+        COALESCE(m.person_id = ${ownerPlaceholder}, false) AS "isOwner",
         COUNT(DISTINCT mr.recipe_id)::int AS recipe_count,
         -- cast: COUNT() is bigint, which pg returns as a string, not a number
         COUNT(*) OVER()::int AS total_count
@@ -35,20 +38,24 @@ const MENU_LIST_SELECT = `
              LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
              LEFT JOIN menu_recipe mr ON mr.menu_id = m.menu_id
     `;
+}
 
 // shared tail of both menu list queries: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed
 async function runMenuSearch(
     pool: Pool,
     builder: SqlFilterBuilder,
     filters: MenuFilters,
+    userId: number | null,
 ): Promise<PaginatedResult<MenuSearchRow>> {
+    const [ownerPlaceholder] = builder.bindTail(userId);
+
     for (const clause of MENU_FILTER_CLAUSES) {
         if (clause.applies(filters)) {
             clause.apply(builder, filters);
         }
     }
 
-    let query = `${MENU_LIST_SELECT}${builder.whereClause()}${MENU_LIST_GROUP_BY}${MENU_ORDER_BY}`;
+    let query = `${buildMenuListSelect(ownerPlaceholder)}${builder.whereClause()}${MENU_LIST_GROUP_BY}${MENU_ORDER_BY}`;
 
     const [limitPlaceholder, offsetPlaceholder] = builder.bindTail(
         filters.limit ?? PAGINATION.DEFAULT_LIMIT,
@@ -68,8 +75,9 @@ async function runMenuSearch(
 export async function findAllMenus(
     pool: Pool,
     filters: MenuFilters,
+    userId: number | null,
 ): Promise<PaginatedResult<MenuSearchRow>> {
-    return runMenuSearch(pool, new SqlFilterBuilder(), filters);
+    return runMenuSearch(pool, new SqlFilterBuilder(), filters, userId);
 }
 
 export async function searchPersonMenus(
@@ -81,6 +89,7 @@ export async function searchPersonMenus(
         pool,
         new SqlFilterBuilder("m.person_id = $1", [personId]),
         filters,
+        personId,
     );
 }
 

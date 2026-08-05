@@ -12,6 +12,7 @@ import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
+import { usePageTitle } from "hooks/usePageTitle";
 
 import { AppShell } from "components/layout/AppShell";
 import { MenuHero } from "components/menu/MenuHero";
@@ -41,6 +42,8 @@ const MenuDetailsPage: React.FC = () => {
         caloriesPerPortion: menuCalories,
     });
     const exceedsBudget = useExceedsCalorieBudget(menuCalories);
+
+    usePageTitle(menu?.menu.title);
 
     if (isError) {
         return (

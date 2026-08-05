@@ -189,35 +189,6 @@ describe("useRecipeListView", () => {
         }
     });
 
-    it("should expose the current user's id, for per-item ownership checks in the all-recipes view", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.recipeTypes.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.ingredients.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.userIngredients.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.calories.intake) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.recipes.byFilters) {
-                return Promise.resolve({ data: { items: [], total: 0 } });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
-
-        const { result } = await setup();
-
-        expect(result.current.currentUserId).toBe(CURRENT_USER.id);
-    });
-
     it("should report noRecipes once loading succeeds with zero results", async () => {
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {

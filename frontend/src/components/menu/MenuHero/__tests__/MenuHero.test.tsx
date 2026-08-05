@@ -21,7 +21,6 @@ const BASE_MENU: MenuDetails["menu"] = {
     categoryname: "Dinner",
     menucontent: "Slow-cooked, soul-warming Sunday evening meals.",
     category_id: 1,
-    personid: 1,
     isOwner: false,
 };
 

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { ROUTES } from "constants/routes";
 
 import { useForgotPasswordForm } from "hooks/useForgotPasswordForm";
+import { usePageTitle } from "hooks/usePageTitle";
 
 import { AuthLayout } from "components/auth/AuthLayout";
 import { ForgotPasswordForm } from "components/forms/auth/ForgotPasswordForm";
@@ -16,6 +17,14 @@ import styles from "./AuthPage.module.scss";
 const ForgotPasswordPage: React.FC = () => {
     const { t } = useTranslation("auth");
     const form = useForgotPasswordForm();
+
+    usePageTitle(
+        t(
+            form.submitted
+                ? "forgotPasswordPage.submittedHeading"
+                : "forgotPasswordPage.heading",
+        ),
+    );
 
     return (
         <AuthLayout

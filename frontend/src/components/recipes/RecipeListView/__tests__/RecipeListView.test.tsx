@@ -24,6 +24,7 @@ const RECIPES: RecipeSearchResultItem[] = [
         cooking_time: 60,
         ingredients: [],
         calories_per_portion: null,
+        isOwner: false,
     },
 ];
 
@@ -325,14 +326,13 @@ describe("RecipeListView", () => {
         );
     });
 
-    it("should mark a card as mine when its person_id matches the current user, even without the mine prop", () => {
+    it("should mark a card as mine when the server flags it as owned, even without the mine prop", () => {
         renderWithRouter(
             <RecipeListView
                 {...baseProps}
-                recipes={[{ ...RECIPES[0], person_id: 7 }]}
+                recipes={[{ ...RECIPES[0], isOwner: true }]}
                 noRecipes={false}
                 error={null}
-                currentUserId={7}
             />,
         );
 
@@ -345,10 +345,9 @@ describe("RecipeListView", () => {
         renderWithRouter(
             <RecipeListView
                 {...baseProps}
-                recipes={[{ ...RECIPES[0], person_id: 7 }]}
+                recipes={[{ ...RECIPES[0], isOwner: false }]}
                 noRecipes={false}
                 error={null}
-                currentUserId={9}
             />,
         );
 

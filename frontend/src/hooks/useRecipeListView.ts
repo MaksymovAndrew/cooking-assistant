@@ -4,7 +4,6 @@ import type { RecipeFilterParams } from "types/recipe";
 
 import { useAppSelector } from "redux/hooks";
 import { selectIsAuthed } from "redux/selectors/sessionSelectors";
-import { useGetMeQuery } from "redux/services/authApi";
 import {
     flattenPages,
     getPaginatedTotal,
@@ -83,8 +82,6 @@ export const useRecipeListView = (source: RecipeSource) => {
     });
     const active = isPerson ? byPerson : byFilters;
 
-    // already fetched by PrivateRoute on mount, so this is a cache read, not a new request - used to flag the current user's own recipes in the "all" list
-    const { data: currentUser } = useGetMeQuery(null);
     // computed once here, not per-card, so every RecipeCard just reads a plain boolean prop
     const { goal: calorieGoal, remaining: calorieRemaining } =
         useCalorieBudget();
@@ -120,7 +117,6 @@ export const useRecipeListView = (source: RecipeSource) => {
         recipes,
         calorieGoal,
         calorieRemaining,
-        currentUserId: currentUser?.id ?? null,
         error: !hasLoadedRecipes ? errorMessage : null,
         noRecipes: isRecipeListEmpty(
             isPantryEmpty,

@@ -15,9 +15,13 @@ interface RecipeSearchQueryRow extends RecipeSearchRow {
     total_count: number;
 }
 
-const BASE_RECIPE_SELECT = `
-        SELECT r.id, r.title, r.content, r.person_id, r.type_id, r.creation_date, r.cooking_time,
+// person_id itself never leaves the server - guests and other users have no business seeing an
+// internal owner id, only whether the current viewer owns it, so isOwner is computed here instead
+function buildBaseRecipeSelect(ownerPlaceholder: string): string {
+    return `
+        SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
                COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
+               COALESCE(r.person_id = ${ownerPlaceholder}, false) AS "isOwner",
                rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name, 'allergens', i.allergens)) AS ingredients,
                -- cast: COUNT() is bigint, which pg returns as a string, not a number
                COUNT(*) OVER()::int AS total_count
@@ -26,6 +30,7 @@ const BASE_RECIPE_SELECT = `
                LEFT JOIN ingredients i ON ri.ingredient_id = i.id
                LEFT JOIN recipe_types rt ON r.type_id = rt.id
       `;
+}
 
 // every branch ends with the ", id" tie-breaker so OFFSET pagination never duplicates or skips rows
 function buildRecipeOrderBy(sortOrder?: "asc" | "desc"): string {
@@ -43,13 +48,15 @@ async function runRecipeSearch(
     filters: RecipeFilters,
     userId: number | null,
 ): Promise<PaginatedResult<RecipeSearchRow>> {
+    const [ownerPlaceholder] = builder.bindTail(userId);
+
     for (const clause of RECIPE_FILTER_CLAUSES) {
         if (clause.applies(filters)) {
             clause.apply(builder, filters, { userId });
         }
     }
 
-    let query = `${BASE_RECIPE_SELECT}${builder.whereClause()} GROUP BY r.id, rt.type_name`;
+    let query = `${buildBaseRecipeSelect(ownerPlaceholder)}${builder.whereClause()} GROUP BY r.id, rt.type_name`;
 
     query += buildRecipeOrderBy(filters.sort_order);
 

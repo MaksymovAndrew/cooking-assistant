@@ -22,9 +22,9 @@ describe("GetAllMenus", () => {
 
         menuRepository.findAll.mockResolvedValue(paginated);
 
-        const result = await useCase.execute(filters);
+        const result = await useCase.execute(7, filters);
 
-        expect(menuRepository.findAll).toHaveBeenCalledWith(filters);
+        expect(menuRepository.findAll).toHaveBeenCalledWith(filters, 7);
         expect(result).toEqual(paginated);
     });
 
@@ -34,18 +34,29 @@ describe("GetAllMenus", () => {
 
         menuRepository.findAll.mockResolvedValue(paginated);
 
-        await useCase.execute({ limit: "10", offset: "20" });
+        await useCase.execute(7, { limit: "10", offset: "20" });
 
-        expect(menuRepository.findAll).toHaveBeenCalledWith({
-            limit: 10,
-            offset: 20,
-        });
+        expect(menuRepository.findAll).toHaveBeenCalledWith(
+            { limit: 10, offset: 20 },
+            7,
+        );
+    });
+
+    it("should pass a null userId through for a guest requester", async () => {
+        const { useCase, menuRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        menuRepository.findAll.mockResolvedValue(paginated);
+
+        await useCase.execute(null, {});
+
+        expect(menuRepository.findAll).toHaveBeenCalledWith({}, null);
     });
 
     it("should throw a 400 ValidationError when offset is negative", async () => {
         const { useCase, menuRepository } = setup();
 
-        const error = await catchError(useCase.execute({ offset: -1 }));
+        const error = await catchError(useCase.execute(7, { offset: -1 }));
 
         expect(error).toBeAppError(
             ValidationError,
@@ -59,7 +70,7 @@ describe("GetAllMenus", () => {
         const { useCase, menuRepository } = setup();
 
         const error = await catchError(
-            useCase.execute({ category_ids: "abc" }),
+            useCase.execute(7, { category_ids: "abc" }),
         );
 
         expect(error).toBeAppError(

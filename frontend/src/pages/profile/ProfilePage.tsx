@@ -2,6 +2,7 @@ import { Heart } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { usePageTitle } from "hooks/usePageTitle";
 import { PROFILE_TAB, useProfilePage } from "hooks/useProfilePage";
 
 import { AppShell } from "components/layout/AppShell";
@@ -19,6 +20,8 @@ const ProfilePage: React.FC = () => {
     const { t } = useTranslation("profile");
     const profile = useProfilePage();
     const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+
+    usePageTitle(t("common:nav.profile"));
 
     return (
         <AppShell>

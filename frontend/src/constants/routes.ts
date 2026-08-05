@@ -48,6 +48,7 @@ export const profileDietaryPath = (): string => `${ROUTES.profile}?tab=dietary`;
 // route patterns (":id" and all), not literal paths - matched against the current location with
 // react-router's matchPath, since a dynamic segment never equals its own pattern string
 export const PUBLIC_PATHS: string[] = [
+    ROUTES.home,
     ROUTES.login,
     ROUTES.registration,
     ROUTES.forgotPassword,

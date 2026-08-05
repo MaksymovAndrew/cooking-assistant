@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
+import { usePageTitle } from "hooks/usePageTitle";
+
 import { DonburiMarkDetailed } from "components/icons";
 import { AppShell } from "components/layout/AppShell";
 import { Button } from "components/ui/Button";
@@ -17,6 +19,9 @@ const BACK_ICON_SIZE = 16;
 const NotFoundPage: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const heading = t("notFound.heading");
+
+    usePageTitle(heading);
 
     return (
         <AppShell>
@@ -33,9 +38,7 @@ const NotFoundPage: React.FC = () => {
                 <p className={styles["not-found__numeral"]} aria-hidden="true">
                     404
                 </p>
-                <h1 className={styles["not-found__heading"]}>
-                    {t("notFound.heading")}
-                </h1>
+                <h1 className={styles["not-found__heading"]}>{heading}</h1>
                 <p className={styles["not-found__description"]}>
                     {t("notFound.description")}
                 </p>
@@ -48,7 +51,7 @@ const NotFoundPage: React.FC = () => {
                 </Button>
                 <nav
                     className={styles["not-found__links"]}
-                    aria-label={t("notFound.heading")}
+                    aria-label={heading}
                 >
                     <Link to={ROUTES.allRecipes}>{t("notFound.recipes")}</Link>
                     <span aria-hidden="true">·</span>

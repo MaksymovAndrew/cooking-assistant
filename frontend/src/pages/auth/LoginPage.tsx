@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { ROUTES } from "constants/routes";
 
 import { useLoginForm } from "hooks/useLoginForm";
+import { usePageTitle } from "hooks/usePageTitle";
 
 import { AuthLayout } from "components/auth/AuthLayout";
 import { LoginForm } from "components/forms/auth/LoginForm";
@@ -14,6 +15,8 @@ import styles from "./AuthPage.module.scss";
 const LoginPage: React.FC = () => {
     const { t } = useTranslation("auth");
     const form = useLoginForm();
+
+    usePageTitle(t("loginPage.heading"));
 
     return (
         <AuthLayout

@@ -95,4 +95,31 @@ describe("handleAuthError", () => {
 
         expect(jest.mocked(redirectToLogin)).not.toHaveBeenCalled();
     });
+
+    it("should not redirect on a 401 from the all-recipes page (public for guests)", async () => {
+        window.history.pushState({}, "", ROUTES.allRecipes);
+        const error = makeAuthError(401);
+
+        await expect(handleAuthError(error)).rejects.toBe(error);
+
+        expect(jest.mocked(redirectToLogin)).not.toHaveBeenCalled();
+    });
+
+    it("should not redirect on a 401 from a recipe detail page - a dynamic :id route (public for guests)", async () => {
+        window.history.pushState({}, "", "/recipe/236");
+        const error = makeAuthError(401);
+
+        await expect(handleAuthError(error)).rejects.toBe(error);
+
+        expect(jest.mocked(redirectToLogin)).not.toHaveBeenCalled();
+    });
+
+    it("should still redirect on a 401 from a still-private route that merely starts with a public one's prefix", async () => {
+        window.history.pushState({}, "", "/recipe/236/something-else");
+        const error = makeAuthError(401);
+
+        await expect(handleAuthError(error)).rejects.toBe(error);
+
+        expect(jest.mocked(redirectToLogin)).toHaveBeenCalled();
+    });
 });

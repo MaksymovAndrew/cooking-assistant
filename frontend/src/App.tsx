@@ -59,22 +59,29 @@ interface AppRoute {
     element: ReactElement;
 }
 
+// / stays private until the guest landing page lands (see PUBLIC_ROUTES) - logged-in / keeps
+// rendering the dashboard either way
 const PRIVATE_ROUTES: AppRoute[] = [
     { path: ROUTES.home, element: <HomePage /> },
-    { path: ROUTES.allRecipes, element: <MainPage /> },
     { path: ROUTES.myRecipes, element: <UserRecipesPage /> },
     { path: ROUTES.myMenus, element: <UserMenuPage /> },
     { path: ROUTES.addRecipe, element: <CreateRecipePage /> },
-    { path: ROUTES.recipeDetails, element: <RecipeDetailsPage /> },
     { path: ROUTES.changeRecipe, element: <ChangeRecipePage /> },
     { path: ROUTES.stats, element: <StatsPage /> },
     { path: ROUTES.ingredients, element: <IngredientsPage /> },
-    { path: ROUTES.allMenus, element: <MenuPage /> },
     { path: ROUTES.addMenu, element: <CreateMenuPage /> },
-    { path: ROUTES.menuDetails, element: <MenuDetailsPage /> },
     { path: ROUTES.changeMenu, element: <ChangeMenuPage /> },
     { path: ROUTES.profile, element: <ProfilePage /> },
     { path: ROUTES.settings, element: <SettingsPage /> },
+];
+
+// reachable without a session; must render immediately and never block on the /api/me round trip
+// (no PrivateRoute wrapper) - session status may change their chrome, never whether they render
+const PUBLIC_ROUTES: AppRoute[] = [
+    { path: ROUTES.allRecipes, element: <MainPage /> },
+    { path: ROUTES.recipeDetails, element: <RecipeDetailsPage /> },
+    { path: ROUTES.allMenus, element: <MenuPage /> },
+    { path: ROUTES.menuDetails, element: <MenuDetailsPage /> },
 ];
 
 // shell chrome shared by every route; lives inside the router so descendants (modals, forms) can use data-router hooks like useBlocker
@@ -105,6 +112,9 @@ const router = createBrowserRouter(
                 element={<ResetPasswordPage />}
             />
             <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
+            {PUBLIC_ROUTES.map(({ path, element }) => (
+                <Route key={path} path={path} element={element} />
+            ))}
             <Route element={<PrivateRoute />}>
                 {PRIVATE_ROUTES.map(({ path, element }) => (
                     <Route key={path} path={path} element={element} />

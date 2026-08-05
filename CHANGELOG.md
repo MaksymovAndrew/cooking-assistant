@@ -27,6 +27,7 @@ changelogs and the tags and now track everything here against one shared version
 
 ### Frontend
 
+- Added: You can now browse the full recipe list, individual recipes, the full menu list, and individual menus without an account - look around before you decide to join.
 - Changed: Logging in now returns you to the page you were trying to reach, instead of always sending you to the home dashboard.
 
 ## 4.0 - 2026-08-04

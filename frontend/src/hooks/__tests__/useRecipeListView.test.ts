@@ -615,4 +615,29 @@ describe("useRecipeListView", () => {
 
         expect(result.current.isPantryEmpty).toBe(true);
     });
+
+    it("should not request the pantry while the session is still checking (guest-safe on a public list)", () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.recipes.byFilters) {
+                return Promise.resolve({ data: { items: [], total: 0 } });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        renderHookWithRouter(() => useRecipeListView(RECIPE_SOURCE.all), {
+            store: makeTestStore(),
+        });
+
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.list,
+            expect.anything(),
+        );
+    });
 });

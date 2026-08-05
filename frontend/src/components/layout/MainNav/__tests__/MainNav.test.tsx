@@ -2,7 +2,8 @@ import { screen } from "@testing-library/react";
 
 import { MainNav } from "components/layout/MainNav";
 
-import { renderWithRouter } from "test/router";
+import { renderWithProviders, renderWithRouter } from "test/router";
+import { makeTestStore } from "test/store";
 
 describe("MainNav", () => {
     it("should render the Recipes, Menus, Ingredients and Stats links", () => {
@@ -22,5 +23,15 @@ describe("MainNav", () => {
         expect(screen.getByRole("link", { name: /Stats/ })).not.toHaveClass(
             "main-nav__item--active",
         );
+    });
+
+    it("should render only Recipes and Menus for a guest", () => {
+        renderWithProviders(<MainNav />, {
+            store: makeTestStore({ session: { status: "guest" } }),
+        });
+
+        expect(
+            screen.getAllByRole("link").map((link) => link.textContent),
+        ).toEqual(["Recipes", "Menus"]);
     });
 });

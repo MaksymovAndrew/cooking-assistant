@@ -89,4 +89,16 @@ describe("useCalorieBudget", () => {
             expect.anything(),
         );
     });
+
+    it("should skip the calorie-intake request while the session is still checking", () => {
+        const store = makeTestStore();
+
+        const { result } = renderHookWithStore(() => useCalorieBudget(), store);
+
+        expect(result.current.consumed).toBe(0);
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.calories.intake,
+            expect.anything(),
+        );
+    });
 });

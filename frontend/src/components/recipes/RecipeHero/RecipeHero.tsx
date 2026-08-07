@@ -44,9 +44,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
-    const { canFavourite, canTrackCalories } = useAppSelector(
-        selectViewerCapabilities,
-    );
+    const { canFavourite } = useAppSelector(selectViewerCapabilities);
     const favouriteLabel = t("recipeDetailsPage.favourite");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const formattedCookingTime =
@@ -123,7 +121,6 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
             ) : (
                 <RecipeHeroVisitorActions
                     canFavourite={canFavourite}
-                    canTrackCalories={canTrackCalories}
                     favouriteLabel={favouriteLabel}
                     onLogIntake={onLogIntake}
                 />

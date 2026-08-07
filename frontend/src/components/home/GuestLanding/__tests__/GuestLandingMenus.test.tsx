@@ -33,7 +33,9 @@ describe("GuestLandingMenus", () => {
         renderWithRouter(<GuestLandingMenus />);
 
         expect(await screen.findByText(MENU_TITLE)).toBeInTheDocument();
-        expect(screen.getByText("4 courses")).toBeInTheDocument();
+        expect(
+            screen.getByText("Category: Dinner · 4 recipes"),
+        ).toBeInTheDocument();
         expect(
             screen.getByRole("link", { name: /See all menus/ }),
         ).toHaveAttribute("href", "/all-menus");

@@ -25,7 +25,9 @@ export const AppHeader: React.FC = () => {
     const location = useLocation();
     const isGuest = useAppSelector(selectIsGuest);
     const openLogoutModal = useLogoutModal();
-    const { data: currentUser } = useGetMeQuery(null);
+    // only the AccountMenu branch below needs this - skip it once the session is definitively
+    // guest so AppHeader doesn't fire its own redundant /api/me alongside HomeRoute/PrivateRoute's
+    const { data: currentUser } = useGetMeQuery(null, { skip: isGuest });
     const loginState: LoginRedirectState = { from: location };
 
     return (

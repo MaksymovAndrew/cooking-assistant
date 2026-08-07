@@ -7,16 +7,14 @@ import {
     selectIsAuthed,
     selectIsChecking,
 } from "redux/selectors/sessionSelectors";
+import { selectIsGuest } from "redux/selectors/viewerSelectors";
 import { useGetMeQuery } from "redux/services/authApi";
 
 import { ErrorState } from "components/ui/ErrorState";
 
-import { getQueryErrorStatus } from "utils/queryError";
 import { reloadPage } from "utils/reloadPage";
 
 import styles from "./HomeRoute.module.scss";
-
-const UNAUTHORIZED_STATUSES = [401, 403];
 
 interface HomeRouteProps {
     authedElement: ReactNode;
@@ -31,20 +29,15 @@ export const HomeRoute: React.FC<HomeRouteProps> = ({
     guestElement,
 }) => {
     const { t } = useTranslation();
-    const { error } = useGetMeQuery(null);
+
+    useGetMeQuery(null);
     const isChecking = useAppSelector(selectIsChecking);
     const isAuthed = useAppSelector(selectIsAuthed);
+    const isGuest = useAppSelector(selectIsGuest);
 
     if (isChecking) return <div className="min-h-screen" />;
     if (isAuthed) return <>{authedElement}</>;
-
-    const status = getQueryErrorStatus(error);
-    const isUnauthorized =
-        status !== null && UNAUTHORIZED_STATUSES.includes(status);
-
-    if (isUnauthorized) {
-        return <>{guestElement}</>;
-    }
+    if (isGuest) return <>{guestElement}</>;
 
     return (
         <div className={styles["home-route-error"]}>

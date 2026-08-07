@@ -8,6 +8,9 @@ export interface MenuFilterState {
     categories: number[];
 }
 
+// shared with links that pre-set the filter before navigating (see GuestLandingMenuFilters)
+export const MENU_CATEGORY_URL_PARAM = "cats";
+
 export const MENU_FILTER_DEFS: readonly FilterDef<unknown, MenuListParams>[] = [
     textFilter<MenuListParams>({
         key: "search",
@@ -18,7 +21,7 @@ export const MENU_FILTER_DEFS: readonly FilterDef<unknown, MenuListParams>[] = [
     }),
     idListFilter<MenuListParams>({
         key: "categories",
-        urlParam: "cats",
+        urlParam: MENU_CATEGORY_URL_PARAM,
         param: "category_ids",
         chipLabel: (value, t) =>
             t("categoryFilter.categoryChip", { count: value.length }),

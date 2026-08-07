@@ -3,6 +3,11 @@
     "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "guestBrowsing": {
+            "date": "2026-08-06",
+            "title": "Browse without an account",
+            "description": "Look through every recipe and menu, search, and filter by type or category before you sign up - no login required. When you do decide to log in, you'll land back on the exact page you were headed to instead of the dashboard."
+        },
         "calorieTracking": {
             "date": "2026-08-04",
             "title": "Calorie tracking is here",

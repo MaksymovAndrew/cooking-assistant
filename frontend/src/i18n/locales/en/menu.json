@@ -127,6 +127,6 @@
         "error": "Error: {{message}}",
         "errorFetch": "Error fetching menu details",
         "logIntake": "Log intake",
-        "logIntakeCta": "Log in to log intake"
+        "guestCta": "Log in for the full experience"
     }
 }

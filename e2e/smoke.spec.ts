@@ -113,6 +113,12 @@ test("should log out and protect private routes again", async () => {
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login$/);
 
+    // "/" is public now - a logged-out visitor sees the guest landing page instead of a redirect
     await page.goto("/");
+    await expect(page).toHaveURL("/");
+    await expect(page.getByText("Browsing as guest")).toBeVisible();
+
+    // a genuinely private route still redirects to login
+    await page.goto("/profile");
     await expect(page).toHaveURL(/\/login$/);
 });

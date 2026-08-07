@@ -73,11 +73,16 @@ export const useRecipeListView = (source: RecipeSource) => {
         isPantryUninitialized,
     );
 
+    // a guest can't use in_pantry (the toggle that sets it is hidden for them) - if it's still set
+    // in the URL (a stale bookmark, or a session that expired mid-visit), isPantryUninitialized
+    // never resolves since the pantry query itself stays skipped, so drop the filter here too
+    // instead of sending a request the backend rejects with a 400
+    const queryParams = isAuthed ? params : { ...params, in_pantry: undefined };
     const isPerson = source === RECIPE_SOURCE.person;
-    const byFilters = useGetRecipesByFiltersInfiniteQuery(params, {
+    const byFilters = useGetRecipesByFiltersInfiniteQuery(queryParams, {
         skip: isPerson || isPantryEmpty,
     });
-    const byPerson = useGetRecipesByPersonInfiniteQuery(params, {
+    const byPerson = useGetRecipesByPersonInfiniteQuery(queryParams, {
         skip: !isPerson || isPantryEmpty,
     });
     const active = isPerson ? byPerson : byFilters;

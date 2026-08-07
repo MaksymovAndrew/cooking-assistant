@@ -17,8 +17,7 @@ interface SessionState {
 
 const initialState: SessionState = { status: "checking" };
 
-// "error" is only for a genuine failure (network/offline) checking the session; a 401/403 on
-// getMe means "no session", which is "guest", not an error - guests browse public routes fine
+// "error" is a genuine failure (network/5xx); getMe returns 200+null for a guest, not 401/403
 const sessionSlice = createSlice({
     name: "session",
     initialState,
@@ -29,23 +28,19 @@ const sessionSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // a background refetch (any Me-touching mutation invalidates this) must not flip an
-            // already-determined session back to "checking" - PrivateRoute unmounts its Outlet
-            // while checking (resetting every page's local state), and query-skip selectors like
-            // selectIsGuest key personal-data fetches off this exact status, so a guest browsing
-            // a public page must not have those fetches transiently un-skip mid-visit
+            // a background refetch must not flip an already-determined session back to "checking"
             .addMatcher(authApi.endpoints.getMe.matchPending, (state) => {
                 if (state.status !== "authed" && state.status !== "guest") {
                     state.status = "checking";
                 }
             })
-            .addMatcher(authApi.endpoints.getMe.matchFulfilled, (state) => {
-                state.status = "authed";
-            })
-            // mirrors the matchPending guard above - a background refetch failing with a
-            // transient/network error must not kick an already-determined session to "error";
-            // a genuine 401/403 lands on "guest" (and the api client's own interceptor still
-            // redirects to /login for that case on a private route, regardless of this slice)
+            .addMatcher(
+                authApi.endpoints.getMe.matchFulfilled,
+                (state, action) => {
+                    state.status = action.payload === null ? "guest" : "authed";
+                },
+            )
+            // a transient rejection can't touch a determined session, but an unexpected 401/403 still can
             .addMatcher(
                 authApi.endpoints.getMe.matchRejected,
                 (state, action) => {

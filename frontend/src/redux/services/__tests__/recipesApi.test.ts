@@ -61,7 +61,6 @@ const DETAIL: RecipeDetails = {
     type_name: "Hot",
     cooking_time: 30,
     creation_date: "2024-01-01",
-    person_id: 1,
     isOwner: true,
     calories_per_portion: null,
     calories_override: null,

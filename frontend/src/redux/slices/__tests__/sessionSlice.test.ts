@@ -1,3 +1,5 @@
+import type { CurrentUser } from "types/auth";
+
 import { authApi } from "redux/services/authApi";
 import { loggedOut, sessionReducer } from "redux/slices/sessionSlice";
 
@@ -5,6 +7,18 @@ import { makeAxiosError, mockedGet, mockedPost } from "test/apiClientMock";
 import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
+
+const CURRENT_USER: CurrentUser = {
+    id: 1,
+    name: "Claude",
+    surname: "Cook",
+    login: "claude",
+    created_at: "2025-06-15T00:00:00.000Z",
+    email: "claude@example.com",
+    email_verified_at: null,
+    avatar: null,
+    calorie_goal: null,
+};
 
 describe("sessionSlice", () => {
     it("should start in the checking status", () => {
@@ -20,7 +34,7 @@ describe("sessionSlice", () => {
     });
 
     it("should go checking while the initial session check is pending then authed on success", async () => {
-        mockedGet.mockResolvedValue({ data: null });
+        mockedGet.mockResolvedValue({ data: CURRENT_USER });
         const store = makeTestStore();
 
         const pending = store.dispatch(authApi.endpoints.getMe.initiate(null));
@@ -32,8 +46,21 @@ describe("sessionSlice", () => {
         expect(store.getState().session.status).toBe("authed");
     });
 
-    it("should stay authed while a background getMe refetch is pending, not flash back to checking", async () => {
+    it("should go checking while the initial session check is pending then guest on a null payload", async () => {
         mockedGet.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+
+        const pending = store.dispatch(authApi.endpoints.getMe.initiate(null));
+
+        expect(store.getState().session.status).toBe("checking");
+
+        await pending;
+
+        expect(store.getState().session.status).toBe("guest");
+    });
+
+    it("should stay authed while a background getMe refetch is pending, not flash back to checking", async () => {
+        mockedGet.mockResolvedValue({ data: CURRENT_USER });
         const store = makeTestStore({ session: { status: "authed" } });
 
         const pending = store.dispatch(authApi.endpoints.getMe.initiate(null));
@@ -56,6 +83,15 @@ describe("sessionSlice", () => {
         await pending;
     });
 
+    it("should demote from authed to guest when a background getMe refetch resolves with a null payload", async () => {
+        mockedGet.mockResolvedValue({ data: null });
+        const store = makeTestStore({ session: { status: "authed" } });
+
+        await store.dispatch(authApi.endpoints.getMe.initiate(null));
+
+        expect(store.getState().session.status).toBe("guest");
+    });
+
     it("should stay guest if a background getMe refetch fails with a network error", async () => {
         mockedGet.mockRejectedValue(new Error("offline"));
         const store = makeTestStore({ session: { status: "guest" } });
@@ -74,7 +110,7 @@ describe("sessionSlice", () => {
         expect(store.getState().session.status).toBe("error");
     });
 
-    it("should set the status to guest when the session check fails with a 401", async () => {
+    it("should set the status to guest when the session check unexpectedly fails with a 401", async () => {
         mockedGet.mockRejectedValue(makeAxiosError(401, "Unauthorized"));
         const store = makeTestStore();
 
@@ -92,7 +128,7 @@ describe("sessionSlice", () => {
         expect(store.getState().session.status).toBe("authed");
     });
 
-    it("should go to guest if a background getMe refetch fails with a 401", async () => {
+    it("should demote from authed to guest if a background getMe refetch unexpectedly fails with a 401", async () => {
         mockedGet.mockRejectedValue(makeAxiosError(401, "Unauthorized"));
         const store = makeTestStore({ session: { status: "authed" } });
 

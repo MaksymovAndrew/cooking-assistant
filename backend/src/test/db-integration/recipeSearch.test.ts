@@ -101,6 +101,29 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         expect(result.total).toBe(1);
     });
 
+    it("should report isOwner per viewer on search results, never the raw person_id", async () => {
+        const ingredient = await createNamedIngredient();
+        const otherPersonId = await createPerson(pool);
+        const uniqueTitle = unique("isOwner search recipe");
+
+        await createRecipeWithIngredients(uniqueTitle, [ingredient.id], 10);
+
+        const asOwner = await repository.search(ownerId, {
+            recipe_name: uniqueTitle,
+        });
+        const asOther = await repository.search(otherPersonId, {
+            recipe_name: uniqueTitle,
+        });
+        const asGuest = await repository.search(null, {
+            recipe_name: uniqueTitle,
+        });
+
+        expect(asOwner.items[0]).toMatchObject({ isOwner: true });
+        expect(asOther.items[0]).toMatchObject({ isOwner: false });
+        expect(asGuest.items[0]).toMatchObject({ isOwner: false });
+        expect(asGuest.items[0]).not.toHaveProperty("person_id");
+    });
+
     it("should treat literal % and _ in recipe_name as text, not SQL LIKE wildcards", async () => {
         const ingredient = await createNamedIngredient();
         const tag = unique("wildcard");

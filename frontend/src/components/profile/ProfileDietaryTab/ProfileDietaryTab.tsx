@@ -23,7 +23,7 @@ import { calorieToneFor } from "utils/computeCalorieSummary";
 import styles from "./ProfileDietaryTab.module.scss";
 
 interface ProfileDietaryTabProps {
-    currentUser?: CurrentUser;
+    currentUser?: CurrentUser | null;
 }
 
 const GOAL_ID = "dietary-calorie-goal";

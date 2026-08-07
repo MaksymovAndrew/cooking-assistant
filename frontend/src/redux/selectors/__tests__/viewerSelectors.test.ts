@@ -30,7 +30,6 @@ describe("viewerSelectors", () => {
                 canFavourite: true,
                 canEditOwn: true,
                 canUsePantry: true,
-                canTrackCalories: true,
             });
         });
 
@@ -40,7 +39,6 @@ describe("viewerSelectors", () => {
                 canFavourite: false,
                 canEditOwn: false,
                 canUsePantry: false,
-                canTrackCalories: false,
             });
         });
     });

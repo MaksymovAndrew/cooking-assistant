@@ -20,6 +20,8 @@ export interface RecipeFilterState {
 
 // shared with links that pre-set the filter before navigating (see PantryRecipesCard)
 export const RECIPE_PANTRY_URL_PARAM = "pantry";
+// shared with links that pre-set the filter before navigating (see GuestLandingRecipeFilters)
+export const RECIPE_TYPE_URL_PARAM = "types";
 
 export const RECIPE_FILTER_DEFS: readonly FilterDef<
     unknown,
@@ -33,7 +35,7 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
     }),
     idListFilter<RecipeFilterParams>({
         key: "types",
-        urlParam: "types",
+        urlParam: RECIPE_TYPE_URL_PARAM,
         param: "type_ids",
         chipLabel: (value, t) =>
             t("filterPanel.typeChip", { count: value.length }),

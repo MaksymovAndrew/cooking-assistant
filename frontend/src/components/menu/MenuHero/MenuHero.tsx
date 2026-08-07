@@ -44,9 +44,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("menu");
-    const { canFavourite, canTrackCalories } = useAppSelector(
-        selectViewerCapabilities,
-    );
+    const { canFavourite } = useAppSelector(selectViewerCapabilities);
     const favouriteLabel = t("menuDetailsPage.favourite");
     const logIntakeLabel = t("menuDetailsPage.logIntake");
     const { hours, minutes } = splitCookingTime(totalCookingTime);
@@ -101,7 +99,6 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
             {!menu.isOwner && (
                 <MenuHeroVisitorActions
                     canFavourite={canFavourite}
-                    canTrackCalories={canTrackCalories}
                     favouriteLabel={favouriteLabel}
                     logIntakeLabel={logIntakeLabel}
                     onLogIntake={onLogIntake}

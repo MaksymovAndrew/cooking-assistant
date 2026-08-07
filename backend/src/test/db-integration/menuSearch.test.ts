@@ -81,6 +81,32 @@ describe("PgMenuRepository search (real Postgres)", () => {
         expect(result.total).toBe(1);
     });
 
+    it("should report isOwner per viewer on search results, never the raw person_id", async () => {
+        const categoryId = await createMenuCategory(pool);
+        const otherPersonId = await createPerson(pool);
+        const uniqueTitle = unique("isOwner search menu");
+
+        await createOwnedMenu(uniqueTitle, categoryId);
+
+        const asOwner = await menuRepository.findAll(
+            { menu_name: uniqueTitle },
+            ownerId,
+        );
+        const asOther = await menuRepository.findAll(
+            { menu_name: uniqueTitle },
+            otherPersonId,
+        );
+        const asGuest = await menuRepository.findAll(
+            { menu_name: uniqueTitle },
+            null,
+        );
+
+        expect(asOwner.items[0]).toMatchObject({ isOwner: true });
+        expect(asOther.items[0]).toMatchObject({ isOwner: false });
+        expect(asGuest.items[0]).toMatchObject({ isOwner: false });
+        expect(asGuest.items[0]).not.toHaveProperty("person_id");
+    });
+
     it("should treat literal % and _ in menu_name as text, not SQL LIKE wildcards", async () => {
         const categoryId = await createMenuCategory(pool);
         const tag = unique("wildcard");

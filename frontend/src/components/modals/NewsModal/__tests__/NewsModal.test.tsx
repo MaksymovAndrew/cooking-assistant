@@ -17,12 +17,15 @@ describe("NewsModal", () => {
 
         expect(screen.getByText("What's new")).toBeInTheDocument();
         expect(
+            screen.getByText("Browse without an account"),
+        ).toBeInTheDocument();
+        expect(
             screen.getByText("Calorie tracking is here"),
         ).toBeInTheDocument();
         expect(
             screen.getByText("Smarter search and shareable filters"),
         ).toBeInTheDocument();
-        expect(screen.getByText("A brand-new look")).toBeInTheDocument();
+        expect(screen.getByText("Sign in your way")).toBeInTheDocument();
     });
 
     it("should call onClose when the close button is clicked", async () => {

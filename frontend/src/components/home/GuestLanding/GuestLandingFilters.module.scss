@@ -1,13 +1,19 @@
 @use "styles/abstracts" as *;
 
-.guest-landing-search {
+.guest-landing-filters {
     display: flex;
     flex-direction: column;
     gap: var(--s-4);
-    padding: var(--s-5) 0;
 
-    &__field {
-        max-width: 520px;
+    &__search-button {
+        justify-content: flex-start;
+        width: 100%;
+        color: var(--text-muted);
+        font-weight: 500;
+
+        @include on-hover {
+            color: var(--text);
+        }
     }
 
     &__chips {
@@ -27,9 +33,12 @@
         border-radius: var(--r-pill);
         background: var(--surface);
         color: var(--text-2);
+        text-decoration: none;
         font:
             600 13px Inter,
             sans-serif;
+
+        @include focus-ring;
 
         @include on-hover {
             border-color: var(--brand);
@@ -41,12 +50,5 @@
             background: var(--brand-subtle);
             color: var(--brand);
         }
-    }
-
-    &__divider {
-        width: 1px;
-        height: 24px;
-        margin: 0 4px;
-        background: var(--border);
     }
 }

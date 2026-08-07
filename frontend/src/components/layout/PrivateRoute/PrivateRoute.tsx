@@ -10,17 +10,15 @@ import {
     selectIsAuthed,
     selectIsChecking,
 } from "redux/selectors/sessionSelectors";
+import { selectIsGuest } from "redux/selectors/viewerSelectors";
 import { useGetMeQuery } from "redux/services/authApi";
 
 import { ErrorState } from "components/ui/ErrorState";
 
 import type { LoginRedirectState } from "utils/loginRedirect";
-import { getQueryErrorStatus } from "utils/queryError";
 import { reloadPage } from "utils/reloadPage";
 
 import styles from "./PrivateRoute.module.scss";
-
-const UNAUTHORIZED_STATUSES = [401, 403];
 
 interface PrivateRouteProps {
     children?: ReactNode;
@@ -29,19 +27,17 @@ interface PrivateRouteProps {
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     const { t } = useTranslation();
     const location = useLocation();
+
     // drives the session matchers; the slice tracks checking/authed/guest/error
-    const { error } = useGetMeQuery(null);
+    useGetMeQuery(null);
     const isChecking = useAppSelector(selectIsChecking);
     const isAuthed = useAppSelector(selectIsAuthed);
+    const isGuest = useAppSelector(selectIsGuest);
 
     if (isChecking) return <div className="min-h-screen" />;
     if (isAuthed) return <>{children ?? <Outlet />}</>;
 
-    const status = getQueryErrorStatus(error);
-    const isUnauthorized =
-        status !== null && UNAUTHORIZED_STATUSES.includes(status);
-
-    if (isUnauthorized) {
+    if (isGuest) {
         // carries where the guest was trying to go, so a successful login returns them there
         // instead of dropping them on the home dashboard - see utils/loginRedirect
         const state: LoginRedirectState = { from: location };

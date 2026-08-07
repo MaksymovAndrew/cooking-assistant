@@ -9,7 +9,7 @@ import { renderWithProviders, renderWithRouter } from "test/router";
 import { makeTestStore } from "test/store";
 
 const LOG_INTAKE_BUTTON = "Log intake";
-const LOG_INTAKE_CTA = "Log in to log intake";
+const GUEST_CTA = "Log in for the full experience";
 const CALORIES_PER_PORTION_LABEL = "420 kcal / portion";
 const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
@@ -24,7 +24,6 @@ const BASE_RECIPE: RecipeDetails = {
     type_name: "Main course",
     cooking_time: 85,
     creation_date: "2024-01-01",
-    person_id: 1,
     isOwner: false,
     calories_per_portion: 420,
     calories_override: null,
@@ -184,7 +183,7 @@ describe("RecipeHero", () => {
         ).not.toBeInTheDocument();
     });
 
-    it("should show a login CTA instead of the log-intake button for a guest", () => {
+    it("should show a generic login CTA instead of the log-intake button for a guest", () => {
         renderWithProviders(
             <RecipeHero {...baseProps} onLogIntake={jest.fn()} />,
             { store: GUEST_STORE },
@@ -193,9 +192,21 @@ describe("RecipeHero", () => {
         expect(
             screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
         ).not.toBeInTheDocument();
-        expect(
-            screen.getByRole("link", { name: LOG_INTAKE_CTA }),
-        ).toHaveAttribute("href", "/login");
+        expect(screen.getByRole("link", { name: GUEST_CTA })).toHaveAttribute(
+            "href",
+            "/login",
+        );
+    });
+
+    it("should show the generic login CTA for a guest even without onLogIntake", () => {
+        renderWithProviders(<RecipeHero {...baseProps} />, {
+            store: GUEST_STORE,
+        });
+
+        expect(screen.getByRole("link", { name: GUEST_CTA })).toHaveAttribute(
+            "href",
+            "/login",
+        );
     });
 
     it("should show the log-intake button in the owner actions row and call onLogIntake", async () => {

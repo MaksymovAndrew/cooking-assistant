@@ -7,7 +7,7 @@ import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { AppHeader } from "components/layout/AppHeader";
 
-import { mockGetByUrl } from "test/apiClientMock";
+import { mockedGet, mockGetByUrl } from "test/apiClientMock";
 import { renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
 
@@ -15,7 +15,14 @@ jest.mock("api/client");
 
 describe("AppHeader", () => {
     it("should open the logout confirmation modal when the logout menu item is clicked", async () => {
-        mockGetByUrl({ [API_ROUTES.auth.me]: null });
+        mockGetByUrl({
+            [API_ROUTES.auth.me]: {
+                id: 1,
+                name: "Claude",
+                surname: "Cook",
+                login: "claude",
+            },
+        });
 
         const { store } = renderWithProviders(<AppHeader />);
 
@@ -60,5 +67,16 @@ describe("AppHeader", () => {
         expect(
             screen.queryByRole("button", { name: "Account menu" }),
         ).not.toBeInTheDocument();
+    });
+
+    it("should not fire its own /api/me request once the session is definitively guest", () => {
+        renderWithProviders(<AppHeader />, {
+            store: makeTestStore({ session: { status: "guest" } }),
+        });
+
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.auth.me,
+            expect.anything(),
+        );
     });
 });

@@ -13,12 +13,7 @@ import { MODAL_TYPE } from "redux/slices/uiSlice";
 import { ModalRoot } from "components/modals";
 
 import MenuDetailsPage from "pages/menu/MenuDetailsPage";
-import {
-    makeAxiosError,
-    mockedDelete,
-    mockedGet,
-    mockGetByUrl,
-} from "test/apiClientMock";
+import { mockedDelete, mockedGet, mockGetByUrl } from "test/apiClientMock";
 import {
     BTN_DELETE_MENU,
     BTN_EDIT_MENU,
@@ -86,7 +81,12 @@ const mockMenuDetails = () => {
     mockGetByUrl({
         [API_ROUTES.menu.byId(1)]: SAMPLE,
         [API_ROUTES.userIngredients.list]: [],
-        [API_ROUTES.auth.me]: null,
+        [API_ROUTES.auth.me]: {
+            id: 1,
+            name: "Claude",
+            surname: "Cook",
+            login: "claude",
+        },
     });
 };
 
@@ -226,7 +226,12 @@ describe("MenuDetailsPage", () => {
         mockGetByUrl({
             [API_ROUTES.menu.byId(1)]: SAMPLE_WITH_CALORIES,
             [API_ROUTES.userIngredients.list]: [],
-            [API_ROUTES.auth.me]: null,
+            [API_ROUTES.auth.me]: {
+                id: 1,
+                name: "Claude",
+                surname: "Cook",
+                login: "claude",
+            },
         });
 
         const { store } = renderPage();
@@ -248,21 +253,10 @@ describe("MenuDetailsPage", () => {
     });
 
     it("should not render the missing-ingredients aside for a guest when the menu has no allergens", async () => {
-        // /api/me must actually reject (not resolve with null) so the session stays "guest"
-        // instead of AppHeader/AppShell's own getMe call flipping it back to "authed"
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.reject(makeAxiosError(401, "Unauthorized"));
-            }
-
-            const handlers: Record<string, unknown> = {
-                [API_ROUTES.menu.byId(1)]: SAMPLE,
-                [API_ROUTES.userIngredients.list]: [],
-            };
-
-            return url in handlers
-                ? Promise.resolve({ data: handlers[url] })
-                : Promise.reject(new Error(`unexpected GET ${url}`));
+        mockGetByUrl({
+            [API_ROUTES.menu.byId(1)]: SAMPLE,
+            [API_ROUTES.userIngredients.list]: [],
+            [API_ROUTES.auth.me]: null,
         });
 
         renderPage(makeTestStore({ session: { status: "guest" } }));

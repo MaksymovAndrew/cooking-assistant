@@ -21,14 +21,6 @@ const VERIFY_TOKEN = "verify-token";
 const CREATED_AT = "2026-01-15T00:00:00.000Z";
 
 describe("user routes", () => {
-    it("should return 401 without a token", async () => {
-        const { app } = buildTestApp();
-
-        const res = await request(app).get("/api/me");
-
-        expect(res.status).toBe(401);
-    });
-
     it("should register a user and log them in with a session cookie", async () => {
         const { app, deps } = buildTestApp();
 
@@ -149,12 +141,13 @@ describe("user routes", () => {
         expect(deps.userRepository.findById).toHaveBeenCalledWith(1);
     });
 
-    it("should return 401 on GET /api/me without a token", async () => {
+    it("should return 200 with null on GET /api/me without a token", async () => {
         const { app } = buildTestApp();
 
         const res = await request(app).get("/api/me");
 
-        expect(res.status).toBe(401);
+        expect(res.status).toBe(200);
+        expect(res.body).toBeNull();
     });
 
     it("should return 404 on GET /api/me when the user no longer exists", async () => {

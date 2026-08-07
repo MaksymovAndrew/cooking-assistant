@@ -49,7 +49,6 @@ export interface RecipeDetails {
     type_name: string;
     cooking_time: number;
     creation_date: string;
-    person_id: number;
     // computed by the backend (r.person_id = current user) so the client can gate Edit/Delete without decoding the session
     isOwner: boolean;
     // COALESCE(calories_override, calories_computed)

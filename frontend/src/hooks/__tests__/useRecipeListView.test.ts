@@ -611,4 +611,38 @@ describe("useRecipeListView", () => {
             expect.anything(),
         );
     });
+
+    it("should drop in_pantry from the request for a guest instead of sending a filter the backend rejects", async () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: null });
+            }
+            if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.recipes.byFilters) {
+                return Promise.resolve({
+                    data: { items: [RECIPE_1], total: 1 },
+                });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const { result } = await setup(RECIPE_SOURCE.all, [
+            "/test?pantry=true",
+        ]);
+
+        expect(result.current.recipes).toEqual([RECIPE_1]);
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.list,
+            expect.anything(),
+        );
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byFilters, {
+            params: { limit: PAGE_SIZE, offset: 0 },
+        });
+    });
 });

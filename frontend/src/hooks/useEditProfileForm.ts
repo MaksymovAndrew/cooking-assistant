@@ -6,7 +6,7 @@ import type { CurrentUser } from "types/auth";
 import { useUpdateProfileMutation } from "redux/services/authApi";
 
 export const useEditProfileForm = (
-    currentUser: CurrentUser | undefined,
+    currentUser: CurrentUser | null | undefined,
     onSuccess: () => void,
 ) => {
     const { t } = useTranslation("profile");

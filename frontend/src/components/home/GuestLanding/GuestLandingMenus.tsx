@@ -3,34 +3,35 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
 import { ROUTES } from "constants/routes";
 
 import { flattenPages } from "redux/services/infiniteQueryHelpers";
 import { useGetMenusInfiniteQuery } from "redux/services/menusApi";
 
+import { useMediaQuery } from "hooks/useMediaQuery";
+
 import { NotebookMark } from "components/icons";
+import { MenuCard } from "components/menu/MenuCard";
 import { EmptyState } from "components/ui/EmptyState";
 
 import styles from "./GuestLanding.module.scss";
-import { GuestLandingMenuCard } from "./GuestLandingMenuCard";
 
 const SEE_ALL_ICON_SIZE = 15;
-const MENU_COUNT = 3;
+const MENU_COUNT = 4;
 
-// hidden below tablet width (see &--menus in GuestLanding.module.scss) - the mockup drops this
-// section entirely on mobile rather than cramming a third content block under the fold
+// reuses the same MenuCard as /all-menus and every other menu list in the app - no bespoke
+// card style for the landing page
 export const GuestLandingMenus: React.FC = () => {
     const { t } = useTranslation("guestLanding");
+    const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
+    // same request /all-menus fires with no filters applied, so it's already cached once a
+    // guest clicks through - the count is trimmed client-side, not by a second endpoint
     const { data } = useGetMenusInfiniteQuery({});
     const menus = flattenPages(data).slice(0, MENU_COUNT);
 
     return (
-        <section
-            className={[
-                styles["guest-landing-section"],
-                styles["guest-landing-section--menus"],
-            ].join(" ")}
-        >
+        <section className={styles["guest-landing-section"]}>
             <div className={styles["guest-landing-section__header"]}>
                 <h2 className={styles["guest-landing-section__title"]}>
                     {t("menusTitle")}
@@ -52,12 +53,13 @@ export const GuestLandingMenus: React.FC = () => {
             ) : (
                 <div className={styles["guest-landing-section__menu-grid"]}>
                     {menus.map((menu) => (
-                        <GuestLandingMenuCard
+                        <MenuCard
                             key={menu.id}
                             id={menu.id}
                             title={menu.title}
-                            description={menu.menucontent}
+                            categoryName={menu.categoryname}
                             recipeCount={menu.recipe_count}
+                            variant={isMobile ? "row" : "grid"}
                         />
                     ))}
                 </div>

@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
+import type { CurrentUser } from "types/auth";
+
 import { HomeRoute } from "components/layout/HomeRoute";
 
 import { mockedGet } from "test/apiClientMock";
@@ -14,11 +16,17 @@ const GUEST = "Guest landing";
 const HOME_PATH = "/";
 const SESSION_ERROR = "Could not verify session. Please refresh the page.";
 
-const makeAuthError = (status: number) =>
-    Object.assign(new Error(), {
-        isAxiosError: true,
-        response: { status, data: { error: "Unauthorized" } },
-    });
+const CURRENT_USER: CurrentUser = {
+    id: 1,
+    name: "Claude",
+    surname: "Cook",
+    login: "claude",
+    created_at: "2025-06-15T00:00:00.000Z",
+    email: "claude@example.com",
+    email_verified_at: null,
+    avatar: null,
+    calorie_goal: null,
+};
 
 const renderHomeRoute = () =>
     render(
@@ -40,8 +48,8 @@ const renderHomeRoute = () =>
     );
 
 describe("HomeRoute", () => {
-    it("should render the authed element when getMe resolves", async () => {
-        mockedGet.mockResolvedValue({ data: null });
+    it("should render the authed element when getMe resolves with a user", async () => {
+        mockedGet.mockResolvedValue({ data: CURRENT_USER });
 
         renderHomeRoute();
 
@@ -49,8 +57,8 @@ describe("HomeRoute", () => {
         expect(screen.queryByText(GUEST)).not.toBeInTheDocument();
     });
 
-    it("should render the guest element when getMe rejects with 401", async () => {
-        mockedGet.mockRejectedValue(makeAuthError(401));
+    it("should render the guest element when getMe resolves with a null payload", async () => {
+        mockedGet.mockResolvedValue({ data: null });
 
         renderHomeRoute();
 
@@ -58,15 +66,7 @@ describe("HomeRoute", () => {
         expect(screen.queryByText(AUTHED)).not.toBeInTheDocument();
     });
 
-    it("should render the guest element when getMe rejects with 403", async () => {
-        mockedGet.mockRejectedValue(makeAuthError(403));
-
-        renderHomeRoute();
-
-        expect(await screen.findByText(GUEST)).toBeInTheDocument();
-    });
-
-    it("should show a session error when getMe rejects with a non-auth error", async () => {
+    it("should show a session error when getMe rejects with a genuine failure", async () => {
         mockedGet.mockRejectedValue(new Error("Network error"));
 
         renderHomeRoute();

@@ -1,4 +1,4 @@
-import { Flame, Heart } from "lucide-react";
+import { Flame, Heart, Sparkles } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -14,7 +14,6 @@ import styles from "./MenuHero.module.scss";
 
 interface MenuHeroVisitorActionsProps {
     canFavourite: boolean;
-    canTrackCalories: boolean;
     favouriteLabel: string;
     logIntakeLabel: string;
     onLogIntake?: () => void;
@@ -23,10 +22,9 @@ interface MenuHeroVisitorActionsProps {
 const FAVOURITE_ICON_SIZE = 17;
 const STAT_ICON_SIZE = 16;
 
-// the non-owner branch of MenuHero - split out to keep MenuHero under the components/ max-lines cap
+// non-owner branch of MenuHero; a guest gets one generic login CTA instead of a per-feature one
 export const MenuHeroVisitorActions: React.FC<MenuHeroVisitorActionsProps> = ({
     canFavourite,
-    canTrackCalories,
     favouriteLabel,
     logIntakeLabel,
     onLogIntake,
@@ -35,40 +33,43 @@ export const MenuHeroVisitorActions: React.FC<MenuHeroVisitorActionsProps> = ({
     const location = useLocation();
     const loginState: LoginRedirectState = { from: location };
 
+    if (!canFavourite) {
+        return (
+            <div className={styles["menu-hero__visitor-actions"]}>
+                <LinkButton
+                    to={ROUTES.login}
+                    state={loginState}
+                    variant="secondary"
+                    className={styles["menu-hero__visitor-log-intake"]}
+                >
+                    <Sparkles size={STAT_ICON_SIZE} aria-hidden="true" />
+                    {t("menuDetailsPage.guestCta")}
+                </LinkButton>
+            </div>
+        );
+    }
+
     return (
         <div className={styles["menu-hero__visitor-actions"]}>
-            {canFavourite && (
-                <button
-                    type="button"
-                    disabled
-                    aria-label={favouriteLabel}
-                    className={styles["menu-hero__favourite"]}
+            <button
+                type="button"
+                disabled
+                aria-label={favouriteLabel}
+                className={styles["menu-hero__favourite"]}
+            >
+                <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
+                {favouriteLabel}
+            </button>
+            {onLogIntake && (
+                <Button
+                    variant="secondary"
+                    className={styles["menu-hero__visitor-log-intake"]}
+                    onClick={onLogIntake}
                 >
-                    <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
-                    {favouriteLabel}
-                </button>
+                    <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
+                    {logIntakeLabel}
+                </Button>
             )}
-            {onLogIntake &&
-                (canTrackCalories ? (
-                    <Button
-                        variant="secondary"
-                        className={styles["menu-hero__visitor-log-intake"]}
-                        onClick={onLogIntake}
-                    >
-                        <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {logIntakeLabel}
-                    </Button>
-                ) : (
-                    <LinkButton
-                        to={ROUTES.login}
-                        state={loginState}
-                        variant="secondary"
-                        className={styles["menu-hero__visitor-log-intake"]}
-                    >
-                        <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {t("menuDetailsPage.logIntakeCta")}
-                    </LinkButton>
-                ))}
         </div>
     );
 };

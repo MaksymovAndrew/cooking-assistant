@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from "constants/errorMessages";
 import { ValidationError } from "domain/errors/AppError";
 
 import SearchRecipes from "application/use-cases/recipes/SearchRecipes";
@@ -200,6 +201,35 @@ describe("SearchRecipes", () => {
         expect(error).toBeAppError(
             ValidationError,
             "offset: Offset must be at least 0",
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should search with a null userId for an anonymous request", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        const result = await useCase.execute(null, { recipe_name: "Soup" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(null, {
+            recipe_name: "Soup",
+        });
+        expect(result).toEqual(paginated);
+    });
+
+    it("should throw a 400 ValidationError when an anonymous request uses in_pantry", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(null, { in_pantry: "true" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_MESSAGES.RECIPE_IN_PANTRY_REQUIRES_LOGIN,
             400,
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();

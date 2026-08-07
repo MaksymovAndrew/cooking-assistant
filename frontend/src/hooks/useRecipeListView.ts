@@ -2,7 +2,8 @@ import { useMemo } from "react";
 
 import type { RecipeFilterParams } from "types/recipe";
 
-import { useGetMeQuery } from "redux/services/authApi";
+import { useAppSelector } from "redux/hooks";
+import { selectIsAuthed } from "redux/selectors/sessionSelectors";
 import {
     flattenPages,
     getPaginatedTotal,
@@ -55,12 +56,16 @@ export const useRecipeListView = (source: RecipeSource) => {
     // feeds the ingredients filter's search-and-pick UI - already cached by the ingredient picker/pantry pages, so this is a read, not a new request
     const { data: ingredientCatalog = [] } = useGetIngredientsQuery(null);
 
+    // skipped until the session is confirmed authed - not just "not yet known to be a guest" -
+    // so this list stays reachable without a 401 tripping the global auth redirect on a page
+    // that's public now, including during the initial checking window
+    const isAuthed = useAppSelector(selectIsAuthed);
     // already fetched by the pantry page/home dashboard - a cache read, not a new request
     const {
         data: pantry = [],
         isLoading: isPantryLoading,
         isUninitialized: isPantryUninitialized,
-    } = useGetUserIngredientsQuery(null);
+    } = useGetUserIngredientsQuery(null, { skip: !isAuthed });
     const isPantryEmpty = isPantryFilterEmpty(
         filters.inPantry,
         pantry.length,
@@ -68,17 +73,20 @@ export const useRecipeListView = (source: RecipeSource) => {
         isPantryUninitialized,
     );
 
+    // a guest can't use in_pantry (the toggle that sets it is hidden for them) - if it's still set
+    // in the URL (a stale bookmark, or a session that expired mid-visit), isPantryUninitialized
+    // never resolves since the pantry query itself stays skipped, so drop the filter here too
+    // instead of sending a request the backend rejects with a 400
+    const queryParams = isAuthed ? params : { ...params, in_pantry: undefined };
     const isPerson = source === RECIPE_SOURCE.person;
-    const byFilters = useGetRecipesByFiltersInfiniteQuery(params, {
+    const byFilters = useGetRecipesByFiltersInfiniteQuery(queryParams, {
         skip: isPerson || isPantryEmpty,
     });
-    const byPerson = useGetRecipesByPersonInfiniteQuery(params, {
+    const byPerson = useGetRecipesByPersonInfiniteQuery(queryParams, {
         skip: !isPerson || isPantryEmpty,
     });
     const active = isPerson ? byPerson : byFilters;
 
-    // already fetched by PrivateRoute on mount, so this is a cache read, not a new request - used to flag the current user's own recipes in the "all" list
-    const { data: currentUser } = useGetMeQuery(null);
     // computed once here, not per-card, so every RecipeCard just reads a plain boolean prop
     const { goal: calorieGoal, remaining: calorieRemaining } =
         useCalorieBudget();
@@ -114,7 +122,6 @@ export const useRecipeListView = (source: RecipeSource) => {
         recipes,
         calorieGoal,
         calorieRemaining,
-        currentUserId: currentUser?.id ?? null,
         error: !hasLoadedRecipes ? errorMessage : null,
         noRecipes: isRecipeListEmpty(
             isPantryEmpty,

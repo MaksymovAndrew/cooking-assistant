@@ -117,14 +117,6 @@ describe("useMenuListView", () => {
         expect(result.current.noMenus).toBe(false);
     });
 
-    it("should expose the current user's id, for per-item ownership checks in the all-menus view", async () => {
-        mockEmptyMenuList();
-
-        const { result } = await setup();
-
-        expect(result.current.currentUserId).toBe(CURRENT_USER.id);
-    });
-
     it("should report noMenus once loading succeeds with zero results", async () => {
         mockEmptyMenuList();
 

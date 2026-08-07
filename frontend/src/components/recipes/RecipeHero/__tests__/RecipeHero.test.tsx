@@ -5,11 +5,15 @@ import type { RecipeDetails } from "types/recipe";
 
 import { RecipeHero } from "components/recipes/RecipeHero";
 
-import { renderWithRouter } from "test/router";
+import { renderWithProviders, renderWithRouter } from "test/router";
+import { makeTestStore } from "test/store";
 
 const LOG_INTAKE_BUTTON = "Log intake";
+const GUEST_CTA = "Log in for the full experience";
 const CALORIES_PER_PORTION_LABEL = "420 kcal / portion";
 const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
+const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
+const GUEST_STORE = makeTestStore({ session: { status: "guest" } });
 
 const BASE_RECIPE: RecipeDetails = {
     id: 1,
@@ -20,7 +24,6 @@ const BASE_RECIPE: RecipeDetails = {
     type_name: "Main course",
     cooking_time: 85,
     creation_date: "2024-01-01",
-    person_id: 1,
     isOwner: false,
     calories_per_portion: 420,
     calories_override: null,
@@ -91,7 +94,9 @@ describe("RecipeHero", () => {
     });
 
     it("should show just the Favourite button and no explanatory text for a visitor", () => {
-        renderWithRouter(<RecipeHero {...baseProps} />);
+        renderWithProviders(<RecipeHero {...baseProps} />, {
+            store: AUTHED_STORE,
+        });
 
         expect(
             screen.queryByRole("link", { name: /Edit recipe/ }),
@@ -134,7 +139,9 @@ describe("RecipeHero", () => {
     });
 
     it("should disable the favourite button since favourites are not wired up yet", () => {
-        renderWithRouter(<RecipeHero {...baseProps} />);
+        renderWithProviders(<RecipeHero {...baseProps} />, {
+            store: AUTHED_STORE,
+        });
 
         expect(
             screen.getAllByRole("button", { name: "Favourite" })[0],
@@ -144,8 +151,9 @@ describe("RecipeHero", () => {
     it("should show the log-intake button and call onLogIntake when calories are available", async () => {
         const onLogIntake = jest.fn();
 
-        renderWithRouter(
+        renderWithProviders(
             <RecipeHero {...baseProps} onLogIntake={onLogIntake} />,
+            { store: AUTHED_STORE },
         );
 
         await userEvent.click(
@@ -156,11 +164,49 @@ describe("RecipeHero", () => {
     });
 
     it("should not show the log-intake button when onLogIntake is not provided", () => {
-        renderWithRouter(<RecipeHero {...baseProps} />);
+        renderWithProviders(<RecipeHero {...baseProps} />, {
+            store: AUTHED_STORE,
+        });
 
         expect(
             screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
         ).not.toBeInTheDocument();
+    });
+
+    it("should hide both favourite buttons for a guest", () => {
+        renderWithProviders(<RecipeHero {...baseProps} />, {
+            store: GUEST_STORE,
+        });
+
+        expect(
+            screen.queryByRole("button", { name: "Favourite" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should show a generic login CTA instead of the log-intake button for a guest", () => {
+        renderWithProviders(
+            <RecipeHero {...baseProps} onLogIntake={jest.fn()} />,
+            { store: GUEST_STORE },
+        );
+
+        expect(
+            screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
+        ).not.toBeInTheDocument();
+        expect(screen.getByRole("link", { name: GUEST_CTA })).toHaveAttribute(
+            "href",
+            "/login",
+        );
+    });
+
+    it("should show the generic login CTA for a guest even without onLogIntake", () => {
+        renderWithProviders(<RecipeHero {...baseProps} />, {
+            store: GUEST_STORE,
+        });
+
+        expect(screen.getByRole("link", { name: GUEST_CTA })).toHaveAttribute(
+            "href",
+            "/login",
+        );
     });
 
     it("should show the log-intake button in the owner actions row and call onLogIntake", async () => {

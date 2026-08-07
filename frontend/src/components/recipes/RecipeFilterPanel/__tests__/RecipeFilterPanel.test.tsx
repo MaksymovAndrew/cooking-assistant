@@ -7,7 +7,11 @@ import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
 
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
-import { renderWithRouter } from "test/router";
+import { renderWithProviders, renderWithRouter } from "test/router";
+import { makeTestStore } from "test/store";
+
+const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
+const GUEST_STORE = makeTestStore({ session: { status: "guest" } });
 
 const CALORIES_FILTER_KEY = "calories";
 const RESET_FILTERS_BUTTON = "Reset filters";
@@ -39,11 +43,12 @@ const setup = (
     overrides: Partial<RecipeFilterState> = {},
     activeCount = 0,
     ingredientCatalog: Ingredient[] = [],
+    store = AUTHED_STORE,
 ) => {
     const setValue = jest.fn();
     const setValues = jest.fn();
 
-    renderWithRouter(
+    renderWithProviders(
         <RecipeFilterPanel
             filters={{ ...BASE_FILTERS, ...overrides }}
             setValue={setValue}
@@ -54,6 +59,7 @@ const setup = (
             searchPlaceholder="Search recipes"
             total={5}
         />,
+        { store },
     );
 
     return { setValue, setValues };
@@ -300,6 +306,14 @@ describe("RecipeFilterPanel", () => {
         await userEvent.click(screen.getByRole("switch"));
 
         expect(setValue).toHaveBeenCalledWith("inPantry", true);
+    });
+
+    it("should not show the pantry toggle for a guest", async () => {
+        setup({}, 0, [], GUEST_STORE);
+
+        await openPanel();
+
+        expect(screen.queryByRole("switch")).not.toBeInTheDocument();
     });
 
     it("should reset only the popover's own fields when Reset filters is clicked, leaving search alone", async () => {

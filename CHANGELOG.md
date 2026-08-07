@@ -20,6 +20,27 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.1 - 2026-08-06
+
+### Backend
+
+- Added: Browsing recipes and menus, and their reference data (ingredients, recipe types, menu categories), no longer requires being logged in.
+- Changed: API responses are now compressed, making pages that load a lot of data noticeably faster.
+- Changed: Checking whether you're logged in is no longer treated as a failed request for a signed-out visitor - it now succeeds normally either way, so browsing without an account no longer shows an authorization error in the background.
+- Security: Recipe and menu listings no longer include the raw internal id of who created them - only whether you're the owner, computed on the server.
+
+### Frontend
+
+- Added: You can now browse the full recipe list, individual recipes, the full menu list, and individual menus without an account - look around before you decide to join.
+- Added: Visiting the site without an account now shows a guest landing page, split into a recipes side and a menus side, each with its own quick search button and filter shortcuts (by type/category, and by recipes' cooking time and calories) straight into the full browsing experience.
+- Added: Browser tabs now show the actual page title - a recipe's name, "All Recipes", "Settings", and so on - instead of just "Cooking Assistant" everywhere.
+- Changed: Logging in now returns you to the page you were trying to reach, instead of always sending you to the home dashboard.
+- Changed: Browsing without an account now hides pantry- and calorie-tracking specific bits (the favourite button, ingredient availability, missing-ingredient reminders) and offers a single "Log in for the full experience" prompt on recipe and menu pages that takes you back to the exact page you were on once you're signed in.
+- Fixed: The logo and bowl icon on the login and registration screens now link back to the home page.
+- Fixed: Filter chips, "see all" links and menu cards on the guest landing page no longer show a stray underline.
+- Fixed: The guest landing page now shows a preview of menus on mobile too, not just recipes.
+- Fixed: The guest landing page fired an extra, unnecessary session check on load - it now only checks once.
+
 ## 4.0 - 2026-08-04
 
 ### Backend

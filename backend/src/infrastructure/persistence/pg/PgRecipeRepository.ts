@@ -39,7 +39,7 @@ export default class PgRecipeRepository implements RecipeRepository {
 
     async findByIdWithIngredients(
         recipeId: string | number,
-        currentUserId: number,
+        currentUserId: number | null,
     ): Promise<unknown> {
         return findRecipeByIdWithIngredients(
             this.pool,
@@ -57,7 +57,7 @@ export default class PgRecipeRepository implements RecipeRepository {
     }
 
     async search(
-        userId: number,
+        userId: number | null,
         filters: RecipeFilters,
     ): Promise<PaginatedResult<RecipeSearchRow>> {
         return searchRecipes(this.pool, userId, filters);

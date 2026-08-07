@@ -17,7 +17,7 @@ import { getInitials } from "utils/getInitials";
 import styles from "./EditProfileModal.module.scss";
 
 interface EditProfileModalProps {
-    currentUser?: CurrentUser;
+    currentUser?: CurrentUser | null;
     onClose: () => void;
 }
 

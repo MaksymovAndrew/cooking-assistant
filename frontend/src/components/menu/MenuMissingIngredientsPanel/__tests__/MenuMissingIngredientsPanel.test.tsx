@@ -3,6 +3,10 @@ import { screen } from "@testing-library/react";
 import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
 
 import { renderWithProviders } from "test/router";
+import { makeTestStore } from "test/store";
+
+const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
+const GUEST_STORE = makeTestStore({ session: { status: "guest" } });
 
 describe("MenuMissingIngredientsPanel", () => {
     it("should render the section heading, count badge and each missing ingredient", () => {
@@ -20,6 +24,7 @@ describe("MenuMissingIngredientsPanel", () => {
                 }}
                 allergens={[]}
             />,
+            { store: AUTHED_STORE },
         );
 
         expect(screen.getByText("Ingredients")).toBeInTheDocument();
@@ -46,6 +51,7 @@ describe("MenuMissingIngredientsPanel", () => {
                 }}
                 allergens={[]}
             />,
+            { store: AUTHED_STORE },
         );
 
         expect(screen.queryByText("1")).not.toBeInTheDocument();
@@ -57,6 +63,7 @@ describe("MenuMissingIngredientsPanel", () => {
     it("should show a positive message when the menu has no ingredients", () => {
         renderWithProviders(
             <MenuMissingIngredientsPanel ingredients={{}} allergens={[]} />,
+            { store: AUTHED_STORE },
         );
 
         expect(screen.getByText("Ingredients")).toBeInTheDocument();
@@ -71,10 +78,55 @@ describe("MenuMissingIngredientsPanel", () => {
                 ingredients={{}}
                 allergens={["gluten", "milk"]}
             />,
+            { store: AUTHED_STORE },
         );
 
         expect(screen.getByText("Allergens across menu")).toBeInTheDocument();
         expect(screen.getByText("Gluten")).toBeInTheDocument();
         expect(screen.getByText("Milk")).toBeInTheDocument();
+    });
+
+    it("should hide ingredient tracking from a guest but still show allergens", () => {
+        renderWithProviders(
+            <MenuMissingIngredientsPanel
+                ingredients={{
+                    1: {
+                        slug: "tomato",
+                        name: "Tomato",
+                        quantity: 2,
+                        missingQuantity: 2,
+                        unit: "kg",
+                        sufficient: false,
+                    },
+                }}
+                allergens={["gluten"]}
+            />,
+            { store: GUEST_STORE },
+        );
+
+        expect(screen.queryByText("Ingredients")).not.toBeInTheDocument();
+        expect(screen.queryByText("Tomato")).not.toBeInTheDocument();
+        expect(screen.getByText("Allergens across menu")).toBeInTheDocument();
+    });
+
+    it("should render nothing for a guest when the menu has no allergens", () => {
+        const { container } = renderWithProviders(
+            <MenuMissingIngredientsPanel
+                ingredients={{
+                    1: {
+                        slug: "tomato",
+                        name: "Tomato",
+                        quantity: 2,
+                        missingQuantity: 2,
+                        unit: "kg",
+                        sufficient: false,
+                    },
+                }}
+                allergens={[]}
+            />,
+            { store: GUEST_STORE },
+        );
+
+        expect(container).toBeEmptyDOMElement();
     });
 });

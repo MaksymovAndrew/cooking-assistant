@@ -126,6 +126,7 @@
         "deleteMessage": "Are you sure you want to delete \"{{title}}\"? Recipes inside won't be deleted. This action can't be undone.",
         "error": "Error: {{message}}",
         "errorFetch": "Error fetching menu details",
-        "logIntake": "Log intake"
+        "logIntake": "Log intake",
+        "guestCta": "Log in for the full experience"
     }
 }

@@ -29,7 +29,6 @@ jest.mock("react-router-dom", () => ({
 jest.mock("api/client");
 
 const TITLE = "Weekday menu";
-const OWNER_ID = 5;
 const SAMPLE: MenuDetails = {
     menu: {
         id: 1,
@@ -37,7 +36,6 @@ const SAMPLE: MenuDetails = {
         categoryname: "Lunch",
         menucontent: "quick",
         category_id: 2,
-        personid: OWNER_ID,
         isOwner: true,
     },
     recipes: [
@@ -83,11 +81,18 @@ const mockMenuDetails = () => {
     mockGetByUrl({
         [API_ROUTES.menu.byId(1)]: SAMPLE,
         [API_ROUTES.userIngredients.list]: [],
-        [API_ROUTES.auth.me]: null,
+        [API_ROUTES.auth.me]: {
+            id: 1,
+            name: "Claude",
+            surname: "Cook",
+            login: "claude",
+        },
     });
 };
 
-const renderPage = (store = makeTestStore()) => {
+const renderPage = (
+    store = makeTestStore({ session: { status: "authed" } }),
+) => {
     const view = render(
         <Provider store={store}>
             <MemoryRouter initialEntries={["/menu/1"]}>
@@ -221,7 +226,12 @@ describe("MenuDetailsPage", () => {
         mockGetByUrl({
             [API_ROUTES.menu.byId(1)]: SAMPLE_WITH_CALORIES,
             [API_ROUTES.userIngredients.list]: [],
-            [API_ROUTES.auth.me]: null,
+            [API_ROUTES.auth.me]: {
+                id: 1,
+                name: "Claude",
+                surname: "Cook",
+                login: "claude",
+            },
         });
 
         const { store } = renderPage();
@@ -240,5 +250,19 @@ describe("MenuDetailsPage", () => {
             title: TITLE,
             caloriesPerPortion: 600,
         });
+    });
+
+    it("should not render the missing-ingredients aside for a guest when the menu has no allergens", async () => {
+        mockGetByUrl({
+            [API_ROUTES.menu.byId(1)]: SAMPLE,
+            [API_ROUTES.userIngredients.list]: [],
+            [API_ROUTES.auth.me]: null,
+        });
+
+        renderPage(makeTestStore({ session: { status: "guest" } }));
+        await screen.findByRole("heading", { name: TITLE });
+
+        expect(screen.queryByText("Carrot")).not.toBeInTheDocument();
+        expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     });
 });

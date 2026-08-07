@@ -13,7 +13,7 @@ const RECIPE_12_PATH = "/api/recipe/12";
 
 const RECIPE_ROW_EXTRAS = {
     content: "Boil tomatoes",
-    person_id: 7,
+    isOwner: false,
     type_id: 1,
     creation_date: new Date("2026-01-01T00:00:00.000Z"),
     cooking_time: 30,
@@ -39,6 +39,67 @@ describe("recipe routes", () => {
         const res = await request(app).get("/api/recipes");
 
         expect(res.status).toBe(401);
+    });
+
+    it.each([
+        ["post", "/api/recipe"],
+        ["put", RECIPE_12_PATH],
+        ["delete", RECIPE_12_PATH],
+        ["get", "/api/recipes-filters-person"],
+        ["get", "/api/recipes-stats"],
+    ] as const)(
+        "should return 401 without a token for %s %s",
+        async (method, path) => {
+            const { app } = buildTestApp();
+
+            const res = await request(app)[method](path);
+
+            expect(res.status).toBe(401);
+        },
+    );
+
+    it("should return one recipe with ingredients for an anonymous request", async () => {
+        const { app, deps } = buildTestApp();
+        const recipe = { id: 12, title: RECIPE_TITLE, ingredients: [] };
+
+        deps.recipeRepository.findByIdWithIngredients.mockResolvedValue(recipe);
+
+        const res = await request(app).get(RECIPE_12_PATH);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(recipe);
+        expect(
+            deps.recipeRepository.findByIdWithIngredients,
+        ).toHaveBeenCalledWith(12, null);
+    });
+
+    it("should search recipes by filters for an anonymous request", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.recipeRepository.search.mockResolvedValue({ items: [], total: 0 });
+
+        const res = await request(app).get(
+            "/api/recipes-by-filters?ingredient_ids=3",
+        );
+
+        expect(res.status).toBe(200);
+        expect(deps.recipeRepository.search).toHaveBeenCalledWith(null, {
+            ingredient_ids: "3",
+        });
+    });
+
+    it("should return a 400 error body when an anonymous request uses in_pantry", async () => {
+        const { app, deps } = buildTestApp();
+
+        const res = await request(app).get(
+            "/api/recipes-by-filters?in_pantry=true",
+        );
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({
+            error: ERROR_MESSAGES.RECIPE_IN_PANTRY_REQUIRES_LOGIN,
+        });
+        expect(deps.recipeRepository.search).not.toHaveBeenCalled();
     });
 
     it("should create a recipe for an authenticated request", async () => {

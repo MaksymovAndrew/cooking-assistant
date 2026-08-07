@@ -5,11 +5,15 @@ import type { MenuDetails } from "types/menu";
 
 import { MenuHero } from "components/menu/MenuHero";
 
-import { renderWithRouter } from "test/router";
+import { renderWithProviders, renderWithRouter } from "test/router";
+import { makeTestStore } from "test/store";
 
 const LOG_INTAKE_BUTTON = "Log intake";
+const GUEST_CTA = "Log in for the full experience";
 const CALORIES_LABEL = "620 kcal";
 const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
+const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
+const GUEST_STORE = makeTestStore({ session: { status: "guest" } });
 
 const BASE_MENU: MenuDetails["menu"] = {
     id: 1,
@@ -17,7 +21,6 @@ const BASE_MENU: MenuDetails["menu"] = {
     categoryname: "Dinner",
     menucontent: "Slow-cooked, soul-warming Sunday evening meals.",
     category_id: 1,
-    personid: 1,
     isOwner: false,
 };
 
@@ -86,7 +89,9 @@ describe("MenuHero", () => {
     });
 
     it("should show just the Favourite button and no explanatory text for a visitor", () => {
-        renderWithRouter(<MenuHero {...baseProps} />);
+        renderWithProviders(<MenuHero {...baseProps} />, {
+            store: AUTHED_STORE,
+        });
 
         expect(
             screen.queryByRole("link", { name: /Edit menu/ }),
@@ -139,7 +144,10 @@ describe("MenuHero", () => {
     it("should show the log-intake button next to Favourite and call onLogIntake for a visitor", async () => {
         const onLogIntake = jest.fn();
 
-        renderWithRouter(<MenuHero {...baseProps} onLogIntake={onLogIntake} />);
+        renderWithProviders(
+            <MenuHero {...baseProps} onLogIntake={onLogIntake} />,
+            { store: AUTHED_STORE },
+        );
 
         await userEvent.click(
             screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
@@ -149,11 +157,49 @@ describe("MenuHero", () => {
     });
 
     it("should not show the log-intake button when onLogIntake is not provided", () => {
-        renderWithRouter(<MenuHero {...baseProps} />);
+        renderWithProviders(<MenuHero {...baseProps} />, {
+            store: AUTHED_STORE,
+        });
 
         expect(
             screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
         ).not.toBeInTheDocument();
+    });
+
+    it("should hide the favourite button for a guest", () => {
+        renderWithProviders(<MenuHero {...baseProps} />, {
+            store: GUEST_STORE,
+        });
+
+        expect(
+            screen.queryByRole("button", { name: "Favourite" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should show a generic login CTA instead of the log-intake button for a guest", () => {
+        renderWithProviders(
+            <MenuHero {...baseProps} onLogIntake={jest.fn()} />,
+            { store: GUEST_STORE },
+        );
+
+        expect(
+            screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
+        ).not.toBeInTheDocument();
+        expect(screen.getByRole("link", { name: GUEST_CTA })).toHaveAttribute(
+            "href",
+            "/login",
+        );
+    });
+
+    it("should show the generic login CTA for a guest even without onLogIntake", () => {
+        renderWithProviders(<MenuHero {...baseProps} />, {
+            store: GUEST_STORE,
+        });
+
+        expect(screen.getByRole("link", { name: GUEST_CTA })).toHaveAttribute(
+            "href",
+            "/login",
+        );
     });
 
     it("should show a log-intake trigger for an owner and call onLogIntake when clicked", async () => {

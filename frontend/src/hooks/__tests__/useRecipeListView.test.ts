@@ -189,35 +189,6 @@ describe("useRecipeListView", () => {
         }
     });
 
-    it("should expose the current user's id, for per-item ownership checks in the all-recipes view", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.recipeTypes.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.ingredients.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.userIngredients.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.calories.intake) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.recipes.byFilters) {
-                return Promise.resolve({ data: { items: [], total: 0 } });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
-
-        const { result } = await setup();
-
-        expect(result.current.currentUserId).toBe(CURRENT_USER.id);
-    });
-
     it("should report noRecipes once loading succeeds with zero results", async () => {
         mockedGet.mockImplementation((url: string) => {
             if (url === API_ROUTES.auth.me) {
@@ -614,5 +585,64 @@ describe("useRecipeListView", () => {
         });
 
         expect(result.current.isPantryEmpty).toBe(true);
+    });
+
+    it("should not request the pantry while the session is still checking (guest-safe on a public list)", () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.recipes.byFilters) {
+                return Promise.resolve({ data: { items: [], total: 0 } });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        renderHookWithRouter(() => useRecipeListView(RECIPE_SOURCE.all), {
+            store: makeTestStore(),
+        });
+
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.list,
+            expect.anything(),
+        );
+    });
+
+    it("should drop in_pantry from the request for a guest instead of sending a filter the backend rejects", async () => {
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.auth.me) {
+                return Promise.resolve({ data: null });
+            }
+            if (url === API_ROUTES.recipeTypes.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.ingredients.list) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url === API_ROUTES.recipes.byFilters) {
+                return Promise.resolve({
+                    data: { items: [RECIPE_1], total: 1 },
+                });
+            }
+
+            return Promise.reject(new Error(`unexpected GET ${url}`));
+        });
+
+        const { result } = await setup(RECIPE_SOURCE.all, [
+            "/test?pantry=true",
+        ]);
+
+        expect(result.current.recipes).toEqual([RECIPE_1]);
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.list,
+            expect.anything(),
+        );
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byFilters, {
+            params: { limit: PAGE_SIZE, offset: 0 },
+        });
     });
 });

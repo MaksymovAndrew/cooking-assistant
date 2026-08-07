@@ -34,7 +34,6 @@ interface MenuListViewProps extends MenuFilterPanelProps {
     hasActiveFilters: boolean;
     activeFilters: ActiveFilterEntry<MenuListParams>[];
     mine?: boolean;
-    currentUserId?: number | null;
     loadedCount: number;
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
@@ -62,7 +61,6 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
     activeFilters,
     searchPlaceholder,
     mine = false,
-    currentUserId = null,
     total,
     loadedCount,
     hasNextPage,
@@ -138,11 +136,7 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
                                 title={menu.title}
                                 categoryName={menu.categoryname}
                                 recipeCount={menu.recipe_count}
-                                mine={
-                                    mine ||
-                                    (typeof menu.person_id === "number" &&
-                                        menu.person_id === currentUserId)
-                                }
+                                mine={mine || Boolean(menu.isOwner)}
                             />
                         ))}
                     </div>

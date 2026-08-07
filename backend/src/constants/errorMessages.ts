@@ -12,6 +12,9 @@ export const ERROR_MESSAGES = {
     RECIPE_INGREDIENTS_NOT_EXIST: "One or more ingredients do not exist",
     RECIPE_TITLE_CONTENT_EMPTY: "Title and content cannot be empty",
 
+    RECIPE_IN_PANTRY_REQUIRES_LOGIN:
+        "Log in to filter recipes by pantry contents",
+
     MENU_NOT_FOUND: "Menu not found",
     MENU_INSUFFICIENT_DATA_CREATE: "Insufficient data to create menu",
     MENU_INSUFFICIENT_DATA_UPDATE: "Insufficient data to update menu",

@@ -132,6 +132,25 @@ describe("PgRecipeRepository (real Postgres)", () => {
         expect(asOther.isOwner).toBe(false);
     });
 
+    it("should report isOwner false, not null, for an anonymous (null) requester", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+        const recipe = Recipe.forCreation({
+            title: "Anonymous view",
+            content: "Guest-visible recipe.",
+            person_id: ownerId,
+            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
+        });
+
+        const created = (await repository.create(recipe)) as { id: number };
+
+        const asGuest = (await repository.findByIdWithIngredients(
+            created.id,
+            null,
+        )) as RecipeDetail;
+
+        expect(asGuest.isOwner).toBe(false);
+    });
+
     it("should refuse to update a recipe owned by someone else", async () => {
         const ingredientId = await createIngredient(pool, unitId);
         const otherPersonId = await createPerson(pool);

@@ -2,6 +2,7 @@ import express, { type Router } from "express";
 
 import type RecipeController from "controller/recipe.controller";
 import authenticateToken from "middleware/jwtMiddleware";
+import optionalAuth from "middleware/optionalAuth";
 
 const RECIPE_BY_ID_PATH = "/recipe/:id";
 
@@ -16,7 +17,7 @@ export default function createRecipeRouter(
 
     router.get(
         RECIPE_BY_ID_PATH,
-        authenticateToken,
+        optionalAuth,
         recipeController.getRecipeWithIngredients,
     );
 
@@ -34,7 +35,7 @@ export default function createRecipeRouter(
 
     router.get(
         "/recipes-by-filters",
-        authenticateToken,
+        optionalAuth,
         recipeController.searchRecipes,
     );
 

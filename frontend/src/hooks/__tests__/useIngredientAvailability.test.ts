@@ -43,7 +43,7 @@ const PANTRY_TOMATO: UserIngredient = {
 
 // pre-seed the cache by awaiting the real query thunk before the hook mounts, so the hook reads already-fulfilled data on first render
 const setup = async (ingredients: RecipeDetailIngredient[]) => {
-    const store = makeTestStore();
+    const store = makeTestStore({ session: { status: "authed" } });
 
     await store.dispatch(
         userIngredientsApi.endpoints.getUserIngredients.initiate(null),
@@ -67,5 +67,18 @@ describe("useIngredientAvailability", () => {
         ]);
         expect(result.current.haveCount).toBe(1);
         expect(result.current.missingCount).toBe(1);
+    });
+
+    it("should skip the pantry request and report nothing as available while the session is still checking", () => {
+        const store = makeTestStore();
+
+        const { result } = renderHookWithStore(
+            () => useIngredientAvailability([TOMATO, ONION]),
+            store,
+        );
+
+        expect(mockedGet).not.toHaveBeenCalled();
+        expect(result.current.haveCount).toBe(0);
+        expect(result.current.missingCount).toBe(2);
     });
 });

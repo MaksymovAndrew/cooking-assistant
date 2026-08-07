@@ -46,4 +46,10 @@
             display: block;
         }
     }
+
+    &__guest-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+    }
 }

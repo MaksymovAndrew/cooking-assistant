@@ -30,7 +30,6 @@ jest.mock("api/client");
 
 const TITLE = "Borscht";
 const LOG_INTAKE_BUTTON = "Log intake";
-const OWNER_ID = 3;
 const SAMPLE: RecipeDetails = {
     id: 1,
     title: TITLE,
@@ -40,7 +39,6 @@ const SAMPLE: RecipeDetails = {
     type_name: "Soup",
     cooking_time: 60,
     creation_date: "2024-01-01",
-    person_id: OWNER_ID,
     isOwner: true,
     calories_per_portion: null,
     calories_override: null,

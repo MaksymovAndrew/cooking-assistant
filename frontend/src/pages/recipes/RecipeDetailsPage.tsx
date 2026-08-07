@@ -12,6 +12,7 @@ import { useDeleteRecipeHandler } from "hooks/useDeleteRecipeHandler";
 import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 import { useIngredientAvailability } from "hooks/useIngredientAvailability";
 import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
+import { usePageTitle } from "hooks/usePageTitle";
 import { usePortionScaling } from "hooks/usePortionScaling";
 
 import { AppShell } from "components/layout/AppShell";
@@ -33,10 +34,10 @@ const RecipeDetailsPage: React.FC = () => {
     } = useGetRecipeByIdQuery(id ?? skipToken);
 
     const portions = usePortionScaling();
-    const { availability, haveCount, missingCount } = useIngredientAvailability(
-        recipe?.ingredients ?? [],
-    );
-    const allergens = getRecipeAllergens(recipe?.ingredients ?? []);
+    const ingredients = recipe?.ingredients ?? [];
+    const { availability, haveCount, missingCount } =
+        useIngredientAvailability(ingredients);
+    const allergens = getRecipeAllergens(ingredients);
     const handleDeleteRecipe = useDeleteRecipeHandler(recipe);
     const handleLogIntake = useLogIntakeHandler({
         recipeId: recipe?.id,
@@ -48,6 +49,8 @@ const RecipeDetailsPage: React.FC = () => {
         recipe?.calories_per_portion ?? null,
         portions.count,
     );
+
+    usePageTitle(recipe?.title);
 
     if (isError) {
         return (

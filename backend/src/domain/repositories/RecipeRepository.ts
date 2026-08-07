@@ -10,7 +10,7 @@ export interface RecipeRepository {
     findAllWithIngredients(): Promise<unknown[]>;
     findByIdWithIngredients(
         id: string | number,
-        currentUserId: number,
+        currentUserId: number | null,
     ): Promise<unknown>;
     update(
         id: string | number,
@@ -19,7 +19,7 @@ export interface RecipeRepository {
     ): Promise<unknown>;
     deleteById(id: string | number, personId: number): Promise<unknown>;
     search(
-        userId: number,
+        userId: number | null,
         filters: RecipeFilters,
     ): Promise<PaginatedResult<RecipeSearchRow>>;
     searchByPerson(

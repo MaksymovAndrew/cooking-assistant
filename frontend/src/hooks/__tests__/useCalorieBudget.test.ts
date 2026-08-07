@@ -9,7 +9,7 @@ import { useCalorieBudget } from "hooks/useCalorieBudget";
 
 import { getTodayRange } from "utils/calorieDateRange";
 
-import { mockGetByUrl } from "test/apiClientMock";
+import { makeAxiosError, mockedGet, mockGetByUrl } from "test/apiClientMock";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
@@ -72,5 +72,33 @@ describe("useCalorieBudget", () => {
         expect(result.current.consumed).toBe(300);
         expect(result.current.goal).toBeNull();
         expect(result.current.remaining).toBeNull();
+    });
+
+    it("should skip the calorie-intake request and report an empty budget for a guest", () => {
+        // /api/me also 401s for a guest - a real axios error, so it doesn't clobber the seeded
+        // "guest" status back to "error" via the getMe.matchRejected matcher (see sessionSlice)
+        mockedGet.mockRejectedValue(makeAxiosError(401, "Unauthorized"));
+        const store = makeTestStore({ session: { status: "guest" } });
+
+        const { result } = renderHookWithStore(() => useCalorieBudget(), store);
+
+        expect(result.current.consumed).toBe(0);
+        expect(result.current.goal).toBeNull();
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.calories.intake,
+            expect.anything(),
+        );
+    });
+
+    it("should skip the calorie-intake request while the session is still checking", () => {
+        const store = makeTestStore();
+
+        const { result } = renderHookWithStore(() => useCalorieBudget(), store);
+
+        expect(result.current.consumed).toBe(0);
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.calories.intake,
+            expect.anything(),
+        );
     });
 });

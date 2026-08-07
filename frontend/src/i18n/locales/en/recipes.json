@@ -169,6 +169,7 @@
         "yourRating": "Your rating",
         "allergens": "Allergens",
         "logIntake": "Log intake",
+        "guestCta": "Log in for the full experience",
         "customCaloriesNote": "The creator set a custom calorie total for this recipe, so per-ingredient calories aren't shown - only the total above applies."
     }
 }

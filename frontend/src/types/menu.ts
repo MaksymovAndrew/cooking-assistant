@@ -4,8 +4,10 @@ export interface Menu {
     categoryname: string;
     menucontent: string;
     recipe_count: number;
-    // present on the browse/person list endpoints, absent from the unpaginated stats-only query - optional so it stays honest about which callers have it
-    person_id?: number;
+    // computed by the backend (m.person_id = current viewer) - present on the browse/person list
+    // endpoints, absent from the unpaginated stats-only query, optional so it stays honest about
+    // which callers have it. The raw person_id itself never leaves the server.
+    isOwner?: boolean;
 }
 
 // shape returned by GET /api/menus (unpaginated) - the plain menu list plus each menu's recipe count/total cooking time, used for stats-page averages
@@ -45,7 +47,6 @@ export interface MenuDetails {
         categoryname: string;
         menucontent: string;
         category_id: number;
-        personid?: number;
         isOwner: boolean;
     };
     recipes: MenuDetailRecipe[];

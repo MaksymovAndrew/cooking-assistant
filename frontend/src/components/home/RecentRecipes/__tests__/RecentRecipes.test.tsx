@@ -14,6 +14,7 @@ const RECIPE: RecipeSearchResultItem = {
     cooking_time: 30,
     ingredients: [],
     calories_per_portion: null,
+    isOwner: true,
 };
 
 describe("RecentRecipes", () => {

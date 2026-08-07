@@ -11,6 +11,7 @@ import {
 import { ROUTES } from "constants/routes";
 
 import { OfflineModal } from "components/connectivity/OfflineModal";
+import { HomeRoute } from "components/layout/HomeRoute";
 import { PageSpinner } from "components/layout/PageSpinner";
 import { PrivateRoute } from "components/layout/PrivateRoute";
 import { RouteErrorBoundary } from "components/layout/RouteErrorBoundary";
@@ -28,6 +29,9 @@ const ResetPasswordPage = React.lazy(
 );
 const VerifyEmailPage = React.lazy(() => import("pages/auth/VerifyEmailPage"));
 const HomePage = React.lazy(() => import("pages/home/HomePage"));
+const GuestLandingPage = React.lazy(
+    () => import("pages/home/GuestLandingPage"),
+);
 const ChangeMenuPage = React.lazy(() => import("pages/menu/ChangeMenuPage"));
 const CreateMenuPage = React.lazy(() => import("pages/menu/CreateMenuPage"));
 const MenuDetailsPage = React.lazy(() => import("pages/menu/MenuDetailsPage"));
@@ -60,21 +64,25 @@ interface AppRoute {
 }
 
 const PRIVATE_ROUTES: AppRoute[] = [
-    { path: ROUTES.home, element: <HomePage /> },
-    { path: ROUTES.allRecipes, element: <MainPage /> },
     { path: ROUTES.myRecipes, element: <UserRecipesPage /> },
     { path: ROUTES.myMenus, element: <UserMenuPage /> },
     { path: ROUTES.addRecipe, element: <CreateRecipePage /> },
-    { path: ROUTES.recipeDetails, element: <RecipeDetailsPage /> },
     { path: ROUTES.changeRecipe, element: <ChangeRecipePage /> },
     { path: ROUTES.stats, element: <StatsPage /> },
     { path: ROUTES.ingredients, element: <IngredientsPage /> },
-    { path: ROUTES.allMenus, element: <MenuPage /> },
     { path: ROUTES.addMenu, element: <CreateMenuPage /> },
-    { path: ROUTES.menuDetails, element: <MenuDetailsPage /> },
     { path: ROUTES.changeMenu, element: <ChangeMenuPage /> },
     { path: ROUTES.profile, element: <ProfilePage /> },
     { path: ROUTES.settings, element: <SettingsPage /> },
+];
+
+// reachable without a session; must render immediately and never block on the /api/me round trip
+// (no PrivateRoute wrapper) - session status may change their chrome, never whether they render
+const PUBLIC_ROUTES: AppRoute[] = [
+    { path: ROUTES.allRecipes, element: <MainPage /> },
+    { path: ROUTES.recipeDetails, element: <RecipeDetailsPage /> },
+    { path: ROUTES.allMenus, element: <MenuPage /> },
+    { path: ROUTES.menuDetails, element: <MenuDetailsPage /> },
 ];
 
 // shell chrome shared by every route; lives inside the router so descendants (modals, forms) can use data-router hooks like useBlocker
@@ -105,6 +113,18 @@ const router = createBrowserRouter(
                 element={<ResetPasswordPage />}
             />
             <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
+            <Route
+                path={ROUTES.home}
+                element={
+                    <HomeRoute
+                        authedElement={<HomePage />}
+                        guestElement={<GuestLandingPage />}
+                    />
+                }
+            />
+            {PUBLIC_ROUTES.map(({ path, element }) => (
+                <Route key={path} path={path} element={element} />
+            ))}
             <Route element={<PrivateRoute />}>
                 {PRIVATE_ROUTES.map(({ path, element }) => (
                     <Route key={path} path={path} element={element} />

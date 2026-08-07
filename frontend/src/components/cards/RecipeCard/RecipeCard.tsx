@@ -4,6 +4,9 @@ import { useTranslation } from "react-i18next";
 
 import { recipeDetailsPath } from "constants/routes";
 
+import { useAppSelector } from "redux/hooks";
+import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
+
 import type { ContentCardVariant } from "components/cards/ContentCard";
 import {
     ContentCard,
@@ -42,6 +45,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
+    const { canFavourite } = useAppSelector(selectViewerCapabilities);
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const hasAllergens =
         filterAllergens((recipe.ingredients ?? []).flatMap((i) => i.allergens))
@@ -57,6 +61,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             variant={variant}
             badge={hasAllergens}
             calorieOver={exceedsBudget}
+            showFavourite={canFavourite}
             metaItems={[
                 {
                     icon: Clock,

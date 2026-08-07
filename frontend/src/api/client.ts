@@ -1,5 +1,6 @@
 import type { AxiosError, AxiosInstance } from "axios";
 import axios from "axios";
+import { matchPath } from "react-router-dom";
 export { isAxiosError } from "axios";
 
 import { API_BASE_URL } from "config/env";
@@ -27,7 +28,10 @@ export function handleAuthError(error: AxiosError): Promise<never> {
     const isAuthError =
         typeof status === "number" && AUTH_ERROR_STATUSES.includes(status);
     const isSkipped = SKIP_REDIRECT_URLS.some((url) => requestUrl === url);
-    const isProtectedPath = !PUBLIC_PATHS.includes(window.location.pathname);
+    const isPublicPath = PUBLIC_PATHS.some((pattern) =>
+        matchPath(pattern, window.location.pathname),
+    );
+    const isProtectedPath = !isPublicPath;
 
     const shouldRedirect = isAuthError && !isSkipped && isProtectedPath;
 

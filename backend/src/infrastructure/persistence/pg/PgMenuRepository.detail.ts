@@ -6,7 +6,6 @@ interface MenuRow {
     menuContent: string;
     categoryName: string;
     category_id: number;
-    personId: number;
     isOwner: boolean;
 }
 
@@ -14,7 +13,6 @@ interface MenuRecipeRow {
     recipe_id: number;
     title: string;
     content: string;
-    person_id: number;
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
@@ -47,7 +45,7 @@ interface MissingIngredient {
 export async function findMenuByIdWithRecipes(
     pool: Pool,
     id: string | number,
-    personId: number,
+    personId: number | null,
 ): Promise<unknown> {
     const menuResult = await pool.query<MenuRow>(
         `SELECT
@@ -56,8 +54,7 @@ export async function findMenuByIdWithRecipes(
         m.menu_content AS menuContent,
         mc.category_name AS categoryName,
         m.category_id,
-        m.person_id AS personId,
-        (m.person_id = $2) AS "isOwner"
+        COALESCE(m.person_id = $2, false) AS "isOwner"
       FROM menu m
       LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
       WHERE m.menu_id = $1`,
@@ -75,7 +72,6 @@ export async function findMenuByIdWithRecipes(
         r.id AS recipe_id,
         r.title,
         r.content,
-        r.person_id,
         r.type_id,
         r.creation_date,
         r.cooking_time,
@@ -94,10 +90,12 @@ export async function findMenuByIdWithRecipes(
 
     const recipeIds = recipeResult.rows.map((recipe) => recipe.recipe_id);
 
-    // fetch missing ingredients for every recipe of the menu in one query, then group in memory
+    // fetch missing ingredients for every recipe of the menu in one query, then group in memory -
+    // skipped for a guest (personId null): joining pi.person_id = NULL would match no pantry rows,
+    // so every ingredient would come back as fully missing instead of "unknown, show nothing"
     const missingByRecipe = new Map<number, MissingIngredient[]>();
 
-    if (recipeIds.length > 0) {
+    if (recipeIds.length > 0 && personId !== null) {
         const missingResult = await pool.query<MissingIngredientRow>(
             `SELECT
           ri.recipe_id,

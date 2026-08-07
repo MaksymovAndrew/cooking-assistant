@@ -1,0 +1,56 @@
+@use "styles/abstracts" as *;
+
+.guest-landing-discover {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+    padding: var(--s-5) 0 var(--s-7);
+
+    @include respond-to(desktop) {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-areas:
+            "recipe-filters divider menu-filters"
+            "recipe-content divider menu-content";
+        gap: var(--s-5) var(--s-7);
+    }
+
+    &__recipe-filters {
+        @include respond-to(desktop) {
+            grid-area: recipe-filters;
+        }
+    }
+
+    &__recipe-content {
+        min-width: 0;
+
+        @include respond-to(desktop) {
+            grid-area: recipe-content;
+        }
+    }
+
+    &__menu-filters {
+        @include respond-to(desktop) {
+            grid-area: menu-filters;
+        }
+    }
+
+    &__menu-content {
+        min-width: 0;
+
+        @include respond-to(desktop) {
+            grid-area: menu-content;
+        }
+    }
+
+    &__divider {
+        height: 1px;
+        background: var(--border);
+
+        @include respond-to(desktop) {
+            grid-area: divider;
+            width: 1px;
+            height: auto;
+        }
+    }
+}

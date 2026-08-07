@@ -19,7 +19,7 @@ const parseOptionalPositiveInteger = (value: string): number | null | false => {
 };
 
 export const useCalorieGoalForm = (
-    currentUser: CurrentUser | undefined,
+    currentUser: CurrentUser | null | undefined,
     onSuccess: () => void,
 ) => {
     const { t } = useTranslation("calories");

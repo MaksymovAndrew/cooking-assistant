@@ -14,7 +14,7 @@ import type RequestEmailVerification from "application/use-cases/users/RequestEm
 import type RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
 import type UpdateProfile from "application/use-cases/users/UpdateProfile";
 
-import { getUserId } from "controller/requestUser";
+import { getOptionalUserId, getUserId } from "controller/requestUser";
 
 interface UserControllerDependencies {
     registerUser: RegisterUser;
@@ -89,7 +89,11 @@ export default class UserController {
     };
 
     me: RequestHandler = async (req, res) => {
-        const user = await this.getCurrentUserUseCase.execute(getUserId(req));
+        const userId = getOptionalUserId(req);
+        const user =
+            userId === null
+                ? null
+                : await this.getCurrentUserUseCase.execute(userId);
 
         res.json(user);
     };

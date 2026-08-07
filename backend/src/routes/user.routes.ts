@@ -2,6 +2,7 @@ import express, { type Router } from "express";
 
 import type UserController from "controller/user.controller";
 import authenticateToken from "middleware/jwtMiddleware";
+import optionalAuth from "middleware/optionalAuth";
 import {
     changePasswordLimiter,
     confirmEmailLimiter,
@@ -33,7 +34,7 @@ export default function createUserRouter(
         userController.loginUser,
     );
     router.post("/logout", userController.logout);
-    router.get("/me", authenticateToken, userController.me);
+    router.get("/me", optionalAuth, userController.me);
     router.post(
         "/forgot-password",
         forgotPasswordLimiter,

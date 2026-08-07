@@ -14,7 +14,7 @@ const makeState = (status: SessionStatus): RootState =>
     makeTestStore({ session: { status } }).getState();
 
 const authed: SessionStatus = "authed";
-const unauthed: SessionStatus = "unauthed";
+const guest: SessionStatus = "guest";
 const checking: SessionStatus = "checking";
 const error: SessionStatus = "error";
 
@@ -22,7 +22,7 @@ describe("sessionSelectors", () => {
     describe("selectSessionStatus", () => {
         it("should return the current session status", () => {
             expect(selectSessionStatus(makeState(authed))).toBe(authed);
-            expect(selectSessionStatus(makeState(unauthed))).toBe(unauthed);
+            expect(selectSessionStatus(makeState(guest))).toBe(guest);
             expect(selectSessionStatus(makeState(checking))).toBe(checking);
             expect(selectSessionStatus(makeState(error))).toBe(error);
         });
@@ -34,7 +34,7 @@ describe("sessionSelectors", () => {
         });
 
         it("should return false when status is not authed", () => {
-            expect(selectIsAuthed(makeState(unauthed))).toBe(false);
+            expect(selectIsAuthed(makeState(guest))).toBe(false);
             expect(selectIsAuthed(makeState(checking))).toBe(false);
             expect(selectIsAuthed(makeState(error))).toBe(false);
         });
@@ -47,7 +47,7 @@ describe("sessionSelectors", () => {
 
         it("should return false when status is not checking", () => {
             expect(selectIsChecking(makeState(authed))).toBe(false);
-            expect(selectIsChecking(makeState(unauthed))).toBe(false);
+            expect(selectIsChecking(makeState(guest))).toBe(false);
             expect(selectIsChecking(makeState(error))).toBe(false);
         });
     });
@@ -59,7 +59,7 @@ describe("sessionSelectors", () => {
 
         it("should return false when there is no session error", () => {
             expect(selectHasSessionError(makeState(authed))).toBe(false);
-            expect(selectHasSessionError(makeState(unauthed))).toBe(false);
+            expect(selectHasSessionError(makeState(guest))).toBe(false);
             expect(selectHasSessionError(makeState(checking))).toBe(false);
         });
     });

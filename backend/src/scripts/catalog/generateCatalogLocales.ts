@@ -1,4 +1,4 @@
-// build-time: turns catalogData.json into the four frontend catalog.json locale files - only en/ is imported by the running app (see frontend/src/i18n/index.ts), ru/uk/pl are generated and committed ahead of translations (CA-10) shipping
+// build-time: turns catalogData.json into the four frontend catalog.json locale files - only en/ is imported by the running app (see frontend/src/i18n/index.ts), ru/uk/pl are generated and committed ahead of translations shipping
 import { writeFileSync } from "fs";
 import { join } from "path";
 

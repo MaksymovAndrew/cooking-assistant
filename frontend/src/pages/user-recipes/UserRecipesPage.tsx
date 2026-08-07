@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { usePageTitle } from "hooks/usePageTitle";
 import { RECIPE_SOURCE, useRecipeListView } from "hooks/useRecipeListView";
 
 import { RecipeListView } from "components/recipes/RecipeListView";
@@ -14,6 +15,8 @@ const UserRecipesPage: React.FC = () => {
         list.filters.types.length > 0
             ? t("userRecipesPage.recipesBy", { types: list.typesHeader })
             : t("userRecipesPage.myRecipes");
+
+    usePageTitle(heading);
 
     return (
         <RecipeListView

@@ -6,12 +6,15 @@ import type {
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
 export interface MenuRepository {
-    findAll(filters: MenuFilters): Promise<PaginatedResult<MenuSearchRow>>;
+    findAll(
+        filters: MenuFilters,
+        userId: number | null,
+    ): Promise<PaginatedResult<MenuSearchRow>>;
     findAllUnpaginated(): Promise<unknown[]>;
     create(menu: Menu, recipeIds: number[]): Promise<unknown>;
     findByIdWithRecipes(
         id: string | number,
-        personId: number,
+        personId: number | null,
     ): Promise<unknown>;
     update(
         id: string | number,

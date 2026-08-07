@@ -2,7 +2,8 @@ import { screen } from "@testing-library/react";
 
 import { RecipeCard } from "components/cards/RecipeCard";
 
-import { renderWithRouter } from "test/router";
+import { renderWithProviders, renderWithRouter } from "test/router";
+import { makeTestStore } from "test/store";
 
 const RECIPE = {
     id: 7,
@@ -88,5 +89,25 @@ describe("RecipeCard", () => {
         expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).not.toHaveClass(
             "content-card__meta-item--calorie-over",
         );
+    });
+
+    it("should show the favourite button for an authed viewer", () => {
+        renderWithProviders(<RecipeCard recipe={RECIPE} />, {
+            store: makeTestStore({ session: { status: "authed" } }),
+        });
+
+        expect(
+            screen.getByRole("button", { name: "Favourite" }),
+        ).toBeInTheDocument();
+    });
+
+    it("should hide the favourite button for a guest", () => {
+        renderWithProviders(<RecipeCard recipe={RECIPE} />, {
+            store: makeTestStore({ session: { status: "guest" } }),
+        });
+
+        expect(
+            screen.queryByRole("button", { name: "Favourite" }),
+        ).not.toBeInTheDocument();
     });
 });

@@ -2,7 +2,6 @@ import { useMemo } from "react";
 
 import type { MenuListParams } from "types/menu";
 
-import { useGetMeQuery } from "redux/services/authApi";
 import {
     flattenPages,
     getPaginatedTotal,
@@ -48,8 +47,6 @@ export const useMenuListView = (source: MenuSource) => {
     });
     const active = isPerson ? byPerson : all;
 
-    // already fetched by PrivateRoute on mount, so this is a cache read, not a new request - used to flag the current user's own menus in the "all" list
-    const { data: currentUser } = useGetMeQuery(null);
     const { data: categories = [] } = useGetMenuCategoriesQuery(null);
     const menus = useMemo(() => flattenPages(active.data), [active.data]);
     const total = getPaginatedTotal(active.data);
@@ -74,7 +71,6 @@ export const useMenuListView = (source: MenuSource) => {
         hasActiveFilters,
         categories,
         menus,
-        currentUserId: currentUser?.id ?? null,
         noMenus: active.isSuccess && !hasLoadedMenus,
         error: !hasLoadedMenus ? errorMessage : null,
         selectedCategoryNames,

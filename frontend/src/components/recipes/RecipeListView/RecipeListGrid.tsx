@@ -13,7 +13,6 @@ interface RecipeListGridProps {
     calorieGoal: number | null;
     calorieRemaining: number | null;
     mine: boolean;
-    currentUserId: number | null;
 }
 
 export const RecipeListGrid: React.FC<RecipeListGridProps> = ({
@@ -21,18 +20,13 @@ export const RecipeListGrid: React.FC<RecipeListGridProps> = ({
     calorieGoal,
     calorieRemaining,
     mine,
-    currentUserId,
 }) => (
     <div className={styles["recipe-list-view__grid"]}>
         {recipes.map((recipe) => (
             <RecipeCard
                 key={recipe.id}
                 recipe={recipe}
-                mine={
-                    mine ||
-                    (typeof recipe.person_id === "number" &&
-                        recipe.person_id === currentUserId)
-                }
+                mine={mine || recipe.isOwner}
                 exceedsBudget={exceedsCalorieBudget(
                     recipe.calories_per_portion,
                     calorieGoal,

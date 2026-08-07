@@ -7,6 +7,7 @@ import auth from "i18n/locales/en/auth.json";
 import calories from "i18n/locales/en/calories.json";
 import catalog from "i18n/locales/en/catalog.json";
 import common from "i18n/locales/en/common.json";
+import guestLanding from "i18n/locales/en/guestLanding.json";
 import home from "i18n/locales/en/home.json";
 import ingredients from "i18n/locales/en/ingredients.json";
 import menu from "i18n/locales/en/menu.json";
@@ -28,6 +29,7 @@ i18n.use(initReactI18next)
                 stats,
                 auth,
                 home,
+                guestLanding,
                 news,
                 profile,
                 settings,

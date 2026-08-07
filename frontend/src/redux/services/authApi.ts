@@ -15,9 +15,11 @@ import { API_ROUTES } from "api/endpoints";
 import { baseApi } from "./baseApi";
 
 // getMe provides the Me tag; login/logout invalidate it so the session check (sessionSlice listens to these endpoints) re-runs after auth changes
+// an anonymous requester gets 200 with a null body, not a 401 - a session check is a normal
+// query, not an authorization failure, so a guest browsing public pages never sees a failed request
 export const authApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        getMe: build.query<CurrentUser, null>({
+        getMe: build.query<CurrentUser | null, null>({
             query: () => ({ url: API_ROUTES.auth.me }),
             providesTags: ["Me"],
         }),

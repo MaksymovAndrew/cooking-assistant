@@ -10,7 +10,7 @@ import type GetMenuById from "application/use-cases/menus/GetMenuById";
 import type SearchPersonMenus from "application/use-cases/menus/SearchPersonMenus";
 import type UpdateMenu from "application/use-cases/menus/UpdateMenu";
 
-import { getUserId } from "./requestUser";
+import { getOptionalUserId, getUserId } from "./requestUser";
 
 interface MenuControllerDependencies {
     getAllMenus: GetAllMenus;
@@ -50,7 +50,10 @@ export default class MenuController {
     }
 
     getAll: RequestHandler = async (req, res) => {
-        const menus = await this.getAllMenusUseCase.execute(req.query);
+        const menus = await this.getAllMenusUseCase.execute(
+            getOptionalUserId(req),
+            req.query,
+        );
 
         res.status(200).json(menus);
     };
@@ -78,7 +81,7 @@ export default class MenuController {
     getById: RequestHandler<{ id: string }> = async (req, res) => {
         const menu = await this.getMenuByIdUseCase.execute(
             req.params.id,
-            getUserId(req),
+            getOptionalUserId(req),
         );
 
         res.status(200).json(menu);

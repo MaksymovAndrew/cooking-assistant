@@ -1,3 +1,4 @@
+import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Express } from "express";
@@ -33,6 +34,7 @@ export function createApp(controllers: Controllers): Express {
 
     app.set("trust proxy", TRUST_PROXY_HOPS);
     app.use(helmet({ hsts: HSTS_OPTIONS }));
+    app.use(compression());
     app.use(
         pinoHttp({
             logger,

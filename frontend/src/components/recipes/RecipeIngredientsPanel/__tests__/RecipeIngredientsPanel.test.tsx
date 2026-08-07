@@ -5,7 +5,12 @@ import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
 import { RecipeIngredientsPanel } from "components/recipes/RecipeIngredientsPanel";
 
-import { renderWithRouter } from "test/router";
+import { renderWithProviders, renderWithRouter } from "test/router";
+import { makeTestStore } from "test/store";
+
+const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
+const GUEST_STORE = makeTestStore({ session: { status: "guest" } });
+const CHECK_PANTRY_LINK = "Check pantry →";
 
 const TOMATO: IngredientAvailability = {
     id: 1,
@@ -52,36 +57,40 @@ describe("RecipeIngredientsPanel", () => {
     });
 
     it("should show the have/missing summary banner and a pantry link for the owner", () => {
-        renderWithRouter(<RecipeIngredientsPanel {...baseProps} />);
+        renderWithProviders(<RecipeIngredientsPanel {...baseProps} />, {
+            store: AUTHED_STORE,
+        });
 
         expect(
             screen.getByText(/You have 1 of 2 — 1 to buy\./),
         ).toBeInTheDocument();
         expect(
-            screen.getByRole("link", { name: "Check pantry →" }),
+            screen.getByRole("link", { name: CHECK_PANTRY_LINK }),
         ).toBeInTheDocument();
     });
 
     it("should show the pantry-link banner for a visitor", () => {
-        renderWithRouter(
+        renderWithProviders(
             <RecipeIngredientsPanel {...baseProps} isOwner={false} />,
+            { store: AUTHED_STORE },
         );
 
         expect(
             screen.getByText(/You have 1 of 2 ingredients\./),
         ).toBeInTheDocument();
         expect(
-            screen.getByRole("link", { name: "Check pantry →" }),
+            screen.getByRole("link", { name: CHECK_PANTRY_LINK }),
         ).toBeInTheDocument();
     });
 
     it("should not show the banner when nothing is missing", () => {
-        renderWithRouter(
+        renderWithProviders(
             <RecipeIngredientsPanel
                 {...baseProps}
                 missingCount={0}
                 availability={[TOMATO]}
             />,
+            { store: AUTHED_STORE },
         );
 
         expect(
@@ -89,6 +98,19 @@ describe("RecipeIngredientsPanel", () => {
                 (_, element) =>
                     element?.textContent === "You have 1 of 1 — 0 to buy.",
             ),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should show ingredients without have/missing indicators or a pantry banner for a guest", () => {
+        renderWithProviders(<RecipeIngredientsPanel {...baseProps} />, {
+            store: GUEST_STORE,
+        });
+
+        expect(screen.getByText("Tomato")).toBeInTheDocument();
+        expect(screen.getByText("Onion")).toBeInTheDocument();
+        expect(screen.queryByText(/You have 1 of 2/)).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole("link", { name: CHECK_PANTRY_LINK }),
         ).not.toBeInTheDocument();
     });
 

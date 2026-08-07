@@ -39,7 +39,6 @@ interface RecipeListViewProps extends RecipeFilterPanelProps {
     hasActiveFilters: boolean;
     activeFilters: ActiveFilterEntry<RecipeFilterParams>[];
     mine?: boolean;
-    currentUserId?: number | null;
     loadedCount: number;
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
@@ -70,7 +69,6 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     hasActiveFilters,
     activeFilters,
     mine = false,
-    currentUserId = null,
     searchPlaceholder,
     total,
     loadedCount,
@@ -140,7 +138,6 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                         calorieGoal={calorieGoal}
                         calorieRemaining={calorieRemaining}
                         mine={mine}
-                        currentUserId={currentUserId}
                     />
                 )}
                 {!error && !noRecipes && (

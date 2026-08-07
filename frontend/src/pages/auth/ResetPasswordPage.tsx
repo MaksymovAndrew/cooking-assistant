@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
+import { usePageTitle } from "hooks/usePageTitle";
 import { useResetPasswordForm } from "hooks/useResetPasswordForm";
 
 import { AuthLayout } from "components/auth/AuthLayout";
@@ -17,6 +18,14 @@ import styles from "./AuthPage.module.scss";
 const ResetPasswordPage: React.FC = () => {
     const { t } = useTranslation("auth");
     const form = useResetPasswordForm();
+
+    usePageTitle(
+        t(
+            form.tokenInvalid
+                ? "resetPasswordPage.invalidHeading"
+                : "resetPasswordPage.heading",
+        ),
+    );
 
     return (
         <AuthLayout

@@ -8,7 +8,7 @@ import { ERROR_MESSAGES } from "constants/errorMessages";
 
 // the typ claim must be checked positively: purpose tokens (password-reset, verify-email) are signed
 // with the same secret, so accepting any well-formed { id } would let an emailed link act as a session
-function isUserPayload(
+export function isSessionPayload(
     decoded: string | JwtPayload | undefined,
 ): decoded is JwtPayload & {
     id: number;
@@ -25,10 +25,15 @@ function isUserPayload(
     );
 }
 
+// shared by optionalAuth, which needs the identical cookie lookup for a route a guest may also hit
+export function readSessionCookie(req: {
+    cookies?: Record<string, string | undefined>;
+}): string {
+    return req.cookies?.[AUTH_COOKIE_NAME]?.trim() ?? "";
+}
+
 const authenticateToken: RequestHandler = (req, res, next) => {
-    const cookies = req.cookies as
-        Record<string, string | undefined> | undefined;
-    const token = cookies?.[AUTH_COOKIE_NAME]?.trim() ?? "";
+    const token = readSessionCookie(req);
 
     if (!token) {
         res.status(401).json({ error: ERROR_MESSAGES.SESSION_EXPIRED });
@@ -39,7 +44,7 @@ const authenticateToken: RequestHandler = (req, res, next) => {
     const secret = requireJwtSecret();
 
     jwt.verify(token, secret, { algorithms: ["HS256"] }, (err, decoded) => {
-        if (err !== null || !isUserPayload(decoded)) {
+        if (err !== null || !isSessionPayload(decoded)) {
             res.status(403).json({
                 error: ERROR_MESSAGES.SESSION_EXPIRED,
             });

@@ -18,7 +18,7 @@ export interface RecipeSearchRow {
     id: number;
     title: string;
     content: string;
-    person_id: number;
+    isOwner: boolean;
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;

@@ -220,14 +220,13 @@ describe("MenuListView", () => {
         ).toHaveClass(MINE_CLASS);
     });
 
-    it("should mark a card as mine when its person_id matches the current user, even without the mine prop", () => {
+    it("should mark a card as mine when the server flags it as owned, even without the mine prop", () => {
         renderWithRouter(
             <MenuListView
                 {...baseProps}
-                menus={[{ ...MENUS[0], person_id: 7 }]}
+                menus={[{ ...MENUS[0], isOwner: true }]}
                 noMenus={false}
                 error={null}
-                currentUserId={7}
             />,
         );
 
@@ -240,10 +239,9 @@ describe("MenuListView", () => {
         renderWithRouter(
             <MenuListView
                 {...baseProps}
-                menus={[{ ...MENUS[0], person_id: 7 }]}
+                menus={[{ ...MENUS[0], isOwner: false }]}
                 noMenus={false}
                 error={null}
-                currentUserId={9}
             />,
         );
 

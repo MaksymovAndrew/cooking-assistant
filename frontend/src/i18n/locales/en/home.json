@@ -1,4 +1,5 @@
 {
+    "pageTitle": "Home",
     "greeting": {
         "welcome": "Welcome back 👋",
         "welcomeWithName": "Welcome back, {{name}} 👋"

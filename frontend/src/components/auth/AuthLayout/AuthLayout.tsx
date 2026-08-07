@@ -1,5 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+import { ROUTES } from "constants/routes";
 
 import { DonburiMarkDetailed } from "components/icons";
 
@@ -27,15 +30,18 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
     return (
         <div className={styles["auth-layout"]}>
             <div className={styles["auth-layout__illustration"]}>
-                <span className={styles["auth-layout__brand"]}>
+                <Link to={ROUTES.home} className={styles["auth-layout__brand"]}>
                     {brandIcon && (
                         <DonburiMarkDetailed size={BRAND_ICON_SIZE} />
                     )}
                     {t("appName")}
-                </span>
-                <span className={styles["auth-layout__icon-circle"]}>
+                </Link>
+                <Link
+                    to={ROUTES.home}
+                    className={styles["auth-layout__icon-circle"]}
+                >
                     <DonburiMarkDetailed size={ILLUSTRATION_ICON_SIZE} />
-                </span>
+                </Link>
                 <div className={styles["auth-layout__tagline"]}>
                     <p className={styles["auth-layout__tagline-heading"]}>
                         {tagline}
@@ -46,7 +52,10 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
                 </div>
             </div>
             <div className={styles["auth-layout__panel"]}>
-                <div className={styles["auth-layout__mobile-header"]}>
+                <Link
+                    to={ROUTES.home}
+                    className={styles["auth-layout__mobile-header"]}
+                >
                     <span
                         className={styles["auth-layout__icon-circle--mobile"]}
                     >
@@ -55,7 +64,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
                     <span className={styles["auth-layout__brand-text"]}>
                         {t("appName")}
                     </span>
-                </div>
+                </Link>
                 <div className={styles["auth-layout__card"]}>{children}</div>
             </div>
         </div>

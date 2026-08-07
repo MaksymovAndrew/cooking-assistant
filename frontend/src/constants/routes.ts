@@ -45,10 +45,17 @@ export const changeMenuPath = (id: string | number): string =>
 // deep-links into the Dietary tab of the profile page - kept in sync with the "dietary" tab id read in useProfilePage.ts
 export const profileDietaryPath = (): string => `${ROUTES.profile}?tab=dietary`;
 
+// route patterns (":id" and all), not literal paths - matched against the current location with
+// react-router's matchPath, since a dynamic segment never equals its own pattern string
 export const PUBLIC_PATHS: string[] = [
+    ROUTES.home,
     ROUTES.login,
     ROUTES.registration,
     ROUTES.forgotPassword,
     ROUTES.resetPassword,
     ROUTES.verifyEmail,
+    ROUTES.allRecipes,
+    ROUTES.recipeDetails,
+    ROUTES.allMenus,
+    ROUTES.menuDetails,
 ];

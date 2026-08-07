@@ -2,6 +2,7 @@ import { renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import React from "react";
 import { Provider } from "react-redux";
+import type { InitialEntry } from "react-router-dom";
 import { MemoryRouter } from "react-router-dom";
 
 import type { AppStore, RootState } from "redux/store";
@@ -24,7 +25,7 @@ export const renderHookWithStore = <T>(
 
 interface RenderHookWithRouterOptions {
     store?: AppStore;
-    initialEntries?: string[];
+    initialEntries?: InitialEntry[];
 }
 
 // same as renderHookWithStore, but also wraps in a real Router so hooks built on

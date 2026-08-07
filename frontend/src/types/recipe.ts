@@ -6,13 +6,12 @@ export interface RecipeListItem {
     type_name: string;
     creation_date: string;
     cooking_time: number;
-    // present on the search/person-filtered endpoints, absent from the unpaginated stats-only query - optional so it stays honest about which callers have it
-    person_id?: number;
 }
 
 // shape returned by GET /api/recipes - the recipe list plus an array_agg of ingredient names
 export interface RecipeWithIngredientNames extends RecipeListItem {
     ingredients: string[];
+    person_id?: number;
 }
 
 export interface RecipeSearchIngredient {
@@ -26,6 +25,8 @@ export interface RecipeSearchResultItem extends RecipeListItem {
     ingredients: RecipeSearchIngredient[];
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
+    // computed by the backend (r.person_id = current viewer) - the raw person_id itself never leaves the server
+    isOwner: boolean;
 }
 
 export interface RecipeDetailIngredient extends CatalogIngredientRef {
@@ -48,7 +49,6 @@ export interface RecipeDetails {
     type_name: string;
     cooking_time: number;
     creation_date: string;
-    person_id: number;
     // computed by the backend (r.person_id = current user) so the client can gate Edit/Delete without decoding the session
     isOwner: boolean;
     // COALESCE(calories_override, calories_computed)

@@ -15,7 +15,7 @@ export default class GetRecipeById {
 
     async execute(
         id: string | number,
-        currentUserId: number,
+        currentUserId: number | null,
     ): Promise<unknown> {
         const recipeId = validate(idSchema, id);
         const recipe = await this.recipeRepository.findByIdWithIngredients(

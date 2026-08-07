@@ -101,6 +101,29 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         expect(result.total).toBe(1);
     });
 
+    it("should report isOwner per viewer on search results, never the raw person_id", async () => {
+        const ingredient = await createNamedIngredient();
+        const otherPersonId = await createPerson(pool);
+        const uniqueTitle = unique("isOwner search recipe");
+
+        await createRecipeWithIngredients(uniqueTitle, [ingredient.id], 10);
+
+        const asOwner = await repository.search(ownerId, {
+            recipe_name: uniqueTitle,
+        });
+        const asOther = await repository.search(otherPersonId, {
+            recipe_name: uniqueTitle,
+        });
+        const asGuest = await repository.search(null, {
+            recipe_name: uniqueTitle,
+        });
+
+        expect(asOwner.items[0]).toMatchObject({ isOwner: true });
+        expect(asOther.items[0]).toMatchObject({ isOwner: false });
+        expect(asGuest.items[0]).toMatchObject({ isOwner: false });
+        expect(asGuest.items[0]).not.toHaveProperty("person_id");
+    });
+
     it("should treat literal % and _ in recipe_name as text, not SQL LIKE wildcards", async () => {
         const ingredient = await createNamedIngredient();
         const tag = unique("wildcard");
@@ -521,6 +544,23 @@ describe("PgRecipeRepository search (real Postgres)", () => {
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: ownRecipeId }),
+        ]);
+    });
+
+    it("should search recipes for an anonymous (null) requester without in_pantry", async () => {
+        const ingredient = await createNamedIngredient();
+        const recipeId = await createRecipeWithIngredients(
+            "Anonymous search fixture",
+            [ingredient.id],
+            10,
+        );
+
+        const result = await repository.search(null, {
+            ingredient_ids: String(ingredient.id),
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: recipeId }),
         ]);
     });
 });

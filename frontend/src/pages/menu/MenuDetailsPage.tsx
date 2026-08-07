@@ -12,17 +12,14 @@ import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
+import { usePageTitle } from "hooks/usePageTitle";
 
 import { AppShell } from "components/layout/AppShell";
 import { MenuHero } from "components/menu/MenuHero";
-import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
-import { MenuRecipesPanel } from "components/menu/MenuRecipesPanel";
 import { ErrorState } from "components/ui/ErrorState";
 
-import { aggregateMenuIngredients } from "utils/menuUtils";
-import { filterAllergens } from "utils/recipeAllergens";
-
 import styles from "./MenuDetailsPage.module.scss";
+import { MenuDetailsSecondary } from "./MenuDetailsSecondary";
 
 const MenuDetailsPage: React.FC = () => {
     const { t } = useTranslation("menu");
@@ -45,6 +42,8 @@ const MenuDetailsPage: React.FC = () => {
         caloriesPerPortion: menuCalories,
     });
     const exceedsBudget = useExceedsCalorieBudget(menuCalories);
+
+    usePageTitle(menu?.menu.title);
 
     if (isError) {
         return (
@@ -74,10 +73,7 @@ const MenuDetailsPage: React.FC = () => {
         (total, recipe) => total + recipe.cooking_time,
         0,
     );
-    const menuIngredients = aggregateMenuIngredients(menu.recipes);
-    const menuAllergens = filterAllergens(menu.allergens);
     const isOwner = menu.menu.isOwner;
-    const gridClassName = `${styles["menu-details-page__grid"]} ${styles["menu-details-page__grid--with-aside"]}`;
 
     return (
         <AppShell
@@ -114,17 +110,12 @@ const MenuDetailsPage: React.FC = () => {
                     onLogIntake={handleLogIntake}
                     exceedsBudget={exceedsBudget}
                 />
-                <div className={gridClassName}>
-                    <MenuRecipesPanel
-                        recipes={menu.recipes}
-                        isOwner={isOwner}
-                        addRecipesTo={changeMenuPath(menu.menu.id)}
-                    />
-                    <MenuMissingIngredientsPanel
-                        ingredients={menuIngredients}
-                        allergens={menuAllergens}
-                    />
-                </div>
+                <MenuDetailsSecondary
+                    recipes={menu.recipes}
+                    allergens={menu.allergens}
+                    isOwner={isOwner}
+                    addRecipesTo={changeMenuPath(menu.menu.id)}
+                />
             </div>
         </AppShell>
     );

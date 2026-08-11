@@ -25,8 +25,9 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: Popups no longer show a stray gap of unblurred background at the top of the screen on iPhone Safari, and the login/register pages no longer scroll a few extra pixels of empty space.
 - Fixed: A popup taller than the screen (for example after rotating the phone) can now always be scrolled up to reach its own title and close button.
 - Added: On mobile, tapping the handle at the top of a popup now closes it.
-- Changed: Every popup now uses the same footer layout - actions aligned to the right (stacked full-width on mobile with the main action on top), and popups that only show information get a close button in the corner.
+- Changed: Every popup now uses the same footer layout - actions aligned to the right, staying on one row unless they don't fit - and popups that only show information get a close button in the corner.
 - Fixed: Adding an ingredient to the pantry could silently fail to save if the ingredient category browser was still open when "Add to pantry" was clicked.
+- Fixed: The recipe/menu filter popover could open partly below the screen with no way to scroll down to its "Reset filters" button.
 
 ### Project
 

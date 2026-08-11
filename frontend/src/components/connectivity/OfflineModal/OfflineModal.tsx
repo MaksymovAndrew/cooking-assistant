@@ -43,15 +43,18 @@ export const OfflineModal: React.FC = () => {
     );
 
     return (
-        <BaseModal onClose={handleClose} title={heading}>
-            <p className={styles["offline-modal__message"]}>
-                {t("offlineModal.message")}
-            </p>
-            <div className={styles["offline-modal__actions"]}>
+        <BaseModal
+            onClose={handleClose}
+            title={heading}
+            footer={
                 <Button variant="secondary" onClick={handleClose}>
                     {t("offlineModal.close")}
                 </Button>
-            </div>
+            }
+        >
+            <p className={styles["offline-modal__message"]}>
+                {t("offlineModal.message")}
+            </p>
         </BaseModal>
     );
 };

@@ -40,14 +40,4 @@
         gap: var(--s-2);
         margin-top: var(--s-4);
     }
-
-    &__footer {
-        @include mobile-stacked-actions;
-
-        margin-top: var(--s-5);
-
-        @include respond-to(tablet) {
-            justify-content: flex-end;
-        }
-    }
 }

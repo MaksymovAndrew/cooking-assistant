@@ -41,6 +41,16 @@ export const ExpiredIngredientsModal = ({
                 </span>
             }
             onClose={handleClose}
+            footer={
+                <>
+                    <Button variant="secondary" onClick={handleClose}>
+                        {t("expiredNoticeModal.close")}
+                    </Button>
+                    <LinkButton to={ROUTES.ingredients} onClick={handleClose}>
+                        {t("expiredNoticeModal.goToPantry")}
+                    </LinkButton>
+                </>
+            }
         >
             <p className={styles["expired-ingredients-modal__message"]}>
                 {t("expiredNoticeModal.message", {
@@ -54,14 +64,6 @@ export const ExpiredIngredientsModal = ({
                     </li>
                 ))}
             </ul>
-            <div className={styles["expired-ingredients-modal__footer"]}>
-                <Button variant="secondary" onClick={handleClose}>
-                    {t("expiredNoticeModal.close")}
-                </Button>
-                <LinkButton to={ROUTES.ingredients} onClick={handleClose}>
-                    {t("expiredNoticeModal.goToPantry")}
-                </LinkButton>
-            </div>
         </BaseModal>
     );
 };

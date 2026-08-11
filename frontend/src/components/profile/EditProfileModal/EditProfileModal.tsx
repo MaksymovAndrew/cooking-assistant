@@ -23,6 +23,7 @@ interface EditProfileModalProps {
 
 const NAME_ID = "edit-profile-name";
 const SURNAME_ID = "edit-profile-surname";
+const FORM_ID = "edit-profile-form";
 
 export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     currentUser,
@@ -42,8 +43,19 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             size="sm"
             title={t("editProfileModal.title")}
             onClose={onClose}
+            footer={
+                <>
+                    <Button type="button" variant="secondary" onClick={onClose}>
+                        {t("editProfileModal.cancelButton")}
+                    </Button>
+                    <Button type="submit" form={FORM_ID}>
+                        {t("editProfileModal.saveButton")}
+                    </Button>
+                </>
+            }
         >
             <form
+                id={FORM_ID}
                 className={styles["edit-profile-modal__form"]}
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -87,14 +99,6 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                     />
                 </div>
                 {form.error && <FormErrorBanner message={form.error} />}
-                <div className={styles["edit-profile-modal__footer"]}>
-                    <Button type="button" variant="secondary" onClick={onClose}>
-                        {t("editProfileModal.cancelButton")}
-                    </Button>
-                    <Button type="submit">
-                        {t("editProfileModal.saveButton")}
-                    </Button>
-                </div>
             </form>
         </BaseModal>
     );

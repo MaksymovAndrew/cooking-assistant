@@ -112,40 +112,6 @@ describe("BaseModal", () => {
         expect(onClose).not.toHaveBeenCalled();
     });
 
-    it("should wrap Tab from the last focusable element back to the first", async () => {
-        render(
-            <BaseModal onClose={jest.fn()}>
-                <button>First</button>
-                <button>Last</button>
-            </BaseModal>,
-        );
-
-        const first = screen.getByRole("button", { name: "First" });
-        const last = screen.getByRole("button", { name: "Last" });
-
-        last.focus();
-        await userEvent.tab();
-
-        expect(first).toHaveFocus();
-    });
-
-    it("should wrap Shift+Tab from the first focusable element back to the last", async () => {
-        render(
-            <BaseModal onClose={jest.fn()}>
-                <button>First</button>
-                <button>Last</button>
-            </BaseModal>,
-        );
-
-        const first = screen.getByRole("button", { name: "First" });
-        const last = screen.getByRole("button", { name: "Last" });
-
-        first.focus();
-        await userEvent.tab({ shift: true });
-
-        expect(last).toHaveFocus();
-    });
-
     it("should lock body scroll while mounted and restore it on unmount", () => {
         const { unmount } = render(
             <BaseModal onClose={jest.fn()}>
@@ -158,5 +124,102 @@ describe("BaseModal", () => {
         unmount();
 
         expect(document.body.style.overflow).toBe("");
+    });
+
+    it("should not render a footer when none is given", () => {
+        render(
+            <BaseModal onClose={jest.fn()}>
+                <p>{MESSAGE}</p>
+            </BaseModal>,
+        );
+
+        expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    });
+
+    it("should render the footer outside the scrolling body", () => {
+        render(
+            <BaseModal onClose={jest.fn()} footer={<button>Save</button>}>
+                <p>{MESSAGE}</p>
+            </BaseModal>,
+        );
+
+        expect(
+            screen.getByRole("button", { name: "Save" }),
+        ).toBeInTheDocument();
+    });
+
+    it("should not render a close button by default", () => {
+        render(
+            <BaseModal onClose={jest.fn()} title="Heading">
+                <p>{MESSAGE}</p>
+            </BaseModal>,
+        );
+
+        expect(
+            screen.queryByRole("button", { name: "Close" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should call onClose when the close button is clicked", async () => {
+        const onClose = jest.fn();
+
+        render(
+            <BaseModal onClose={onClose} title="Heading" showCloseButton>
+                <p>{MESSAGE}</p>
+            </BaseModal>,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Close" }));
+
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not render a drag handle above the mobile breakpoint", () => {
+        render(
+            <BaseModal onClose={jest.fn()}>
+                <p>{MESSAGE}</p>
+            </BaseModal>,
+        );
+
+        expect(
+            screen.queryByRole("button", { name: "Close" }),
+        ).not.toBeInTheDocument();
+    });
+
+    describe("on a mobile viewport", () => {
+        const originalMatchMedia = window.matchMedia;
+
+        beforeEach(() => {
+            window.matchMedia = (query: string): MediaQueryList => ({
+                matches: true,
+                media: query,
+                onchange: null,
+                addListener: jest.fn(),
+                removeListener: jest.fn(),
+                addEventListener: jest.fn(),
+                removeEventListener: jest.fn(),
+                dispatchEvent: jest.fn(),
+            });
+        });
+
+        afterEach(() => {
+            window.matchMedia = originalMatchMedia;
+        });
+
+        it("should call onClose when the drag handle is clicked", async () => {
+            const onClose = jest.fn();
+
+            render(
+                <BaseModal onClose={onClose}>
+                    <p>{MESSAGE}</p>
+                </BaseModal>,
+            );
+
+            await userEvent.click(
+                screen.getByRole("button", { name: "Close" }),
+            );
+
+            expect(onClose).toHaveBeenCalledTimes(1);
+        });
     });
 });

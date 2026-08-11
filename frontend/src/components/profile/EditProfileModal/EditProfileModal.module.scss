@@ -19,14 +19,4 @@
             sans-serif;
         color: var(--text-2);
     }
-
-    &__footer {
-        @include mobile-stacked-actions;
-
-        margin-top: var(--s-5);
-
-        @include respond-to(tablet) {
-            justify-content: flex-end;
-        }
-    }
 }

@@ -45,24 +45,4 @@
             500 13px Inter,
             sans-serif;
     }
-
-    &__actions {
-        display: flex;
-        flex-direction: column-reverse;
-        gap: var(--s-3);
-        margin-top: var(--s-5);
-
-        @include respond-to(tablet) {
-            flex-direction: row;
-            justify-content: center;
-        }
-    }
-}
-
-.confirm-modal__actions > button {
-    width: 100%;
-
-    @include respond-to(tablet) {
-        width: auto;
-    }
 }

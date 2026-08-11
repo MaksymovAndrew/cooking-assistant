@@ -1,6 +1,5 @@
 {
     "title": "What's new",
-    "close": "Close",
     "newCount": "{{total}} new",
     "items": {
         "guestBrowsing": {

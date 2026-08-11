@@ -1,4 +1,13 @@
+import { X } from "lucide-react";
 import React, { useEffect, useId, useRef } from "react";
+import { useTranslation } from "react-i18next";
+
+import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
+
+import { useEscapeKey } from "hooks/useEscapeKey";
+import { useFocusTrap } from "hooks/useFocusTrap";
+import { useMediaQuery } from "hooks/useMediaQuery";
+import { useScrollLock } from "hooks/useScrollLock";
 
 import styles from "./BaseModal.module.scss";
 
@@ -9,9 +18,15 @@ interface BaseModalProps {
     size?: BaseModalSize;
     title?: React.ReactNode;
     children: React.ReactNode;
+    // sticky row of up to 2 right-aligned actions, rendered outside the scrolling body
+    footer?: React.ReactNode;
+    // only for modals with no footer buttons to close via - most modals already have one
+    showCloseButton?: boolean;
     closeOnOverlay?: boolean;
     closeOnEscape?: boolean;
 }
+
+const CLOSE_ICON_SIZE = 16;
 
 const SIZE_CLASS: Record<BaseModalSize, string> = {
     sm: styles["base-modal--sm"],
@@ -19,90 +34,30 @@ const SIZE_CLASS: Record<BaseModalSize, string> = {
     lg: styles["base-modal--lg"],
 };
 
-const FOCUSABLE_SELECTOR =
-    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
 // no isOpen prop - visibility is owned by the caller (mounted = open)
 export const BaseModal: React.FC<BaseModalProps> = ({
     onClose,
     size = "md",
     title,
     children,
+    footer,
+    showCloseButton = false,
     closeOnOverlay = true,
     closeOnEscape = true,
 }) => {
+    const { t } = useTranslation();
     const titleId = useId();
     const containerRef = useRef<HTMLDivElement>(null);
+    // rendered conditionally, not just CSS-hidden - a display:none button would still match
+    // useFocusTrap's selector and break the desktop focus trap's first/last calculation
+    const isBottomSheet = useMediaQuery(MOBILE_MEDIA_QUERY);
 
-    useEffect(() => {
-        if (!closeOnEscape) {
-            return undefined;
-        }
-
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                onClose();
-            }
-        };
-
-        document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [closeOnEscape, onClose]);
+    useEscapeKey(onClose, closeOnEscape);
+    useFocusTrap(containerRef);
+    useScrollLock(true);
 
     useEffect(() => {
         containerRef.current?.focus();
-    }, []);
-
-    // traps Tab navigation inside the modal so it can't escape to the page behind it
-    useEffect(() => {
-        const handleTabKey = (e: KeyboardEvent) => {
-            if (e.key !== "Tab") {
-                return;
-            }
-
-            const container = containerRef.current;
-            const focusable = container
-                ? Array.from(
-                      container.querySelectorAll<HTMLElement>(
-                          FOCUSABLE_SELECTOR,
-                      ),
-                  )
-                : [];
-
-            if (focusable.length === 0) {
-                return;
-            }
-
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-
-            if (e.shiftKey && document.activeElement === first) {
-                e.preventDefault();
-                last.focus();
-            } else if (!e.shiftKey && document.activeElement === last) {
-                e.preventDefault();
-                first.focus();
-            }
-        };
-
-        document.addEventListener("keydown", handleTabKey);
-
-        return () => {
-            document.removeEventListener("keydown", handleTabKey);
-        };
-    }, []);
-
-    useEffect(() => {
-        const previousOverflow = document.body.style.overflow;
-
-        document.body.style.overflow = "hidden";
-
-        return () => {
-            document.body.style.overflow = previousOverflow;
-        };
     }, []);
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -125,10 +80,24 @@ export const BaseModal: React.FC<BaseModalProps> = ({
                 tabIndex={-1}
                 className={`${styles["base-modal"]} ${SIZE_CLASS[size]}`}
             >
-                <span
-                    className={styles["base-modal__handle"]}
-                    aria-hidden="true"
-                />
+                {isBottomSheet && (
+                    <button
+                        type="button"
+                        aria-label={t("modal.closeSheet")}
+                        className={styles["base-modal__handle"]}
+                        onClick={onClose}
+                    />
+                )}
+                {showCloseButton && (
+                    <button
+                        type="button"
+                        aria-label={t("modal.close")}
+                        className={styles["base-modal__close"]}
+                        onClick={onClose}
+                    >
+                        <X size={CLOSE_ICON_SIZE} aria-hidden="true" />
+                    </button>
+                )}
                 {title && (
                     <h2 id={titleId} className={styles["base-modal__title"]}>
                         {title}
@@ -136,6 +105,9 @@ export const BaseModal: React.FC<BaseModalProps> = ({
                 )}
                 {/* scrollbar lives here, not on the rounded outer box, so it can't poke past the corner */}
                 <div className={styles["base-modal__scroll"]}>{children}</div>
+                {footer && (
+                    <div className={styles["base-modal__footer"]}>{footer}</div>
+                )}
             </div>
         </div>
     );

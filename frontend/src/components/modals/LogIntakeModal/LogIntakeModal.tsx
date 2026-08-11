@@ -73,6 +73,19 @@ export const LogIntakeModal = ({
             size="sm"
             title={t("logIntakeModal.title")}
             onClose={handleClose}
+            footer={
+                <>
+                    <Button variant="secondary" onClick={handleClose}>
+                        {t("logIntakeModal.cancel")}
+                    </Button>
+                    <Button
+                        onClick={() => void handleConfirm()}
+                        disabled={isLoading}
+                    >
+                        {t("logIntakeModal.confirm")}
+                    </Button>
+                </>
+            }
         >
             <p className={styles["log-intake-modal__title"]}>{title}</p>
 
@@ -104,10 +117,6 @@ export const LogIntakeModal = ({
                     </button>
                 </div>
             </div>
-
-            <p className={styles["log-intake-modal__total"]}>
-                {t("logIntakeModal.totalLabel", { total: formatKcal(total) })}
-            </p>
 
             {goal !== null && remaining !== null && (
                 <div className={styles["log-intake-modal__budget"]}>
@@ -141,17 +150,9 @@ export const LogIntakeModal = ({
                 </div>
             )}
 
-            <div className={styles["log-intake-modal__footer"]}>
-                <Button variant="secondary" onClick={handleClose}>
-                    {t("logIntakeModal.cancel")}
-                </Button>
-                <Button
-                    onClick={() => void handleConfirm()}
-                    disabled={isLoading}
-                >
-                    {t("logIntakeModal.confirm")}
-                </Button>
-            </div>
+            <p className={styles["log-intake-modal__total"]}>
+                {t("logIntakeModal.totalLabel", { total: formatKcal(total) })}
+            </p>
         </BaseModal>
     );
 };

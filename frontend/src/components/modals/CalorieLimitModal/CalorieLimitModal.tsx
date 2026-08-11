@@ -42,6 +42,20 @@ export const CalorieLimitModal = ({
                 </span>
             }
             onClose={handleClose}
+            footer={
+                <>
+                    <LinkButton
+                        to={profileDietaryPath()}
+                        variant="secondary"
+                        onClick={handleClose}
+                    >
+                        {t("limitModal.adjustGoal")}
+                    </LinkButton>
+                    <Button onClick={handleClose}>
+                        {t("limitModal.gotIt")}
+                    </Button>
+                </>
+            }
         >
             <p className={styles["calorie-limit-modal__message"]}>
                 {t("limitModal.message", {
@@ -53,16 +67,6 @@ export const CalorieLimitModal = ({
             <p className={styles["calorie-limit-modal__note"]}>
                 {t("limitModal.note")}
             </p>
-            <div className={styles["calorie-limit-modal__footer"]}>
-                <LinkButton
-                    to={profileDietaryPath()}
-                    variant="secondary"
-                    onClick={handleClose}
-                >
-                    {t("limitModal.adjustGoal")}
-                </LinkButton>
-                <Button onClick={handleClose}>{t("limitModal.gotIt")}</Button>
-            </div>
         </BaseModal>
     );
 };

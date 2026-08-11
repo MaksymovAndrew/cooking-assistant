@@ -27,24 +27,4 @@
             400 14px/1.55 Inter,
             sans-serif;
     }
-
-    &__actions {
-        display: flex;
-        flex-direction: column-reverse;
-        gap: var(--s-3);
-        margin-top: var(--s-5);
-
-        @include respond-to(tablet) {
-            flex-direction: row;
-            justify-content: center;
-        }
-    }
-}
-
-.theme-change-modal__actions > button {
-    width: 100%;
-
-    @include respond-to(tablet) {
-        width: auto;
-    }
 }

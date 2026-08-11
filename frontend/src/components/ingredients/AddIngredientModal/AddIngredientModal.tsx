@@ -5,6 +5,7 @@ import type { Ingredient } from "types/ingredient";
 import type { PantryIngredient } from "types/userIngredient";
 
 import { useCategorizedIngredients } from "hooks/useCategorizedIngredients";
+import { CLICK_OUTSIDE_SAFE_ATTR } from "hooks/useClickOutside";
 import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 
 import { BaseModal } from "components/modals/BaseModal";
@@ -102,6 +103,25 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
             // just the dropdown - BaseModal's document-level listener is registered first (at mount) and
             // would otherwise fire first and close the whole modal on the same keypress
             closeOnEscape={!isOpen}
+            footer={
+                <>
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={onClose}
+                        {...{ [CLICK_OUTSIDE_SAFE_ATTR]: "" }}
+                    >
+                        {t("addIngredientModal.cancelButton")}
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={onSave}
+                        {...{ [CLICK_OUTSIDE_SAFE_ATTR]: "" }}
+                    >
+                        {t("addIngredientModal.saveButton")}
+                    </Button>
+                </>
+            }
         >
             <div ref={containerRef}>
                 <SearchField
@@ -142,15 +162,6 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
                         ))}
                     </div>
                 )}
-
-                <div className={styles["add-ingredient-modal__footer"]}>
-                    <Button type="button" variant="secondary" onClick={onClose}>
-                        {t("addIngredientModal.cancelButton")}
-                    </Button>
-                    <Button type="button" onClick={onSave}>
-                        {t("addIngredientModal.saveButton")}
-                    </Button>
-                </div>
             </div>
         </BaseModal>
     );

@@ -3,7 +3,9 @@
     "sessionError": "Could not verify session. Please refresh the page.",
     "modal": {
         "cancel": "Cancel",
-        "confirm": "Delete"
+        "confirm": "Delete",
+        "close": "Close",
+        "closeSheet": "Close"
     },
     "mobileSubpageHeader": {
         "back": "Back",

@@ -65,21 +65,26 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     );
 
     return (
-        <BaseModal onClose={onClose} title={heading}>
+        <BaseModal
+            onClose={onClose}
+            title={heading}
+            footer={
+                <>
+                    <Button variant="secondary" onClick={onClose}>
+                        {cancelLabel ?? t("modal.cancel")}
+                    </Button>
+                    <Button
+                        variant={confirmVariant}
+                        onClick={onConfirm}
+                        disabled={isConfirmDisabled}
+                    >
+                        {confirmLabel ?? t("modal.confirm")}
+                    </Button>
+                </>
+            }
+        >
             <p className={styles["confirm-modal__message"]}>{message}</p>
             {error && <p className={styles["confirm-modal__error"]}>{error}</p>}
-            <div className={styles["confirm-modal__actions"]}>
-                <Button variant="secondary" onClick={onClose}>
-                    {cancelLabel ?? t("modal.cancel")}
-                </Button>
-                <Button
-                    variant={confirmVariant}
-                    onClick={onConfirm}
-                    disabled={isConfirmDisabled}
-                >
-                    {confirmLabel ?? t("modal.confirm")}
-                </Button>
-            </div>
         </BaseModal>
     );
 };

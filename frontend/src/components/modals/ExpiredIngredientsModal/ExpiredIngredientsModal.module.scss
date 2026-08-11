@@ -22,11 +22,4 @@
         list-style: none;
         padding-inline-start: 0;
     }
-
-    &__footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: var(--s-2);
-        margin-top: var(--s-4);
-    }
 }

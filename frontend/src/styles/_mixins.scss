@@ -61,7 +61,7 @@
 }
 
 // a Cancel/primary action pair: full-width and stacked (primary on top) on mobile so both are
-// easy to tap; a compact auto-width row from tablet up. Match ConfirmModal's proven pattern.
+// easy to tap; a right-aligned, primary-rightmost, compact row from tablet up
 @mixin mobile-stacked-actions {
     display: flex;
     flex-direction: column-reverse;
@@ -71,7 +71,7 @@
     @include breakpoints.respond-to(tablet) {
         flex-direction: row;
         align-self: auto;
-        justify-content: center;
+        justify-content: flex-end;
     }
 
     > * {

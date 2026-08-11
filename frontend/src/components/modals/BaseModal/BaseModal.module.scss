@@ -24,6 +24,11 @@
     inset: 0;
     z-index: var(--z-modal);
     display: flex;
+
+    // scrollable so a sheet taller than the viewport (e.g. after a landscape rotation) can
+    // always be scrolled to reach its own header - modern browsers fall back center/flex-end
+    // alignment to start alignment automatically once the content overflows
+    overflow-y: auto;
     align-items: flex-end;
     justify-content: center;
     background: rgb(0 0 0 / 55%);
@@ -38,10 +43,15 @@
 
 // a flex column so only __scroll grows/scrolls, keeping the scrollbar off this rounded box
 .base-modal {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
+
+    // svh is the safe, always-visible viewport - vh alone can exceed it (e.g. iOS landscape
+    // with the browser chrome collapsed), pushing the header out of reach
     max-height: 90vh;
+    max-height: 90svh;
     overflow: hidden;
     padding: var(--s-5) var(--s-5) 0;
     border: 1px solid var(--border);
@@ -61,18 +71,47 @@
         animation: base-modal-fade-up 250ms var(--ease-out);
     }
 
+    // the pill is drawn small, but the button's own box is a comfortable tap target
     &__handle {
-        display: block;
+        display: flex;
         flex: none;
-        width: 38px;
-        height: 4px;
-        margin: 0 auto var(--s-4);
-        border-radius: var(--r-pill);
-        background: var(--border);
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 28px;
+        margin: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
 
-        @include respond-to(tablet) {
-            display: none;
+        &::before {
+            width: 38px;
+            height: 4px;
+            border-radius: var(--r-pill);
+            background: var(--border);
+            content: "";
         }
+
+        @include focus-ring;
+    }
+
+    &__close {
+        position: absolute;
+        top: var(--s-4);
+        right: var(--s-4);
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: var(--r-sm);
+        background: var(--surface-2);
+        color: var(--text-muted);
+        cursor: pointer;
+
+        @include focus-ring;
     }
 
     &__title {
@@ -93,6 +132,21 @@
 
         @include respond-to(tablet) {
             padding-bottom: 26px;
+        }
+    }
+
+    // canonical Cancel/primary footer: a right-aligned row, primary rightmost - wraps only if
+    // the buttons genuinely don't fit side by side, instead of always stacking on mobile
+    &__footer {
+        display: flex;
+        flex: none;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: var(--s-3);
+        padding: var(--s-4) 0 calc(var(--s-4) + env(safe-area-inset-bottom));
+
+        @include respond-to(tablet) {
+            padding-bottom: var(--s-4);
         }
     }
 }

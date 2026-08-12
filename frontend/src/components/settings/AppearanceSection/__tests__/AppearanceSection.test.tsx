@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { THEME_STORAGE_KEY } from "constants/theme";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { AppearanceSection } from "components/settings/AppearanceSection";
@@ -24,7 +25,9 @@ describe("AppearanceSection", () => {
 
         await userEvent.click(screen.getByRole("radio", { name: "Light" }));
 
-        expect(store.getState().ui.modal?.type).toBe(MODAL_TYPE.themeChange);
+        expect(selectActiveModal(store.getState())?.type).toBe(
+            MODAL_TYPE.themeChange,
+        );
     });
 
     it("should not open a confirmation when the current choice is re-selected", async () => {
@@ -34,7 +37,7 @@ describe("AppearanceSection", () => {
 
         await userEvent.click(screen.getByRole("radio", { name: "Dark" }));
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should not open a confirmation when System is re-selected while already following the system theme", async () => {
@@ -42,6 +45,6 @@ describe("AppearanceSection", () => {
 
         await userEvent.click(screen.getByRole("radio", { name: "System" }));
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 });

@@ -215,6 +215,42 @@ Redux slices instead. Filtering/search on list pages goes through a shared decla
 (`utils/filters/`, `hooks/useListFilters.ts` for URL-backed lists, `hooks/useClientFilters.ts` for
 local-state lists) rather than ad hoc component state.
 
+## Modals - one queue, one renderer
+
+Every modal in the app goes through a single FIFO queue in
+[redux/slices/uiSlice.ts](src/redux/slices/uiSlice.ts) (`ui.queue`), and
+[components/modals/ModalRoot/](src/components/modals/ModalRoot/) is the **only** place a modal is
+rendered. `selectActiveModal` returns the head of the queue, so exactly one modal is ever on screen -
+opening a second while one is showing makes it wait, never stack and never clobber the first. That
+collision was real: two notice hooks could fire in the same tick and the second silently destroyed
+the first, which had already marked itself "shown" and so never came back.
+
+Rules that follow from this:
+
+- **Never render a modal in place.** No page or component mounts its own modal - it dispatches
+  `openModal({ type, ...payload })` and lets `ModalRoot` render it. `NewsModal` and `OfflineModal`
+  used to be mounted directly and could therefore land on top of a queued modal; both were moved onto
+  the queue in 4.2.
+- **`openModal` ignores a type that is already queued.** A modal covers the screen, so a second one of
+  the same type is always an accidental double dispatch (a double-clicked delete button), never a real
+  second request. Same idea as notistack's `preventDuplicate`.
+- **A modal closes itself** by dispatching `closeModal(modalId)`; the next queued modal is promoted
+  automatically.
+- **State-driven modals get a hook that owns the lifecycle**, not local component state - see
+  [hooks/useOfflineNotice.ts](src/hooks/useOfflineNotice.ts), which enqueues on connectivity loss and
+  withdraws on reconnect.
+- **A "shown once" marker is written when the modal is actually presented**, not when it is enqueued -
+  otherwise a notice still waiting its turn is recorded as seen and never returns
+  (`useExpiredIngredientsNotice`, `useCalorieLimitNotice`).
+
+Adding a modal is three edits and no change to the queue itself: a key in `MODAL_TYPE` plus its
+`<Name>ModalInput`/`<Name>Modal` interfaces added to the `ModalInput`/`ActiveModal` unions, a branch in
+`ModalRoot`, and a `dispatch(openModal(...))` at the trigger.
+
+**Toasts are a separate queue on purpose.** `notificationsSlice` is its own FIFO array with dedupe and
+`MAX_VISIBLE = 3` ([components/ui/Toasts/](src/components/ui/Toasts/)). Toasts are non-blocking and
+several are visible at once; modals are blocking and strictly serialized. Don't merge the two.
+
 ## Internationalization
 
 [src/i18n/index.ts](src/i18n/index.ts) initializes i18next with inlined JSON resources (synchronous,

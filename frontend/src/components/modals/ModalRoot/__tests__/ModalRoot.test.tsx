@@ -3,9 +3,11 @@ import { act } from "@testing-library/react";
 import type { ExpiringIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
+import { OfflineModal } from "components/connectivity/OfflineModal";
 import { ModalRoot } from "components/modals";
 import { CalorieLimitModal } from "components/modals/CalorieLimitModal";
 import { DeleteCalorieIntakeModal } from "components/modals/DeleteCalorieIntakeModal";
@@ -15,6 +17,7 @@ import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
 import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
 import { LogIntakeModal } from "components/modals/LogIntakeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
+import { NewsModal } from "components/modals/NewsModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
 
@@ -51,6 +54,12 @@ jest.mock("components/modals/CalorieLimitModal", () => ({
 jest.mock("components/modals/LogIntakeModal", () => ({
     LogIntakeModal: jest.fn(() => null),
 }));
+jest.mock("components/modals/NewsModal", () => ({
+    NewsModal: jest.fn(() => null),
+}));
+jest.mock("components/connectivity/OfflineModal", () => ({
+    OfflineModal: jest.fn(() => null),
+}));
 
 const mockedModal = jest.mocked(PurchaseHistoryModal);
 const mockedDeleteRecipe = jest.mocked(DeleteRecipeModal);
@@ -62,6 +71,8 @@ const mockedExpiredIngredients = jest.mocked(ExpiredIngredientsModal);
 const mockedDeleteCalorieIntake = jest.mocked(DeleteCalorieIntakeModal);
 const mockedCalorieLimit = jest.mocked(CalorieLimitModal);
 const mockedLogIntake = jest.mocked(LogIntakeModal);
+const mockedNews = jest.mocked(NewsModal);
+const mockedOffline = jest.mocked(OfflineModal);
 
 const INGREDIENT: PantryIngredient = {
     id: 9,
@@ -83,7 +94,7 @@ const MODAL: ActiveModal = {
 describe("ModalRoot", () => {
     it("should render the history modal for the ingredientHistory type", () => {
         renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({ ui: { modal: MODAL } }),
+            store: makeTestStore({ ui: { queue: [MODAL] } }),
         });
 
         expect(mockedModal).toHaveBeenCalled();
@@ -95,7 +106,7 @@ describe("ModalRoot", () => {
     });
 
     it("should close the modal when the child requests it", () => {
-        const store = makeTestStore({ ui: { modal: MODAL } });
+        const store = makeTestStore({ ui: { queue: [MODAL] } });
 
         renderWithProviders(<ModalRoot />, { store });
 
@@ -105,7 +116,7 @@ describe("ModalRoot", () => {
             props.onClose();
         });
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should render nothing when no modal is open", () => {
@@ -121,12 +132,14 @@ describe("ModalRoot", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
-                    modal: {
-                        id: "modal-2",
-                        type: MODAL_TYPE.deleteRecipe,
-                        recipeId: "42",
-                        recipeTitle: "Slow-roasted ragù",
-                    },
+                    queue: [
+                        {
+                            id: "modal-2",
+                            type: MODAL_TYPE.deleteRecipe,
+                            recipeId: "42",
+                            recipeTitle: "Slow-roasted ragù",
+                        },
+                    ],
                 },
             }),
         });
@@ -142,12 +155,14 @@ describe("ModalRoot", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
-                    modal: {
-                        id: "modal-3",
-                        type: MODAL_TYPE.deleteMenu,
-                        menuId: 7,
-                        menuTitle: "Week of Comfort",
-                    },
+                    queue: [
+                        {
+                            id: "modal-3",
+                            type: MODAL_TYPE.deleteMenu,
+                            menuId: 7,
+                            menuTitle: "Week of Comfort",
+                        },
+                    ],
                 },
             }),
         });
@@ -162,11 +177,13 @@ describe("ModalRoot", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
-                    modal: {
-                        id: "modal-4",
-                        type: MODAL_TYPE.deleteIngredient,
-                        ingredient: INGREDIENT,
-                    },
+                    queue: [
+                        {
+                            id: "modal-4",
+                            type: MODAL_TYPE.deleteIngredient,
+                            ingredient: INGREDIENT,
+                        },
+                    ],
                 },
             }),
         });
@@ -180,7 +197,7 @@ describe("ModalRoot", () => {
     it("should render the logout modal with its id", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
-                ui: { modal: { id: "modal-5", type: MODAL_TYPE.logout } },
+                ui: { queue: [{ id: "modal-5", type: MODAL_TYPE.logout }] },
             }),
         });
 
@@ -193,11 +210,13 @@ describe("ModalRoot", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
-                    modal: {
-                        id: "modal-6",
-                        type: MODAL_TYPE.themeChange,
-                        nextMode: "dark",
-                    },
+                    queue: [
+                        {
+                            id: "modal-6",
+                            type: MODAL_TYPE.themeChange,
+                            nextMode: "dark",
+                        },
+                    ],
                 },
             }),
         });
@@ -221,11 +240,13 @@ describe("ModalRoot", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
-                    modal: {
-                        id: "modal-7",
-                        type: MODAL_TYPE.expiredIngredients,
-                        ingredients,
-                    },
+                    queue: [
+                        {
+                            id: "modal-7",
+                            type: MODAL_TYPE.expiredIngredients,
+                            ingredients,
+                        },
+                    ],
                 },
             }),
         });
@@ -240,12 +261,14 @@ describe("ModalRoot", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
-                    modal: {
-                        id: "modal-8",
-                        type: MODAL_TYPE.deleteCalorieIntake,
-                        intakeId: 9,
-                        title: "Miso ramen",
-                    },
+                    queue: [
+                        {
+                            id: "modal-8",
+                            type: MODAL_TYPE.deleteCalorieIntake,
+                            intakeId: 9,
+                            title: "Miso ramen",
+                        },
+                    ],
                 },
             }),
         });
@@ -261,12 +284,14 @@ describe("ModalRoot", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
-                    modal: {
-                        id: "modal-9",
-                        type: MODAL_TYPE.calorieLimit,
-                        consumed: 2520,
-                        goal: 2200,
-                    },
+                    queue: [
+                        {
+                            id: "modal-9",
+                            type: MODAL_TYPE.calorieLimit,
+                            consumed: 2520,
+                            goal: 2200,
+                        },
+                    ],
                 },
             }),
         });
@@ -278,17 +303,55 @@ describe("ModalRoot", () => {
         expect(props.goal).toBe(2200);
     });
 
+    it("should render the news modal with its id", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: { queue: [{ id: "modal-11", type: MODAL_TYPE.news }] },
+            }),
+        });
+
+        expect(mockedNews.mock.calls[0][0].modalId).toBe("modal-11");
+    });
+
+    it("should render the offline modal with its id", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: { queue: [{ id: "modal-12", type: MODAL_TYPE.offline }] },
+            }),
+        });
+
+        expect(mockedOffline.mock.calls[0][0].modalId).toBe("modal-12");
+    });
+
+    it("should render only the head of the queue", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: {
+                    queue: [
+                        { id: "modal-13", type: MODAL_TYPE.logout },
+                        { id: "modal-14", type: MODAL_TYPE.news },
+                    ],
+                },
+            }),
+        });
+
+        expect(mockedLogout).toHaveBeenCalled();
+        expect(mockedNews).not.toHaveBeenCalled();
+    });
+
     it("should render the log-intake modal with its id, recipe/menu ids, title and calories", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
                 ui: {
-                    modal: {
-                        id: "modal-10",
-                        type: MODAL_TYPE.logIntake,
-                        recipeId: 7,
-                        title: "Chicken teriyaki don",
-                        caloriesPerPortion: 620,
-                    },
+                    queue: [
+                        {
+                            id: "modal-10",
+                            type: MODAL_TYPE.logIntake,
+                            recipeId: 7,
+                            title: "Chicken teriyaki don",
+                            caloriesPerPortion: 620,
+                        },
+                    ],
                 },
             }),
         });

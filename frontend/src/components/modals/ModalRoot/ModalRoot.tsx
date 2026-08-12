@@ -3,6 +3,7 @@ import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { closeModal, MODAL_TYPE } from "redux/slices/uiSlice";
 
+import { OfflineModal } from "components/connectivity/OfflineModal";
 import { CalorieLimitModal } from "components/modals/CalorieLimitModal";
 import { DeleteCalorieIntakeModal } from "components/modals/DeleteCalorieIntakeModal";
 import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
@@ -11,6 +12,7 @@ import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
 import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
 import { LogIntakeModal } from "components/modals/LogIntakeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
+import { NewsModal } from "components/modals/NewsModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
 
@@ -50,6 +52,20 @@ const renderCalorieModal = (modal: ActiveModal | null) => {
     }
 
     return null;
+};
+
+// app-level modals with no payload of their own - both are enqueued rather than rendered
+// in place, so they queue behind whatever is showing instead of stacking on top of it
+const renderAppModal = (modal: ActiveModal | null) => {
+    if (modal?.type === MODAL_TYPE.news) {
+        return <NewsModal modalId={modal.id} />;
+    }
+
+    if (modal?.type === MODAL_TYPE.offline) {
+        return <OfflineModal modalId={modal.id} />;
+    }
+
+    return renderCalorieModal(modal);
 };
 
 export const ModalRoot = () => {
@@ -123,5 +139,5 @@ export const ModalRoot = () => {
         );
     }
 
-    return renderCalorieModal(modal);
+    return renderAppModal(modal);
 };

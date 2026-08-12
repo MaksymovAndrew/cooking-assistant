@@ -5,6 +5,7 @@ import { THEME_STORAGE_KEY } from "constants/theme";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import SettingsPage from "pages/settings/SettingsPage";
@@ -33,7 +34,9 @@ describe("SettingsPage", () => {
 
         await userEvent.click(screen.getByRole("radio", { name: "Light" }));
 
-        expect(store.getState().ui.modal?.type).toBe(MODAL_TYPE.themeChange);
+        expect(selectActiveModal(store.getState())?.type).toBe(
+            MODAL_TYPE.themeChange,
+        );
     });
 
     it("should not open a confirmation when the current theme is re-selected", async () => {
@@ -43,7 +46,7 @@ describe("SettingsPage", () => {
 
         await userEvent.click(screen.getByRole("radio", { name: "Dark" }));
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should open and close the change-password modal", async () => {

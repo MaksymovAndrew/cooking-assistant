@@ -2,6 +2,9 @@ import { Bell } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppDispatch } from "redux/hooks";
+import { closeModal } from "redux/slices/uiSlice";
+
 import { BaseModal } from "components/modals/BaseModal";
 
 import { formatNewsDate } from "utils/formatNewsDate";
@@ -10,19 +13,17 @@ import { getNewsItems } from "utils/newsItems";
 import styles from "./NewsModal.module.scss";
 
 interface NewsModalProps {
-    isOpen: boolean;
-    onClose: () => void;
+    modalId: string;
 }
 
 const ICON_SIZE = 20;
 const MAX_VISIBLE_ITEMS = 10;
 
-export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
+export const NewsModal: React.FC<NewsModalProps> = ({ modalId }) => {
     const { t } = useTranslation("news");
+    const dispatch = useAppDispatch();
 
-    if (!isOpen) {
-        return null;
-    }
+    const handleClose = () => dispatch(closeModal(modalId));
 
     const visibleItems = getNewsItems().slice(0, MAX_VISIBLE_ITEMS);
 
@@ -36,7 +37,12 @@ export const NewsModal: React.FC<NewsModalProps> = ({ isOpen, onClose }) => {
     );
 
     return (
-        <BaseModal size="md" title={heading} onClose={onClose} showCloseButton>
+        <BaseModal
+            size="md"
+            title={heading}
+            onClose={handleClose}
+            showCloseButton
+        >
             <ul className={styles["news-modal__list"]}>
                 {visibleItems.map((entry) => (
                     <li key={entry.id} className={styles["news-modal__item"]}>

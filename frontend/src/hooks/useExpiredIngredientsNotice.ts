@@ -8,6 +8,7 @@ import {
     selectIsAuthed,
     selectIsChecking,
 } from "redux/selectors/sessionSelectors";
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
@@ -44,10 +45,12 @@ export const useExpiredIngredientsNotice = (): void => {
     const dispatch = useAppDispatch();
     const isChecking = useAppSelector(selectIsChecking);
     const isAuthed = useAppSelector(selectIsAuthed);
+    const activeModal = useAppSelector(selectActiveModal);
     const { data: pantry } = useGetUserIngredientsQuery(null, {
         skip: isChecking || !isAuthed,
     });
     const hasFired = useRef(false);
+    const enqueuedId = useRef<string | null>(null);
 
     useEffect(() => {
         const notReady = isChecking || !isAuthed || !pantry;
@@ -71,12 +74,25 @@ export const useExpiredIngredientsNotice = (): void => {
         }
 
         hasFired.current = true;
-        markExpiredIngredientsNoticeShown();
-        dispatch(
+        enqueuedId.current = dispatch(
             openModal({
                 type: MODAL_TYPE.expiredIngredients,
                 ingredients: expired,
             }),
-        );
+        ).payload.id;
     }, [isChecking, isAuthed, pantry, dispatch]);
+
+    // marks on presentation, not on enqueue - a notice still waiting behind another modal
+    // would otherwise be silenced before it was ever seen
+    useEffect(() => {
+        if (
+            enqueuedId.current === null ||
+            activeModal?.id !== enqueuedId.current
+        ) {
+            return;
+        }
+
+        enqueuedId.current = null;
+        markExpiredIngredientsNoticeShown();
+    }, [activeModal]);
 };

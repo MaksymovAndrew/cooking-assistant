@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
@@ -23,7 +24,7 @@ const MODAL: ActiveModal = {
 };
 
 const renderOpen = () => {
-    const store = makeTestStore({ ui: { modal: MODAL } });
+    const store = makeTestStore({ ui: { queue: [MODAL] } });
     const view = renderWithProviders(
         <DeleteCalorieIntakeModal
             modalId={MODAL_ID}
@@ -65,7 +66,7 @@ describe("DeleteCalorieIntakeModal", () => {
                 message: "Entry deleted",
             }),
         ]);
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should close the modal without deleting on cancel", async () => {
@@ -74,7 +75,7 @@ describe("DeleteCalorieIntakeModal", () => {
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
         expect(mockedDelete).not.toHaveBeenCalled();
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should keep the modal open when deletion fails", async () => {
@@ -87,7 +88,7 @@ describe("DeleteCalorieIntakeModal", () => {
 
         await clickConfirm();
 
-        expect(store.getState().ui.modal).toEqual(MODAL);
+        expect(selectActiveModal(store.getState())).toEqual(MODAL);
         expect(store.getState().notifications.items).toEqual([
             expect.objectContaining({ type: "error", message: "Boom" }),
         ]);

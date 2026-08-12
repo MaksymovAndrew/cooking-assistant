@@ -6,6 +6,7 @@ import type { RecipeWithIngredientNames } from "types/recipe";
 import { API_ROUTES } from "api/endpoints";
 
 import { HomeDashboard } from "components/home/HomeDashboard";
+import { ModalRoot } from "components/modals";
 
 import { mockGetByUrl } from "test/apiClientMock";
 import { renderWithProviders } from "test/router";
@@ -65,10 +66,16 @@ describe("HomeDashboard", () => {
         ).toBeInTheDocument();
     });
 
+    // the news modal is enqueued, so it renders from ModalRoot rather than from the dashboard
     it("should open and close the news modal", async () => {
         stubData();
 
-        renderWithProviders(<HomeDashboard />);
+        renderWithProviders(
+            <>
+                <HomeDashboard />
+                <ModalRoot />
+            </>,
+        );
 
         await userEvent.click(
             await screen.findByRole("button", { name: "News" }),

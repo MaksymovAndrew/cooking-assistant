@@ -8,6 +8,7 @@ import type { RecipeDetails } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { ModalRoot } from "components/modals";
@@ -110,7 +111,9 @@ describe("RecipeDetailsPage", () => {
             screen.getByRole("button", { name: BTN_DELETE_RECIPE }),
         );
 
-        expect(store.getState().ui.modal?.type).toBe(MODAL_TYPE.deleteRecipe);
+        expect(selectActiveModal(store.getState())?.type).toBe(
+            MODAL_TYPE.deleteRecipe,
+        );
 
         const dialog = screen.getByRole("dialog");
 
@@ -166,7 +169,7 @@ describe("RecipeDetailsPage", () => {
         );
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should not show the log-intake button when the recipe has no calorie data", async () => {
@@ -191,7 +194,7 @@ describe("RecipeDetailsPage", () => {
             screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
         );
 
-        expect(store.getState().ui.modal).toMatchObject({
+        expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.logIntake,
             recipeId: 1,
             title: TITLE,
@@ -214,7 +217,7 @@ describe("RecipeDetailsPage", () => {
             screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
         );
 
-        expect(store.getState().ui.modal).toMatchObject({
+        expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.logIntake,
             initialPortions: 2,
         });

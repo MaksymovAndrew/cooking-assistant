@@ -1,88 +1,45 @@
-import { act, render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import { selectActiveModal } from "redux/selectors/uiSelectors";
+import type { ActiveModal } from "redux/slices/uiSlice";
+import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { OfflineModal } from "components/connectivity/OfflineModal";
 
+import { renderWithProviders } from "test/router";
+import { makeTestStore } from "test/store";
+
 const TITLE = "No internet connection";
+const MODAL_ID = "m1";
+const MODAL: ActiveModal = { id: MODAL_ID, type: MODAL_TYPE.offline };
 
-const setNavigatorOnLine = (value: boolean) => {
-    Object.defineProperty(navigator, "onLine", {
-        configurable: true,
-        value,
-    });
-};
+const renderOpen = () => {
+    const store = makeTestStore({ ui: { queue: [MODAL] } });
 
-const goOffline = () => {
-    act(() => {
-        window.dispatchEvent(new Event("offline"));
-    });
-};
-
-const goOnline = () => {
-    act(() => {
-        window.dispatchEvent(new Event("online"));
-    });
+    return renderWithProviders(<OfflineModal modalId={MODAL_ID} />, { store });
 };
 
 describe("OfflineModal", () => {
-    afterEach(() => {
-        setNavigatorOnLine(true);
-    });
-
-    it("should render nothing while online", () => {
-        render(<OfflineModal />);
-
-        expect(screen.queryByText(TITLE)).not.toBeInTheDocument();
-    });
-
-    it("should show when the app starts offline", () => {
-        setNavigatorOnLine(false);
-
-        render(<OfflineModal />);
+    it("should show the offline message", () => {
+        renderOpen();
 
         expect(screen.getByText(TITLE)).toBeInTheDocument();
     });
 
-    it("should show when connectivity drops after mounting online", () => {
-        render(<OfflineModal />);
+    it("should close the modal on the close button", async () => {
+        const { store } = renderOpen();
 
-        goOffline();
-
-        expect(screen.getByText(TITLE)).toBeInTheDocument();
-    });
-
-    it("should dismiss on close and not reappear while still offline", async () => {
-        render(<OfflineModal />);
-
-        goOffline();
         await userEvent.click(screen.getByRole("button", { name: "Close" }));
 
-        expect(screen.queryByText(TITLE)).not.toBeInTheDocument();
-
-        goOffline();
-
-        expect(screen.queryByText(TITLE)).not.toBeInTheDocument();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
-    it("should auto-close when connectivity returns", () => {
-        render(<OfflineModal />);
+    it("should close the modal when the overlay is clicked", async () => {
+        const { store } = renderOpen();
 
-        goOffline();
-        expect(screen.getByText(TITLE)).toBeInTheDocument();
+        await userEvent.click(screen.getByRole("presentation"));
 
-        goOnline();
-
-        expect(screen.queryByText(TITLE)).not.toBeInTheDocument();
-    });
-
-    it("should show again on a fresh offline transition after a previous dismiss", async () => {
-        render(<OfflineModal />);
-
-        goOffline();
-        await userEvent.click(screen.getByRole("button", { name: "Close" }));
-        goOnline();
-        goOffline();
-
-        expect(screen.getByText(TITLE)).toBeInTheDocument();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 });

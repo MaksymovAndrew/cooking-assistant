@@ -1,7 +1,9 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { useDisclosure } from "hooks/useDisclosure";
+import { useAppDispatch } from "redux/hooks";
+import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
+
 import { useEmailVerificationNudge } from "hooks/useEmailVerificationNudge";
 import { useHomeDashboard } from "hooks/useHomeDashboard";
 import { useNewsBadge } from "hooks/useNewsBadge";
@@ -15,20 +17,19 @@ import { RecentRecipes } from "components/home/RecentRecipes";
 import { StatStrip } from "components/home/StatStrip";
 import { WhatsNewCard } from "components/home/WhatsNewCard";
 import { PageSpinner } from "components/layout/PageSpinner";
-import { NewsModal } from "components/modals/NewsModal";
 
 import styles from "./HomeDashboard.module.scss";
 
 export const HomeDashboard: React.FC = () => {
     const { t } = useTranslation();
+    const dispatch = useAppDispatch();
     const dashboard = useHomeDashboard();
-    const news = useDisclosure();
     const newsBadge = useNewsBadge();
     const emailNudge = useEmailVerificationNudge();
 
     const openNews = () => {
         newsBadge.markAllSeen();
-        news.open();
+        dispatch(openModal({ type: MODAL_TYPE.news }));
     };
 
     if (dashboard.isLoading) {
@@ -81,7 +82,6 @@ export const HomeDashboard: React.FC = () => {
                 onOpenNews={openNews}
                 hasUnseenNews={newsBadge.unseenCount > 0}
             />
-            <NewsModal isOpen={news.isOpen} onClose={news.close} />
         </div>
     );
 };

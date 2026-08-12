@@ -28,6 +28,9 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: Every popup now uses the same footer layout - actions aligned to the right, staying on one row unless they don't fit - and popups that only show information get a close button in the corner.
 - Fixed: Adding an ingredient to the pantry could silently fail to save if the ingredient category browser was still open when "Add to pantry" was clicked.
 - Fixed: The recipe/menu filter popover could open partly below the screen with no way to scroll down to its "Reset filters" button.
+- Fixed: Two popups appearing at the same moment no longer cancel each other out - for example the expired-ingredients notice used to vanish behind the daily calorie warning and never come back. Popups now wait their turn and are shown one after another.
+- Fixed: The "no internet connection" and "What's new" popups could appear stacked on top of another popup; they now join the same queue as everything else.
+- Fixed: Double-clicking a button that opens a popup no longer opens the same popup twice in a row.
 
 ### Project
 

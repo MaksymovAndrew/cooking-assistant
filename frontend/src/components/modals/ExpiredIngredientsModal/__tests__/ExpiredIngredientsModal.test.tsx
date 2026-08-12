@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import type { ExpiringIngredient } from "types/expiry";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
@@ -33,7 +34,7 @@ const MODAL: ActiveModal = {
 };
 
 const renderOpen = () => {
-    const store = makeTestStore({ ui: { modal: MODAL } });
+    const store = makeTestStore({ ui: { queue: [MODAL] } });
     const view = renderWithProviders(
         <ExpiredIngredientsModal
             modalId={MODAL_ID}
@@ -59,7 +60,7 @@ describe("ExpiredIngredientsModal", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Close" }));
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should link to the pantry and close the modal", async () => {
@@ -71,6 +72,6 @@ describe("ExpiredIngredientsModal", () => {
 
         await userEvent.click(link);
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 });

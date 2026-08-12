@@ -4,10 +4,14 @@ import type { UserIngredient } from "types/userIngredient";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { userIngredientsApi } from "redux/services/userIngredientsApi";
+import type { ActiveModal } from "redux/slices/uiSlice";
 import { closeModal, MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { useExpiredIngredientsNotice } from "hooks/useExpiredIngredientsNotice";
+
+import { hasShownExpiredIngredientsNotice } from "utils/expiredIngredientsNoticeStorage";
 
 import { mockGetByUrl } from "test/apiClientMock";
 import { makeTestStore, renderHookWithStore } from "test/store";
@@ -53,10 +57,14 @@ const FRESH_INGREDIENT: UserIngredient = {
 const setup = async (
     pantry: UserIngredient[],
     sessionStatus: "authed" | "checking" = "authed",
+    queue: ActiveModal[] = [],
 ) => {
     mockGetByUrl({ [API_ROUTES.userIngredients.list]: pantry });
 
-    const store = makeTestStore({ session: { status: sessionStatus } });
+    const store = makeTestStore({
+        session: { status: sessionStatus },
+        ui: { queue },
+    });
 
     if (sessionStatus === "authed") {
         await store.dispatch(
@@ -73,7 +81,7 @@ describe("useExpiredIngredientsNotice", () => {
     it("should open the expired-ingredients modal when the pantry has an expired ingredient", async () => {
         const { store } = await setup([EXPIRED_INGREDIENT, FRESH_INGREDIENT]);
 
-        expect(store.getState().ui.modal).toMatchObject({
+        expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.expiredIngredients,
             ingredients: [{ ingredientId: 1, name: "Milk" }],
         });
@@ -82,18 +90,50 @@ describe("useExpiredIngredientsNotice", () => {
     it("should not open a modal when nothing in the pantry is expired", async () => {
         const { store } = await setup([FRESH_INGREDIENT]);
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should not open a modal while the session is still checking", async () => {
         const { store } = await setup([EXPIRED_INGREDIENT], "checking");
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
+    });
+
+    it("should wait behind a modal that is already showing instead of replacing it", async () => {
+        const { store } = await setup([EXPIRED_INGREDIENT], "authed", [
+            { id: "m1", type: MODAL_TYPE.logout },
+        ]);
+
+        expect(selectActiveModal(store.getState())).toMatchObject({
+            type: MODAL_TYPE.logout,
+        });
+
+        act(() => {
+            store.dispatch(closeModal("m1"));
+        });
+
+        expect(selectActiveModal(store.getState())).toMatchObject({
+            type: MODAL_TYPE.expiredIngredients,
+        });
+    });
+
+    it("should not mark the notice as shown while it is still waiting in the queue", async () => {
+        const { store } = await setup([EXPIRED_INGREDIENT], "authed", [
+            { id: "m1", type: MODAL_TYPE.logout },
+        ]);
+
+        expect(hasShownExpiredIngredientsNotice()).toBe(false);
+
+        act(() => {
+            store.dispatch(closeModal("m1"));
+        });
+
+        expect(hasShownExpiredIngredientsNotice()).toBe(true);
     });
 
     it("should not reopen the modal on a later mount once already shown this session", async () => {
         const { store } = await setup([EXPIRED_INGREDIENT]);
-        const openedModal = store.getState().ui.modal;
+        const openedModal = selectActiveModal(store.getState());
 
         expect(openedModal).not.toBeNull();
 
@@ -105,6 +145,6 @@ describe("useExpiredIngredientsNotice", () => {
             useExpiredIngredientsNotice();
         }, store);
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 });

@@ -13,7 +13,7 @@ const MODAL: ActiveModal = {
 
 describe("uiSelectors", () => {
     it("should select the active modal", () => {
-        const store = makeTestStore({ ui: { modal: MODAL } });
+        const store = makeTestStore({ ui: { queue: [MODAL] } });
 
         expect(selectActiveModal(store.getState())).toEqual(MODAL);
     });

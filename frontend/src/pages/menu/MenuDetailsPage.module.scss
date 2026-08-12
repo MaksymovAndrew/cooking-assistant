@@ -39,7 +39,7 @@
 
     &__grid {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         align-items: start;
         gap: var(--s-4);
         margin-top: var(--s-5);
@@ -48,10 +48,36 @@
             gap: var(--s-6);
         }
 
+        // ingredients/actions/recipes stay in that DOM order (source order) at every breakpoint;
+        // desktop alone reflows them visually via named areas - ingredients becomes a right-side
+        // aside spanning both rows, without touching the underlying reading order
         &--with-aside {
             @include respond-to(desktop) {
-                grid-template-columns: 1fr 300px;
+                grid-template-columns: minmax(0, 1fr) 300px;
+                grid-template-areas:
+                    "actions ingredients"
+                    "recipes ingredients";
             }
+        }
+    }
+
+    &__ingredients-area {
+        @include respond-to(desktop) {
+            grid-area: ingredients;
+        }
+    }
+
+    &__actions-area {
+        @include respond-to(desktop) {
+            grid-area: actions;
+        }
+    }
+
+    &__recipes-area {
+        min-width: 0;
+
+        @include respond-to(desktop) {
+            grid-area: recipes;
         }
     }
 }

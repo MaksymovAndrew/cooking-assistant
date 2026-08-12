@@ -76,11 +76,7 @@ const MenuDetailsPage: React.FC = () => {
     const isOwner = menu.menu.isOwner;
 
     return (
-        <AppShell
-            mobileBackTo={ROUTES.allMenus}
-            mobileTitle={menu.menu.title}
-            mobileEditTo={isOwner ? changeMenuPath(menu.menu.id) : undefined}
-        >
+        <AppShell mobileBackTo={ROUTES.allMenus} mobileTitle={menu.menu.title}>
             <div className={styles["menu-details-page"]}>
                 <nav
                     aria-label={t("menuDetailsPage.breadcrumb")}
@@ -97,6 +93,13 @@ const MenuDetailsPage: React.FC = () => {
                     totalCookingTime={totalCookingTime}
                     recipeCount={menu.recipes.length}
                     caloriesPerPortion={menuCalories}
+                    exceedsBudget={exceedsBudget}
+                />
+                <MenuDetailsSecondary
+                    recipes={menu.recipes}
+                    allergens={menu.allergens}
+                    isOwner={isOwner}
+                    addRecipesTo={changeMenuPath(menu.menu.id)}
                     editTo={changeMenuPath(menu.menu.id)}
                     onDelete={() => {
                         dispatch(
@@ -108,13 +111,6 @@ const MenuDetailsPage: React.FC = () => {
                         );
                     }}
                     onLogIntake={handleLogIntake}
-                    exceedsBudget={exceedsBudget}
-                />
-                <MenuDetailsSecondary
-                    recipes={menu.recipes}
-                    allergens={menu.allergens}
-                    isOwner={isOwner}
-                    addRecipesTo={changeMenuPath(menu.menu.id)}
                 />
             </div>
         </AppShell>

@@ -31,6 +31,8 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: Two popups appearing at the same moment no longer cancel each other out - for example the expired-ingredients notice used to vanish behind the daily calorie warning and never come back. Popups now wait their turn and are shown one after another.
 - Fixed: The "no internet connection" and "What's new" popups could appear stacked on top of another popup; they now join the same queue as everything else.
 - Fixed: Double-clicking a button that opens a popup no longer opens the same popup twice in a row.
+- Changed: Menu detail pages now show their information in the same order everywhere - title, quick facts, description, ingredients, then the action buttons and recipe list - with a divider under the quick facts on mobile to match desktop.
+- Fixed: A menu's Edit and Delete buttons are now reachable on mobile, not just tablet and desktop.
 
 ### Project
 

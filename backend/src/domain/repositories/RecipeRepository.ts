@@ -4,6 +4,7 @@ import type {
     RecipeFilters,
     RecipeSearchRow,
 } from "domain/repositories/recipe.filters";
+import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
 
 export interface RecipeRepository {
     create(recipe: Recipe): Promise<unknown>;
@@ -27,5 +28,5 @@ export interface RecipeRepository {
         filters: RecipeFilters,
     ): Promise<PaginatedResult<RecipeSearchRow>>;
     findExistingIds(ids: number[]): Promise<number[]>;
-    getStats(): Promise<unknown>;
+    getStats(): Promise<RecipeStatisticsDto>;
 }

@@ -3,13 +3,9 @@ import type { Pool } from "pg";
 interface RecipeListRow {
     id: number;
     title: string;
-    content: string;
-    person_id: number;
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
-    calories_override: number | null;
-    calories_computed: number | null;
     type_name: string | null;
     ingredients: string[];
 }
@@ -29,9 +25,12 @@ interface RecipeDetailRow {
     calories_per_portion: number | null;
 }
 
+// explicit columns - r.* would leak the owner's raw person_id to every caller (this list is not
+// filtered by owner, unlike the search endpoints, which compute an isOwner flag instead)
 export async function findAllRecipes(pool: Pool): Promise<unknown[]> {
     const result = await pool.query<RecipeListRow>(
-        `SELECT r.*, rt.type_name, array_agg(i.name) AS ingredients
+        `SELECT r.id, r.title, r.type_id, r.creation_date, r.cooking_time,
+                rt.type_name, array_agg(i.name) AS ingredients
          FROM recipes r
                 LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
                 LEFT JOIN ingredients i ON ri.ingredient_id = i.id

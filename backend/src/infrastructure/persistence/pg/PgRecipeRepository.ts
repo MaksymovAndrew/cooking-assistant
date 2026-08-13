@@ -7,6 +7,7 @@ import type {
     RecipeSearchRow,
 } from "domain/repositories/recipe.filters";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
+import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
 
 import {
     createRecipeInDb,
@@ -124,7 +125,7 @@ export default class PgRecipeRepository implements RecipeRepository {
         }
     }
 
-    async getStats(): Promise<unknown> {
+    async getStats(): Promise<RecipeStatisticsDto> {
         return getRecipeStats(this.pool);
     }
 }

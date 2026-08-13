@@ -11,7 +11,6 @@ export interface RecipeListItem {
 // shape returned by GET /api/recipes - the recipe list plus an array_agg of ingredient names
 export interface RecipeWithIngredientNames extends RecipeListItem {
     ingredients: string[];
-    person_id?: number;
 }
 
 export interface RecipeSearchIngredient {

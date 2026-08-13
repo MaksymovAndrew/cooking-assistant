@@ -9,6 +9,7 @@ import { StatBarList } from "components/stats/StatBarList";
 import { StatCard } from "components/stats/StatCard";
 import { StatTile } from "components/stats/StatTile";
 
+import { formatKcal } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 
 import { RecipeExtremesCards } from "./RecipeExtremesCards";
@@ -51,12 +52,12 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
                 <StatTile
                     label={t("statsPage.totalRecipesTile")}
                     value={stats.recipesCount}
-                    caption={t("statsPage.totalRecipesCaption")}
+                    caption={t("statsPage.acrossAppCaption")}
                 />
                 <StatTile
                     label={t("statsPage.totalMenusTile")}
                     value={menusCount}
-                    caption={t("statsPage.totalMenusCaption")}
+                    caption={t("statsPage.acrossAppCaption")}
                 />
                 <StatTile
                     label={t("statsPage.avgCookingTimeTile")}
@@ -79,6 +80,19 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
                               })
                             : undefined
                     }
+                />
+                <StatTile
+                    label={t("statsPage.avgCaloriesTile")}
+                    value={
+                        stats.averageCaloriesOverall !== null
+                            ? t("statsPage.caloriesValue", {
+                                  count: formatKcal(
+                                      stats.averageCaloriesOverall,
+                                  ),
+                              })
+                            : "—"
+                    }
+                    caption={t("statsPage.perRecipeCaption")}
                 />
             </div>
 

@@ -1,17 +1,32 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
-import type { RecipeWithIngredientNames } from "types/recipe";
-import type { RecipeStatistics } from "types/stats";
+import { recipeDetailsPath } from "constants/routes";
+import type {
+    RecipeCalorieEntry,
+    RecipeIngredientCountEntry,
+    RecipeStatistics,
+    RecipeTimeEntry,
+} from "types/stats";
 
 import { RecipeStatsSection } from "components/stats/RecipeStatsSection";
 
-const RECIPE: RecipeWithIngredientNames = {
-    id: 1,
+import { renderWithRouter } from "test/router";
+
+const RECIPE_ID = 1;
+const TIME_ENTRY: RecipeTimeEntry = {
+    id: RECIPE_ID,
     title: "Borscht",
-    type_name: "Soup",
-    creation_date: "2024-01-01",
-    cooking_time: 30,
-    ingredients: ["beet"],
+    cookingTime: 30,
+};
+const INGREDIENT_ENTRY: RecipeIngredientCountEntry = {
+    id: RECIPE_ID,
+    title: "Borscht",
+    ingredientCount: 3,
+};
+const CALORIE_ENTRY: RecipeCalorieEntry = {
+    id: RECIPE_ID,
+    title: "Borscht",
+    caloriesPerPortion: 450,
 };
 
 const STATS: RecipeStatistics = {
@@ -20,25 +35,29 @@ const STATS: RecipeStatistics = {
     averageCookingTimeOverall: 25,
     averageCookingTimesByType: [{ typeName: "Soup", averageCookingTime: 20 }],
     mostUsedType: { typeName: "Soup", count: 2 },
-    fastestRecipes: [RECIPE],
-    slowestRecipes: [RECIPE],
-    mostIngredientsRecipes: [RECIPE],
-    leastIngredientsRecipes: [RECIPE],
+    fastestRecipes: [TIME_ENTRY],
+    slowestRecipes: [TIME_ENTRY],
+    mostIngredientsRecipes: [INGREDIENT_ENTRY],
+    leastIngredientsRecipes: [INGREDIENT_ENTRY],
+    averageCaloriesOverall: 450,
+    mostCaloricRecipes: [CALORIE_ENTRY],
+    leastCaloricRecipes: [CALORIE_ENTRY],
 };
 
 describe("RecipeStatsSection", () => {
     it("should render the quick-stat tiles", () => {
-        render(<RecipeStatsSection stats={STATS} menusCount={5} />);
+        renderWithRouter(<RecipeStatsSection stats={STATS} menusCount={5} />);
 
         expect(screen.getByText("2")).toBeInTheDocument();
         expect(screen.getByText("5")).toBeInTheDocument();
         expect(screen.getByText("25 min")).toBeInTheDocument();
         expect(screen.getAllByText("Soup").length).toBeGreaterThan(0);
         expect(screen.getByText("2 of 2 recipes")).toBeInTheDocument();
+        expect(screen.getAllByText("450 kcal").length).toBeGreaterThan(0);
     });
 
     it("should show a placeholder tile when there is no most-used type", () => {
-        render(
+        renderWithRouter(
             <RecipeStatsSection
                 stats={{ ...STATS, mostUsedType: null, recipesCount: 0 }}
                 menusCount={5}
@@ -48,14 +67,60 @@ describe("RecipeStatsSection", () => {
         expect(screen.getByText("—")).toBeInTheDocument();
     });
 
+    it("should show a placeholder tile when there is no calorie data", () => {
+        renderWithRouter(
+            <RecipeStatsSection
+                stats={{
+                    ...STATS,
+                    averageCaloriesOverall: null,
+                    mostCaloricRecipes: [],
+                    leastCaloricRecipes: [],
+                }}
+                menusCount={5}
+            />,
+        );
+
+        expect(screen.getByText("Avg calories")).toBeInTheDocument();
+    });
+
     it("should render the recipe extremes", () => {
-        render(<RecipeStatsSection stats={STATS} menusCount={5} />);
+        renderWithRouter(<RecipeStatsSection stats={STATS} menusCount={5} />);
 
         expect(screen.getAllByText("Borscht").length).toBeGreaterThan(0);
     });
 
+    it("should link each extreme recipe to its own detail page", () => {
+        renderWithRouter(<RecipeStatsSection stats={STATS} menusCount={5} />);
+
+        const links = screen.getAllByRole("link", { name: /Borscht/ });
+
+        expect(links.length).toBeGreaterThan(0);
+        links.forEach((link) => {
+            expect(link).toHaveAttribute("href", recipeDetailsPath(RECIPE_ID));
+        });
+    });
+
+    it("should abbreviate large calorie totals in the extremes list", () => {
+        renderWithRouter(
+            <RecipeStatsSection
+                stats={{
+                    ...STATS,
+                    mostCaloricRecipes: [
+                        { ...CALORIE_ENTRY, caloriesPerPortion: 13_333 },
+                    ],
+                    leastCaloricRecipes: [
+                        { ...CALORIE_ENTRY, caloriesPerPortion: 13_333 },
+                    ],
+                }}
+                menusCount={5}
+            />,
+        );
+
+        expect(screen.getAllByText("13k kcal").length).toBeGreaterThan(0);
+    });
+
     it("should color each average-time bar to match its type's donut-chart color", () => {
-        render(
+        renderWithRouter(
             <RecipeStatsSection
                 stats={{
                     ...STATS,

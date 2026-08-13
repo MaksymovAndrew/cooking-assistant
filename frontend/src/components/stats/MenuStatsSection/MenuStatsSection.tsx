@@ -8,6 +8,7 @@ import { StatBarList } from "components/stats/StatBarList";
 import { StatCard } from "components/stats/StatCard";
 import { StatTile } from "components/stats/StatTile";
 
+import { formatKcal } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 
 import { MenuExtremesCards } from "./MenuExtremesCards";
@@ -19,6 +20,7 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
     stats,
 }) => {
     const { t } = useTranslation("stats");
+    const perMenuCaption = t("statsPage.perMenuCaption");
 
     const formatCompactTime = (totalMinutes: number): string => {
         const { hours, minutes } = splitCookingTime(totalMinutes);
@@ -38,7 +40,7 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
                 <StatTile
                     label={t("statsPage.totalMenusTile")}
                     value={stats.menusCount}
-                    caption={t("statsPage.totalMenusCaption")}
+                    caption={t("statsPage.acrossAppCaption")}
                 />
                 <StatTile
                     label={t("statsPage.avgTotalTimeTile")}
@@ -47,7 +49,7 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
                             ? formatCompactTime(stats.averageTotalTime)
                             : "—"
                     }
-                    caption={t("statsPage.perMenuCaption")}
+                    caption={perMenuCaption}
                 />
                 <StatTile
                     label={t("statsPage.avgRecipesTile")}
@@ -58,7 +60,7 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
                               )
                             : "—"
                     }
-                    caption={t("statsPage.perMenuCaption")}
+                    caption={perMenuCaption}
                 />
                 <StatTile
                     label={t("statsPage.mostUsedCategoryTile")}
@@ -72,6 +74,19 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
                               })
                             : undefined
                     }
+                />
+                <StatTile
+                    label={t("statsPage.avgCaloriesTile")}
+                    value={
+                        stats.averageCaloriesOverall !== null
+                            ? t("statsPage.caloriesValue", {
+                                  count: formatKcal(
+                                      stats.averageCaloriesOverall,
+                                  ),
+                              })
+                            : "—"
+                    }
+                    caption={perMenuCaption}
                 />
             </div>
 

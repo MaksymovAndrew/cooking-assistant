@@ -8,6 +8,7 @@ import type {
     RecipeWithIngredientNames,
     UpdateRecipeRequest,
 } from "types/recipe";
+import type { RecipeStatistics } from "types/stats";
 
 import { API_ROUTES } from "api/endpoints";
 
@@ -57,6 +58,10 @@ export const recipesApi = baseApi.injectEndpoints({
         getAllRecipes: build.query<RecipeWithIngredientNames[], null>({
             query: () => ({ url: API_ROUTES.recipes.list }),
             providesTags: (result) => listProvidesTags(RECIPE, result),
+        }),
+        getRecipeStats: build.query<RecipeStatistics, null>({
+            query: () => ({ url: API_ROUTES.recipes.stats }),
+            providesTags: [RECIPE_LIST],
         }),
         getRecipeById: build.query<RecipeDetails, string>({
             query: (id) => ({ url: API_ROUTES.recipes.byId(id) }),
@@ -110,6 +115,7 @@ export const {
     useGetRecipesByFiltersInfiniteQuery,
     useGetRecipesByPersonInfiniteQuery,
     useGetAllRecipesQuery,
+    useGetRecipeStatsQuery,
     useGetRecipeByIdQuery,
     useCreateRecipeMutation,
     useUpdateRecipeMutation,

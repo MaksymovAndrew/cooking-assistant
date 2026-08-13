@@ -23,6 +23,8 @@ changelogs and the tags and now track everything here against one shared version
 ### Backend
 
 - Fixed: Buying more of an ingredient you already have no longer resets its shelf life - older stock now keeps its own expiry date instead of being treated as freshly bought.
+- Security: The recipe list no longer includes the raw internal id of who created each recipe - the same fix 4.1 already made to the recipe/menu search and browse endpoints.
+- Changed: The statistics page's numbers are now calculated on the server instead of being downloaded and calculated in the browser, so the page loads a much smaller amount of data.
 
 ### Frontend
 
@@ -41,6 +43,13 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: The expired-ingredients popup now lists each expired purchase separately, with its own quantity, purchase date and expiry date.
 - Removed: The bulk "Edit quantities" screen on the pantry page - correct a quantity by editing it directly from an ingredient's purchase history instead.
 - Added: A "Buy more" button on each pantry ingredient to record a new purchase without deleting or overwriting what you already have.
+- Changed: Chart animations on the statistics page (the recipe/menu type donuts, the average-time bars, and the calorie history bars) are turned back on, and respect your device's "reduce motion" setting.
+- Fixed: The FASTEST/SLOWEST and MOST/LEAST column labels on the statistics page are now centered above their lists instead of sitting to one side.
+- Changed: The statistics page's "Total recipes"/"Total menus" tiles now honestly say they count everything "across the app", not "in your cookbook"/"created by you" - the numbers were always app-wide, only the wording was wrong.
+- Added: The statistics page now shows average calories and a "most/least calories" breakdown for both recipes and menus.
+- Added: Every recipe or menu named on the statistics page (fastest/slowest, most/least ingredients, calorie extremes) now links straight to it.
+- Changed: The number badges on the statistics page are smaller and large calorie totals are abbreviated (e.g. "13k kcal"), leaving more room for the recipe/menu name.
+- Fixed: The 5th quick-stat tile on the statistics page no longer sits alone next to an empty gap on mobile and tablet - it now spans the full row.
 
 ### Project
 

@@ -5,6 +5,7 @@ import {
     ERROR_MESSAGES,
     SUCCESS_MESSAGES,
 } from "constants/errorMessages";
+import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
 
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
@@ -315,7 +316,26 @@ describe("recipe routes", () => {
 
     it("should return recipe stats", async () => {
         const { app, deps } = buildTestApp();
-        const stats = { fastestRecipe: [{ id: 12 }] };
+        const stats: RecipeStatisticsDto = {
+            stats: [{ typeName: "Soup", count: 1 }],
+            recipesCount: 1,
+            averageCookingTimeOverall: 30,
+            averageCookingTimesByType: [
+                { typeName: "Soup", averageCookingTime: 30 },
+            ],
+            mostUsedType: { typeName: "Soup", count: 1 },
+            fastestRecipes: [{ id: 12, title: RECIPE_TITLE, cookingTime: 30 }],
+            slowestRecipes: [{ id: 12, title: RECIPE_TITLE, cookingTime: 30 }],
+            mostIngredientsRecipes: [
+                { id: 12, title: RECIPE_TITLE, ingredientCount: 1 },
+            ],
+            leastIngredientsRecipes: [
+                { id: 12, title: RECIPE_TITLE, ingredientCount: 1 },
+            ],
+            averageCaloriesOverall: null,
+            mostCaloricRecipes: [],
+            leastCaloricRecipes: [],
+        };
 
         deps.recipeRepository.getStats.mockResolvedValue(stats);
 

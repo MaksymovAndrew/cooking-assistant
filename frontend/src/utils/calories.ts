@@ -9,6 +9,16 @@ export const calorieRingFraction = (consumed: number, goal: number): number =>
 export const formatKcal = (calories: number): string =>
     calories.toLocaleString("en-US");
 
+const COMPACT_KCAL_FORMATTER = new Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 0,
+});
+
+// abbreviated for tight spaces (e.g. "13k" instead of "13,333") - lowercased since Intl's compact
+// suffix is uppercase ("13K") and the app's own kcal figures read lowercase everywhere else
+export const formatKcalCompact = (calories: number): string =>
+    COMPACT_KCAL_FORMATTER.format(calories).toLowerCase();
+
 // rounds the per-portion value first, then multiplies by the portion count - keeps a
 // multi-portion total a clean multiple of what's shown per portion, instead of drifting from
 // independently rounding the scaled raw value (e.g. 22/portion * 2 must read 44, not 43)

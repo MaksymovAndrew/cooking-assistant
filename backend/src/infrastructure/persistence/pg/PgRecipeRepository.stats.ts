@@ -1,114 +1,121 @@
 import type { Pool } from "pg";
 
-interface RecipeStatRow {
-    id: number;
-    title: string;
-    person_id: number;
-    type_id: number | null;
-    creation_date: Date;
-    cooking_time: number | null;
-    typeName: string | null;
+import type {
+    AverageCookingTime,
+    RecipeCalorieEntry,
+    RecipeIngredientCountEntry,
+    RecipeStatisticsDto,
+    RecipeTimeEntry,
+    RecipeTypeStat,
+} from "domain/repositories/recipeStats.types";
+
+const EXTREMES_LIMIT = 3;
+// effective per-portion calories: the author's manual value wins, otherwise the ingredient total
+const CALORIES_PER_PORTION_SQL =
+    "COALESCE(r.calories_override, r.calories_computed)";
+
+interface OverallRow {
+    recipesCount: number;
+    averageCookingTimeOverall: number | null;
+    averageCaloriesOverall: number | null;
 }
 
-interface TypeStatRow {
-    typeName: string;
-    count: number;
+function findMostUsed(stats: RecipeTypeStat[]): RecipeTypeStat | null {
+    return stats.reduce<RecipeTypeStat | null>(
+        (best, stat) => (!best || stat.count > best.count ? stat : best),
+        null,
+    );
 }
 
-interface IngredientCountRow {
-    id: number;
-    title: string;
-    person_id: number;
-    type_id: number | null;
-    creation_date: Date;
-    cooking_time: number | null;
-    ingredient_count: number;
-}
-
-interface AvgCookingTimeRow {
-    typeName: string;
-    averageCookingTime: number;
-}
-
-export async function getRecipeStats(pool: Pool): Promise<unknown> {
-    // the six aggregates are independent, so run them in parallel
+export async function getRecipeStats(pool: Pool): Promise<RecipeStatisticsDto> {
+    // every aggregate below is independent, so run them in parallel
     const [
-        { rows: fastestRecipe },
-        { rows: slowestRecipe },
-        { rows: typeStats },
-        { rows: recipesWithMostIngredients },
-        { rows: recipesWithLeastIngredients },
-        { rows: averageCookingTimes },
+        { rows: overallRows },
+        { rows: stats },
+        { rows: averageCookingTimesByType },
+        { rows: fastestRecipes },
+        { rows: slowestRecipes },
+        { rows: mostIngredientsRecipes },
+        { rows: leastIngredientsRecipes },
+        { rows: mostCaloricRecipes },
+        { rows: leastCaloricRecipes },
     ] = await Promise.all([
-        pool.query<RecipeStatRow>(
-            `SELECT r.*, rt.type_name as "typeName"
-           FROM recipes r
-                  JOIN recipe_types rt ON r.type_id = rt.id
-           WHERE r.cooking_time = (
-             SELECT MIN(cooking_time)
-             FROM recipes
-           )`,
+        pool.query<OverallRow>(
+            `SELECT COUNT(*)::int AS "recipesCount",
+                    ROUND(AVG(r.cooking_time))::int AS "averageCookingTimeOverall",
+                    ROUND(AVG(${CALORIES_PER_PORTION_SQL}))::int AS "averageCaloriesOverall"
+             FROM recipes r`,
         ),
-        pool.query<RecipeStatRow>(
-            `SELECT r.*, rt.type_name as "typeName"
-           FROM recipes r
-                  JOIN recipe_types rt ON r.type_id = rt.id
-           WHERE r.cooking_time = (
-             SELECT MAX(cooking_time)
-             FROM recipes
-           )`,
+        pool.query<RecipeTypeStat>(
+            `SELECT rt.type_name AS "typeName", COUNT(*)::int AS count
+             FROM recipes r
+                    JOIN recipe_types rt ON r.type_id = rt.id
+             GROUP BY rt.type_name`,
         ),
-        pool.query<TypeStatRow>(
-            `SELECT rt.type_name as "typeName", COUNT(*) as count
-           FROM recipes r
-             JOIN recipe_types rt ON r.type_id = rt.id
-           GROUP BY rt.type_name`,
+        pool.query<AverageCookingTime>(
+            `SELECT rt.type_name AS "typeName",
+                    ROUND(AVG(r.cooking_time))::int AS "averageCookingTime"
+             FROM recipes r
+                    JOIN recipe_types rt ON r.type_id = rt.id
+             GROUP BY rt.type_name`,
         ),
-        pool.query<IngredientCountRow>(
-            `SELECT r.*, COUNT(ri.ingredient_id) as ingredient_count
-           FROM recipes r
-                  JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-           GROUP BY r.id
-           HAVING COUNT(ri.ingredient_id) = (
-             SELECT MAX(ingredient_count)
-             FROM (
-                    SELECT COUNT(ri.ingredient_id) as ingredient_count
-                    FROM recipes r
-                           JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-                    GROUP BY r.id
-                  ) subquery
-           )`,
+        pool.query<RecipeTimeEntry>(
+            `SELECT r.id, r.title, r.cooking_time AS "cookingTime"
+             FROM recipes r
+             ORDER BY r.cooking_time ASC, r.id ASC
+             LIMIT ${EXTREMES_LIMIT}`,
         ),
-        pool.query<IngredientCountRow>(
-            `SELECT r.*, COUNT(ri.ingredient_id) as ingredient_count
-           FROM recipes r
-                  JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-           GROUP BY r.id
-           HAVING COUNT(ri.ingredient_id) = (
-             SELECT MIN(ingredient_count)
-             FROM (
-                    SELECT COUNT(ri.ingredient_id) as ingredient_count
-                    FROM recipes r
-                           JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-                    GROUP BY r.id
-                  ) subquery
-           )`,
+        pool.query<RecipeTimeEntry>(
+            `SELECT r.id, r.title, r.cooking_time AS "cookingTime"
+             FROM recipes r
+             ORDER BY r.cooking_time DESC, r.id ASC
+             LIMIT ${EXTREMES_LIMIT}`,
         ),
-        pool.query<AvgCookingTimeRow>(
-            `SELECT rt.type_name as "typeName",
-              AVG(r.cooking_time) as "averageCookingTime"
-         FROM recipes r
-         JOIN recipe_types rt ON r.type_id = rt.id
-         GROUP BY rt.type_name`,
+        pool.query<RecipeIngredientCountEntry>(
+            `SELECT r.id, r.title, COUNT(ri.ingredient_id)::int AS "ingredientCount"
+             FROM recipes r
+                    JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+             GROUP BY r.id, r.title
+             ORDER BY "ingredientCount" DESC, r.id ASC
+             LIMIT ${EXTREMES_LIMIT}`,
+        ),
+        pool.query<RecipeIngredientCountEntry>(
+            `SELECT r.id, r.title, COUNT(ri.ingredient_id)::int AS "ingredientCount"
+             FROM recipes r
+                    JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+             GROUP BY r.id, r.title
+             ORDER BY "ingredientCount" ASC, r.id ASC
+             LIMIT ${EXTREMES_LIMIT}`,
+        ),
+        pool.query<RecipeCalorieEntry>(
+            `SELECT r.id, r.title, ${CALORIES_PER_PORTION_SQL} AS "caloriesPerPortion"
+             FROM recipes r
+             WHERE ${CALORIES_PER_PORTION_SQL} IS NOT NULL
+             ORDER BY "caloriesPerPortion" DESC, r.id ASC
+             LIMIT ${EXTREMES_LIMIT}`,
+        ),
+        pool.query<RecipeCalorieEntry>(
+            `SELECT r.id, r.title, ${CALORIES_PER_PORTION_SQL} AS "caloriesPerPortion"
+             FROM recipes r
+             WHERE ${CALORIES_PER_PORTION_SQL} IS NOT NULL
+             ORDER BY "caloriesPerPortion" ASC, r.id ASC
+             LIMIT ${EXTREMES_LIMIT}`,
         ),
     ]);
+    const overall = overallRows[0];
 
     return {
-        fastestRecipe,
-        slowestRecipe,
-        typeStats,
-        recipesWithMostIngredients,
-        recipesWithLeastIngredients,
-        averageCookingTimes,
+        stats,
+        recipesCount: overall.recipesCount,
+        averageCookingTimeOverall: overall.averageCookingTimeOverall,
+        averageCookingTimesByType,
+        mostUsedType: findMostUsed(stats),
+        fastestRecipes,
+        slowestRecipes,
+        mostIngredientsRecipes,
+        leastIngredientsRecipes,
+        averageCaloriesOverall: overall.averageCaloriesOverall,
+        mostCaloricRecipes,
+        leastCaloricRecipes,
     };
 }

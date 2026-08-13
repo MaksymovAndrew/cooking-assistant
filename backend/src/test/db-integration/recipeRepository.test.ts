@@ -249,6 +249,68 @@ describe("PgRecipeRepository (real Postgres)", () => {
         expect(afterDelete).toBeNull();
     });
 
+    it("should not leak person_id on the rows returned by findAllWithIngredients", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+        const recipe = Recipe.forCreation({
+            title: "Leak check",
+            content: "Should not expose its owner.",
+            person_id: ownerId,
+            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
+        });
+
+        await repository.create(recipe);
+        const rows = (await repository.findAllWithIngredients()) as Record<
+            string,
+            unknown
+        >[];
+        const mine = rows.find((row) => row.title === "Leak check");
+
+        expect(mine).not.toHaveProperty("person_id");
+    });
+
+    it("should aggregate recipe stats without leaking person_id and reflect this recipe's own numbers", async () => {
+        const STATS_CHECK_TITLE = "Stats aggregate check";
+        const highCalorieIngredient = await createIngredient(
+            pool,
+            unitId,
+            [],
+            100_000,
+        );
+        const recipe = Recipe.forCreation({
+            title: STATS_CHECK_TITLE,
+            content: "Deliberately extreme values for a stable assertion.",
+            person_id: ownerId,
+            cooking_time: 1,
+            ingredients: [
+                {
+                    id: highCalorieIngredient,
+                    quantity_recipe_ingredients: 1,
+                },
+            ],
+        });
+
+        await repository.create(recipe);
+        const stats = await repository.getStats();
+
+        expect(stats).not.toHaveProperty("person_id");
+        expect(
+            stats.fastestRecipes.find((r) => r.title === STATS_CHECK_TITLE),
+        ).toEqual(
+            expect.objectContaining({
+                title: STATS_CHECK_TITLE,
+                cookingTime: 1,
+            }),
+        );
+        expect(
+            stats.mostCaloricRecipes.find((r) => r.title === STATS_CHECK_TITLE),
+        ).toEqual(
+            expect.objectContaining({
+                title: STATS_CHECK_TITLE,
+                caloriesPerPortion: 100_000,
+            }),
+        );
+    });
+
     it("should only return ids that actually exist", async () => {
         const ingredientId = await createIngredient(pool, unitId);
         const recipe = Recipe.forCreation({

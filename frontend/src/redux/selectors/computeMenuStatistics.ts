@@ -19,6 +19,11 @@ const computeAverageTotalTimeByCategory = (
         averageTotalTime: average,
     }));
 
+const hasCalories = (
+    menu: MenuWithStats,
+): menu is MenuWithStats & { total_calories: number } =>
+    menu.total_calories !== null;
+
 export const computeMenuStatistics = (
     menus: MenuWithStats[],
 ): MenuStatistics => {
@@ -45,6 +50,9 @@ export const computeMenuStatistics = (
             slowestMenus: [],
             mostRecipesMenus: [],
             leastRecipesMenus: [],
+            averageCaloriesOverall: null,
+            mostCaloricMenus: [],
+            leastCaloricMenus: [],
         };
     }
 
@@ -52,6 +60,20 @@ export const computeMenuStatistics = (
     const totalRecipes = menus.reduce((sum, m) => sum + m.recipe_count, 0);
     const timeExtremes = findExtremes(menus, (m) => m.total_cooking_time);
     const recipeCountExtremes = findExtremes(menus, (m) => m.recipe_count);
+    const menusWithCalories = menus.filter(hasCalories);
+    const calorieExtremes = findExtremes(
+        menusWithCalories,
+        (m) => m.total_calories,
+    );
+    const averageCaloriesOverall =
+        menusWithCalories.length === 0
+            ? null
+            : Math.round(
+                  menusWithCalories.reduce(
+                      (sum, m) => sum + m.total_calories,
+                      0,
+                  ) / menusWithCalories.length,
+              );
 
     return {
         menusCount: menus.length,
@@ -67,5 +89,8 @@ export const computeMenuStatistics = (
         slowestMenus: timeExtremes.max,
         mostRecipesMenus: recipeCountExtremes.max,
         leastRecipesMenus: recipeCountExtremes.min,
+        averageCaloriesOverall,
+        mostCaloricMenus: calorieExtremes.max,
+        leastCaloricMenus: calorieExtremes.min,
     };
 };

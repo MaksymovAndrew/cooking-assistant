@@ -89,6 +89,8 @@
         min-height: 2px;
         border-radius: 6px 6px 3px 3px;
         background: color-mix(in srgb, var(--brand-strong) 80%, transparent);
+        transform-origin: bottom;
+        animation: calorie-history-bar-grow 0.6s ease-out;
 
         &--near {
             background: color-mix(in srgb, var(--warning) 78%, transparent);
@@ -200,5 +202,15 @@
                 400 11.5px Inter,
                 sans-serif;
         }
+    }
+}
+
+@keyframes calorie-history-bar-grow {
+    from {
+        transform: scaleY(0);
+    }
+
+    to {
+        transform: scaleY(1);
     }
 }

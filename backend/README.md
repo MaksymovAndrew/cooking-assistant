@@ -455,7 +455,14 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | DELETE | `/recipe/:id`             | Delete a recipe                                      |
 | GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry) |
 | GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie) |
-| GET    | `/recipes-stats`          | Aggregated stats for the analytics page              |
+| GET    | `/recipes-stats`          | Aggregated stats for the statistics page             |
+
+`GET /recipes` and `GET /recipes-stats` both use explicit columns rather than `SELECT r.*`, so
+neither ships a recipe's raw owner `person_id` to the client - the same rule the list/search
+endpoints already followed. `/recipes-stats` computes every aggregate (type distribution, cooking
+time and calorie extremes/averages, most-used type) in SQL across every recipe, not just the
+current user's - the statistics page reads it directly instead of downloading the whole recipe
+table and aggregating client-side.
 
 ### Recipe types ([src/routes/type.routes.ts](src/routes/type.routes.ts))
 

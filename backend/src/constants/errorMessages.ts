@@ -63,7 +63,6 @@ export const SUCCESS_MESSAGES = {
 
     INGREDIENTS_UPDATED: "Ingredients updated successfully",
     INGREDIENT_DELETED: "Ingredient and its history successfully deleted",
-    QUANTITIES_UPDATED: "Ingredient quantities and purchase history updated",
     PURCHASE_UPDATED: "Purchase quantity updated successfully.",
 
     INTAKE_DELETED: "Intake entry successfully deleted",

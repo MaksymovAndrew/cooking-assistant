@@ -22,6 +22,7 @@ test.beforeAll(async ({ browser }) => {
         page.getByPlaceholder("Search ingredients..."),
         "Tomato",
     );
+    await page.getByRole("button", { name: "Continue" }).click();
     await page.getByRole("button", { name: "Add to pantry" }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
 });

@@ -69,25 +69,6 @@ describe("user ingredient routes", () => {
         );
     });
 
-    it("should update ingredient quantities", async () => {
-        const { app, deps } = buildTestApp();
-
-        deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
-        deps.pantryRepository.updateQuantities.mockResolvedValue(undefined);
-
-        const res = await request(app)
-            .put("/api/user-ingredients/update-quantities")
-            .set("Cookie", authCookie(7))
-            .send({
-                updatedIngredients: [{ id: 3, quantity_person_ingradient: 4 }],
-            });
-
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.QUANTITIES_UPDATED,
-        });
-    });
-
     it("should update a purchase quantity", async () => {
         const { app, deps } = buildTestApp();
 

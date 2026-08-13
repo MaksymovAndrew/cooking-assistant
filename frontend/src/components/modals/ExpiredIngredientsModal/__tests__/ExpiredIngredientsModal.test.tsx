@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { ExpiringIngredient } from "types/expiry";
+import type { ExpiredPantryIngredient } from "types/expiry";
 
 import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
@@ -13,18 +13,37 @@ import { renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
 
 const MODAL_ID = "m1";
-const INGREDIENTS: ExpiringIngredient[] = [
+const INGREDIENTS: ExpiredPantryIngredient[] = [
     {
         ingredientId: 1,
         slug: "milk",
         name: "Milk",
-        status: { tone: "expired", days: -2 },
+        unitName: "l",
+        lots: [
+            {
+                quantity: 1,
+                purchaseDate: "2026-01-01T00:00:00.000Z",
+                expiryDate: "2026-01-05T00:00:00.000Z",
+            },
+        ],
     },
     {
         ingredientId: 2,
         slug: "eggs",
         name: "Eggs",
-        status: { tone: "expired", days: -1 },
+        unitName: "piece",
+        lots: [
+            {
+                quantity: 6,
+                purchaseDate: "2026-01-02T00:00:00.000Z",
+                expiryDate: "2026-01-09T00:00:00.000Z",
+            },
+            {
+                quantity: 12,
+                purchaseDate: "2026-01-03T00:00:00.000Z",
+                expiryDate: "2026-01-10T00:00:00.000Z",
+            },
+        ],
     },
 ];
 const MODAL: ActiveModal = {
@@ -53,6 +72,23 @@ describe("ExpiredIngredientsModal", () => {
         expect(screen.getByText("Expired ingredients")).toBeInTheDocument();
         expect(screen.getByText("Milk")).toBeInTheDocument();
         expect(screen.getByText("Eggs")).toBeInTheDocument();
+    });
+
+    it("should list every expired lot's quantity, not just one per ingredient", () => {
+        renderOpen();
+
+        expect(screen.getByText("1 liter")).toBeInTheDocument();
+        expect(screen.getByText("6 piece")).toBeInTheDocument();
+        expect(screen.getByText("12 piece")).toBeInTheDocument();
+    });
+
+    it("should count purchases, not ingredients, in the summary message", () => {
+        renderOpen();
+
+        // 1 milk lot + 2 egg lots = 3 purchases across 2 ingredients
+        expect(
+            screen.getByText("3 purchases in your pantry have expired:"),
+        ).toBeInTheDocument();
     });
 
     it("should close the modal on the close button", async () => {

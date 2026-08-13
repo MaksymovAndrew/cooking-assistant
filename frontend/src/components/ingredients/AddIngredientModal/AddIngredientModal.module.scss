@@ -40,4 +40,44 @@
         gap: var(--s-2);
         margin-top: var(--s-4);
     }
+
+    &__quantity-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--s-3);
+        padding: var(--s-6) 0;
+        text-align: center;
+    }
+
+    &__step-count {
+        color: var(--text-muted);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        font:
+            500 12px "Geist Mono",
+            monospace;
+    }
+
+    &__quantity-name {
+        color: var(--text);
+        font:
+            600 18px Fraunces,
+            serif;
+    }
+
+    &__quantity-input {
+        display: flex;
+        align-items: center;
+        gap: var(--s-3);
+        color: var(--text-2);
+        font:
+            500 14px Inter,
+            sans-serif;
+
+        input {
+            max-width: 100px;
+            text-align: center;
+        }
+    }
 }

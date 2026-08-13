@@ -18,12 +18,9 @@
         "purchaseDate": "Purchased:",
         "purchaseDateUnknown": "Unknown",
         "detailsButton": "Details",
+        "restockButton": "Buy more",
         "deleteButton": "Delete",
         "addIngredientButton": "Add ingredient",
-        "editQuantitiesButton": "Edit quantities",
-        "doneEditingButton": "Done",
-        "saveQuantityButton": "Save",
-        "editModeActive": "edit mode active",
         "deleteTitle": "Delete confirmation",
         "deleteConfirmMessage": "Are you sure you want to delete the ingredient \"{{name}}\"?",
         "confirmButton": "Confirm",
@@ -44,7 +41,11 @@
         "searchPlaceholder": "Search ingredients...",
         "noMatches": "No ingredients found",
         "cancelButton": "Cancel",
-        "saveButton": "Add to pantry"
+        "continueButton": "Continue",
+        "backButton": "Back",
+        "nextButton": "Next",
+        "saveButton": "Add to pantry",
+        "stepCount": "{{current}} of {{total}}"
     },
     "purchaseModal": {
         "title": "Purchase History: {{name}}",
@@ -53,10 +54,18 @@
         "closeButton": "Close",
         "editButton": "Edit quantity"
     },
+    "restockModal": {
+        "title": "Buy more {{name}}",
+        "current": "You currently have {{quantity}} {{unit}}.",
+        "confirmButton": "Add to pantry"
+    },
     "expiredNoticeModal": {
         "title": "Expired ingredients",
-        "message_one": "{{count}} ingredient in your pantry has expired:",
-        "message_other": "{{count}} ingredients in your pantry have expired:",
+        "message_one": "{{count}} purchase in your pantry has expired:",
+        "message_other": "{{count}} purchases in your pantry have expired:",
+        "lotQuantity": "{{quantity}} {{unit}}",
+        "lotPurchased": "Purchased {{date}}",
+        "lotExpired": "Expired {{date}}",
         "close": "Close",
         "goToPantry": "Go to my pantry"
     }

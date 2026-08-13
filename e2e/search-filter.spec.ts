@@ -215,6 +215,7 @@ test("should filter My Recipes to only what's in the pantry", async () => {
         page.getByPlaceholder("Search ingredients..."),
         "Tomato",
     );
+    await page.getByRole("button", { name: "Continue" }).click();
     await page.getByRole("button", { name: "Add to pantry" }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
 

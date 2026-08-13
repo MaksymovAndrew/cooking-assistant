@@ -13,6 +13,7 @@ const INGREDIENTS: PantryIngredient[] = [
         unit_name: "kg",
         quantity_person_ingradient: 2,
         allergens: [],
+        lots: [],
     },
     {
         id: 2,
@@ -22,6 +23,7 @@ const INGREDIENTS: PantryIngredient[] = [
         unit_name: "kg",
         quantity_person_ingradient: 1,
         allergens: [],
+        lots: [],
     },
 ];
 
@@ -31,10 +33,8 @@ describe("IngredientGrid", () => {
             <IngredientGrid
                 ingredients={INGREDIENTS}
                 emptyMessage="No ingredients"
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
@@ -48,10 +48,8 @@ describe("IngredientGrid", () => {
             <IngredientGrid
                 ingredients={[]}
                 emptyMessage="No ingredients"
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );

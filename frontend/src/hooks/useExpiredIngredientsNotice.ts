@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import type { ExpiringIngredient } from "types/expiry";
+import type { ExpiredLot, ExpiredPantryIngredient } from "types/expiry";
 import type { UserIngredient } from "types/userIngredient";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
@@ -16,29 +16,47 @@ import {
     hasShownExpiredIngredientsNotice,
     markExpiredIngredientsNoticeShown,
 } from "utils/expiredIngredientsNoticeStorage";
-import { getExpiryStatus } from "utils/expiry";
+import { computeExpiryDate, getExpiryStatus } from "utils/expiry";
 
+// every individually-expired lot, not just the ingredient's worst one - a single ingredient can
+// have both an expired lot and a fresh one bought since
 const toExpiredIngredient = (
     ingredient: UserIngredient,
-): ExpiringIngredient | null => {
-    const status = getExpiryStatus(
-        ingredient.days_to_expire,
-        ingredient.purchase_date,
-    );
+): ExpiredPantryIngredient | null => {
+    if (typeof ingredient.days_to_expire !== "number") {
+        return null;
+    }
 
-    return status?.tone === "expired"
+    const daysToExpire = ingredient.days_to_expire;
+    const expiredLots: ExpiredLot[] = ingredient.lots
+        .filter(
+            (lot) =>
+                getExpiryStatus(daysToExpire, lot.purchase_date)?.tone ===
+                "expired",
+        )
+        .map((lot) => ({
+            quantity: lot.quantity,
+            purchaseDate: lot.purchase_date,
+            expiryDate: computeExpiryDate(
+                lot.purchase_date,
+                daysToExpire,
+            ).toISOString(),
+        }));
+
+    return expiredLots.length > 0
         ? {
               ingredientId: ingredient.ingredient_id,
               slug: ingredient.ingredient_slug,
               name: ingredient.ingredient_name,
-              status,
+              unitName: ingredient.unit_name,
+              lots: expiredLots,
           }
         : null;
 };
 
 const isExpiringIngredient = (
-    item: ExpiringIngredient | null,
-): item is ExpiringIngredient => item !== null;
+    item: ExpiredPantryIngredient | null,
+): item is ExpiredPantryIngredient => item !== null;
 
 // one-shot per tab session: opens the shared modal the first time the pantry is found to contain an expired ingredient after login
 export const useExpiredIngredientsNotice = (): void => {

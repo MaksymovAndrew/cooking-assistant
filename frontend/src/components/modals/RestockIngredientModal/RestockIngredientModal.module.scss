@@ -1,0 +1,25 @@
+@use "styles/abstracts" as *;
+
+.restock-modal {
+    &__current {
+        margin: 0 0 var(--s-4);
+        color: var(--text-2);
+        font:
+            400 14px Inter,
+            sans-serif;
+    }
+
+    &__input {
+        display: flex;
+        align-items: center;
+        gap: var(--s-3);
+        color: var(--text-2);
+        font:
+            500 14px Inter,
+            sans-serif;
+
+        input {
+            max-width: 100px;
+        }
+    }
+}

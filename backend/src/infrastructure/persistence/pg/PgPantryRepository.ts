@@ -6,10 +6,7 @@ import type {
 } from "domain/repositories/PantryRepository";
 
 import { findIngredientPurchaseHistory } from "./PgPantryRepository.history";
-import {
-    findPantryByUser,
-    updatePantryQuantities,
-} from "./PgPantryRepository.queries";
+import { findPantryByUser } from "./PgPantryRepository.queries";
 
 interface PurchaseRow {
     quantity: number;
@@ -100,13 +97,6 @@ export default class PgPantryRepository implements PantryRepository {
         } finally {
             client.release();
         }
-    }
-
-    async updateQuantities(
-        userId: string | number,
-        items: PantryIngredientInput[],
-    ): Promise<void> {
-        return updatePantryQuantities(this.pool, userId, items);
     }
 
     async updatePurchaseQuantity(

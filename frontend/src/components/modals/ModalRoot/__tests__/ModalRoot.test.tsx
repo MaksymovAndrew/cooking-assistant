@@ -1,6 +1,6 @@
 import { act } from "@testing-library/react";
 
-import type { ExpiringIngredient } from "types/expiry";
+import type { ExpiredPantryIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
 
 import { selectActiveModal } from "redux/selectors/uiSelectors";
@@ -19,6 +19,7 @@ import { LogIntakeModal } from "components/modals/LogIntakeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { NewsModal } from "components/modals/NewsModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
+import { RestockIngredientModal } from "components/modals/RestockIngredientModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
 
 import { renderWithProviders } from "test/router";
@@ -35,6 +36,9 @@ jest.mock("components/modals/DeleteMenuModal", () => ({
 }));
 jest.mock("components/modals/DeleteIngredientModal", () => ({
     DeleteIngredientModal: jest.fn(() => null),
+}));
+jest.mock("components/modals/RestockIngredientModal", () => ({
+    RestockIngredientModal: jest.fn(() => null),
 }));
 jest.mock("components/modals/LogoutConfirmModal", () => ({
     LogoutConfirmModal: jest.fn(() => null),
@@ -65,6 +69,7 @@ const mockedModal = jest.mocked(PurchaseHistoryModal);
 const mockedDeleteRecipe = jest.mocked(DeleteRecipeModal);
 const mockedDeleteMenu = jest.mocked(DeleteMenuModal);
 const mockedDeleteIngredient = jest.mocked(DeleteIngredientModal);
+const mockedRestockIngredient = jest.mocked(RestockIngredientModal);
 const mockedLogout = jest.mocked(LogoutConfirmModal);
 const mockedThemeChange = jest.mocked(ThemeChangeConfirmModal);
 const mockedExpiredIngredients = jest.mocked(ExpiredIngredientsModal);
@@ -82,6 +87,7 @@ const INGREDIENT: PantryIngredient = {
     unit_name: "g",
     quantity_person_ingradient: 100,
     allergens: [],
+    lots: [],
 };
 
 const MODAL: ActiveModal = {
@@ -194,6 +200,27 @@ describe("ModalRoot", () => {
         expect(props.ingredient).toEqual(INGREDIENT);
     });
 
+    it("should render the restock-ingredient modal with its id and ingredient", () => {
+        renderWithProviders(<ModalRoot />, {
+            store: makeTestStore({
+                ui: {
+                    queue: [
+                        {
+                            id: "modal-4b",
+                            type: MODAL_TYPE.restockIngredient,
+                            ingredient: INGREDIENT,
+                        },
+                    ],
+                },
+            }),
+        });
+
+        const props = mockedRestockIngredient.mock.calls[0][0];
+
+        expect(props.modalId).toBe("modal-4b");
+        expect(props.ingredient).toEqual(INGREDIENT);
+    });
+
     it("should render the logout modal with its id", () => {
         renderWithProviders(<ModalRoot />, {
             store: makeTestStore({
@@ -228,12 +255,19 @@ describe("ModalRoot", () => {
     });
 
     it("should render the expired-ingredients modal with its id and ingredient list", () => {
-        const ingredients: ExpiringIngredient[] = [
+        const ingredients: ExpiredPantryIngredient[] = [
             {
                 ingredientId: 1,
                 slug: "milk",
                 name: "Milk",
-                status: { tone: "expired", days: -2 },
+                unitName: "l",
+                lots: [
+                    {
+                        quantity: 1,
+                        purchaseDate: "2026-01-01T00:00:00.000Z",
+                        expiryDate: "2026-01-05T00:00:00.000Z",
+                    },
+                ],
             },
         ];
 

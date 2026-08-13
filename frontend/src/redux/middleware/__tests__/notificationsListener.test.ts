@@ -443,34 +443,6 @@ describe("notificationsListener success toasts", () => {
         });
     });
 
-    it("should add a success notification when ingredient quantities are updated", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            userIngredientsApi.endpoints.updateQuantities.initiate({
-                updatedIngredients: [
-                    {
-                        id: 1,
-                        slug: "salt",
-                        category: "spices",
-                        unit_name: "g",
-                        quantity_person_ingradient: 3,
-                        allergens: [],
-                    },
-                ],
-            }),
-        );
-
-        const { items } = store.getState().notifications;
-
-        expect(items).toHaveLength(1);
-        expect(items[0]).toMatchObject({
-            type: "success",
-            message: "Quantities updated",
-        });
-    });
-
     it("should add a success notification when a purchase is saved", async () => {
         mockedPut.mockResolvedValue({ data: null });
         const store = makeTestStore();

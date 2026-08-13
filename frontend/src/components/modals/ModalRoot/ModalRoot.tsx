@@ -14,6 +14,7 @@ import { LogIntakeModal } from "components/modals/LogIntakeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 import { NewsModal } from "components/modals/NewsModal";
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
+import { RestockIngredientModal } from "components/modals/RestockIngredientModal";
 import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
 
 // the calorie-feature modals manage their own dispatch/close internally (like DeleteIngredientModal), so they only need the modal itself
@@ -68,6 +69,52 @@ const renderAppModal = (modal: ActiveModal | null) => {
     return renderCalorieModal(modal);
 };
 
+// the pantry-page modals (history/restock/delete/expired-notice) - split out to keep ModalRoot's
+// own branching under the complexity cap
+const renderIngredientModal = (
+    modal: ActiveModal | null,
+    onCloseHistory: () => void,
+) => {
+    if (modal?.type === MODAL_TYPE.ingredientHistory) {
+        return (
+            <PurchaseHistoryModal
+                ingredientId={modal.ingredientId}
+                ingredientName={modal.ingredientName}
+                onClose={onCloseHistory}
+            />
+        );
+    }
+
+    if (modal?.type === MODAL_TYPE.deleteIngredient) {
+        return (
+            <DeleteIngredientModal
+                modalId={modal.id}
+                ingredient={modal.ingredient}
+            />
+        );
+    }
+
+    if (modal?.type === MODAL_TYPE.restockIngredient) {
+        return (
+            <RestockIngredientModal
+                modalId={modal.id}
+                ingredient={modal.ingredient}
+            />
+        );
+    }
+
+    if (modal?.type === MODAL_TYPE.expiredIngredients) {
+        return (
+            <ExpiredIngredientsModal
+                modalId={modal.id}
+                ingredients={modal.ingredients}
+            />
+        );
+    }
+
+    return renderAppModal(modal);
+};
+
 export const ModalRoot = () => {
     const modal = useAppSelector(selectActiveModal);
     const dispatch = useAppDispatch();
@@ -77,16 +124,6 @@ export const ModalRoot = () => {
             dispatch(closeModal(modal.id));
         }
     };
-
-    if (modal?.type === MODAL_TYPE.ingredientHistory) {
-        return (
-            <PurchaseHistoryModal
-                ingredientId={modal.ingredientId}
-                ingredientName={modal.ingredientName}
-                onClose={handleClose}
-            />
-        );
-    }
 
     if (modal?.type === MODAL_TYPE.deleteRecipe) {
         return (
@@ -108,15 +145,6 @@ export const ModalRoot = () => {
         );
     }
 
-    if (modal?.type === MODAL_TYPE.deleteIngredient) {
-        return (
-            <DeleteIngredientModal
-                modalId={modal.id}
-                ingredient={modal.ingredient}
-            />
-        );
-    }
-
     if (modal?.type === MODAL_TYPE.logout) {
         return <LogoutConfirmModal modalId={modal.id} />;
     }
@@ -130,14 +158,5 @@ export const ModalRoot = () => {
         );
     }
 
-    if (modal?.type === MODAL_TYPE.expiredIngredients) {
-        return (
-            <ExpiredIngredientsModal
-                modalId={modal.id}
-                ingredients={modal.ingredients}
-            />
-        );
-    }
-
-    return renderAppModal(modal);
+    return renderIngredientModal(modal, handleClose);
 };

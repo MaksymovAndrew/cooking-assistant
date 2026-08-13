@@ -467,14 +467,13 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 
 ### User pantry ([src/routes/userIngredients.routes.ts](src/routes/userIngredients.routes.ts))
 
-| Method | Path                                      | Purpose                                        |
-| ------ | ----------------------------------------- | ---------------------------------------------- |
-| GET    | `/user-ingredients`                       | Get the current user's pantry                  |
-| PUT    | `/user-ingredients`                       | Add/replace pantry items                       |
-| PUT    | `/user-ingredients/update-quantities`     | Bulk update quantities (qty 0 deletes the row) |
-| GET    | `/user-ingredients/history/:ingredientId` | Purchase history for one ingredient            |
-| PUT    | `/user-ingredients/history/:purchaseId`   | Update a purchase entry                        |
-| DELETE | `/user-ingredients/:ingredientId`         | Remove a pantry item                           |
+| Method | Path                                      | Purpose                                                               |
+| ------ | ----------------------------------------- | --------------------------------------------------------------------- |
+| GET    | `/user-ingredients`                       | Get the current user's pantry, each ingredient with its purchase lots |
+| PUT    | `/user-ingredients`                       | Add/replace pantry items                                              |
+| GET    | `/user-ingredients/history/:ingredientId` | Purchase history for one ingredient                                   |
+| PUT    | `/user-ingredients/history/:purchaseId`   | Update a purchase entry                                               |
+| DELETE | `/user-ingredients/:ingredientId`         | Remove a pantry item                                                  |
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 
@@ -502,8 +501,10 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
   and `email_verified_at` (nullable timestamp) - see [Auth flow](#auth-flow)
 - `recipes` to `ingredients` through `recipe_ingredients` (with `quantity_recipe_ingredients`)
 - `recipes.type_id` -> `recipe_types`
-- `person` to `ingredients` through `person_ingredients` (the pantry, with `quantity_person_ingradient`
-    - typo in the real column name, leave it) and `ingredient_purchases` (history log)
+- `person` to `ingredients` through `person_ingredients` (the pantry aggregate, with
+  `quantity_person_ingradient` - typo in the real column name, leave it) and `ingredient_purchases`
+  (one row per purchase lot). Expiry is computed per lot from `ingredient_purchases.purchase_date`,
+  not the aggregate's own date - a top-up must not "refresh" older stock's expiry.
 - `ingredients.id_unit_measurement` -> `unit_measurement`
 - `ingredients` carries metadata: `allergens`, `days_to_expire`, `seasonality`, `storage_condition`
 - `menu` (per-user, with `category_id` -> `menu_category`) to `recipes` through `menu_recipe`

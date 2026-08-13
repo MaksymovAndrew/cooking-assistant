@@ -23,12 +23,6 @@ export default function createUserIngredientsRouter(
     );
 
     router.put(
-        "/user-ingredients/update-quantities",
-        authenticateToken,
-        userIngredientsController.updateIngredientQuantities,
-    );
-
-    router.put(
         "/user-ingredients/history/:purchaseId",
         authenticateToken,
         userIngredientsController.updatePurchaseQuantity,

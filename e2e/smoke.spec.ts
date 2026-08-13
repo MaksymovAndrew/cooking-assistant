@@ -96,6 +96,7 @@ test("should add a pantry ingredient", async () => {
         page.getByPlaceholder("Search ingredients..."),
         "Tomato",
     );
+    await page.getByRole("button", { name: "Continue" }).click();
     await page.getByRole("button", { name: "Add to pantry" }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
     await expect(page.getByText("Tomato")).toBeVisible();

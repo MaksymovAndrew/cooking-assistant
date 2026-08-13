@@ -15,14 +15,11 @@ import { useClientFilters } from "./useClientFilters";
 
 interface UsePantryFiltersOptions {
     personIngredients: PantryIngredient[];
-    // while editing quantities, the page filters over the in-flight draft rather than the stale cache
-    sourceIngredients: PantryIngredient[];
 }
 
 // search/category/expiring-soon filtering for the pantry page, kept out of the component to stay under the file's line cap
 export const usePantryFilters = ({
     personIngredients,
-    sourceIngredients,
 }: UsePantryFiltersOptions) => {
     const { t } = useTranslation("ingredients");
     const categories = useIngredientCategories(personIngredients);
@@ -32,7 +29,7 @@ export const usePantryFilters = ({
         visibleItems: visibleIngredients,
     } = useClientFilters<PantryIngredient, PantryFilterState>(
         PANTRY_FILTER_DEFS,
-        sourceIngredients,
+        personIngredients,
     );
 
     // drops a stale category filter (its last item just got deleted) rather than silently matching nothing forever - adjusted during render, not via an effect, since it's already a conditional, idempotent correction
@@ -46,7 +43,7 @@ export const usePantryFilters = ({
     const expiringSoonCount = useMemo(
         () =>
             personIngredients.filter((ingredient) =>
-                isUrgent(ingredient.days_to_expire, ingredient.purchase_date),
+                isUrgent(ingredient.days_to_expire, ingredient.lots),
             ).length,
         [personIngredients],
     );

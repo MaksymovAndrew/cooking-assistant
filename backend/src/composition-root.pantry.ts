@@ -5,7 +5,6 @@ import AddUserIngredients from "application/use-cases/pantry/AddUserIngredients"
 import DeleteUserIngredient from "application/use-cases/pantry/DeleteUserIngredient";
 import GetPurchaseHistory from "application/use-cases/pantry/GetPurchaseHistory";
 import GetUserIngredients from "application/use-cases/pantry/GetUserIngredients";
-import UpdateIngredientQuantities from "application/use-cases/pantry/UpdateIngredientQuantities";
 import UpdatePurchaseQuantity from "application/use-cases/pantry/UpdatePurchaseQuantity";
 
 import UserIngredientsController from "controller/userIngredients.controller";
@@ -27,10 +26,6 @@ export function buildPantryController({
             ingredientRepository,
         ),
         deleteUserIngredient: new DeleteUserIngredient(pantryRepository),
-        updateIngredientQuantities: new UpdateIngredientQuantities(
-            pantryRepository,
-            ingredientRepository,
-        ),
         updatePurchaseQuantity: new UpdatePurchaseQuantity(pantryRepository),
         getPurchaseHistory: new GetPurchaseHistory(pantryRepository),
     });

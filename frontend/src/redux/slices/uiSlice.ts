@@ -1,7 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
-import type { ExpiringIngredient } from "types/expiry";
+import type { ExpiredPantryIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
 
 import type { ThemeChoice } from "redux/slices/themeSlice";
@@ -20,6 +20,7 @@ export const MODAL_TYPE = {
     logIntake: "logIntake",
     news: "news",
     offline: "offline",
+    restockIngredient: "restockIngredient",
 } as const;
 
 export interface IngredientHistoryModalInput {
@@ -56,7 +57,7 @@ export interface ThemeChangeModalInput {
 
 export interface ExpiredIngredientsModalInput {
     type: typeof MODAL_TYPE.expiredIngredients;
-    ingredients: ExpiringIngredient[];
+    ingredients: ExpiredPantryIngredient[];
 }
 
 export interface DeleteCalorieIntakeModalInput {
@@ -88,6 +89,11 @@ export interface OfflineModalInput {
     type: typeof MODAL_TYPE.offline;
 }
 
+export interface RestockIngredientModalInput {
+    type: typeof MODAL_TYPE.restockIngredient;
+    ingredient: PantryIngredient;
+}
+
 // what a caller provides; the id is generated in the action `prepare` step
 export type ModalInput =
     | IngredientHistoryModalInput
@@ -101,7 +107,8 @@ export type ModalInput =
     | CalorieLimitModalInput
     | LogIntakeModalInput
     | NewsModalInput
-    | OfflineModalInput;
+    | OfflineModalInput
+    | RestockIngredientModalInput;
 
 // distributes over the union so `modal.type` still narrows to the matching payload
 type WithId<T> = T extends unknown ? T & { id: string } : never;

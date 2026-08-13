@@ -1,4 +1,4 @@
-import type { ExpiringIngredient } from "types/expiry";
+import type { ExpiredPantryIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
 
 import type { ActiveModal, ModalInput } from "redux/slices/uiSlice";
@@ -24,6 +24,7 @@ const PANTRY_INGREDIENT: PantryIngredient = {
     unit_name: "g",
     quantity_person_ingradient: 100,
     allergens: [],
+    lots: [],
 };
 
 describe("uiSlice", () => {
@@ -140,12 +141,19 @@ describe("uiSlice", () => {
     });
 
     it("should open an expired-ingredients modal carrying the ingredient list", () => {
-        const ingredients: ExpiringIngredient[] = [
+        const ingredients: ExpiredPantryIngredient[] = [
             {
                 ingredientId: 1,
                 slug: "milk",
                 name: "Milk",
-                status: { tone: "expired", days: -2 },
+                unitName: "l",
+                lots: [
+                    {
+                        quantity: 1,
+                        purchaseDate: "2026-01-01T00:00:00.000Z",
+                        expiryDate: "2026-01-05T00:00:00.000Z",
+                    },
+                ],
             },
         ];
 

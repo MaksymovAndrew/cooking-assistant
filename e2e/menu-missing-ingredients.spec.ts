@@ -84,6 +84,7 @@ test("should mark the ingredient as sufficient once enough is stocked in the pan
         page.getByPlaceholder("Search ingredients..."),
         "Garlic",
     );
+    await page.getByRole("button", { name: "Continue" }).click();
     await page.getByRole("button", { name: "Add to pantry" }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
 

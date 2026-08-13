@@ -100,7 +100,7 @@ test("should delete the recipe and redirect away from its details page", async (
     await expect(page).toHaveURL(/\/all-recipes$/);
 });
 
-test("should edit a pantry ingredient's quantity and persist it across reload", async () => {
+test("should add a pantry ingredient with a chosen quantity and persist it across reload", async () => {
     await page.goto("/ingredients");
     await page.getByRole("button", { name: "Add ingredient" }).click();
     await selectFromPicker(
@@ -108,27 +108,26 @@ test("should edit a pantry ingredient's quantity and persist it across reload", 
         page.getByPlaceholder("Search ingredients..."),
         "Onion",
     );
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    const quantityInput = page.locator('input[type="number"]').first();
+
+    await quantityInput.fill("7");
     await page.getByRole("button", { name: "Add to pantry" }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
 
-    await page.getByRole("button", { name: "Edit quantities" }).click();
-    const quantityInput = page.locator('input[type="number"]').first();
-    await quantityInput.fill("7");
-    await page
-        .getByRole("button", { name: "Save", exact: true })
-        .first()
-        .click();
-    await expect(page.getByText("Quantities updated")).toBeVisible();
+    const onionCard = page
+        .getByRole("heading", { name: "Onion", level: 3 })
+        .locator("../..");
+
+    await expect(onionCard.getByText(/^7\s*piece$/)).toBeVisible();
 
     await page.reload();
     await expect(page.getByText("Onion")).toBeVisible();
+    await expect(onionCard.getByText(/^7\s*piece$/)).toBeVisible();
 
     // cleanup: leave the shared account's pantry empty for other specs
-    await page
-        .getByRole("heading", { name: "Onion", level: 3 })
-        .locator("../..")
-        .getByRole("button", { name: "Delete" })
-        .click();
+    await onionCard.getByRole("button", { name: "Delete" }).click();
     await page.getByRole("button", { name: "Confirm" }).click();
     await expect(page.getByText("Ingredient deleted")).toBeVisible();
 });

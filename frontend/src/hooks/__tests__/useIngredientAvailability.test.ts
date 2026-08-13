@@ -39,6 +39,7 @@ const PANTRY_TOMATO: UserIngredient = {
     unit_name: "piece",
     quantity_person_ingradient: 3,
     allergens: [],
+    lots: [],
 };
 
 // pre-seed the cache by awaiting the real query thunk before the hook mounts, so the hook reads already-fulfilled data on first render

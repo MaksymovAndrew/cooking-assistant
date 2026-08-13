@@ -1,4 +1,8 @@
-import { getExpiryStatus } from "utils/expiry";
+import {
+    computeExpiryDate,
+    getExpiryStatus,
+    getWorstLotExpiryStatus,
+} from "utils/expiry";
 
 const DAYS_TO_EXPIRE = 10;
 
@@ -42,5 +46,28 @@ describe("getExpiryStatus", () => {
         const status = getExpiryStatus(DAYS_TO_EXPIRE, purchasedDaysAgo(0));
 
         expect(status).toEqual(expect.objectContaining({ tone: "ok" }));
+    });
+});
+
+describe("computeExpiryDate", () => {
+    it("should add daysToExpire to the purchase date in UTC", () => {
+        const expiresAt = computeExpiryDate("2026-01-01T00:00:00.000Z", 5);
+
+        expect(expiresAt.toISOString()).toBe("2026-01-06T00:00:00.000Z");
+    });
+});
+
+describe("getWorstLotExpiryStatus", () => {
+    it("should return null when there are no lots", () => {
+        expect(getWorstLotExpiryStatus(DAYS_TO_EXPIRE, [])).toBeNull();
+    });
+
+    it("should use the oldest lot (lots[0]) as the worst case, ignoring a fresher lot bought since", () => {
+        const status = getWorstLotExpiryStatus(DAYS_TO_EXPIRE, [
+            { quantity: 1, purchase_date: purchasedDaysAgo(30) },
+            { quantity: 1, purchase_date: purchasedDaysAgo(0) },
+        ]);
+
+        expect(status).toEqual(expect.objectContaining({ tone: "expired" }));
     });
 });

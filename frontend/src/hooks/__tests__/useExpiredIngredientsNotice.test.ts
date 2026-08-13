@@ -40,7 +40,7 @@ const EXPIRED_INGREDIENT: UserIngredient = {
     quantity_person_ingradient: 1,
     days_to_expire: 5,
     allergens: ["milk"],
-    purchase_date: daysFromNow(-10),
+    lots: [{ quantity: 1, purchase_date: daysFromNow(-10) }],
 };
 const FRESH_INGREDIENT: UserIngredient = {
     ingredient_id: 2,
@@ -51,7 +51,7 @@ const FRESH_INGREDIENT: UserIngredient = {
     quantity_person_ingradient: 1,
     days_to_expire: 60,
     allergens: ["gluten"],
-    purchase_date: daysFromNow(0),
+    lots: [{ quantity: 1, purchase_date: daysFromNow(0) }],
 };
 
 const setup = async (
@@ -83,7 +83,13 @@ describe("useExpiredIngredientsNotice", () => {
 
         expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.expiredIngredients,
-            ingredients: [{ ingredientId: 1, name: "Milk" }],
+            ingredients: [
+                {
+                    ingredientId: 1,
+                    name: "Milk",
+                    lots: [{ quantity: 1 }],
+                },
+            ],
         });
     });
 
@@ -91,6 +97,30 @@ describe("useExpiredIngredientsNotice", () => {
         const { store } = await setup([FRESH_INGREDIENT]);
 
         expect(selectActiveModal(store.getState())).toBeNull();
+    });
+
+    it("should list only the expired lot when a top-up added a fresh one for the same ingredient", async () => {
+        const MIXED_INGREDIENT: UserIngredient = {
+            ...EXPIRED_INGREDIENT,
+            quantity_person_ingradient: 2,
+            lots: [
+                { quantity: 1, purchase_date: daysFromNow(-10) },
+                { quantity: 1, purchase_date: daysFromNow(0) },
+            ],
+        };
+
+        const { store } = await setup([MIXED_INGREDIENT]);
+
+        const modal = selectActiveModal(store.getState());
+
+        expect(modal).toMatchObject({
+            type: MODAL_TYPE.expiredIngredients,
+            ingredients: [{ ingredientId: 1 }],
+        });
+        // top-up does not "refresh" the older lot: only the old one shows as expired
+        expect(
+            modal && "ingredients" in modal ? modal.ingredients[0].lots : [],
+        ).toHaveLength(1);
     });
 
     it("should not open a modal while the session is still checking", async () => {

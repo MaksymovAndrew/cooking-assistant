@@ -6,7 +6,6 @@ import type AddUserIngredients from "application/use-cases/pantry/AddUserIngredi
 import type DeleteUserIngredient from "application/use-cases/pantry/DeleteUserIngredient";
 import type GetPurchaseHistory from "application/use-cases/pantry/GetPurchaseHistory";
 import type GetUserIngredients from "application/use-cases/pantry/GetUserIngredients";
-import type UpdateIngredientQuantities from "application/use-cases/pantry/UpdateIngredientQuantities";
 import type UpdatePurchaseQuantity from "application/use-cases/pantry/UpdatePurchaseQuantity";
 
 import { getUserId } from "./requestUser";
@@ -15,7 +14,6 @@ interface UserIngredientsControllerDependencies {
     getUserIngredients: GetUserIngredients;
     addUserIngredients: AddUserIngredients;
     deleteUserIngredient: DeleteUserIngredient;
-    updateIngredientQuantities: UpdateIngredientQuantities;
     updatePurchaseQuantity: UpdatePurchaseQuantity;
     getPurchaseHistory: GetPurchaseHistory;
 }
@@ -24,7 +22,6 @@ export default class UserIngredientsController {
     private getUserIngredientsUseCase: GetUserIngredients;
     private addUserIngredientsUseCase: AddUserIngredients;
     private deleteUserIngredientUseCase: DeleteUserIngredient;
-    private updateIngredientQuantitiesUseCase: UpdateIngredientQuantities;
     private updatePurchaseQuantityUseCase: UpdatePurchaseQuantity;
     private getPurchaseHistoryUseCase: GetPurchaseHistory;
 
@@ -32,14 +29,12 @@ export default class UserIngredientsController {
         getUserIngredients,
         addUserIngredients,
         deleteUserIngredient,
-        updateIngredientQuantities,
         updatePurchaseQuantity,
         getPurchaseHistory,
     }: UserIngredientsControllerDependencies) {
         this.getUserIngredientsUseCase = getUserIngredients;
         this.addUserIngredientsUseCase = addUserIngredients;
         this.deleteUserIngredientUseCase = deleteUserIngredient;
-        this.updateIngredientQuantitiesUseCase = updateIngredientQuantities;
         this.updatePurchaseQuantityUseCase = updatePurchaseQuantity;
         this.getPurchaseHistoryUseCase = getPurchaseHistory;
     }
@@ -76,20 +71,6 @@ export default class UserIngredientsController {
 
         res.json({
             message: SUCCESS_MESSAGES.INGREDIENT_DELETED,
-        });
-    };
-
-    updateIngredientQuantities: RequestHandler = async (req, res) => {
-        const userId = getUserId(req);
-        const { updatedIngredients } = req.body as Record<string, unknown>;
-
-        await this.updateIngredientQuantitiesUseCase.execute(
-            userId,
-            updatedIngredients,
-        );
-
-        res.json({
-            message: SUCCESS_MESSAGES.QUANTITIES_UPDATED,
         });
     };
 

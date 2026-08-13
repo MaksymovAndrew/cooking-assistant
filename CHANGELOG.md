@@ -20,6 +20,10 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Backend
+
+- Fixed: Buying more of an ingredient you already have no longer resets its shelf life - older stock now keeps its own expiry date instead of being treated as freshly bought.
+
 ### Frontend
 
 - Fixed: Popups no longer show a stray gap of unblurred background at the top of the screen on iPhone Safari, and the login/register pages no longer scroll a few extra pixels of empty space.
@@ -33,6 +37,10 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: Double-clicking a button that opens a popup no longer opens the same popup twice in a row.
 - Changed: Menu detail pages now show their information in the same order everywhere - title, quick facts, description, ingredients, then the action buttons and recipe list - with a divider under the quick facts on mobile to match desktop.
 - Fixed: A menu's Edit and Delete buttons are now reachable on mobile, not just tablet and desktop.
+- Added: Adding a new ingredient now asks for its quantity one ingredient at a time, instead of assuming 1 for everything you pick.
+- Changed: The expired-ingredients popup now lists each expired purchase separately, with its own quantity, purchase date and expiry date.
+- Removed: The bulk "Edit quantities" screen on the pantry page - correct a quantity by editing it directly from an ingredient's purchase history instead.
+- Added: A "Buy more" button on each pantry ingredient to record a new purchase without deleting or overwriting what you already have.
 
 ### Project
 

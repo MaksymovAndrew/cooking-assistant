@@ -56,6 +56,7 @@ const OWNED: PantryIngredient[] = [
         unit_name: "g",
         quantity_person_ingradient: 1,
         allergens: [],
+        lots: [],
     },
 ];
 
@@ -71,7 +72,7 @@ describe("AddIngredientModal", () => {
                     personIngredients={OWNED}
                     selectedIngredients={[]}
                     onToggle={jest.fn()}
-                    onSave={jest.fn()}
+                    onConfirm={jest.fn()}
                     onClose={jest.fn()}
                 />,
             );
@@ -108,7 +109,7 @@ describe("AddIngredientModal", () => {
                     personIngredients={OWNED}
                     selectedIngredients={[]}
                     onToggle={onToggle}
-                    onSave={jest.fn()}
+                    onConfirm={jest.fn()}
                     onClose={jest.fn()}
                 />,
             );
@@ -137,7 +138,7 @@ describe("AddIngredientModal", () => {
                 personIngredients={OWNED}
                 selectedIngredients={[1]}
                 onToggle={onToggle}
-                onSave={jest.fn()}
+                onConfirm={jest.fn()}
                 onClose={jest.fn()}
             />,
         );
@@ -149,8 +150,22 @@ describe("AddIngredientModal", () => {
         expect(onToggle).toHaveBeenCalledWith(1);
     });
 
-    it("should call onSave and onClose from the footer buttons", async () => {
-        const onSave = jest.fn();
+    it("should disable Continue until at least one ingredient is selected", () => {
+        render(
+            <AddIngredientModal
+                allIngredients={ALL_INGREDIENTS}
+                personIngredients={OWNED}
+                selectedIngredients={[]}
+                onToggle={jest.fn()}
+                onConfirm={jest.fn()}
+                onClose={jest.fn()}
+            />,
+        );
+
+        expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+    });
+
+    it("should call onClose from the Cancel button", async () => {
         const onClose = jest.fn();
 
         render(
@@ -159,18 +174,71 @@ describe("AddIngredientModal", () => {
                 personIngredients={OWNED}
                 selectedIngredients={[]}
                 onToggle={jest.fn()}
-                onSave={onSave}
+                onConfirm={jest.fn()}
                 onClose={onClose}
             />,
         );
 
+        await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("should step through each selected ingredient's quantity and call onConfirm with all of them", async () => {
+        const onConfirm = jest.fn();
+
+        render(
+            <AddIngredientModal
+                allIngredients={ALL_INGREDIENTS}
+                personIngredients={OWNED}
+                selectedIngredients={[1, 3]}
+                onToggle={jest.fn()}
+                onConfirm={onConfirm}
+                onClose={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+
+        expect(screen.getByText("1 of 2")).toBeInTheDocument();
+        expect(screen.getByText("Potato")).toBeInTheDocument();
+
+        const quantityInput = screen.getByRole("spinbutton");
+
+        await userEvent.clear(quantityInput);
+        await userEvent.type(quantityInput, "5");
+        await userEvent.click(screen.getByRole("button", { name: "Next" }));
+
+        expect(screen.getByText("2 of 2")).toBeInTheDocument();
+        // resolveIngredientName prefers the real catalog translation for a known slug over the fixture's raw name
+        expect(screen.getByText("Salmon fillet")).toBeInTheDocument();
+
         await userEvent.click(
             screen.getByRole("button", { name: "Add to pantry" }),
         );
-        expect(onSave).toHaveBeenCalledTimes(1);
 
-        await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
-        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(onConfirm).toHaveBeenCalledWith({ 1: 5, 3: 1 });
+    });
+
+    it("should go back to the picker from the first quantity step", async () => {
+        render(
+            <AddIngredientModal
+                allIngredients={ALL_INGREDIENTS}
+                personIngredients={OWNED}
+                selectedIngredients={[1]}
+                onToggle={jest.fn()}
+                onConfirm={jest.fn()}
+                onClose={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+        expect(screen.getByText("Potato")).toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole("button", { name: "Back" }));
+
+        expect(
+            screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
+        ).toBeInTheDocument();
     });
 
     it("should browse addable ingredients by category, excluding already-owned ones", async () => {
@@ -180,7 +248,7 @@ describe("AddIngredientModal", () => {
                 personIngredients={OWNED}
                 selectedIngredients={[]}
                 onToggle={jest.fn()}
-                onSave={jest.fn()}
+                onConfirm={jest.fn()}
                 onClose={jest.fn()}
             />,
         );
@@ -216,7 +284,7 @@ describe("AddIngredientModal", () => {
                 personIngredients={OWNED}
                 selectedIngredients={[]}
                 onToggle={jest.fn()}
-                onSave={jest.fn()}
+                onConfirm={jest.fn()}
                 onClose={onClose}
             />,
         );
@@ -248,7 +316,7 @@ describe("AddIngredientModal", () => {
                 personIngredients={OWNED}
                 selectedIngredients={[]}
                 onToggle={onToggle}
-                onSave={jest.fn()}
+                onConfirm={jest.fn()}
                 onClose={jest.fn()}
             />,
         );
@@ -266,7 +334,7 @@ describe("AddIngredientModal", () => {
                 personIngredients={OWNED}
                 selectedIngredients={[3]}
                 onToggle={onToggle}
-                onSave={jest.fn()}
+                onConfirm={jest.fn()}
                 onClose={jest.fn()}
             />,
         );

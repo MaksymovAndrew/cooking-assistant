@@ -2,7 +2,6 @@ import type {
     Purchase,
     SaveUserIngredientsRequest,
     UpdatePurchaseRequest,
-    UpdateQuantitiesRequest,
     UserIngredient,
 } from "types/userIngredient";
 
@@ -34,14 +33,6 @@ export const userIngredientsApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: PANTRY_INVALIDATES,
         }),
-        updateQuantities: build.mutation<null, UpdateQuantitiesRequest>({
-            query: (body) => ({
-                url: API_ROUTES.userIngredients.updateQuantities,
-                method: "PUT",
-                data: body,
-            }),
-            invalidatesTags: PANTRY_INVALIDATES,
-        }),
         deleteUserIngredient: build.mutation<null, number>({
             query: (ingredientId) => ({
                 url: API_ROUTES.userIngredients.item(ingredientId),
@@ -67,7 +58,6 @@ export const {
     useGetUserIngredientsQuery,
     useGetPurchaseHistoryQuery,
     useSaveUserIngredientMutation,
-    useUpdateQuantitiesMutation,
     useDeleteUserIngredientMutation,
     useUpdatePurchaseMutation,
 } = userIngredientsApi;

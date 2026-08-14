@@ -16,6 +16,7 @@ export const NotificationsSection: React.FC = () => {
                 title={t("notificationsSection.expiryTitle")}
                 description={t("notificationsSection.expiryDescription")}
                 disabled
+                comingSoon
             >
                 <ToggleSwitch
                     label={t("notificationsSection.expiryTitle")}
@@ -29,6 +30,7 @@ export const NotificationsSection: React.FC = () => {
                 title={t("notificationsSection.digestTitle")}
                 description={t("notificationsSection.digestDescription")}
                 disabled
+                comingSoon
             >
                 <ToggleSwitch
                     label={t("notificationsSection.digestTitle")}

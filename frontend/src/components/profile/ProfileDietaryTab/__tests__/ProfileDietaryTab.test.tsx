@@ -77,6 +77,9 @@ describe("ProfileDietaryTab", () => {
         expect(
             screen.getByText("Set a daily goal to start tracking."),
         ).toBeInTheDocument();
+        expect(
+            screen.getByText("Start tracking your calories"),
+        ).toBeInTheDocument();
         expect(screen.queryByText("Today")).not.toBeInTheDocument();
     });
 

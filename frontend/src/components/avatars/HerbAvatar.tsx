@@ -17,7 +17,7 @@ export const HerbAvatar: React.FC<IconProps> = ({
         aria-hidden="true"
         className={className}
     >
-        <g transform="translate(64 64) scale(2.45) translate(-34 -32)">
+        <g transform="translate(64 64) scale(2.02) translate(-34 -30)">
             <g
                 stroke="#557045"
                 strokeWidth={2.4}

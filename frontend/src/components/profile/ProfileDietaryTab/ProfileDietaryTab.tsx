@@ -28,6 +28,7 @@ interface ProfileDietaryTabProps {
 
 const GOAL_ID = "dietary-calorie-goal";
 const ICON_SIZE = 18;
+const EMPTY_ICON_SIZE = 40;
 
 export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
     currentUser,
@@ -132,6 +133,29 @@ export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
                 </div>
             ) : (
                 <div className={styles["profile-dietary-tab__empty"]}>
+                    <div className={styles["profile-dietary-tab__empty-intro"]}>
+                        <span
+                            className={
+                                styles["profile-dietary-tab__empty-icon"]
+                            }
+                        >
+                            <Flame size={EMPTY_ICON_SIZE} aria-hidden="true" />
+                        </span>
+                        <h2
+                            className={
+                                styles["profile-dietary-tab__empty-title"]
+                            }
+                        >
+                            {t("dietaryTab.emptyTitle")}
+                        </h2>
+                        <p
+                            className={
+                                styles["profile-dietary-tab__empty-description"]
+                            }
+                        >
+                            {t("dietaryTab.emptyDescription")}
+                        </p>
+                    </div>
                     {goalCard}
                 </div>
             )}

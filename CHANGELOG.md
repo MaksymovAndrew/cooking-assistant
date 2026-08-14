@@ -50,6 +50,10 @@ changelogs and the tags and now track everything here against one shared version
 - Added: Every recipe or menu named on the statistics page (fastest/slowest, most/least ingredients, calorie extremes) now links straight to it.
 - Changed: The number badges on the statistics page are smaller and large calorie totals are abbreviated (e.g. "13k kcal"), leaving more room for the recipe/menu name.
 - Fixed: The 5th quick-stat tile on the statistics page no longer sits alone next to an empty gap on mobile and tablet - it now spans the full row.
+- Changed: The Dietary tab's first-run screen (before you've set a calorie goal) now has a proper introduction instead of a single floating card, and its Save button moved to align with the rest of the app's forms.
+- Fixed: The preset profile avatars (sushi, herb sprig, and others) are now properly centred and a consistent size - some previously sat off-centre or looked notably smaller/larger than the rest.
+- Added: A 6th home tile shows how many calories you have left today once you've set a daily goal.
+- Changed: Settings rows that aren't available yet (Language & Region, notification toggles) now show a "Coming soon" badge at every screen size, instead of relying on description text that was hidden on mobile.
 
 ### Project
 

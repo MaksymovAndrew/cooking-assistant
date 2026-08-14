@@ -5,8 +5,10 @@
     grid-template-columns: repeat(2, 1fr);
     gap: var(--s-3);
 
-    // the 5th (kcal) tile has no natural partner in a 2/4-column grid, so it spans the full row below
-    > :last-child {
+    // 5 tiles (no calorie goal set yet) vs 6 (goal set - Kcal today + Kcal left both show) - an
+    // odd count leaves the last tile alone in a 2-column grid, so let it span the full row; an
+    // even count already divides cleanly and this selector simply doesn't match
+    > :nth-child(odd):last-child {
         grid-column: 1 / -1;
     }
 
@@ -16,9 +18,11 @@
     }
 
     @include respond-to(desktop) {
-        grid-template-columns: repeat(5, 1fr);
+        // auto-fit (not a fixed column count) so 5 or 6 tiles both reflow into one full row
+        // instead of a fixed 5-column grid leaving a 6th tile orphaned on its own row
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 
-        > :last-child {
+        > :nth-child(odd):last-child {
             grid-column: auto;
         }
     }
@@ -28,7 +32,7 @@
         grid-template-columns: repeat(2, 1fr);
         gap: var(--s-2);
 
-        > :last-child {
+        > :nth-child(odd):last-child {
             grid-column: 1 / -1;
         }
     }

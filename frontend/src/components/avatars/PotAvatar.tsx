@@ -17,7 +17,7 @@ export const PotAvatar: React.FC<IconProps> = ({
         aria-hidden="true"
         className={className}
     >
-        <g transform="translate(64 64) scale(2.45) translate(-32 -32)">
+        <g transform="translate(64 64) scale(2.08) translate(-32 -32)">
             <g
                 stroke="#6F7580"
                 strokeWidth={2.4}

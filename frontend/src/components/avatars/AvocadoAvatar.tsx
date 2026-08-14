@@ -17,7 +17,7 @@ export const AvocadoAvatar: React.FC<IconProps> = ({
         aria-hidden="true"
         className={className}
     >
-        <g transform="translate(64 64) scale(2.45) translate(-32 -33)">
+        <g transform="translate(64 64) scale(2.31) translate(-32 -33)">
             <g
                 stroke="#557045"
                 strokeWidth={2.4}

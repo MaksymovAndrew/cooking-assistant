@@ -17,7 +17,7 @@ export const SushiAvatar: React.FC<IconProps> = ({
         aria-hidden="true"
         className={className}
     >
-        <g transform="translate(64 64) scale(2.45) translate(-32 -32)">
+        <g transform="translate(64 64) scale(2.6) translate(-32 -34)">
             <g
                 stroke="#D8CFBF"
                 strokeWidth={2.4}

@@ -60,18 +60,23 @@ export const ThemeChangeConfirmModal = ({
     );
 
     return (
-        <BaseModal onClose={handleClose} title={heading}>
+        <BaseModal
+            onClose={handleClose}
+            title={heading}
+            footer={
+                <>
+                    <Button variant="secondary" onClick={handleClose}>
+                        {t("modal.cancel")}
+                    </Button>
+                    <Button variant="primary" onClick={handleConfirm}>
+                        {t("themeModal.confirm")}
+                    </Button>
+                </>
+            }
+        >
             <p className={styles["theme-change-modal__message"]}>
                 {t("themeModal.message")}
             </p>
-            <div className={styles["theme-change-modal__actions"]}>
-                <Button variant="secondary" onClick={handleClose}>
-                    {t("modal.cancel")}
-                </Button>
-                <Button variant="primary" onClick={handleConfirm}>
-                    {t("themeModal.confirm")}
-                </Button>
-            </div>
         </BaseModal>
     );
 };

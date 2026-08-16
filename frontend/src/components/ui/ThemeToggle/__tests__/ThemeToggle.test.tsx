@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { ThemeToggle } from "components/ui/ThemeToggle";
@@ -44,7 +45,7 @@ describe("ThemeToggle", () => {
             screen.getByRole("button", { name: TOGGLE_BUTTON_NAME }),
         );
 
-        expect(store.getState().ui.modal).toMatchObject({
+        expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.themeChange,
             nextMode: "light",
         });

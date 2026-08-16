@@ -1,7 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
-import type { ExpiringIngredient } from "types/expiry";
+import type { ExpiredPantryIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
 
 import type { ThemeChoice } from "redux/slices/themeSlice";
@@ -18,6 +18,9 @@ export const MODAL_TYPE = {
     deleteCalorieIntake: "deleteCalorieIntake",
     calorieLimit: "calorieLimit",
     logIntake: "logIntake",
+    news: "news",
+    offline: "offline",
+    restockIngredient: "restockIngredient",
 } as const;
 
 export interface IngredientHistoryModalInput {
@@ -26,18 +29,10 @@ export interface IngredientHistoryModalInput {
     ingredientName: string;
 }
 
-export interface IngredientHistoryModal extends IngredientHistoryModalInput {
-    id: string;
-}
-
 export interface DeleteRecipeModalInput {
     type: typeof MODAL_TYPE.deleteRecipe;
     recipeId: string;
     recipeTitle: string;
-}
-
-export interface DeleteRecipeModal extends DeleteRecipeModalInput {
-    id: string;
 }
 
 export interface DeleteMenuModalInput {
@@ -46,25 +41,13 @@ export interface DeleteMenuModalInput {
     menuTitle: string;
 }
 
-export interface DeleteMenuModal extends DeleteMenuModalInput {
-    id: string;
-}
-
 export interface DeleteIngredientModalInput {
     type: typeof MODAL_TYPE.deleteIngredient;
     ingredient: PantryIngredient;
 }
 
-export interface DeleteIngredientModal extends DeleteIngredientModalInput {
-    id: string;
-}
-
 export interface LogoutModalInput {
     type: typeof MODAL_TYPE.logout;
-}
-
-export interface LogoutModal extends LogoutModalInput {
-    id: string;
 }
 
 export interface ThemeChangeModalInput {
@@ -72,17 +55,9 @@ export interface ThemeChangeModalInput {
     nextMode: ThemeChoice;
 }
 
-export interface ThemeChangeModal extends ThemeChangeModalInput {
-    id: string;
-}
-
 export interface ExpiredIngredientsModalInput {
     type: typeof MODAL_TYPE.expiredIngredients;
-    ingredients: ExpiringIngredient[];
-}
-
-export interface ExpiredIngredientsModal extends ExpiredIngredientsModalInput {
-    id: string;
+    ingredients: ExpiredPantryIngredient[];
 }
 
 export interface DeleteCalorieIntakeModalInput {
@@ -91,18 +66,10 @@ export interface DeleteCalorieIntakeModalInput {
     title: string;
 }
 
-export interface DeleteCalorieIntakeModal extends DeleteCalorieIntakeModalInput {
-    id: string;
-}
-
 export interface CalorieLimitModalInput {
     type: typeof MODAL_TYPE.calorieLimit;
     consumed: number;
     goal: number;
-}
-
-export interface CalorieLimitModal extends CalorieLimitModalInput {
-    id: string;
 }
 
 export interface LogIntakeModalInput {
@@ -114,10 +81,20 @@ export interface LogIntakeModalInput {
     initialPortions?: number;
 }
 
-export interface LogIntakeModal extends LogIntakeModalInput {
-    id: string;
+export interface NewsModalInput {
+    type: typeof MODAL_TYPE.news;
 }
 
+export interface OfflineModalInput {
+    type: typeof MODAL_TYPE.offline;
+}
+
+export interface RestockIngredientModalInput {
+    type: typeof MODAL_TYPE.restockIngredient;
+    ingredient: PantryIngredient;
+}
+
+// what a caller provides; the id is generated in the action `prepare` step
 export type ModalInput =
     | IngredientHistoryModalInput
     | DeleteRecipeModalInput
@@ -128,41 +105,48 @@ export type ModalInput =
     | ExpiredIngredientsModalInput
     | DeleteCalorieIntakeModalInput
     | CalorieLimitModalInput
-    | LogIntakeModalInput;
-export type ActiveModal =
-    | IngredientHistoryModal
-    | DeleteRecipeModal
-    | DeleteMenuModal
-    | DeleteIngredientModal
-    | LogoutModal
-    | ThemeChangeModal
-    | ExpiredIngredientsModal
-    | DeleteCalorieIntakeModal
-    | CalorieLimitModal
-    | LogIntakeModal;
+    | LogIntakeModalInput
+    | NewsModalInput
+    | OfflineModalInput
+    | RestockIngredientModalInput;
+
+// distributes over the union so `modal.type` still narrows to the matching payload
+type WithId<T> = T extends unknown ? T & { id: string } : never;
+
+export type ActiveModal = WithId<ModalInput>;
 
 interface UiState {
-    modal: ActiveModal | null;
+    // FIFO: openModal enqueues, closeModal dequeues - only queue[0] is ever rendered, so a second
+    // modal opened while one is showing waits its turn instead of clobbering the first
+    queue: ActiveModal[];
 }
 
-const initialState: UiState = { modal: null };
+const initialState: UiState = { queue: [] };
 
 const uiSlice = createSlice({
     name: "ui",
     initialState,
     reducers: {
         openModal: {
+            // a modal covers the screen, so a second one of the same type is always an accidental
+            // double dispatch (double-clicked delete button), never a real second request
             reducer: (state, action: PayloadAction<ActiveModal>) => {
-                state.modal = action.payload;
+                const isQueued = state.queue.some(
+                    (modal) => modal.type === action.payload.type,
+                );
+
+                if (!isQueued) {
+                    state.queue.push(action.payload);
+                }
             },
             prepare: (modal: ModalInput) => ({
                 payload: { id: nanoid(), ...modal },
             }),
         },
         closeModal: (state, action: PayloadAction<string>) => {
-            if (state.modal?.id === action.payload) {
-                state.modal = null;
-            }
+            state.queue = state.queue.filter(
+                (modal) => modal.id !== action.payload,
+            );
         },
     },
 });

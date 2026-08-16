@@ -11,20 +11,16 @@ import styles from "./IngredientGrid.module.scss";
 interface IngredientGridProps {
     ingredients: PantryIngredient[];
     emptyMessage: string;
-    isEditingQuantity: boolean;
-    onQuantityChange: (id: number, quantity: number) => void;
-    onSaveQuantity: (id: number) => void;
     onOpenHistory: (ingredient: PantryIngredient) => void;
+    onRestock: (ingredient: PantryIngredient) => void;
     onDelete: (ingredient: PantryIngredient) => void;
 }
 
 export const IngredientGrid: React.FC<IngredientGridProps> = ({
     ingredients,
     emptyMessage,
-    isEditingQuantity,
-    onQuantityChange,
-    onSaveQuantity,
     onOpenHistory,
+    onRestock,
     onDelete,
 }) => {
     if (ingredients.length === 0) {
@@ -37,10 +33,8 @@ export const IngredientGrid: React.FC<IngredientGridProps> = ({
                 <IngredientCard
                     key={ingredient.id}
                     ingredient={ingredient}
-                    isEditingQuantity={isEditingQuantity}
-                    onQuantityChange={onQuantityChange}
-                    onSaveQuantity={onSaveQuantity}
                     onOpenHistory={onOpenHistory}
+                    onRestock={onRestock}
                     onDelete={onDelete}
                 />
             ))}

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { THEME_STORAGE_KEY } from "constants/theme";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
@@ -23,7 +24,7 @@ const MODAL: ActiveModal = {
 };
 
 const renderOpen = () => {
-    const store = makeTestStore({ ui: { modal: MODAL } });
+    const store = makeTestStore({ ui: { queue: [MODAL] } });
 
     return renderWithProviders(
         <ThemeChangeConfirmModal modalId={MODAL_ID} nextMode="light" />,
@@ -59,7 +60,7 @@ describe("ThemeChangeConfirmModal", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
         expect(jest.mocked(reloadPage)).not.toHaveBeenCalled();
     });
 });

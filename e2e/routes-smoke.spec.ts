@@ -13,6 +13,8 @@ let runId: string;
 let recipeId: string;
 let menuId: string;
 
+const MOBILE_VIEWPORT = { width: 390, height: 844 };
+
 test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
     // reuses the shared primary account (registered once in global-setup) instead of registering a fresh one here - keeps the suite's total auth calls low
@@ -22,6 +24,26 @@ test.beforeAll(async ({ browser }) => {
 
 test.afterAll(async () => {
     await context.close();
+});
+
+// permanent regression guard: the route each test lands on must not scroll horizontally at 390px
+test.afterEach(async () => {
+    const desktopViewport = page.viewportSize();
+
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await expect
+        .poll(() =>
+            page.evaluate(
+                () =>
+                    document.documentElement.scrollWidth -
+                    document.documentElement.clientWidth,
+            ),
+        )
+        .toBeLessThanOrEqual(0);
+
+    if (desktopViewport) {
+        await page.setViewportSize(desktopViewport);
+    }
 });
 
 test("should create a recipe from /add-recipe and capture its id", async () => {
@@ -68,14 +90,14 @@ test("should render the home dashboard at /", async () => {
 test("should render /all-recipes", async () => {
     await page.goto("/all-recipes");
     await expect(
-        page.getByRole("heading", { name: "All Recipes", exact: true }),
+        page.getByRole("heading", { name: "All recipes", exact: true }),
     ).toBeVisible();
 });
 
 test("should render /my-recipes with the created recipe listed", async () => {
     await page.goto("/my-recipes");
     await expect(
-        page.getByRole("heading", { name: "My Recipes", exact: true }),
+        page.getByRole("heading", { name: "My recipes", exact: true }),
     ).toBeVisible();
     await expect(page.getByText(`Routes recipe ${runId}`)).toBeVisible();
 });
@@ -94,14 +116,14 @@ test("should render /settings", async () => {
 test("should render /ingredients", async () => {
     await page.goto("/ingredients");
     await expect(
-        page.getByRole("heading", { name: "My Ingredients" }),
+        page.getByRole("heading", { name: "My ingredients" }),
     ).toBeVisible();
 });
 
 test("should render /stats", async () => {
     await page.goto("/stats");
     await expect(
-        page.getByRole("heading", { name: "Recipe Statistics" }),
+        page.getByRole("heading", { name: "Recipe statistics" }),
     ).toBeVisible();
 });
 
@@ -115,7 +137,7 @@ test("should render /all-menus", async () => {
 test("should render /my-menus with the created menu listed", async () => {
     await page.goto("/my-menus");
     await expect(
-        page.getByRole("heading", { name: "My Menus", exact: true }),
+        page.getByRole("heading", { name: "My menus", exact: true }),
     ).toBeVisible();
     await expect(page.getByText(`Routes menu ${runId}`)).toBeVisible();
 });

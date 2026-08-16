@@ -10,7 +10,8 @@ import {
 
 import { ROUTES } from "constants/routes";
 
-import { OfflineModal } from "components/connectivity/OfflineModal";
+import { useOfflineNotice } from "hooks/useOfflineNotice";
+
 import { HomeRoute } from "components/layout/HomeRoute";
 import { PageSpinner } from "components/layout/PageSpinner";
 import { PrivateRoute } from "components/layout/PrivateRoute";
@@ -86,17 +87,20 @@ const PUBLIC_ROUTES: AppRoute[] = [
 ];
 
 // shell chrome shared by every route; lives inside the router so descendants (modals, forms) can use data-router hooks like useBlocker
-const RootLayout: React.FC = () => (
-    <>
-        <ThemeManager />
-        <Suspense fallback={<PageSpinner />}>
-            <Outlet />
-        </Suspense>
-        <ModalRoot />
-        <OfflineModal />
-        <Toaster />
-    </>
-);
+const RootLayout: React.FC = () => {
+    useOfflineNotice();
+
+    return (
+        <>
+            <ThemeManager />
+            <Suspense fallback={<PageSpinner />}>
+                <Outlet />
+            </Suspense>
+            <ModalRoot />
+            <Toaster />
+        </>
+    );
+};
 
 // data router (not <BrowserRouter>): forms block in-app navigation away from unsaved edits via useBlocker, which plain routers don't support
 const router = createBrowserRouter(

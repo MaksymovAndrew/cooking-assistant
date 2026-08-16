@@ -282,4 +282,76 @@ describe("PgMenuRepository (real Postgres)", () => {
         expect(deleted).toBe(true);
         expect(afterDelete).toBeNull();
     });
+
+    async function createRecipeWithCalories(
+        caloriesPerUnit: number | null,
+    ): Promise<number> {
+        const ingredientId = await createIngredient(
+            pool,
+            unitId,
+            [],
+            caloriesPerUnit,
+        );
+        const recipe = Recipe.forCreation({
+            title: "Calorie-bearing recipe",
+            content: "For stats tests.",
+            person_id: ownerId,
+            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
+        });
+        const created = (await recipeRepository.create(recipe)) as {
+            id: number;
+        };
+
+        return created.id;
+    }
+
+    interface UnpaginatedMenuRow {
+        title: string;
+        total_calories: number | null;
+    }
+
+    it("should sum total_calories across a menu's recipes when all of them have calorie data", async () => {
+        const recipeAId = await createRecipeWithCalories(10);
+        const recipeBId = await createRecipeWithCalories(50);
+        const menu = Menu.forCreation({
+            menuTitle: "Stats calorie check - complete",
+            menuContent: "Notes.",
+            categoryId,
+            personId: ownerId,
+            recipeIds: [recipeAId, recipeBId],
+        });
+
+        await menuRepository.create(menu, [recipeAId, recipeBId]);
+        const rows =
+            (await menuRepository.findAllUnpaginated()) as UnpaginatedMenuRow[];
+        const mine = rows.find(
+            (row) => row.title === "Stats calorie check - complete",
+        );
+
+        expect(mine?.total_calories).toBe(60);
+    });
+
+    it("should report total_calories as null (not an undercounted number) when one of the menu's recipes has no calorie data", async () => {
+        const recipeWithCaloriesId = await createRecipeWithCalories(10);
+        const recipeWithoutCaloriesId = await createRecipeWithCalories(null);
+        const menu = Menu.forCreation({
+            menuTitle: "Stats calorie check - incomplete",
+            menuContent: "Notes.",
+            categoryId,
+            personId: ownerId,
+            recipeIds: [recipeWithCaloriesId, recipeWithoutCaloriesId],
+        });
+
+        await menuRepository.create(menu, [
+            recipeWithCaloriesId,
+            recipeWithoutCaloriesId,
+        ]);
+        const rows =
+            (await menuRepository.findAllUnpaginated()) as UnpaginatedMenuRow[];
+        const mine = rows.find(
+            (row) => row.title === "Stats calorie check - incomplete",
+        );
+
+        expect(mine?.total_calories).toBeNull();
+    });
 });

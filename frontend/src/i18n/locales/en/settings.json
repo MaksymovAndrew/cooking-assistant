@@ -3,6 +3,7 @@
         "heading": "Settings",
         "subheading": "Appearance, language and account preferences."
     },
+    "comingSoonBadge": "Coming soon",
     "appearanceSection": {
         "heading": "Appearance",
         "themeTitle": "Theme",
@@ -15,7 +16,7 @@
     "languageSection": {
         "heading": "Language & region",
         "languageTitle": "Language",
-        "languageDescription": "English - more languages coming soon."
+        "languageDescription": "English is the only language available right now."
     },
     "notificationsSection": {
         "heading": "Notifications",

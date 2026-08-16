@@ -45,6 +45,7 @@ const OWNED: UserIngredient = {
     unit_name: "g",
     quantity_person_ingradient: 2,
     allergens: [],
+    lots: [],
 };
 
 const setup = async (pantry: UserIngredient[] = [OWNED]) => {
@@ -92,23 +93,65 @@ describe("useIngredientCatalog", () => {
         expect(result.current.selectedIngredients).not.toContain(2);
     });
 
-    it("should enter edit mode on the first call and save new selections on the second", async () => {
+    it("should open the add-ingredient flow with an empty selection", async () => {
+        const { result } = await setup();
+
+        act(() => {
+            result.current.toggleIngredientSelection(2);
+        });
+        act(() => {
+            result.current.handleOpenAddModal();
+        });
+
+        expect(result.current.isAdding).toBe(true);
+        expect(result.current.selectedIngredients).toEqual([]);
+    });
+
+    it("should save each newly selected ingredient with its own real quantity, not a hardcoded default", async () => {
         mockedPut.mockResolvedValue({ data: null });
 
         const { result } = await setup();
 
-        await act(async () => {
-            await result.current.handleSaveOrToggleEdit();
+        act(() => {
+            result.current.handleOpenAddModal();
         });
-
-        expect(result.current.isEditing).toBe(true);
-
         act(() => {
             result.current.toggleIngredientSelection(2);
         });
 
         await act(async () => {
-            await result.current.handleSaveOrToggleEdit();
+            await result.current.handleConfirmAddIngredients({ 2: 7 });
+        });
+
+        expect(mockedPut).toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.list,
+            {
+                ingredients: [
+                    {
+                        id: 2,
+                        ingredient_name: "Onion",
+                        quantity_person_ingradient: 7,
+                    },
+                ],
+            },
+        );
+        expect(result.current.isAdding).toBe(false);
+    });
+
+    it("should default to a quantity of 1 for a selected ingredient missing from the quantities map", async () => {
+        mockedPut.mockResolvedValue({ data: null });
+
+        const { result } = await setup();
+
+        act(() => {
+            result.current.handleOpenAddModal();
+        });
+        act(() => {
+            result.current.toggleIngredientSelection(2);
+        });
+
+        await act(async () => {
+            await result.current.handleConfirmAddIngredients({});
         });
 
         expect(mockedPut).toHaveBeenCalledWith(
@@ -123,14 +166,13 @@ describe("useIngredientCatalog", () => {
                 ],
             },
         );
-        expect(result.current.isEditing).toBe(false);
     });
 
-    it("should reset the selection and leave edit mode without saving when cancelled", async () => {
+    it("should reset the selection and leave the add flow without saving when cancelled", async () => {
         const { result } = await setup();
 
-        await act(async () => {
-            await result.current.handleSaveOrToggleEdit();
+        act(() => {
+            result.current.handleOpenAddModal();
         });
         act(() => {
             result.current.toggleIngredientSelection(2);
@@ -139,93 +181,10 @@ describe("useIngredientCatalog", () => {
         expect(result.current.selectedIngredients).toContain(2);
 
         act(() => {
-            result.current.handleCancelEdit();
+            result.current.handleCancelAdd();
         });
 
-        expect(result.current.isEditing).toBe(false);
-        expect(result.current.selectedIngredients).toEqual([1]);
-    });
-
-    it("should stamp a purchase date only when a quantity is increased", async () => {
-        const { result } = await setup();
-
-        act(() => {
-            result.current.handleToggleQuantityEdit();
-        });
-
-        expect(result.current.isEditingQuantity).toBe(true);
-        expect(
-            result.current.updatedIngredients[0].purchase_date,
-        ).toBeUndefined();
-
-        act(() => {
-            result.current.handleQuantityChange(1, 5);
-        });
-
-        expect(
-            result.current.updatedIngredients[0].purchase_date,
-        ).toBeDefined();
-    });
-
-    it("should save only the edited ingredient's quantity, keeping the edit session open", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-
-        const { result } = await setup();
-
-        act(() => {
-            result.current.handleToggleQuantityEdit();
-        });
-        act(() => {
-            result.current.handleQuantityChange(1, 9);
-        });
-
-        await act(async () => {
-            await result.current.handleSaveQuantity(1);
-        });
-
-        expect(mockedPut).toHaveBeenCalledWith(
-            API_ROUTES.userIngredients.updateQuantities,
-            {
-                updatedIngredients: [
-                    expect.objectContaining({
-                        id: 1,
-                        quantity_person_ingradient: 9,
-                    }),
-                ],
-            },
-        );
-        expect(result.current.isEditingQuantity).toBe(true);
-    });
-
-    it("should not send a request when saving an unchanged quantity", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-
-        const { result } = await setup();
-
-        act(() => {
-            result.current.handleToggleQuantityEdit();
-        });
-
-        await act(async () => {
-            await result.current.handleSaveQuantity(1);
-        });
-
-        expect(mockedPut).not.toHaveBeenCalled();
-    });
-
-    it("should toggle quantity edit mode off without saving", async () => {
-        const { result } = await setup();
-
-        act(() => {
-            result.current.handleToggleQuantityEdit();
-        });
-
-        expect(result.current.isEditingQuantity).toBe(true);
-
-        act(() => {
-            result.current.handleToggleQuantityEdit();
-        });
-
-        expect(result.current.isEditingQuantity).toBe(false);
+        expect(result.current.isAdding).toBe(false);
+        expect(result.current.selectedIngredients).toEqual([]);
     });
 });

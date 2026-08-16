@@ -1,7 +1,10 @@
 import { ListFilter, X } from "lucide-react";
 import type { ReactNode } from "react";
-import React, { useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 
+import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
+
+import { useMediaQuery } from "hooks/useMediaQuery";
 import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 import { useScrollLock } from "hooks/useScrollLock";
 
@@ -22,6 +25,12 @@ export interface FilterPanelProps {
 const FILTER_ICON_SIZE = 17;
 const CLOSE_ICON_SIZE = 14;
 
+// mirrors the SCSS `&__popover`'s tablet+ `top: calc(100% + 8px)`
+const POPOVER_TOP_GAP_PX = 8;
+// breathing room before the viewport's bottom edge, matches --s-4
+const POPOVER_BOTTOM_MARGIN_PX = 16;
+const POPOVER_MIN_HEIGHT_PX = 160;
+
 // trigger + badge + popover chrome shared by every filter panel (recipes, menus, ...);
 // the popover body is page-specific and passed in as children
 export const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -37,6 +46,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const popoverRef = useRef<HTMLDivElement>(null);
+    const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
 
     const closePopover = () => {
         setIsOpen(false);
@@ -44,6 +55,35 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
     usePopoverDismiss(containerRef, isOpen, closePopover);
     useScrollLock(isOpen);
+
+    // the tablet+ popover is anchored below the trigger (not the true viewport bottom) and
+    // opens with the page scroll locked, so a flat 85vh max-height can push its footer past
+    // the fold with no way to reach it - clamp against the space actually left below the trigger
+    useLayoutEffect(() => {
+        if (!isOpen || isMobile) return undefined;
+
+        const clampToViewport = () => {
+            const container = containerRef.current;
+            const popover = popoverRef.current;
+
+            if (!container || !popover) return;
+
+            const available =
+                window.innerHeight -
+                container.getBoundingClientRect().bottom -
+                POPOVER_TOP_GAP_PX -
+                POPOVER_BOTTOM_MARGIN_PX;
+
+            popover.style.maxHeight = `${Math.max(POPOVER_MIN_HEIGHT_PX, available)}px`;
+        };
+
+        clampToViewport();
+        window.addEventListener("resize", clampToViewport);
+
+        return () => {
+            window.removeEventListener("resize", clampToViewport);
+        };
+    }, [isOpen, isMobile]);
 
     return (
         <div ref={containerRef} className={styles["filter-panel"]}>
@@ -71,6 +111,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             </button>
             {isOpen && (
                 <div
+                    ref={popoverRef}
                     role="dialog"
                     aria-label={title}
                     className={styles["filter-panel__popover"]}

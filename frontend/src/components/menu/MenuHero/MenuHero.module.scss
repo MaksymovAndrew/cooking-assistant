@@ -2,10 +2,6 @@
 
 .menu-hero {
     &__header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: var(--s-4);
         margin-bottom: var(--s-3);
     }
 
@@ -66,42 +62,6 @@
         @include respond-to(tablet) {
             font-size: 14px;
             line-height: 1.55;
-        }
-    }
-
-    &__visitor-actions {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--s-3);
-        margin-bottom: var(--s-5);
-    }
-
-    &__favourite {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        height: 40px;
-        padding: 0 16px;
-        border: 1px solid var(--border);
-        border-radius: var(--r-sm);
-        background: var(--surface);
-        color: var(--text);
-        cursor: default;
-        font:
-            600 13px Inter,
-            sans-serif;
-
-        svg {
-            color: var(--brand);
-        }
-    }
-
-    &__visitor-log-intake {
-        flex: 1;
-
-        @include respond-to(tablet) {
-            flex: none;
         }
     }
 
@@ -169,7 +129,9 @@
     &__mobile-meta {
         display: flex;
         gap: var(--s-5);
+        padding-bottom: var(--s-5);
         margin-bottom: var(--s-5);
+        border-bottom: 1px solid var(--border);
 
         @include respond-to(tablet) {
             display: none;
@@ -195,17 +157,6 @@
 
         svg {
             color: var(--calorie-over);
-        }
-    }
-
-    // MenuHeroActions (the owner's Edit/Favourite/LogIntake/Delete row) is tablet+ only
-    // (mobile owner-actions live in the subpage header's edit-pencil icon instead), so the
-    // owner still needs a reachable Log intake trigger below the fold on mobile
-    &__owner-log-intake-mobile {
-        width: 100%;
-
-        @include respond-to(tablet) {
-            display: none;
         }
     }
 }

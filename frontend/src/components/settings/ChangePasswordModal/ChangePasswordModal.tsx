@@ -18,6 +18,7 @@ interface ChangePasswordModalProps {
 const CURRENT_PW_FIELD_ID = "settings-current-password";
 const NEW_PW_FIELD_ID = "settings-new-password";
 const CONFIRM_PW_FIELD_ID = "settings-confirm-password";
+const FORM_ID = "change-password-form";
 
 export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     onClose,
@@ -32,8 +33,23 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             size="sm"
             title={t("changePasswordModal.title")}
             onClose={onClose}
+            footer={
+                <>
+                    <Button type="button" variant="secondary" onClick={onClose}>
+                        {t("changePasswordModal.cancelButton")}
+                    </Button>
+                    <Button
+                        type="submit"
+                        form={FORM_ID}
+                        loading={form.isSubmitting}
+                    >
+                        {t("changePasswordModal.saveButton")}
+                    </Button>
+                </>
+            }
         >
             <form
+                id={FORM_ID}
                 className={styles["change-password-modal__form"]}
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -80,14 +96,6 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                     />
                 </FormField>
                 {form.error && <FormErrorBanner message={form.error} />}
-                <div className={styles["change-password-modal__footer"]}>
-                    <Button type="button" variant="secondary" onClick={onClose}>
-                        {t("changePasswordModal.cancelButton")}
-                    </Button>
-                    <Button type="submit">
-                        {t("changePasswordModal.saveButton")}
-                    </Button>
-                </div>
             </form>
         </BaseModal>
     );

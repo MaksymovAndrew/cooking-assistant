@@ -8,5 +8,6 @@ describe("LanguageSection", () => {
 
         expect(screen.getByText("Language")).toBeInTheDocument();
         expect(screen.getByText("EN")).toBeInTheDocument();
+        expect(screen.getByText("Coming soon")).toBeInTheDocument();
     });
 });

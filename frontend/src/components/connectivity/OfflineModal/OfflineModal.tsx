@@ -1,37 +1,26 @@
 import { CloudOff } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { useOnlineStatus } from "hooks/useOnlineStatus";
+import { useAppDispatch } from "redux/hooks";
+import { closeModal } from "redux/slices/uiSlice";
 
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
 
 import styles from "./OfflineModal.module.scss";
 
+interface OfflineModalProps {
+    modalId: string;
+}
+
 const ICON_SIZE = 26;
 
-// shows once per online->offline transition; auto-closes on reconnect; doesn't re-nag while still offline after being dismissed
-export const OfflineModal: React.FC = () => {
+export const OfflineModal: React.FC<OfflineModalProps> = ({ modalId }) => {
     const { t } = useTranslation();
-    const isOnline = useOnlineStatus();
-    const [dismissed, setDismissed] = useState(false);
-    const wasOnline = useRef(isOnline);
+    const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        if (wasOnline.current && !isOnline) {
-            setDismissed(false);
-        }
-        wasOnline.current = isOnline;
-    }, [isOnline]);
-
-    if (isOnline || dismissed) {
-        return null;
-    }
-
-    const handleClose = () => {
-        setDismissed(true);
-    };
+    const handleClose = () => dispatch(closeModal(modalId));
 
     const heading = (
         <span className={styles["offline-modal__heading"]}>
@@ -43,15 +32,18 @@ export const OfflineModal: React.FC = () => {
     );
 
     return (
-        <BaseModal onClose={handleClose} title={heading}>
-            <p className={styles["offline-modal__message"]}>
-                {t("offlineModal.message")}
-            </p>
-            <div className={styles["offline-modal__actions"]}>
+        <BaseModal
+            onClose={handleClose}
+            title={heading}
+            footer={
                 <Button variant="secondary" onClick={handleClose}>
                     {t("offlineModal.close")}
                 </Button>
-            </div>
+            }
+        >
+            <p className={styles["offline-modal__message"]}>
+                {t("offlineModal.message")}
+            </p>
         </BaseModal>
     );
 };

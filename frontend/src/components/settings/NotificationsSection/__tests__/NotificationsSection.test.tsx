@@ -13,4 +13,10 @@ describe("NotificationsSection", () => {
             screen.getByRole("switch", { name: "Weekly digest" }),
         ).toBeDisabled();
     });
+
+    it("should mark both rows as coming soon", () => {
+        render(<NotificationsSection />);
+
+        expect(screen.getAllByText("Coming soon")).toHaveLength(2);
+    });
 });

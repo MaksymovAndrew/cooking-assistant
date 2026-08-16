@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import type { CalorieIntakeItem } from "types/calorie";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { CalorieJournal } from "components/calories/CalorieJournal";
@@ -53,7 +54,7 @@ describe("CalorieJournal", () => {
             screen.getByRole("button", { name: "Delete entry" }),
         );
 
-        expect(store.getState().ui.modal).toMatchObject({
+        expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.deleteCalorieIntake,
             intakeId: 1,
             title: ENTRY_TITLE,

@@ -40,7 +40,7 @@
         "searchPlaceholder": "menu title"
     },
     "userMenuPage": {
-        "myMenus": "My Menus",
+        "myMenus": "My menus",
         "menusByCategories": "Menus by categories: {{names}}",
         "subtitle_one": "{{count}} menu created by you",
         "subtitle_other": "{{count}} menus created by you",

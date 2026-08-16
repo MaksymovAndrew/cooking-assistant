@@ -2,6 +2,7 @@ import {
     exceedsCalorieBudget,
     exceedsCalorieBudgetForPortions,
     formatKcal,
+    formatKcalCompact,
     roundCalories,
     scaleCaloriesForPortions,
     sumIngredientCalories,
@@ -98,5 +99,15 @@ describe("formatKcal", () => {
 
     it("should leave a small number unchanged", () => {
         expect(formatKcal(320)).toBe("320");
+    });
+});
+
+describe("formatKcalCompact", () => {
+    it("should abbreviate thousands with a lowercase suffix", () => {
+        expect(formatKcalCompact(13_333)).toBe("13k");
+    });
+
+    it("should leave a number under a thousand unchanged", () => {
+        expect(formatKcalCompact(320)).toBe("320");
     });
 });

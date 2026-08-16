@@ -1,6 +1,8 @@
 import type { PieSectorShapeProps } from "recharts";
 import { Pie, PieChart as RechartsPieChart, Sector, Tooltip } from "recharts";
 
+import { useMediaQuery } from "hooks/useMediaQuery";
+
 import { getChartColor } from "./chartColors";
 import {
     PIE_CURSOR,
@@ -27,8 +29,13 @@ const PieSlice = (props: PieSectorShapeProps) => (
     <Sector {...props} fill={getChartColor(props.index)} />
 );
 
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
 const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
     const total = data.reduce((sum, d) => sum + d.value, 0);
+    // recharts drives this itself (not CSS), so the blanket prefers-reduced-motion rule in
+    // global.scss can't reach it - it has to be gated here explicitly
+    const prefersReducedMotion = useMediaQuery(REDUCED_MOTION_QUERY);
 
     return (
         <div className={styles["pie-chart-card"]}>
@@ -56,7 +63,7 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                         paddingAngle={2}
                         strokeWidth={0}
                         cursor={PIE_CURSOR}
-                        isAnimationActive={false}
+                        isAnimationActive={!prefersReducedMotion}
                         shape={PieSlice}
                     />
                     <Tooltip

@@ -5,6 +5,8 @@
         "goalLabel": "Daily goal (kcal)",
         "goalPlaceholder": "e.g. 2,200",
         "helperEmpty": "Set a daily goal to start tracking.",
+        "emptyTitle": "Start tracking your calories",
+        "emptyDescription": "Set a daily calorie goal and this tab turns into a dashboard - today's progress, a history chart, and a running journal of what you've logged.",
         "helperPopulated": "This is your current daily target - changing it also re-judges your past history against the new number.",
         "saveButton": "Save goal",
         "savedIndicator": "Saved just now",
@@ -44,6 +46,7 @@
         "label": "Kcal today",
         "labelWithPercent": "Kcal today · {{percent}}%",
         "labelOver": "Kcal today · over",
+        "remainingLabel": "Kcal left",
         "goalSuffix": "/ {{goal}} kcal today",
         "emptyLabel": "No goal set",
         "emptyCta": "Set a goal"

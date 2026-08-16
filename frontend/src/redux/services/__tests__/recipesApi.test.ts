@@ -94,7 +94,7 @@ describe("recipesApi", () => {
         });
     });
 
-    it("should fetch all recipes for statistics", async () => {
+    it("should fetch all recipes", async () => {
         mockedGet.mockResolvedValue({ data: [] });
         const store = makeTestStore();
 
@@ -103,6 +103,35 @@ describe("recipesApi", () => {
         expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.list, {
             params: undefined,
         });
+    });
+
+    it("should fetch aggregated recipe statistics", async () => {
+        const stats = {
+            stats: [],
+            recipesCount: 0,
+            averageCookingTimeOverall: null,
+            averageCookingTimesByType: [],
+            mostUsedType: null,
+            fastestRecipes: [],
+            slowestRecipes: [],
+            mostIngredientsRecipes: [],
+            leastIngredientsRecipes: [],
+            averageCaloriesOverall: null,
+            mostCaloricRecipes: [],
+            leastCaloricRecipes: [],
+        };
+
+        mockedGet.mockResolvedValue({ data: stats });
+        const store = makeTestStore();
+
+        const result = await store.dispatch(
+            recipesApi.endpoints.getRecipeStats.initiate(null),
+        );
+
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.stats, {
+            params: undefined,
+        });
+        expect(result.data).toEqual(stats);
     });
 
     it("should fetch a recipe by id", async () => {

@@ -14,7 +14,7 @@ const BASE_INGREDIENT: PantryIngredient = {
     quantity_person_ingradient: 3,
     allergens: [],
     days_to_expire: null,
-    purchase_date: undefined,
+    lots: [],
 };
 
 describe("IngredientCard", () => {
@@ -22,10 +22,8 @@ describe("IngredientCard", () => {
         render(
             <IngredientCard
                 ingredient={BASE_INGREDIENT}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
@@ -42,10 +40,8 @@ describe("IngredientCard", () => {
                     ...BASE_INGREDIENT,
                     allergens: ["milk", "gluten"],
                 }}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
@@ -57,10 +53,8 @@ describe("IngredientCard", () => {
         render(
             <IngredientCard
                 ingredient={{ ...BASE_INGREDIENT, allergens: [] }}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
@@ -72,10 +66,8 @@ describe("IngredientCard", () => {
         render(
             <IngredientCard
                 ingredient={BASE_INGREDIENT}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
@@ -89,12 +81,10 @@ describe("IngredientCard", () => {
                 ingredient={{
                     ...BASE_INGREDIENT,
                     days_to_expire: 1,
-                    purchase_date: "2000-01-01",
+                    lots: [{ quantity: 3, purchase_date: "2000-01-01" }],
                 }}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
@@ -108,10 +98,8 @@ describe("IngredientCard", () => {
         render(
             <IngredientCard
                 ingredient={BASE_INGREDIENT}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={onOpenHistory}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
@@ -121,16 +109,31 @@ describe("IngredientCard", () => {
         expect(onOpenHistory).toHaveBeenCalledWith(BASE_INGREDIENT);
     });
 
+    it("should call onRestock when the restock button is clicked", async () => {
+        const onRestock = jest.fn();
+
+        render(
+            <IngredientCard
+                ingredient={BASE_INGREDIENT}
+                onOpenHistory={jest.fn()}
+                onRestock={onRestock}
+                onDelete={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Buy more" }));
+
+        expect(onRestock).toHaveBeenCalledWith(BASE_INGREDIENT);
+    });
+
     it("should call onDelete when the delete button is clicked", async () => {
         const onDelete = jest.fn();
 
         render(
             <IngredientCard
                 ingredient={BASE_INGREDIENT}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={onDelete}
             />,
         );
@@ -140,49 +143,27 @@ describe("IngredientCard", () => {
         expect(onDelete).toHaveBeenCalledWith(BASE_INGREDIENT);
     });
 
-    it("should show a quantity input and a Save button instead of Details/Delete when editing quantity", async () => {
-        const onQuantityChange = jest.fn();
-
+    it("should show the worst (soonest-expiring) lot's status when several lots exist", () => {
         render(
             <IngredientCard
-                ingredient={BASE_INGREDIENT}
-                isEditingQuantity={true}
-                onQuantityChange={onQuantityChange}
-                onSaveQuantity={jest.fn()}
+                ingredient={{
+                    ...BASE_INGREDIENT,
+                    days_to_expire: 10,
+                    lots: [
+                        { quantity: 1, purchase_date: "2000-01-01" },
+                        {
+                            quantity: 2,
+                            purchase_date: new Date().toISOString(),
+                        },
+                    ],
+                }}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
 
-        expect(
-            screen.queryByRole("button", { name: "Delete" }),
-        ).not.toBeInTheDocument();
-        expect(
-            screen.queryByRole("button", { name: "Details" }),
-        ).not.toBeInTheDocument();
-
-        await userEvent.type(screen.getByRole("spinbutton"), "5");
-
-        expect(onQuantityChange).toHaveBeenCalledWith(1, 35);
-    });
-
-    it("should call onSaveQuantity with the ingredient's id when the card's Save button is clicked", async () => {
-        const onSaveQuantity = jest.fn();
-
-        render(
-            <IngredientCard
-                ingredient={BASE_INGREDIENT}
-                isEditingQuantity={true}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={onSaveQuantity}
-                onOpenHistory={jest.fn()}
-                onDelete={jest.fn()}
-            />,
-        );
-
-        await userEvent.click(screen.getByRole("button", { name: "Save" }));
-
-        expect(onSaveQuantity).toHaveBeenCalledWith(1);
+        expect(screen.getByText("Expired")).toBeInTheDocument();
     });
 
     it("should show a Clock icon badge and an amber border for an ingredient expiring soon", () => {
@@ -191,12 +172,15 @@ describe("IngredientCard", () => {
                 ingredient={{
                     ...BASE_INGREDIENT,
                     days_to_expire: 3,
-                    purchase_date: new Date().toISOString(),
+                    lots: [
+                        {
+                            quantity: 3,
+                            purchase_date: new Date().toISOString(),
+                        },
+                    ],
                 }}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );
@@ -210,12 +194,15 @@ describe("IngredientCard", () => {
                 ingredient={{
                     ...BASE_INGREDIENT,
                     days_to_expire: 30,
-                    purchase_date: new Date().toISOString(),
+                    lots: [
+                        {
+                            quantity: 3,
+                            purchase_date: new Date().toISOString(),
+                        },
+                    ],
                 }}
-                isEditingQuantity={false}
-                onQuantityChange={jest.fn()}
-                onSaveQuantity={jest.fn()}
                 onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
                 onDelete={jest.fn()}
             />,
         );

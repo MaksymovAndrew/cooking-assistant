@@ -15,6 +15,10 @@ import styles from "./KcalStatCard.module.scss";
 interface KcalStatCardProps {
     consumed: number;
     goal: number | null;
+    // "consumed" (default) reads today's total against tone-specific messaging; "remaining"
+    // reads what's left of the goal instead, with a fixed label - the ring and tone/colour stay
+    // the same either way since both frame the same underlying progress
+    variant?: "consumed" | "remaining";
 }
 
 const RADIUS = 15;
@@ -24,6 +28,7 @@ const PERCENT_MULTIPLIER = 100;
 export const KcalStatCard: React.FC<KcalStatCardProps> = ({
     consumed,
     goal,
+    variant = "consumed",
 }) => {
     const { t } = useTranslation("calories");
 
@@ -53,7 +58,12 @@ export const KcalStatCard: React.FC<KcalStatCardProps> = ({
         near: t("homeTile.labelWithPercent", { percent }),
         over: t("homeTile.labelOver"),
     };
-    const label = LABEL_BY_TONE[tone];
+    const value =
+        variant === "remaining" ? Math.max(goal - consumed, 0) : consumed;
+    const label =
+        variant === "remaining"
+            ? t("homeTile.remainingLabel")
+            : LABEL_BY_TONE[tone];
 
     const cardClass = [
         styles["kcal-stat-card"],
@@ -86,7 +96,7 @@ export const KcalStatCard: React.FC<KcalStatCardProps> = ({
             </span>
             <span>
                 <span className={styles["kcal-stat-card__value"]}>
-                    {formatKcal(consumed)}
+                    {formatKcal(value)}
                 </span>
                 <span className={styles["kcal-stat-card__label"]}>{label}</span>
             </span>

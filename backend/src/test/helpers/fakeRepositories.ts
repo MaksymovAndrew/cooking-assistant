@@ -67,7 +67,6 @@ function createPantryRepository(): jest.Mocked<PantryRepository> {
         findByUser: jest.fn(),
         addIngredients: jest.fn(),
         deleteIngredient: jest.fn(),
-        updateQuantities: jest.fn(),
         updatePurchaseQuantity: jest.fn(),
         findPurchaseHistory: jest.fn(),
     };

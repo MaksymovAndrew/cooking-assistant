@@ -16,7 +16,8 @@
 .auth-layout {
     display: flex;
     flex-direction: column;
-    min-height: 100dvh;
+    min-height: 100vh;
+    min-height: 100svh;
 
     @include respond-to(desktop) {
         flex-direction: row;
@@ -106,13 +107,26 @@
         align-items: center;
         justify-content: center;
         padding: var(--s-7) var(--s-4);
+
+        // below desktop there's no illustration column, so this bleeds against the very top of
+        // the screen - centered instead of top-anchored so it never touches the status bar/notch
         background:
             radial-gradient(
-                ellipse 80% 60% at 50% 0%,
+                ellipse 80% 60% at 50% 50%,
                 var(--brand-subtle),
                 transparent 70%
             ),
             var(--bg);
+
+        @include respond-to(desktop) {
+            background:
+                radial-gradient(
+                    ellipse 80% 60% at 50% 0%,
+                    var(--brand-subtle),
+                    transparent 70%
+                ),
+                var(--bg);
+        }
     }
 
     &__mobile-header {

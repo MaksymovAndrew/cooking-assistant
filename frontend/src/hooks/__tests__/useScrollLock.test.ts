@@ -57,4 +57,28 @@ describe("useScrollLock", () => {
 
         expect(document.body.style.overflow).toBe("scroll");
     });
+
+    it("should pin body position to the current scroll offset while locked, and restore scroll position on unmount", () => {
+        const scrollToSpy = jest.spyOn(window, "scrollTo").mockImplementation();
+
+        Object.defineProperty(window, "scrollY", {
+            configurable: true,
+            value: 240,
+        });
+
+        const { unmount } = renderHook(() => {
+            useScrollLock(true);
+        });
+
+        expect(document.body.style.position).toBe("fixed");
+        expect(document.body.style.top).toBe("-240px");
+
+        unmount();
+
+        expect(document.body.style.position).toBe("");
+        expect(document.body.style.top).toBe("");
+        expect(scrollToSpy).toHaveBeenCalledWith(0, 240);
+
+        scrollToSpy.mockRestore();
+    });
 });

@@ -1,14 +1,14 @@
-import type { PantryIngredient } from "types/userIngredient";
+import type { PantryIngredient, PantryLot } from "types/userIngredient";
 
-import { getExpiryStatus } from "utils/expiry";
+import { getWorstLotExpiryStatus } from "utils/expiry";
 import type { ClientFilterDef } from "utils/filters/clientFilterDef";
 import { resolvePantryIngredientName } from "utils/ingredientName";
 
 export const isUrgent = (
     daysToExpire: number | null | undefined,
-    purchaseDate: string | undefined,
+    lots: PantryLot[],
 ): boolean => {
-    const status = getExpiryStatus(daysToExpire, purchaseDate);
+    const status = getWorstLotExpiryStatus(daysToExpire, lots);
 
     return status !== null && status.tone !== "ok";
 };
@@ -40,7 +40,7 @@ const expiringSoonFilter: ClientFilterDef<PantryIngredient, boolean> = {
     key: "expiringSoonOnly",
     defaultValue: false,
     isActive: (value) => value,
-    predicate: (item) => isUrgent(item.days_to_expire, item.purchase_date),
+    predicate: (item) => isUrgent(item.days_to_expire, item.lots),
 };
 
 export const PANTRY_FILTER_DEFS: readonly ClientFilterDef<

@@ -38,7 +38,7 @@ export const RecipeTimeRangeFields: React.FC<RecipeTimeRangeFieldsProps> = ({
                 <span>{t("filterPanel.min")}</span>
                 <input
                     type="number"
-                    min="0"
+                    min="1"
                     value={localMin}
                     onChange={(e) => {
                         setLocalMin(e.target.value);

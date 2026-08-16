@@ -27,6 +27,9 @@
     }
 
     &__title {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
         color: var(--text);
         font:
             600 14px Inter,
@@ -35,6 +38,18 @@
         &--danger {
             color: var(--danger);
         }
+    }
+
+    &__badge {
+        padding: 2px 8px;
+        border-radius: var(--r-pill);
+        background: var(--surface-2);
+        color: var(--text-muted);
+        letter-spacing: 0.02em;
+        font:
+            500 10.5px Inter,
+            sans-serif;
+        text-transform: uppercase;
     }
 
     &__description {

@@ -96,6 +96,7 @@ test("should add a pantry ingredient", async () => {
         page.getByPlaceholder("Search ingredients..."),
         "Tomato",
     );
+    await page.getByRole("button", { name: "Continue" }).click();
     await page.getByRole("button", { name: "Add to pantry" }).click();
     await expect(page.getByText("Ingredients saved")).toBeVisible();
     await expect(page.getByText("Tomato")).toBeVisible();
@@ -103,7 +104,7 @@ test("should add a pantry ingredient", async () => {
 
 test("should render the statistics page", async () => {
     await page.goto("/stats");
-    await expect(page.getByText("Recipe Statistics")).toBeVisible();
+    await expect(page.getByText("Recipe statistics")).toBeVisible();
 });
 
 test("should log out and protect private routes again", async () => {

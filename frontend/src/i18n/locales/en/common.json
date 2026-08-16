@@ -3,7 +3,9 @@
     "sessionError": "Could not verify session. Please refresh the page.",
     "modal": {
         "cancel": "Cancel",
-        "confirm": "Delete"
+        "confirm": "Delete",
+        "close": "Close",
+        "closeSheet": "Close"
     },
     "mobileSubpageHeader": {
         "back": "Back",
@@ -89,7 +91,6 @@
         "menuDeleted": "Menu deleted",
         "ingredientDeleted": "Ingredient deleted",
         "ingredientsSaved": "Ingredients saved",
-        "quantitiesUpdated": "Quantities updated",
         "purchaseSaved": "Purchase saved",
         "passwordChanged": "Password changed",
         "verificationEmailSent": "Verification link sent",

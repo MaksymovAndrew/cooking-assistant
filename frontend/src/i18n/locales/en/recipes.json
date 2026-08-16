@@ -81,7 +81,7 @@
         "pantryEmptyAction": "Go to pantry"
     },
     "mainPage": {
-        "allRecipes": "All Recipes",
+        "allRecipes": "All recipes",
         "recipesBy": "Recipes: {{types}}",
         "subtitle": "Browse your cookbook",
         "emptyTitle": "No recipes yet",
@@ -89,7 +89,7 @@
         "searchPlaceholder": "recipe title"
     },
     "userRecipesPage": {
-        "myRecipes": "My Recipes",
+        "myRecipes": "My recipes",
         "recipesBy": "Recipes: {{types}}",
         "subtitle_one": "{{count}} recipe in your cookbook",
         "subtitle_other": "{{count}} recipes in your cookbook",

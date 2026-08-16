@@ -21,7 +21,7 @@ const CreateRecipePage: React.FC = () => {
     usePageTitle(t("createRecipePage.heading"));
 
     return (
-        <AppShell>
+        <AppShell skipNotices>
             <div className={styles["recipe-form-page"]}>
                 <nav
                     aria-label={t("createRecipePage.breadcrumb")}

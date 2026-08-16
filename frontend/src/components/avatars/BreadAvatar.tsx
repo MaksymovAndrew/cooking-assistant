@@ -17,7 +17,7 @@ export const BreadAvatar: React.FC<IconProps> = ({
         aria-hidden="true"
         className={className}
     >
-        <g transform="translate(64 64) scale(2.45) translate(-32 -35)">
+        <g transform="translate(64 64) scale(2.08) translate(-32 -35)">
             <g
                 stroke="#8A5E36"
                 strokeWidth={2.4}

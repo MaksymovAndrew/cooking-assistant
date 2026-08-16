@@ -20,7 +20,7 @@ export const GreetingHeader: React.FC = () => {
 
     return (
         <div className={styles["greeting-header"]}>
-            <div>
+            <div className={styles["greeting-header__text"]}>
                 <div className={styles["greeting-header__date"]}>
                     {formatDashboardDate(new Date())}
                 </div>

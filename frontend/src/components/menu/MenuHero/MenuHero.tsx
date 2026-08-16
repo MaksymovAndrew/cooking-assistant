@@ -1,17 +1,11 @@
-import { Flame, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
 import type { MenuDetails } from "types/menu";
 
-import { useAppSelector } from "redux/hooks";
-import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
-
 import { MenuHeroStats } from "components/menu/MenuHero/MenuHeroStats";
-import { MenuHeroVisitorActions } from "components/menu/MenuHero/MenuHeroVisitorActions";
-import { MenuHeroActions } from "components/menu/MenuHeroActions";
-import { Button } from "components/ui/Button";
 import { Chip } from "components/ui/Chip";
 
 import { formatKcal } from "utils/calories";
@@ -24,29 +18,22 @@ interface MenuHeroProps {
     totalCookingTime: number;
     recipeCount: number;
     caloriesPerPortion: number | null;
-    editTo: string;
-    onDelete: () => void;
-    onLogIntake?: () => void;
     exceedsBudget?: boolean;
 }
 
-const STAT_ICON_SIZE = 16;
 const RATING_ICON_SIZE = 13;
 
+// title, meta and description only - actions and the ingredients/recipes grid live in
+// MenuDetailsSecondary, which follows this in the page's single title -> meta -> description ->
+// ingredients -> actions -> recipes reading order
 export const MenuHero: React.FC<MenuHeroProps> = ({
     menu,
     totalCookingTime,
     recipeCount,
     caloriesPerPortion,
-    editTo,
-    onDelete,
-    onLogIntake,
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("menu");
-    const { canFavourite } = useAppSelector(selectViewerCapabilities);
-    const favouriteLabel = t("menuDetailsPage.favourite");
-    const logIntakeLabel = t("menuDetailsPage.logIntake");
     const { hours, minutes } = splitCookingTime(totalCookingTime);
     const formattedTotalTime =
         hours > 0
@@ -77,33 +64,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                         </span>
                     </span>
                 </div>
-                {menu.isOwner && (
-                    <MenuHeroActions
-                        editTo={editTo}
-                        onDelete={onDelete}
-                        editLabel={t("menuDetailsPage.editButton")}
-                        deleteLabel={t("menuDetailsPage.deleteButton")}
-                        favouriteLabel={favouriteLabel}
-                        onLogIntake={onLogIntake}
-                        logIntakeLabel={logIntakeLabel}
-                    />
-                )}
             </div>
-
-            {menu.menucontent && (
-                <p className={styles["menu-hero__description"]}>
-                    {menu.menucontent}
-                </p>
-            )}
-
-            {!menu.isOwner && (
-                <MenuHeroVisitorActions
-                    canFavourite={canFavourite}
-                    favouriteLabel={favouriteLabel}
-                    logIntakeLabel={logIntakeLabel}
-                    onLogIntake={onLogIntake}
-                />
-            )}
 
             <MenuHeroStats
                 formattedTotalTime={formattedTotalTime}
@@ -113,15 +74,10 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                 exceedsBudget={exceedsBudget}
             />
 
-            {menu.isOwner && onLogIntake && (
-                <Button
-                    variant="secondary"
-                    className={styles["menu-hero__owner-log-intake-mobile"]}
-                    onClick={onLogIntake}
-                >
-                    <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
-                    {logIntakeLabel}
-                </Button>
+            {menu.menucontent && (
+                <p className={styles["menu-hero__description"]}>
+                    {menu.menucontent}
+                </p>
             )}
         </div>
     );

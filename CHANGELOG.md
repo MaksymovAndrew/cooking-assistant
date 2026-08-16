@@ -20,6 +20,57 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.2 - 2026-08-16
+
+### Backend
+
+- Fixed: Buying more of an ingredient you already have no longer resets its shelf life - older stock now keeps its own expiry date instead of being treated as freshly bought.
+- Security: The recipe list no longer includes the raw internal id of who created each recipe - the same fix 4.1 already made to the recipe/menu search and browse endpoints.
+- Changed: The statistics page's numbers are now calculated on the server instead of being downloaded and calculated in the browser, so the page loads a much smaller amount of data.
+- Fixed: Recipe and menu filters that accepted a cooking-time or calorie range of 0 or a maximum smaller than the minimum now ignore the invalid part instead of sending it to the server.
+
+### Frontend
+
+- Fixed: Popups no longer show a stray gap of unblurred background at the top of the screen on iPhone Safari, and the login/register pages no longer scroll a few extra pixels of empty space.
+- Fixed: A popup taller than the screen (for example after rotating the phone) can now always be scrolled up to reach its own title and close button.
+- Added: On mobile, tapping the handle at the top of a popup now closes it.
+- Changed: Every popup now uses the same footer layout - actions aligned to the right, staying on one row unless they don't fit - and popups that only show information get a close button in the corner.
+- Fixed: Adding an ingredient to the pantry could silently fail to save if the ingredient category browser was still open when "Add to pantry" was clicked.
+- Fixed: The recipe/menu filter popover could open partly below the screen with no way to scroll down to its "Reset filters" button.
+- Fixed: Two popups appearing at the same moment no longer cancel each other out - for example the expired-ingredients notice used to vanish behind the daily calorie warning and never come back. Popups now wait their turn and are shown one after another.
+- Fixed: The "no internet connection" and "What's new" popups could appear stacked on top of another popup; they now join the same queue as everything else.
+- Fixed: Double-clicking a button that opens a popup no longer opens the same popup twice in a row.
+- Changed: Menu detail pages now show their information in the same order everywhere - title, quick facts, description, ingredients, then the action buttons and recipe list - with a divider under the quick facts on mobile to match desktop.
+- Fixed: A menu's Edit and Delete buttons are now reachable on mobile, not just tablet and desktop.
+- Added: Adding a new ingredient now asks for its quantity one ingredient at a time, instead of assuming 1 for everything you pick.
+- Changed: The expired-ingredients popup now lists each expired purchase separately, with its own quantity, purchase date and expiry date.
+- Removed: The bulk "Edit quantities" screen on the pantry page - correct a quantity by editing it directly from an ingredient's purchase history instead.
+- Added: A "Buy more" button on each pantry ingredient to record a new purchase without deleting or overwriting what you already have.
+- Changed: Chart animations on the statistics page (the recipe/menu type donuts, the average-time bars, and the calorie history bars) are turned back on, and respect your device's "reduce motion" setting.
+- Fixed: The FASTEST/SLOWEST and MOST/LEAST column labels on the statistics page are now centered above their lists instead of sitting to one side.
+- Changed: The statistics page's "Total recipes"/"Total menus" tiles now honestly say they count everything "across the app", not "in your cookbook"/"created by you" - the numbers were always app-wide, only the wording was wrong.
+- Added: The statistics page now shows average calories and a "most/least calories" breakdown for both recipes and menus.
+- Added: Every recipe or menu named on the statistics page (fastest/slowest, most/least ingredients, calorie extremes) now links straight to it.
+- Changed: The number badges on the statistics page are smaller and large calorie totals are abbreviated (e.g. "13k kcal"), leaving more room for the recipe/menu name.
+- Fixed: The 5th quick-stat tile on the statistics page no longer sits alone next to an empty gap on mobile and tablet - it now spans the full row.
+- Changed: The Dietary tab's first-run screen (before you've set a calorie goal) now has a proper introduction instead of a single floating card, and its Save button moved to align with the rest of the app's forms.
+- Fixed: The preset profile avatars (sushi, herb sprig, and others) are now properly centred and a consistent size - some previously sat off-centre or looked notably smaller/larger than the rest.
+- Added: A 6th home tile shows how many calories you have left today once you've set a daily goal.
+- Changed: Settings rows that aren't available yet (Language & Region, notification toggles) now show a "Coming soon" badge at every screen size, instead of relying on description text that was hidden on mobile.
+- Fixed: The calorie history card on the Dietary tab no longer changes height when it has no data to show, or when switching between the 7-day and 30-day views - it stays the same size, with dashes in place of numbers.
+- Fixed: A handful of pages (home dashboard, recipe details, menu details, and others) could scroll sideways on narrow screens when they held an unusually long recipe name, ingredient name, or display name.
+- Changed: Page headings and section titles now use a consistent capitalization style across the app (e.g. "Recipe statistics", "My ingredients").
+- Added: The "Recent recipes" panel on the home dashboard now shows a proper empty state with a button to add your first recipe, instead of a plain line of text.
+- Fixed: The Save/Change password/Delete account/Log in buttons now show a loading state and can't be clicked again while the request is already in flight.
+- Fixed: Creating or editing a recipe or menu can no longer be interrupted by an unrelated "ingredients expired" or "over your calorie goal" popup while you're mid-edit.
+- Changed: The ingredient catalog used to translate ingredient/unit/category names now loads separately from the rest of the app, so the login and registration screens have less to download.
+- Changed: The two calorie-tracking requests that used to fire separately on every page load are now combined into one.
+
+### Project
+
+- Changed: Routine dependency maintenance - refreshed a batch of minor/patch library versions across the project and the CI/deploy GitHub Actions.
+- Security: Resolved two transitive dependency advisories (`js-yaml`, `fast-uri`) via pinned overrides.
+
 ## 4.1 - 2026-08-06
 
 ### Backend

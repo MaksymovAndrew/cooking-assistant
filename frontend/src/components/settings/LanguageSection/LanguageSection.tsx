@@ -17,6 +17,7 @@ export const LanguageSection: React.FC = () => {
                 title={t("languageSection.languageTitle")}
                 description={t("languageSection.languageDescription")}
                 disabled
+                comingSoon
             >
                 <span className={styles["language-section__pill"]}>EN</span>
             </SettingsRow>

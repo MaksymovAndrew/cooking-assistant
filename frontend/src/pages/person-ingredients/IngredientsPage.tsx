@@ -26,9 +26,6 @@ const IngredientsPage: React.FC = () => {
     usePageTitle(t("heading"));
     const filters = usePantryFilters({
         personIngredients: catalog.personIngredients,
-        sourceIngredients: catalog.isEditingQuantity
-            ? catalog.updatedIngredients
-            : catalog.personIngredients,
     });
 
     return (
@@ -36,11 +33,7 @@ const IngredientsPage: React.FC = () => {
             <div className={styles["ingredients-page"]}>
                 <IngredientsPageHeader
                     count={catalog.personIngredients.length}
-                    isEditingQuantity={catalog.isEditingQuantity}
-                    onToggleQuantityEdit={catalog.handleToggleQuantityEdit}
-                    onAddIngredient={() => {
-                        catalog.handleSaveOrToggleEdit().catch(() => undefined);
-                    }}
+                    onAddIngredient={catalog.handleOpenAddModal}
                 />
 
                 <IngredientsToolbar
@@ -59,11 +52,6 @@ const IngredientsPage: React.FC = () => {
                 <IngredientGrid
                     ingredients={filters.visibleIngredients}
                     emptyMessage={filters.emptyMessage}
-                    isEditingQuantity={catalog.isEditingQuantity}
-                    onQuantityChange={catalog.handleQuantityChange}
-                    onSaveQuantity={(id) => {
-                        catalog.handleSaveQuantity(id).catch(() => undefined);
-                    }}
                     onOpenHistory={(ingredient) => {
                         dispatch(
                             openModal({
@@ -71,6 +59,14 @@ const IngredientsPage: React.FC = () => {
                                 ingredientId: ingredient.id,
                                 ingredientName:
                                     resolvePantryIngredientName(ingredient),
+                            }),
+                        );
+                    }}
+                    onRestock={(ingredient) => {
+                        dispatch(
+                            openModal({
+                                type: MODAL_TYPE.restockIngredient,
+                                ingredient,
                             }),
                         );
                     }}
@@ -85,16 +81,18 @@ const IngredientsPage: React.FC = () => {
                 />
             </div>
 
-            {catalog.isEditing && (
+            {catalog.isAdding && (
                 <AddIngredientModal
                     allIngredients={catalog.allIngredients}
                     personIngredients={catalog.personIngredients}
                     selectedIngredients={catalog.selectedIngredients}
                     onToggle={catalog.toggleIngredientSelection}
-                    onSave={() => {
-                        catalog.handleSaveOrToggleEdit().catch(() => undefined);
+                    onConfirm={(quantities) => {
+                        catalog
+                            .handleConfirmAddIngredients(quantities)
+                            .catch(() => undefined);
                     }}
-                    onClose={catalog.handleCancelEdit}
+                    onClose={catalog.handleCancelAdd}
                 />
             )}
         </AppShell>

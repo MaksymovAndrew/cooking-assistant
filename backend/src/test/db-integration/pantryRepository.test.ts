@@ -9,9 +9,16 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
+interface PantryLot {
+    quantity: number;
+    purchase_date: string;
+}
+
 interface PantryRow {
     ingredient_id: number;
     quantity_person_ingradient: number;
+    purchase_date: string | null;
+    lots: PantryLot[];
 }
 
 interface PurchaseRow {
@@ -19,7 +26,8 @@ interface PurchaseRow {
     quantity: number;
 }
 
-// targets the misspelled `quantity_person_ingradient` column and the purchase-delta math in PgPantryRepository.queries.ts - invisible to mocked-repository unit tests
+// targets the misspelled `quantity_person_ingradient` column and the purchase-lot aggregation in
+// PgPantryRepository.queries.ts - invisible to mocked-repository unit tests
 describe("PgPantryRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgPantryRepository;
@@ -37,6 +45,12 @@ describe("PgPantryRepository (real Postgres)", () => {
         await pool.end();
     });
 
+    const findPantryRow = async (ingredientId: number) => {
+        const pantry = (await repository.findByUser(userId)) as PantryRow[];
+
+        return pantry.find((row) => row.ingredient_id === ingredientId);
+    };
+
     it("should record a pantry row and a matching purchase-history row on first purchase", async () => {
         const ingredientId = await createIngredient(pool, unitId);
 
@@ -44,16 +58,13 @@ describe("PgPantryRepository (real Postgres)", () => {
             { id: ingredientId, quantity_person_ingradient: 3 },
         ]);
 
-        const pantry = (await repository.findByUser(userId)) as PantryRow[];
+        const pantryRow = await findPantryRow(ingredientId);
         const history = (await repository.findPurchaseHistory(
             userId,
             ingredientId,
         )) as PurchaseRow[];
 
-        expect(
-            pantry.find((row) => row.ingredient_id === ingredientId)
-                ?.quantity_person_ingradient,
-        ).toBe(3);
+        expect(pantryRow?.quantity_person_ingradient).toBe(3);
         expect(history).toHaveLength(1);
         expect(history[0].quantity).toBe(3);
     });
@@ -68,78 +79,72 @@ describe("PgPantryRepository (real Postgres)", () => {
             { id: ingredientId, quantity_person_ingradient: 5 },
         ]);
 
-        const pantry = (await repository.findByUser(userId)) as PantryRow[];
+        const pantryRow = await findPantryRow(ingredientId);
         const history = (await repository.findPurchaseHistory(
             userId,
             ingredientId,
         )) as PurchaseRow[];
 
-        expect(
-            pantry.find((row) => row.ingredient_id === ingredientId)
-                ?.quantity_person_ingradient,
-        ).toBe(7);
+        expect(pantryRow?.quantity_person_ingradient).toBe(7);
         expect(history).toHaveLength(2);
     });
 
-    it("should log only the delta (not the new total) when updateQuantities increases stock", async () => {
+    it("should surface every lot with its own purchase date and quantity, oldest first", async () => {
         const ingredientId = await createIngredient(pool, unitId);
 
-        await repository.addIngredients(userId, [
-            { id: ingredientId, quantity_person_ingradient: 4 },
-        ]);
-        await repository.updateQuantities(userId, [
-            { id: ingredientId, quantity_person_ingradient: 10 },
-        ]);
-
-        const history = (await repository.findPurchaseHistory(
-            userId,
-            ingredientId,
-        )) as PurchaseRow[];
-        const totalLogged = history.reduce((sum, row) => sum + row.quantity, 0);
-
-        expect(totalLogged).toBe(10);
-        expect(history).toHaveLength(2);
-    });
-
-    it("should persist an edit even when the delta rounds to zero", async () => {
-        const ingredientId = await createIngredient(pool, unitId);
-
-        await repository.addIngredients(userId, [
-            { id: ingredientId, quantity_person_ingradient: 5 },
-        ]);
-        // 5.001 - 5 rounds to 0.00, but the raw quantities genuinely differ
-        await repository.updateQuantities(userId, [
-            { id: ingredientId, quantity_person_ingradient: 5.001 },
-        ]);
-
-        const pantry = (await repository.findByUser(userId)) as PantryRow[];
-
-        expect(
-            pantry.find((row) => row.ingredient_id === ingredientId)
-                ?.quantity_person_ingradient,
-        ).toBeCloseTo(5.001);
-    });
-
-    it("should delete both the pantry row and its purchase history when updateQuantities drops stock to zero", async () => {
-        const ingredientId = await createIngredient(pool, unitId);
-
-        await repository.addIngredients(userId, [
-            { id: ingredientId, quantity_person_ingradient: 6 },
-        ]);
-        await repository.updateQuantities(userId, [
-            { id: ingredientId, quantity_person_ingradient: 0 },
-        ]);
-
-        const pantry = (await repository.findByUser(userId)) as PantryRow[];
-        const history = await repository.findPurchaseHistory(
-            userId,
-            ingredientId,
+        await pool.query(
+            `INSERT INTO ingredient_purchases (person_id, ingredient_id, quantity, purchase_date)
+             VALUES ($1, $2, 2, '2026-01-01T00:00:00Z')`,
+            [userId, ingredientId],
+        );
+        await pool.query(
+            `INSERT INTO ingredient_purchases (person_id, ingredient_id, quantity, purchase_date)
+             VALUES ($1, $2, 4, '2026-02-01T00:00:00Z')`,
+            [userId, ingredientId],
+        );
+        await pool.query(
+            `INSERT INTO person_ingredients (person_id, ingredient_id, quantity_person_ingradient, purchase_date)
+             VALUES ($1, $2, 6, '2026-02-01T00:00:00Z')`,
+            [userId, ingredientId],
         );
 
-        expect(
-            pantry.find((row) => row.ingredient_id === ingredientId),
-        ).toBeUndefined();
-        expect(history).toHaveLength(0);
+        const pantryRow = await findPantryRow(ingredientId);
+
+        // ordering (not exact clock time) is what the feature depends on - `purchase_date` is a
+        // tz-naive column, so the driver round-trips it through the test runner's local zone
+        expect(pantryRow?.lots).toEqual([
+            expect.objectContaining({ quantity: 2 }),
+            expect.objectContaining({ quantity: 4 }),
+        ]);
+    });
+
+    it("should report the oldest lot's date, not the most recently topped-up date, as purchase_date", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+
+        // an old lot, bought years before "today" - far from any day/year boundary so a
+        // timezone round-trip through the tz-naive column can't shift it into a different year
+        await pool.query(
+            `INSERT INTO ingredient_purchases (person_id, ingredient_id, quantity, purchase_date)
+             VALUES ($1, $2, 1, '2020-06-15T12:00:00Z')`,
+            [userId, ingredientId],
+        );
+        await pool.query(
+            `INSERT INTO person_ingredients (person_id, ingredient_id, quantity_person_ingradient, purchase_date)
+             VALUES ($1, $2, 1, '2020-06-15T12:00:00Z')`,
+            [userId, ingredientId],
+        );
+
+        // topping up today must not "refresh" the old lot's expiry
+        await repository.addIngredients(userId, [
+            { id: ingredientId, quantity_person_ingradient: 1 },
+        ]);
+
+        const pantryRow = await findPantryRow(ingredientId);
+
+        expect(new Date(pantryRow?.purchase_date ?? 0).getFullYear()).toBe(
+            2020,
+        );
+        expect(pantryRow?.lots).toHaveLength(2);
     });
 
     it("should apply a purchase edit as a delta on pantry stock, floored at zero", async () => {
@@ -154,10 +159,13 @@ describe("PgPantryRepository (real Postgres)", () => {
         )) as PurchaseRow[];
         const purchaseId = history[0].id;
 
-        // consumption elsewhere: stock drops to 1, purchase history untouched
-        await repository.updateQuantities(userId, [
-            { id: ingredientId, quantity_person_ingradient: 1 },
-        ]);
+        // consumption elsewhere (no in-app flow for this yet): stock drops to 1 out of band,
+        // purchase history untouched
+        await pool.query(
+            `UPDATE person_ingredients SET quantity_person_ingradient = 1
+             WHERE person_id = $1 AND ingredient_id = $2`,
+            [userId, ingredientId],
+        );
 
         // correcting the purchase to 0 is a -5 delta, but only 1 unit is left - must floor at 0
         const updated = await repository.updatePurchaseQuantity(
@@ -165,16 +173,10 @@ describe("PgPantryRepository (real Postgres)", () => {
             purchaseId,
             0,
         );
-        const pantryAfterCorrection = (await repository.findByUser(
-            userId,
-        )) as PantryRow[];
+        const pantryRow = await findPantryRow(ingredientId);
 
         expect(updated).toBe(true);
-        expect(
-            pantryAfterCorrection.find(
-                (row) => row.ingredient_id === ingredientId,
-            )?.quantity_person_ingradient,
-        ).toBe(0);
+        expect(pantryRow?.quantity_person_ingradient).toBe(0);
     });
 
     it("should delete an ingredient's pantry and purchase rows, and report false when it did not exist", async () => {

@@ -39,7 +39,7 @@
 
     &__grid {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         grid-template-areas:
             "hero"
             "ingredients"
@@ -47,7 +47,7 @@
         gap: var(--s-7);
 
         @include respond-to(desktop) {
-            grid-template-columns: 1.05fr 1fr;
+            grid-template-columns: 1.05fr minmax(0, 1fr);
             grid-template-areas:
                 "hero ingredients"
                 "description ingredients";

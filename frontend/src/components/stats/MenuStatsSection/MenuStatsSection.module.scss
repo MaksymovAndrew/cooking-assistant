@@ -10,14 +10,28 @@
             serif;
     }
 
+    // auto-fit at desktop (not a fixed column count) so a tile count that doesn't divide evenly -
+    // e.g. 5 - reflows instead of leaving an empty gap in the last row. Mobile/tablet stay a fixed
+    // 2-column grid (auto-fit would still only fit 2 at that width, so it buys nothing there), so
+    // an odd tile count is handled separately below: the classic "odd item, also last" selector
+    // makes a lone trailing tile span the full row instead of sitting alone beside empty space -
+    // self-healing for any tile count, not hardcoded to 5
     &__tiles {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: var(--s-4);
         margin-bottom: var(--s-6);
 
+        > :nth-child(odd):last-child {
+            grid-column: 1 / -1;
+        }
+
         @include respond-to(desktop) {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+
+            > :nth-child(odd):last-child {
+                grid-column: auto;
+            }
         }
     }
 
@@ -29,6 +43,18 @@
 
         @include respond-to(desktop) {
             grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    // same reflow reasoning as __tiles - the extremes row holds 3 cards, not the 2 __grid assumes
+    &__extremes-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-5);
+        margin-bottom: var(--s-5);
+
+        @include respond-to(desktop) {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         }
     }
 

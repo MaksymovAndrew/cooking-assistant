@@ -11,6 +11,11 @@
         justify-content: space-between;
     }
 
+    // a long display name must shrink/wrap instead of pushing __actions aside or widening the page
+    &__text {
+        min-width: 0;
+    }
+
     &__date {
         margin-bottom: var(--s-1);
         color: var(--text-muted);
@@ -21,6 +26,8 @@
     }
 
     &__title {
+        @include wrap-anywhere;
+
         margin: 0;
         color: var(--text);
         letter-spacing: -0.02em;

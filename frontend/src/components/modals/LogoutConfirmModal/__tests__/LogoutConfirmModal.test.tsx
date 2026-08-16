@@ -6,6 +6,7 @@ import { ROUTES } from "constants/routes";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
@@ -25,7 +26,7 @@ const MODAL_ID = "m1";
 const MODAL: ActiveModal = { id: MODAL_ID, type: MODAL_TYPE.logout };
 
 const renderOpen = () => {
-    const store = makeTestStore({ ui: { modal: MODAL } });
+    const store = makeTestStore({ ui: { queue: [MODAL] } });
     const view = renderWithProviders(
         <LogoutConfirmModal modalId={MODAL_ID} />,
         {
@@ -57,7 +58,7 @@ describe("LogoutConfirmModal", () => {
             API_ROUTES.auth.logout,
             undefined,
         );
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
         expect(mockNavigate).toHaveBeenCalledWith(ROUTES.login);
     });
 
@@ -67,7 +68,7 @@ describe("LogoutConfirmModal", () => {
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
         expect(mockedPost).not.toHaveBeenCalled();
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should keep the modal open, show an inline error, and not navigate when logout fails", async () => {
@@ -80,7 +81,7 @@ describe("LogoutConfirmModal", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Log out" }));
 
-        expect(store.getState().ui.modal).toEqual(MODAL);
+        expect(selectActiveModal(store.getState())).toEqual(MODAL);
         expect(mockNavigate).not.toHaveBeenCalled();
         expect(screen.getByText("Boom")).toBeInTheDocument();
     });

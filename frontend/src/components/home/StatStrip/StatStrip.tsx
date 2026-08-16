@@ -57,6 +57,13 @@ export const StatStrip: React.FC<StatStripProps> = ({
                 tone="warning"
             />
             <KcalStatCard consumed={kcalToday} goal={kcalGoal} />
+            {kcalGoal !== null && (
+                <KcalStatCard
+                    consumed={kcalToday}
+                    goal={kcalGoal}
+                    variant="remaining"
+                />
+            )}
         </div>
     );
 };

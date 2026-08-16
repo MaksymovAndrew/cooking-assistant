@@ -106,10 +106,6 @@ registerSuccessToast(
     "notifications.ingredientsSaved",
 );
 registerSuccessToast(
-    userIngredientsApi.endpoints.updateQuantities.matchFulfilled,
-    "notifications.quantitiesUpdated",
-);
-registerSuccessToast(
     userIngredientsApi.endpoints.updatePurchase.matchFulfilled,
     "notifications.purchaseSaved",
 );

@@ -1,8 +1,12 @@
 {
     "title": "What's new",
-    "close": "Close",
     "newCount": "{{total}} new",
     "items": {
+        "bugsAndPolish": {
+            "date": "2026-08-16",
+            "title": "Smarter pantry, calmer popups",
+            "description": "Buying more of an ingredient you already have no longer resets its shelf life, and the expired-ingredients list now shows exactly which purchase went bad. Popups now queue politely instead of overwriting each other, the statistics page got calorie averages and clickable results, and a long list of smaller rough edges - avatars, headings, loading states, and more - got smoothed out."
+        },
         "guestBrowsing": {
             "date": "2026-08-06",
             "title": "Browse without an account",

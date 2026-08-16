@@ -74,6 +74,11 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
             size="md"
             title={t("purchaseModal.title", { name: ingredientName })}
             onClose={onClose}
+            footer={
+                <Button type="button" onClick={onClose}>
+                    {t("purchaseModal.closeButton")}
+                </Button>
+            }
         >
             {isLoading && <p>{t("purchaseModal.loading")}</p>}
             {isError && (
@@ -94,11 +99,6 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
                     ))}
                 </ul>
             )}
-            <div className={styles["purchase-history-modal__footer"]}>
-                <Button type="button" onClick={onClose}>
-                    {t("purchaseModal.closeButton")}
-                </Button>
-            </div>
         </BaseModal>
     );
 };

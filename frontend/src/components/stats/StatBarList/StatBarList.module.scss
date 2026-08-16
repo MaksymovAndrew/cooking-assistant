@@ -37,6 +37,8 @@
         height: 100%;
         border-radius: var(--r-pill);
         background: var(--brand);
+        transform-origin: left;
+        animation: stat-bar-list-grow 0.6s ease-out;
     }
 
     &__value {
@@ -45,5 +47,15 @@
         font:
             500 12px "Geist Mono",
             monospace;
+    }
+}
+
+@keyframes stat-bar-list-grow {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
     }
 }

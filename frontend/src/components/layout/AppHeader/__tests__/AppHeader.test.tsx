@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { AppHeader } from "components/layout/AppHeader";
@@ -31,7 +32,7 @@ describe("AppHeader", () => {
         );
         await userEvent.click(screen.getByRole("menuitem", { name: "Logout" }));
 
-        expect(store.getState().ui.modal).toEqual(
+        expect(selectActiveModal(store.getState())).toEqual(
             expect.objectContaining({ type: MODAL_TYPE.logout }),
         );
     });

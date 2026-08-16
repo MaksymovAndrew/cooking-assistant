@@ -59,6 +59,7 @@ const EXPIRED_INGREDIENT: UserIngredient = {
     days_to_expire: 5,
     allergens: ["milk"],
     purchase_date: daysFromNow(-10),
+    lots: [],
 };
 const SOON_INGREDIENT: UserIngredient = {
     ingredient_id: 2,
@@ -70,6 +71,7 @@ const SOON_INGREDIENT: UserIngredient = {
     days_to_expire: 5,
     allergens: ["eggs"],
     purchase_date: daysFromNow(-3),
+    lots: [],
 };
 const FRESH_INGREDIENT: UserIngredient = {
     ingredient_id: 3,
@@ -81,6 +83,7 @@ const FRESH_INGREDIENT: UserIngredient = {
     days_to_expire: 60,
     allergens: ["gluten"],
     purchase_date: daysFromNow(0),
+    lots: [],
 };
 const NO_EXPIRY_DATA_INGREDIENT: UserIngredient = {
     ingredient_id: 4,
@@ -90,6 +93,7 @@ const NO_EXPIRY_DATA_INGREDIENT: UserIngredient = {
     unit_name: "kg",
     quantity_person_ingradient: 1,
     allergens: [],
+    lots: [],
 };
 
 const setup = async (

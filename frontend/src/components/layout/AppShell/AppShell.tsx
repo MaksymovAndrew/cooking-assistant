@@ -7,8 +7,12 @@ import { AppHeader } from "components/layout/AppHeader";
 import { BottomNav } from "components/layout/BottomNav";
 import { MobileSubpageHeader } from "components/layout/MobileSubpageHeader";
 import { ScrollToTopButton } from "components/layout/ScrollToTopButton";
+import { ensureCatalogLoaded } from "i18n/loadCatalog";
 
 import styles from "./AppShell.module.scss";
+
+// earliest point common to every authenticated page - starts the catalog loading as soon as possible
+ensureCatalogLoaded().catch(() => undefined);
 
 interface AppShellProps {
     children: React.ReactNode;
@@ -16,6 +20,8 @@ interface AppShellProps {
     mobileBackTo?: string;
     mobileTitle?: string;
     mobileEditTo?: string;
+    // opts a create/edit form page out of the expired-ingredients/calorie-limit popups (P4), which would otherwise interrupt mid-edit
+    skipNotices?: boolean;
 }
 
 export const AppShell: React.FC<AppShellProps> = ({
@@ -23,9 +29,10 @@ export const AppShell: React.FC<AppShellProps> = ({
     mobileBackTo,
     mobileTitle,
     mobileEditTo,
+    skipNotices = false,
 }) => {
-    useExpiredIngredientsNotice();
-    useCalorieLimitNotice();
+    useExpiredIngredientsNotice({ skip: skipNotices });
+    useCalorieLimitNotice({ skip: skipNotices });
 
     return (
         <div className={styles["app-shell"]}>

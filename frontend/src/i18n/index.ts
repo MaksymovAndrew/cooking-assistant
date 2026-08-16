@@ -5,7 +5,6 @@ import { logger } from "config/logger";
 
 import auth from "i18n/locales/en/auth.json";
 import calories from "i18n/locales/en/calories.json";
-import catalog from "i18n/locales/en/catalog.json";
 import common from "i18n/locales/en/common.json";
 import guestLanding from "i18n/locales/en/guestLanding.json";
 import home from "i18n/locales/en/home.json";
@@ -17,7 +16,7 @@ import recipes from "i18n/locales/en/recipes.json";
 import settings from "i18n/locales/en/settings.json";
 import stats from "i18n/locales/en/stats.json";
 
-// synchronous init (resources are inlined, no backend) so t() returns real strings immediately; useSuspense:false avoids a Suspense boundary in the app and tests
+// synchronous init (resources are inlined, no backend) so t() returns real strings immediately; useSuspense:false avoids a Suspense boundary in the app and tests. "catalog" is added lazily instead, via loadCatalog.ts
 i18n.use(initReactI18next)
     .init({
         resources: {
@@ -33,7 +32,6 @@ i18n.use(initReactI18next)
                 news,
                 profile,
                 settings,
-                catalog,
                 calories,
             },
         },

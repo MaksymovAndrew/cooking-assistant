@@ -24,6 +24,26 @@ describe("getTodayRange", () => {
 
         expect(range.from).toBe(new Date(2026, 0, 10).toISOString());
     });
+
+    it("should round the end of the range up to the next minute, not truncate it", () => {
+        jest.setSystemTime(new Date(2026, 0, 14, 15, 30, 45, 123));
+
+        const range = getTodayRange();
+
+        expect(range.to).toBe(
+            new Date(2026, 0, 14, 15, 31, 0, 0).toISOString(),
+        );
+    });
+
+    it("should return an identical range for two calls a moment apart, so callers share one RTK Query cache entry", () => {
+        jest.setSystemTime(new Date(2026, 0, 14, 15, 30, 10));
+        const first = getTodayRange();
+
+        jest.setSystemTime(new Date(2026, 0, 14, 15, 30, 40));
+        const second = getTodayRange();
+
+        expect(second).toEqual(first);
+    });
 });
 
 describe("getLastNDaysRange", () => {

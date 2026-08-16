@@ -2,7 +2,6 @@ import type {
     Purchase,
     SaveUserIngredientsRequest,
     UpdatePurchaseRequest,
-    UpdateQuantitiesRequest,
     UserIngredient,
 } from "types/userIngredient";
 
@@ -24,6 +23,7 @@ const PANTRY: UserIngredient[] = [
         unit_name: "g",
         quantity_person_ingradient: 5,
         allergens: [],
+        lots: [],
     },
 ];
 const HISTORY: Purchase[] = [
@@ -38,18 +38,6 @@ const HISTORY: Purchase[] = [
 const SAVE: SaveUserIngredientsRequest = {
     ingredients: [
         { id: 1, ingredient_name: "Salt", quantity_person_ingradient: 1 },
-    ],
-};
-const QUANTITIES: UpdateQuantitiesRequest = {
-    updatedIngredients: [
-        {
-            id: 1,
-            slug: "salt",
-            category: "spices",
-            unit_name: "g",
-            quantity_person_ingradient: 3,
-            allergens: [],
-        },
     ],
 };
 const PURCHASE: UpdatePurchaseRequest = { quantity: 4 };
@@ -98,20 +86,6 @@ describe("userIngredientsApi", () => {
         expect(mockedPut).toHaveBeenCalledWith(
             API_ROUTES.userIngredients.list,
             SAVE,
-        );
-    });
-
-    it("should update pantry quantities", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            userIngredientsApi.endpoints.updateQuantities.initiate(QUANTITIES),
-        );
-
-        expect(mockedPut).toHaveBeenCalledWith(
-            API_ROUTES.userIngredients.updateQuantities,
-            QUANTITIES,
         );
     });
 

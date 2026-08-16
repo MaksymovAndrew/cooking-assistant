@@ -4,14 +4,19 @@ import type { CurrentUser } from "types/auth";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { authApi } from "redux/services/authApi";
 import { caloriesApi } from "redux/services/caloriesApi";
+import type { ActiveModal } from "redux/slices/uiSlice";
 import { closeModal, MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { useCalorieLimitNotice } from "hooks/useCalorieLimitNotice";
 
 import { getTodayRange } from "utils/calorieDateRange";
-import { markCalorieLimitNoticeShown } from "utils/calorieLimitNoticeStorage";
+import {
+    hasShownCalorieLimitNotice,
+    markCalorieLimitNoticeShown,
+} from "utils/calorieLimitNoticeStorage";
 
 import { mockGetByUrl } from "test/apiClientMock";
 import { makeTestStore, renderHookWithStore } from "test/store";
@@ -46,15 +51,20 @@ const setup = async (
     entries: { calories: number }[],
     sessionStatus: "authed" | "checking" = "authed",
     user: CurrentUser = CURRENT_USER,
+    queue: ActiveModal[] = [],
+    skip = false,
 ) => {
     mockGetByUrl({
         [API_ROUTES.auth.me]: user,
         [API_ROUTES.calories.intake]: entries,
     });
 
-    const store = makeTestStore({ session: { status: sessionStatus } });
+    const store = makeTestStore({
+        session: { status: sessionStatus },
+        ui: { queue },
+    });
 
-    if (sessionStatus === "authed") {
+    if (sessionStatus === "authed" && !skip) {
         await Promise.all([
             store.dispatch(authApi.endpoints.getMe.initiate(null)),
             store.dispatch(
@@ -66,7 +76,7 @@ const setup = async (
     }
 
     return renderHookWithStore(() => {
-        useCalorieLimitNotice();
+        useCalorieLimitNotice({ skip });
     }, store);
 };
 
@@ -74,7 +84,7 @@ describe("useCalorieLimitNotice", () => {
     it("should open the calorie-limit modal once today's intake crosses the goal", async () => {
         const { store } = await setup([{ calories: 2500 }]);
 
-        expect(store.getState().ui.modal).toMatchObject({
+        expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.calorieLimit,
             consumed: 2500,
             goal: 2200,
@@ -84,7 +94,7 @@ describe("useCalorieLimitNotice", () => {
     it("should not open a modal when under the goal", async () => {
         const { store } = await setup([{ calories: 1000 }]);
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should not open a modal when there is no goal set", async () => {
@@ -93,13 +103,13 @@ describe("useCalorieLimitNotice", () => {
             calorie_goal: null,
         });
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should not open a modal while the session is still checking", async () => {
         const { store } = await setup([{ calories: 2500 }], "checking");
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should not open the modal on a fresh page load if already shown earlier today", async () => {
@@ -107,7 +117,7 @@ describe("useCalorieLimitNotice", () => {
 
         const { store } = await setup([{ calories: 2500 }]);
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should open the modal again on a new day even if it already fired the day before", async () => {
@@ -117,7 +127,7 @@ describe("useCalorieLimitNotice", () => {
 
         const { store } = await setup([{ calories: 2500 }]);
 
-        expect(store.getState().ui.modal).toMatchObject({
+        expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.calorieLimit,
         });
     });
@@ -127,14 +137,80 @@ describe("useCalorieLimitNotice", () => {
 
         const { store } = await setup([{ calories: 2500 }]);
 
-        expect(store.getState().ui.modal).toMatchObject({
+        expect(selectActiveModal(store.getState())).toMatchObject({
             type: MODAL_TYPE.calorieLimit,
         });
     });
 
+    it("should wait behind a modal that is already showing instead of replacing it", async () => {
+        const { store } = await setup(
+            [{ calories: 2500 }],
+            "authed",
+            CURRENT_USER,
+            [
+                {
+                    id: "m1",
+                    type: MODAL_TYPE.expiredIngredients,
+                    ingredients: [],
+                },
+            ],
+        );
+
+        expect(selectActiveModal(store.getState())).toMatchObject({
+            type: MODAL_TYPE.expiredIngredients,
+        });
+
+        act(() => {
+            store.dispatch(closeModal("m1"));
+        });
+
+        expect(selectActiveModal(store.getState())).toMatchObject({
+            type: MODAL_TYPE.calorieLimit,
+        });
+    });
+
+    it("should not mark the notice as shown while it is still waiting in the queue", async () => {
+        const { store } = await setup(
+            [{ calories: 2500 }],
+            "authed",
+            CURRENT_USER,
+            [
+                {
+                    id: "m1",
+                    type: MODAL_TYPE.expiredIngredients,
+                    ingredients: [],
+                },
+            ],
+        );
+
+        expect(
+            hasShownCalorieLimitNotice(CURRENT_USER.id, NOW.toDateString()),
+        ).toBe(false);
+
+        act(() => {
+            store.dispatch(closeModal("m1"));
+        });
+
+        expect(
+            hasShownCalorieLimitNotice(CURRENT_USER.id, NOW.toDateString()),
+        ).toBe(true);
+    });
+
+    it("should not open a modal when skip is set", async () => {
+        const { store } = await setup(
+            [{ calories: 2500 }],
+            "authed",
+            CURRENT_USER,
+            [],
+            true,
+        );
+
+        expect(selectActiveModal(store.getState())).toBeNull();
+    });
+
     it("should not reopen the modal on a later mount once already shown this session", async () => {
         const { store } = await setup([{ calories: 2500 }]);
-        const openedModal = store.getState().ui.modal;
+        const openedModal = selectActiveModal(store.getState());
 
         expect(openedModal).not.toBeNull();
 
@@ -146,6 +222,6 @@ describe("useCalorieLimitNotice", () => {
             useCalorieLimitNotice();
         }, store);
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 });

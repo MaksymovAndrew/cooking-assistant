@@ -1,14 +1,9 @@
 @use "styles/abstracts" as *;
 
 .menu-hero-actions {
-    display: none;
-    flex: none;
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--s-2);
-
-    // mobile owner-actions live in the subpage header's edit-pencil icon instead (see MobileSubpageHeader) - this inline row is tablet+ only
-    @include respond-to(tablet) {
-        display: flex;
-    }
 
     &__edit {
         height: 44px;

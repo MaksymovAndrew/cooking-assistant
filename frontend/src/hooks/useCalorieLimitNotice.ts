@@ -5,6 +5,7 @@ import {
     selectIsAuthed,
     selectIsChecking,
 } from "redux/selectors/sessionSelectors";
+import { selectActiveModal } from "redux/selectors/uiSelectors";
 import { useGetMeQuery } from "redux/services/authApi";
 import { useGetCalorieIntakeQuery } from "redux/services/caloriesApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
@@ -18,22 +19,33 @@ import {
 } from "utils/calorieLimitNoticeStorage";
 import { computeCalorieSummary } from "utils/computeCalorieSummary";
 
+interface UseCalorieLimitNoticeOptions {
+    // "not ready yet", not "consumed" - the once-per-day notice can still fire later on a route that doesn't skip it
+    skip?: boolean;
+}
+
 // once per (user, calendar day): opens the shared modal the first time today's intake crosses
 // the goal, persisted in localStorage so it survives reloads/restarts, not just this tab session
-export const useCalorieLimitNotice = (): void => {
+export const useCalorieLimitNotice = ({
+    skip: skipOption = false,
+}: UseCalorieLimitNoticeOptions = {}): void => {
     const dispatch = useAppDispatch();
     const isChecking = useAppSelector(selectIsChecking);
     const isAuthed = useAppSelector(selectIsAuthed);
-    const skip = isChecking || !isAuthed;
+    const skip = skipOption || isChecking || !isAuthed;
     const { data: currentUser } = useGetMeQuery(null, { skip });
     const todayKey = useTodayDateKey();
     const range = useMemo(() => getTodayRange(todayKey), [todayKey]);
     const { data: entries = [] } = useGetCalorieIntakeQuery(range, { skip });
     const goal = currentUser?.calorie_goal ?? null;
     const summary = computeCalorieSummary(entries, goal);
+    const activeModal = useAppSelector(selectActiveModal);
     // stores the day it last fired for, not just a boolean - so a tab left open across midnight
     // re-arms for the new day instead of staying silenced by yesterday's firing
     const firedForDay = useRef<string | null>(null);
+    const enqueued = useRef<{ id: string; userId: number; day: string } | null>(
+        null,
+    );
 
     useEffect(() => {
         const notReady = skip || !currentUser || goal === null;
@@ -53,14 +65,17 @@ export const useCalorieLimitNotice = (): void => {
         }
 
         firedForDay.current = todayKey;
-        markCalorieLimitNoticeShown(currentUser.id, todayKey);
-        dispatch(
-            openModal({
-                type: MODAL_TYPE.calorieLimit,
-                consumed: summary.consumed,
-                goal,
-            }),
-        );
+        enqueued.current = {
+            id: dispatch(
+                openModal({
+                    type: MODAL_TYPE.calorieLimit,
+                    consumed: summary.consumed,
+                    goal,
+                }),
+            ).payload.id,
+            userId: currentUser.id,
+            day: todayKey,
+        };
     }, [
         skip,
         currentUser,
@@ -70,4 +85,17 @@ export const useCalorieLimitNotice = (): void => {
         summary.consumed,
         dispatch,
     ]);
+
+    // marks on presentation, not on enqueue - a notice still waiting behind another modal
+    // would otherwise be silenced for the whole day before it was ever seen
+    useEffect(() => {
+        const pending = enqueued.current;
+
+        if (pending === null || activeModal?.id !== pending.id) {
+            return;
+        }
+
+        enqueued.current = null;
+        markCalorieLimitNoticeShown(pending.userId, pending.day);
+    }, [activeModal]);
 };

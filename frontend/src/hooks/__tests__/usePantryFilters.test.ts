@@ -12,6 +12,7 @@ const SALMON: PantryIngredient = {
     unit_name: "g",
     quantity_person_ingradient: 1,
     allergens: [],
+    lots: [],
 };
 const CARROT: PantryIngredient = {
     id: 2,
@@ -21,6 +22,7 @@ const CARROT: PantryIngredient = {
     unit_name: "g",
     quantity_person_ingradient: 1,
     allergens: [],
+    lots: [],
 };
 
 describe("usePantryFilters", () => {
@@ -28,7 +30,6 @@ describe("usePantryFilters", () => {
         const { result } = renderHook(() =>
             usePantryFilters({
                 personIngredients: [SALMON, CARROT],
-                sourceIngredients: [SALMON, CARROT],
             }),
         );
 
@@ -46,7 +47,6 @@ describe("usePantryFilters", () => {
             (props: { personIngredients: PantryIngredient[] }) =>
                 usePantryFilters({
                     personIngredients: props.personIngredients,
-                    sourceIngredients: props.personIngredients,
                 }),
             { initialProps: { personIngredients: [SALMON, CARROT] } },
         );

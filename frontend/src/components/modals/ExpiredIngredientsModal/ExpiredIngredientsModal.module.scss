@@ -15,18 +15,46 @@
     &__list {
         display: flex;
         flex-direction: column;
-        gap: var(--s-2);
-        max-height: 320px;
+        gap: var(--s-3);
+        max-height: 400px;
         margin: 0;
         overflow-y: auto;
         list-style: none;
         padding-inline-start: 0;
     }
 
-    &__footer {
+    &__group {
         display: flex;
-        justify-content: flex-end;
+        flex-direction: column;
         gap: var(--s-2);
-        margin-top: var(--s-4);
+    }
+
+    &__name {
+        color: var(--text);
+        font:
+            600 14px Inter,
+            sans-serif;
+    }
+
+    &__lots {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
+        margin: 0;
+        list-style: none;
+        padding-inline-start: 0;
+    }
+
+    &__lot {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-2) var(--s-4);
+        padding: var(--s-3);
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--danger) 10%, var(--surface-2));
+        color: var(--danger);
+        font:
+            400 13px Inter,
+            sans-serif;
     }
 }

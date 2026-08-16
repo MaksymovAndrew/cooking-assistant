@@ -10,9 +10,13 @@ export interface Menu {
     isOwner?: boolean;
 }
 
-// shape returned by GET /api/menus (unpaginated) - the plain menu list plus each menu's recipe count/total cooking time, used for stats-page averages
+// shape returned by GET /api/menus (unpaginated) - the plain menu list plus each menu's recipe
+// count/total cooking time/total calories, used for stats-page averages. total_calories is null
+// (not a silently undercounted number) once any of the menu's recipes lacks calorie data - same
+// rule PgCalorieRepository.findMenuCalories already uses for a single menu
 export interface MenuWithStats extends Menu {
     total_cooking_time: number;
+    total_calories: number | null;
 }
 
 export interface MenuCategory {

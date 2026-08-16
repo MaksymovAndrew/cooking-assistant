@@ -20,7 +20,9 @@
     "recentRecipes": {
         "title": "Recent recipes",
         "viewAll": "View all →",
-        "empty": "No recipes yet - add your first one.",
+        "emptyTitle": "No recipes yet",
+        "emptyDescription": "Add your first recipe to see it here.",
+        "emptyAction": "Add a recipe",
         "cookingTimeHoursMinutes": "{{hours}}h {{minutes}}m",
         "cookingTimeMinutesOnly": "{{minutes}}m",
         "caloriesValue": "{{count}} kcal"

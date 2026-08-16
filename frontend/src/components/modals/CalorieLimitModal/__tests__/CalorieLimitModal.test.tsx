@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 
 import { profileDietaryPath } from "constants/routes";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
+
 import { CalorieLimitModal } from "components/modals/CalorieLimitModal";
 
 import { renderWithProviders } from "test/router";
@@ -37,12 +39,14 @@ describe("CalorieLimitModal", () => {
     it("should close the modal when Got it is clicked", async () => {
         const store = makeTestStore({
             ui: {
-                modal: {
-                    id: "m1",
-                    type: "calorieLimit",
-                    consumed: 2520,
-                    goal: 2200,
-                },
+                queue: [
+                    {
+                        id: "m1",
+                        type: "calorieLimit",
+                        consumed: 2520,
+                        goal: 2200,
+                    },
+                ],
             },
         });
 
@@ -53,6 +57,6 @@ describe("CalorieLimitModal", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Got it" }));
 
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 });

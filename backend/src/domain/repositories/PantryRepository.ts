@@ -13,10 +13,6 @@ export interface PantryRepository {
         userId: string | number,
         ingredientId: string | number,
     ): Promise<unknown>;
-    updateQuantities(
-        userId: string | number,
-        items: PantryIngredientInput[],
-    ): Promise<void>;
     updatePurchaseQuantity(
         userId: string | number,
         purchaseId: string | number,

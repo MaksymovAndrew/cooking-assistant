@@ -54,6 +54,11 @@
     // native scrollbar stays hidden - components/ui/HorizontalScrollbar
     // renders a custom track+thumb below instead, so the same affordance
     // and drag-to-scroll work identically on touch and mouse alike
+    // positioned so the empty-state message can overlay it without collapsing the row's height
+    &__bars-wrapper {
+        position: relative;
+    }
+
     &__bars {
         display: flex;
         align-items: flex-end;
@@ -89,6 +94,8 @@
         min-height: 2px;
         border-radius: 6px 6px 3px 3px;
         background: color-mix(in srgb, var(--brand-strong) 80%, transparent);
+        transform-origin: bottom;
+        animation: calorie-history-bar-grow 0.6s ease-out;
 
         &--near {
             background: color-mix(in srgb, var(--warning) 78%, transparent);
@@ -149,9 +156,14 @@
         }
     }
 
+    // overlaid on the all-zero-height bars rather than replacing them, so the footprint stays fixed
     &__empty {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin: 0;
-        padding: var(--s-6) 0;
         color: var(--text-muted);
         font:
             400 13px Inter,
@@ -200,5 +212,15 @@
                 400 11.5px Inter,
                 sans-serif;
         }
+    }
+}
+
+@keyframes calorie-history-bar-grow {
+    from {
+        transform: scaleY(0);
+    }
+
+    to {
+        transform: scaleY(1);
     }
 }

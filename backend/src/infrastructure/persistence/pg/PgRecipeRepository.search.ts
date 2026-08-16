@@ -7,6 +7,7 @@ import type {
     RecipeSearchRow,
 } from "domain/repositories/recipe.filters";
 
+import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
 import { RECIPE_FILTER_CLAUSES } from "infrastructure/persistence/pg/recipeFilterClauses";
 import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
@@ -15,13 +16,11 @@ interface RecipeSearchQueryRow extends RecipeSearchRow {
     total_count: number;
 }
 
-// person_id itself never leaves the server - guests and other users have no business seeing an
-// internal owner id, only whether the current viewer owns it, so isOwner is computed here instead
 function buildBaseRecipeSelect(ownerPlaceholder: string): string {
     return `
         SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
                COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
-               COALESCE(r.person_id = ${ownerPlaceholder}, false) AS "isOwner",
+               ${isOwnerColumn("r", ownerPlaceholder)},
                rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name, 'allergens', i.allergens)) AS ingredients,
                -- cast: COUNT() is bigint, which pg returns as a string, not a number
                COUNT(*) OVER()::int AS total_count

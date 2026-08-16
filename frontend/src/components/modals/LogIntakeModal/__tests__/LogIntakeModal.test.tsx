@@ -5,6 +5,8 @@ import type { CurrentUser } from "types/auth";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
+
 import { LogIntakeModal } from "components/modals/LogIntakeModal";
 
 import { mockedPost, mockGetByUrl } from "test/apiClientMock";
@@ -40,14 +42,16 @@ const setup = (
 
     const store = makeTestStore({
         ui: {
-            modal: {
-                id: "m1",
-                type: "logIntake",
-                recipeId: 7,
-                title: ENTRY_TITLE,
-                caloriesPerPortion: 620,
-                initialPortions,
-            },
+            queue: [
+                {
+                    id: "m1",
+                    type: "logIntake",
+                    recipeId: 7,
+                    title: ENTRY_TITLE,
+                    caloriesPerPortion: 620,
+                    initialPortions,
+                },
+            ],
         },
     });
 
@@ -157,7 +161,7 @@ describe("LogIntakeModal", () => {
             menu_id: undefined,
             portions: 1,
         });
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should close without logging on cancel", async () => {
@@ -166,6 +170,6 @@ describe("LogIntakeModal", () => {
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
         expect(mockedPost).not.toHaveBeenCalled();
-        expect(store.getState().ui.modal).toBeNull();
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 });

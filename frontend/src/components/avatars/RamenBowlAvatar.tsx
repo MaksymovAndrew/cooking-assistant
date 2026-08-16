@@ -17,7 +17,7 @@ export const RamenBowlAvatar: React.FC<IconProps> = ({
         aria-hidden="true"
         className={className}
     >
-        <g transform="translate(64 64) scale(2.45) translate(-34 -35)">
+        <g transform="translate(64 64) scale(1.89) translate(-34 -35)">
             <g
                 stroke="#A9463C"
                 strokeWidth={2.4}

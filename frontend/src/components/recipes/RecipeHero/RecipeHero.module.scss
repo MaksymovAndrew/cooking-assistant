@@ -146,36 +146,8 @@
         margin-bottom: var(--s-6);
     }
 
-    &__visitor-actions {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--s-3);
+    // just reproduces __actions' margin - HeroVisitorActions' own sizing lives in its own module
+    &__visitor-actions-wrap {
         margin-bottom: var(--s-6);
-    }
-
-    &__visitor-favourite {
-        display: inline-flex;
-        flex: none;
-        align-items: center;
-        gap: var(--s-2);
-        height: 46px;
-        padding: 0 var(--s-4);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        background: var(--surface);
-        color: var(--text);
-        font:
-            600 14px Inter,
-            sans-serif;
-        cursor: default;
-    }
-
-    &__visitor-log-intake {
-        flex: 1;
-
-        @include respond-to(tablet) {
-            flex: none;
-        }
     }
 }

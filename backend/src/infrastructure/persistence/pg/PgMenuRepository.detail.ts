@@ -1,5 +1,7 @@
 import type { Pool } from "pg";
 
+import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
+
 interface MenuRow {
     id: number;
     title: string;
@@ -54,7 +56,7 @@ export async function findMenuByIdWithRecipes(
         m.menu_content AS menuContent,
         mc.category_name AS categoryName,
         m.category_id,
-        COALESCE(m.person_id = $2, false) AS "isOwner"
+        ${isOwnerColumn("m", "$2")}
       FROM menu m
       LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
       WHERE m.menu_id = $1`,

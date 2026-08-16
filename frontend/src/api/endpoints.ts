@@ -26,7 +26,6 @@ export const API_ROUTES = {
     },
     userIngredients: {
         list: "/api/user-ingredients",
-        updateQuantities: "/api/user-ingredients/update-quantities",
         item: (ingredientId: string | number) =>
             `/api/user-ingredients/${ingredientId}`,
         history: (id: string | number) => `/api/user-ingredients/history/${id}`,

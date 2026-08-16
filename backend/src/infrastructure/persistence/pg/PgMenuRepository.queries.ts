@@ -7,6 +7,7 @@ import type {
 } from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
+import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { MENU_FILTER_CLAUSES } from "infrastructure/persistence/pg/menuFilterClauses";
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
 import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
@@ -21,8 +22,6 @@ const MENU_LIST_GROUP_BY = ` GROUP BY m.menu_id, mc.category_name`;
 // menu_id is the primary key, so ordering by it is already a deterministic tie-breaker
 const MENU_ORDER_BY = ` ORDER BY m.menu_id DESC`;
 
-// person_id itself never leaves the server - guests and other users have no business seeing an
-// internal owner id, only whether the current viewer owns it, so isOwner is computed here instead
 function buildMenuListSelect(ownerPlaceholder: string): string {
     return `
       SELECT
@@ -30,7 +29,7 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
-        COALESCE(m.person_id = ${ownerPlaceholder}, false) AS "isOwner",
+        ${isOwnerColumn("m", ownerPlaceholder)},
         COUNT(DISTINCT mr.recipe_id)::int AS recipe_count,
         -- cast: COUNT() is bigint, which pg returns as a string, not a number
         COUNT(*) OVER()::int AS total_count
@@ -100,6 +99,7 @@ interface MenuRow {
     menuContent: string;
     recipe_count: number;
     total_cooking_time: number;
+    total_calories: number | null;
 }
 
 // unbounded, no filters/pagination - the statistics page needs every menu (incl. recipe count/total cooking time) for the averages and extremes
@@ -111,7 +111,13 @@ export async function findAllMenusUnpaginated(pool: Pool): Promise<unknown[]> {
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
         COUNT(mr.recipe_id)::int AS recipe_count,
-        COALESCE(SUM(r.cooking_time), 0)::int AS total_cooking_time
+        COALESCE(SUM(r.cooking_time), 0)::int AS total_cooking_time,
+        -- null (not a silently undercounted number) once any of the menu's recipes lacks calorie data - same rule PgCalorieRepository.findMenuCalories already uses for a single menu
+        CASE
+          WHEN bool_or(r.id IS NOT NULL AND COALESCE(r.calories_override, r.calories_computed) IS NULL)
+            THEN NULL
+          ELSE SUM(COALESCE(r.calories_override, r.calories_computed))
+        END AS total_calories
       FROM menu m
              LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
              LEFT JOIN menu_recipe mr ON mr.menu_id = m.menu_id

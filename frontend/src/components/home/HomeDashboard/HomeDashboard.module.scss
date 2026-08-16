@@ -15,7 +15,7 @@
     // a rotated phone is too short for the column layout, so it splits into greeting+stats+actions on the left and the recipes/expiring panels on the right
     @include respond-to-short-landscape {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         grid-template-rows: repeat(3, auto);
         gap: var(--s-3);
         padding: var(--s-3) var(--s-4);
@@ -45,15 +45,15 @@
 
     &__panels {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: var(--s-5);
 
         @include respond-to(desktop) {
-            grid-template-columns: 1.65fr 1fr;
+            grid-template-columns: 1.65fr minmax(0, 1fr);
         }
 
         @include respond-to-short-landscape {
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
             gap: var(--s-3);
         }
     }

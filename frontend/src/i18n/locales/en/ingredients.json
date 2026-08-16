@@ -1,6 +1,6 @@
 {
     "page": {
-        "heading": "My Ingredients",
+        "heading": "My ingredients",
         "noIngredients": "You currently have no ingredients.",
         "noSearchResults": "No ingredients match your search.",
         "itemCount_one": "{{count}} item in your pantry",
@@ -48,7 +48,7 @@
         "stepCount": "{{current}} of {{total}}"
     },
     "purchaseModal": {
-        "title": "Purchase History: {{name}}",
+        "title": "Purchase history: {{name}}",
         "loading": "Loading...",
         "noHistory": "No purchase history available.",
         "closeButton": "Close",

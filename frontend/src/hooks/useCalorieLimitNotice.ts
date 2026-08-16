@@ -19,13 +19,20 @@ import {
 } from "utils/calorieLimitNoticeStorage";
 import { computeCalorieSummary } from "utils/computeCalorieSummary";
 
+interface UseCalorieLimitNoticeOptions {
+    // "not ready yet", not "consumed" - the once-per-day notice can still fire later on a route that doesn't skip it
+    skip?: boolean;
+}
+
 // once per (user, calendar day): opens the shared modal the first time today's intake crosses
 // the goal, persisted in localStorage so it survives reloads/restarts, not just this tab session
-export const useCalorieLimitNotice = (): void => {
+export const useCalorieLimitNotice = ({
+    skip: skipOption = false,
+}: UseCalorieLimitNoticeOptions = {}): void => {
     const dispatch = useAppDispatch();
     const isChecking = useAppSelector(selectIsChecking);
     const isAuthed = useAppSelector(selectIsAuthed);
-    const skip = isChecking || !isAuthed;
+    const skip = skipOption || isChecking || !isAuthed;
     const { data: currentUser } = useGetMeQuery(null, { skip });
     const todayKey = useTodayDateKey();
     const range = useMemo(() => getTodayRange(todayKey), [todayKey]);

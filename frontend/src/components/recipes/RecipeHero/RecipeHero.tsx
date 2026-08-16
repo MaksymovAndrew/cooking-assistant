@@ -9,8 +9,8 @@ import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
 
 import { UtensilsMarkSimple } from "components/icons";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
-import { RecipeHeroVisitorActions } from "components/recipes/RecipeHero/RecipeHeroVisitorActions";
 import { Chip } from "components/ui/Chip";
+import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
 import { OwnerActions } from "components/ui/OwnerActions";
 
 import {
@@ -119,11 +119,15 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                     />
                 </div>
             ) : (
-                <RecipeHeroVisitorActions
-                    canFavourite={canFavourite}
-                    favouriteLabel={favouriteLabel}
-                    onLogIntake={onLogIntake}
-                />
+                <div className={styles["recipe-hero__visitor-actions-wrap"]}>
+                    <HeroVisitorActions
+                        canFavourite={canFavourite}
+                        favouriteLabel={favouriteLabel}
+                        guestCtaLabel={t("recipeDetailsPage.guestCta")}
+                        logIntakeLabel={t("recipeDetailsPage.logIntake")}
+                        onLogIntake={onLogIntake}
+                    />
+                </div>
             )}
         </div>
     );

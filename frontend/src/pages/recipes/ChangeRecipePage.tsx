@@ -21,7 +21,7 @@ const ChangeRecipePage: React.FC = () => {
     usePageTitle(t("changeRecipePage.heading"));
 
     return (
-        <AppShell>
+        <AppShell skipNotices>
             <div className={styles["recipe-form-page"]}>
                 <nav
                     aria-label={t("changeRecipePage.breadcrumb")}

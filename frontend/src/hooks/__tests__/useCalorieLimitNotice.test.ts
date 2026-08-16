@@ -52,6 +52,7 @@ const setup = async (
     sessionStatus: "authed" | "checking" = "authed",
     user: CurrentUser = CURRENT_USER,
     queue: ActiveModal[] = [],
+    skip = false,
 ) => {
     mockGetByUrl({
         [API_ROUTES.auth.me]: user,
@@ -63,7 +64,7 @@ const setup = async (
         ui: { queue },
     });
 
-    if (sessionStatus === "authed") {
+    if (sessionStatus === "authed" && !skip) {
         await Promise.all([
             store.dispatch(authApi.endpoints.getMe.initiate(null)),
             store.dispatch(
@@ -75,7 +76,7 @@ const setup = async (
     }
 
     return renderHookWithStore(() => {
-        useCalorieLimitNotice();
+        useCalorieLimitNotice({ skip });
     }, store);
 };
 
@@ -193,6 +194,18 @@ describe("useCalorieLimitNotice", () => {
         expect(
             hasShownCalorieLimitNotice(CURRENT_USER.id, NOW.toDateString()),
         ).toBe(true);
+    });
+
+    it("should not open a modal when skip is set", async () => {
+        const { store } = await setup(
+            [{ calories: 2500 }],
+            "authed",
+            CURRENT_USER,
+            [],
+            true,
+        );
+
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should not reopen the modal on a later mount once already shown this session", async () => {

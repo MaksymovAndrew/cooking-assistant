@@ -1,38 +1,22 @@
 import type { ReactNode } from "react";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 
-import { useAppSelector } from "redux/hooks";
-import {
-    selectIsAuthed,
-    selectIsChecking,
-} from "redux/selectors/sessionSelectors";
-import { selectIsGuest } from "redux/selectors/viewerSelectors";
-import { useGetMeQuery } from "redux/services/authApi";
+import { useSessionGate } from "hooks/useSessionGate";
 
-import { ErrorState } from "components/ui/ErrorState";
+import { SessionErrorState } from "components/layout/SessionErrorState";
 
 import type { LoginRedirectState } from "utils/loginRedirect";
-import { reloadPage } from "utils/reloadPage";
-
-import styles from "./PrivateRoute.module.scss";
 
 interface PrivateRouteProps {
     children?: ReactNode;
 }
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-    const { t } = useTranslation();
     const location = useLocation();
-
-    // drives the session matchers; the slice tracks checking/authed/guest/error
-    useGetMeQuery(null);
-    const isChecking = useAppSelector(selectIsChecking);
-    const isAuthed = useAppSelector(selectIsAuthed);
-    const isGuest = useAppSelector(selectIsGuest);
+    const { isChecking, isAuthed, isGuest } = useSessionGate();
 
     if (isChecking) return <div className="min-h-screen" />;
     if (isAuthed) return <>{children ?? <Outlet />}</>;
@@ -45,14 +29,5 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
         return <Navigate to={ROUTES.login} state={state} replace />;
     }
 
-    return (
-        <div className={styles["private-route-error"]}>
-            <ErrorState
-                title={t("errorState.title")}
-                description={t("sessionError")}
-                onRetry={reloadPage}
-                retryLabel={t("errorState.retry")}
-            />
-        </div>
-    );
+    return <SessionErrorState />;
 };

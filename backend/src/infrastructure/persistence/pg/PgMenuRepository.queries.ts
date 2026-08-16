@@ -7,6 +7,7 @@ import type {
 } from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
+import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { MENU_FILTER_CLAUSES } from "infrastructure/persistence/pg/menuFilterClauses";
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
 import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
@@ -21,8 +22,6 @@ const MENU_LIST_GROUP_BY = ` GROUP BY m.menu_id, mc.category_name`;
 // menu_id is the primary key, so ordering by it is already a deterministic tie-breaker
 const MENU_ORDER_BY = ` ORDER BY m.menu_id DESC`;
 
-// person_id itself never leaves the server - guests and other users have no business seeing an
-// internal owner id, only whether the current viewer owns it, so isOwner is computed here instead
 function buildMenuListSelect(ownerPlaceholder: string): string {
     return `
       SELECT
@@ -30,7 +29,7 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
-        COALESCE(m.person_id = ${ownerPlaceholder}, false) AS "isOwner",
+        ${isOwnerColumn("m", ownerPlaceholder)},
         COUNT(DISTINCT mr.recipe_id)::int AS recipe_count,
         -- cast: COUNT() is bigint, which pg returns as a string, not a number
         COUNT(*) OVER()::int AS total_count

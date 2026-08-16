@@ -24,7 +24,8 @@ function getChangePasswordErrorMessage(error: unknown, t: TFunction): string {
 
 export const useChangePasswordForm = (onSuccess: () => void) => {
     const { t } = useTranslation("settings");
-    const [changePassword] = useChangePasswordMutation();
+    const [changePassword, { isLoading: isSubmitting }] =
+        useChangePasswordMutation();
 
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -80,5 +81,6 @@ export const useChangePasswordForm = (onSuccess: () => void) => {
         setConfirmPassword,
         error,
         handleSubmit,
+        isSubmitting,
     };
 };

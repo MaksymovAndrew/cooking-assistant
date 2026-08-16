@@ -6,6 +6,9 @@ import { ROUTES } from "constants/routes";
 import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecentRecipeCard } from "components/home/RecentRecipes/RecentRecipeCard";
+import { UtensilsMark } from "components/icons";
+import { EmptyState } from "components/ui/EmptyState";
+import { LinkButton } from "components/ui/LinkButton";
 
 import { exceedsCalorieBudget } from "utils/calories";
 
@@ -52,9 +55,16 @@ export const RecentRecipes: React.FC<RecentRecipesProps> = ({
                     ))}
                 </div>
             ) : (
-                <p className={styles["recent-recipes__empty"]}>
-                    {t("recentRecipes.empty")}
-                </p>
+                <EmptyState
+                    icon={UtensilsMark}
+                    title={t("recentRecipes.emptyTitle")}
+                    description={t("recentRecipes.emptyDescription")}
+                    action={
+                        <LinkButton to={ROUTES.addRecipe}>
+                            {t("recentRecipes.emptyAction")}
+                        </LinkButton>
+                    }
+                />
             )}
         </section>
     );

@@ -61,7 +61,7 @@ test("should show the guest landing page at / instead of redirecting to login", 
 test("should let a guest browse the recipe list and open a recipe with no owner or favourite controls", async () => {
     await guestPage.goto("/all-recipes");
     await expect(
-        guestPage.getByRole("heading", { name: "All Recipes", exact: true }),
+        guestPage.getByRole("heading", { name: "All recipes", exact: true }),
     ).toBeVisible();
 
     await guestPage.goto(`/recipe/${recipeId}`);

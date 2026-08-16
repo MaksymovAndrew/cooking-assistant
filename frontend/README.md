@@ -256,9 +256,13 @@ several are visible at once; modals are blocking and strictly serialized. Don't 
 [src/i18n/index.ts](src/i18n/index.ts) initializes i18next with inlined JSON resources (synchronous,
 `useSuspense: false`), `lng: "en"`, `defaultNS: "common"`. One namespace file per domain lives under
 `src/i18n/locales/en/` (`common`, `auth`, `recipes`, `menu`, `ingredients`, `stats`, `profile`,
-`settings`, `home`, `catalog`, `news`). Components/hooks read strings via `useTranslation("<namespace>")`;
-non-React code (Redux middleware, utilities) uses `i18next.t()` directly. Every user-visible string must
-go through i18n - no hardcoded English in components, hooks, or Redux middleware.
+`settings`, `home`, `news`). `catalog` (the 739-item ingredient catalog, ~29.5 KB) is deliberately NOT
+in that inlined set - [src/i18n/loadCatalog.ts](src/i18n/loadCatalog.ts)'s `ensureCatalogLoaded()` adds
+it lazily via a dynamic `import()`, called once from `AppShell`'s module scope, so the public auth pages
+(login, register, forgot/reset password, verify email) never download it. Components/hooks read strings
+via `useTranslation("<namespace>")`; non-React code (Redux middleware, utilities) uses `i18next.t()`
+directly. Every user-visible string must go through i18n - no hardcoded English in components, hooks, or
+Redux middleware.
 
 ## Layering, ESLint boundaries, path aliases
 

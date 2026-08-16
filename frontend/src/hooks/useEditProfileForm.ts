@@ -10,7 +10,8 @@ export const useEditProfileForm = (
     onSuccess: () => void,
 ) => {
     const { t } = useTranslation("profile");
-    const [updateProfile] = useUpdateProfileMutation();
+    const [updateProfile, { isLoading: isSubmitting }] =
+        useUpdateProfileMutation();
 
     const [name, setName] = useState(currentUser?.name ?? "");
     const [surname, setSurname] = useState(currentUser?.surname ?? "");
@@ -50,5 +51,6 @@ export const useEditProfileForm = (
         setAvatar,
         error,
         handleSubmit,
+        isSubmitting,
     };
 };

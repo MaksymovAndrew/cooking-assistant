@@ -54,6 +54,11 @@
     // native scrollbar stays hidden - components/ui/HorizontalScrollbar
     // renders a custom track+thumb below instead, so the same affordance
     // and drag-to-scroll work identically on touch and mouse alike
+    // positioned so the empty-state message can overlay it without collapsing the row's height
+    &__bars-wrapper {
+        position: relative;
+    }
+
     &__bars {
         display: flex;
         align-items: flex-end;
@@ -151,9 +156,14 @@
         }
     }
 
+    // overlaid on the all-zero-height bars rather than replacing them, so the footprint stays fixed
     &__empty {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin: 0;
-        padding: var(--s-6) 0;
         color: var(--text-muted);
         font:
             400 13px Inter,

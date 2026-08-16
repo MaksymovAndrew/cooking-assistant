@@ -44,7 +44,7 @@ export const useLoginForm = () => {
     const { t } = useTranslation("auth");
     const navigate = useNavigate();
     const location = useLocation();
-    const [login] = useLoginMutation();
+    const [login, { isLoading: isSubmitting }] = useLoginMutation();
 
     const [values, setValues] = useState<LoginRequest>(EMPTY_FORM);
     const [loginMode, setLoginMode] = useState<LoginMode>("username");
@@ -164,6 +164,7 @@ export const useLoginForm = () => {
         setMode,
         handleSubmit,
         isLocked,
+        isSubmitting,
         lockoutRemainingMs,
         lockoutTotalMs,
     };

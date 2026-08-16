@@ -61,9 +61,9 @@ describe("StatsPage", () => {
         renderWithRouter(<StatsPage />);
 
         expect(
-            await screen.findByText("Recipe Statistics"),
+            await screen.findByText("Recipe statistics"),
         ).toBeInTheDocument();
-        expect(screen.getByText("Menu Statistics")).toBeInTheDocument();
+        expect(screen.getByText("Menu statistics")).toBeInTheDocument();
     });
 
     it("should render the recipe quick-stat tiles", async () => {

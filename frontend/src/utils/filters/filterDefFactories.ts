@@ -104,6 +104,15 @@ interface NumericRangeFilterConfig<TParams> {
     chipLabel?: (value: NumericRangeValue, t: TFunction) => string;
 }
 
+// a value the backend would reject (zero, negative, non-integer) is dropped, same as an empty field
+function sanitizedBound(raw: string): number | null {
+    const parsed = Number(raw);
+    const isPositiveInteger =
+        raw !== "" && Number.isInteger(parsed) && parsed > 0;
+
+    return isPositiveInteger ? parsed : null;
+}
+
 // urlParam is a prefix: the two URL keys are `${urlParam}_min`/`${urlParam}_max`
 export function numericRangeFilter<TParams>({
     key,
@@ -134,11 +143,19 @@ export function numericRangeFilter<TParams>({
                 value.max === "" ? null : value.max,
             );
         },
-        toParams: (value) =>
-            ({
-                ...(value.min !== "" ? { [minParam]: value.min } : {}),
-                ...(value.max !== "" ? { [maxParam]: value.max } : {}),
-            }) as Partial<TParams>,
+        // only the request params are sanitized - the raw text the user typed is left untouched
+        toParams: (value) => {
+            const min = sanitizedBound(value.min);
+            const max = sanitizedBound(value.max);
+            // an inverted range can't be satisfied by either bound alone - drop the upper one
+            const isInvertedRange = min !== null && max !== null && min > max;
+            const validMax = isInvertedRange ? null : max;
+
+            return {
+                ...(min !== null ? { [minParam]: String(min) } : {}),
+                ...(validMax !== null ? { [maxParam]: String(validMax) } : {}),
+            } as Partial<TParams>;
+        },
         isActive: (value) => value.min !== "" || value.max !== "",
         chipLabel,
     };

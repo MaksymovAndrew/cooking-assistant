@@ -1,13 +1,19 @@
+@use "styles/abstracts" as *;
+
 .expiring-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--s-2);
     padding: var(--s-2) var(--s-3);
     border: 1px solid var(--border);
     border-radius: var(--r-sm);
     background: var(--surface-2);
 
     &__name {
+        @include truncate;
+
+        min-width: 0;
         color: var(--text);
         font:
             500 13px Inter,
@@ -15,6 +21,7 @@
     }
 
     &__badge {
+        flex: none;
         color: var(--text-muted);
         font:
             700 12px "Geist Mono",

@@ -22,6 +22,7 @@ interface CalorieHistoryBarsProps {
 
 const WEEKDAY_FORMAT = new Intl.DateTimeFormat("en-US", { weekday: "short" });
 const PERCENT_MULTIPLIER = 100;
+const DASH = "—";
 
 const barClass = (day: DailyIntakeDay, goal: number, isToday: boolean) => {
     const tone = calorieToneFor(
@@ -45,6 +46,7 @@ const dayLabelClass = (isToday: boolean) =>
         .filter(Boolean)
         .join(" ");
 
+// always renders the same bars/footer skeleton so the card's height never changes between empty and populated
 export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
     days,
     goal,
@@ -63,19 +65,10 @@ export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
         }
     }, [range, days]);
 
-    if (!hasHistory) {
-        return (
-            <p className={styles["calorie-history-chart__empty"]}>
-                {t("dietaryTab.historyEmpty")}
-            </p>
-        );
-    }
-
     const maxValue = Math.max(goal, ...days.map((day) => day.consumed), 1);
-    const goalLinePercent = Math.min(
-        (goal / maxValue) * PERCENT_MULTIPLIER,
-        PERCENT_MULTIPLIER,
-    );
+    const goalLinePercent = hasHistory
+        ? Math.min((goal / maxValue) * PERCENT_MULTIPLIER, PERCENT_MULTIPLIER)
+        : 0;
 
     return (
         <>
@@ -83,45 +76,58 @@ export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
                 className={styles["calorie-history-chart__goal-line"]}
                 style={{ bottom: `${goalLinePercent}%` }}
             />
-            <div
-                ref={barsRef}
-                className={styles["calorie-history-chart__bars"]}
-            >
-                {days.map((day, index) => {
-                    const isToday = index === days.length - 1;
+            <div className={styles["calorie-history-chart__bars-wrapper"]}>
+                <div
+                    ref={barsRef}
+                    className={styles["calorie-history-chart__bars"]}
+                >
+                    {days.map((day, index) => {
+                        const isToday = index === days.length - 1;
 
-                    return (
-                        <div
-                            key={day.date}
-                            className={styles["calorie-history-chart__column"]}
-                        >
-                            {range === "7" && (
-                                <span
-                                    className={
-                                        styles["calorie-history-chart__value"]
-                                    }
-                                >
-                                    {formatKcal(day.consumed)}
-                                </span>
-                            )}
+                        return (
                             <div
-                                className={barClass(day, goal, isToday)}
-                                style={{
-                                    height: `${(day.consumed / maxValue) * PERCENT_MULTIPLIER}%`,
-                                }}
-                            />
-                            {range === "7" && (
-                                <span className={dayLabelClass(isToday)}>
-                                    {isToday
-                                        ? t("dietaryTab.todayLabel")
-                                        : WEEKDAY_FORMAT.format(
-                                              new Date(day.date),
-                                          )}
-                                </span>
-                            )}
-                        </div>
-                    );
-                })}
+                                key={day.date}
+                                className={
+                                    styles["calorie-history-chart__column"]
+                                }
+                            >
+                                {range === "7" && (
+                                    <span
+                                        className={
+                                            styles[
+                                                "calorie-history-chart__value"
+                                            ]
+                                        }
+                                    >
+                                        {hasHistory
+                                            ? formatKcal(day.consumed)
+                                            : DASH}
+                                    </span>
+                                )}
+                                <div
+                                    className={barClass(day, goal, isToday)}
+                                    style={{
+                                        height: `${(day.consumed / maxValue) * PERCENT_MULTIPLIER}%`,
+                                    }}
+                                />
+                                {range === "7" && (
+                                    <span className={dayLabelClass(isToday)}>
+                                        {isToday
+                                            ? t("dietaryTab.todayLabel")
+                                            : WEEKDAY_FORMAT.format(
+                                                  new Date(day.date),
+                                              )}
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+                {!hasHistory && (
+                    <p className={styles["calorie-history-chart__empty"]}>
+                        {t("dietaryTab.historyEmpty")}
+                    </p>
+                )}
             </div>
             <HorizontalScrollbar scrollRef={barsRef} />
             <div className={styles["calorie-history-chart__footer"]}>
@@ -134,12 +140,12 @@ export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
                     <>
                         <span>
                             {t("dietaryTab.avgLabel", {
-                                count: formatKcal(average),
+                                count: hasHistory ? formatKcal(average) : DASH,
                             })}
                         </span>
                         <span>
                             {t("dietaryTab.daysOnGoalLabel", {
-                                onGoal: daysOnGoal,
+                                onGoal: hasHistory ? daysOnGoal : DASH,
                                 total: days.length,
                             })}
                         </span>

@@ -1,0 +1,33 @@
+@use "styles/abstracts" as *;
+
+.hero-visitor-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3);
+
+    &__favourite {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: var(--s-2);
+        height: 46px;
+        padding: 0 var(--s-4);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--text);
+        font:
+            600 14px Inter,
+            sans-serif;
+        cursor: default;
+    }
+
+    &__log-intake {
+        flex: 1;
+
+        @include respond-to(tablet) {
+            flex: none;
+        }
+    }
+}

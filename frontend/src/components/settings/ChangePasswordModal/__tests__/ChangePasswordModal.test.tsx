@@ -53,6 +53,16 @@ describe("ChangePasswordModal", () => {
         expect(onClose).toHaveBeenCalledTimes(1);
     });
 
+    it("should disable the submit button while the request is in flight", async () => {
+        mockedPost.mockReturnValue(new Promise(() => undefined));
+
+        renderWithProviders(<ChangePasswordModal onClose={jest.fn()} />);
+
+        await fillAndSave();
+
+        expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
+    });
+
     it("should call onClose when Cancel is clicked", async () => {
         const onClose = jest.fn();
 

@@ -20,7 +20,7 @@ const CreateMenuPage: React.FC = () => {
     usePageTitle(t("createMenuPage.heading"));
 
     return (
-        <AppShell>
+        <AppShell skipNotices>
             <div className={styles["menu-form-page"]}>
                 <nav
                     aria-label={t("createMenuPage.breadcrumb")}

@@ -38,6 +38,7 @@ const LoginPage: React.FC = () => {
                 submitLabel={t("loginPage.submit")}
                 submitError={form.error}
                 isLocked={form.isLocked}
+                isSubmitting={form.isSubmitting}
                 lockoutRemainingMs={form.lockoutRemainingMs}
                 lockoutTotalMs={form.lockoutTotalMs}
             />

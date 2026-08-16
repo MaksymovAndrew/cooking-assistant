@@ -36,4 +36,18 @@ describe("LoginPage", () => {
             replace: true,
         });
     });
+
+    it("should disable the submit button and fields while the request is in flight", async () => {
+        mockedPost.mockReturnValue(new Promise(() => undefined));
+
+        renderWithRouter(<LoginPage />);
+
+        await userEvent.type(screen.getByLabelText("Username"), USERNAME);
+        await userEvent.type(screen.getByLabelText("Password"), PASSWORD);
+        await userEvent.click(screen.getByRole("button", { name: "Log In" }));
+
+        expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
+        expect(screen.getByLabelText("Username")).toBeDisabled();
+        expect(screen.getByLabelText("Password")).toBeDisabled();
+    });
 });

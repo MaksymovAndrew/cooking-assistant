@@ -48,7 +48,11 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                     <Button type="button" variant="secondary" onClick={onClose}>
                         {t("editProfileModal.cancelButton")}
                     </Button>
-                    <Button type="submit" form={FORM_ID}>
+                    <Button
+                        type="submit"
+                        form={FORM_ID}
+                        loading={form.isSubmitting}
+                    >
                         {t("editProfileModal.saveButton")}
                     </Button>
                 </>

@@ -58,6 +58,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                         form={FORM_ID}
                         variant="danger"
                         disabled={form.isLocked}
+                        loading={form.isSubmitting}
                     >
                         {t("deleteAccountModal.confirmButton")}
                     </Button>

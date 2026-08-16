@@ -58,6 +58,7 @@ const setup = async (
     pantry: UserIngredient[],
     sessionStatus: "authed" | "checking" = "authed",
     queue: ActiveModal[] = [],
+    skip = false,
 ) => {
     mockGetByUrl({ [API_ROUTES.userIngredients.list]: pantry });
 
@@ -66,14 +67,14 @@ const setup = async (
         ui: { queue },
     });
 
-    if (sessionStatus === "authed") {
+    if (sessionStatus === "authed" && !skip) {
         await store.dispatch(
             userIngredientsApi.endpoints.getUserIngredients.initiate(null),
         );
     }
 
     return renderHookWithStore(() => {
-        useExpiredIngredientsNotice();
+        useExpiredIngredientsNotice({ skip });
     }, store);
 };
 
@@ -159,6 +160,29 @@ describe("useExpiredIngredientsNotice", () => {
         });
 
         expect(hasShownExpiredIngredientsNotice()).toBe(true);
+    });
+
+    it("should not fetch the pantry or open a modal when skip is set", async () => {
+        const { store } = await setup([EXPIRED_INGREDIENT], "authed", [], true);
+
+        expect(selectActiveModal(store.getState())).toBeNull();
+    });
+
+    it("should still be able to fire on a later, non-skipping mount after an earlier mount was skipped", async () => {
+        const { store } = await setup([EXPIRED_INGREDIENT], "authed", [], true);
+
+        expect(selectActiveModal(store.getState())).toBeNull();
+
+        await store.dispatch(
+            userIngredientsApi.endpoints.getUserIngredients.initiate(null),
+        );
+        renderHookWithStore(() => {
+            useExpiredIngredientsNotice({ skip: false });
+        }, store);
+
+        expect(selectActiveModal(store.getState())).toMatchObject({
+            type: MODAL_TYPE.expiredIngredients,
+        });
     });
 
     it("should not reopen the modal on a later mount once already shown this session", async () => {

@@ -30,7 +30,8 @@ const TICK_INTERVAL_MS = 1000;
 export const useDeleteAccountForm = (login: string) => {
     const { t } = useTranslation("settings");
     const navigate = useNavigate();
-    const [deleteAccount] = useDeleteAccountMutation();
+    const [deleteAccount, { isLoading: isSubmitting }] =
+        useDeleteAccountMutation();
 
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -141,6 +142,7 @@ export const useDeleteAccountForm = (login: string) => {
         error,
         handleSubmit,
         isLocked,
+        isSubmitting,
         lockoutRemainingMs,
         lockoutTotalMs,
     };

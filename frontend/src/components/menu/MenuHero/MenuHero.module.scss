@@ -65,42 +65,6 @@
         }
     }
 
-    &__visitor-actions {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--s-3);
-        margin-bottom: var(--s-5);
-    }
-
-    &__favourite {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        height: 40px;
-        padding: 0 16px;
-        border: 1px solid var(--border);
-        border-radius: var(--r-sm);
-        background: var(--surface);
-        color: var(--text);
-        cursor: default;
-        font:
-            600 13px Inter,
-            sans-serif;
-
-        svg {
-            color: var(--brand);
-        }
-    }
-
-    &__visitor-log-intake {
-        flex: 1;
-
-        @include respond-to(tablet) {
-            flex: none;
-        }
-    }
-
     // labeled 3-up stats row - tablet+ only (mobile uses the compact unlabeled meta row below instead)
     &__stats {
         display: none;

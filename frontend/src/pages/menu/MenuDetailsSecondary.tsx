@@ -6,10 +6,10 @@ import type { MenuDetailRecipe } from "types/menu";
 import { useAppSelector } from "redux/hooks";
 import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
 
-import { MenuHeroVisitorActions } from "components/menu/MenuHero/MenuHeroVisitorActions";
 import { MenuHeroActions } from "components/menu/MenuHeroActions";
 import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
 import { MenuRecipesPanel } from "components/menu/MenuRecipesPanel";
+import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
 
 import { aggregateMenuIngredients } from "utils/menuUtils";
 import { filterAllergens } from "utils/recipeAllergens";
@@ -73,9 +73,10 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
                         logIntakeLabel={logIntakeLabel}
                     />
                 ) : (
-                    <MenuHeroVisitorActions
+                    <HeroVisitorActions
                         canFavourite={canFavourite}
                         favouriteLabel={favouriteLabel}
+                        guestCtaLabel={t("menuDetailsPage.guestCta")}
                         logIntakeLabel={logIntakeLabel}
                         onLogIntake={onLogIntake}
                     />

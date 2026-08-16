@@ -29,6 +29,7 @@ interface LoginFormProps {
     submitLabel: string;
     submitError?: string | null;
     isLocked?: boolean;
+    isSubmitting?: boolean;
     lockoutRemainingMs?: number | null;
     lockoutTotalMs?: number | null;
 }
@@ -42,6 +43,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     submitLabel,
     submitError,
     isLocked = false,
+    isSubmitting = false,
     lockoutRemainingMs = null,
     lockoutTotalMs = null,
 }) => {
@@ -81,7 +83,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     type={loginMode === "email" ? "email" : "text"}
                     value={values.login}
                     hasError={hasCredentialError}
-                    disabled={isLocked}
+                    disabled={isLocked || isSubmitting}
                     onChange={(e) => {
                         onFieldChange("login", e.target.value);
                     }}
@@ -103,7 +105,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     id={PW_FIELD_ID}
                     value={values.password}
                     hasError={hasCredentialError}
-                    disabled={isLocked}
+                    disabled={isLocked || isSubmitting}
                     onChange={(e) => {
                         onFieldChange("password", e.target.value);
                     }}
@@ -120,6 +122,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             <Button
                 type="submit"
                 disabled={isLocked}
+                loading={isSubmitting}
                 className={styles["login-form__submit"]}
             >
                 {submitLabel}

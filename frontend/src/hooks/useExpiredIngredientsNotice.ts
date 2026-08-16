@@ -58,20 +58,26 @@ const isExpiringIngredient = (
     item: ExpiredPantryIngredient | null,
 ): item is ExpiredPantryIngredient => item !== null;
 
+interface UseExpiredIngredientsNoticeOptions {
+    // "not ready yet", not "consumed" - the one-shot notice can still fire later on a route that doesn't skip it
+    skip?: boolean;
+}
+
 // one-shot per tab session: opens the shared modal the first time the pantry is found to contain an expired ingredient after login
-export const useExpiredIngredientsNotice = (): void => {
+export const useExpiredIngredientsNotice = ({
+    skip: skipOption = false,
+}: UseExpiredIngredientsNoticeOptions = {}): void => {
     const dispatch = useAppDispatch();
     const isChecking = useAppSelector(selectIsChecking);
     const isAuthed = useAppSelector(selectIsAuthed);
     const activeModal = useAppSelector(selectActiveModal);
-    const { data: pantry } = useGetUserIngredientsQuery(null, {
-        skip: isChecking || !isAuthed,
-    });
+    const skip = skipOption || isChecking || !isAuthed;
+    const { data: pantry } = useGetUserIngredientsQuery(null, { skip });
     const hasFired = useRef(false);
     const enqueuedId = useRef<string | null>(null);
 
     useEffect(() => {
-        const notReady = isChecking || !isAuthed || !pantry;
+        const notReady = skip || !pantry;
 
         if (notReady || hasFired.current) {
             return;
@@ -98,7 +104,7 @@ export const useExpiredIngredientsNotice = (): void => {
                 ingredients: expired,
             }),
         ).payload.id;
-    }, [isChecking, isAuthed, pantry, dispatch]);
+    }, [skip, pantry, dispatch]);
 
     // marks on presentation, not on enqueue - a notice still waiting behind another modal
     // would otherwise be silenced before it was ever seen

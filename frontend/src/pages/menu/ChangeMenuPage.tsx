@@ -21,7 +21,7 @@ const ChangeMenuPage: React.FC = () => {
     usePageTitle(t("changeMenuPage.heading"));
 
     return (
-        <AppShell>
+        <AppShell skipNotices>
             <div className={styles["menu-form-page"]}>
                 <nav
                     aria-label={t("changeMenuPage.breadcrumb")}

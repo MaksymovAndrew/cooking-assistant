@@ -1,5 +1,7 @@
 import type { Pool } from "pg";
 
+import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
+
 interface RecipeListRow {
     id: number;
     title: string;
@@ -49,7 +51,7 @@ export async function findRecipeByIdWithIngredients(
     const result = await pool.query<RecipeDetailRow>(
         `SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
                   r.calories_override, r.calories_computed,
-                  COALESCE(r.person_id = $2, false) AS "isOwner",
+                  ${isOwnerColumn("r", "$2")},
                   COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                   json_agg(
                       json_build_object(

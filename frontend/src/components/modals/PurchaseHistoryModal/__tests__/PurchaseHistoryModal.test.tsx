@@ -65,7 +65,7 @@ describe("PurchaseHistoryModal", () => {
         );
 
         expect(
-            await screen.findByText("Purchase History: Potato"),
+            await screen.findByText("Purchase history: Potato"),
         ).toBeInTheDocument();
         expect(
             screen.getByRole("button", { name: "Close" }),

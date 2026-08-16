@@ -40,13 +40,13 @@ test("should open the purchase history modal and show the recorded purchase", as
     await tomatoCard.getByRole("button", { name: "Details" }).click();
 
     await expect(
-        page.getByRole("heading", { name: "Purchase History: Tomato" }),
+        page.getByRole("heading", { name: "Purchase history: Tomato" }),
     ).toBeVisible();
     await expect(page.getByText("No purchase history available.")).toBeHidden();
 
     await page.getByRole("button", { name: "Close" }).click();
     await expect(
-        page.getByRole("heading", { name: "Purchase History: Tomato" }),
+        page.getByRole("heading", { name: "Purchase history: Tomato" }),
     ).toBeHidden();
 });
 

@@ -33,7 +33,7 @@ describe("RecentRecipes", () => {
         ).toHaveAttribute("href", "/my-recipes");
     });
 
-    it("should show an empty message when there are no recent recipes", () => {
+    it("should show an empty state with a link to add a recipe when there are no recent recipes", () => {
         renderWithRouter(
             <RecentRecipes
                 recipes={[]}
@@ -42,9 +42,10 @@ describe("RecentRecipes", () => {
             />,
         );
 
+        expect(screen.getByText("No recipes yet")).toBeInTheDocument();
         expect(
-            screen.getByText("No recipes yet - add your first one."),
-        ).toBeInTheDocument();
+            screen.getByRole("link", { name: "Add a recipe" }),
+        ).toHaveAttribute("href", "/add-recipe");
     });
 
     it("should recolor a card whose calories exceed what's left today", () => {

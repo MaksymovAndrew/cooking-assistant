@@ -20,11 +20,14 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.2 - 2026-08-16
+
 ### Backend
 
 - Fixed: Buying more of an ingredient you already have no longer resets its shelf life - older stock now keeps its own expiry date instead of being treated as freshly bought.
 - Security: The recipe list no longer includes the raw internal id of who created each recipe - the same fix 4.1 already made to the recipe/menu search and browse endpoints.
 - Changed: The statistics page's numbers are now calculated on the server instead of being downloaded and calculated in the browser, so the page loads a much smaller amount of data.
+- Fixed: Recipe and menu filters that accepted a cooking-time or calorie range of 0 or a maximum smaller than the minimum now ignore the invalid part instead of sending it to the server.
 
 ### Frontend
 
@@ -54,6 +57,14 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: The preset profile avatars (sushi, herb sprig, and others) are now properly centred and a consistent size - some previously sat off-centre or looked notably smaller/larger than the rest.
 - Added: A 6th home tile shows how many calories you have left today once you've set a daily goal.
 - Changed: Settings rows that aren't available yet (Language & Region, notification toggles) now show a "Coming soon" badge at every screen size, instead of relying on description text that was hidden on mobile.
+- Fixed: The calorie history card on the Dietary tab no longer changes height when it has no data to show, or when switching between the 7-day and 30-day views - it stays the same size, with dashes in place of numbers.
+- Fixed: A handful of pages (home dashboard, recipe details, menu details, and others) could scroll sideways on narrow screens when they held an unusually long recipe name, ingredient name, or display name.
+- Changed: Page headings and section titles now use a consistent capitalization style across the app (e.g. "Recipe statistics", "My ingredients").
+- Added: The "Recent recipes" panel on the home dashboard now shows a proper empty state with a button to add your first recipe, instead of a plain line of text.
+- Fixed: The Save/Change password/Delete account/Log in buttons now show a loading state and can't be clicked again while the request is already in flight.
+- Fixed: Creating or editing a recipe or menu can no longer be interrupted by an unrelated "ingredients expired" or "over your calorie goal" popup while you're mid-edit.
+- Changed: The ingredient catalog used to translate ingredient/unit/category names now loads separately from the rest of the app, so the login and registration screens have less to download.
+- Changed: The two calorie-tracking requests that used to fire separately on every page load are now combined into one.
 
 ### Project
 

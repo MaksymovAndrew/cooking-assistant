@@ -38,7 +38,11 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                     <Button type="button" variant="secondary" onClick={onClose}>
                         {t("changePasswordModal.cancelButton")}
                     </Button>
-                    <Button type="submit" form={FORM_ID}>
+                    <Button
+                        type="submit"
+                        form={FORM_ID}
+                        loading={form.isSubmitting}
+                    >
                         {t("changePasswordModal.saveButton")}
                     </Button>
                 </>

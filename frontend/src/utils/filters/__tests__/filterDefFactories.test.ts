@@ -17,6 +17,11 @@ interface TestParams {
     sort_by?: "asc" | "desc";
 }
 
+interface RangeParams {
+    min_calories?: string;
+    max_calories?: string;
+}
+
 describe("textFilter", () => {
     const def = textFilter<TestParams>({ key: "search", urlParam: "q" });
 
@@ -116,13 +121,6 @@ describe("numericRangeFilter", () => {
         expect(params.has("val_max")).toBe(false);
     });
 
-    it("should map only the set bounds to request params", () => {
-        expect(def.toParams({ min: "10", max: "" })).toEqual({
-            min_val: "10",
-        });
-        expect(def.toParams({ min: "", max: "" })).toEqual({});
-    });
-
     it("should be active when either bound is set", () => {
         expect(def.isActive({ min: "", max: "" })).toBe(false);
         expect(def.isActive({ min: "10", max: "" })).toBe(true);
@@ -197,5 +195,47 @@ describe("enumFilter", () => {
     it("should be active only when set", () => {
         expect(def.isActive(null)).toBe(false);
         expect(def.isActive("asc")).toBe(true);
+    });
+});
+
+describe("numericRangeFilter toParams", () => {
+    const filter = numericRangeFilter<RangeParams>({
+        key: "calories",
+        urlParam: "calories",
+        minParam: "min_calories",
+        maxParam: "max_calories",
+    });
+
+    it("should pass through a valid min/max range", () => {
+        expect(filter.toParams({ min: "10", max: "20" })).toEqual({
+            min_calories: "10",
+            max_calories: "20",
+        });
+    });
+
+    it("should drop a zero min instead of sending a value the backend rejects", () => {
+        expect(filter.toParams({ min: "0", max: "20" })).toEqual({
+            max_calories: "20",
+        });
+    });
+
+    it("should drop a negative max instead of sending a value the backend rejects", () => {
+        expect(filter.toParams({ min: "10", max: "-5" })).toEqual({
+            min_calories: "10",
+        });
+    });
+
+    it("should drop the max when min is greater than max, keeping the min the user typed", () => {
+        expect(filter.toParams({ min: "50", max: "10" })).toEqual({
+            min_calories: "50",
+        });
+    });
+
+    it("should send nothing for an empty range", () => {
+        expect(filter.toParams({ min: "", max: "" })).toEqual({});
+    });
+
+    it("should drop a non-integer bound", () => {
+        expect(filter.toParams({ min: "1.5", max: "" })).toEqual({});
     });
 });

@@ -1,7 +1,7 @@
 {
     "statsPage": {
-        "recipeSectionHeading": "Recipe Statistics",
-        "menuSectionHeading": "Menu Statistics",
+        "recipeSectionHeading": "Recipe statistics",
+        "menuSectionHeading": "Menu statistics",
 
         "totalRecipesTile": "Total recipes",
         "totalMenusTile": "Total menus",
@@ -18,11 +18,11 @@
         "avgCaloriesTile": "Avg calories",
         "perRecipeCaption": "per recipe",
 
-        "recipeTypesHeading": "Recipe Types Summary",
+        "recipeTypesHeading": "Recipe types summary",
         "recipeTypesSubtitle": "Distribution across {{count}} recipes",
         "avgTimeByTypeHeading": "Average cooking time by recipe types",
         "avgTimeByTypeSubtitle": "In minutes",
-        "menuCategoriesHeading": "Menu Categories Summary",
+        "menuCategoriesHeading": "Menu categories summary",
         "menuCategoriesSubtitle": "Distribution across {{count}} menus",
         "avgTimeByCategoryHeading": "Average total time by category",
         "avgTimeByCategorySubtitle": "Cook time per menu",

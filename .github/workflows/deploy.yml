@@ -104,7 +104,12 @@ jobs:
                   printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
                   chmod 600 ~/.ssh/deploy_key ~/.ssh/known_hosts
 
+                  # The owner is sent along because only GitHub knows who owns the repo right now,
+                  # and a transfer changes the GHCR namespace - the server must not hold a stale copy.
+                  # GHCR paths are lowercase, GitHub logins are not.
+                  OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+
                   # deploy.sh pulls the images, runs migrations, waits for the health check and
-                  # restores the previous tag if the backend never reports healthy
+                  # restores the previous release if the backend never reports healthy
                   ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes \
-                      "$DEPLOY_USER@$DEPLOY_HOST" "$RELEASE_TAG"
+                      "$DEPLOY_USER@$DEPLOY_HOST" "$OWNER $RELEASE_TAG"

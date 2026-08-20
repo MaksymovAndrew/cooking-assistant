@@ -29,6 +29,7 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: Releases are built for the server's processor and delivered over SSH: a deploy applies migrations, waits for the app to report healthy, and puts the previous version back automatically if it does not.
 - Added: The production setup - container definitions, routing, the deploy script and an environment template - now lives in the repository instead of only inside a hosting provider's control panel.
 - Added: Any published release can be re-deployed or rolled back from the Actions tab without creating a new tag.
+- Changed: Routine dependency maintenance - refreshed a development-only lint plugin.
 
 ## 4.2 - 2026-08-16
 

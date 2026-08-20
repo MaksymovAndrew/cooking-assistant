@@ -108,17 +108,23 @@ manual step needed.
 ## Production deployment
 
 Deployment is tag-triggered: push a `v*` tag and [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
-builds both Docker images, pushes them to GHCR, runs DB migrations as an Azure Container Apps Job, then
-updates the two Container Apps.
+builds both Docker images for `linux/arm64`, pushes them to GHCR, then connects to the server over SSH and
+runs [deploy/deploy.sh](deploy/deploy.sh) - which applies migrations, starts the new containers, and waits
+for the backend health check, restoring the previous image tag automatically if it never reports healthy.
 
 ```bash
 git tag v2.0
 git push origin v2.0
 ```
 
-Infrastructure: Azure Container Apps (Germany West Central, scale-to-zero), Neon PostgreSQL (Frankfurt),
-GHCR for images, Azure managed certificates for HTTPS. Secrets and env vars live in the Container App
-configuration - never in the repo.
+The same workflow can be started manually from the Actions tab to re-deploy or roll back to any published
+tag without inventing a new one.
+
+Infrastructure: a single self-hosted ARM server (Ubuntu 24.04, Frankfurt) running Docker, with Caddy as a
+shared reverse proxy that obtains and renews HTTPS certificates automatically, PostgreSQL in a container
+next to the app, and GHCR for images. The shape of the deployed stack lives in [deploy/](deploy/); secrets
+live only in a `.env` on the server and never in the repo - see [deploy/.env.example](deploy/.env.example)
+for the variables it must define.
 
 ## How we work (contributing)
 
@@ -132,8 +138,8 @@ configuration - never in the repo.
 
 - Frontend: React 19, TypeScript, Vite 8, React Router v7, Redux Toolkit + RTK Query, SCSS modules, axios, i18next + react-i18next, Recharts; served by nginx in production
 - Backend: Node.js, TypeScript, Express 5, `pg`, `node-pg-migrate`, `jsonwebtoken`, `bcryptjs`, `cookie-parser`, `zod`, `helmet`, `pino`, `tsx` (dev) / `tsup` + `node` (prod)
-- Database: PostgreSQL 16 (Neon managed, free tier)
-- Infra: Docker multi-stage builds, GHCR, GitHub Actions, Azure Container Apps, Azure managed SSL
+- Database: PostgreSQL 18, running as a container next to the app
+- Infra: Docker multi-stage builds (arm64), GHCR, GitHub Actions, Docker Compose on a self-hosted ARM server, Caddy with automatic HTTPS
 - Tests: Jest on both sides (backend ts-jest + Supertest, frontend @swc/jest + React Testing Library + jsdom, 80% coverage gate each) plus a Playwright e2e suite and a Testcontainers real-Postgres repository suite
 
 Both sides have a Jest test suite with an 80% coverage gate: backend (`npm --prefix backend test`) uses ts-jest + Supertest with fake repositories; frontend (`npm --prefix frontend test`) uses @swc/jest + React Testing Library + jsdom (~220 test files). Run `npm test` from the root to run both. The e2e suite (`npm run test:e2e`) drives real login/CRUD flows through Chromium; the db-integration suite (`npm run test:db`) runs backend repositories against a real Postgres started by Testcontainers - Docker must be running locally for that one (GitHub-hosted CI runners already have Docker running, so nothing to configure there).

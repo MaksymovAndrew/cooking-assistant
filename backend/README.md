@@ -37,7 +37,8 @@ TypeScript toolchain). The [Dockerfile](Dockerfile) handles this in two stages:
 2. **runner** - installs prod-only deps (`npm ci --omit=dev`), copies `dist/` and `migrations/`, runs
    `node dist/index.js`.
 
-Migrations and seed run before the new image goes live, via an Azure Container Apps Job that runs:
+Migrations and seed run before the new containers go live, as a one-shot container started by the
+deploy script:
 
 ```bash
 node dist/scripts/deploy-db.js
@@ -45,8 +46,8 @@ node dist/scripts/deploy-db.js
 
 `deploy-db.js` is a single entry point that runs migrations then seed in one Node process (no shell needed).
 
-All secrets (`JWT_SECRET_KEY`, `DB_*`, `CORS_ORIGIN`, etc.) are set as Container App environment variables -
-never baked into the image. See [Required configuration](#configuration) for the full list.
+All secrets (`JWT_SECRET_KEY`, `DB_*`, `CORS_ORIGIN`, etc.) come from an `.env` file that lives only on the
+server - never baked into the image, never in the repo. See [Required configuration](#configuration) for the full list.
 
 ## Configuration
 
@@ -213,7 +214,7 @@ backend/
 ├── .env                  JWT_SECRET_KEY + DB_* + PORT (you create - gitignored)
 │
 └── src/
-    ├── scripts/             migrate.ts, seed.ts (thin CLI entry points); runMigrations.ts, runSeed.ts (shared logic); deploy-db.ts (migrate + seed in one process, used by the Container Apps Job)
+    ├── scripts/             migrate.ts, seed.ts (thin CLI entry points); runMigrations.ts, runSeed.ts (shared logic); deploy-db.ts (migrate + seed in one process, used by the deploy script)
     ├── app.ts                createApp(controllers); mounts middleware, health, and routers without listening
     ├── index.ts              runtime entry; listens on 3000 and shuts down server + pg pool cleanly
     ├── composition-root.ts   dependency injection: buildControllers(deps), plus real pg wiring

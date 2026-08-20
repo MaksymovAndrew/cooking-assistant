@@ -20,6 +20,16 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.3 - 2026-08-20
+
+### Project
+
+- Changed: The app now runs on its own always-on server instead of a managed hosting platform, so it responds straight away instead of taking up to twenty seconds to wake up after a quiet spell.
+- Changed: The database moved onto that same server. Backups now run every night and each one is verified by restoring it before older copies are cleaned up.
+- Changed: Releases are built for the server's processor and delivered over SSH: a deploy applies migrations, waits for the app to report healthy, and puts the previous version back automatically if it does not.
+- Added: The production setup - container definitions, routing, the deploy script and an environment template - now lives in the repository instead of only inside a hosting provider's control panel.
+- Added: Any published release can be re-deployed or rolled back from the Actions tab without creating a new tag.
+
 ## 4.2 - 2026-08-16
 
 ### Backend

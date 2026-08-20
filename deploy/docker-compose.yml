@@ -1,0 +1,73 @@
+name: cooking-assistant
+
+# Deployed to /srv/cooking-assistant on the server. No service publishes a host port: the reverse
+# proxy reaches backend/frontend over the shared external `edge` network, and Postgres is reachable
+# only from this project's own network.
+services:
+    postgres:
+        image: postgres:18-alpine
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            # PG18 keeps data in /var/lib/postgresql/18/docker - mount the declared parent volume
+            - postgres-data:/var/lib/postgresql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+            interval: 10s
+            timeout: 5s
+            retries: 12
+        mem_limit: 1g
+        cpus: 1.0
+
+    # Migrations + seed, run once per deploy. Behind a profile so `up` never starts it.
+    migrate:
+        image: ${BACKEND_IMAGE}:${IMAGE_TAG}
+        profiles: ["tools"]
+        restart: "no"
+        env_file: .env
+        command: ["node", "dist/scripts/deploy-db.js"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+
+    backend:
+        image: ${BACKEND_IMAGE}:${IMAGE_TAG}
+        restart: unless-stopped
+        env_file: .env
+        healthcheck:
+            test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health | grep -q ok"]
+            interval: 15s
+            timeout: 5s
+            retries: 5
+            start_period: 20s
+        depends_on:
+            postgres:
+                condition: service_healthy
+        networks:
+            default: {}
+            edge:
+                # explicit alias so another project can also have a service called `backend`
+                aliases: [cooking-backend]
+        mem_limit: 640m
+        cpus: 1.5
+
+    frontend:
+        image: ${FRONTEND_IMAGE}:${IMAGE_TAG}
+        restart: unless-stopped
+        networks:
+            default: {}
+            edge:
+                aliases: [cooking-frontend]
+        mem_limit: 96m
+        cpus: 0.5
+
+networks:
+    edge:
+        name: edge
+        external: true
+
+volumes:
+    postgres-data:

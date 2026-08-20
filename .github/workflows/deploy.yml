@@ -1,142 +1,115 @@
 name: Deploy
 
 on:
-  push:
-    tags:
-      - 'v*'
+    push:
+        tags:
+            - "v*"
+    # lets a release be re-deployed or rolled back without inventing a new tag
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: Image tag to build and deploy
+                required: true
+                default: latest
 
 permissions:
-  id-token: write   # OIDC federated credential for Azure login
-  contents: read
-  packages: write   # push to GHCR
+    contents: read
+    packages: write # push to GHCR
 
 env:
-  REGISTRY: ghcr.io
-  # resolved from the current repo owner (not hardcoded) so a repo transfer/rename can't silently
-  # break this again - GITHUB_TOKEN only has packages:write for the current owner's namespace
-  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/cooking-backend
-  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/cooking-frontend
+    REGISTRY: ghcr.io
+    # resolved from the current repo owner (not hardcoded) so a repo transfer/rename can't silently
+    # break this again - GITHUB_TOKEN only has packages:write for the current owner's namespace
+    BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/cooking-backend
+    FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/cooking-frontend
+    RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
-  build-backend:
-    name: Build & push backend image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
+    build-backend:
+        name: Build & push backend image
+        # native arm64 runner: the server is ARM, and emulating it on x86 takes ~20x longer
+        runs-on: ubuntu-24.04-arm
+        steps:
+            - uses: actions/checkout@v7
 
-      - uses: docker/login-action@v4.6.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+            - uses: docker/login-action@v4.6.0
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/metadata-action@v6
-        id: meta
-        with:
-          images: ${{ env.BACKEND_IMAGE }}
-          tags: |
-            type=ref,event=tag
-            type=raw,value=latest
+            - uses: docker/metadata-action@v6
+              id: meta
+              with:
+                  images: ${{ env.BACKEND_IMAGE }}
+                  tags: |
+                      type=raw,value=${{ env.RELEASE_TAG }}
+                      type=raw,value=latest
 
-      - uses: docker/build-push-action@v7
-        with:
-          context: ./backend
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+            - uses: docker/build-push-action@v7
+              with:
+                  context: ./backend
+                  platforms: linux/arm64
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
 
-  build-frontend:
-    name: Build & push frontend image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
+    build-frontend:
+        name: Build & push frontend image
+        runs-on: ubuntu-24.04-arm
+        steps:
+            - uses: actions/checkout@v7
 
-      - uses: docker/login-action@v4.6.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+            - uses: docker/login-action@v4.6.0
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/metadata-action@v6
-        id: meta
-        with:
-          images: ${{ env.FRONTEND_IMAGE }}
-          tags: |
-            type=ref,event=tag
-            type=raw,value=latest
+            - uses: docker/metadata-action@v6
+              id: meta
+              with:
+                  images: ${{ env.FRONTEND_IMAGE }}
+                  tags: |
+                      type=raw,value=${{ env.RELEASE_TAG }}
+                      type=raw,value=latest
 
-      - uses: docker/build-push-action@v7
-        with:
-          context: ./frontend
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            VITE_API_URL=https://${{ vars.API_DOMAIN }}
+            - uses: docker/build-push-action@v7
+              with:
+                  context: ./frontend
+                  platforms: linux/arm64
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  build-args: |
+                      VITE_API_URL=https://${{ vars.API_DOMAIN }}
 
-  deploy:
-    name: Migrate & deploy to Azure
-    runs-on: ubuntu-latest
-    needs: [build-backend, build-frontend]
-    environment: production
-    steps:
-      - uses: actions/checkout@v7
+    deploy:
+        name: Migrate & deploy to the server
+        runs-on: ubuntu-latest
+        needs: [build-backend, build-frontend]
+        environment: production
+        steps:
+            # The deploy key is pinned server-side to /srv/bin/deploy.sh with a forced command, so
+            # the tag below is all this job can ask for - it cannot get a shell.
+            - name: Deploy over SSH
+              env:
+                  DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+                  DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+                  DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+                  SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+              run: |
+                  install -m 700 -d ~/.ssh
+                  printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+                  printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+                  chmod 600 ~/.ssh/deploy_key ~/.ssh/known_hosts
 
-      # Docker/OCI image paths must be lowercase; docker/metadata-action already lowercases
-      # for the build jobs above, but this job interpolates BACKEND_IMAGE/FRONTEND_IMAGE
-      # straight into az CLI commands, so it needs the same normalization done explicitly
-      - name: Compute lowercase image refs
-        run: |
-          echo "BACKEND_IMAGE_LC=$(echo '${{ env.BACKEND_IMAGE }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
-          echo "FRONTEND_IMAGE_LC=$(echo '${{ env.FRONTEND_IMAGE }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+                  # The owner is sent along because only GitHub knows who owns the repo right now,
+                  # and a transfer changes the GHCR namespace - the server must not hold a stale copy.
+                  # GHCR paths are lowercase, GitHub logins are not.
+                  OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
-      - uses: azure/login@v3
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Run database migrations
-        env:
-          BACKEND_TAG: ${{ env.BACKEND_IMAGE_LC }}:${{ github.ref_name }}
-        run: |
-          # point the migration Job at the freshly built image before starting it
-          az containerapp job update \
-            --name "${{ vars.MIGRATION_JOB }}" \
-            --resource-group "${{ vars.AZURE_RG }}" \
-            --image "$BACKEND_TAG" \
-            --command "node" \
-            --args "dist/scripts/deploy-db.js"
-
-          EXEC=$(az containerapp job start \
-            --name "${{ vars.MIGRATION_JOB }}" \
-            --resource-group "${{ vars.AZURE_RG }}" \
-            --query name -o tsv)
-
-          echo "Waiting for migration execution: $EXEC"
-          for _ in $(seq 1 60); do
-            STATUS=$(az containerapp job execution show \
-              --name "${{ vars.MIGRATION_JOB }}" \
-              --resource-group "${{ vars.AZURE_RG }}" \
-              --job-execution-name "$EXEC" \
-              --query properties.status -o tsv)
-            echo "  status: $STATUS"
-            [ "$STATUS" = "Succeeded" ] && break
-            [ "$STATUS" = "Failed"    ] && { echo "Migration job failed"; exit 1; }
-            sleep 5
-          done
-          [ "$STATUS" = "Succeeded" ] || { echo "Migration job timed out after 5 min"; exit 1; }
-
-      - name: Update backend container app
-        run: |
-          az containerapp update \
-            --name "${{ vars.BACKEND_APP }}" \
-            --resource-group "${{ vars.AZURE_RG }}" \
-            --image "${{ env.BACKEND_IMAGE_LC }}:${{ github.ref_name }}"
-
-      - name: Update frontend container app
-        run: |
-          az containerapp update \
-            --name "${{ vars.FRONTEND_APP }}" \
-            --resource-group "${{ vars.AZURE_RG }}" \
-            --image "${{ env.FRONTEND_IMAGE_LC }}:${{ github.ref_name }}"
+                  # deploy.sh pulls the images, runs migrations, waits for the health check and
+                  # restores the previous release if the backend never reports healthy
+                  ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes \
+                      "$DEPLOY_USER@$DEPLOY_HOST" "$OWNER $RELEASE_TAG"

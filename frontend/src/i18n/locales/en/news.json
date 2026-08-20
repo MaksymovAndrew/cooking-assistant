@@ -2,6 +2,11 @@
     "title": "What's new",
     "newCount": "{{total}} new",
     "items": {
+        "instantWakeUp": {
+            "date": "2026-08-20",
+            "title": "The app wakes up instantly",
+            "description": "After a quiet spell the site used to need up to twenty seconds to answer while its hosting woke back up. It now lives on a server that is always on, so pages open straight away, at any hour."
+        },
         "bugsAndPolish": {
             "date": "2026-08-16",
             "title": "Smarter pantry, calmer popups",

@@ -179,40 +179,49 @@ This is a narrower, unconditional trigger than the ops-only escape hatch above -
 
 1. Builds `cooking-backend` Docker image via `tsup` + `node`, pushes to GHCR. The runtime stage drops to the unprivileged `node` user (`USER node`) - keep it that way; the app only reads from disk and logs to stdout.
 2. Builds `cooking-frontend` Docker image via Vite + nginx, pushes to GHCR. nginx serves `dist/` with an SPA fallback, so anything that must be fetched as a real file (e.g. `public/robots.txt`) has to exist on disk - an unmatched path returns the `index.html` shell, not a 404.
-3. Runs DB migrations + seed as an Azure Container Apps Job (`cooking-migration-job`).
-4. Updates both Azure Container Apps with the new images.
+3. Connects to the server over SSH and runs `/srv/bin/deploy.sh` ([deploy/deploy.sh](deploy/deploy.sh)): pull images, run migrations + seed as a one-shot compose container, start the stack, wait for the backend health check - and restore the previous `IMAGE_TAG` if it never reports healthy.
 
-**Infrastructure (Germany West Central):**
+Both build jobs run on `ubuntu-24.04-arm` and target `linux/arm64`. This is not optional: the server is ARM, an x86 image does not start on it at all, and emulating arm64 on an x86 runner is roughly twenty times slower. ARM runners are free for public repositories.
 
-- Container Apps Environment: `cooking-assistant-env`
-- Backend Container App: `cooking-backend`
-- Frontend Container App: `cooking-frontend`
-- Migration Job: `cooking-migration-job`
-- DB: Neon PostgreSQL 16 (Frankfurt, free tier) - connection via `DB_*` env vars
-- Images: `ghcr.io/<repo-owner>/cooking-{backend,frontend}` (owner resolved from `github.repository_owner` in the workflow, not hardcoded - it must track whoever currently owns the GitHub repo)
-- SSL: Azure managed certificates on both custom domains
+`workflow_dispatch` takes a tag input, so any published tag can be re-deployed or rolled back from the Actions tab without inventing a new one.
 
-**Config at runtime** (Azure Container App env vars, never in repo): `JWT_SECRET_KEY`, `DB_*`,
-`NODE_ENV`, `CORS_ORIGIN`, `COOKIE_DOMAIN`, `LOG_LEVEL`, `DB_SSL=true`, `RESEND_API_KEY`, `EMAIL_FROM`
+**Infrastructure:** one self-hosted ARM server (Ubuntu 24.04, 2 OCPU / 12 GB, Frankfurt), everything in Docker. The deployed shape lives in [deploy/](deploy/) and is copied onto the server - the repo is the source of truth for it, not the machine.
+
+- Shared entrypoint `/srv/edge`: Caddy on 80/443 with automatic Let's Encrypt certificates, importing one file per project from `sites/`. Adding a project never edits a shared file.
+- Project stack `/srv/cooking-assistant`: `backend`, `frontend`, `postgres`, plus a `migrate` service behind the `tools` profile so `up` never starts it.
+- **No application container publishes a host port.** Caddy reaches them over the external `edge` network by alias (`cooking-backend`, `cooking-frontend`); Postgres is reachable only from the project's own network. This is the actual protection for the database - Docker inserts its rules into `nat` ahead of the `INPUT` chain, so a published port is reachable regardless of the host firewall.
+- Images: `ghcr.io/<repo-owner>/cooking-{backend,frontend}` (owner resolved from `github.repository_owner` in the workflow, not hardcoded - it must track whoever currently owns the GitHub repo). The packages are public, so the server pulls them without registry credentials.
+- DB: PostgreSQL 18 in a container. The volume is mounted at `/var/lib/postgresql`, not the pre-18 `/var/lib/postgresql/data` - PG18 moved its data directory to `/var/lib/postgresql/18/docker`, and the old path keeps working right up until the container is recreated, then the data is gone.
+- Ops scripts on the server: `/srv/bin/backup.sh` (nightly 03:30 - dump, restore it into a throwaway database to prove it works, prune) and `/srv/bin/status.sh` (one-shot health report: resources, platform, per-project).
+
+**Config at runtime** (`/srv/cooking-assistant/.env` on the server, mode 600, never in repo): `JWT_SECRET_KEY`, `DB_*`,
+`NODE_ENV`, `CORS_ORIGIN`, `COOKIE_DOMAIN`, `LOG_LEVEL`, `RESEND_API_KEY`, `EMAIL_FROM`
 (transactional email for password-reset/email-verification links - both must be set together; the
-production `cooking-backend` app has no logging-fallback safety net once real users depend on these
-flows, so treat them as required for prod even though they're optional in dev).
+production backend has no logging-fallback safety net once real users depend on these
+flows, so treat them as required for prod even though they're optional in dev). Four of them are easy to get wrong:
 
-**OIDC auth** (GitHub → Azure, no stored password): federated credential scoped to `refs/tags/v*`.
-GitHub repo secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`.
-GitHub repo variables: `AZURE_RG`, `BACKEND_APP`, `FRONTEND_APP`, `MIGRATION_JOB`, `API_DOMAIN`.
+- `DB_SSL=false` is **required**. Production defaults SSL on, and the co-located Postgres container serves no TLS, so the backend never starts without it.
+- `TRUST_PROXY_HOPS=1` - exactly one proxy (Caddy) sits in front.
+- `CORS_ORIGIN` must match the site origin exactly. A wrong value is invisible to `curl`, which ignores the header, while every browser request is blocked - verify it in a browser or by reading `Access-Control-Allow-Origin` explicitly.
+- `IMAGE_TAG` is rewritten by `deploy.sh` on every deploy, and pointing it back at the previous value is what a rollback is.
+
+**Deploy auth** (GitHub → server, no password): an SSH key pinned server-side in `authorized_keys` to
+`command="/srv/bin/deploy.sh"` with no pty and no forwarding, so a leaked key can trigger a deploy and nothing else.
+GitHub repo secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, `SSH_KNOWN_HOSTS`.
+GitHub repo variable: `API_DOMAIN` - baked into the frontend bundle as `VITE_API_URL` at build time, so changing the API address needs a rebuilt image, not a restart.
 
 **Uptime monitoring (not wired up yet - manual step, no code involved):** point any free uptime
-checker (e.g. UptimeRobot, Better Uptime, Freshping) at `GET https://api.cooking-assistant.app/api/health`
-on a 1-5 minute interval, alerting on a non-200 response. It is the same public, unauthenticated
-liveness endpoint Container Apps already probes - no new backend code needed, just external
-configuration once an account exists on whichever provider is chosen.
+checker (e.g. UptimeRobot, Better Uptime, Freshping) at `GET /api/health` on the API domain,
+on a 1-5 minute interval, alerting on a non-200 response. It is a public, unauthenticated
+liveness endpoint - no new backend code needed, just external configuration. This matters more than it
+used to: a managed platform used to probe the app and restart it, and now nothing does.
 
 **Cookie in prod**: `httpOnly`, `secure` (auto when `NODE_ENV=production`), `sameSite: Lax`,
-`domain: .cooking-assistant.app` (leading dot so the app and api subdomains share the session).
+`domain: .<app-domain>` (leading dot so the app and api subdomains share the session).
 
-**When adding env vars**: add to `.env.example`, set in Azure Container App configuration, never commit
-values. Switching Postgres providers = change 5 `DB_*` env vars in the Container App, no code change.
+**When adding env vars**: add to `backend/.env.example` AND [deploy/.env.example](deploy/.env.example), set the
+value in the server's `.env`, never commit values. Editing `.env` takes effect only after the container is
+recreated - the backend reads its environment once at startup.
 
 ## Database workflow
 
@@ -345,5 +354,5 @@ The "missing ingredients for a menu" feature works by joining `menu_recipe` -> `
     - **TypeScript 7**: hard-blocked. `typescript-eslint` peers on `typescript >=4.8.4 <6.1.0` in both its stable (8.65.0) and canary (8.65.1-alpha.\*) lines, and it is the parser behind every type-aware lint rule. TS 6.0.3 is the ceiling until that peer range moves.
     - **ESLint 10**: down to a single blocker. `eslint-plugin-jsx-a11y@6.10.2` caps at `^9` (upstream issue #1075, open since Feb 2026, no fork, no prerelease) and only the frontend uses it. `eslint-plugin-import` also caps at `^9` but the maintained fork `eslint-plugin-import-x` already supports `^10` (rules rename `import/*` → `import-x/*`, ~7 config touch points per side). `typescript-eslint` is no longer a blocker - it allows `^10`. The root config uses neither blocker and could move today. Deliberately not doing a partial migration: splitting the monorepo across two linter majors is worse than waiting. When jsx-a11y ships support, move all three packages plus the `import-x` swap in one maintenance release.
 - Commit lockfiles and tool configs. `package-lock.json` (root/backend/frontend) and `eslint.config.js` are tracked - committing them keeps installs reproducible and lets CI run `npm ci`.
-- **Never hardcode credentials, API keys, tokens, or passwords anywhere in the repo** - not in code, tests, scripts, docs, commit messages, or PR text. Every secret is read from an environment variable through [backend/src/config/env.ts](backend/src/config/env.ts): locally via the gitignored `backend/.env`, in production via Azure Container App configuration. A new secret gets a key (no value) in `backend/.env.example`. The only tolerated in-code values are the historical local-dev DB defaults already in `env.ts` and test-only values generated at runtime (see the e2e per-run password) - do not add new exceptions.
-- **Never hardcode real domains/emails/infrastructure identifiers** (anything that could collide with real prod data, e.g. `cooking-assistant.app`, Azure/Neon resource names) anywhere in the codebase, including as "fake" test fixtures - use `example.com`/`localhost`/other generic placeholders instead. Synthetic test literals (passwords, tokens, IDs) are fine inline in test files as-is - they aren't real credentials, so they don't need env-var indirection.
+- **Never hardcode credentials, API keys, tokens, or passwords anywhere in the repo** - not in code, tests, scripts, docs, commit messages, or PR text. Every secret is read from an environment variable through [backend/src/config/env.ts](backend/src/config/env.ts): locally via the gitignored `backend/.env`, in production via the server's `/srv/cooking-assistant/.env`. A new secret gets a key (no value) in `backend/.env.example`. The only tolerated in-code values are the historical local-dev DB defaults already in `env.ts` and test-only values generated at runtime (see the e2e per-run password) - do not add new exceptions.
+- **Never hardcode real domains/emails/infrastructure identifiers** (anything that could collide with real prod data, e.g. `cooking-assistant.app`, server addresses, hosting-provider resource names) anywhere in the codebase, including as "fake" test fixtures - use `example.com`/`localhost`/other generic placeholders instead. Synthetic test literals (passwords, tokens, IDs) are fine inline in test files as-is - they aren't real credentials, so they don't need env-var indirection.

@@ -22,10 +22,6 @@ test.beforeAll(async ({ browser }) => {
     page = await context.newPage();
 });
 
-test.afterAll(async () => {
-    await context.close();
-});
-
 // permanent regression guard: the route each test lands on must not scroll horizontally at 390px
 test.afterEach(async () => {
     const desktopViewport = page.viewportSize();
@@ -44,6 +40,10 @@ test.afterEach(async () => {
     if (desktopViewport) {
         await page.setViewportSize(desktopViewport);
     }
+});
+
+test.afterAll(async () => {
+    await context.close();
 });
 
 test("should create a recipe from /add-recipe and capture its id", async () => {

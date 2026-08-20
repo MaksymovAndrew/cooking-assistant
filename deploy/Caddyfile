@@ -1,0 +1,13 @@
+# Routing for this project only. Deployed to /srv/edge/sites/cooking-assistant.caddy on the server,
+# where the shared Caddy imports every file in that directory - adding a project never edits a
+# shared file. Domains come from the proxy's environment so no real hostname lives in the repo.
+
+{$APP_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy cooking-frontend:80
+}
+
+{$API_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy cooking-backend:3000
+}

@@ -20,6 +20,10 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Project
+
+- Changed: Routine dependency maintenance - refreshed a batch of minor/patch versions of lint, test and styling tooling plus the icon and translation libraries.
+
 ## 4.4 - 2026-09-09
 
 ### Project

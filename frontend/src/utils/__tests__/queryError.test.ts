@@ -56,9 +56,9 @@ describe("getQueryErrorRetryAfter", () => {
 
 describe("getQueryErrorCode", () => {
     it("should return the string code from a query error", () => {
-        expect(getQueryErrorCode({ code: "LOGIN_ALREADY_TAKEN" })).toBe(
-            "LOGIN_ALREADY_TAKEN",
-        );
+        expect(
+            getQueryErrorCode({ code: ERROR_CODES.LOGIN_ALREADY_TAKEN }),
+        ).toBe(ERROR_CODES.LOGIN_ALREADY_TAKEN);
     });
 
     it("should return null when code is not a string", () => {

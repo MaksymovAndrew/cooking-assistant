@@ -1,6 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
+import { ERROR_CODES } from "constants/errorCodes";
+
 import type { AxiosBaseQueryArgs } from "redux/services/axiosBaseQuery";
 import { axiosBaseQuery } from "redux/services/axiosBaseQuery";
 
@@ -118,14 +120,14 @@ describe("axiosBaseQuery", () => {
         });
     });
 
-    it("should surface the server's error code on a 4xx response", async () => {
+    it("should surface the server's error code and the app's own copy for it on a 4xx response", async () => {
         mockedGet.mockRejectedValue({
             isAxiosError: true,
             response: {
                 status: 409,
                 data: {
                     error: "Login already taken",
-                    code: "LOGIN_ALREADY_TAKEN",
+                    code: ERROR_CODES.LOGIN_ALREADY_TAKEN,
                 },
                 headers: {},
             },
@@ -139,9 +141,9 @@ describe("axiosBaseQuery", () => {
 
         expect(result.error).toEqual({
             status: 409,
-            data: "Login already taken",
+            data: "This login is already taken.",
             retryAfter: null,
-            code: "LOGIN_ALREADY_TAKEN",
+            code: ERROR_CODES.LOGIN_ALREADY_TAKEN,
         });
     });
 

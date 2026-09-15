@@ -30,6 +30,10 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: Every error the server answers with now carries a stable error code - expired sessions, rate limits, unknown pages and server errors included - and all server-side wording lives in one message catalog, ready for more languages.
 - Fixed: Ordinary client mistakes such as a missing recipe or a bad filter are no longer logged as server errors, so real incidents stand out in the logs.
 
+### Frontend
+
+- Changed: Error messages from the server now use the app's own friendly wording for each kind of problem, instead of the server's technical text, and are ready to be translated together with the rest of the interface.
+
 ## 4.4 - 2026-09-09
 
 ### Project

@@ -309,7 +309,8 @@ repository method (see menu/pantry repos).
   (`recipe/not_found`, `auth/session_expired`). The frontend switches on the code and renders its own
   copy; the English `error` text is a fallback. A new error = one `ERROR_CODES` entry + one line in
   `i18n/locales/en/errors.json` + the same entry in the frontend mirror (`frontend/src/constants/errorCodes.ts`) -
-  a missing catalog line is a compile error, and a test fails if the frontend mirror drifts either way.
+  a missing catalog line is a compile error, and a test fails if the frontend mirror drifts either way. The frontend's own copy for each code lives under `apiErrors` in
+  `frontend/src/i18n/locales/en/common.json`, guarded by a frontend sync test.
 - **No display text in `AppError`.** It holds `code`, `status` and an optional `detail` (request-specific
   context, e.g. the zod issue list on `validation_error`). `errorHandler` resolves the text at the HTTP
   edge - `detail ?? translateError(code)` - which is where a request locale will be read once a second

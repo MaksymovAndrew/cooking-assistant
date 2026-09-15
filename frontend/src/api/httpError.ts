@@ -1,13 +1,25 @@
 import axios from "axios";
 import i18next from "i18next";
 
+import { ERROR_CODES } from "constants/errorCodes";
+
 interface ApiErrorBody {
     error?: string;
     code?: string;
 }
 
+const KNOWN_ERROR_CODES = new Set<string>(Object.values(ERROR_CODES));
+
+// the code is the contract and the copy is ours: a known code renders from common.json apiErrors, and the
+// server's English text is only the fallback for a code this build doesn't know yet
 export function getApiErrorMessage(error: unknown): string {
     if (axios.isAxiosError<ApiErrorBody>(error)) {
+        const code = error.response?.data.code;
+
+        if (typeof code === "string" && KNOWN_ERROR_CODES.has(code)) {
+            return i18next.t(`apiErrors.${code}`);
+        }
+
         const serverMessage = error.response?.data.error;
 
         if (serverMessage) {

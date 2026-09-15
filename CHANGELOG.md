@@ -23,6 +23,12 @@ changelogs and the tags and now track everything here against one shared version
 ### Project
 
 - Changed: Routine dependency maintenance - refreshed a batch of minor/patch versions of lint, test and styling tooling plus the icon and translation libraries.
+- Fixed: The automatic version bump on a release branch keeps each package file's own formatting, so it no longer turns a one-line version change into a rewrite of every package and lock file.
+
+### Backend
+
+- Changed: Every error the server answers with now carries a stable error code - expired sessions, rate limits, unknown pages and server errors included - and all server-side wording lives in one message catalog, ready for more languages.
+- Fixed: Ordinary client mistakes such as a missing recipe or a bad filter are no longer logged as server errors, so real incidents stand out in the logs.
 
 ## 4.4 - 2026-09-09
 

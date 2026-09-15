@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import Recipe from "domain/entities/Recipe";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 
@@ -77,7 +77,7 @@ describe("UpdateRecipe", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.RECIPE_NOT_FOUND,
+            ERROR_CODES.RECIPE_NOT_FOUND,
             404,
         );
     });
@@ -91,8 +91,9 @@ describe("UpdateRecipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "title: Title cannot be empty",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "title: Title cannot be empty",
         );
         expect(recipeRepository.update).not.toHaveBeenCalled();
     });
@@ -106,7 +107,7 @@ describe("UpdateRecipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_INGREDIENTS_NOT_EXIST,
+            ERROR_CODES.RECIPE_INGREDIENTS_NOT_EXIST,
             400,
         );
         expect(recipeRepository.update).not.toHaveBeenCalled();

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
@@ -19,7 +19,7 @@ export default class SearchRecipes {
         if (userId === null) {
             if (validFilters.in_pantry) {
                 throw new ValidationError(
-                    ERROR_MESSAGES.RECIPE_IN_PANTRY_REQUIRES_LOGIN,
+                    ERROR_CODES.RECIPE_IN_PANTRY_REQUIRES_LOGIN,
                 );
             }
 

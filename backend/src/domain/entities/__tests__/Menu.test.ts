@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import Menu from "domain/entities/Menu";
 import { ValidationError } from "domain/errors/AppError";
 
@@ -36,7 +36,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_CREATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
             400,
         );
     });
@@ -46,7 +46,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_CREATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
             400,
         );
     });
@@ -56,7 +56,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_CREATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
             400,
         );
     });
@@ -66,7 +66,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_CREATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
             400,
         );
     });
@@ -96,7 +96,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_UPDATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
             400,
         );
     });
@@ -106,7 +106,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_UPDATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
             400,
         );
     });
@@ -116,7 +116,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_UPDATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
             400,
         );
     });
@@ -126,7 +126,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_UPDATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
             400,
         );
     });
@@ -136,7 +136,7 @@ describe("Menu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_UPDATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
             400,
         );
     });

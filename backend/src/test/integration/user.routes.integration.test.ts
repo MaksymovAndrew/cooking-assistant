@@ -1,12 +1,10 @@
 import type { IncomingHttpHeaders } from "http";
 import request from "supertest";
 
-import {
-    ERROR_CODES,
-    ERROR_MESSAGES,
-    SUCCESS_MESSAGES,
-} from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
+import { translateMessage } from "i18n/translate";
 
+import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const LOGIN_PATH = "/api/login";
@@ -37,7 +35,7 @@ describe("user routes", () => {
         });
 
         expect(res.status).toBe(201);
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.REGISTERED });
+        expect(res.body).toEqual({ message: translateMessage("registered") });
         expect(deps.userRepository.create).toHaveBeenCalledWith({
             name: "Bob",
             surname: "Cook",
@@ -71,7 +69,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         // token lives only in the cookie, never in the response body
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.LOGGED_IN });
+        expect(res.body).toEqual({ message: translateMessage("loggedIn") });
 
         const headers = res.headers as IncomingHttpHeaders;
         const setCookie = headers["set-cookie"]?.join(";") ?? "";
@@ -108,7 +106,7 @@ describe("user routes", () => {
         const res = await request(app).post("/api/logout");
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.LOGGED_OUT });
+        expect(res.body).toEqual({ message: translateMessage("loggedOut") });
         const logoutHeaders = res.headers as IncomingHttpHeaders;
 
         expect(logoutHeaders["set-cookie"]?.join(";") ?? "").toContain(
@@ -160,7 +158,7 @@ describe("user routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.USER_NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.USER_NOT_FOUND));
     });
 
     it("should map a login domain error to the response status", async () => {
@@ -174,10 +172,9 @@ describe("user routes", () => {
         });
 
         expect(res.status).toBe(401);
-        expect(res.body).toEqual({
-            error: ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
-            code: ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
-        });
+        expect(res.body).toEqual(
+            errorBody(ERROR_CODES.INVALID_LOGIN_OR_PASSWORD),
+        );
     });
 
     it("should return a 400 error body for malformed JSON", async () => {
@@ -212,7 +209,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.PASSWORD_RESET_EMAIL_SENT,
+            message: translateMessage("passwordResetEmailSent"),
         });
         expect(deps.emailSender.sendPasswordResetEmail).toHaveBeenCalledWith(
             EMAIL,
@@ -233,7 +230,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.PASSWORD_RESET_EMAIL_SENT,
+            message: translateMessage("passwordResetEmailSent"),
         });
         expect(deps.emailSender.sendPasswordResetEmail).not.toHaveBeenCalled();
     });
@@ -254,7 +251,9 @@ describe("user routes", () => {
         });
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.PASSWORD_RESET });
+        expect(res.body).toEqual({
+            message: translateMessage("passwordReset"),
+        });
         expect(deps.userRepository.updatePassword).toHaveBeenCalledWith(
             7,
             HASHED_NEW_PASSWORD,
@@ -272,10 +271,9 @@ describe("user routes", () => {
         });
 
         expect(res.status).toBe(401);
-        expect(res.body).toEqual({
-            error: ERROR_MESSAGES.INVALID_OR_EXPIRED_TOKEN,
-            code: ERROR_CODES.INVALID_OR_EXPIRED_TOKEN,
-        });
+        expect(res.body).toEqual(
+            errorBody(ERROR_CODES.INVALID_OR_EXPIRED_TOKEN),
+        );
     });
 
     it("should return 401 on POST /api/change-password without a token", async () => {
@@ -311,7 +309,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.PASSWORD_CHANGED,
+            message: translateMessage("passwordChanged"),
         });
         expect(deps.userRepository.updatePassword).toHaveBeenCalledWith(
             1,
@@ -334,10 +332,9 @@ describe("user routes", () => {
             .send({ currentPassword: "wrong", newPassword: NEW_PASSWORD });
 
         expect(res.status).toBe(401);
-        expect(res.body).toEqual({
-            error: ERROR_MESSAGES.CURRENT_PASSWORD_INCORRECT,
-            code: ERROR_CODES.CURRENT_PASSWORD_INCORRECT,
-        });
+        expect(res.body).toEqual(
+            errorBody(ERROR_CODES.CURRENT_PASSWORD_INCORRECT),
+        );
         expect(deps.userRepository.updatePassword).not.toHaveBeenCalled();
     });
 
@@ -363,7 +360,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.VERIFICATION_EMAIL_SENT,
+            message: translateMessage("verificationEmailSent"),
         });
         expect(deps.emailSender.sendVerificationEmail).toHaveBeenCalledWith(
             EMAIL,
@@ -381,7 +378,9 @@ describe("user routes", () => {
             .send({ token: VERIFY_TOKEN });
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.EMAIL_VERIFIED });
+        expect(res.body).toEqual({
+            message: translateMessage("emailVerified"),
+        });
         expect(deps.userRepository.markEmailVerified).toHaveBeenCalledWith(1);
     });
 
@@ -395,10 +394,9 @@ describe("user routes", () => {
             .send({ token: "bad-token" });
 
         expect(res.status).toBe(401);
-        expect(res.body).toEqual({
-            error: ERROR_MESSAGES.INVALID_OR_EXPIRED_TOKEN,
-            code: ERROR_CODES.INVALID_OR_EXPIRED_TOKEN,
-        });
+        expect(res.body).toEqual(
+            errorBody(ERROR_CODES.INVALID_OR_EXPIRED_TOKEN),
+        );
     });
 
     it("should return 401 on PATCH /api/me without a token", async () => {
@@ -421,7 +419,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.PROFILE_UPDATED,
+            message: translateMessage("profileUpdated"),
         });
         expect(deps.userRepository.updateProfile).toHaveBeenCalledWith(1, {
             name: "Claude",
@@ -468,7 +466,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.ACCOUNT_DELETED,
+            message: translateMessage("accountDeleted"),
         });
         expect(deps.userRepository.delete).toHaveBeenCalledWith(1);
 
@@ -492,10 +490,9 @@ describe("user routes", () => {
             .send({ password: "wrong-password" });
 
         expect(res.status).toBe(401);
-        expect(res.body).toEqual({
-            error: ERROR_MESSAGES.CURRENT_PASSWORD_INCORRECT,
-            code: ERROR_CODES.CURRENT_PASSWORD_INCORRECT,
-        });
+        expect(res.body).toEqual(
+            errorBody(ERROR_CODES.CURRENT_PASSWORD_INCORRECT),
+        );
         expect(deps.userRepository.delete).not.toHaveBeenCalled();
     });
 });

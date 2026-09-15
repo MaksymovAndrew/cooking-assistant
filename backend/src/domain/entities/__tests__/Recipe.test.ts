@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import Recipe from "domain/entities/Recipe";
 import { ValidationError } from "domain/errors/AppError";
 
@@ -37,7 +37,7 @@ describe("Recipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_INGREDIENTS_EMPTY,
+            ERROR_CODES.RECIPE_INGREDIENTS_EMPTY,
             400,
         );
     });
@@ -47,7 +47,7 @@ describe("Recipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_INGREDIENTS_EMPTY,
+            ERROR_CODES.RECIPE_INGREDIENTS_EMPTY,
             400,
         );
     });
@@ -59,7 +59,7 @@ describe("Recipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_INGREDIENTS_NO_ID,
+            ERROR_CODES.RECIPE_INGREDIENTS_NO_ID,
             400,
         );
     });
@@ -103,7 +103,7 @@ describe("Recipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_TITLE_CONTENT_EMPTY,
+            ERROR_CODES.RECIPE_TITLE_CONTENT_EMPTY,
             400,
         );
     });
@@ -113,7 +113,7 @@ describe("Recipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_INGREDIENTS_EMPTY,
+            ERROR_CODES.RECIPE_INGREDIENTS_EMPTY,
             400,
         );
     });
@@ -127,7 +127,7 @@ describe("Recipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_INGREDIENTS_NO_ID,
+            ERROR_CODES.RECIPE_INGREDIENTS_NO_ID,
             400,
         );
     });

@@ -1,4 +1,6 @@
-// mirrors backend/src/constants/errorCodes.ts one to one - a backend test fails the build if the two drift apart
+// the stable, client-facing contract for every error: the frontend switches on these and renders its own copy,
+// while backend/src/i18n holds the server-side text. Lowercase/namespaced values, not a screaming-case echo of
+// the key, so sonarjs doesn't mistake one for a hardcoded secret
 export const ERROR_CODES = {
     BAD_REQUEST: "bad_request",
     NOT_FOUND: "not_found",
@@ -34,3 +36,5 @@ export const ERROR_CODES = {
     INTAKE_NOT_FOUND: "calories/intake_not_found",
     CALORIES_NOT_AVAILABLE: "calories/not_available",
 } as const;
+
+export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

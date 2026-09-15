@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 
@@ -19,7 +19,7 @@ export default class DeleteRecipe {
         );
 
         if (!deleted) {
-            throw new NotFoundError(ERROR_MESSAGES.RECIPE_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.RECIPE_NOT_FOUND);
         }
     }
 }

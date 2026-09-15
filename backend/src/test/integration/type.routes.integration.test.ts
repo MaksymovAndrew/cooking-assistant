@@ -1,7 +1,8 @@
 import request from "supertest";
 
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 
+import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const RECIPE_TYPES_PATH = "/api/recipe-types";
@@ -42,7 +43,7 @@ describe("recipe type routes", () => {
             .send({ type_name: "Soup", description: "Warm" });
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.NOT_FOUND));
     });
 
     it("should not expose a route to update recipe types", async () => {
@@ -54,7 +55,7 @@ describe("recipe type routes", () => {
             .send({ type_name: "Soup", description: "Hot" });
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.NOT_FOUND));
     });
 
     it("should not expose a route to delete recipe types", async () => {
@@ -65,6 +66,6 @@ describe("recipe type routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.NOT_FOUND));
     });
 });

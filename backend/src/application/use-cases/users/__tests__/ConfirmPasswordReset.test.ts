@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { UnauthorizedError, ValidationError } from "domain/errors/AppError";
 
 import ConfirmPasswordReset from "application/use-cases/users/ConfirmPasswordReset";
@@ -80,7 +81,7 @@ describe("ConfirmPasswordReset", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "New password must be different from your current password",
+            ERROR_CODES.NEW_PASSWORD_SAME_AS_CURRENT,
             400,
         );
         expect(deps.passwordHasher.hash).not.toHaveBeenCalled();
@@ -103,7 +104,7 @@ describe("ConfirmPasswordReset", () => {
 
         expect(error).toBeAppError(
             UnauthorizedError,
-            "This link is invalid or has expired",
+            ERROR_CODES.INVALID_OR_EXPIRED_TOKEN,
             401,
         );
         expect(deps.userRepository.updatePassword).not.toHaveBeenCalled();
@@ -132,7 +133,7 @@ describe("ConfirmPasswordReset", () => {
 
         expect(error).toBeAppError(
             UnauthorizedError,
-            "This link is invalid or has expired",
+            ERROR_CODES.INVALID_OR_EXPIRED_TOKEN,
             401,
         );
         expect(deps.userRepository.updatePassword).not.toHaveBeenCalled();

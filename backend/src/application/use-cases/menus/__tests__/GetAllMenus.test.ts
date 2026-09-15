@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
 import GetAllMenus from "application/use-cases/menus/GetAllMenus";
@@ -60,8 +61,9 @@ describe("GetAllMenus", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "offset: Offset must be at least 0",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "offset: Offset must be at least 0",
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });
@@ -75,8 +77,9 @@ describe("GetAllMenus", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "category_ids: Category IDs must be a comma-separated list of IDs",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "category_ids: Category IDs must be a comma-separated list of IDs",
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });

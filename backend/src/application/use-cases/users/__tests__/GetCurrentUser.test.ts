@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 
 import GetCurrentUser from "application/use-cases/users/GetCurrentUser";
@@ -25,7 +25,7 @@ describe("GetCurrentUser", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.USER_NOT_FOUND,
+            ERROR_CODES.USER_NOT_FOUND,
             404,
         );
     });

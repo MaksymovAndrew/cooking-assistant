@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { SUCCESS_MESSAGES } from "constants/errorMessages";
+import { translateMessage } from "i18n/translate";
 
 import type DeleteIntake from "application/use-cases/calories/DeleteIntake";
 import type GetIntakeLog from "application/use-cases/calories/GetIntakeLog";
@@ -56,7 +56,7 @@ export default class CalorieController {
 
         await this.deleteIntakeUseCase.execute(userId, req.params.intakeId);
 
-        res.status(200).json({ message: SUCCESS_MESSAGES.INTAKE_DELETED });
+        res.status(200).json({ message: translateMessage("intakeDeleted") });
     };
 
     updateCalorieGoal: RequestHandler = async (req, res) => {
@@ -65,7 +65,7 @@ export default class CalorieController {
         await this.updateCalorieGoalUseCase.execute(userId, req.body);
 
         res.status(200).json({
-            message: SUCCESS_MESSAGES.CALORIE_GOAL_UPDATED,
+            message: translateMessage("calorieGoalUpdated"),
         });
     };
 }

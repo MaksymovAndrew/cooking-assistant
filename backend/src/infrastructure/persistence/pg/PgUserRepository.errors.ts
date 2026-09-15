@@ -1,5 +1,5 @@
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
-import { AppError } from "domain/errors/AppError";
+import { ERROR_CODES } from "constants/errorCodes";
+import { type AppError, ConflictError } from "domain/errors/AppError";
 
 const UNIQUE_LOGIN_CONSTRAINT = "unique_login";
 const UNIQUE_EMAIL_CONSTRAINT = "unique_email";
@@ -26,19 +26,11 @@ export function uniqueViolationError(error: unknown): AppError | null {
     const constraint = getUniqueViolationConstraint(error);
 
     if (constraint === UNIQUE_EMAIL_CONSTRAINT) {
-        return new AppError(
-            ERROR_MESSAGES.EMAIL_ALREADY_TAKEN,
-            409,
-            ERROR_CODES.EMAIL_ALREADY_TAKEN,
-        );
+        return new ConflictError(ERROR_CODES.EMAIL_ALREADY_TAKEN);
     }
 
     if (constraint === UNIQUE_LOGIN_CONSTRAINT) {
-        return new AppError(
-            ERROR_MESSAGES.LOGIN_ALREADY_TAKEN,
-            409,
-            ERROR_CODES.LOGIN_ALREADY_TAKEN,
-        );
+        return new ConflictError(ERROR_CODES.LOGIN_ALREADY_TAKEN);
     }
 
     return null;

@@ -1,4 +1,4 @@
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { UnauthorizedError } from "domain/errors/AppError";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
@@ -20,10 +20,7 @@ export default class ConfirmEmailVerification {
         );
 
         if (userId === null) {
-            throw new UnauthorizedError(
-                ERROR_MESSAGES.INVALID_OR_EXPIRED_TOKEN,
-                ERROR_CODES.INVALID_OR_EXPIRED_TOKEN,
-            );
+            throw new UnauthorizedError(ERROR_CODES.INVALID_OR_EXPIRED_TOKEN);
         }
 
         await this.userRepository.markEmailVerified(userId);

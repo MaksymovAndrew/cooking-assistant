@@ -224,13 +224,14 @@ backend/
     ├── config/logger.ts      shared pino logger, LOG_LEVEL-aware and silent in tests
     ├── config/cookie.ts      AUTH_COOKIE_NAME + AUTH_COOKIE_OPTIONS (httpOnly, sameSite, secure, maxAge)
     ├── config/security.ts    rate-limit configs, purpose-token TTLs, SESSION_TOKEN_TYPE, DUMMY_PASSWORD_HASH
-    ├── constants/             routes.ts (every API path), errorMessages.ts (ERROR_CODES/ERROR_MESSAGES),
+    ├── constants/             routes.ts (every API path), errorCodes.ts (ERROR_CODES - the error contract),
     │                          pagination.ts, avatarKeys.ts
-    ├── i18n/locales/en/       transactional-email copy (email.json), read by ResendEmailService
+    ├── i18n/                 translate.ts + locales/<locale>/ catalogs: errors.json (text per error code),
+    │                          messages.json (success messages), email.json (transactional email copy)
     │
     ├── domain/               innermost layer (no framework/db deps)
     │   ├── entities/         Recipe, Menu (only entities that enforce an invariant)
-    │   ├── errors/           AppError + NotFoundError / ValidationError / UnauthorizedError (carry HTTP status)
+    │   ├── errors/           AppError + Validation/Unauthorized/Forbidden/NotFound/ConflictError (code + HTTP status)
     │   └── repositories/     repository interfaces (TypeScript interface)
     │
     ├── application/
@@ -248,7 +249,7 @@ backend/
     │   ├── rateLimit.ts      createGlobalLimiter + per-route limiters: login/register (each with a
     │   │                     stricter per-login limiter and a looser per-IP one), forgotPassword,
     │   │                     resetPassword, changePassword, resendVerification, confirmEmail, deleteAccount
-    │   └── errorHandler.ts   turns thrown errors into { error, code? } responses (mounted last)
+    │   └── errorHandler.ts   turns every error into a { error, code } response (mounted last)
     │
     ├── routes/               route factories (controller) => router, all under /api
     │   └── *.routes.ts       paths come from constants/routes.ts, never written inline
@@ -281,7 +282,7 @@ public health check, a global rate limiter, then the seven domain routers, and f
   request shape only (types, required scalars, formats, ranges, array item shape).
 - **application/use-cases/** - one class per operation with `execute(...)`: input validation + orchestration;
   throw domain errors; depend on repository/service interfaces only. Service ports in **application/ports/**.
-- **domain/** - repository interfaces, entities, and `errors/AppError.ts` (errors carry an HTTP `status`).
+- **domain/** - repository interfaces, entities, and `errors/AppError.ts` (errors carry a `code` and an HTTP `status`).
   Entities such as `Recipe` and `Menu` keep domain invariants like non-empty ingredient/recipe lists, so
   each validation rule lives in one layer only.
 - **infrastructure/persistence/pg/** - concrete repositories; ALL SQL; constructor takes the `pg.Pool`.
@@ -296,9 +297,32 @@ escapes `\`, `%`, and `_` before any `ILIKE` interpolation so literal wildcards 
 literal. Adding a filter means one clause entry plus one zod field - no changes to the query assembly.
 
 Errors: a use case throws a domain error -> Express 5 forwards the rejected promise -> `errorHandler`
-logs through pino and replies `{ error: <msg> }` with `err.status || 500`. Every error body uses
-`{ error }`, including auth failures and the JSON 404 for unknown routes. Transactions live inside a
-single repository method (see menu/pantry repos).
+replies `{ error, code }` with `err.status || 500`. Every error body has that shape, and every one goes
+through `errorHandler` - auth middleware failures, rate-limit rejections and the JSON 404 for unknown
+routes call `next(error)` instead of writing a response themselves. Transactions live inside a single
+repository method (see menu/pantry repos).
+
+### Error codes and the message catalog
+
+- **The code is the contract.** Every client-facing error is an `AppError` carrying one value from
+  `ERROR_CODES` ([src/constants/errorCodes.ts](src/constants/errorCodes.ts)), namespaced by domain
+  (`recipe/not_found`, `auth/session_expired`). The frontend switches on the code and renders its own
+  copy; the English `error` text is a fallback. A new error = one `ERROR_CODES` entry + one line in
+  `i18n/locales/en/errors.json` + the same entry in the frontend mirror (`frontend/src/constants/errorCodes.ts`) -
+  a missing catalog line is a compile error, and a test fails if the frontend mirror drifts either way.
+- **No display text in `AppError`.** It holds `code`, `status` and an optional `detail` (request-specific
+  context, e.g. the zod issue list on `validation_error`). `errorHandler` resolves the text at the HTTP
+  edge - `detail ?? translateError(code)` - which is where a request locale will be read once a second
+  language exists. Adding a locale is a new `i18n/locales/<locale>/` folder plus one entry in
+  `CATALOGS` ([src/i18n/translate.ts](src/i18n/translate.ts)); `satisfies Catalog` rejects a locale missing any key.
+- **Internal failures are not `AppError`s.** A misconfiguration or programming error (missing JWT secret,
+  a route without `req.user`) throws a plain `Error`; every 5xx is answered as `server_error` and never
+  leaks its message.
+- **Log levels follow the status**: a 4xx is one compact `warn` line (`status`, `code`, text - no stack, so bots
+  probing unknown routes can't crowd the rotated logs), a 5xx is logged in full at `error`.
+- Success messages (`{ message }`) come from `translateMessage(key)`, email copy from `getEmailCopy()`.
+- Tests assert domain errors by code: `expect(err).toBeAppError(Class, ERROR_CODES.X, status, detail?)`,
+  and integration tests compare bodies with `errorBody(ERROR_CODES.X)` from `src/test/helpers/errorBody.ts`.
 
 To add a feature: add SQL to a `Pg*Repository` (and its interface), add a use case, call it from a
 controller handler, and wire the new pieces in [src/composition-root.ts](src/composition-root.ts).
@@ -359,10 +383,10 @@ reads it. Cookie name and options live in [src/config/cookie.ts](src/config/cook
     `userIdLimiterKey` in the same file. Login returns the same generic error for unknown user vs wrong
     password (anti-enumeration). pino redacts the `cookie` and `authorization` headers from logs.
 
-8. Every domain error can carry a stable machine-readable `code` alongside its message (see
-   `ERROR_CODES`/`ERROR_MESSAGES` in [src/constants/errorMessages.ts](src/constants/errorMessages.ts)) -
-   `errorHandler` includes it in the JSON body (`{ error, code }`) for 4xx responses only, so the frontend
-   can show the exact right copy per cause instead of guessing from the HTTP status.
+8. Every error response carries a stable machine-readable `code` alongside its text (see
+   [Error codes and the message catalog](#error-codes-and-the-message-catalog)), so the frontend can show
+   the exact right copy per cause instead of guessing from the HTTP status. A missing or invalid session
+   answers `auth/session_expired` (`401`/`403`), a rate-limit rejection `rate_limited` (`429`).
 
 ### Purpose-scoped tokens (password reset / email verification)
 

@@ -1,6 +1,6 @@
 import type { Pool } from "pg";
 
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { Menu } from "domain/entities/Menu";
 import Recipe from "domain/entities/Recipe";
 import { AppError } from "domain/errors/AppError";
@@ -71,9 +71,7 @@ describe("PgUserRepository (real Postgres)", () => {
 
         expect(error).toBeInstanceOf(AppError);
         expect((error as AppError).status).toBe(409);
-        expect((error as AppError).message).toBe(
-            ERROR_MESSAGES.LOGIN_ALREADY_TAKEN,
-        );
+        expect((error as AppError).code).toBe(ERROR_CODES.LOGIN_ALREADY_TAKEN);
     });
 
     it("should reject a duplicate email with a 409", async () => {
@@ -99,9 +97,7 @@ describe("PgUserRepository (real Postgres)", () => {
 
         expect(error).toBeInstanceOf(AppError);
         expect((error as AppError).status).toBe(409);
-        expect((error as AppError).message).toBe(
-            ERROR_MESSAGES.EMAIL_ALREADY_TAKEN,
-        );
+        expect((error as AppError).code).toBe(ERROR_CODES.EMAIL_ALREADY_TAKEN);
     });
 
     it("should find the full record by login including the password hash", async () => {

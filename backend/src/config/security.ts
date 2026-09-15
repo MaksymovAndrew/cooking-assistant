@@ -1,7 +1,6 @@
 import type { Options as RateLimitOptions } from "express-rate-limit";
 
 import { config } from "config/env";
-import { ERROR_CODES } from "constants/errorMessages";
 
 // production hardening knobs kept in one auditable place so the app wiring in app.ts carries no magic numbers
 
@@ -37,19 +36,12 @@ export const HSTS_OPTIONS = {
     preload: true,
 };
 
-// shared so every 429 keeps the codebase-wide { error } JSON contract
-const RATE_LIMIT_MESSAGE = {
-    error: "Too many requests, please try again later",
-    code: ERROR_CODES.RATE_LIMITED,
-};
-
 // coarse abuse cap applied to every request on top of the stricter auth limiter
 export const GLOBAL_RATE_LIMIT: Partial<RateLimitOptions> = {
     windowMs: config.rateLimitWindowMs,
     limit: config.rateLimitMax,
     standardHeaders: true,
     legacyHeaders: false,
-    message: RATE_LIMIT_MESSAGE,
 };
 
 // stricter limiter for login/register/change-password/token-redemption: success is a legitimate one-time action, so only failed attempts (credential stuffing, token guessing) count
@@ -59,7 +51,6 @@ export const AUTH_RATE_LIMIT: Partial<RateLimitOptions> = {
     standardHeaders: true,
     legacyHeaders: false,
     skipSuccessfulRequests: true,
-    message: RATE_LIMIT_MESSAGE,
 };
 
 // coarse per-IP backstop with the same skip-successes semantics as AUTH_RATE_LIMIT, just looser and keyed purely by address

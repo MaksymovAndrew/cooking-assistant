@@ -1,5 +1,5 @@
 import { LOGIN_TIMING_DECOY_HASH } from "config/security";
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { UnauthorizedError } from "domain/errors/AppError";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
@@ -39,10 +39,7 @@ export default class LoginUser {
         );
 
         if (!user || !isPasswordValid) {
-            throw new UnauthorizedError(
-                ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
-                ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
-            );
+            throw new UnauthorizedError(ERROR_CODES.INVALID_LOGIN_OR_PASSWORD);
         }
 
         const token = this.tokenService.generate(user.id);

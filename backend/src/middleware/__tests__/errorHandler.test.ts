@@ -1,13 +1,16 @@
 import type { NextFunction, Request, Response } from "express";
 
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import { logger } from "config/logger";
+import { ERROR_CODES } from "constants/errorCodes";
 import {
     AppError,
     NotFoundError,
-    UnauthorizedError,
+    ValidationError,
 } from "domain/errors/AppError";
 
 import errorHandler from "middleware/errorHandler";
+
+import { errorBody } from "test/helpers/errorBody";
 
 function makeResponse(headersSent = false) {
     return {
@@ -18,8 +21,8 @@ function makeResponse(headersSent = false) {
 }
 
 describe("errorHandler", () => {
-    it("should respond with the AppError status and message", () => {
-        const err = new NotFoundError(ERROR_MESSAGES.RECIPE_NOT_FOUND);
+    it("should respond with the AppError status, catalog text and code", () => {
+        const err = new NotFoundError(ERROR_CODES.RECIPE_NOT_FOUND);
         const req = {} as Request;
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
@@ -27,28 +30,50 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.json).toHaveBeenCalledWith({
-            error: ERROR_MESSAGES.RECIPE_NOT_FOUND,
-        });
+        expect(res.json).toHaveBeenCalledWith(
+            errorBody(ERROR_CODES.RECIPE_NOT_FOUND),
+        );
         expect(next).not.toHaveBeenCalled();
     });
 
-    it("should hide the message of an AppError with a 5xx status", () => {
-        const err = new AppError(ERROR_MESSAGES.JWT_NOT_CONFIGURED, 500);
+    it("should respond with the detail instead of the catalog text when the AppError carries one", () => {
+        const err = new ValidationError(
+            ERROR_CODES.VALIDATION_ERROR,
+            "limit: Limit must be at most 100",
+        );
         const req = {} as Request;
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
         errorHandler(err, req, res, next);
 
-        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
-            error: ERROR_MESSAGES.SERVER_ERROR,
+            error: "limit: Limit must be at most 100",
+            code: ERROR_CODES.VALIDATION_ERROR,
         });
+    });
+
+    it("should hide an AppError with a 5xx status behind server_error", () => {
+        const err = new AppError(
+            ERROR_CODES.RECIPE_NOT_FOUND,
+            503,
+            "pool down",
+        );
+        const req = {} as Request;
+        const res = makeResponse();
+        const next = jest.fn() as NextFunction;
+
+        errorHandler(err, req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(503);
+        expect(res.json).toHaveBeenCalledWith(
+            errorBody(ERROR_CODES.SERVER_ERROR),
+        );
         expect(next).not.toHaveBeenCalled();
     });
 
-    it("should hide the Error message behind Server error for a regular Error", () => {
+    it("should hide the message of a regular Error behind server_error", () => {
         const err = new Error("duplicate key value violates unique constraint");
         const req = {} as Request;
         const res = makeResponse();
@@ -57,13 +82,13 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({
-            error: ERROR_MESSAGES.SERVER_ERROR,
-        });
+        expect(res.json).toHaveBeenCalledWith(
+            errorBody(ERROR_CODES.SERVER_ERROR),
+        );
         expect(next).not.toHaveBeenCalled();
     });
 
-    it("should keep the Error message for a non-AppError with a 4xx status", () => {
+    it("should keep the message of a non-AppError with a 4xx status and mark it bad_request", () => {
         const err = Object.assign(new Error("Unexpected token in JSON"), {
             status: 400,
         });
@@ -76,11 +101,26 @@ describe("errorHandler", () => {
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
             error: "Unexpected token in JSON",
+            code: ERROR_CODES.BAD_REQUEST,
         });
         expect(next).not.toHaveBeenCalled();
     });
 
-    it("should respond with 500 and Server error for a non-Error", () => {
+    it("should fall back to the bad_request text when a 4xx non-AppError has no message", () => {
+        const err = Object.assign(new Error(""), { status: 422 });
+        const req = {} as Request;
+        const res = makeResponse();
+        const next = jest.fn() as NextFunction;
+
+        errorHandler(err, req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(422);
+        expect(res.json).toHaveBeenCalledWith(
+            errorBody(ERROR_CODES.BAD_REQUEST),
+        );
+    });
+
+    it("should respond with 500 and server_error for a non-Error", () => {
         const req = {} as Request;
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
@@ -88,9 +128,9 @@ describe("errorHandler", () => {
         errorHandler("broken", req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({
-            error: ERROR_MESSAGES.SERVER_ERROR,
-        });
+        expect(res.json).toHaveBeenCalledWith(
+            errorBody(ERROR_CODES.SERVER_ERROR),
+        );
         expect(next).not.toHaveBeenCalled();
     });
 
@@ -103,58 +143,34 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({
-            error: ERROR_MESSAGES.SERVER_ERROR,
-        });
-    });
-
-    it("should return Server error when the Error message is empty with a 4xx status", () => {
-        const err = Object.assign(new Error(""), { status: 422 });
-        const req = {} as Request;
-        const res = makeResponse();
-        const next = jest.fn() as NextFunction;
-
-        errorHandler(err, req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(422);
-        expect(res.json).toHaveBeenCalledWith({
-            error: ERROR_MESSAGES.SERVER_ERROR,
-        });
-    });
-
-    it("should include the error code when the AppError carries one", () => {
-        const err = new UnauthorizedError(
-            ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
-            ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
+        expect(res.json).toHaveBeenCalledWith(
+            errorBody(ERROR_CODES.SERVER_ERROR),
         );
-        const req = {} as Request;
-        const res = makeResponse();
-        const next = jest.fn() as NextFunction;
-
-        errorHandler(err, req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(401);
-        expect(res.json).toHaveBeenCalledWith({
-            error: ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
-            code: ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
-        });
     });
 
-    it("should not include a code on a 5xx even if the AppError carries one", () => {
-        const err = new AppError(
-            ERROR_MESSAGES.JWT_NOT_CONFIGURED,
-            500,
-            "SOME_CODE",
+    it("should log a 4xx as one compact warn line without the stack", () => {
+        const warnSpy = jest.spyOn(logger, "warn");
+        const errorSpy = jest.spyOn(logger, "error");
+        const err = new NotFoundError(ERROR_CODES.MENU_NOT_FOUND);
+
+        errorHandler(err, {} as Request, makeResponse(), jest.fn());
+
+        expect(warnSpy).toHaveBeenCalledWith(
+            { status: 404, code: ERROR_CODES.MENU_NOT_FOUND },
+            "Menu not found",
         );
-        const req = {} as Request;
-        const res = makeResponse();
-        const next = jest.fn() as NextFunction;
+        expect(errorSpy).not.toHaveBeenCalled();
+    });
 
-        errorHandler(err, req, res, next);
+    it("should log a 5xx at error level", () => {
+        const warnSpy = jest.spyOn(logger, "warn");
+        const errorSpy = jest.spyOn(logger, "error");
+        const err = new Error("connection refused");
 
-        expect(res.json).toHaveBeenCalledWith({
-            error: ERROR_MESSAGES.SERVER_ERROR,
-        });
+        errorHandler(err, {} as Request, makeResponse(), jest.fn());
+
+        expect(errorSpy).toHaveBeenCalledWith(err);
+        expect(warnSpy).not.toHaveBeenCalled();
     });
 
     it("should pass the error to next when headers were sent", () => {

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 
 import GetRecipeById from "application/use-cases/recipes/GetRecipeById";
@@ -22,7 +22,7 @@ describe("GetRecipeById", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.RECIPE_NOT_FOUND,
+            ERROR_CODES.RECIPE_NOT_FOUND,
             404,
         );
     });

@@ -1,5 +1,5 @@
 import { EMAIL_VERIFICATION_TOKEN_TTL_SECONDS } from "config/security";
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
@@ -19,14 +19,11 @@ export default class RequestEmailVerification {
         const user = await this.userRepository.findById(userId);
 
         if (!user) {
-            throw new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.USER_NOT_FOUND);
         }
 
         if (user.email_verified_at) {
-            throw new ValidationError(
-                ERROR_MESSAGES.EMAIL_ALREADY_VERIFIED,
-                ERROR_CODES.EMAIL_ALREADY_VERIFIED,
-            );
+            throw new ValidationError(ERROR_CODES.EMAIL_ALREADY_VERIFIED);
         }
 
         const token = this.tokenService.generatePurposeToken(

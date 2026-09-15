@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import Recipe from "domain/entities/Recipe";
 import { ValidationError } from "domain/errors/AppError";
 
@@ -78,8 +78,9 @@ describe("CreateRecipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "ingredients: Ingredient IDs must be unique",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "ingredients: Ingredient IDs must be unique",
         );
         expect(recipeRepository.create).not.toHaveBeenCalled();
     });
@@ -93,7 +94,7 @@ describe("CreateRecipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_INGREDIENTS_EMPTY,
+            ERROR_CODES.RECIPE_INGREDIENTS_EMPTY,
             400,
         );
         expect(recipeRepository.create).not.toHaveBeenCalled();
@@ -108,7 +109,7 @@ describe("CreateRecipe", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_INGREDIENTS_NOT_EXIST,
+            ERROR_CODES.RECIPE_INGREDIENTS_NOT_EXIST,
             400,
         );
         expect(recipeRepository.create).not.toHaveBeenCalled();

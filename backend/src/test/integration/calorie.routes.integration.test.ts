@@ -1,7 +1,9 @@
 import request from "supertest";
 
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
+import { translateMessage } from "i18n/translate";
 
+import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const INTAKE_PATH = "/api/calorie-intake";
@@ -98,7 +100,7 @@ describe("calorie routes", () => {
             .send({ recipe_id: 999, portions: 1 });
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.RECIPE_NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.RECIPE_NOT_FOUND));
     });
 
     it("should delete an intake entry", async () => {
@@ -111,7 +113,9 @@ describe("calorie routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.INTAKE_DELETED });
+        expect(res.body).toEqual({
+            message: translateMessage("intakeDeleted"),
+        });
         expect(deps.calorieRepository.deleteIntake).toHaveBeenCalledWith(7, 11);
     });
 
@@ -125,7 +129,7 @@ describe("calorie routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.INTAKE_NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.INTAKE_NOT_FOUND));
     });
 
     it("should update the calorie goal", async () => {
@@ -142,7 +146,7 @@ describe("calorie routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.CALORIE_GOAL_UPDATED,
+            message: translateMessage("calorieGoalUpdated"),
         });
         expect(deps.calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
             calorie_goal: 2000,

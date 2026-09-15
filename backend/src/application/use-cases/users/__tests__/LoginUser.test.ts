@@ -1,5 +1,5 @@
 import { LOGIN_TIMING_DECOY_HASH } from "config/security";
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { UnauthorizedError } from "domain/errors/AppError";
 
 import LoginUser from "application/use-cases/users/LoginUser";
@@ -41,7 +41,7 @@ describe("LoginUser", () => {
 
         expect(error).toBeAppError(
             UnauthorizedError,
-            ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
+            ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
             401,
         );
     });
@@ -75,7 +75,7 @@ describe("LoginUser", () => {
 
         expect(error).toBeAppError(
             UnauthorizedError,
-            ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
+            ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
             401,
         );
     });
@@ -150,7 +150,7 @@ describe("LoginUser", () => {
 
         expect(error).toBeAppError(
             UnauthorizedError,
-            ERROR_MESSAGES.INVALID_LOGIN_OR_PASSWORD,
+            ERROR_CODES.INVALID_LOGIN_OR_PASSWORD,
             401,
         );
     });

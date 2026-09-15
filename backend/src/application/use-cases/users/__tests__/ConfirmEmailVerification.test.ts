@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { UnauthorizedError } from "domain/errors/AppError";
 
 import ConfirmEmailVerification from "application/use-cases/users/ConfirmEmailVerification";
@@ -46,7 +47,7 @@ describe("ConfirmEmailVerification", () => {
 
         expect(error).toBeAppError(
             UnauthorizedError,
-            "This link is invalid or has expired",
+            ERROR_CODES.INVALID_OR_EXPIRED_TOKEN,
             401,
         );
         expect(deps.userRepository.markEmailVerified).not.toHaveBeenCalled();

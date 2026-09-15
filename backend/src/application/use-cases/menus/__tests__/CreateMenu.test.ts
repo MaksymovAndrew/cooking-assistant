@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import Menu from "domain/entities/Menu";
 import { ValidationError } from "domain/errors/AppError";
 
@@ -76,7 +76,7 @@ describe("CreateMenu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_RECIPES_NOT_EXIST,
+            ERROR_CODES.MENU_RECIPES_NOT_EXIST,
             400,
         );
         expect(menuRepository.create).not.toHaveBeenCalled();
@@ -91,8 +91,9 @@ describe("CreateMenu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "recipeIds: Recipe IDs must be unique",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "recipeIds: Recipe IDs must be unique",
         );
         expect(menuRepository.create).not.toHaveBeenCalled();
     });
@@ -106,7 +107,7 @@ describe("CreateMenu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_CREATE,
+            ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
             400,
         );
         expect(menuRepository.create).not.toHaveBeenCalled();

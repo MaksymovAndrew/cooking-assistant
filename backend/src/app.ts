@@ -13,8 +13,9 @@ import {
     JSON_BODY_LIMIT,
     TRUST_PROXY_HOPS,
 } from "config/security";
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { API_PREFIX, HEALTH_PATH } from "constants/routes";
+import { NotFoundError } from "domain/errors/AppError";
 
 import errorHandler from "middleware/errorHandler";
 import { createGlobalLimiter } from "middleware/rateLimit";
@@ -84,8 +85,8 @@ export function createApp(controllers: Controllers): Express {
     );
     app.use(API_PREFIX, createCalorieRouter(controllers.calorieController));
 
-    app.use((_req, res) => {
-        res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });
+    app.use((_req, _res, next) => {
+        next(new NotFoundError(ERROR_CODES.NOT_FOUND));
     });
     app.use(errorHandler);
 

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
 
@@ -22,9 +22,7 @@ export default class DeleteUserIngredient {
         );
 
         if (!deleted) {
-            throw new NotFoundError(
-                ERROR_MESSAGES.INGREDIENT_NOT_FOUND_FOR_USER,
-            );
+            throw new NotFoundError(ERROR_CODES.INGREDIENT_NOT_FOUND_FOR_USER);
         }
     }
 }

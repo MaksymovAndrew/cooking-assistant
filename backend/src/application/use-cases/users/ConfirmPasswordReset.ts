@@ -1,4 +1,4 @@
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { UnauthorizedError, ValidationError } from "domain/errors/AppError";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
@@ -37,10 +37,7 @@ export default class ConfirmPasswordReset {
             : null;
 
         if (userId === null || credentials === null) {
-            throw new UnauthorizedError(
-                ERROR_MESSAGES.INVALID_OR_EXPIRED_TOKEN,
-                ERROR_CODES.INVALID_OR_EXPIRED_TOKEN,
-            );
+            throw new UnauthorizedError(ERROR_CODES.INVALID_OR_EXPIRED_TOKEN);
         }
 
         const isSameAsCurrent = await this.passwordHasher.compare(
@@ -49,10 +46,7 @@ export default class ConfirmPasswordReset {
         );
 
         if (isSameAsCurrent) {
-            throw new ValidationError(
-                ERROR_MESSAGES.NEW_PASSWORD_SAME_AS_CURRENT,
-                ERROR_CODES.NEW_PASSWORD_SAME_AS_CURRENT,
-            );
+            throw new ValidationError(ERROR_CODES.NEW_PASSWORD_SAME_AS_CURRENT);
         }
 
         const hashedPassword = await this.passwordHasher.hash(data.newPassword);

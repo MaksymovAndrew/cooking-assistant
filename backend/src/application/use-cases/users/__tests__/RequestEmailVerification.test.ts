@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 
 import RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
@@ -54,7 +55,11 @@ describe("RequestEmailVerification", () => {
 
         const error = await catchError(useCase.execute(USER_ID));
 
-        expect(error).toBeAppError(NotFoundError, "User not found", 404);
+        expect(error).toBeAppError(
+            NotFoundError,
+            ERROR_CODES.USER_NOT_FOUND,
+            404,
+        );
         expect(deps.emailSender.sendVerificationEmail).not.toHaveBeenCalled();
     });
 
@@ -77,7 +82,7 @@ describe("RequestEmailVerification", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "Email is already verified",
+            ERROR_CODES.EMAIL_ALREADY_VERIFIED,
             400,
         );
         expect(deps.emailSender.sendVerificationEmail).not.toHaveBeenCalled();

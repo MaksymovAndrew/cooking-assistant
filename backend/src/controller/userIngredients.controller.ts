@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { SUCCESS_MESSAGES } from "constants/errorMessages";
+import { translateMessage } from "i18n/translate";
 
 import type AddUserIngredients from "application/use-cases/pantry/AddUserIngredients";
 import type DeleteUserIngredient from "application/use-cases/pantry/DeleteUserIngredient";
@@ -54,7 +54,7 @@ export default class UserIngredientsController {
         await this.addUserIngredientsUseCase.execute(userId, ingredients);
 
         res.status(200).json({
-            message: SUCCESS_MESSAGES.INGREDIENTS_UPDATED,
+            message: translateMessage("ingredientsUpdated"),
         });
     };
 
@@ -70,7 +70,7 @@ export default class UserIngredientsController {
         );
 
         res.json({
-            message: SUCCESS_MESSAGES.INGREDIENT_DELETED,
+            message: translateMessage("ingredientDeleted"),
         });
     };
 
@@ -88,7 +88,7 @@ export default class UserIngredientsController {
         );
 
         res.status(200).json({
-            message: SUCCESS_MESSAGES.PURCHASE_UPDATED,
+            message: translateMessage("purchaseUpdated"),
         });
     };
 

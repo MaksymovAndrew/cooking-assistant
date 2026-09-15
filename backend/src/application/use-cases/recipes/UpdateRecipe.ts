@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import Recipe from "domain/entities/Recipe";
 import { NotFoundError } from "domain/errors/AppError";
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
@@ -40,7 +40,7 @@ export default class UpdateRecipe {
         );
 
         if (!updated) {
-            throw new NotFoundError(ERROR_MESSAGES.RECIPE_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.RECIPE_NOT_FOUND);
         }
 
         return updated;

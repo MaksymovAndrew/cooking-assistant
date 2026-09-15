@@ -1,4 +1,4 @@
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, UnauthorizedError } from "domain/errors/AppError";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
@@ -21,7 +21,7 @@ export default class DeleteAccount {
             await this.userRepository.findCredentialsById(userId);
 
         if (!credentials) {
-            throw new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.USER_NOT_FOUND);
         }
 
         const isPasswordValid = await this.passwordHasher.compare(
@@ -30,10 +30,7 @@ export default class DeleteAccount {
         );
 
         if (!isPasswordValid) {
-            throw new UnauthorizedError(
-                ERROR_MESSAGES.CURRENT_PASSWORD_INCORRECT,
-                ERROR_CODES.CURRENT_PASSWORD_INCORRECT,
-            );
+            throw new UnauthorizedError(ERROR_CODES.CURRENT_PASSWORD_INCORRECT);
         }
 
         await this.userRepository.delete(userId);

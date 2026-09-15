@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 
 import DeleteMenu from "application/use-cases/menus/DeleteMenu";
@@ -18,7 +18,12 @@ describe("DeleteMenu", () => {
 
         const error = await catchError(useCase.execute(null, 7));
 
-        expect(error).toBeAppError(ValidationError, "ID is required", 400);
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "ID is required",
+        );
         expect(menuRepository.deleteById).not.toHaveBeenCalled();
     });
 
@@ -31,7 +36,7 @@ describe("DeleteMenu", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.MENU_NOT_FOUND,
+            ERROR_CODES.MENU_NOT_FOUND,
             404,
         );
     });

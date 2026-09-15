@@ -15,12 +15,16 @@
         box-shadow 200ms var(--ease-out),
         border-color 200ms var(--ease-out);
 
-    @include focus-ring;
-
     @include on-hover {
         transform: translateY(-4px);
         box-shadow: var(--e-2);
         border-color: var(--brand);
+    }
+
+    // the focus ring belongs to the whole card, though focus itself lands on the stretched title link
+    &:has(.content-card__link:focus-visible) {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
     }
 
     &__image {
@@ -69,20 +73,13 @@
         background: color-mix(in srgb, var(--surface) 70%, transparent);
         backdrop-filter: blur(10px);
         color: var(--text-2);
-        cursor: default;
+        z-index: 1;
+        cursor: pointer;
         opacity: 1;
         transition: transform var(--dur-fast) var(--ease-out);
 
         @include on-hover {
             transform: scale(1.1);
-        }
-    }
-
-    &__favourite--active {
-        color: var(--brand);
-
-        svg {
-            fill: currentcolor;
         }
     }
 
@@ -97,7 +94,7 @@
     }
 
     &__favourite--row {
-        position: static;
+        position: relative;
         width: 30px;
         height: 30px;
         border: none;
@@ -118,6 +115,23 @@
         flex-direction: column;
         gap: var(--s-2);
         min-width: 0;
+    }
+
+    &__link {
+        color: inherit;
+        text-decoration: none;
+
+        &:focus-visible {
+            outline: none;
+        }
+
+        // stretched over the whole card so its entire surface navigates, while the heart above stays a button
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+        }
     }
 
     &__title {

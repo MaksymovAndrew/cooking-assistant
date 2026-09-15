@@ -21,6 +21,7 @@ export const ROUTES = {
         create: "/recipe",
         list: "/recipes",
         byId: "/recipe/:id",
+        favourite: "/recipe/:id/favourite",
         byFilters: "/recipes-by-filters",
         byPerson: "/recipes-filters-person",
         stats: "/recipes-stats",
@@ -46,6 +47,7 @@ export const ROUTES = {
         allUnpaginated: "/menus",
         create: "/create-menu",
         byId: "/menu/:id",
+        favourite: "/menu/:id/favourite",
         byPerson: "/menu-filters-person",
     },
 

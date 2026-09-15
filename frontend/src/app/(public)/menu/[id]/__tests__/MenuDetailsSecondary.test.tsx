@@ -34,6 +34,8 @@ const RECIPE: MenuDetailRecipe = {
 };
 
 const baseProps = {
+    menuId: 1,
+    isFavourite: false,
     recipes: [RECIPE],
     allergens: [],
     addRecipesTo: CHANGE_MENU_PATH,
@@ -130,7 +132,11 @@ describe("MenuDetailsSecondary", () => {
 
     it("should hide the favourite button for a guest", () => {
         renderWithProviders(
-            <MenuDetailsSecondary {...baseProps} isOwner={false} />,
+            <MenuDetailsSecondary
+                {...baseProps}
+                isFavourite={null}
+                isOwner={false}
+            />,
             { store: GUEST_STORE },
         );
 
@@ -143,6 +149,7 @@ describe("MenuDetailsSecondary", () => {
         renderWithProviders(
             <MenuDetailsSecondary
                 {...baseProps}
+                isFavourite={null}
                 isOwner={false}
                 onLogIntake={jest.fn()}
             />,

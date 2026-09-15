@@ -6,6 +6,7 @@ import { Link } from "components/ui/Link";
 
 import styles from "./ContentCard.module.scss";
 import type {
+    ContentCardFavouriteState,
     ContentCardIcon,
     ContentCardMetaItem,
     ContentCardVariant,
@@ -14,6 +15,7 @@ import { ContentCardBody } from "./ContentCardBody";
 import { ContentCardImage, ContentCardRowHeader } from "./ContentCardHeader";
 
 export type {
+    ContentCardFavouriteState,
     ContentCardIcon,
     ContentCardMetaItem,
     ContentCardVariant,
@@ -36,8 +38,8 @@ interface ContentCardProps {
     // not through this prop) - kept as its own modifier so it can carry a different border color
     // than the allergen badge, and both can be active on the same card at once
     calorieOver?: boolean;
-    favourite?: boolean;
-    showFavourite?: boolean;
+    // null hides the heart - a guest's card, or a record fetched without a per-viewer flag
+    favourite?: ContentCardFavouriteState | null;
     rating?: string;
     ratingCount?: string;
 }
@@ -53,8 +55,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
     mine = false,
     badge = false,
     calorieOver = false,
-    favourite = false,
-    showFavourite = true,
+    favourite = null,
     rating = RECIPE_RATING,
     ratingCount = RECIPE_RATING_COUNT,
 }) => {
@@ -72,25 +73,27 @@ export const ContentCard: React.FC<ContentCardProps> = ({
         .filter(Boolean)
         .join(" ");
 
+    // an article with a title link stretched over it rather than one big link: the heart is a
+    // button of its own, and a button nested inside an anchor is invalid markup
     return (
-        <Link href={href} className={cardClassNames}>
+        <article className={cardClassNames}>
             <ContentCardImage
                 isRow={isRow}
                 imageIcon={ImageIcon}
                 chipLabel={chipLabel}
                 favourite={favourite}
-                showFavourite={showFavourite}
             />
             <span className={styles["content-card__body"]}>
                 {isRow && (
                     <ContentCardRowHeader
                         chipLabel={chipLabel}
                         favourite={favourite}
-                        showFavourite={showFavourite}
                     />
                 )}
                 <h3 className={styles["content-card__title"]} title={title}>
-                    {title}
+                    <Link href={href} className={styles["content-card__link"]}>
+                        {title}
+                    </Link>
                 </h3>
                 <ContentCardBody
                     isRow={isRow}
@@ -101,6 +104,6 @@ export const ContentCard: React.FC<ContentCardProps> = ({
                     metaItems={metaItems}
                 />
             </span>
-        </Link>
+        </article>
     );
 };

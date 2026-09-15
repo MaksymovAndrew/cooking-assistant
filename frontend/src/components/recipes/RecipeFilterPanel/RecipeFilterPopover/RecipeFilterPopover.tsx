@@ -4,9 +4,6 @@ import { useTranslation } from "react-i18next";
 import type { Ingredient } from "types/ingredient";
 import type { RecipeTypeSummary } from "types/recipeType";
 
-import { useAppSelector } from "redux/hooks";
-import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
-
 import type { SetFilterValue } from "hooks/useListFilters";
 
 import styles from "components/recipes/RecipeFilterPanel/RecipeFilterPanel.module.scss";
@@ -17,8 +14,8 @@ import { SegmentedControl } from "components/ui/SegmentedControl";
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
 import { RecipeCalorieRangeFields } from "./RecipeCalorieRangeFields";
+import { RecipeFilterToggles } from "./RecipeFilterToggles";
 import { RecipeIngredientsFilter } from "./RecipeIngredientsFilter";
-import { RecipePantryToggle } from "./RecipePantryToggle";
 import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
 
 interface RecipeFilterPopoverProps {
@@ -44,18 +41,10 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
     fieldsResetKey,
 }) => {
     const { t } = useTranslation("recipes");
-    const { canUsePantry } = useAppSelector(selectViewerCapabilities);
 
     return (
         <>
-            {canUsePantry && (
-                <RecipePantryToggle
-                    checked={filters.inPantry}
-                    onChange={(value) => {
-                        setValue("inPantry", value);
-                    }}
-                />
-            )}
+            <RecipeFilterToggles filters={filters} setValue={setValue} />
 
             <div className={styles["recipe-filter-panel__section"]}>
                 <span className={styles["recipe-filter-panel__label"]}>

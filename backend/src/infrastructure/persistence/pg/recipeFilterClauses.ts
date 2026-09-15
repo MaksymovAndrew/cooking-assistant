@@ -1,5 +1,6 @@
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
+import { favouritesFilterClause } from "infrastructure/persistence/pg/favouritesFilterClause";
 import {
     escapeLikePattern,
     type SqlFilterBuilder,
@@ -175,4 +176,5 @@ export const RECIPE_FILTER_CLAUSES: readonly RecipeFilterClause[] = [
             );
         },
     },
+    favouritesFilterClause("recipe", "r.id"),
 ];

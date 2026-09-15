@@ -8,6 +8,8 @@ export interface Menu {
     // endpoints, absent from the unpaginated stats-only query, optional so it stays honest about
     // which callers have it. The raw person_id itself never leaves the server.
     isOwner?: boolean;
+    // per viewer, like isOwner - null when the request carried no session
+    isFavourite?: boolean | null;
 }
 
 // shape returned by GET /api/menus (unpaginated) - the plain menu list plus each menu's recipe
@@ -53,6 +55,7 @@ export interface MenuDetails {
         menucontent: string;
         category_id: number;
         isOwner: boolean;
+        isFavourite: boolean | null;
     };
     recipes: MenuDetailRecipe[];
     // distinct allergen slugs across every recipe of the menu
@@ -62,6 +65,7 @@ export interface MenuDetails {
 export interface MenuListParams {
     menu_name?: string;
     category_ids?: string;
+    favourites?: boolean;
 }
 
 export interface CreateMenuRequest {

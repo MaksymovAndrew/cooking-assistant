@@ -74,6 +74,8 @@
         "clearAll": "Clear all",
         "inPantryLabel": "Only what I can make",
         "inPantryChip": "From my pantry",
+        "favouritesLabel": "Only my favourites",
+        "favouritesChip": "Favourites",
         "pantryBanner_one": "Showing only recipes you can make right now — {{count}} recipe",
         "pantryBanner_other": "Showing only recipes you can make right now — {{count}} recipes",
         "pantryEmptyTitle": "Your pantry is empty",

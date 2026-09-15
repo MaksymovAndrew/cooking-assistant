@@ -1,6 +1,7 @@
 export interface MenuFilters {
     menu_name?: string;
     category_ids?: string;
+    favourites?: boolean;
     limit?: number;
     offset?: number;
 }
@@ -11,5 +12,6 @@ export interface MenuSearchRow {
     categoryName: string;
     menuContent: string;
     isOwner: boolean;
+    isFavourite: boolean | null;
     recipe_count: number;
 }

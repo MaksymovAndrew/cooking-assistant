@@ -31,5 +31,7 @@
     "pantry/purchase_not_found": "Purchase not found.",
 
     "calories/intake_not_found": "Intake entry not found",
-    "calories/not_available": "Calories are not available for this item"
+    "calories/not_available": "Calories are not available for this item",
+
+    "favourites/requires_login": "Log in to see your favourites"
 }

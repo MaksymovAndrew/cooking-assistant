@@ -33,4 +33,6 @@ export const ERROR_CODES = {
 
     INTAKE_NOT_FOUND: "calories/intake_not_found",
     CALORIES_NOT_AVAILABLE: "calories/not_available",
+
+    FAVOURITES_REQUIRES_LOGIN: "favourites/requires_login",
 } as const;

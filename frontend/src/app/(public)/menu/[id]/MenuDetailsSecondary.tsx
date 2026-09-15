@@ -1,10 +1,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { FAVOURITE_TARGET } from "constants/favourites";
 import type { MenuDetailRecipe } from "types/menu";
 
 import { useAppSelector } from "redux/hooks";
 import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
+
+import { useFavouriteToggle } from "hooks/useFavouriteToggle";
 
 import { MenuHeroActions } from "components/menu/MenuHeroActions";
 import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
@@ -17,6 +20,9 @@ import { filterAllergens } from "utils/recipeAllergens";
 import styles from "./MenuDetailsView.module.scss";
 
 interface MenuDetailsSecondaryProps {
+    menuId: number;
+    // null exactly when the server rendered this menu for an anonymous requester
+    isFavourite: boolean | null;
     recipes: MenuDetailRecipe[];
     allergens: string[];
     isOwner: boolean;
@@ -30,6 +36,8 @@ interface MenuDetailsSecondaryProps {
 // commits to. Desktop keeps ingredients as a right-side aside via grid-template-areas, which
 // repositions items visually without changing this source order (see MenuDetailsView.module.scss)
 export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
+    menuId,
+    isFavourite,
     recipes,
     allergens,
     isOwner,
@@ -39,9 +47,14 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     onLogIntake,
 }) => {
     const { t } = useTranslation("menu");
-    const { canUsePantry, canFavourite } = useAppSelector(
-        selectViewerCapabilities,
+    const { canUsePantry } = useAppSelector(selectViewerCapabilities);
+    const favourite = useFavouriteToggle(
+        FAVOURITE_TARGET.menu,
+        menuId,
+        isFavourite === true,
     );
+    // the guest branch is decided from the server-rendered record, not the client session check
+    const visitorFavourite = isFavourite === null ? null : favourite;
     const menuIngredients = aggregateMenuIngredients(recipes);
     const menuAllergens = filterAllergens(allergens);
     // the aside is empty and unrendered for a guest with an allergen-free menu - see
@@ -68,13 +81,14 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
                         onDelete={onDelete}
                         editLabel={t("menuDetailsPage.editButton")}
                         deleteLabel={t("menuDetailsPage.deleteButton")}
+                        favourite={favourite}
                         favouriteLabel={favouriteLabel}
                         onLogIntake={onLogIntake}
                         logIntakeLabel={logIntakeLabel}
                     />
                 ) : (
                     <HeroVisitorActions
-                        canFavourite={canFavourite}
+                        favourite={visitorFavourite}
                         favouriteLabel={favouriteLabel}
                         guestCtaLabel={t("menuDetailsPage.guestCta")}
                         logIntakeLabel={logIntakeLabel}

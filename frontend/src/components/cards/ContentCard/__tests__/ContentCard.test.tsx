@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/react";
 import { Calendar, Clock, UtensilsCrossed } from "lucide-react";
 
+import { FAVOURITE_TARGET } from "constants/favourites";
+
 import { ContentCard } from "components/cards/ContentCard";
 
 import { renderWithRouter } from "test/router";
@@ -45,19 +47,19 @@ describe("ContentCard", () => {
     it("should apply the mine class when mine is true", () => {
         renderCard({ mine: true });
 
-        expect(screen.getByRole("link")).toHaveClass("content-card--mine");
+        expect(screen.getByRole("article")).toHaveClass("content-card--mine");
     });
 
     it("should apply the badge class when badge is true", () => {
         renderCard({ badge: true });
 
-        expect(screen.getByRole("link")).toHaveClass("content-card--badge");
+        expect(screen.getByRole("article")).toHaveClass("content-card--badge");
     });
 
     it("should apply the calorie-over class when calorieOver is true", () => {
         renderCard({ calorieOver: true });
 
-        expect(screen.getByRole("link")).toHaveClass(
+        expect(screen.getByRole("article")).toHaveClass(
             "content-card--calorie-over",
         );
     });
@@ -65,10 +67,10 @@ describe("ContentCard", () => {
     it("should apply both classes when badge and calorieOver are both true", () => {
         renderCard({ badge: true, calorieOver: true });
 
-        const link = screen.getByRole("link");
+        const card = screen.getByRole("article");
 
-        expect(link).toHaveClass("content-card--badge");
-        expect(link).toHaveClass("content-card--calorie-over");
+        expect(card).toHaveClass("content-card--badge");
+        expect(card).toHaveClass("content-card--calorie-over");
     });
 
     it("should recolor a meta item tagged with the calorieOver tone", () => {
@@ -90,21 +92,38 @@ describe("ContentCard", () => {
     it("should default to the grid variant", () => {
         renderCard();
 
-        expect(screen.getByRole("link")).toHaveClass("content-card--grid");
+        expect(screen.getByRole("article")).toHaveClass("content-card--grid");
     });
 
     it("should render the row variant when requested", () => {
         renderCard({ variant: "row" });
 
-        expect(screen.getByRole("link")).toHaveClass("content-card--row");
+        expect(screen.getByRole("article")).toHaveClass("content-card--row");
     });
 
-    it("should disable the favourite button since favourites are not wired up yet", () => {
+    it("should not render a heart without a favourite state", () => {
         renderCard();
 
         expect(
-            screen.getByRole("button", { name: "Favourite" }),
-        ).toBeDisabled();
+            screen.queryByRole("button", { name: "Favourite" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should render a pressed heart outside the title link for a favourited card", () => {
+        renderCard({
+            favourite: {
+                target: FAVOURITE_TARGET.recipe,
+                id: 1,
+                isFavourite: true,
+            },
+        });
+
+        const heart = screen.getByRole("button", { name: "Favourite" });
+
+        expect(heart).toHaveAttribute("aria-pressed", "true");
+        expect(
+            screen.getByRole("link", { name: "Slow-roasted ragù" }),
+        ).not.toContainElement(heart);
     });
 
     it("should show a star rating in the grid variant", () => {

@@ -113,7 +113,8 @@
         "pantry/ingredient_not_found": "This ingredient isn't in your pantry.",
         "pantry/purchase_not_found": "This purchase no longer exists.",
         "calories/intake_not_found": "This entry no longer exists.",
-        "calories/not_available": "Calories aren't available for this item."
+        "calories/not_available": "Calories aren't available for this item.",
+        "favourites/requires_login": "Log in to see your favourites."
     },
     "errorState": {
         "title": "Something went wrong",

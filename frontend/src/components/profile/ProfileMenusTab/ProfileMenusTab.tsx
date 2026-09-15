@@ -19,6 +19,8 @@ interface ProfileMenusTabProps {
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
     fetchNextPage: () => void;
+    // the favourites list reuses this tab with its own empty-state wording
+    emptyTitle?: string;
 }
 
 export const ProfileMenusTab: React.FC<ProfileMenusTabProps> = ({
@@ -27,13 +29,17 @@ export const ProfileMenusTab: React.FC<ProfileMenusTabProps> = ({
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
+    emptyTitle,
 }) => {
     const { t } = useTranslation("profile");
     const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
 
     if (menus.length === 0) {
         return (
-            <EmptyState icon={NotebookMark} title={t("profilePage.noMenus")} />
+            <EmptyState
+                icon={NotebookMark}
+                title={emptyTitle ?? t("profilePage.noMenus")}
+            />
         );
     }
 
@@ -47,7 +53,8 @@ export const ProfileMenusTab: React.FC<ProfileMenusTabProps> = ({
                         title={menu.title}
                         categoryName={menu.categoryname}
                         recipeCount={menu.recipe_count}
-                        mine
+                        isFavourite={menu.isFavourite}
+                        mine={Boolean(menu.isOwner)}
                         variant={isMobile ? "row" : "grid"}
                     />
                 ))}

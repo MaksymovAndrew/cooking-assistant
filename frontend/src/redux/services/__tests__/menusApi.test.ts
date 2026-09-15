@@ -41,6 +41,7 @@ const DETAIL: MenuDetails = {
         menucontent: "x",
         category_id: 2,
         isOwner: true,
+        isFavourite: false,
     },
     recipes: [],
     allergens: [],

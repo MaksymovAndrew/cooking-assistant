@@ -88,6 +88,17 @@ export function hasUniqueItems<T>(
     return new Set(items.map(getKey)).size === items.length;
 }
 
+// query strings carry booleans as text, so only the two literal spellings are accepted
+export function booleanQuerySchema(field: string) {
+    return z
+        .string({ error: `${field} must be true or false` })
+        .refine((value) => value === "true" || value === "false", {
+            message: `${field} must be true or false`,
+        })
+        .transform((value) => value === "true")
+        .optional();
+}
+
 export function idListStringSchema(field: string) {
     return z
         .string({

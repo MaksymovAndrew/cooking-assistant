@@ -23,11 +23,16 @@ const MENUS: Menu[] = [
     },
 ];
 
-const FILTERS: MenuFilterState = { search: "", categories: [] };
+const FILTERS: MenuFilterState = {
+    search: "",
+    categories: [],
+    favourites: false,
+};
 
 const baseProps = {
     filters: FILTERS,
     setValue: jest.fn(),
+    setValues: jest.fn(),
     resetFilters: jest.fn(),
     activeCount: 0,
     activeFilters: [],
@@ -215,9 +220,7 @@ describe("MenuListView", () => {
             />,
         );
 
-        expect(
-            screen.getByRole("link", { name: new RegExp(MENU_TITLE) }),
-        ).toHaveClass(MINE_CLASS);
+        expect(screen.getAllByRole("article")[0]).toHaveClass(MINE_CLASS);
     });
 
     it("should mark a card as mine when the server flags it as owned, even without the mine prop", () => {
@@ -230,9 +233,7 @@ describe("MenuListView", () => {
             />,
         );
 
-        expect(
-            screen.getByRole("link", { name: new RegExp(MENU_TITLE) }),
-        ).toHaveClass(MINE_CLASS);
+        expect(screen.getAllByRole("article")[0]).toHaveClass(MINE_CLASS);
     });
 
     it("should not mark another user's card as mine", () => {
@@ -245,8 +246,6 @@ describe("MenuListView", () => {
             />,
         );
 
-        expect(
-            screen.getByRole("link", { name: new RegExp(MENU_TITLE) }),
-        ).not.toHaveClass(MINE_CLASS);
+        expect(screen.getAllByRole("article")[0]).not.toHaveClass(MINE_CLASS);
     });
 });

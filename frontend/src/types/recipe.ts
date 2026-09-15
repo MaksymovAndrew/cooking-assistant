@@ -26,6 +26,8 @@ export interface RecipeSearchResultItem extends RecipeListItem {
     calories_per_portion: number | null;
     // computed by the backend (r.person_id = current viewer) - the raw person_id itself never leaves the server
     isOwner: boolean;
+    // per viewer, like isOwner - null when the request carried no session
+    isFavourite: boolean | null;
 }
 
 export interface RecipeDetailIngredient extends CatalogIngredientRef {
@@ -51,6 +53,8 @@ export interface RecipeDetails {
     creation_date: string;
     // computed by the backend (r.person_id = current user) so the client can gate Edit/Delete without decoding the session
     isOwner: boolean;
+    // per viewer, like isOwner - null when the request carried no session
+    isFavourite: boolean | null;
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
     // the author's manual value; null means the total above is auto-computed from the ingredients
@@ -70,6 +74,7 @@ export interface RecipeFilterParams {
     // omitted (not empty string - the backend enum-validates "asc"/"desc") falls back to creation_date DESC server-side
     sort_order?: string;
     in_pantry?: boolean;
+    favourites?: boolean;
 }
 
 export interface CreateRecipeIngredient {

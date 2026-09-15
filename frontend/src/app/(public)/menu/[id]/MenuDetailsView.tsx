@@ -67,6 +67,8 @@ export const MenuDetailsView: React.FC<MenuDetailsViewProps> = ({ menu }) => {
                     exceedsBudget={exceedsBudget}
                 />
                 <MenuDetailsSecondary
+                    menuId={menu.menu.id}
+                    isFavourite={menu.menu.isFavourite}
                     recipes={menu.recipes}
                     allergens={menu.allergens}
                     isOwner={menu.menu.isOwner}

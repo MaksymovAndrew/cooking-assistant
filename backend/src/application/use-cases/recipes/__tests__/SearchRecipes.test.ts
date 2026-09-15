@@ -243,6 +243,34 @@ describe("SearchRecipes", () => {
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
 
+    it("should throw a 400 ValidationError when an anonymous request uses the favourites filter", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(null, { favourites: "true" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.FAVOURITES_REQUIRES_LOGIN,
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should pass through the favourites filter as a boolean for a signed-in user", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { favourites: "true" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
+            favourites: true,
+        });
+    });
+
     it("should throw a 400 ValidationError when offset is not an integer", async () => {
         const { useCase, recipeRepository } = setup();
 

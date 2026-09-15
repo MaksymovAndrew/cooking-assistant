@@ -1,12 +1,17 @@
+import { Heart } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { MenuCategory } from "types/menu";
 
-import type { SetFilterValue } from "hooks/useListFilters";
+import { useAppSelector } from "redux/hooks";
+import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
+
+import type { SetFilterValue, SetFilterValues } from "hooks/useListFilters";
 
 import { FilterChipGroup } from "components/ui/FilterChipGroup";
 import { FilterPanel } from "components/ui/FilterPanel";
+import { FilterToggle } from "components/ui/FilterToggle";
 import { SearchField } from "components/ui/SearchField";
 
 import type { MenuFilterState } from "utils/filters/menuFilterDefs";
@@ -16,6 +21,7 @@ import styles from "./MenuFilterPanel.module.scss";
 export interface MenuFilterPanelProps {
     filters: MenuFilterState;
     setValue: SetFilterValue<MenuFilterState>;
+    setValues: SetFilterValues<MenuFilterState>;
     activeCount: number;
     categories: MenuCategory[];
     searchPlaceholder: string;
@@ -28,6 +34,7 @@ export interface MenuFilterPanelProps {
 export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
     filters,
     setValue,
+    setValues,
     activeCount,
     categories,
     searchPlaceholder,
@@ -35,12 +42,14 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
     searchResetKey,
 }) => {
     const { t } = useTranslation("menu");
+    const { canFavourite } = useAppSelector(selectViewerCapabilities);
     const showResultsLabel = t("categoryFilter.showResults", { count: total });
 
     // resets only the fields the popover itself controls, leaving the search box (rendered
-    // outside the popover) untouched - resetFilters is the full reset, used by "Clear all"
+    // outside the popover) untouched - resetFilters is the full reset, used by "Clear all".
+    // one setValues() call: separate setValue() calls would each read the same pre-reset URL
     const resetPanelFields = () => {
-        setValue("categories", []);
+        setValues({ categories: [], favourites: false });
     };
 
     return (
@@ -63,6 +72,16 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
                 activeCount={activeCount}
                 onReset={resetPanelFields}
             >
+                {canFavourite && (
+                    <FilterToggle
+                        icon={Heart}
+                        label={t("categoryFilter.favouritesLabel")}
+                        checked={filters.favourites}
+                        onChange={(value) => {
+                            setValue("favourites", value);
+                        }}
+                    />
+                )}
                 <div className={styles["menu-filter-panel__section"]}>
                     <span className={styles["menu-filter-panel__label"]}>
                         {t("categoryFilter.categoryLabel")}

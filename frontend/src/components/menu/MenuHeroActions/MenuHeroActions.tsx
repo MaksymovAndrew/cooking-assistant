@@ -1,9 +1,11 @@
-import { Flame, Heart } from "lucide-react";
+import { Flame } from "lucide-react";
 import React from "react";
 
+import type { FavouriteToggle } from "hooks/useFavouriteToggle";
 import { useIsHydrated } from "hooks/useIsHydrated";
 
 import { EditMark, TrashMark } from "components/icons";
+import { FavouriteButton } from "components/ui/FavouriteButton";
 import { LinkButton } from "components/ui/LinkButton";
 
 import styles from "./MenuHeroActions.module.scss";
@@ -13,6 +15,7 @@ interface MenuHeroActionsProps {
     onDelete: () => void;
     editLabel: string;
     deleteLabel: string;
+    favourite: FavouriteToggle;
     favouriteLabel: string;
     onLogIntake?: () => void;
     logIntakeLabel?: string;
@@ -25,6 +28,7 @@ export const MenuHeroActions: React.FC<MenuHeroActionsProps> = ({
     onDelete,
     editLabel,
     deleteLabel,
+    favourite,
     favouriteLabel,
     onLogIntake,
     logIntakeLabel,
@@ -42,15 +46,14 @@ export const MenuHeroActions: React.FC<MenuHeroActionsProps> = ({
                 <EditMark size={ICON_SIZE} />
                 {editLabel}
             </LinkButton>
-            <button
-                type="button"
-                disabled
-                aria-label={favouriteLabel}
+            <FavouriteButton
+                favourite={favourite}
+                label={favouriteLabel}
+                iconSize={ICON_SIZE}
                 className={styles["menu-hero-actions__favourite"]}
             >
-                <Heart size={ICON_SIZE} aria-hidden="true" />
                 {favouriteLabel}
-            </button>
+            </FavouriteButton>
             {onLogIntake && (
                 <button
                     type="button"

@@ -2,6 +2,11 @@
     "title": "What's new",
     "newCount": "{{total}} new",
     "items": {
+        "favourites": {
+            "date": "2026-09-15",
+            "title": "Favourites are here",
+            "description": "Tap the heart on any recipe or menu to keep it close. Your favourites live in their own tab on your profile, and the recipe and menu filters can now show only the ones you love."
+        },
         "fasterPagesAndLinks": {
             "date": "2026-09-09",
             "title": "Pages open faster, links look right",

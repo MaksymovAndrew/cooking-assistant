@@ -23,6 +23,12 @@ export default class SearchRecipes {
                 );
             }
 
+            if (validFilters.favourites) {
+                throw new ValidationError(
+                    ERROR_CODES.FAVOURITES_REQUIRES_LOGIN,
+                );
+            }
+
             return this.recipeRepository.search(null, validFilters);
         }
 

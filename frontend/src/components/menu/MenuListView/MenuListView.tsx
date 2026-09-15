@@ -46,6 +46,7 @@ const NEW_MENU_ICON_SIZE = 18;
 export const MenuListView: React.FC<MenuListViewProps> = ({
     filters,
     setValue,
+    setValues,
     resetFilters,
     activeCount,
     categories,
@@ -98,6 +99,7 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
                 <MenuFilterPanel
                     filters={filters}
                     setValue={setValue}
+                    setValues={setValues}
                     activeCount={activeCount}
                     categories={categories}
                     searchPlaceholder={searchPlaceholder}
@@ -136,6 +138,7 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
                                 title={menu.title}
                                 categoryName={menu.categoryname}
                                 recipeCount={menu.recipe_count}
+                                isFavourite={menu.isFavourite}
                                 mine={mine || Boolean(menu.isOwner)}
                             />
                         ))}

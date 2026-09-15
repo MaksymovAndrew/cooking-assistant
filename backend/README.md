@@ -476,16 +476,24 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 
 ### Recipes ([src/routes/recipe.routes.ts](src/routes/recipe.routes.ts))
 
-| Method | Path                      | Purpose                                              |
-| ------ | ------------------------- | ---------------------------------------------------- |
-| POST   | `/recipe`                 | Create a recipe with ingredients                     |
-| GET    | `/recipes`                | List all recipes (joined with type + ingredients)    |
-| GET    | `/recipe/:id`             | Single recipe with ingredients                       |
-| PUT    | `/recipe/:id`             | Update a recipe                                      |
-| DELETE | `/recipe/:id`             | Delete a recipe                                      |
-| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry) |
-| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie) |
-| GET    | `/recipes-stats`          | Aggregated stats for the statistics page             |
+| Method | Path                      | Purpose                                                           |
+| ------ | ------------------------- | ----------------------------------------------------------------- |
+| POST   | `/recipe`                 | Create a recipe with ingredients                                  |
+| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                 |
+| GET    | `/recipe/:id`             | Single recipe with ingredients                                    |
+| PUT    | `/recipe/:id`             | Update a recipe                                                   |
+| DELETE | `/recipe/:id`             | Delete a recipe                                                   |
+| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites)  |
+| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)              |
+| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                          |
+| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent) |
+| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)    |
+
+Every search/list and detail response carries `isOwner` and `isFavourite` computed for the requester;
+`isFavourite` is `null` when the request has no session. `favourites=true` narrows a list to the
+requester's favourites and is refused for a guest with `favourites/requires_login`. Favourite writes
+live in [src/routes/favourite.routes.ts](src/routes/favourite.routes.ts); adding a favourite for a
+recipe or menu that does not exist answers `404`, removing one that isn't there is a no-op.
 
 `GET /recipes` and `GET /recipes-stats` both use explicit columns rather than `SELECT r.*`, so
 neither ships a recipe's raw owner `person_id` to the client - the same rule the list/search
@@ -514,15 +522,17 @@ table and aggregating client-side.
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 
-| Method | Path                   | Purpose                                              |
-| ------ | ---------------------- | ---------------------------------------------------- |
-| GET    | `/menu`                | All menus, paginated (also accepts category filter)  |
-| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page) |
-| POST   | `/create-menu`         | Create a menu with recipes                           |
-| GET    | `/menu/:id`            | Menu details + recipes                               |
-| PUT    | `/menu/:id`            | Update a menu                                        |
-| DELETE | `/menu/:id`            | Delete a menu                                        |
-| GET    | `/menu-filters-person` | The current user's menus (user from cookie)          |
+| Method | Path                   | Purpose                                                |
+| ------ | ---------------------- | ------------------------------------------------------ |
+| GET    | `/menu`                | All menus, paginated (category and favourites filters) |
+| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page)   |
+| POST   | `/create-menu`         | Create a menu with recipes                             |
+| GET    | `/menu/:id`            | Menu details + recipes                                 |
+| PUT    | `/menu/:id`            | Update a menu                                          |
+| DELETE | `/menu/:id`            | Delete a menu                                          |
+| GET    | `/menu-filters-person` | The current user's menus (user from cookie)            |
+| PUT    | `/menu/:id/favourite`  | Add the menu to the current user's favourites (204)    |
+| DELETE | `/menu/:id/favourite`  | Remove it from the current user's favourites (204)     |
 
 ### Menu categories ([src/routes/menuCategory.routes.ts](src/routes/menuCategory.routes.ts))
 
@@ -538,6 +548,9 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
   and `email_verified_at` (nullable timestamp) - see [Auth flow](#auth-flow)
 - `recipes` to `ingredients` through `recipe_ingredients` (with `quantity_recipe_ingredients`)
 - `recipes.type_id` -> `recipe_types`
+- `recipe_favourites` / `menu_favourites` - one row per person and favourited recipe / menu (composite
+  primary key, so a repeat add is a no-op). Every foreign key is `ON DELETE CASCADE`: recipe, menu and
+  account deletion are hand-written transactions that know nothing about favourites.
 - `person` to `ingredients` through `person_ingredients` (the pantry aggregate, with
   `quantity_person_ingradient` - typo in the real column name, leave it) and `ingredient_purchases`
   (one row per purchase lot). Expiry is computed per lot from `ingredient_purchases.purchase_date`,

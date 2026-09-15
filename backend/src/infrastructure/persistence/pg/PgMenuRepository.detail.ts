@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 
 interface MenuRow {
@@ -9,6 +10,7 @@ interface MenuRow {
     categoryName: string;
     category_id: number;
     isOwner: boolean;
+    isFavourite: boolean | null;
 }
 
 interface MenuRecipeRow {
@@ -56,7 +58,8 @@ export async function findMenuByIdWithRecipes(
         m.menu_content AS menuContent,
         mc.category_name AS categoryName,
         m.category_id,
-        ${isOwnerColumn("m", "$2")}
+        ${isOwnerColumn("m", "$2")},
+        ${isFavouriteColumn("menu", "m.menu_id", "$2")}
       FROM menu m
       LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
       WHERE m.menu_id = $1`,

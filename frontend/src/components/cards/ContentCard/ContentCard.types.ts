@@ -1,5 +1,7 @@
 import type React from "react";
 
+import type { FavouriteTarget } from "constants/favourites";
+
 export type ContentCardVariant = "grid" | "row";
 
 // accepts both lucide-react icons and hand-authored components/icons/* glyphs
@@ -19,4 +21,10 @@ export interface ContentCardMetaItem {
     // recolors this one meta item (icon + text) - currently only the calorie-over-budget cue
     tone?: typeof META_ITEM_TONE_CALORIE_OVER;
     title?: string;
+}
+
+export interface ContentCardFavouriteState {
+    target: FavouriteTarget;
+    id: number;
+    isFavourite: boolean;
 }

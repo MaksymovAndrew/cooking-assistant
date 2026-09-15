@@ -2,10 +2,8 @@ import { Clock, Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { FAVOURITE_TARGET } from "constants/favourites";
 import { recipeDetailsPath } from "constants/routes";
-
-import { useAppSelector } from "redux/hooks";
-import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
 
 import type { ContentCardVariant } from "components/cards/ContentCard";
 import {
@@ -29,6 +27,8 @@ interface RecipeCardRecipe {
     cooking_time: number;
     calories_per_portion: number | null;
     ingredients?: RecipeCardIngredient[];
+    // null for an anonymous viewer, so the heart only appears where the server knows who is looking
+    isFavourite?: boolean | null;
 }
 
 interface RecipeCardProps {
@@ -45,7 +45,6 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
-    const { canFavourite } = useAppSelector(selectViewerCapabilities);
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const hasAllergens =
         filterAllergens((recipe.ingredients ?? []).flatMap((i) => i.allergens))
@@ -61,7 +60,15 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             variant={variant}
             badge={hasAllergens}
             calorieOver={exceedsBudget}
-            showFavourite={canFavourite}
+            favourite={
+                typeof recipe.isFavourite === "boolean"
+                    ? {
+                          target: FAVOURITE_TARGET.recipe,
+                          id: recipe.id,
+                          isFavourite: recipe.isFavourite,
+                      }
+                    : null
+            }
             metaItems={[
                 {
                     icon: Clock,

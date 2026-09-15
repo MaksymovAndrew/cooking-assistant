@@ -20,6 +20,7 @@ const SAMPLE: MenuDetails = {
         menucontent: "Quick and light.",
         category_id: 2,
         isOwner: false,
+        isFavourite: false,
     },
     recipes: [],
     allergens: [],

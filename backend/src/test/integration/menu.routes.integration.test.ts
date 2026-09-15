@@ -14,6 +14,7 @@ const MENU_ROW_EXTRAS = {
     categoryName: "Dinner",
     menuContent: "Simple dinners",
     isOwner: false,
+    isFavourite: false,
     recipe_count: 2,
 };
 

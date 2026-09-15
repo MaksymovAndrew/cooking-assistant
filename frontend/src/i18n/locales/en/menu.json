@@ -24,6 +24,8 @@
         "searchChip": "“{{query}}”",
         "categoryChip_one": "{{count}} category",
         "categoryChip_other": "{{count}} categories",
+        "favouritesLabel": "Only my favourites",
+        "favouritesChip": "Favourites",
         "removeFilter": "Remove"
     },
     "recipePicker": {

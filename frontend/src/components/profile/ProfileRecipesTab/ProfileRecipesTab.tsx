@@ -19,6 +19,8 @@ interface ProfileRecipesTabProps {
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
     fetchNextPage: () => void;
+    // the favourites list reuses this tab with its own empty-state wording
+    emptyTitle?: string;
 }
 
 export const ProfileRecipesTab: React.FC<ProfileRecipesTabProps> = ({
@@ -27,6 +29,7 @@ export const ProfileRecipesTab: React.FC<ProfileRecipesTabProps> = ({
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
+    emptyTitle,
 }) => {
     const { t } = useTranslation("profile");
     const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
@@ -35,7 +38,7 @@ export const ProfileRecipesTab: React.FC<ProfileRecipesTabProps> = ({
         return (
             <EmptyState
                 icon={UtensilsMark}
-                title={t("profilePage.noRecipes")}
+                title={emptyTitle ?? t("profilePage.noRecipes")}
             />
         );
     }
@@ -47,7 +50,7 @@ export const ProfileRecipesTab: React.FC<ProfileRecipesTabProps> = ({
                     <RecipeCard
                         key={recipe.id}
                         recipe={recipe}
-                        mine
+                        mine={recipe.isOwner}
                         variant={isMobile ? "row" : "grid"}
                     />
                 ))}

@@ -25,6 +25,7 @@ const RECIPES: RecipeSearchResultItem[] = [
         ingredients: [],
         calories_per_portion: null,
         isOwner: false,
+        isFavourite: false,
     },
 ];
 
@@ -36,6 +37,7 @@ const FILTERS: RecipeFilterState = {
     calories: { min: "", max: "" },
     sort: null,
     inPantry: false,
+    favourites: false,
 };
 
 const baseProps = {
@@ -321,9 +323,7 @@ describe("RecipeListView", () => {
             />,
         );
 
-        expect(screen.getByRole("link", { name: /Borscht/ })).toHaveClass(
-            MINE_CLASS,
-        );
+        expect(screen.getAllByRole("article")[0]).toHaveClass(MINE_CLASS);
     });
 
     it("should mark a card as mine when the server flags it as owned, even without the mine prop", () => {
@@ -336,9 +336,7 @@ describe("RecipeListView", () => {
             />,
         );
 
-        expect(screen.getByRole("link", { name: /Borscht/ })).toHaveClass(
-            MINE_CLASS,
-        );
+        expect(screen.getAllByRole("article")[0]).toHaveClass(MINE_CLASS);
     });
 
     it("should not mark another user's card as mine", () => {
@@ -351,9 +349,7 @@ describe("RecipeListView", () => {
             />,
         );
 
-        expect(screen.getByRole("link", { name: /Borscht/ })).not.toHaveClass(
-            MINE_CLASS,
-        );
+        expect(screen.getAllByRole("article")[0]).not.toHaveClass(MINE_CLASS);
     });
 
     it("should show the pantry banner with the result count when the pantry filter is active", () => {

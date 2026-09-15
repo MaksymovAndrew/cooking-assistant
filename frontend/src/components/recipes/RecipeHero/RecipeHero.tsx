@@ -1,15 +1,15 @@
-import { Heart } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { FAVOURITE_TARGET } from "constants/favourites";
 import type { RecipeDetails } from "types/recipe";
 
-import { useAppSelector } from "redux/hooks";
-import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
+import { useFavouriteToggle } from "hooks/useFavouriteToggle";
 
 import { UtensilsMarkSimple } from "components/icons";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
 import { Chip } from "components/ui/Chip";
+import { FavouriteButton } from "components/ui/FavouriteButton";
 import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
 import { OwnerActions } from "components/ui/OwnerActions";
 
@@ -44,7 +44,14 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
-    const { canFavourite } = useAppSelector(selectViewerCapabilities);
+    const favourite = useFavouriteToggle(
+        FAVOURITE_TARGET.recipe,
+        recipe.id,
+        recipe.isFavourite === true,
+    );
+    // isFavourite is null exactly when the server rendered this record for an anonymous requester -
+    // deciding the guest branch from it, not from the client session check, keeps the first paint right
+    const visitorFavourite = recipe.isFavourite === null ? null : favourite;
     const favouriteLabel = t("recipeDetailsPage.favourite");
     const { hours, minutes } = splitCookingTime(recipe.cooking_time ?? 0);
     const durationLabel =
@@ -85,15 +92,13 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                     size={IMAGE_ICON_SIZE}
                     className={styles["recipe-hero__image-icon"]}
                 />
-                {canFavourite && (
-                    <button
-                        type="button"
-                        disabled
-                        aria-label={favouriteLabel}
+                {visitorFavourite && (
+                    <FavouriteButton
+                        favourite={visitorFavourite}
+                        label={favouriteLabel}
+                        iconSize={FAVOURITE_ICON_SIZE}
                         className={styles["recipe-hero__favourite"]}
-                    >
-                        <Heart size={FAVOURITE_ICON_SIZE} aria-hidden="true" />
-                    </button>
+                    />
                 )}
             </div>
 
@@ -118,6 +123,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                         onDelete={onDelete}
                         editLabel={t("recipeDetailsPage.editButton")}
                         deleteLabel={t("recipeDetailsPage.deleteButton")}
+                        favourite={favourite}
                         favouriteLabel={favouriteLabel}
                         onLogIntake={onLogIntake}
                         logIntakeLabel={t("recipeDetailsPage.logIntake")}
@@ -126,7 +132,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
             ) : (
                 <div className={styles["recipe-hero__visitor-actions-wrap"]}>
                     <HeroVisitorActions
-                        canFavourite={canFavourite}
+                        favourite={visitorFavourite}
                         favouriteLabel={favouriteLabel}
                         guestCtaLabel={t("recipeDetailsPage.guestCta")}
                         logIntakeLabel={t("recipeDetailsPage.logIntake")}

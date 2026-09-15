@@ -1,6 +1,5 @@
 "use client";
 
-import { Heart } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,8 +8,8 @@ import { PROFILE_TAB, useProfilePage } from "hooks/useProfilePage";
 
 import { AppShell } from "components/layout/AppShell";
 import { EditProfileModal } from "components/profile/EditProfileModal";
-import { ProfileComingSoon } from "components/profile/ProfileComingSoon";
 import { ProfileDietaryTab } from "components/profile/ProfileDietaryTab";
+import { ProfileFavouritesTab } from "components/profile/ProfileFavouritesTab";
 import { ProfileHero } from "components/profile/ProfileHero";
 import { ProfileMenusTab } from "components/profile/ProfileMenusTab";
 import { ProfileRecipesTab } from "components/profile/ProfileRecipesTab";
@@ -36,6 +35,7 @@ const ProfilePage: React.FC = () => {
                     avatar={profile.currentUser?.avatar}
                     recipesCount={profile.recipesCount}
                     menusCount={profile.menusCount}
+                    favouritesCount={profile.favouritesCount}
                     kcalToday={profile.kcalToday}
                     onLogout={profile.openLogoutModal}
                     onEditProfile={() => {
@@ -73,9 +73,9 @@ const ProfilePage: React.FC = () => {
                     />
                 )}
                 {profile.activeTab === PROFILE_TAB.favourites && (
-                    <ProfileComingSoon
-                        icon={Heart}
-                        title={t("profilePage.favouritesTitle")}
+                    <ProfileFavouritesTab
+                        recipes={profile.favouriteRecipes}
+                        menus={profile.favouriteMenus}
                     />
                 )}
                 {profile.activeTab === PROFILE_TAB.dietary && (

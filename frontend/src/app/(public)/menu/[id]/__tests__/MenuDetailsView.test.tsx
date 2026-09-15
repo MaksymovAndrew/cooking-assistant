@@ -31,6 +31,7 @@ const SAMPLE: MenuDetails = {
         menucontent: "quick",
         category_id: 2,
         isOwner: true,
+        isFavourite: false,
     },
     recipes: [
         {

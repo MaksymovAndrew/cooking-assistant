@@ -16,6 +16,7 @@ export const API_ROUTES = {
         byPerson: "/api/recipes-filters-person",
         create: "/api/recipe",
         byId: (id: string | number) => `/api/recipe/${id}`,
+        favourite: (id: string | number) => `/api/recipe/${id}/favourite`,
         stats: "/api/recipes-stats",
     },
     recipeTypes: {
@@ -35,6 +36,7 @@ export const API_ROUTES = {
         allUnpaginated: "/api/menus",
         create: "/api/create-menu",
         byId: (id: string | number) => `/api/menu/${id}`,
+        favourite: (id: string | number) => `/api/menu/${id}/favourite`,
         byPerson: "/api/menu-filters-person",
     },
     menuCategories: {

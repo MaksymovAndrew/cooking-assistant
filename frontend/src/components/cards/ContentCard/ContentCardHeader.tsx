@@ -1,7 +1,10 @@
 import React from "react";
 
 import styles from "./ContentCard.module.scss";
-import type { ContentCardIcon } from "./ContentCard.types";
+import type {
+    ContentCardFavouriteState,
+    ContentCardIcon,
+} from "./ContentCard.types";
 import { ContentCardChip } from "./ContentCardChip";
 import { ContentCardFavourite } from "./ContentCardFavourite";
 
@@ -12,8 +15,7 @@ interface ContentCardImageProps {
     isRow: boolean;
     imageIcon: ContentCardIcon;
     chipLabel: string;
-    favourite: boolean;
-    showFavourite: boolean;
+    favourite: ContentCardFavouriteState | null;
 }
 
 // for grid, this also carries the type chip + favourite button (absolutely positioned over the image); for row, those move into ContentCardRowHeader instead
@@ -22,7 +24,6 @@ export const ContentCardImage: React.FC<ContentCardImageProps> = ({
     imageIcon: ImageIcon,
     chipLabel,
     favourite,
-    showFavourite,
 }) => (
     <span className={styles["content-card__image"]}>
         <ImageIcon
@@ -31,25 +32,23 @@ export const ContentCardImage: React.FC<ContentCardImageProps> = ({
             className={styles["content-card__image-icon"]}
         />
         {!isRow && <ContentCardChip isRow={isRow} label={chipLabel} />}
-        {!isRow && showFavourite && (
-            <ContentCardFavourite isRow={isRow} active={favourite} />
+        {!isRow && favourite && (
+            <ContentCardFavourite isRow={isRow} {...favourite} />
         )}
     </span>
 );
 
 interface ContentCardRowHeaderProps {
     chipLabel: string;
-    favourite: boolean;
-    showFavourite: boolean;
+    favourite: ContentCardFavouriteState | null;
 }
 
 export const ContentCardRowHeader: React.FC<ContentCardRowHeaderProps> = ({
     chipLabel,
     favourite,
-    showFavourite,
 }) => (
     <span className={styles["content-card__row-header"]}>
         <ContentCardChip isRow label={chipLabel} />
-        {showFavourite && <ContentCardFavourite isRow active={favourite} />}
+        {favourite && <ContentCardFavourite isRow {...favourite} />}
     </span>
 );

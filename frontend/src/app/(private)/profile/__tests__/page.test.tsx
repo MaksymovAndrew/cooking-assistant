@@ -33,6 +33,14 @@ const RECIPE: RecipeSearchResultItem = {
     calories_per_portion: null,
     ingredients: [],
     isOwner: true,
+    isFavourite: false,
+};
+const FAVOURITE_RECIPE: RecipeSearchResultItem = {
+    ...RECIPE,
+    id: 2,
+    title: "Pelmeni",
+    isOwner: false,
+    isFavourite: true,
 };
 const MENU: Menu = {
     id: 1,
@@ -47,6 +55,8 @@ const setup = () => {
         [API_ROUTES.auth.me]: CURRENT_USER,
         [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
         [API_ROUTES.menu.byPerson]: { items: [MENU], total: 1 },
+        [API_ROUTES.recipes.byFilters]: { items: [FAVOURITE_RECIPE], total: 1 },
+        [API_ROUTES.menu.list]: { items: [], total: 0 },
         [API_ROUTES.calories.intake]: [],
     });
 
@@ -61,35 +71,20 @@ describe("ProfilePage", () => {
         expect(await screen.findByText("Borscht")).toBeInTheDocument();
     });
 
-    it("should switch to the menus tab", async () => {
-        setup();
+    it.each([
+        ["My menus", "Weekday menu"],
+        ["Favourites", "Pelmeni"],
+        ["Dietary", "Calorie goal"],
+    ])(
+        "should show the %s tab's content once it is selected",
+        async (tab, expectedText) => {
+            setup();
 
-        await screen.findByText("Borscht");
+            await screen.findByText("Borscht");
 
-        await userEvent.click(screen.getByRole("tab", { name: "My menus" }));
+            await userEvent.click(screen.getByRole("tab", { name: tab }));
 
-        expect(await screen.findByText("Weekday menu")).toBeInTheDocument();
-    });
-
-    it("should show a coming-soon placeholder for the Favourites tab", async () => {
-        setup();
-
-        await screen.findByText("Borscht");
-
-        await userEvent.click(screen.getByRole("tab", { name: "Favourites" }));
-
-        expect(
-            screen.getByText("Coming in a future release."),
-        ).toBeInTheDocument();
-    });
-
-    it("should show the calorie goal form on the Dietary tab", async () => {
-        setup();
-
-        await screen.findByText("Borscht");
-
-        await userEvent.click(screen.getByRole("tab", { name: "Dietary" }));
-
-        expect(await screen.findByText("Calorie goal")).toBeInTheDocument();
-    });
+            expect(await screen.findByText(expectedText)).toBeInTheDocument();
+        },
+    );
 });

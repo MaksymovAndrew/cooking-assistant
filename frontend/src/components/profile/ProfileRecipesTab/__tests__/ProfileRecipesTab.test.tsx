@@ -15,6 +15,7 @@ const RECIPE: RecipeSearchResultItem = {
     ingredients: [],
     calories_per_portion: null,
     isOwner: true,
+    isFavourite: false,
 };
 
 describe("ProfileRecipesTab", () => {

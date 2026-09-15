@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
 import {
+    booleanQuerySchema,
     hasUniqueItems,
     idListStringSchema,
     idSchema,
@@ -118,13 +119,8 @@ export const recipeFiltersSchema = z.object({
             },
         })
         .optional(),
-    in_pantry: z
-        .string({ error: "In pantry must be true or false" })
-        .refine((value) => value === "true" || value === "false", {
-            message: "In pantry must be true or false",
-        })
-        .transform((value) => value === "true")
-        .optional(),
+    in_pantry: booleanQuerySchema("In pantry"),
+    favourites: booleanQuerySchema("Favourites"),
     limit: limitSchema,
     offset: offsetSchema,
 }) satisfies z.ZodType<RecipeFilters>;

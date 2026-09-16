@@ -20,6 +20,14 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Project
+
+- Changed: Routine dependency maintenance, including a security fix in response compression.
+
+### Backend
+
+- Added: A personal shopping list - add, check off, rename, reorder and clear items, or add catalog ingredients with a quantity; adding an ingredient that is already on the list updates it instead of duplicating it.
+
 ## 4.5 - 2026-09-15
 
 ### Project

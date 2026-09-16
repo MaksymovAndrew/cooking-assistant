@@ -60,6 +60,14 @@ export const ROUTES = {
         intakeById: "/calorie-intake/:intakeId",
         goal: "/calorie-goal",
     },
+
+    shoppingList: {
+        list: "/shopping-list",
+        byId: "/shopping-list/:id",
+        checked: "/shopping-list/checked",
+        order: "/shopping-list/order",
+        ingredients: "/shopping-list/ingredients",
+    },
 } as const;
 
 // the probe is the one path referenced outside its own router - request logging filters it out -

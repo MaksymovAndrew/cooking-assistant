@@ -271,6 +271,7 @@ Express app creation in [backend/src/app.ts](backend/src/app.ts) mounts operatio
 - `menuCategory.routes` -> menu category list, menus by category
 - `calorie.routes` -> calorie intake log and calorie goal
 - `favourite.routes` -> add/remove a recipe or menu favourite (`PUT`/`DELETE /recipe/:id/favourite`, `/menu/:id/favourite`)
+- `shoppingList.routes` -> per-user shopping list: items CRUD, clear checked, reorder, add catalog ingredients with merge
 
 The backend is organised in layers with dependencies pointing inward (Dependency Rule). Wiring is built once in [backend/src/composition-root.ts](backend/src/composition-root.ts): `buildControllers(deps)` is reusable for tests, and the default export uses the real Pg repositories/services.
 
@@ -339,6 +340,7 @@ Key tables and joins (see the initial migration [backend/migrations/178118564836
 - `person` <-> `ingredients` through `person_ingredients` (the pantry, with `quantity_person_ingradient` - note the misspelling, it's the actual column name) and `ingredient_purchases` (history)
 - `menu` (per-user, with `category_id` -> `menu_category`) <-> `recipes` through `menu_recipe`
 - `recipe_favourites` / `menu_favourites` (person <-> recipe / menu, composite primary key) - every foreign key is `ON DELETE CASCADE`, because recipe, menu and account deletion are hand-written transactions that know nothing about favourites. Search and detail queries add a per-requester `isFavourite` column (`isFavouriteColumn`, `null` for an anonymous requester) next to `isOwner`, and the `favourites=true` filter is one shared clause (`favouritesFilterClause`) in both registries
+- `shopping_list_items` (per-user, optional `ingredient_id` -> `ingredients` with `ON DELETE SET NULL` plus `quantity`) - writes run in one transaction that locks the owner's `person` row, so the item limit and `position` can't race; adding an ingredient merges into its unchecked item (`quantity = GREATEST`) instead of duplicating it
 - `ingredients` carries `id_unit_measurement` -> `unit_measurement` plus metadata (`allergens`, `days_to_expire`, `seasonality`, `storage_condition`)
 
 The "missing ingredients for a menu" feature works by joining `menu_recipe` -> `recipe_ingredients` -> `ingredients` and subtracting the user's `person_ingredients`.

@@ -534,6 +534,25 @@ table and aggregating client-side.
 | PUT    | `/menu/:id/favourite`  | Add the menu to the current user's favourites (204)    |
 | DELETE | `/menu/:id/favourite`  | Remove it from the current user's favourites (204)     |
 
+### Shopping list ([src/routes/shoppingList.routes.ts](src/routes/shoppingList.routes.ts))
+
+| Method | Path                         | Purpose                                                                  |
+| ------ | ---------------------------- | ------------------------------------------------------------------------ |
+| GET    | `/shopping-list`             | The current user's items, in list order                                  |
+| POST   | `/shopping-list`             | Add a free-text item `{ name, note? }` (201 with the item)               |
+| PATCH  | `/shopping-list/:id`         | Change `name`, `note` and/or `checked` (200 with the item)               |
+| DELETE | `/shopping-list/:id`         | Remove one item (204)                                                    |
+| DELETE | `/shopping-list/checked`     | Remove every checked item (204)                                          |
+| PUT    | `/shopping-list/order`       | Reorder with the full list of ids `{ ids }` (204)                        |
+| POST   | `/shopping-list/ingredients` | Add catalog ingredients `{ items: [{ ingredient_id, quantity }] }` (204) |
+
+A list holds at most 200 items; an add past that answers 409 `shopping_list/limit_reached`. Adding an
+ingredient that already has an unchecked item raises that item's quantity to the larger of the two
+instead of adding a duplicate, so pressing "add missing" twice changes nothing. A reorder must name
+exactly the current items - otherwise 409 `shopping_list/order_out_of_date`, and the client refetches.
+`/shopping-list/checked` is registered before `/shopping-list/:id`, which would otherwise read
+`checked` as an id.
+
 ### Menu categories ([src/routes/menuCategory.routes.ts](src/routes/menuCategory.routes.ts))
 
 | Method | Path               | Purpose         |
@@ -555,6 +574,9 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
   `quantity_person_ingradient` - typo in the real column name, leave it) and `ingredient_purchases`
   (one row per purchase lot). Expiry is computed per lot from `ingredient_purchases.purchase_date`,
   not the aggregate's own date - a top-up must not "refresh" older stock's expiry.
+- `shopping_list_items` - one row per item on a person's shopping list: free text, or a catalog
+  ingredient with a quantity (`ingredient_id` is `ON DELETE SET NULL`, so the item outlives it as text).
+  Writes lock the owner's `person` row, so the 200-item limit and the next `position` can't race.
 - `ingredients.id_unit_measurement` -> `unit_measurement`
 - `ingredients` carries metadata: `allergens`, `days_to_expire`, `seasonality`, `storage_condition`
 - `menu` (per-user, with `category_id` -> `menu_category`) to `recipes` through `menu_recipe`

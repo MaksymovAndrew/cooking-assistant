@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, UnauthorizedError } from "domain/errors/AppError";
 
 import DeleteAccount from "application/use-cases/users/DeleteAccount";
@@ -58,7 +59,7 @@ describe("DeleteAccount", () => {
 
         expect(error).toBeAppError(
             UnauthorizedError,
-            "Current password is incorrect",
+            ERROR_CODES.CURRENT_PASSWORD_INCORRECT,
             401,
         );
         expect(deps.userRepository.delete).not.toHaveBeenCalled();
@@ -77,7 +78,11 @@ describe("DeleteAccount", () => {
             useCase.execute(USER_ID, { password: PASSWORD }),
         );
 
-        expect(error).toBeAppError(NotFoundError, "User not found", 404);
+        expect(error).toBeAppError(
+            NotFoundError,
+            ERROR_CODES.USER_NOT_FOUND,
+            404,
+        );
         expect(deps.passwordHasher.compare).not.toHaveBeenCalled();
     });
 

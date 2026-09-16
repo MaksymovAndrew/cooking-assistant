@@ -4,7 +4,8 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import { AUTH_COOKIE_NAME } from "config/cookie";
 import { requireJwtSecret } from "config/env";
 import { SESSION_TOKEN_TYPE } from "config/security";
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
+import { ForbiddenError, UnauthorizedError } from "domain/errors/AppError";
 
 // the typ claim must be checked positively: purpose tokens (password-reset, verify-email) are signed
 // with the same secret, so accepting any well-formed { id } would let an emailed link act as a session
@@ -32,11 +33,11 @@ export function readSessionCookie(req: {
     return req.cookies?.[AUTH_COOKIE_NAME]?.trim() ?? "";
 }
 
-const authenticateToken: RequestHandler = (req, res, next) => {
+const authenticateToken: RequestHandler = (req, _res, next) => {
     const token = readSessionCookie(req);
 
     if (!token) {
-        res.status(401).json({ error: ERROR_MESSAGES.SESSION_EXPIRED });
+        next(new UnauthorizedError(ERROR_CODES.SESSION_EXPIRED));
 
         return;
     }
@@ -45,9 +46,7 @@ const authenticateToken: RequestHandler = (req, res, next) => {
 
     jwt.verify(token, secret, { algorithms: ["HS256"] }, (err, decoded) => {
         if (err !== null || !isSessionPayload(decoded)) {
-            res.status(403).json({
-                error: ERROR_MESSAGES.SESSION_EXPIRED,
-            });
+            next(new ForbiddenError(ERROR_CODES.SESSION_EXPIRED));
 
             return;
         }

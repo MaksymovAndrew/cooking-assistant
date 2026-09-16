@@ -3,17 +3,19 @@ import userEvent from "@testing-library/user-event";
 
 import type { RecipeDetails } from "types/recipe";
 
+import { API_ROUTES } from "api/endpoints";
+
 import { RecipeHero } from "components/recipes/RecipeHero";
 
-import { renderWithProviders, renderWithRouter } from "test/router";
-import { makeTestStore } from "test/store";
+import { mockedPut } from "test/apiClientMock";
+import { renderWithRouter } from "test/router";
+
+jest.mock("api/client");
 
 const LOG_INTAKE_BUTTON = "Log intake";
 const GUEST_CTA = "Log in for the full experience";
 const CALORIES_PER_PORTION_LABEL = "420 kcal / portion";
 const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
-const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
-const GUEST_STORE = makeTestStore({ session: { status: "guest" } });
 
 const BASE_RECIPE: RecipeDetails = {
     id: 1,
@@ -25,9 +27,13 @@ const BASE_RECIPE: RecipeDetails = {
     cooking_time: 85,
     creation_date: "2024-01-01",
     isOwner: false,
+    isFavourite: false,
     calories_per_portion: 420,
     calories_override: null,
 };
+
+// the server answers isFavourite: null exactly when it rendered the record for an anonymous requester
+const GUEST_RECIPE: RecipeDetails = { ...BASE_RECIPE, isFavourite: null };
 
 const baseProps = {
     recipe: BASE_RECIPE,
@@ -106,9 +112,7 @@ describe("RecipeHero", () => {
     });
 
     it("should show just the Favourite button and no explanatory text for a visitor", () => {
-        renderWithProviders(<RecipeHero {...baseProps} />, {
-            store: AUTHED_STORE,
-        });
+        renderWithRouter(<RecipeHero {...baseProps} />);
 
         expect(
             screen.queryByRole("link", { name: /Edit recipe/ }),
@@ -150,22 +154,40 @@ describe("RecipeHero", () => {
         expect(onDelete).toHaveBeenCalledTimes(1);
     });
 
-    it("should disable the favourite button since favourites are not wired up yet", () => {
-        renderWithProviders(<RecipeHero {...baseProps} />, {
-            store: AUTHED_STORE,
-        });
+    it("should favourite the recipe on the server when the heart is pressed", async () => {
+        mockedPut.mockResolvedValue({ data: null });
 
+        renderWithRouter(<RecipeHero {...baseProps} />);
+
+        await userEvent.click(
+            screen.getAllByRole("button", { name: "Favourite" })[0],
+        );
+
+        expect(mockedPut).toHaveBeenCalledWith(
+            API_ROUTES.recipes.favourite(1),
+            undefined,
+        );
         expect(
             screen.getAllByRole("button", { name: "Favourite" })[0],
-        ).toBeDisabled();
+        ).toHaveAttribute("aria-pressed", "true");
+    });
+
+    it("should show the signed-in actions, not the guest CTA, while the client session check is still pending", () => {
+        renderWithRouter(<RecipeHero {...baseProps} onLogIntake={jest.fn()} />);
+
+        expect(
+            screen.queryByRole("link", { name: GUEST_CTA }),
+        ).not.toBeInTheDocument();
+        expect(
+            screen.getAllByRole("button", { name: "Favourite" }),
+        ).toHaveLength(2);
     });
 
     it("should show the log-intake button and call onLogIntake when calories are available", async () => {
         const onLogIntake = jest.fn();
 
-        renderWithProviders(
+        renderWithRouter(
             <RecipeHero {...baseProps} onLogIntake={onLogIntake} />,
-            { store: AUTHED_STORE },
         );
 
         await userEvent.click(
@@ -176,9 +198,7 @@ describe("RecipeHero", () => {
     });
 
     it("should not show the log-intake button when onLogIntake is not provided", () => {
-        renderWithProviders(<RecipeHero {...baseProps} />, {
-            store: AUTHED_STORE,
-        });
+        renderWithRouter(<RecipeHero {...baseProps} />);
 
         expect(
             screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
@@ -186,9 +206,7 @@ describe("RecipeHero", () => {
     });
 
     it("should hide both favourite buttons for a guest", () => {
-        renderWithProviders(<RecipeHero {...baseProps} />, {
-            store: GUEST_STORE,
-        });
+        renderWithRouter(<RecipeHero {...baseProps} recipe={GUEST_RECIPE} />);
 
         expect(
             screen.queryByRole("button", { name: "Favourite" }),
@@ -196,9 +214,12 @@ describe("RecipeHero", () => {
     });
 
     it("should show a generic login CTA instead of the log-intake button for a guest", () => {
-        renderWithProviders(
-            <RecipeHero {...baseProps} onLogIntake={jest.fn()} />,
-            { store: GUEST_STORE },
+        renderWithRouter(
+            <RecipeHero
+                {...baseProps}
+                recipe={GUEST_RECIPE}
+                onLogIntake={jest.fn()}
+            />,
         );
 
         expect(
@@ -211,9 +232,7 @@ describe("RecipeHero", () => {
     });
 
     it("should show the generic login CTA for a guest even without onLogIntake", () => {
-        renderWithProviders(<RecipeHero {...baseProps} />, {
-            store: GUEST_STORE,
-        });
+        renderWithRouter(<RecipeHero {...baseProps} recipe={GUEST_RECIPE} />);
 
         expect(screen.getByRole("link", { name: GUEST_CTA })).toHaveAttribute(
             "href",

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 import type {
     CalorieRepository,
@@ -35,18 +35,18 @@ export default class LogIntake {
             isRecipe = false;
         } else {
             // unreachable - logIntakeSchema.refine requires exactly one of recipe_id/menu_id
-            throw new ValidationError(ERROR_MESSAGES.RECIPE_NOT_FOUND);
+            throw new ValidationError(ERROR_CODES.VALIDATION_ERROR);
         }
 
         if (!source) {
             throw new NotFoundError(
                 isRecipe
-                    ? ERROR_MESSAGES.RECIPE_NOT_FOUND
-                    : ERROR_MESSAGES.MENU_NOT_FOUND,
+                    ? ERROR_CODES.RECIPE_NOT_FOUND
+                    : ERROR_CODES.MENU_NOT_FOUND,
             );
         }
         if (source.calories === null) {
-            throw new ValidationError(ERROR_MESSAGES.CALORIES_NOT_AVAILABLE);
+            throw new ValidationError(ERROR_CODES.CALORIES_NOT_AVAILABLE);
         }
 
         return this.calorieRepository.logIntake(validPersonId, {

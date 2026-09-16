@@ -12,9 +12,6 @@ import { getInitials } from "utils/getInitials";
 
 import styles from "./ProfileHero.module.scss";
 
-// no favourites data exists on the backend yet - a fixed decorative placeholder, like the recipe/menu rating counts
-const FAVOURITES_COUNT = 15;
-
 interface ProfileHeroProps {
     name?: string;
     surname?: string;
@@ -23,6 +20,7 @@ interface ProfileHeroProps {
     avatar?: string | null;
     recipesCount: number;
     menusCount: number;
+    favouritesCount: number;
     kcalToday: number;
     onLogout: () => void;
     onEditProfile: () => void;
@@ -40,6 +38,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
     avatar,
     recipesCount,
     menusCount,
+    favouritesCount,
     kcalToday,
     onLogout,
     onEditProfile,
@@ -89,7 +88,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
                 </div>
                 <div className={styles["profile-hero__stat"]}>
                     <span className={styles["profile-hero__stat-value"]}>
-                        {FAVOURITES_COUNT}
+                        {favouritesCount}
                     </span>
                     <span className={styles["profile-hero__stat-label"]}>
                         {t("profilePage.favouritesStat")}

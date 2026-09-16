@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
 import GetAllMenus from "application/use-cases/menus/GetAllMenus";
@@ -53,6 +54,35 @@ describe("GetAllMenus", () => {
         expect(menuRepository.findAll).toHaveBeenCalledWith({}, null);
     });
 
+    it("should throw a 400 ValidationError when an anonymous request uses the favourites filter", async () => {
+        const { useCase, menuRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(null, { favourites: "true" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.FAVOURITES_REQUIRES_LOGIN,
+            400,
+        );
+        expect(menuRepository.findAll).not.toHaveBeenCalled();
+    });
+
+    it("should pass through the favourites filter as a boolean for a signed-in user", async () => {
+        const { useCase, menuRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        menuRepository.findAll.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { favourites: "true" });
+
+        expect(menuRepository.findAll).toHaveBeenCalledWith(
+            { favourites: true },
+            7,
+        );
+    });
+
     it("should throw a 400 ValidationError when offset is negative", async () => {
         const { useCase, menuRepository } = setup();
 
@@ -60,8 +90,9 @@ describe("GetAllMenus", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "offset: Offset must be at least 0",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "offset: Offset must be at least 0",
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });
@@ -75,8 +106,9 @@ describe("GetAllMenus", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "category_ids: Category IDs must be a comma-separated list of IDs",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "category_ids: Category IDs must be a comma-separated list of IDs",
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });

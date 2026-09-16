@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 
 import DeleteUserIngredient from "application/use-cases/pantry/DeleteUserIngredient";
@@ -22,7 +22,7 @@ describe("DeleteUserIngredient", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.INGREDIENT_NOT_FOUND_FOR_USER,
+            ERROR_CODES.INGREDIENT_NOT_FOUND_FOR_USER,
             404,
         );
     });

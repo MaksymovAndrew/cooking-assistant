@@ -2,10 +2,12 @@ import type { MenuListParams } from "types/menu";
 
 import type { FilterDef } from "./filterDef";
 import { idListFilter, textFilter } from "./filterDefFactories";
+import { booleanFilter } from "./filterDefFactories.scalar";
 
 export interface MenuFilterState {
     search: string;
     categories: number[];
+    favourites: boolean;
 }
 
 // shared with links that pre-set the filter before navigating (see GuestLandingMenuFilters)
@@ -25,5 +27,11 @@ export const MENU_FILTER_DEFS: readonly FilterDef<unknown, MenuListParams>[] = [
         param: "category_ids",
         chipLabel: (value, t) =>
             t("categoryFilter.categoryChip", { count: value.length }),
+    }),
+    booleanFilter<MenuListParams>({
+        key: "favourites",
+        urlParam: "fav",
+        param: "favourites",
+        chipLabel: (_value, t) => t("categoryFilter.favouritesChip"),
     }),
 ];

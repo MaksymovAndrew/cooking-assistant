@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 
 import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "config/cookie";
-import { SUCCESS_MESSAGES } from "constants/errorMessages";
+import { translateMessage } from "i18n/translate";
 
 import type ChangePassword from "application/use-cases/users/ChangePassword";
 import type ConfirmEmailVerification from "application/use-cases/users/ConfirmEmailVerification";
@@ -71,7 +71,7 @@ export default class UserController {
         );
 
         res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
-        res.status(201).json({ message: SUCCESS_MESSAGES.REGISTERED });
+        res.status(201).json({ message: translateMessage("registered") });
     };
 
     loginUser: RequestHandler = async (req, res) => {
@@ -80,12 +80,12 @@ export default class UserController {
         );
 
         res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
-        res.json({ message: SUCCESS_MESSAGES.LOGGED_IN });
+        res.json({ message: translateMessage("loggedIn") });
     };
 
     logout: RequestHandler = (_req, res) => {
         res.clearCookie(AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS);
-        res.json({ message: SUCCESS_MESSAGES.LOGGED_OUT });
+        res.json({ message: translateMessage("loggedOut") });
     };
 
     me: RequestHandler = async (req, res) => {
@@ -103,7 +103,7 @@ export default class UserController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: SUCCESS_MESSAGES.PASSWORD_RESET_EMAIL_SENT });
+        res.json({ message: translateMessage("passwordResetEmailSent") });
     };
 
     confirmPasswordReset: RequestHandler = async (req, res) => {
@@ -111,7 +111,7 @@ export default class UserController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: SUCCESS_MESSAGES.PASSWORD_RESET });
+        res.json({ message: translateMessage("passwordReset") });
     };
 
     changePassword: RequestHandler = async (req, res) => {
@@ -120,7 +120,7 @@ export default class UserController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: SUCCESS_MESSAGES.PASSWORD_CHANGED });
+        res.json({ message: translateMessage("passwordChanged") });
     };
 
     updateProfile: RequestHandler = async (req, res) => {
@@ -129,7 +129,7 @@ export default class UserController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: SUCCESS_MESSAGES.PROFILE_UPDATED });
+        res.json({ message: translateMessage("profileUpdated") });
     };
 
     deleteAccount: RequestHandler = async (req, res) => {
@@ -139,13 +139,13 @@ export default class UserController {
         );
 
         res.clearCookie(AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS);
-        res.json({ message: SUCCESS_MESSAGES.ACCOUNT_DELETED });
+        res.json({ message: translateMessage("accountDeleted") });
     };
 
     requestEmailVerification: RequestHandler = async (req, res) => {
         await this.requestEmailVerificationUseCase.execute(getUserId(req));
 
-        res.json({ message: SUCCESS_MESSAGES.VERIFICATION_EMAIL_SENT });
+        res.json({ message: translateMessage("verificationEmailSent") });
     };
 
     confirmEmailVerification: RequestHandler = async (req, res) => {
@@ -153,6 +153,6 @@ export default class UserController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: SUCCESS_MESSAGES.EMAIL_VERIFIED });
+        res.json({ message: translateMessage("emailVerified") });
     };
 }

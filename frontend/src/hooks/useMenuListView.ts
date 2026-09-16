@@ -17,6 +17,7 @@ import { MENU_FILTER_DEFS } from "utils/filters/menuFilterDefs";
 import { getQueryErrorMessage } from "utils/queryError";
 
 import { useListFilters } from "./useListFilters";
+import { useViewerFilterGate } from "./useViewerFilterGate";
 
 export type { MenuFilterState } from "utils/filters/menuFilterDefs";
 
@@ -33,6 +34,7 @@ export const useMenuListView = (source: MenuSource) => {
     const {
         values: filters,
         setValue,
+        setValues,
         reset: resetFilters,
         params,
         activeFilters,
@@ -40,10 +42,20 @@ export const useMenuListView = (source: MenuSource) => {
         hasActiveFilters,
     } = useListFilters<MenuFilterState, MenuListParams>(MENU_FILTER_DEFS);
 
+    // the favourites toggle is hidden for a guest; a stale ?fav=1 (a bookmark, an expired session) is
+    // dropped here instead of sending a request the backend rejects with a 400
+    const { isAuthed, isAwaitingSession } = useViewerFilterGate(
+        filters.favourites,
+    );
+    const queryParams = isAuthed
+        ? params
+        : { ...params, favourites: undefined };
     const isPerson = source === MENU_SOURCE.person;
-    const all = useGetMenusInfiniteQuery(params, { skip: isPerson });
-    const byPerson = useGetMenusByPersonInfiniteQuery(params, {
-        skip: !isPerson,
+    const all = useGetMenusInfiniteQuery(queryParams, {
+        skip: isPerson || isAwaitingSession,
+    });
+    const byPerson = useGetMenusByPersonInfiniteQuery(queryParams, {
+        skip: !isPerson || isAwaitingSession,
     });
     const active = isPerson ? byPerson : all;
 
@@ -65,6 +77,7 @@ export const useMenuListView = (source: MenuSource) => {
     return {
         filters,
         setValue,
+        setValues,
         resetFilters,
         activeFilters,
         activeCount,

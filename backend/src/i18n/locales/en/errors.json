@@ -1,0 +1,37 @@
+{
+    "bad_request": "Bad request",
+    "not_found": "Not found",
+    "server_error": "Server error",
+    "validation_error": "Invalid request data",
+    "rate_limited": "Too many requests, please try again later",
+
+    "auth/session_expired": "Session expired, please log in again",
+    "auth/user_not_found": "User not found",
+    "auth/login_already_taken": "Login already taken",
+    "auth/email_already_taken": "Email already taken",
+    "auth/invalid_login_or_password": "Invalid login or password",
+    "auth/current_password_incorrect": "Current password is incorrect",
+    "auth/invalid_or_expired_token": "This link is invalid or has expired",
+    "auth/email_already_verified": "Email is already verified",
+    "auth/new_password_same_as_current": "New password must be different from your current password",
+
+    "recipe/not_found": "Recipe not found",
+    "recipe/ingredients_empty": "Ingredients cannot be empty",
+    "recipe/ingredients_missing_id": "All ingredients must have id",
+    "recipe/ingredients_not_exist": "One or more ingredients do not exist",
+    "recipe/title_content_empty": "Title and content cannot be empty",
+    "recipe/in_pantry_requires_login": "Log in to filter recipes by pantry contents",
+
+    "menu/not_found": "Menu not found",
+    "menu/insufficient_data_create": "Insufficient data to create menu",
+    "menu/insufficient_data_update": "Insufficient data to update menu",
+    "menu/recipes_not_exist": "One or more recipes do not exist",
+
+    "pantry/ingredient_not_found": "Ingredient not found for this user",
+    "pantry/purchase_not_found": "Purchase not found.",
+
+    "calories/intake_not_found": "Intake entry not found",
+    "calories/not_available": "Calories are not available for this item",
+
+    "favourites/requires_login": "Log in to see your favourites"
+}

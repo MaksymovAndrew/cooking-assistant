@@ -1,6 +1,8 @@
 import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { AxiosError, AxiosHeaders } from "axios";
 
+import { ERROR_CODES } from "constants/errorCodes";
+
 import {
     getApiErrorCode,
     getApiErrorMessage,
@@ -22,6 +24,49 @@ describe("getApiErrorMessage", () => {
             data: { error: SERVER_MESSAGE },
             status: 429,
             statusText: STATUS_TEXT,
+            headers: new AxiosHeaders(),
+            config,
+        };
+        const error = new AxiosError(
+            AXIOS_MESSAGE,
+            AXIOS_CODE,
+            config,
+            undefined,
+            response,
+        );
+
+        expect(getApiErrorMessage(error)).toBe(SERVER_MESSAGE);
+    });
+
+    it("should return the app's own copy for a known error code instead of the server text", () => {
+        const response: AxiosResponse = {
+            data: {
+                error: "Recipe not found",
+                code: ERROR_CODES.RECIPE_NOT_FOUND,
+            },
+            status: 404,
+            statusText: "Not Found",
+            headers: new AxiosHeaders(),
+            config,
+        };
+        const error = new AxiosError(
+            AXIOS_MESSAGE,
+            AXIOS_CODE,
+            config,
+            undefined,
+            response,
+        );
+
+        expect(getApiErrorMessage(error)).toBe(
+            "This recipe doesn't exist or has been removed.",
+        );
+    });
+
+    it("should fall back to the server text for a code this build does not know", () => {
+        const response: AxiosResponse = {
+            data: { error: SERVER_MESSAGE, code: "future/unknown_code" },
+            status: 400,
+            statusText: "Bad Request",
             headers: new AxiosHeaders(),
             config,
         };
@@ -114,7 +159,7 @@ describe("getApiErrorRetryAfter", () => {
 describe("getApiErrorCode", () => {
     it("should return the code from an axios error response", () => {
         const response: AxiosResponse = {
-            data: { error: SERVER_MESSAGE, code: "RATE_LIMITED" },
+            data: { error: SERVER_MESSAGE, code: ERROR_CODES.RATE_LIMITED },
             status: 429,
             statusText: STATUS_TEXT,
             headers: new AxiosHeaders(),
@@ -128,7 +173,7 @@ describe("getApiErrorCode", () => {
             response,
         );
 
-        expect(getApiErrorCode(error)).toBe("RATE_LIMITED");
+        expect(getApiErrorCode(error)).toBe(ERROR_CODES.RATE_LIMITED);
     });
 
     it("should return null when the response has no code field", () => {

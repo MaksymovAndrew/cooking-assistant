@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 
@@ -21,7 +21,7 @@ export default class GetMenuById {
         );
 
         if (!menu) {
-            throw new NotFoundError(ERROR_MESSAGES.MENU_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.MENU_NOT_FOUND);
         }
 
         return menu;

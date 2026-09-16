@@ -1,0 +1,17 @@
+.filter-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+
+    &__label {
+        display: flex;
+        align-items: center;
+        gap: var(--s-2);
+        color: var(--text);
+        font:
+            600 14px Inter,
+            sans-serif;
+    }
+}

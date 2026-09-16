@@ -37,6 +37,7 @@ const BASE_FILTERS: RecipeFilterState = {
     calories: { min: "", max: "" },
     sort: null,
     inPantry: false,
+    favourites: false,
 };
 
 const setup = (
@@ -303,9 +304,22 @@ describe("RecipeFilterPanel", () => {
         const { setValue } = setup();
 
         await openPanel();
-        await userEvent.click(screen.getByRole("switch"));
+        await userEvent.click(
+            screen.getByRole("switch", { name: "Only what I can make" }),
+        );
 
         expect(setValue).toHaveBeenCalledWith("inPantry", true);
+    });
+
+    it("should call setValue with true when the favourites toggle is clicked", async () => {
+        const { setValue } = setup();
+
+        await openPanel();
+        await userEvent.click(
+            screen.getByRole("switch", { name: "Only my favourites" }),
+        );
+
+        expect(setValue).toHaveBeenCalledWith("favourites", true);
     });
 
     it("should not show the pantry toggle for a guest", async () => {
@@ -336,6 +350,7 @@ describe("RecipeFilterPanel", () => {
             calories: { min: "", max: "" },
             sort: null,
             inPantry: false,
+            favourites: false,
         });
         expect(setValue).not.toHaveBeenCalledWith(
             "search",

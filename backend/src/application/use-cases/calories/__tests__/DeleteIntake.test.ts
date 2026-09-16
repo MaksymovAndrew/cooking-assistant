@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 
 import DeleteIntake from "application/use-cases/calories/DeleteIntake";
@@ -22,7 +22,7 @@ describe("DeleteIntake", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.INTAKE_NOT_FOUND,
+            ERROR_CODES.INTAKE_NOT_FOUND,
             404,
         );
     });

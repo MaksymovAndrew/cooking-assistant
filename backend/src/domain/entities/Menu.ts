@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
 export interface MenuInput {
@@ -29,7 +29,7 @@ export class Menu {
 
         if (hasInsufficientData) {
             throw new ValidationError(
-                ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_CREATE,
+                ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
             );
         }
 
@@ -49,7 +49,7 @@ export class Menu {
 
         if (hasInsufficientData) {
             throw new ValidationError(
-                ERROR_MESSAGES.MENU_INSUFFICIENT_DATA_UPDATE,
+                ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
             );
         }
 

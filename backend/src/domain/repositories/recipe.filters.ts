@@ -10,6 +10,7 @@ export interface RecipeFilters {
     max_calories?: number;
     sort_order?: "asc" | "desc";
     in_pantry?: boolean;
+    favourites?: boolean;
     limit?: number;
     offset?: number;
 }
@@ -19,6 +20,7 @@ export interface RecipeSearchRow {
     title: string;
     content: string;
     isOwner: boolean;
+    isFavourite: boolean | null;
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;

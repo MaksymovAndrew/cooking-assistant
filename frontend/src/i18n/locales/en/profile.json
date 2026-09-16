@@ -14,8 +14,11 @@
         "settingsTab": "Settings",
         "noRecipes": "You haven't created any recipes yet.",
         "noMenus": "You haven't created any menus yet.",
-        "comingSoonDescription": "Coming in a future release.",
-        "favouritesTitle": "Favourites"
+        "favouritesKindLabel": "Favourites type",
+        "favouriteRecipes": "Recipes",
+        "favouriteMenus": "Menus",
+        "noFavouriteRecipes": "You haven't added any recipes to your favourites yet.",
+        "noFavouriteMenus": "You haven't added any menus to your favourites yet."
     },
     "editProfileModal": {
         "title": "Edit profile",

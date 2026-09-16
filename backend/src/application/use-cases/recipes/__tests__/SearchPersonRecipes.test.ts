@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
 import SearchPersonRecipes from "application/use-cases/recipes/SearchPersonRecipes";
@@ -52,8 +53,9 @@ describe("SearchPersonRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "limit: Limit must be at most 100",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "limit: Limit must be at most 100",
         );
         expect(recipeRepository.searchByPerson).not.toHaveBeenCalled();
     });
@@ -67,8 +69,9 @@ describe("SearchPersonRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "start_date: Start date must be a YYYY-MM-DD date",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "start_date: Start date must be a YYYY-MM-DD date",
         );
         expect(recipeRepository.searchByPerson).not.toHaveBeenCalled();
     });

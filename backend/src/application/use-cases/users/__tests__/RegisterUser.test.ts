@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
 import RegisterUser from "application/use-cases/users/RegisterUser";
@@ -95,8 +96,9 @@ describe("RegisterUser", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "password: Password must be at least 8 characters and include a letter, a number, and a special character",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "password: Password must be at least 8 characters and include a letter, a number, and a special character",
         );
         expect(deps.passwordHasher.hash).not.toHaveBeenCalled();
         expect(deps.userRepository.create).not.toHaveBeenCalled();
@@ -122,8 +124,9 @@ describe("RegisterUser", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "email: Email must be a valid email address",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "email: Email must be a valid email address",
         );
         expect(deps.userRepository.create).not.toHaveBeenCalled();
     });

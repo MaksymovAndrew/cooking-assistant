@@ -16,6 +16,7 @@ export interface RecipeFilterState {
     calories: { min: string; max: string };
     sort: "asc" | "desc" | null;
     inPantry: boolean;
+    favourites: boolean;
 }
 
 // shared with links that pre-set the filter before navigating (see PantryRecipesCard)
@@ -104,5 +105,11 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
         urlParam: RECIPE_PANTRY_URL_PARAM,
         param: "in_pantry",
         chipLabel: (_value, t) => t("filterPanel.inPantryChip"),
+    }),
+    booleanFilter<RecipeFilterParams>({
+        key: "favourites",
+        urlParam: "fav",
+        param: "favourites",
+        chipLabel: (_value, t) => t("filterPanel.favouritesChip"),
     }),
 ];

@@ -24,6 +24,7 @@ const SAMPLE: RecipeDetails = {
     cooking_time: 60,
     creation_date: "2024-01-01",
     isOwner: false,
+    isFavourite: false,
     calories_per_portion: null,
     calories_override: null,
 };

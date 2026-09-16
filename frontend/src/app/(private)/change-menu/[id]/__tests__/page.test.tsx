@@ -44,6 +44,7 @@ const SAMPLE: MenuDetails = {
         menucontent: "quick",
         category_id: CATEGORY_ID,
         isOwner: true,
+        isFavourite: false,
     },
     recipes: [],
     allergens: [],

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 
 import DeleteRecipe from "application/use-cases/recipes/DeleteRecipe";
@@ -22,7 +22,7 @@ describe("DeleteRecipe", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.RECIPE_NOT_FOUND,
+            ERROR_CODES.RECIPE_NOT_FOUND,
             404,
         );
     });

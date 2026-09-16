@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 
@@ -13,6 +13,6 @@ export async function assertIngredientsExist(
     const existingSet = new Set(existingIds);
 
     if (!ingredientIds.every((id) => existingSet.has(id))) {
-        throw new ValidationError(ERROR_MESSAGES.RECIPE_INGREDIENTS_NOT_EXIST);
+        throw new ValidationError(ERROR_CODES.RECIPE_INGREDIENTS_NOT_EXIST);
     }
 }

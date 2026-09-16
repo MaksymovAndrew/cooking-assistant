@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 
@@ -12,6 +12,6 @@ export async function assertRecipesExist(
     const existingSet = new Set(existingIds);
 
     if (!recipeIds.every((id) => existingSet.has(id))) {
-        throw new ValidationError(ERROR_MESSAGES.MENU_RECIPES_NOT_EXIST);
+        throw new ValidationError(ERROR_CODES.MENU_RECIPES_NOT_EXIST);
     }
 }

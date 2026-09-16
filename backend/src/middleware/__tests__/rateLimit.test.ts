@@ -1,5 +1,14 @@
-import type { NextFunction, Request, Response } from "express";
+import express, {
+    type NextFunction,
+    type Request,
+    type Response,
+} from "express";
+import request from "supertest";
 
+import { AUTH_RATE_LIMIT } from "config/security";
+import { ERROR_CODES } from "constants/errorCodes";
+
+import errorHandler from "middleware/errorHandler";
 import {
     authLimiterKey,
     createLimiter,
@@ -7,6 +16,8 @@ import {
     ipLimiterKey,
     userIdLimiterKey,
 } from "middleware/rateLimit";
+
+import { errorBody } from "test/helpers/errorBody";
 
 const SHARED_IP = "203.0.113.5";
 
@@ -24,6 +35,29 @@ describe("createLimiter", () => {
         const limiter = createLimiter(false, authLimiterKey);
 
         expect(typeof limiter).toBe("function");
+    });
+
+    it("should answer past the limit with a 429 rate_limited error body", async () => {
+        const app = express();
+
+        app.use(
+            createLimiter(false, ipLimiterKey, {
+                ...AUTH_RATE_LIMIT,
+                limit: 1,
+                skipSuccessfulRequests: false,
+            }),
+        );
+        app.get("/", (_req, res) => {
+            res.json({});
+        });
+        app.use(errorHandler);
+
+        await request(app).get("/");
+        const res = await request(app).get("/");
+
+        expect(res.status).toBe(429);
+        expect(res.body).toEqual(errorBody(ERROR_CODES.RATE_LIMITED));
+        expect(res.headers["retry-after"]).toBeDefined();
     });
 });
 

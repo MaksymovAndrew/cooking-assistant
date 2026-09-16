@@ -1,12 +1,10 @@
 import request from "supertest";
 
-import {
-    ERROR_CODES,
-    ERROR_MESSAGES,
-    SUCCESS_MESSAGES,
-} from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
+import { translateMessage } from "i18n/translate";
 
+import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const RECIPE_TITLE = "Tomato soup";
@@ -15,6 +13,7 @@ const RECIPE_12_PATH = "/api/recipe/12";
 const RECIPE_ROW_EXTRAS = {
     content: "Boil tomatoes",
     isOwner: false,
+    isFavourite: false,
     type_id: 1,
     creation_date: new Date("2026-01-01T00:00:00.000Z"),
     cooking_time: 30,
@@ -97,9 +96,9 @@ describe("recipe routes", () => {
         );
 
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({
-            error: ERROR_MESSAGES.RECIPE_IN_PANTRY_REQUIRES_LOGIN,
-        });
+        expect(res.body).toEqual(
+            errorBody(ERROR_CODES.RECIPE_IN_PANTRY_REQUIRES_LOGIN),
+        );
         expect(deps.recipeRepository.search).not.toHaveBeenCalled();
     });
 
@@ -181,7 +180,7 @@ describe("recipe routes", () => {
             .send(makeRecipeBody());
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.RECIPE_NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.RECIPE_NOT_FOUND));
     });
 
     it("should delete a recipe owned by the authenticated user", async () => {
@@ -194,7 +193,9 @@ describe("recipe routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.RECIPE_DELETED });
+        expect(res.body).toEqual({
+            message: translateMessage("recipeDeleted"),
+        });
         expect(deps.recipeRepository.deleteById).toHaveBeenCalledWith(12, 7);
     });
 
@@ -357,6 +358,6 @@ describe("recipe routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.RECIPE_NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.RECIPE_NOT_FOUND));
     });
 });

@@ -295,7 +295,11 @@ describe("useMenuListView", () => {
             result.current.resetFilters();
         });
 
-        expect(result.current.filters).toEqual({ search: "", categories: [] });
+        expect(result.current.filters).toEqual({
+            search: "",
+            categories: [],
+            favourites: false,
+        });
     });
 
     it("should read the name search and selected categories from the URL", async () => {
@@ -308,6 +312,7 @@ describe("useMenuListView", () => {
         expect(result.current.filters).toEqual({
             search: "brunch",
             categories: [1, 2],
+            favourites: false,
         });
         expect(result.current.activeCount).toBe(2);
     });
@@ -324,6 +329,38 @@ describe("useMenuListView", () => {
                 limit: PAGE_SIZE,
                 offset: 0,
             },
+        });
+    });
+
+    it("should hold back a favourites request while the session check is still pending", async () => {
+        mockEmptyMenuList();
+
+        renderHookWithRouter(() => useMenuListView(MENU_SOURCE.all), {
+            initialEntries: ["/test?fav=1"],
+        });
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.menu.list,
+            expect.anything(),
+        );
+    });
+
+    it("should drop the favourites filter for a guest instead of sending it", async () => {
+        mockEmptyMenuList();
+
+        renderHookWithRouter(() => useMenuListView(MENU_SOURCE.all), {
+            store: makeTestStore({ session: { status: "guest" } }),
+            initialEntries: ["/test?fav=1"],
+        });
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.list, {
+            params: { limit: PAGE_SIZE, offset: 0 },
         });
     });
 });

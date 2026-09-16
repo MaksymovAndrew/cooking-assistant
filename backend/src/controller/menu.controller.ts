@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { SUCCESS_MESSAGES } from "constants/errorMessages";
+import { translateMessage } from "i18n/translate";
 
 import type CreateMenu from "application/use-cases/menus/CreateMenu";
 import type DeleteMenu from "application/use-cases/menus/DeleteMenu";
@@ -73,7 +73,7 @@ export default class MenuController {
         });
 
         res.status(201).json({
-            message: SUCCESS_MESSAGES.MENU_CREATED,
+            message: translateMessage("menuCreated"),
             menuId,
         });
     };
@@ -93,13 +93,13 @@ export default class MenuController {
 
         await this.updateMenuUseCase.execute(req.params.id, personId, body);
 
-        res.status(200).json({ message: SUCCESS_MESSAGES.MENU_UPDATED });
+        res.status(200).json({ message: translateMessage("menuUpdated") });
     };
 
     remove: RequestHandler<{ id: string }> = async (req, res) => {
         await this.deleteMenuUseCase.execute(req.params.id, getUserId(req));
 
-        res.status(200).json({ message: SUCCESS_MESSAGES.MENU_DELETED });
+        res.status(200).json({ message: translateMessage("menuDeleted") });
     };
 
     searchByPerson: RequestHandler = async (req, res) => {

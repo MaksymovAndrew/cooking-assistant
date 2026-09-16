@@ -1,6 +1,5 @@
-import emailContent from "i18n/locales/en/email.json";
-
 import { logger } from "config/logger";
+import { getEmailCopy } from "i18n/translate";
 
 import type { EmailSender } from "application/ports/EmailSender";
 
@@ -25,7 +24,7 @@ const BUTTON_STYLE = `display:inline-block;padding:13px 28px;background-color:${
 // currentColor inheritance can't be relied on across email clients
 const BRAND_MARK_SVG = `<svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke="${BRAND_COLOR}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M12.5 12.5c-1-1.2 1-2.2 0-3.4"/><path d="M19.5 12.5c-1-1.2 1-2.2 0-3.4"/><path d="M5 15h22"/><path d="M5 15a11 11 0 0 0 22 0"/></svg>`;
 
-interface EmailCopy {
+interface EmailContent {
     heading: string;
     body: string;
     button: string;
@@ -33,12 +32,22 @@ interface EmailCopy {
 }
 
 // inline styles only - email clients strip <style> tags and ignore external CSS/webfonts
-function emailShell(heading: string, bodyHtml: string, footer: string) {
-    return `<div style="margin:0;padding:40px 16px;background-color:${BG_WASH};font-family:${BODY_FONT_STACK};"><div style="max-width:480px;margin:0 auto;background-color:#ffffff;border-radius:16px;overflow:hidden;"><div style="height:4px;background-color:${BRAND_COLOR};"></div><div style="padding:40px 40px 32px;text-align:center;"><div style="margin:0 0 28px;">${BRAND_MARK_SVG}<span style="display:inline-block;vertical-align:middle;margin-left:8px;color:${BRAND_COLOR};font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${emailContent.brandName}</span></div><h1 style="margin:0 0 16px;color:${INK_COLOR};font-family:${HEADING_FONT_STACK};font-size:24px;font-weight:600;">${heading}</h1>${bodyHtml}</div><div style="border-top:1px solid ${DIVIDER_COLOR};padding:24px 40px;text-align:center;"><p style="margin:0;color:${MUTED_COLOR};font-size:13px;line-height:1.5;">${footer}</p></div></div></div>`;
+function emailShell(
+    brandName: string,
+    heading: string,
+    bodyHtml: string,
+    footer: string,
+) {
+    return `<div style="margin:0;padding:40px 16px;background-color:${BG_WASH};font-family:${BODY_FONT_STACK};"><div style="max-width:480px;margin:0 auto;background-color:#ffffff;border-radius:16px;overflow:hidden;"><div style="height:4px;background-color:${BRAND_COLOR};"></div><div style="padding:40px 40px 32px;text-align:center;"><div style="margin:0 0 28px;">${BRAND_MARK_SVG}<span style="display:inline-block;vertical-align:middle;margin-left:8px;color:${BRAND_COLOR};font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${brandName}</span></div><h1 style="margin:0 0 16px;color:${INK_COLOR};font-family:${HEADING_FONT_STACK};font-size:24px;font-weight:600;">${heading}</h1>${bodyHtml}</div><div style="border-top:1px solid ${DIVIDER_COLOR};padding:24px 40px;text-align:center;"><p style="margin:0;color:${MUTED_COLOR};font-size:13px;line-height:1.5;">${footer}</p></div></div></div>`;
 }
 
-function contentHtml(link: string, copy: EmailCopy): string {
+function contentHtml(
+    link: string,
+    brandName: string,
+    copy: EmailContent,
+): string {
     return emailShell(
+        brandName,
         copy.heading,
         `<p style="${TEXT_STYLE}">${copy.body}</p><a href="${link}" style="${BUTTON_STYLE}">${copy.button}</a>`,
         copy.footer,
@@ -53,18 +62,22 @@ export default class ResendEmailService implements EmailSender {
     ) {}
 
     async sendPasswordResetEmail(to: string, link: string): Promise<void> {
+        const { brandName, passwordReset } = getEmailCopy();
+
         await this.send(
             to,
-            emailContent.passwordReset.subject,
-            contentHtml(link, emailContent.passwordReset),
+            passwordReset.subject,
+            contentHtml(link, brandName, passwordReset),
         );
     }
 
     async sendVerificationEmail(to: string, link: string): Promise<void> {
+        const { brandName, verification } = getEmailCopy();
+
         await this.send(
             to,
-            emailContent.verification.subject,
-            contentHtml(link, emailContent.verification),
+            verification.subject,
+            contentHtml(link, brandName, verification),
         );
     }
 

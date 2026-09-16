@@ -12,15 +12,21 @@ const CATEGORIES = [
     { menu_category_id: 2, category_name: "Dinner" },
 ];
 
-const BASE_FILTERS: MenuFilterState = { search: "", categories: [] };
+const BASE_FILTERS: MenuFilterState = {
+    search: "",
+    categories: [],
+    favourites: false,
+};
 
 const setup = (overrides: Partial<MenuFilterState> = {}, activeCount = 0) => {
     const setValue = jest.fn();
+    const setValues = jest.fn();
 
     renderWithRouter(
         <MenuFilterPanel
             filters={{ ...BASE_FILTERS, ...overrides }}
             setValue={setValue}
+            setValues={setValues}
             activeCount={activeCount}
             categories={CATEGORIES}
             searchPlaceholder="menu title"
@@ -28,7 +34,7 @@ const setup = (overrides: Partial<MenuFilterState> = {}, activeCount = 0) => {
         />,
     );
 
-    return { setValue };
+    return { setValue, setValues };
 };
 
 const openPanel = async () => {
@@ -114,15 +120,22 @@ describe("MenuFilterPanel", () => {
         expect(setValue).toHaveBeenCalledWith("categories", [2]);
     });
 
-    it("should reset only the categories when Reset filters is clicked, leaving search alone", async () => {
-        const { setValue } = setup({ categories: [1, 2] }, 1);
+    it("should reset the categories and the favourites toggle in one call when Reset filters is clicked, leaving search alone", async () => {
+        const { setValue, setValues } = setup(
+            { categories: [1, 2], favourites: true },
+            2,
+        );
 
         await openPanel();
         await userEvent.click(
             screen.getByRole("button", { name: "Reset filters" }),
         );
 
-        expect(setValue).toHaveBeenCalledWith("categories", []);
+        expect(setValues).toHaveBeenCalledWith({
+            categories: [],
+            favourites: false,
+        });
+        expect(setValue).not.toHaveBeenCalled();
     });
 
     it("should close the popover when the apply button is clicked", async () => {

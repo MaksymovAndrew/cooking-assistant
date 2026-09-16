@@ -5,6 +5,12 @@ import { OwnerActions } from "components/ui/OwnerActions";
 
 import { renderWithRouter } from "test/router";
 
+const FAVOURITE = {
+    isFavourite: false,
+    isDisabled: false,
+    toggle: jest.fn().mockResolvedValue(undefined),
+};
+
 describe("OwnerActions", () => {
     it("should link to the edit target and render the delete button", () => {
         renderWithRouter(
@@ -13,6 +19,7 @@ describe("OwnerActions", () => {
                 onDelete={jest.fn()}
                 editLabel="Edit"
                 deleteLabel="Delete"
+                favourite={FAVOURITE}
                 favouriteLabel="Favourite"
             />,
         );
@@ -35,6 +42,7 @@ describe("OwnerActions", () => {
                 onDelete={onDelete}
                 editLabel="Edit"
                 deleteLabel="Delete"
+                favourite={FAVOURITE}
                 favouriteLabel="Favourite"
             />,
         );
@@ -51,6 +59,7 @@ describe("OwnerActions", () => {
                 onDelete={jest.fn()}
                 editLabel="Edit"
                 deleteLabel="Delete"
+                favourite={FAVOURITE}
                 favouriteLabel="Favourite"
             />,
         );
@@ -69,6 +78,7 @@ describe("OwnerActions", () => {
                 onDelete={jest.fn()}
                 editLabel="Edit"
                 deleteLabel="Delete"
+                favourite={FAVOURITE}
                 favouriteLabel="Favourite"
                 onLogIntake={onLogIntake}
                 logIntakeLabel="Log intake"

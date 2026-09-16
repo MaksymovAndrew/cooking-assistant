@@ -1,11 +1,9 @@
 import request from "supertest";
 
-import {
-    ERROR_CODES,
-    ERROR_MESSAGES,
-    SUCCESS_MESSAGES,
-} from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
+import { translateMessage } from "i18n/translate";
 
+import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const MENU_TITLE = "Weekly menu";
@@ -16,6 +14,7 @@ const MENU_ROW_EXTRAS = {
     categoryName: "Dinner",
     menuContent: "Simple dinners",
     isOwner: false,
+    isFavourite: false,
     recipe_count: 2,
 };
 
@@ -139,7 +138,7 @@ describe("menu routes", () => {
 
         expect(res.status).toBe(201);
         expect(res.body).toEqual({
-            message: SUCCESS_MESSAGES.MENU_CREATED,
+            message: translateMessage("menuCreated"),
             menuId: 9,
         });
         expect(deps.menuRepository.create.mock.calls[0][0]).toMatchObject({
@@ -162,9 +161,7 @@ describe("menu routes", () => {
             .send(makeMenuBody());
 
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({
-            error: ERROR_MESSAGES.MENU_RECIPES_NOT_EXIST,
-        });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.MENU_RECIPES_NOT_EXIST));
         expect(deps.menuRepository.create).not.toHaveBeenCalled();
     });
 
@@ -249,7 +246,7 @@ describe("menu routes", () => {
             .send(makeMenuBody());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.MENU_UPDATED });
+        expect(res.body).toEqual({ message: translateMessage("menuUpdated") });
         expect(deps.menuRepository.update.mock.calls[0][0]).toBe(9);
         expect(deps.menuRepository.update.mock.calls[0][1]).toBe(7);
     });
@@ -266,7 +263,7 @@ describe("menu routes", () => {
             .send(makeMenuBody());
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.MENU_NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.MENU_NOT_FOUND));
     });
 
     it("should delete a menu owned by the authenticated user", async () => {
@@ -279,7 +276,7 @@ describe("menu routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: SUCCESS_MESSAGES.MENU_DELETED });
+        expect(res.body).toEqual({ message: translateMessage("menuDeleted") });
         expect(deps.menuRepository.deleteById).toHaveBeenCalledWith(9, 7);
     });
 
@@ -313,6 +310,6 @@ describe("menu routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.MENU_NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.MENU_NOT_FOUND));
     });
 });

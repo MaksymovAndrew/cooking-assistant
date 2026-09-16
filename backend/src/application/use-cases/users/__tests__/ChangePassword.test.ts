@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import {
     NotFoundError,
     UnauthorizedError,
@@ -83,7 +84,7 @@ describe("ChangePassword", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "New password must be different from your current password",
+            ERROR_CODES.NEW_PASSWORD_SAME_AS_CURRENT,
             400,
         );
         expect(deps.passwordHasher.hash).not.toHaveBeenCalled();
@@ -112,7 +113,7 @@ describe("ChangePassword", () => {
 
         expect(error).toBeAppError(
             UnauthorizedError,
-            "Current password is incorrect",
+            ERROR_CODES.CURRENT_PASSWORD_INCORRECT,
             401,
         );
         expect(deps.userRepository.updatePassword).not.toHaveBeenCalled();
@@ -134,7 +135,11 @@ describe("ChangePassword", () => {
             }),
         );
 
-        expect(error).toBeAppError(NotFoundError, "User not found", 404);
+        expect(error).toBeAppError(
+            NotFoundError,
+            ERROR_CODES.USER_NOT_FOUND,
+            404,
+        );
         expect(deps.passwordHasher.compare).not.toHaveBeenCalled();
     });
 

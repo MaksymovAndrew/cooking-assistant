@@ -11,6 +11,13 @@ import {
     IP_RATE_LIMIT,
     REGISTER_IP_RATE_LIMIT,
 } from "config/security";
+import { ERROR_CODES } from "constants/errorCodes";
+import { AppError } from "domain/errors/AppError";
+
+// routed through errorHandler like every other failure, so a 429 gets the same { error, code } body and log line
+const rejectRateLimited: RateLimitOptions["handler"] = (_req, _res, next) => {
+    next(new AppError(ERROR_CODES.RATE_LIMITED, 429));
+};
 
 // collapses an IPv6 address to its /56 subnet before use as a rate-limit key, so rotating within one subnet cannot bypass the limit (express-rate-limit v8 requirement)
 function normalizedIp(req: Request): string {
@@ -52,7 +59,7 @@ export function createLimiter(
         };
     }
 
-    return rateLimit({ ...options, keyGenerator });
+    return rateLimit({ ...options, keyGenerator, handler: rejectRateLimited });
 }
 
 const isTestMode = process.env.NODE_ENV === "test";
@@ -103,5 +110,5 @@ export const confirmEmailLimiter = createLimiter(
 
 // NOT test-bypassed like loginLimiter/registerLimiter - an integration test asserts the live RateLimit-Limit header
 export function createGlobalLimiter(): RequestHandler {
-    return rateLimit(GLOBAL_RATE_LIMIT);
+    return rateLimit({ ...GLOBAL_RATE_LIMIT, handler: rejectRateLimited });
 }

@@ -1,0 +1,26 @@
+{
+    "registered": "Registered",
+    "loggedIn": "Logged in",
+    "loggedOut": "Logged out",
+
+    "recipeDeleted": "Recipe successfully deleted",
+
+    "menuCreated": "Menu created successfully",
+    "menuUpdated": "Menu updated successfully",
+    "menuDeleted": "Menu deleted successfully",
+
+    "ingredientsUpdated": "Ingredients updated successfully",
+    "ingredientDeleted": "Ingredient and its history successfully deleted",
+    "purchaseUpdated": "Purchase quantity updated successfully.",
+
+    "intakeDeleted": "Intake entry successfully deleted",
+    "calorieGoalUpdated": "Calorie goal updated successfully",
+
+    "passwordResetEmailSent": "If an account with that email exists and is verified, a password reset link has been sent.",
+    "passwordReset": "Password reset successfully",
+    "passwordChanged": "Password changed successfully",
+    "profileUpdated": "Profile updated successfully",
+    "accountDeleted": "Account deleted successfully",
+    "verificationEmailSent": "Verification link sent",
+    "emailVerified": "Email verified successfully"
+}

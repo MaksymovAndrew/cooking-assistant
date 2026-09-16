@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 
 interface RecipeListRow {
@@ -24,6 +25,7 @@ interface RecipeDetailRow {
     type_name: string | null;
     ingredients: string[];
     isOwner: boolean;
+    isFavourite: boolean | null;
     calories_per_portion: number | null;
 }
 
@@ -52,6 +54,7 @@ export async function findRecipeByIdWithIngredients(
         `SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
                   r.calories_override, r.calories_computed,
                   ${isOwnerColumn("r", "$2")},
+                  ${isFavouriteColumn("recipe", "r.id", "$2")},
                   COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                   json_agg(
                       json_build_object(

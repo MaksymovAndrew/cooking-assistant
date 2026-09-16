@@ -1,4 +1,4 @@
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import {
     NotFoundError,
     UnauthorizedError,
@@ -25,7 +25,7 @@ export default class ChangePassword {
             await this.userRepository.findCredentialsById(userId);
 
         if (!credentials) {
-            throw new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.USER_NOT_FOUND);
         }
 
         const isCurrentPasswordValid = await this.passwordHasher.compare(
@@ -34,10 +34,7 @@ export default class ChangePassword {
         );
 
         if (!isCurrentPasswordValid) {
-            throw new UnauthorizedError(
-                ERROR_MESSAGES.CURRENT_PASSWORD_INCORRECT,
-                ERROR_CODES.CURRENT_PASSWORD_INCORRECT,
-            );
+            throw new UnauthorizedError(ERROR_CODES.CURRENT_PASSWORD_INCORRECT);
         }
 
         const isSameAsCurrent = await this.passwordHasher.compare(
@@ -46,10 +43,7 @@ export default class ChangePassword {
         );
 
         if (isSameAsCurrent) {
-            throw new ValidationError(
-                ERROR_MESSAGES.NEW_PASSWORD_SAME_AS_CURRENT,
-                ERROR_CODES.NEW_PASSWORD_SAME_AS_CURRENT,
-            );
+            throw new ValidationError(ERROR_CODES.NEW_PASSWORD_SAME_AS_CURRENT);
         }
 
         const hashedPassword = await this.passwordHasher.hash(data.newPassword);

@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { MenuFilters } from "domain/repositories/menu.filters";
 
 import {
+    booleanQuerySchema,
     hasUniqueItems,
     idListStringSchema,
     idSchema,
@@ -42,6 +43,7 @@ export const updateMenuSchema = createMenuSchema.omit({
 export const menuFiltersSchema = z.object({
     menu_name: optionalStringSchema("Menu name"),
     category_ids: idListStringSchema("Category IDs").optional(),
+    favourites: booleanQuerySchema("Favourites"),
     limit: limitSchema,
     offset: offsetSchema,
 }) satisfies z.ZodType<MenuFilters>;

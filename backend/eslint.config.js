@@ -95,9 +95,9 @@ module.exports = tseslint.config(
                     groups: [
                         ["^\\u0000"],
                         [
-                            "^(?!(?:domain|application|infrastructure|controller|routes|middleware|config|constants|test)/)@?\\w",
+                            "^(?!(?:domain|application|infrastructure|controller|routes|middleware|config|constants|i18n|test)/)@?\\w",
                         ],
-                        ["^(?:config|constants|domain)/"],
+                        ["^(?:config|constants|i18n|domain)/"],
                         ["^application/"],
                         ["^infrastructure/"],
                         ["^(?:controller|routes|middleware)/"],
@@ -248,6 +248,7 @@ module.exports = tseslint.config(
             "boundaries/elements": [
                 { type: "config", pattern: "src/config/**" },
                 { type: "constants", pattern: "src/constants/**" },
+                { type: "i18n", pattern: "src/i18n/**" },
                 { type: "domain", pattern: "src/domain/**" },
                 { type: "application", pattern: "src/application/**" },
                 { type: "infrastructure", pattern: "src/infrastructure/**" },
@@ -270,6 +271,7 @@ module.exports = tseslint.config(
                                     element: {
                                         types: {
                                             anyOf: [
+                                                "i18n",
                                                 "application",
                                                 "infrastructure",
                                                 "controller",
@@ -280,7 +282,8 @@ module.exports = tseslint.config(
                                     },
                                 },
                             },
-                            message: "Domain must not import outer layers.",
+                            message:
+                                "Domain must not import outer layers or display copy (errors carry codes, errorHandler translates).",
                         },
                         {
                             from: { element: { type: "application" } },

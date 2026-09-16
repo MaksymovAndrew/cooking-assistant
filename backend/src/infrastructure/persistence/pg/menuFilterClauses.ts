@@ -1,15 +1,24 @@
 import type { MenuFilters } from "domain/repositories/menu.filters";
 
+import { favouritesFilterClause } from "infrastructure/persistence/pg/favouritesFilterClause";
 import {
     escapeLikePattern,
     type SqlFilterBuilder,
 } from "infrastructure/persistence/pg/sqlFilterBuilder";
 
+interface MenuClauseContext {
+    userId: number | null;
+}
+
 // apply() re-checks the same condition applies() already gated on - see the matching comment on
 // RecipeFilterClause for why (applies() can't narrow filters for apply() as a plain predicate)
 interface MenuFilterClause {
     applies: (filters: MenuFilters) => boolean;
-    apply: (builder: SqlFilterBuilder, filters: MenuFilters) => void;
+    apply: (
+        builder: SqlFilterBuilder,
+        filters: MenuFilters,
+        context: MenuClauseContext,
+    ) => void;
 }
 
 export const MENU_FILTER_CLAUSES: readonly MenuFilterClause[] = [
@@ -41,4 +50,5 @@ export const MENU_FILTER_CLAUSES: readonly MenuFilterClause[] = [
             builder.add((bind) => `m.category_id = ANY(${bind(ids)}::int[])`);
         },
     },
+    favouritesFilterClause("menu", "m.menu_id"),
 ];

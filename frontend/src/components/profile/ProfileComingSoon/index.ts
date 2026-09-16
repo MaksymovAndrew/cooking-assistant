@@ -1,1 +1,0 @@
-export { ProfileComingSoon } from "./ProfileComingSoon";

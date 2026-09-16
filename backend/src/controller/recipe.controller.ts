@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { SUCCESS_MESSAGES } from "constants/errorMessages";
+import { translateMessage } from "i18n/translate";
 
 import type CreateRecipe from "application/use-cases/recipes/CreateRecipe";
 import type DeleteRecipe from "application/use-cases/recipes/DeleteRecipe";
@@ -117,7 +117,7 @@ export default class RecipeController {
     deleteRecipe: RequestHandler<{ id: string }> = async (req, res) => {
         await this.deleteRecipeUseCase.execute(req.params.id, getUserId(req));
 
-        res.json({ message: SUCCESS_MESSAGES.RECIPE_DELETED });
+        res.json({ message: translateMessage("recipeDeleted") });
     };
 
     getRecipesStats: RequestHandler = async (_req, res) => {

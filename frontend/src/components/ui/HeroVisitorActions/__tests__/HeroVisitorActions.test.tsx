@@ -5,11 +5,17 @@ import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
 
 import { renderWithRouter } from "test/router";
 
+const FAVOURITE = {
+    isFavourite: false,
+    isDisabled: false,
+    toggle: jest.fn().mockResolvedValue(undefined),
+};
+
 describe("HeroVisitorActions", () => {
-    it("should show a login CTA linking to /login when the viewer cannot favourite", () => {
+    it("should show a login CTA linking to /login for an anonymous viewer", () => {
         renderWithRouter(
             <HeroVisitorActions
-                canFavourite={false}
+                favourite={null}
                 favouriteLabel="Favourite"
                 guestCtaLabel="Log in for the full experience"
                 logIntakeLabel="Log intake"
@@ -26,10 +32,10 @@ describe("HeroVisitorActions", () => {
         ).not.toBeInTheDocument();
     });
 
-    it("should show a disabled favourite button for a signed-in non-owner", () => {
+    it("should show the favourite toggle for a signed-in non-owner", () => {
         renderWithRouter(
             <HeroVisitorActions
-                canFavourite
+                favourite={FAVOURITE}
                 favouriteLabel="Favourite"
                 guestCtaLabel="Log in for the full experience"
                 logIntakeLabel="Log intake"
@@ -38,7 +44,7 @@ describe("HeroVisitorActions", () => {
 
         expect(
             screen.getByRole("button", { name: "Favourite" }),
-        ).toBeDisabled();
+        ).toHaveAttribute("aria-pressed", "false");
         expect(
             screen.queryByRole("button", { name: "Log intake" }),
         ).not.toBeInTheDocument();
@@ -49,7 +55,7 @@ describe("HeroVisitorActions", () => {
 
         renderWithRouter(
             <HeroVisitorActions
-                canFavourite
+                favourite={FAVOURITE}
                 favouriteLabel="Favourite"
                 guestCtaLabel="Log in for the full experience"
                 logIntakeLabel="Log intake"

@@ -1,9 +1,12 @@
-import { Flame, Heart, Sparkles } from "lucide-react";
+import { Flame, Sparkles } from "lucide-react";
 import React from "react";
 
 import { ROUTES } from "constants/routes";
 
+import type { FavouriteToggle } from "hooks/useFavouriteToggle";
+
 import { Button } from "components/ui/Button";
+import { FavouriteButton } from "components/ui/FavouriteButton";
 import { LinkButton } from "components/ui/LinkButton";
 
 import { rememberLoginRedirect } from "utils/loginRedirect";
@@ -11,7 +14,9 @@ import { rememberLoginRedirect } from "utils/loginRedirect";
 import styles from "./HeroVisitorActions.module.scss";
 
 interface HeroVisitorActionsProps {
-    canFavourite: boolean;
+    // null for an anonymous viewer - the caller reads it off the server-rendered record, not the client
+    // session, so the page never flashes the guest CTA at someone who is signed in
+    favourite: FavouriteToggle | null;
     favouriteLabel: string;
     guestCtaLabel: string;
     logIntakeLabel: string;
@@ -22,13 +27,13 @@ const ICON_SIZE = 20;
 
 // non-owner branch of RecipeHero/MenuHero's action row; copy is caller-provided to stay domain-agnostic
 export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
-    canFavourite,
+    favourite,
     favouriteLabel,
     guestCtaLabel,
     logIntakeLabel,
     onLogIntake,
 }) => {
-    if (!canFavourite) {
+    if (favourite === null) {
         return (
             <div className={styles["hero-visitor-actions"]}>
                 <LinkButton
@@ -46,15 +51,14 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
 
     return (
         <div className={styles["hero-visitor-actions"]}>
-            <button
-                type="button"
-                disabled
-                aria-label={favouriteLabel}
+            <FavouriteButton
+                favourite={favourite}
+                label={favouriteLabel}
+                iconSize={ICON_SIZE}
                 className={styles["hero-visitor-actions__favourite"]}
             >
-                <Heart size={ICON_SIZE} aria-hidden="true" />
                 {favouriteLabel}
-            </button>
+            </FavouriteButton>
             {onLogIntake && (
                 <Button
                     variant="secondary"

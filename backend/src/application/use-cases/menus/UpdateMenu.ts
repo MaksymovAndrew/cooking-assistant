@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import Menu from "domain/entities/Menu";
 import { NotFoundError } from "domain/errors/AppError";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
@@ -33,7 +33,7 @@ export default class UpdateMenu {
         );
 
         if (!updated) {
-            throw new NotFoundError(ERROR_MESSAGES.MENU_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.MENU_NOT_FOUND);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 import type {
     PublicUser,
@@ -12,7 +12,7 @@ export default class GetCurrentUser {
         const user = await this.userRepository.findById(id);
 
         if (!user) {
-            throw new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.USER_NOT_FOUND);
         }
 
         return user;

@@ -1,7 +1,5 @@
 import type { Request } from "express";
 
-import { ERROR_MESSAGES } from "constants/errorMessages";
-
 import { getUserId } from "controller/requestUser";
 
 describe("getUserId", () => {
@@ -14,8 +12,6 @@ describe("getUserId", () => {
     it("should throw when req.user is missing", () => {
         const req = {} as Request;
 
-        expect(() => getUserId(req)).toThrow(
-            ERROR_MESSAGES.AUTHENTICATED_USER_MISSING,
-        );
+        expect(() => getUserId(req)).toThrow("Authenticated user is missing");
     });
 });

@@ -85,6 +85,37 @@
     "errors": {
         "unknown": "Unknown error"
     },
+    "apiErrors": {
+        "bad_request": "The request couldn't be processed. Please try again.",
+        "not_found": "We couldn't find what you were looking for.",
+        "server_error": "Something went wrong on our side. Please try again later.",
+        "validation_error": "Some of the details you entered aren't valid.",
+        "rate_limited": "Too many requests. Please wait a moment and try again.",
+        "auth/session_expired": "Your session has expired. Please log in again.",
+        "auth/user_not_found": "We couldn't find your account.",
+        "auth/login_already_taken": "This login is already taken.",
+        "auth/email_already_taken": "This email is already registered.",
+        "auth/invalid_login_or_password": "Invalid login or password.",
+        "auth/current_password_incorrect": "Your current password is incorrect.",
+        "auth/invalid_or_expired_token": "This link is invalid or has expired.",
+        "auth/email_already_verified": "Your email is already verified.",
+        "auth/new_password_same_as_current": "Your new password must be different from the current one.",
+        "recipe/not_found": "This recipe doesn't exist or has been removed.",
+        "recipe/ingredients_empty": "Add at least one ingredient.",
+        "recipe/ingredients_missing_id": "Choose every ingredient from the list.",
+        "recipe/ingredients_not_exist": "One or more ingredients no longer exist.",
+        "recipe/title_content_empty": "Add a title and a description.",
+        "recipe/in_pantry_requires_login": "Log in to filter recipes by what's in your pantry.",
+        "menu/not_found": "This menu doesn't exist or has been removed.",
+        "menu/insufficient_data_create": "Add a title, a category and at least one recipe.",
+        "menu/insufficient_data_update": "Add a title, a category and at least one recipe.",
+        "menu/recipes_not_exist": "One or more recipes no longer exist.",
+        "pantry/ingredient_not_found": "This ingredient isn't in your pantry.",
+        "pantry/purchase_not_found": "This purchase no longer exists.",
+        "calories/intake_not_found": "This entry no longer exists.",
+        "calories/not_available": "Calories aren't available for this item.",
+        "favourites/requires_login": "Log in to see your favourites."
+    },
     "errorState": {
         "title": "Something went wrong",
         "retry": "Try again"

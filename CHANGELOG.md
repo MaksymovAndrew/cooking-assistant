@@ -20,6 +20,28 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.5 - 2026-09-15
+
+### Project
+
+- Changed: Routine dependency maintenance - refreshed a batch of minor/patch versions of lint, test and styling tooling plus the icon and translation libraries.
+- Fixed: The automatic version bump on a release branch keeps each package file's own formatting, so it no longer turns a one-line version change into a rewrite of every package and lock file.
+
+### Backend
+
+- Added: Recipes and menus can be saved to your favourites. Favourites are private to you, adding the same one twice is harmless, and they disappear on their own when the recipe, the menu or an account is deleted.
+- Added: The recipe and menu lists can be narrowed to your favourites only, and every recipe and menu you see now tells whether it is one of them.
+- Changed: Every error the server answers with now carries a stable error code - expired sessions, rate limits, unknown pages and server errors included - and all server-side wording lives in one message catalog, ready for more languages.
+- Fixed: Ordinary client mistakes such as a missing recipe or a bad filter are no longer logged as server errors, so real incidents stand out in the logs.
+
+### Frontend
+
+- Added: A heart on every recipe and menu card, and on their pages, adds them to your favourites in one tap - it responds instantly and quietly undoes itself if the change could not be saved.
+- Added: The profile's Favourites tab lists your favourite recipes and menus, switchable between the two, and the profile counter shows your real number of favourites instead of a placeholder.
+- Added: The recipe and menu filters gain an "Only my favourites" switch.
+- Fixed: A signed-in visitor no longer briefly sees the "Log in for the full experience" button on a recipe or menu page while it loads.
+- Changed: Error messages from the server now use the app's own friendly wording for each kind of problem, instead of the server's technical text, and are ready to be translated together with the rest of the interface.
+
 ## 4.4 - 2026-09-09
 
 ### Project

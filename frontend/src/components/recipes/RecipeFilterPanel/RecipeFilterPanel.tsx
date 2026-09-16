@@ -58,6 +58,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
             calories: { min: "", max: "" },
             sort: null,
             inPantry: false,
+            favourites: false,
         });
         setPopoverResetKey((key) => key + 1);
     };

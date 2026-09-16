@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { FAVOURITE_TARGET } from "constants/favourites";
 import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
 import { menuDetailsPath } from "constants/routes";
 
@@ -15,6 +16,8 @@ interface MenuCardProps {
     recipeCount: number;
     mine?: boolean;
     variant?: ContentCardVariant;
+    // null or absent for an anonymous viewer, so the heart only appears where the server knows who is looking
+    isFavourite?: boolean | null;
 }
 
 export const MenuCard: React.FC<MenuCardProps> = ({
@@ -24,6 +27,7 @@ export const MenuCard: React.FC<MenuCardProps> = ({
     recipeCount,
     mine = false,
     variant,
+    isFavourite,
 }) => {
     const { t } = useTranslation("menu");
 
@@ -37,7 +41,11 @@ export const MenuCard: React.FC<MenuCardProps> = ({
             variant={variant}
             rating={MENU_RATING}
             ratingCount={MENU_RATING_COUNT}
-            showFavourite={false}
+            favourite={
+                typeof isFavourite === "boolean"
+                    ? { target: FAVOURITE_TARGET.menu, id, isFavourite }
+                    : null
+            }
             metaText={t("menuCard.meta", {
                 category: categoryName,
                 count: recipeCount,

@@ -1,7 +1,9 @@
 import request from "supertest";
 
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
+import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const MENU_CATEGORIES_PATH = "/api/menu-categories";
@@ -37,7 +39,7 @@ describe("menu category routes", () => {
         const { app, deps } = buildTestApp();
 
         deps.menuCategoryRepository.findAll.mockRejectedValue(
-            new ValidationError("Category query is invalid"),
+            new ValidationError(ERROR_CODES.VALIDATION_ERROR),
         );
 
         const res = await request(app)
@@ -45,6 +47,6 @@ describe("menu category routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({ error: "Category query is invalid" });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.VALIDATION_ERROR));
     });
 });

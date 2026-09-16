@@ -37,6 +37,7 @@ const RECIPE: RecipeSearchResultItem = {
     calories_per_portion: null,
     ingredients: [],
     isOwner: true,
+    isFavourite: false,
 };
 const MENU: Menu = {
     id: 1,
@@ -48,12 +49,15 @@ const MENU: Menu = {
 
 const RECIPES_PARAMS = {};
 const MENUS_PARAMS = { menu_name: "" };
+const FAVOURITES_PARAMS = { favourites: true };
 
 const setup = async (initialEntries?: string[]) => {
     mockGetByUrl({
         [API_ROUTES.auth.me]: CURRENT_USER,
         [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
         [API_ROUTES.menu.byPerson]: { items: [MENU], total: 1 },
+        [API_ROUTES.recipes.byFilters]: { items: [RECIPE], total: 1 },
+        [API_ROUTES.menu.list]: { items: [MENU, MENU], total: 2 },
         [API_ROUTES.calories.intake]: [],
     });
 
@@ -67,6 +71,12 @@ const setup = async (initialEntries?: string[]) => {
         store.dispatch(
             menusApi.endpoints.getMenusByPerson.initiate(MENUS_PARAMS),
         ),
+        store.dispatch(
+            recipesApi.endpoints.getRecipesByFilters.initiate(
+                FAVOURITES_PARAMS,
+            ),
+        ),
+        store.dispatch(menusApi.endpoints.getMenus.initiate(FAVOURITES_PARAMS)),
     ]);
 
     return renderHookWithRouter(() => useProfilePage(), {
@@ -85,6 +95,14 @@ describe("useProfilePage", () => {
         expect(result.current.menus).toEqual([MENU]);
         expect(result.current.menusCount).toBe(1);
         expect(result.current.kcalToday).toBe(0);
+    });
+
+    it("should count favourite recipes and menus together for the hero", async () => {
+        const { result } = await setup();
+
+        expect(result.current.favouritesCount).toBe(3);
+        expect(result.current.favouriteRecipes.items).toEqual([RECIPE]);
+        expect(result.current.favouriteMenus.total).toBe(2);
     });
 
     it("should default the active tab to recipes and allow switching", async () => {

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError } from "domain/errors/AppError";
 import type { CalorieRepository } from "domain/repositories/CalorieRepository";
 
@@ -23,7 +23,7 @@ export default class DeleteIntake {
         );
 
         if (!deleted) {
-            throw new NotFoundError(ERROR_MESSAGES.INTAKE_NOT_FOUND);
+            throw new NotFoundError(ERROR_CODES.INTAKE_NOT_FOUND);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
 import SearchRecipes from "application/use-cases/recipes/SearchRecipes";
@@ -102,8 +102,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "in_pantry: In pantry must be true or false",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "in_pantry: In pantry must be true or false",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -115,8 +116,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "type_ids: Type IDs must be a comma-separated list of IDs",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "type_ids: Type IDs must be a comma-separated list of IDs",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -130,8 +132,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "ingredient_ids: Ingredient IDs must be a comma-separated list of IDs",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "ingredient_ids: Ingredient IDs must be a comma-separated list of IDs",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -146,8 +149,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "ingredient_ids: Ingredient IDs must be at most 20 items",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "ingredient_ids: Ingredient IDs must be at most 20 items",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -161,8 +165,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "sort_order: Invalid enum value. Expected 'asc' | 'desc', received 'junk'",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "sort_order: Invalid enum value. Expected 'asc' | 'desc', received 'junk'",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -174,8 +179,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "limit: Limit must be at most 100",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "limit: Limit must be at most 100",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -187,8 +193,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "limit: Limit must be positive",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "limit: Limit must be positive",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -200,8 +207,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "offset: Offset must be at least 0",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "offset: Offset must be at least 0",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -229,10 +237,38 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.RECIPE_IN_PANTRY_REQUIRES_LOGIN,
+            ERROR_CODES.RECIPE_IN_PANTRY_REQUIRES_LOGIN,
             400,
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when an anonymous request uses the favourites filter", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(null, { favourites: "true" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.FAVOURITES_REQUIRES_LOGIN,
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should pass through the favourites filter as a boolean for a signed-in user", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { favourites: "true" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
+            favourites: true,
+        });
     });
 
     it("should throw a 400 ValidationError when offset is not an integer", async () => {
@@ -242,8 +278,9 @@ describe("SearchRecipes", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "offset: Offset must be an integer",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "offset: Offset must be an integer",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });

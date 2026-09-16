@@ -2,8 +2,6 @@ import { useMemo } from "react";
 
 import type { RecipeFilterParams } from "types/recipe";
 
-import { useAppSelector } from "redux/hooks";
-import { selectIsAuthed } from "redux/selectors/sessionSelectors";
 import {
     flattenPages,
     getPaginatedTotal,
@@ -27,6 +25,7 @@ import {
     isRecipeListEmpty,
 } from "./recipeListViewHelpers";
 import { useListFilters } from "./useListFilters";
+import { useViewerFilterGate } from "./useViewerFilterGate";
 
 export type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
@@ -59,7 +58,9 @@ export const useRecipeListView = (source: RecipeSource) => {
     // skipped until the session is confirmed authed - not just "not yet known to be a guest" -
     // so this list stays reachable without a 401 tripping the global auth redirect on a page
     // that's public now, including during the initial checking window
-    const isAuthed = useAppSelector(selectIsAuthed);
+    const { isAuthed, isAwaitingSession } = useViewerFilterGate(
+        filters.favourites,
+    );
     // already fetched by the pantry page/home dashboard - a cache read, not a new request
     const {
         data: pantry = [],
@@ -73,17 +74,20 @@ export const useRecipeListView = (source: RecipeSource) => {
         isPantryUninitialized,
     );
 
-    // a guest can't use in_pantry (the toggle that sets it is hidden for them) - if it's still set
+    // a guest can't use in_pantry or favourites (the toggles that set them are hidden for them) - if one is still set
     // in the URL (a stale bookmark, or a session that expired mid-visit), isPantryUninitialized
     // never resolves since the pantry query itself stays skipped, so drop the filter here too
     // instead of sending a request the backend rejects with a 400
-    const queryParams = isAuthed ? params : { ...params, in_pantry: undefined };
+    const queryParams = isAuthed
+        ? params
+        : { ...params, in_pantry: undefined, favourites: undefined };
+    const isHeldBack = isPantryEmpty || isAwaitingSession;
     const isPerson = source === RECIPE_SOURCE.person;
     const byFilters = useGetRecipesByFiltersInfiniteQuery(queryParams, {
-        skip: isPerson || isPantryEmpty,
+        skip: isPerson || isHeldBack,
     });
     const byPerson = useGetRecipesByPersonInfiniteQuery(queryParams, {
-        skip: !isPerson || isPantryEmpty,
+        skip: !isPerson || isHeldBack,
     });
     const active = isPerson ? byPerson : byFilters;
 

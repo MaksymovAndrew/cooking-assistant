@@ -34,28 +34,36 @@ function changedSides() {
   return SIDES.filter((side) => changed.some((file) => file.startsWith(`${side}/`)));
 }
 
-function readPackage(dir) {
-  const file = path.join(dir, "package.json");
-  return { file, json: JSON.parse(readFileSync(file, "utf8")) };
+// keeps each file's own indentation - rewriting a 4-space file with 2 spaces turns a one-line
+// version bump into a whole-file diff of every package.json and lockfile
+function readJson(file) {
+  const text = readFileSync(file, "utf8");
+  const indent = text.match(/^[ \t]+(?=")/m)?.[0] ?? "  ";
+  return { json: JSON.parse(text), indent };
 }
 
-function writeJson(file, json) {
-  writeFileSync(file, `${JSON.stringify(json, null, 2)}\n`);
+function writeJson(file, json, indent) {
+  writeFileSync(file, `${JSON.stringify(json, null, indent)}\n`);
+}
+
+function readPackage(dir) {
+  const file = path.join(dir, "package.json");
+  return { file, ...readJson(file) };
 }
 
 // returns the files it rewrote (empty when the version already matches)
 function setVersion(dir, version) {
-  const { file, json } = readPackage(dir);
+  const { file, json, indent } = readPackage(dir);
   if (json.version === version) return [];
   json.version = version;
-  writeJson(file, json);
+  writeJson(file, json, indent);
   const written = [file];
   const lockFile = path.join(dir, "package-lock.json");
   if (existsSync(lockFile)) {
-    const lock = JSON.parse(readFileSync(lockFile, "utf8"));
-    lock.version = version;
-    if (lock.packages?.[""]) lock.packages[""].version = version;
-    writeJson(lockFile, lock);
+    const lock = readJson(lockFile);
+    lock.json.version = version;
+    if (lock.json.packages?.[""]) lock.json.packages[""].version = version;
+    writeJson(lockFile, lock.json, lock.indent);
     written.push(lockFile);
   }
   return written;

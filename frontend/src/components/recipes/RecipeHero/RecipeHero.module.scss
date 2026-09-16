@@ -35,7 +35,7 @@
         background: color-mix(in srgb, var(--surface) 70%, transparent);
         backdrop-filter: blur(10px);
         color: var(--text-2);
-        cursor: default;
+        cursor: pointer;
     }
 
     &__chip {

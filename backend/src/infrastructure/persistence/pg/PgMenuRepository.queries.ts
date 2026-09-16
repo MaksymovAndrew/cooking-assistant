@@ -7,6 +7,7 @@ import type {
 } from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
+import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { MENU_FILTER_CLAUSES } from "infrastructure/persistence/pg/menuFilterClauses";
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
@@ -30,6 +31,7 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
         ${isOwnerColumn("m", ownerPlaceholder)},
+        ${isFavouriteColumn("menu", "m.menu_id", ownerPlaceholder)},
         COUNT(DISTINCT mr.recipe_id)::int AS recipe_count,
         -- cast: COUNT() is bigint, which pg returns as a string, not a number
         COUNT(*) OVER()::int AS total_count
@@ -50,7 +52,7 @@ async function runMenuSearch(
 
     for (const clause of MENU_FILTER_CLAUSES) {
         if (clause.applies(filters)) {
-            clause.apply(builder, filters);
+            clause.apply(builder, filters, { userId });
         }
     }
 

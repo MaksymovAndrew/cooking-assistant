@@ -16,6 +16,7 @@ const BASE_MENU: MenuDetails["menu"] = {
     menucontent: "Slow-cooked, soul-warming Sunday evening meals.",
     category_id: 1,
     isOwner: false,
+    isFavourite: false,
 };
 
 const baseProps = {

@@ -2,9 +2,6 @@ import "dotenv/config";
 
 import { z } from "zod";
 
-import { ERROR_MESSAGES } from "constants/errorMessages";
-import { AppError } from "domain/errors/AppError";
-
 // shared by the schema defaults and the production guard so the "insecure default" check can never drift from the value it is guarding against
 const DEFAULT_DB_USER = "postgres";
 const DEFAULT_DB_PASSWORD = "12345678";
@@ -142,7 +139,7 @@ export function requireJwtSecret(): string {
     const secret = process.env.JWT_SECRET_KEY;
 
     if (!secret) {
-        throw new AppError(ERROR_MESSAGES.JWT_NOT_CONFIGURED, 500);
+        throw new Error("JWT secret is not configured");
     }
 
     return secret;

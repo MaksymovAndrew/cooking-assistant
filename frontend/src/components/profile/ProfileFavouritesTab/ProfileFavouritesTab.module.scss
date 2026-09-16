@@ -1,0 +1,14 @@
+@use "styles/abstracts" as *;
+
+.profile-favourites-tab {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+
+    &__switch {
+        @include respond-to(tablet) {
+            align-self: flex-start;
+            min-width: 280px;
+        }
+    }
+}

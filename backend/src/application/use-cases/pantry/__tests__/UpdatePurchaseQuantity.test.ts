@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 
 import UpdatePurchaseQuantity from "application/use-cases/pantry/UpdatePurchaseQuantity";
@@ -20,8 +20,9 @@ describe("UpdatePurchaseQuantity", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "Quantity cannot be empty.",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "Quantity cannot be empty.",
         );
         expect(pantryRepository.updatePurchaseQuantity).not.toHaveBeenCalled();
     });
@@ -35,7 +36,7 @@ describe("UpdatePurchaseQuantity", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.PURCHASE_NOT_FOUND,
+            ERROR_CODES.PURCHASE_NOT_FOUND,
             404,
         );
     });
@@ -47,8 +48,9 @@ describe("UpdatePurchaseQuantity", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "Quantity must be greater than 0",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "Quantity must be greater than 0",
         );
         expect(pantryRepository.updatePurchaseQuantity).not.toHaveBeenCalled();
     });

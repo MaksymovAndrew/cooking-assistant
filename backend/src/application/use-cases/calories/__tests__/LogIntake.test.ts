@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 
 import LogIntake from "application/use-cases/calories/LogIntake";
@@ -46,7 +46,7 @@ describe("LogIntake", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.RECIPE_NOT_FOUND,
+            ERROR_CODES.RECIPE_NOT_FOUND,
             404,
         );
     });
@@ -62,7 +62,7 @@ describe("LogIntake", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.MENU_NOT_FOUND,
+            ERROR_CODES.MENU_NOT_FOUND,
             404,
         );
     });
@@ -81,7 +81,7 @@ describe("LogIntake", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.CALORIES_NOT_AVAILABLE,
+            ERROR_CODES.CALORIES_NOT_AVAILABLE,
             400,
         );
     });

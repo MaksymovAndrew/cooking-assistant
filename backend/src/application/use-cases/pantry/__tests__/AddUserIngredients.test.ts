@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
 import AddUserIngredients from "application/use-cases/pantry/AddUserIngredients";
@@ -25,8 +26,9 @@ describe("AddUserIngredients", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "Incorrect data format",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "Incorrect data format",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
@@ -40,8 +42,9 @@ describe("AddUserIngredients", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "0.quantity_person_ingradient: Quantity must be greater than 0",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "0.quantity_person_ingradient: Quantity must be greater than 0",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
@@ -72,8 +75,9 @@ describe("AddUserIngredients", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "Ingredient IDs must be unique",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "Ingredient IDs must be unique",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
@@ -103,7 +107,7 @@ describe("AddUserIngredients", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "One or more ingredients do not exist",
+            ERROR_CODES.RECIPE_INGREDIENTS_NOT_EXIST,
             400,
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();

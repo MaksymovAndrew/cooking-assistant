@@ -1,3 +1,4 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { ValidationError } from "domain/errors/AppError";
 
 import SearchPersonMenus from "application/use-cases/menus/SearchPersonMenus";
@@ -49,8 +50,9 @@ describe("SearchPersonMenus", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "limit: Limit must be at most 100",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "limit: Limit must be at most 100",
         );
         expect(menuRepository.searchByPerson).not.toHaveBeenCalled();
     });
@@ -64,8 +66,9 @@ describe("SearchPersonMenus", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "category_ids: Category IDs must be a comma-separated list of IDs",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "category_ids: Category IDs must be a comma-separated list of IDs",
         );
         expect(menuRepository.searchByPerson).not.toHaveBeenCalled();
     });

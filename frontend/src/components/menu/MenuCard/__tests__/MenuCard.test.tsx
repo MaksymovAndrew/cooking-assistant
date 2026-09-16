@@ -52,7 +52,23 @@ describe("MenuCard", () => {
         ).toBeInTheDocument();
     });
 
-    it("should not render a favourite button", () => {
+    it("should render a pressed heart for a menu the viewer favourited", () => {
+        renderWithRouter(
+            <MenuCard
+                id={1}
+                title={TITLE}
+                categoryName={CATEGORY}
+                recipeCount={RECIPE_COUNT}
+                isFavourite
+            />,
+        );
+
+        expect(
+            screen.getByRole("button", { name: "Favourite" }),
+        ).toHaveAttribute("aria-pressed", "true");
+    });
+
+    it("should not render a favourite button without a per-viewer flag", () => {
         renderWithRouter(
             <MenuCard
                 id={1}
@@ -78,6 +94,6 @@ describe("MenuCard", () => {
             />,
         );
 
-        expect(screen.getByRole("link")).toHaveClass("content-card--mine");
+        expect(screen.getByRole("article")).toHaveClass("content-card--mine");
     });
 });

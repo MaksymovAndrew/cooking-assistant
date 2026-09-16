@@ -190,6 +190,11 @@ Data flow: page/hook -> RTK Query hook (`redux/services/*`) -> `axiosBaseQuery` 
   grouped by domain; parameterized routes are builder functions, e.g. `API_ROUTES.recipes.byId(id)`.
 - **[httpError.ts](src/api/httpError.ts)** - normalizes any axios error into a user-facing message, a
   stable error `code` (see the backend's `ERROR_CODES`), a `Retry-After` value, and an HTTP status.
+  The code is the contract and the wording is ours: a known code renders its copy from `apiErrors` in
+  `i18n/locales/en/common.json` (keyed by code, e.g. `apiErrors.recipe/not_found`), and the server's
+  English `error` text is only the fallback for a code this build doesn't know yet. A new backend error
+  code needs its entry in [constants/errorCodes.ts](src/constants/errorCodes.ts) and its copy in
+  `apiErrors` - a test on each side fails otherwise.
 - **`redux/services/baseApi.ts`** - the single RTK Query API slice; each domain file
   (`recipesApi.ts`, `menusApi.ts`, ...) injects its own `useGet*Query` / `use*Mutation` hooks off it.
   Cache invalidation runs off `tagTypes` - a mutation invalidates the tags its queries provide, so

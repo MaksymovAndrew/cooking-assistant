@@ -1,7 +1,8 @@
 import request from "supertest";
 
-import { ERROR_CODES, ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 
+import { errorBody } from "test/helpers/errorBody";
 import { buildTestApp } from "test/helpers/testApp";
 
 describe("not found routes", () => {
@@ -11,7 +12,7 @@ describe("not found routes", () => {
         const res = await request(app).get("/api/does-not-exist");
 
         expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: ERROR_MESSAGES.NOT_FOUND });
+        expect(res.body).toEqual(errorBody(ERROR_CODES.NOT_FOUND));
     });
 
     it("should return a 400 error when register input is invalid", async () => {

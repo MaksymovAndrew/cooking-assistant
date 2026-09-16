@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "constants/errorMessages";
+import { ERROR_CODES } from "constants/errorCodes";
 import Menu from "domain/entities/Menu";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 
@@ -64,7 +64,7 @@ describe("UpdateMenu", () => {
 
         expect(error).toBeAppError(
             NotFoundError,
-            ERROR_MESSAGES.MENU_NOT_FOUND,
+            ERROR_CODES.MENU_NOT_FOUND,
             404,
         );
     });
@@ -78,7 +78,7 @@ describe("UpdateMenu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            ERROR_MESSAGES.MENU_RECIPES_NOT_EXIST,
+            ERROR_CODES.MENU_RECIPES_NOT_EXIST,
             400,
         );
         expect(menuRepository.update).not.toHaveBeenCalled();
@@ -93,8 +93,9 @@ describe("UpdateMenu", () => {
 
         expect(error).toBeAppError(
             ValidationError,
-            "recipeIds: Recipe IDs must be unique",
+            ERROR_CODES.VALIDATION_ERROR,
             400,
+            "recipeIds: Recipe IDs must be unique",
         );
         expect(menuRepository.update).not.toHaveBeenCalled();
     });
@@ -104,7 +105,12 @@ describe("UpdateMenu", () => {
 
         const error = await catchError(useCase.execute(null, 7, makeInput()));
 
-        expect(error).toBeAppError(ValidationError, "ID is required", 400);
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "ID is required",
+        );
         expect(menuRepository.update).not.toHaveBeenCalled();
     });
 });

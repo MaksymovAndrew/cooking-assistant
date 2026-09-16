@@ -2,8 +2,7 @@ import { screen } from "@testing-library/react";
 
 import { RecipeCard } from "components/cards/RecipeCard";
 
-import { renderWithProviders, renderWithRouter } from "test/router";
-import { makeTestStore } from "test/store";
+import { renderWithRouter } from "test/router";
 
 const RECIPE = {
     id: 7,
@@ -50,7 +49,7 @@ describe("RecipeCard", () => {
     it("should mark the card as mine when requested", () => {
         renderWithRouter(<RecipeCard recipe={RECIPE} mine />);
 
-        expect(screen.getByRole("link")).toHaveClass("content-card--mine");
+        expect(screen.getByRole("article")).toHaveClass("content-card--mine");
     });
 
     it("should show the calorie meta item when the recipe has a calorie total", () => {
@@ -72,7 +71,7 @@ describe("RecipeCard", () => {
             <RecipeCard recipe={RECIPE_OVER_BUDGET} exceedsBudget />,
         );
 
-        expect(screen.getByRole("link")).toHaveClass(
+        expect(screen.getByRole("article")).toHaveClass(
             "content-card--calorie-over",
         );
         expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).toHaveClass(
@@ -83,7 +82,7 @@ describe("RecipeCard", () => {
     it("should not recolor the calorie meta item by default", () => {
         renderWithRouter(<RecipeCard recipe={RECIPE_OVER_BUDGET} />);
 
-        expect(screen.getByRole("link")).not.toHaveClass(
+        expect(screen.getByRole("article")).not.toHaveClass(
             "content-card--calorie-over",
         );
         expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).not.toHaveClass(
@@ -91,20 +90,20 @@ describe("RecipeCard", () => {
         );
     });
 
-    it("should show the favourite button for an authed viewer", () => {
-        renderWithProviders(<RecipeCard recipe={RECIPE} />, {
-            store: makeTestStore({ session: { status: "authed" } }),
-        });
+    it("should show a heart when the server sent a favourite flag", () => {
+        renderWithRouter(
+            <RecipeCard recipe={{ ...RECIPE, isFavourite: false }} />,
+        );
 
         expect(
             screen.getByRole("button", { name: "Favourite" }),
-        ).toBeInTheDocument();
+        ).toHaveAttribute("aria-pressed", "false");
     });
 
-    it("should hide the favourite button for a guest", () => {
-        renderWithProviders(<RecipeCard recipe={RECIPE} />, {
-            store: makeTestStore({ session: { status: "guest" } }),
-        });
+    it("should hide the heart for an anonymous viewer", () => {
+        renderWithRouter(
+            <RecipeCard recipe={{ ...RECIPE, isFavourite: null }} />,
+        );
 
         expect(
             screen.queryByRole("button", { name: "Favourite" }),

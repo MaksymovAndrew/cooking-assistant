@@ -1,5 +1,6 @@
 import { config } from "config/env";
 import type { CalorieRepository } from "domain/repositories/CalorieRepository";
+import type { FavouriteRepository } from "domain/repositories/FavouriteRepository";
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
@@ -13,17 +14,11 @@ import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
 import GetAllIngredients from "application/use-cases/ingredients/GetAllIngredients";
 import GetAllMenuCategories from "application/use-cases/menu-categories/GetAllMenuCategories";
-import CreateMenu from "application/use-cases/menus/CreateMenu";
-import DeleteMenu from "application/use-cases/menus/DeleteMenu";
-import GetAllMenus from "application/use-cases/menus/GetAllMenus";
-import GetAllMenusUnpaginated from "application/use-cases/menus/GetAllMenusUnpaginated";
-import GetMenuById from "application/use-cases/menus/GetMenuById";
-import SearchPersonMenus from "application/use-cases/menus/SearchPersonMenus";
-import UpdateMenu from "application/use-cases/menus/UpdateMenu";
 import GetAllRecipeTypes from "application/use-cases/recipe-types/GetAllRecipeTypes";
 
 import { createEmailSender } from "infrastructure/email/createEmailSender";
 import PgCalorieRepository from "infrastructure/persistence/pg/PgCalorieRepository";
+import PgFavouriteRepository from "infrastructure/persistence/pg/PgFavouriteRepository";
 import PgIngredientRepository from "infrastructure/persistence/pg/PgIngredientRepository";
 import PgMenuCategoryRepository from "infrastructure/persistence/pg/PgMenuCategoryRepository";
 import PgMenuRepository from "infrastructure/persistence/pg/PgMenuRepository";
@@ -35,8 +30,9 @@ import BcryptPasswordHasher from "infrastructure/security/BcryptPasswordHasher";
 import JwtTokenService from "infrastructure/security/JwtTokenService";
 
 import type CalorieController from "controller/calorie.controller";
+import type FavouriteController from "controller/favourite.controller";
 import IngredientController from "controller/ingredient.controller";
-import MenuController from "controller/menu.controller";
+import type MenuController from "controller/menu.controller";
 import MenuCategoryController from "controller/menuCategory.controller";
 import type RecipeController from "controller/recipe.controller";
 import RecipeTypeController from "controller/type.controller";
@@ -44,6 +40,8 @@ import type UserController from "controller/user.controller";
 import type UserIngredientsController from "controller/userIngredients.controller";
 
 import { buildCaloriesController } from "./composition-root.calories";
+import { buildFavouriteController } from "./composition-root.favourites";
+import { buildMenuController } from "./composition-root.menu";
 import { buildPantryController } from "./composition-root.pantry";
 import { buildRecipeController } from "./composition-root.recipe";
 import { buildUserController } from "./composition-root.user";
@@ -58,6 +56,7 @@ export interface RepositoryDeps {
     pantryRepository: PantryRepository;
     userRepository: UserRepository;
     calorieRepository: CalorieRepository;
+    favouriteRepository: FavouriteRepository;
     passwordHasher: PasswordHasher;
     tokenService: TokenService;
     emailSender: EmailSender;
@@ -73,6 +72,7 @@ export interface Controllers {
     menuController: MenuController;
     menuCategoryController: MenuCategoryController;
     calorieController: CalorieController;
+    favouriteController: FavouriteController;
 }
 
 export function buildControllers({
@@ -84,6 +84,7 @@ export function buildControllers({
     pantryRepository,
     userRepository,
     calorieRepository,
+    favouriteRepository,
     passwordHasher,
     tokenService,
     emailSender,
@@ -102,14 +103,9 @@ export function buildControllers({
         ingredientRepository,
     });
 
-    const menuController = new MenuController({
-        getAllMenus: new GetAllMenus(menuRepository),
-        getAllMenusUnpaginated: new GetAllMenusUnpaginated(menuRepository),
-        createMenu: new CreateMenu(menuRepository, recipeRepository),
-        getMenuById: new GetMenuById(menuRepository),
-        updateMenu: new UpdateMenu(menuRepository, recipeRepository),
-        deleteMenu: new DeleteMenu(menuRepository),
-        searchPersonMenus: new SearchPersonMenus(menuRepository),
+    const menuController = buildMenuController({
+        menuRepository,
+        recipeRepository,
     });
 
     const menuCategoryController = new MenuCategoryController({
@@ -140,6 +136,7 @@ export function buildControllers({
         menuController,
         menuCategoryController,
         calorieController,
+        favouriteController: buildFavouriteController(favouriteRepository),
     };
 }
 
@@ -152,6 +149,7 @@ const controllers = buildControllers({
     pantryRepository: new PgPantryRepository(pool),
     userRepository: new PgUserRepository(pool),
     calorieRepository: new PgCalorieRepository(pool),
+    favouriteRepository: new PgFavouriteRepository(pool),
     passwordHasher: new BcryptPasswordHasher(),
     tokenService: new JwtTokenService(),
     emailSender: createEmailSender(config.resendApiKey, config.emailFrom),

@@ -9,6 +9,7 @@ import news from "i18n/locales/en/news.json";
 import profile from "i18n/locales/en/profile.json";
 import recipes from "i18n/locales/en/recipes.json";
 import settings from "i18n/locales/en/settings.json";
+import shoppingList from "i18n/locales/en/shoppingList.json";
 import stats from "i18n/locales/en/stats.json";
 
 export const DEFAULT_LANGUAGE = "en";
@@ -31,5 +32,6 @@ export const resources = {
         profile,
         settings,
         calories,
+        shoppingList,
     },
 };

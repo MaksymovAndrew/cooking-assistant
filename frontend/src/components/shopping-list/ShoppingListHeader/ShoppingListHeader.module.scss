@@ -1,0 +1,74 @@
+@use "styles/abstracts" as *;
+
+.shopping-list-header {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+
+    @include respond-to(tablet) {
+        align-items: flex-end;
+        gap: var(--s-4);
+        margin-bottom: 20px;
+    }
+
+    @include respond-to(desktop) {
+        align-items: center;
+        gap: var(--s-5);
+        margin-bottom: var(--s-5);
+    }
+
+    &__text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__heading {
+        margin: 0;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        font:
+            600 clamp(26px, 4vw, 34px) Fraunces,
+            serif;
+    }
+
+    &__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--s-2);
+        margin: 6px 0 0;
+
+        @include respond-to(tablet) {
+            margin-top: var(--s-2);
+        }
+    }
+
+    // a plain brand line on phones, a pill from tablet up
+    &__to-buy {
+        color: var(--brand);
+        letter-spacing: 0.04em;
+        font:
+            600 12px "Geist Mono",
+            monospace;
+        white-space: nowrap;
+
+        @include respond-to(tablet) {
+            padding: 5px 11px;
+            border-radius: var(--r-pill);
+            background: var(--brand-subtle);
+        }
+    }
+
+    &__summary {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: inline;
+            color: var(--text-muted);
+            font:
+                500 13px Inter,
+                sans-serif;
+        }
+    }
+}

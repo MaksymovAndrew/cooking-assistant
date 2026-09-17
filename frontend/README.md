@@ -137,7 +137,7 @@ src/
 │   ├── robots.ts            allow public, disallow the private prefixes, point at the sitemap
 │   └── (private)/           layout.tsx = PrivateRoute; my-recipes, my-menus, add-recipe,
 │                            change-recipe/[id], add-menu, change-menu/[id], ingredients,
-│                            stats, profile, settings. The two form stylesheets are shared
+│                            shopping-list, stats, profile, settings. The two form stylesheets are shared
 │                            by the group, like the auth one
 │
 ├── api/            the ONLY place axios is touched
@@ -160,10 +160,10 @@ src/
 ├── components/     reusable UI, grouped by domain (each is a folder + index.ts barrel)
 │   ├── layout/        AppShell, AppHeader, MainNav, BottomNav, Logo, PrivateRoute, PageSpinner,
 │   │                  RouteErrorBoundary, MobileSubpageHeader, ScrollToTopButton
-│   ├── ui/            SearchField, FilterPanel, ActiveFilterChips, Button, Chip, Select, ...
+│   ├── ui/            SearchField, FilterPanel, ActiveFilterChips, Button, Chip, Select, ProgressRing, ...
 │   ├── icons/         hand-authored SVG icon components (design-mockup-traced)
 │   ├── forms/         RecipeForm, MenuForm, auth forms, shared fields
-│   └── recipes/, menu/, ingredients/, profile/, settings/, stats/, home/, cards/, modals/,
+│   └── recipes/, menu/, ingredients/, shopping-list/, profile/, settings/, stats/, home/, cards/, modals/,
 │       theme/, avatars/, connectivity/, auth/   domain-specific components
 │
 ├── hooks/          all data fetching + stateful logic (50+ hooks, composed)
@@ -274,6 +274,7 @@ URL.
 | `/add-recipe`, `/change-recipe/:id`                    | Recipe create / edit                | (private) |
 | `/add-menu`, `/change-menu/:id`                        | Menu create / edit                  | (private) |
 | `/ingredients`                                         | IngredientsPage (pantry)            | (private) |
+| `/shopping-list`                                       | ShoppingListPage                    | (private) |
 | `/stats`                                               | StatsPage (charts)                  | (private) |
 | `/profile`, `/settings`                                | ProfilePage, SettingsPage           | (private) |
 | anything else                                          | not-found.tsx (real HTTP 404)       | -         |

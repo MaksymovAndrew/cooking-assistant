@@ -1,34 +1,13 @@
-@use "styles/abstracts" as *;
-
 .calorie-progress-ring {
-    position: relative;
+    --progress-ring-track: var(--border);
+
     flex: none;
     width: 160px;
     height: 160px;
 
-    &__svg {
+    &__ring {
         width: 100%;
         height: 100%;
-    }
-
-    &__track {
-        stroke: var(--border);
-        stroke-width: 22px;
-    }
-
-    &__arc {
-        stroke-width: 22px;
-        transition: stroke-dasharray var(--dur-base) var(--ease-out);
-    }
-
-    &__center {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
     }
 
     &__value {
@@ -48,15 +27,11 @@
 }
 
 .calorie-progress-ring--normal {
-    .calorie-progress-ring__arc {
-        stroke: var(--brand-strong);
-    }
+    --progress-ring-arc: var(--brand-strong);
 }
 
 .calorie-progress-ring--near {
-    .calorie-progress-ring__arc {
-        stroke: var(--warning);
-    }
+    --progress-ring-arc: var(--warning);
 
     .calorie-progress-ring__value {
         color: var(--warning);
@@ -64,9 +39,7 @@
 }
 
 .calorie-progress-ring--over {
-    .calorie-progress-ring__arc {
-        stroke: var(--danger);
-    }
+    --progress-ring-arc: var(--danger);
 
     .calorie-progress-ring__value {
         color: var(--danger);

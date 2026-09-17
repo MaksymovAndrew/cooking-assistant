@@ -14,6 +14,7 @@ export const ROUTES = {
 
     ingredients: "/ingredients",
     stats: "/stats",
+    shoppingList: "/shopping-list",
 
     allMenus: "/all-menus",
     myMenus: "/my-menus",

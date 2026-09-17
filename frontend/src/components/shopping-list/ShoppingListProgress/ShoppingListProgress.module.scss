@@ -1,0 +1,83 @@
+@use "styles/abstracts" as *;
+
+// a bare ring on phones and tablets; from desktop it grows into a card with a caption
+.shopping-list-progress {
+    --progress-ring-track: var(--surface-2);
+    --progress-ring-arc: var(--success);
+    --progress-ring-cap: round;
+
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 14px;
+
+    @include respond-to(desktop) {
+        padding: var(--s-3) 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        background: var(--surface);
+        box-shadow: var(--e-1);
+    }
+
+    &__ring {
+        width: 40px;
+        height: 40px;
+
+        @include respond-to(tablet) {
+            width: 44px;
+            height: 44px;
+        }
+
+        @include respond-to(desktop) {
+            width: 46px;
+            height: 46px;
+        }
+    }
+
+    &__percent {
+        color: var(--text);
+        font:
+            600 10px "Geist Mono",
+            monospace;
+
+        @include respond-to(tablet) {
+            font-size: 11.5px;
+        }
+    }
+
+    &__check {
+        color: var(--success);
+    }
+
+    &__text {
+        // the ring reads the same share, so the caption can go below desktop without hiding anything
+        @include sr-only;
+
+        @include respond-to(desktop) {
+            position: static;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            width: auto;
+            height: auto;
+            margin: 0;
+            overflow: visible;
+            clip-path: none;
+            white-space: nowrap;
+        }
+    }
+
+    &__title {
+        color: var(--text);
+        font:
+            600 13px Inter,
+            sans-serif;
+    }
+
+    &__summary {
+        color: var(--text-muted);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+    }
+}

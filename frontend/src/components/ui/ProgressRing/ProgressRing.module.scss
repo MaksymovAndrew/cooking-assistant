@@ -1,0 +1,43 @@
+// colours and the cap shape are custom properties, so a consumer tones the ring from its own module
+.progress-ring {
+    position: relative;
+    flex: none;
+
+    &__svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    &__track {
+        fill: none;
+        stroke: var(--progress-ring-track, var(--border));
+    }
+
+    &__arc {
+        fill: none;
+        stroke: var(--progress-ring-arc, var(--brand-strong));
+        stroke-linecap: var(--progress-ring-cap, butt);
+        transition:
+            stroke-dashoffset var(--dur-slow) var(--ease-out),
+            stroke var(--dur-base) var(--ease-out);
+        animation: progress-ring-draw 700ms var(--ease-out);
+    }
+
+    &__center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+// only a "from" frame: the arc draws in from empty to whatever offset it was rendered with
+@keyframes progress-ring-draw {
+    from {
+        stroke-dashoffset: 100;
+    }
+}

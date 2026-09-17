@@ -1,0 +1,58 @@
+@use "styles/abstracts" as *;
+
+.shopping-list-notice {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin: var(--s-2) 0 10px;
+
+    &__icon {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: var(--r-pill);
+        background: color-mix(in srgb, var(--success) 14%, transparent);
+        color: var(--success);
+    }
+
+    &__title {
+        margin: 0;
+        color: var(--text);
+        font:
+            600 14.5px Inter,
+            sans-serif;
+    }
+
+    &__description {
+        margin: 2px 0 0;
+        color: var(--text-muted);
+        font:
+            400 12.5px Inter,
+            sans-serif;
+
+        @include respond-to(tablet) {
+            font-size: 13px;
+        }
+    }
+}
+
+.shopping-list-notice--success {
+    padding: var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+
+    @include respond-to(tablet) {
+        padding: 18px;
+    }
+}
+
+.shopping-list-notice--muted {
+    .shopping-list-notice__title {
+        color: var(--text-muted);
+        font-weight: 400;
+        font-size: 13px;
+    }
+}

@@ -24,6 +24,12 @@ changelogs and the tags and now track everything here against one shared version
 
 - Changed: Routine dependency maintenance, including a security fix in response compression.
 
+### Frontend
+
+- Added: A Shopping list page - add items with an optional note, tick them off, reorder what is left to buy and clear the bought ones, with a basket progress ring; on desktop the bought items sit in their own column, and items glide smoothly when they move, get ticked, added or removed.
+- Changed: The calorie ring on the Dietary tab now draws itself in when it appears and when the numbers change.
+- Changed: Shopping takes the Stats tab's place in the mobile bottom bar; Stats is now linked from the profile page, and stays in the desktop top bar.
+
 ### Backend
 
 - Added: A personal shopping list - add, check off, rename, reorder and clear items, or add catalog ingredients with a quantity; adding an ingredient that is already on the list updates it instead of duplicating it.

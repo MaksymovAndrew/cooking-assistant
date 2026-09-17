@@ -1,0 +1,277 @@
+@use "styles/abstracts" as *;
+
+.shopping-list-item-row {
+    // how far the hover fill reaches past the card's padding; the divider stays inside it
+    --row-bleed: 0px;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin: 0 calc(var(--row-bleed) * -1);
+    padding: var(--s-3) var(--row-bleed);
+    border-radius: var(--r-md);
+    transition: background var(--dur-fast) var(--ease-out);
+
+    @include respond-to(desktop) {
+        --row-bleed: 12px;
+
+        gap: 14px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+
+        @include on-hover {
+            background: var(--surface-2);
+        }
+    }
+
+    & + &::before {
+        position: absolute;
+        top: 0;
+        right: var(--row-bleed);
+        left: var(--row-bleed);
+        height: 1px;
+        background: color-mix(in srgb, var(--border) 55%, transparent);
+        content: "";
+    }
+
+    // the real checkbox sits invisibly over the drawn box, so it stays the thing a tap or a keyboard hits
+    &__check {
+        position: relative;
+        display: flex;
+        flex: none;
+    }
+
+    &__input {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    &__box {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border: 1.75px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--surface-2);
+        color: transparent;
+        transition:
+            background var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out);
+
+        @include respond-to(tablet) {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    &__input:focus-visible + &__box {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+    }
+
+    &__input:checked + &__box {
+        border-color: var(--success);
+        background: var(--success);
+        color: var(--bg);
+    }
+
+    &__body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+        cursor: pointer;
+
+        @include respond-to(tablet) {
+            gap: 4px;
+        }
+    }
+
+    &__title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+
+        @include respond-to(tablet) {
+            gap: 10px;
+        }
+    }
+
+    &__name {
+        @include wrap-anywhere;
+
+        color: var(--text);
+        font:
+            600 14px/1.45 Inter,
+            sans-serif;
+        text-wrap: pretty;
+    }
+
+    &__quantity {
+        padding: 2px 7px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-pill);
+        background: var(--surface-2);
+        color: var(--text-2);
+        font:
+            600 11.5px "Geist Mono",
+            monospace;
+        white-space: nowrap;
+
+        @include respond-to(tablet) {
+            padding: 3px 8px;
+        }
+    }
+
+    &__note {
+        @include wrap-anywhere;
+
+        color: var(--text-muted);
+        font:
+            400 12.5px/1.45 Inter,
+            sans-serif;
+
+        @include respond-to(tablet) {
+            font-size: 13px;
+        }
+    }
+
+    &--checked &__name {
+        color: var(--text-2);
+        text-decoration: line-through;
+        text-decoration-color: var(--text-muted);
+    }
+
+    &--checked &__quantity {
+        border-color: transparent;
+        color: var(--text-muted);
+    }
+
+    &__actions {
+        display: flex;
+        flex: none;
+        align-items: center;
+        gap: 2px;
+        transition: opacity var(--dur-fast) var(--ease-out);
+
+        // pointer users see the actions quietly until the row is in play; touch always sees them
+        @include respond-to(desktop) {
+            @media (hover: hover) {
+                opacity: 0.3;
+            }
+        }
+    }
+
+    &:hover &__actions,
+    &:focus-within &__actions {
+        opacity: 1;
+    }
+
+    // stacked on phones so a long name keeps its width
+    &__move {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+        }
+    }
+
+    &__move-button,
+    &__remove {
+        @include focus-ring;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
+        border-radius: var(--r-sm);
+        background: var(--surface-2);
+        color: var(--text-2);
+        cursor: pointer;
+        transition:
+            background var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out),
+            color var(--dur-fast) var(--ease-out);
+
+        @include respond-to(desktop) {
+            background: transparent;
+        }
+    }
+
+    &__move-button {
+        width: 32px;
+        height: 22px;
+        border-radius: 6px;
+
+        @include respond-to(tablet) {
+            height: 32px;
+            border-radius: var(--r-sm);
+        }
+
+        @include respond-to(desktop) {
+            width: 30px;
+            height: 30px;
+        }
+
+        &:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+    }
+
+    &__remove {
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        color: var(--text-muted);
+
+        @include respond-to(tablet) {
+            width: 38px;
+            height: 38px;
+            background: var(--surface-2);
+            color: var(--text-2);
+        }
+
+        @include respond-to(desktop) {
+            width: 40px;
+            height: 40px;
+            background: transparent;
+        }
+    }
+
+    // bought rows only carry the bin, and it stays quiet
+    &--checked &__remove {
+        width: 36px;
+        height: 36px;
+        background: transparent;
+        color: var(--text-muted);
+    }
+
+    @include respond-to(desktop) {
+        @include on-hover {
+            .shopping-list-item-row__move-button:not(:disabled) {
+                border-color: var(--border);
+                background: var(--surface);
+            }
+
+            .shopping-list-item-row__remove {
+                background: color-mix(in srgb, var(--danger) 12%, transparent);
+                color: var(--danger);
+            }
+        }
+    }
+}

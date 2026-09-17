@@ -1,0 +1,41 @@
+{
+    "page": {
+        "heading": "Shopping list",
+        "toBuyCount_one": "{{count}} item to buy",
+        "toBuyCount_other": "{{count}} items to buy",
+        "summary": "{{bought}} bought · {{total}} total",
+        "loading": "Loading your list...",
+        "error": "Couldn't load your shopping list",
+        "errorDescription": "Check your connection and give it another go.",
+        "retry": "Try again"
+    },
+    "progress": {
+        "title": "Basket progress",
+        "summary": "{{bought}} of {{total}} ticked off"
+    },
+    "addForm": {
+        "nameLabel": "Item",
+        "namePlaceholder": "Add an item, e.g. oat milk",
+        "noteLabel": "Note",
+        "notePlaceholder": "Note, e.g. 2 packs",
+        "submit": "Add",
+        "hint": "Enter adds it."
+    },
+    "sections": {
+        "toBuy": "To buy",
+        "bought": "Bought",
+        "clearBought": "Clear bought",
+        "boughtEmpty": "Ticked items land here."
+    },
+    "item": {
+        "moveUp": "Move {{name}} up",
+        "moveDown": "Move {{name}} down",
+        "remove": "Remove {{name}}"
+    },
+    "empty": {
+        "title": "Your shopping list is empty",
+        "description": "Add what you need to buy - it stays here until you tick it off.",
+        "allBought": "Everything is bought.",
+        "allBoughtHint": "Nice one. Add something new any time."
+    }
+}

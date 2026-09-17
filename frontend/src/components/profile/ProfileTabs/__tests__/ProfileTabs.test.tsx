@@ -59,7 +59,7 @@ describe("ProfileTabs", () => {
         expect(onLogout).toHaveBeenCalledTimes(1);
     });
 
-    it("should render Settings as a link to the settings page", () => {
+    it("should render Stats and Settings as links to their pages", () => {
         renderWithRouter(
             <ProfileTabs
                 activeTab={PROFILE_TAB.recipes}
@@ -68,6 +68,10 @@ describe("ProfileTabs", () => {
             />,
         );
 
+        expect(screen.getByRole("link", { name: "Stats" })).toHaveAttribute(
+            "href",
+            "/stats",
+        );
         expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute(
             "href",
             "/settings",

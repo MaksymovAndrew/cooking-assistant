@@ -127,6 +127,13 @@ test("should render /stats", async () => {
     ).toBeVisible();
 });
 
+test("should render /shopping-list", async () => {
+    await page.goto("/shopping-list");
+    await expect(
+        page.getByRole("heading", { name: "Shopping list", level: 1 }),
+    ).toBeVisible();
+});
+
 test("should render /all-menus", async () => {
     await page.goto("/all-menus");
     await expect(

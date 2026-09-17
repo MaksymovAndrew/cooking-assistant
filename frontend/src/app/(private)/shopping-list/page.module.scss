@@ -1,0 +1,90 @@
+@use "styles/abstracts" as *;
+
+// one DOM order - add, to buy, bought - laid out by area: stacked on phones and tablets, the bought
+// list in a side rail on desktop, and beside the list on a short landscape phone
+.shopping-list-page {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 20px var(--s-4) var(--s-6);
+
+    @include respond-to(tablet) {
+        padding: var(--s-5) var(--s-5) var(--s-6);
+    }
+
+    @include respond-to(desktop) {
+        padding-top: var(--s-6);
+    }
+
+    &__layout {
+        display: grid;
+        grid-template-areas:
+            "add"
+            "status";
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+
+        @include respond-to(tablet) {
+            gap: var(--s-4);
+        }
+
+        @include respond-to(desktop) {
+            max-width: 760px;
+        }
+    }
+
+    &__layout--split {
+        grid-template-areas:
+            "add"
+            "to-buy"
+            "bought";
+
+        @include respond-to(desktop) {
+            grid-template:
+                "add bought" auto
+                "to-buy bought" 1fr / minmax(0, 1fr) 336px;
+            column-gap: var(--s-5);
+            max-width: none;
+        }
+
+        @include respond-to-short-landscape {
+            grid-template:
+                "add to-buy" auto
+                "bought to-buy" 1fr / 250px minmax(0, 1fr);
+            gap: var(--s-3);
+        }
+    }
+
+    &__add {
+        grid-area: add;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        background: var(--surface);
+        box-shadow: var(--e-1);
+
+        @include respond-to(tablet) {
+            padding: var(--s-4);
+            box-shadow: var(--e-2);
+        }
+    }
+
+    &__status {
+        grid-area: status;
+    }
+
+    &__empty {
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        background: var(--surface);
+        box-shadow: var(--e-1);
+    }
+
+    &__to-buy {
+        grid-area: to-buy;
+    }
+
+    &__bought {
+        grid-area: bought;
+    }
+}

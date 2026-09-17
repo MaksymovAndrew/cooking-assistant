@@ -1,0 +1,51 @@
+@use "styles/abstracts" as *;
+
+.shopping-list-section {
+    padding: var(--s-4) var(--s-4) 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--e-1);
+
+    @include respond-to(tablet) {
+        padding: 20px 20px 10px;
+    }
+
+    @include respond-to(desktop) {
+        padding: 20px var(--s-5) var(--s-3);
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 34px;
+        padding-bottom: var(--s-1);
+    }
+
+    &__title {
+        margin: 0;
+        color: var(--text);
+        font:
+            600 18px Fraunces,
+            serif;
+    }
+
+    &__count {
+        padding-top: 2px;
+        color: var(--text-muted);
+        font:
+            600 11.5px "Geist Mono",
+            monospace;
+    }
+
+    &__action {
+        margin-left: auto;
+    }
+
+    &__list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+}

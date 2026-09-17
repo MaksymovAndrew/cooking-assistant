@@ -47,4 +47,10 @@ export const API_ROUTES = {
         intakeById: (id: string | number) => `/api/calorie-intake/${id}`,
         goal: "/api/calorie-goal",
     },
+    shoppingList: {
+        list: "/api/shopping-list",
+        byId: (id: string | number) => `/api/shopping-list/${id}`,
+        checked: "/api/shopping-list/checked",
+        order: "/api/shopping-list/order",
+    },
 } as const;

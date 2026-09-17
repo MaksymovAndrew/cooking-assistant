@@ -32,6 +32,17 @@ describe("UpdateShoppingListItem", () => {
         expect(error).toBeInstanceOf(ValidationError);
     });
 
+    it("should refuse a name change, since items keep the name they were added with", async () => {
+        const { useCase, shoppingListRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(7, 3, { name: "Oat milk" }),
+        );
+
+        expect(error).toBeInstanceOf(ValidationError);
+        expect(shoppingListRepository.updateItem).not.toHaveBeenCalled();
+    });
+
     it("should pass only the provided fields, allowing the note to be cleared", async () => {
         const { useCase, shoppingListRepository } = setup();
 

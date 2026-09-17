@@ -48,7 +48,10 @@ describe("shopping list routes", () => {
     it("should add a free-text item", async () => {
         const { app, deps } = buildTestApp();
 
-        deps.shoppingListRepository.addItem.mockResolvedValue(ITEM);
+        deps.shoppingListRepository.addItem.mockResolvedValue({
+            outcome: "added",
+            item: ITEM,
+        });
 
         const res = await request(app)
             .post(LIST_PATH)
@@ -62,7 +65,10 @@ describe("shopping list routes", () => {
     it("should map a full list to a 409 response", async () => {
         const { app, deps } = buildTestApp();
 
-        deps.shoppingListRepository.addItem.mockResolvedValue(null);
+        deps.shoppingListRepository.addItem.mockResolvedValue({
+            outcome: "limit_reached",
+            item: null,
+        });
 
         const res = await request(app)
             .post(LIST_PATH)
@@ -149,7 +155,7 @@ describe("shopping list routes", () => {
         const items = [{ ingredient_id: 4, quantity: 250 }];
 
         deps.ingredientRepository.findExistingIds.mockResolvedValue([4]);
-        deps.shoppingListRepository.addIngredients.mockResolvedValue(true);
+        deps.shoppingListRepository.addIngredients.mockResolvedValue("added");
 
         const res = await request(app)
             .post(`${LIST_PATH}/ingredients`)

@@ -1,6 +1,10 @@
 import { ERROR_CODES } from "constants/errorCodes";
 import { SHOPPING_LIST_LIMITS } from "constants/shoppingList";
-import { ConflictError, ValidationError } from "domain/errors/AppError";
+import {
+    ConflictError,
+    NotFoundError,
+    ValidationError,
+} from "domain/errors/AppError";
 
 import AddShoppingListItem from "application/use-cases/shopping-list/AddShoppingListItem";
 
@@ -38,7 +42,10 @@ describe("AddShoppingListItem", () => {
     it("should trim the name and store a blank note as null", async () => {
         const { useCase, shoppingListRepository } = setup();
 
-        shoppingListRepository.addItem.mockResolvedValue({ id: 1 });
+        shoppingListRepository.addItem.mockResolvedValue({
+            outcome: "added",
+            item: { id: 1 },
+        });
 
         await useCase.execute(7, { name: "  Milk ", note: "  " });
 
@@ -52,7 +59,10 @@ describe("AddShoppingListItem", () => {
     it("should throw a 409 ConflictError when the list is full", async () => {
         const { useCase, shoppingListRepository } = setup();
 
-        shoppingListRepository.addItem.mockResolvedValue(null);
+        shoppingListRepository.addItem.mockResolvedValue({
+            outcome: "limit_reached",
+            item: null,
+        });
 
         const error = await catchError(useCase.execute(7, { name: "Milk" }));
 
@@ -60,6 +70,23 @@ describe("AddShoppingListItem", () => {
             ConflictError,
             ERROR_CODES.SHOPPING_LIST_LIMIT_REACHED,
             409,
+        );
+    });
+
+    it("should throw a 404 NotFoundError when the account no longer exists", async () => {
+        const { useCase, shoppingListRepository } = setup();
+
+        shoppingListRepository.addItem.mockResolvedValue({
+            outcome: "person_not_found",
+            item: null,
+        });
+
+        const error = await catchError(useCase.execute(7, { name: "Milk" }));
+
+        expect(error).toBeAppError(
+            NotFoundError,
+            ERROR_CODES.USER_NOT_FOUND,
+            404,
         );
     });
 });

@@ -1,6 +1,10 @@
 import { ERROR_CODES } from "constants/errorCodes";
 import { SHOPPING_LIST_LIMITS } from "constants/shoppingList";
-import { ConflictError, ValidationError } from "domain/errors/AppError";
+import {
+    ConflictError,
+    NotFoundError,
+    ValidationError,
+} from "domain/errors/AppError";
 
 import AddIngredientsToShoppingList from "application/use-cases/shopping-list/AddIngredientsToShoppingList";
 
@@ -65,7 +69,24 @@ describe("AddIngredientsToShoppingList", () => {
         const items = [{ ingredient_id: 4, quantity: 250 }];
 
         ingredientRepository.findExistingIds.mockResolvedValue([4]);
-        shoppingListRepository.addIngredients.mockResolvedValue(true);
+        shoppingListRepository.addIngredients.mockResolvedValue("added");
+
+        await useCase.execute(7, { items });
+
+        expect(shoppingListRepository.addIngredients).toHaveBeenCalledWith(
+            7,
+            items,
+            SHOPPING_LIST_LIMITS.MAX_ITEMS,
+        );
+    });
+
+    it("should add an ingredient without a quantity", async () => {
+        const { useCase, shoppingListRepository, ingredientRepository } =
+            setup();
+        const items = [{ ingredient_id: 4, quantity: null }];
+
+        ingredientRepository.findExistingIds.mockResolvedValue([4]);
+        shoppingListRepository.addIngredients.mockResolvedValue("added");
 
         await useCase.execute(7, { items });
 
@@ -81,7 +102,9 @@ describe("AddIngredientsToShoppingList", () => {
             setup();
 
         ingredientRepository.findExistingIds.mockResolvedValue([4]);
-        shoppingListRepository.addIngredients.mockResolvedValue(false);
+        shoppingListRepository.addIngredients.mockResolvedValue(
+            "limit_reached",
+        );
 
         const error = await catchError(
             useCase.execute(7, { items: [{ ingredient_id: 4, quantity: 1 }] }),
@@ -91,6 +114,26 @@ describe("AddIngredientsToShoppingList", () => {
             ConflictError,
             ERROR_CODES.SHOPPING_LIST_LIMIT_REACHED,
             409,
+        );
+    });
+
+    it("should throw a 404 NotFoundError when the account no longer exists", async () => {
+        const { useCase, shoppingListRepository, ingredientRepository } =
+            setup();
+
+        ingredientRepository.findExistingIds.mockResolvedValue([4]);
+        shoppingListRepository.addIngredients.mockResolvedValue(
+            "person_not_found",
+        );
+
+        const error = await catchError(
+            useCase.execute(7, { items: [{ ingredient_id: 4, quantity: 1 }] }),
+        );
+
+        expect(error).toBeAppError(
+            NotFoundError,
+            ERROR_CODES.USER_NOT_FOUND,
+            404,
         );
     });
 });

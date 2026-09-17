@@ -1,4 +1,5 @@
 import type {
+    AddIngredientsToShoppingListRequest,
     AddShoppingListItemRequest,
     ReorderShoppingListRequest,
     ShoppingListItem,
@@ -23,6 +24,17 @@ export const shoppingListApi = baseApi.injectEndpoints({
         >({
             query: (data) => ({
                 url: API_ROUTES.shoppingList.list,
+                method: "POST",
+                data,
+            }),
+            invalidatesTags: [SHOPPING_LIST],
+        }),
+        addIngredientsToShoppingList: build.mutation<
+            null,
+            AddIngredientsToShoppingListRequest
+        >({
+            query: (data) => ({
+                url: API_ROUTES.shoppingList.ingredients,
                 method: "POST",
                 data,
             }),
@@ -93,14 +105,8 @@ export const shoppingListApi = baseApi.injectEndpoints({
                         "getShoppingList",
                         null,
                         (items) => {
-                            const rank = new Map(
-                                ids.map((id, index) => [id, index]),
-                            );
-
                             items.sort(
-                                (a, b) =>
-                                    (rank.get(a.id) ?? 0) -
-                                    (rank.get(b.id) ?? 0),
+                                (a, b) => ids.indexOf(a.id) - ids.indexOf(b.id),
                             );
                         },
                     ),
@@ -119,6 +125,7 @@ export const shoppingListApi = baseApi.injectEndpoints({
 export const {
     useGetShoppingListQuery,
     useAddShoppingListItemMutation,
+    useAddIngredientsToShoppingListMutation,
     useSetShoppingListItemCheckedMutation,
     useDeleteShoppingListItemMutation,
     useClearCheckedShoppingListItemsMutation,

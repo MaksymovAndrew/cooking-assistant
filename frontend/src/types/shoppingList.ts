@@ -24,3 +24,13 @@ export interface UpdateShoppingListItemRequest {
 export interface ReorderShoppingListRequest {
     ids: number[];
 }
+
+// null adds the ingredient by name alone, for when only the shopper can tell how much to buy
+export interface ShoppingListIngredientEntry {
+    ingredient_id: number;
+    quantity: number | null;
+}
+
+export interface AddIngredientsToShoppingListRequest {
+    items: ShoppingListIngredientEntry[];
+}

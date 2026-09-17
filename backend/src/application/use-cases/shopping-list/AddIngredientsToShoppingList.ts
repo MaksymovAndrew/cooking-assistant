@@ -1,6 +1,6 @@
 import { ERROR_CODES } from "constants/errorCodes";
 import { SHOPPING_LIST_LIMITS } from "constants/shoppingList";
-import { ConflictError } from "domain/errors/AppError";
+import { ConflictError, NotFoundError } from "domain/errors/AppError";
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { ShoppingListRepository } from "domain/repositories/ShoppingListRepository";
 
@@ -30,13 +30,17 @@ export default class AddIngredientsToShoppingList {
             items.map((item) => item.ingredient_id),
         );
 
-        const added = await this.shoppingListRepository.addIngredients(
+        const outcome = await this.shoppingListRepository.addIngredients(
             validPersonId,
             items,
             SHOPPING_LIST_LIMITS.MAX_ITEMS,
         );
 
-        if (!added) {
+        if (outcome === "person_not_found") {
+            throw new NotFoundError(ERROR_CODES.USER_NOT_FOUND);
+        }
+
+        if (outcome === "limit_reached") {
             throw new ConflictError(ERROR_CODES.SHOPPING_LIST_LIMIT_REACHED);
         }
     }

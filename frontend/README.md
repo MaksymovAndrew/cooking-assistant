@@ -320,9 +320,11 @@ Adding a modal is three edits and no change to the queue itself: a key in `MODAL
 `<Name>ModalInput`/`<Name>Modal` interfaces added to the `ModalInput`/`ActiveModal` unions, a branch in
 `ModalRoot`, and a `dispatch(openModal(...))` at the trigger.
 
-**Toasts are a separate queue on purpose.** `notificationsSlice` is its own FIFO array with dedupe and
+**Toasts are a separate queue on purpose.** `notificationsSlice` is its own FIFO array where a repeated message replaces its
+visible copy (so an error storm shows one toast, and a repeated confirmation shows again), and
 `MAX_VISIBLE = 3` ([components/ui/Toasts/](src/components/ui/Toasts/)). Toasts are non-blocking and
-several are visible at once; modals are blocking and strictly serialized. Don't merge the two.
+several are visible at once; modals are blocking and strictly serialized. Don't merge the two. A toast
+may carry an optional `link` (`{ href, label }`) to where the change landed - the shopping list uses it.
 
 ## Internationalization
 

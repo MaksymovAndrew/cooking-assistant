@@ -46,9 +46,9 @@ describe("PgShoppingListRepository (real Postgres)", () => {
         );
         const items = await repository.findByPerson(personId);
 
-        expect(first?.position).toBe(0);
-        expect(second?.position).toBe(1);
-        expect(third).toBeNull();
+        expect(first.item?.position).toBe(0);
+        expect(second.item?.position).toBe(1);
+        expect(third.outcome).toBe("limit_reached");
         expect(items.map((item) => item.name)).toEqual(["Milk", "Bread"]);
     });
 
@@ -60,7 +60,7 @@ describe("PgShoppingListRepository (real Postgres)", () => {
             { name: "Milk", note: "2%" },
             10,
         );
-        const itemId = item?.id ?? 0;
+        const itemId = item.item?.id ?? 0;
 
         const updatedByOther = await repository.updateItem(
             otherPersonId,
@@ -98,7 +98,7 @@ describe("PgShoppingListRepository (real Postgres)", () => {
         );
 
         await repository.addItem(personId, { name: "Bread", note: null }, 10);
-        await repository.updateItem(personId, bought?.id ?? 0, {
+        await repository.updateItem(personId, bought.item?.id ?? 0, {
             checked: true,
         });
         await repository.deleteChecked(personId);
@@ -119,8 +119,8 @@ describe("PgShoppingListRepository (real Postgres)", () => {
             { name: "Bread", note: null },
             10,
         );
-        const milkId = milk?.id ?? 0;
-        const breadId = bread?.id ?? 0;
+        const milkId = milk.item?.id ?? 0;
+        const breadId = bread.item?.id ?? 0;
 
         const stale = await repository.reorder(personId, [breadId]);
         const reordered = await repository.reorder(personId, [breadId, milkId]);
@@ -131,7 +131,7 @@ describe("PgShoppingListRepository (real Postgres)", () => {
         expect(items.map((item) => item.name)).toEqual(["Bread", "Milk"]);
     });
 
-    it("should merge an ingredient into its unchecked item and add a new one after a checked item", async () => {
+    it("should add an ingredient's quantity to its unchecked item and start a new one after a checked item", async () => {
         const personId = await createPerson(pool);
         const ingredientId = await createIngredient(pool, unitId);
 
@@ -158,7 +158,7 @@ describe("PgShoppingListRepository (real Postgres)", () => {
         expect(merged).toEqual(
             expect.objectContaining({
                 ingredient_id: ingredientId,
-                quantity: 200,
+                quantity: 350,
             }),
         );
         expect(merged.unit_name).not.toBeNull();
@@ -166,9 +166,68 @@ describe("PgShoppingListRepository (real Postgres)", () => {
         expect(
             items.map((item) => [item.checked, item.quantity, item.position]),
         ).toEqual([
-            [true, 200, 0],
+            [true, 350, 0],
             [false, 50, 1],
         ]);
+    });
+
+    it("should keep a known quantity when the same ingredient is added without one", async () => {
+        const personId = await createPerson(pool);
+        const measuredId = await createIngredient(pool, unitId);
+        const unmeasuredId = await createIngredient(pool, unitId);
+
+        await repository.addIngredients(
+            personId,
+            [
+                { ingredient_id: measuredId, quantity: 300 },
+                { ingredient_id: unmeasuredId, quantity: null },
+            ],
+            10,
+        );
+        await repository.addIngredients(
+            personId,
+            [
+                { ingredient_id: measuredId, quantity: null },
+                { ingredient_id: unmeasuredId, quantity: null },
+            ],
+            10,
+        );
+        const items = await repository.findByPerson(personId);
+
+        expect(
+            items.map((item) => [item.ingredient_id, item.quantity]),
+        ).toEqual([
+            [measuredId, 300],
+            [unmeasuredId, null],
+        ]);
+    });
+
+    it("should add a quantity to only the first unchecked item when an unticked one duplicates it", async () => {
+        const personId = await createPerson(pool);
+        const ingredientId = await createIngredient(pool, unitId);
+
+        await repository.addIngredients(
+            personId,
+            [{ ingredient_id: ingredientId, quantity: 1 }],
+            10,
+        );
+        const [first] = await repository.findByPerson(personId);
+
+        await repository.updateItem(personId, first.id, { checked: true });
+        await repository.addIngredients(
+            personId,
+            [{ ingredient_id: ingredientId, quantity: 1 }],
+            10,
+        );
+        await repository.updateItem(personId, first.id, { checked: false });
+        await repository.addIngredients(
+            personId,
+            [{ ingredient_id: ingredientId, quantity: 2 }],
+            10,
+        );
+        const items = await repository.findByPerson(personId);
+
+        expect(items.map((item) => item.quantity)).toEqual([3, 1]);
     });
 
     it("should add nothing when the new ingredients would overflow the list", async () => {
@@ -187,8 +246,28 @@ describe("PgShoppingListRepository (real Postgres)", () => {
         );
         const items = await repository.findByPerson(personId);
 
-        expect(added).toBe(false);
+        expect(added).toBe("limit_reached");
         expect(items).toHaveLength(1);
+    });
+
+    it("should report a missing person instead of failing on the foreign key", async () => {
+        const personId = await createPerson(pool);
+        const ingredientId = await createIngredient(pool, unitId);
+
+        await pool.query(`DELETE FROM person WHERE id = $1`, [personId]);
+        const item = await repository.addItem(
+            personId,
+            { name: "Milk", note: null },
+            10,
+        );
+        const ingredients = await repository.addIngredients(
+            personId,
+            [{ ingredient_id: ingredientId, quantity: 1 }],
+            10,
+        );
+
+        expect(item.outcome).toBe("person_not_found");
+        expect(ingredients).toBe("person_not_found");
     });
 
     it("should remove the list with its owner's account", async () => {

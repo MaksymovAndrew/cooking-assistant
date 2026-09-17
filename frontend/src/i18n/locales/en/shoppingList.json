@@ -19,7 +19,7 @@
         "noteLabel": "Note",
         "notePlaceholder": "Note, e.g. 2 packs",
         "submit": "Add",
-        "hint": "Enter adds it."
+        "hint": "Enter adds it. Recipes and menus can send what you're missing here too."
     },
     "sections": {
         "toBuy": "To buy",
@@ -37,5 +37,10 @@
         "description": "Add what you need to buy - it stays here until you tick it off.",
         "allBought": "Everything is bought.",
         "allBoughtHint": "Nice one. Add something new any time."
+    },
+    "addFromElsewhere": {
+        "addMissing": "Add missing to shopping list",
+        "added": "Added to your shopping list.",
+        "openList": "Open list"
     }
 }

@@ -37,7 +37,6 @@ export const createShoppingListItemSchema = z.object({
 
 export const updateShoppingListItemSchema = z
     .object({
-        name: nameSchema.optional(),
         note: noteSchema.optional(),
         checked: z
             .boolean({ error: "Checked must be true or false" })
@@ -67,9 +66,10 @@ export const addIngredientsToShoppingListSchema = z.object({
         .array(
             z.object({
                 ingredient_id: positiveIntegerSchema("Ingredient ID"),
-                quantity: numberSchema("Quantity").positive(
-                    "Quantity must be greater than 0",
-                ),
+                // null adds the ingredient by name alone, leaving the amount to the shopper
+                quantity: numberSchema("Quantity")
+                    .positive("Quantity must be greater than 0")
+                    .nullable(),
             }),
             { error: INCORRECT_FORMAT_MESSAGE },
         )

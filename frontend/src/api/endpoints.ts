@@ -52,5 +52,6 @@ export const API_ROUTES = {
         byId: (id: string | number) => `/api/shopping-list/${id}`,
         checked: "/api/shopping-list/checked",
         order: "/api/shopping-list/order",
+        ingredients: "/api/shopping-list/ingredients",
     },
 } as const;

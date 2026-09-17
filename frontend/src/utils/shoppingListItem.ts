@@ -1,8 +1,7 @@
 import type { ShoppingListItem } from "types/shoppingList";
 
 import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
-
-const QUANTITY_DECIMALS = 2;
+import { roundQuantity } from "utils/roundQuantity";
 
 // a catalog item follows the viewer's language through its slug; a typed one keeps what was typed
 export const shoppingListItemName = (item: ShoppingListItem): string =>
@@ -13,7 +12,6 @@ export const shoppingListItemName = (item: ShoppingListItem): string =>
               name: item.name,
           });
 
-// scaled recipe amounts arrive as long fractions, so two decimals are enough to shop by
 export const shoppingListItemQuantity = (
     item: ShoppingListItem,
 ): string | null => {
@@ -21,7 +19,7 @@ export const shoppingListItemQuantity = (
         return null;
     }
 
-    const amount = Number(item.quantity.toFixed(QUANTITY_DECIMALS));
+    const amount = roundQuantity(item.quantity);
 
     return item.unit_name === null
         ? String(amount)

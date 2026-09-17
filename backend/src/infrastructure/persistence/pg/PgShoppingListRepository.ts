@@ -1,6 +1,8 @@
 import type { Pool } from "pg";
 
 import type {
+    ShoppingListAddItemResult,
+    ShoppingListAddOutcome,
     ShoppingListIngredientInput,
     ShoppingListItemChanges,
     ShoppingListItemInput,
@@ -40,7 +42,7 @@ export default class PgShoppingListRepository implements ShoppingListRepository 
         personId: number,
         item: ShoppingListItemInput,
         maxItems: number,
-    ): Promise<ShoppingListItemRow | null> {
+    ): Promise<ShoppingListAddItemResult> {
         return addItem(this.pool, personId, item, maxItems);
     }
 
@@ -57,9 +59,6 @@ export default class PgShoppingListRepository implements ShoppingListRepository 
             return `$${values.length}`;
         };
 
-        if (typeof changes.name === "string") {
-            assignments.push(`name = ${bind(changes.name)}`);
-        }
         if (typeof changes.note !== "undefined") {
             assignments.push(`note = ${bind(changes.note)}`);
         }
@@ -107,7 +106,7 @@ export default class PgShoppingListRepository implements ShoppingListRepository 
         personId: number,
         items: ShoppingListIngredientInput[],
         maxItems: number,
-    ): Promise<boolean> {
+    ): Promise<ShoppingListAddOutcome> {
         return addIngredients(this.pool, personId, items, maxItems);
     }
 }

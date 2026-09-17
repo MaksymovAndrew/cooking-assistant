@@ -82,6 +82,8 @@ export const useHomeDashboard = () => {
         pantryCount: pantry.data?.length ?? 0,
         expiringSoonCount: urgentIngredients.length,
         expiringSoon: urgentIngredients.slice(0, EXPIRING_SOON_LIMIT),
+        // the card lists five, but restocking covers every urgent ingredient the counter reports
+        allExpiringSoon: urgentIngredients,
         kcalToday: roundCalories(calorieBudget.consumed),
         kcalGoal: calorieBudget.goal,
         calorieRemaining: calorieBudget.remaining,

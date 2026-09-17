@@ -9,6 +9,7 @@ import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
 import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
 import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+import { roundQuantity } from "utils/roundQuantity";
 
 import { RecipeIngredientsBanner } from "./RecipeIngredientsBanner";
 import { RecipeIngredientsHeader } from "./RecipeIngredientsHeader";
@@ -26,10 +27,6 @@ interface RecipeIngredientsPanelProps {
 }
 
 const CHECK_ICON_SIZE = 16;
-const DECIMALS = 2;
-
-const scaleQuantity = (quantity: number, scaleFactor: number) =>
-    Number((quantity * scaleFactor).toFixed(DECIMALS));
 
 export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     availability,
@@ -100,9 +97,9 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                         <span
                             className={styles["recipe-ingredients-panel__qty"]}
                         >
-                            {scaleQuantity(
-                                ingredient.quantity_recipe_ingredients,
-                                portionCount,
+                            {roundQuantity(
+                                ingredient.quantity_recipe_ingredients *
+                                    portionCount,
                             )}{" "}
                             {resolveUnit(ingredient.unit_name)}
                             {!hasCustomCalories &&
@@ -148,8 +145,9 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                 <RecipeIngredientsBanner
                     isOwner={isOwner}
                     haveCount={haveCount}
-                    totalCount={availability.length}
                     missingCount={missingCount}
+                    availability={availability}
+                    portionCount={portionCount}
                 />
             )}
         </div>

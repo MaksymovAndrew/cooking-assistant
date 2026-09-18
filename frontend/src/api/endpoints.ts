@@ -24,6 +24,7 @@ export const API_ROUTES = {
     },
     ingredients: {
         list: "/api/ingredients",
+        avoid: (id: string | number) => `/api/ingredient/${id}/avoid`,
     },
     userIngredients: {
         list: "/api/user-ingredients",
@@ -46,6 +47,10 @@ export const API_ROUTES = {
         intake: "/api/calorie-intake",
         intakeById: (id: string | number) => `/api/calorie-intake/${id}`,
         goal: "/api/calorie-goal",
+    },
+    dietPreferences: {
+        get: "/api/diet-preferences",
+        allergen: (slug: string) => `/api/diet-preferences/allergens/${slug}`,
     },
     shoppingList: {
         list: "/api/shopping-list",

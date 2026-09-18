@@ -6,6 +6,7 @@ import {
 import {
     booleanFilter,
     enumFilter,
+    enumListFilter,
 } from "utils/filters/filterDefFactories.scalar";
 
 interface TestParams {
@@ -15,6 +16,7 @@ interface TestParams {
     max_val?: string;
     flag?: boolean;
     sort_by?: "asc" | "desc";
+    without?: string;
 }
 
 interface RangeParams {
@@ -195,6 +197,44 @@ describe("enumFilter", () => {
     it("should be active only when set", () => {
         expect(def.isActive(null)).toBe(false);
         expect(def.isActive("asc")).toBe(true);
+    });
+});
+
+describe("enumListFilter", () => {
+    const def = enumListFilter<"milk" | "eggs", TestParams>({
+        key: "excludeAllergens",
+        urlParam: "without",
+        param: "without",
+        values: ["milk", "eggs"],
+    });
+
+    it("should read known values once and drop anything else", () => {
+        expect(def.read(new URLSearchParams())).toEqual([]);
+        expect(
+            def.read(new URLSearchParams("without=eggs,junk,eggs,milk")),
+        ).toEqual(["eggs", "milk"]);
+    });
+
+    it("should write the list and delete the key when emptied", () => {
+        const params = new URLSearchParams();
+
+        def.write(params, ["milk", "eggs"]);
+        expect(params.get("without")).toBe("milk,eggs");
+
+        def.write(params, []);
+        expect(params.has("without")).toBe(false);
+    });
+
+    it("should map to a comma-separated request param only when set", () => {
+        expect(def.toParams(["milk", "eggs"])).toEqual({
+            without: "milk,eggs",
+        });
+        expect(def.toParams([])).toEqual({});
+    });
+
+    it("should be active only when something is picked", () => {
+        expect(def.isActive([])).toBe(false);
+        expect(def.isActive(["eggs"])).toBe(true);
     });
 });
 

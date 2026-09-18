@@ -59,7 +59,7 @@ export const useRecipeListView = (source: RecipeSource) => {
     // so this list stays reachable without a 401 tripping the global auth redirect on a page
     // that's public now, including during the initial checking window
     const { isAuthed, isAwaitingSession } = useViewerFilterGate(
-        filters.favourites,
+        filters.favourites || filters.hideAvoided,
     );
     // already fetched by the pantry page/home dashboard - a cache read, not a new request
     const {
@@ -74,13 +74,18 @@ export const useRecipeListView = (source: RecipeSource) => {
         isPantryUninitialized,
     );
 
-    // a guest can't use in_pantry or favourites (the toggles that set them are hidden for them) - if one is still set
+    // a guest can't use in_pantry, favourites or hide_avoided (the toggles that set them are hidden for them) - if one is still set
     // in the URL (a stale bookmark, or a session that expired mid-visit), isPantryUninitialized
     // never resolves since the pantry query itself stays skipped, so drop the filter here too
     // instead of sending a request the backend rejects with a 400
     const queryParams = isAuthed
         ? params
-        : { ...params, in_pantry: undefined, favourites: undefined };
+        : {
+              ...params,
+              in_pantry: undefined,
+              favourites: undefined,
+              hide_avoided: undefined,
+          };
     const isHeldBack = isPantryEmpty || isAwaitingSession;
     const isPerson = source === RECIPE_SOURCE.person;
     const byFilters = useGetRecipesByFiltersInfiniteQuery(queryParams, {

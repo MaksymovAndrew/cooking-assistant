@@ -29,6 +29,10 @@ export default class SearchRecipes {
                 );
             }
 
+            if (validFilters.hide_avoided) {
+                throw new ValidationError(ERROR_CODES.DIET_REQUIRES_LOGIN);
+            }
+
             return this.recipeRepository.search(null, validFilters);
         }
 

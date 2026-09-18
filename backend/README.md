@@ -476,24 +476,30 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 
 ### Recipes ([src/routes/recipe.routes.ts](src/routes/recipe.routes.ts))
 
-| Method | Path                      | Purpose                                                           |
-| ------ | ------------------------- | ----------------------------------------------------------------- |
-| POST   | `/recipe`                 | Create a recipe with ingredients                                  |
-| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                 |
-| GET    | `/recipe/:id`             | Single recipe with ingredients                                    |
-| PUT    | `/recipe/:id`             | Update a recipe                                                   |
-| DELETE | `/recipe/:id`             | Delete a recipe                                                   |
-| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites)  |
-| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)              |
-| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                          |
-| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent) |
-| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)    |
+| Method | Path                      | Purpose                                                                              |
+| ------ | ------------------------- | ------------------------------------------------------------------------------------ |
+| POST   | `/recipe`                 | Create a recipe with ingredients                                                     |
+| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                    |
+| GET    | `/recipe/:id`             | Single recipe with ingredients                                                       |
+| PUT    | `/recipe/:id`             | Update a recipe                                                                      |
+| DELETE | `/recipe/:id`             | Delete a recipe                                                                      |
+| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites, allergens, avoided) |
+| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)                                 |
+| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                                             |
+| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent)                    |
+| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)                       |
 
 Every search/list and detail response carries `isOwner` and `isFavourite` computed for the requester;
 `isFavourite` is `null` when the request has no session. `favourites=true` narrows a list to the
 requester's favourites and is refused for a guest with `favourites/requires_login`. Favourite writes
 live in [src/routes/favourite.routes.ts](src/routes/favourite.routes.ts); adding a favourite for a
 recipe or menu that does not exist answers `404`, removing one that isn't there is a no-op.
+
+Search and detail responses also carry `containsAvoided` - `true` when any ingredient, or one of its
+allergens, is on the requester's avoid list, `null` for a guest. Without an explicit `sort_order` a signed-in
+requester's list is ranked by it: favourites first, anything avoided last (favourites still lead among those),
+then newest. `hide_avoided=true` drops those recipes and is refused for a guest with `diet/requires_login`;
+`exclude_allergens=gluten,milk` leaves out recipes with any listed allergen and works for everyone.
 
 `GET /recipes` and `GET /recipes-stats` both use explicit columns rather than `SELECT r.*`, so
 neither ships a recipe's raw owner `person_id` to the client - the same rule the list/search
@@ -556,6 +562,21 @@ exactly the current items - otherwise 409 `shopping_list/order_out_of_date`, and
 `/shopping-list/checked` is registered before `/shopping-list/:id`, which would otherwise read
 `checked` as an id.
 
+### Food preferences ([src/routes/dietPreferences.routes.ts](src/routes/dietPreferences.routes.ts))
+
+| Method | Path                                | Purpose                                                      |
+| ------ | ----------------------------------- | ------------------------------------------------------------ |
+| GET    | `/diet-preferences`                 | What the current user avoids `{ allergens, ingredient_ids }` |
+| PUT    | `/diet-preferences/allergens/:slug` | Avoid one of the 14 EU allergens (204, idempotent)           |
+| DELETE | `/diet-preferences/allergens/:slug` | Stop avoiding it (204, idempotent)                           |
+| PUT    | `/ingredient/:id/avoid`             | Avoid a catalog ingredient (204, idempotent)                 |
+| DELETE | `/ingredient/:id/avoid`             | Stop avoiding it (204, idempotent)                           |
+
+One toggle per request, so two quick taps can't overwrite each other the way replacing the whole set would.
+An unknown allergen slug is a 400, an ingredient missing from the catalog a 404 `ingredient/not_found`, and a
+write for an account deleted while its session was still valid a 404 `auth/user_not_found`. The allergen list
+lives in [src/constants/allergens.ts](src/constants/allergens.ts), shared with the catalog scripts.
+
 ### Menu categories ([src/routes/menuCategory.routes.ts](src/routes/menuCategory.routes.ts))
 
 | Method | Path               | Purpose         |
@@ -580,6 +601,10 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
 - `shopping_list_items` - one row per item on a person's shopping list: free text, or a catalog
   ingredient with a quantity (`ingredient_id` is `ON DELETE SET NULL`, so the item outlives it as text).
   Writes lock the owner's `person` row, so the 200-item limit and the next `position` can't race.
+- `person_avoided_allergens` / `person_avoided_ingredients` - a person's avoid list (composite primary keys,
+  every foreign key `ON DELETE CASCADE`). Search and detail queries turn it into the per-requester
+  `containsAvoided` column (`containsAvoidedColumn.ts`), which also drives the default ranking and
+  `hide_avoided`.
 - `ingredients.id_unit_measurement` -> `unit_measurement`
 - `ingredients` carries metadata: `allergens`, `days_to_expire`, `seasonality`, `storage_condition`
 - `menu` (per-user, with `category_id` -> `menu_category`) to `recipes` through `menu_recipe`

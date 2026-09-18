@@ -1,5 +1,6 @@
 import { config } from "config/env";
 import type { CalorieRepository } from "domain/repositories/CalorieRepository";
+import type { DietPreferencesRepository } from "domain/repositories/DietPreferencesRepository";
 import type { FavouriteRepository } from "domain/repositories/FavouriteRepository";
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
@@ -16,6 +17,7 @@ import type { TokenService } from "application/ports/TokenService";
 
 import { createEmailSender } from "infrastructure/email/createEmailSender";
 import PgCalorieRepository from "infrastructure/persistence/pg/PgCalorieRepository";
+import PgDietPreferencesRepository from "infrastructure/persistence/pg/PgDietPreferencesRepository";
 import PgFavouriteRepository from "infrastructure/persistence/pg/PgFavouriteRepository";
 import PgIngredientRepository from "infrastructure/persistence/pg/PgIngredientRepository";
 import PgMenuCategoryRepository from "infrastructure/persistence/pg/PgMenuCategoryRepository";
@@ -30,21 +32,25 @@ import JwtTokenService from "infrastructure/security/JwtTokenService";
 
 import type CalorieController from "controller/calorie.controller";
 import type FavouriteController from "controller/favourite.controller";
-import type IngredientController from "controller/ingredient.controller";
 import type MenuController from "controller/menu.controller";
-import type MenuCategoryController from "controller/menuCategory.controller";
 import type RecipeController from "controller/recipe.controller";
 import type ShoppingListController from "controller/shoppingList.controller";
-import type RecipeTypeController from "controller/type.controller";
 import type UserController from "controller/user.controller";
 import type UserIngredientsController from "controller/userIngredients.controller";
 
 import { buildCaloriesController } from "./composition-root.calories";
+import {
+    buildDietPreferencesControllers,
+    type DietPreferencesControllers,
+} from "./composition-root.dietPreferences";
 import { buildFavouriteController } from "./composition-root.favourites";
 import { buildMenuController } from "./composition-root.menu";
 import { buildPantryController } from "./composition-root.pantry";
 import { buildRecipeController } from "./composition-root.recipe";
-import { buildReferenceControllers } from "./composition-root.reference";
+import {
+    buildReferenceControllers,
+    type ReferenceControllers,
+} from "./composition-root.reference";
 import { buildShoppingListController } from "./composition-root.shoppingList";
 import { buildUserController } from "./composition-root.user";
 import pool from "./db";
@@ -59,6 +65,7 @@ export interface RepositoryDeps {
     userRepository: UserRepository;
     calorieRepository: CalorieRepository;
     favouriteRepository: FavouriteRepository;
+    dietPreferencesRepository: DietPreferencesRepository;
     shoppingListRepository: ShoppingListRepository;
     passwordHasher: PasswordHasher;
     tokenService: TokenService;
@@ -66,14 +73,12 @@ export interface RepositoryDeps {
     frontendOrigin: string;
 }
 
-export interface Controllers {
+export interface Controllers
+    extends ReferenceControllers, DietPreferencesControllers {
     userController: UserController;
-    ingredientController: IngredientController;
     recipeController: RecipeController;
-    recipeTypeController: RecipeTypeController;
     userIngredientsController: UserIngredientsController;
     menuController: MenuController;
-    menuCategoryController: MenuCategoryController;
     calorieController: CalorieController;
     favouriteController: FavouriteController;
     shoppingListController: ShoppingListController;
@@ -89,6 +94,7 @@ export function buildControllers({
     userRepository,
     calorieRepository,
     favouriteRepository,
+    dietPreferencesRepository,
     shoppingListRepository,
     passwordHasher,
     tokenService,
@@ -100,16 +106,6 @@ export function buildControllers({
         ingredientRepository,
     });
 
-    const menuController = buildMenuController({
-        menuRepository,
-        recipeRepository,
-    });
-
-    const userIngredientsController = buildPantryController({
-        pantryRepository,
-        ingredientRepository,
-    });
-
     const userController = buildUserController({
         userRepository,
         passwordHasher,
@@ -117,8 +113,6 @@ export function buildControllers({
         emailSender,
         frontendOrigin,
     });
-
-    const calorieController = buildCaloriesController(calorieRepository);
 
     return {
         ...buildReferenceControllers({
@@ -128,10 +122,17 @@ export function buildControllers({
         }),
         userController,
         recipeController,
-        userIngredientsController,
-        menuController,
-        calorieController,
+        userIngredientsController: buildPantryController({
+            pantryRepository,
+            ingredientRepository,
+        }),
+        menuController: buildMenuController({
+            menuRepository,
+            recipeRepository,
+        }),
+        calorieController: buildCaloriesController(calorieRepository),
         favouriteController: buildFavouriteController(favouriteRepository),
+        ...buildDietPreferencesControllers(dietPreferencesRepository),
         shoppingListController: buildShoppingListController({
             shoppingListRepository,
             ingredientRepository,
@@ -149,6 +150,7 @@ const controllers = buildControllers({
     userRepository: new PgUserRepository(pool),
     calorieRepository: new PgCalorieRepository(pool),
     favouriteRepository: new PgFavouriteRepository(pool),
+    dietPreferencesRepository: new PgDietPreferencesRepository(pool),
     shoppingListRepository: new PgShoppingListRepository(pool),
     passwordHasher: new BcryptPasswordHasher(),
     tokenService: new JwtTokenService(),

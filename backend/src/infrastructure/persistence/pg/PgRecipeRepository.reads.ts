@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import { containsAvoidedColumn } from "infrastructure/persistence/pg/containsAvoidedColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 
@@ -26,6 +27,7 @@ interface RecipeDetailRow {
     ingredients: string[];
     isOwner: boolean;
     isFavourite: boolean | null;
+    containsAvoided: boolean | null;
     calories_per_portion: number | null;
 }
 
@@ -55,6 +57,7 @@ export async function findRecipeByIdWithIngredients(
                   r.calories_override, r.calories_computed,
                   ${isOwnerColumn("r", "$2")},
                   ${isFavouriteColumn("recipe", "r.id", "$2")},
+                  ${containsAvoidedColumn("r.id", "$2")},
                   COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                   json_agg(
                       json_build_object(

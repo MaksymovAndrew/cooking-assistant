@@ -282,4 +282,15 @@
             font-size: 12px;
         }
     }
+
+    &__allergen--avoided {
+        gap: 5px;
+        border-color: color-mix(in srgb, var(--brand) 45%, transparent);
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+
+    &__sr-only {
+        @include sr-only;
+    }
 }

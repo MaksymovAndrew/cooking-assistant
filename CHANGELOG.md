@@ -30,13 +30,15 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: The calorie ring on the Dietary tab now draws itself in when it appears and when the numbers change.
 - Changed: Shopping takes the Stats tab's place in the mobile bottom bar; Stats is now linked from the profile page, and stays in the desktop top bar.
 - Added: Missing ingredients go on the shopping list in one tap - from a recipe (for the portions you picked), from a menu (just the shortfall) and from the home page's "Expiring soon" card; a confirmation links straight to the list.
-- Fixed: Tapping the portions stepper on a recipe page before it has finished loading no longer silently does nothing - the buttons wait until they can respond.
+- Added: Food preferences on the Dietary tab - pick the allergens and ingredients you avoid, each saved the moment you tap it. Recipes with any of them move to the bottom of lists and get a soft "Avoid" mark, and the recipe and menu pages point out exactly what you avoid.
+- Added: Two recipe filters - hide everything you avoid, and leave out chosen allergens (open to everyone, no account needed).
 - Fixed: Tapping the portions stepper on a recipe page before it has finished loading no longer silently does nothing - the buttons wait until they can respond.
 
 ### Backend
 
 - Added: A personal shopping list - add, check off, reorder and clear items, or add catalog ingredients with a quantity; adding an ingredient that is already on the list adds to its quantity instead of duplicating it, so ingredients from several recipes sum up.
 - Changed: A catalog ingredient can go on the shopping list without a quantity; adding it again keeps whatever amount the list already had.
+- Added: Food preferences - a signed-in user can avoid allergens and single ingredients. Recipe lists mark what contains any of them and rank those recipes last (favourites first), and two new filters hide them or leave out chosen allergens.
 
 ## 4.5 - 2026-09-15
 

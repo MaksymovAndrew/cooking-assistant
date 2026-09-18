@@ -1,5 +1,6 @@
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
+import { DIET_FILTER_CLAUSES } from "infrastructure/persistence/pg/dietFilterClauses";
 import { favouritesFilterClause } from "infrastructure/persistence/pg/favouritesFilterClause";
 import {
     escapeLikePattern,
@@ -177,4 +178,5 @@ export const RECIPE_FILTER_CLAUSES: readonly RecipeFilterClause[] = [
         },
     },
     favouritesFilterClause("recipe", "r.id"),
+    ...DIET_FILTER_CLAUSES,
 ];

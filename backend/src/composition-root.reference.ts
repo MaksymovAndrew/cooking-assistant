@@ -16,7 +16,7 @@ interface ReferenceControllerDeps {
     menuCategoryRepository: MenuCategoryRepository;
 }
 
-interface ReferenceControllers {
+export interface ReferenceControllers {
     ingredientController: IngredientController;
     recipeTypeController: RecipeTypeController;
     menuCategoryController: MenuCategoryController;

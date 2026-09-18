@@ -34,6 +34,7 @@ const RECIPE: RecipeSearchResultItem = {
     ingredients: [],
     isOwner: true,
     isFavourite: false,
+    containsAvoided: false,
 };
 const FAVOURITE_RECIPE: RecipeSearchResultItem = {
     ...RECIPE,
@@ -41,6 +42,7 @@ const FAVOURITE_RECIPE: RecipeSearchResultItem = {
     title: "Pelmeni",
     isOwner: false,
     isFavourite: true,
+    containsAvoided: false,
 };
 const MENU: Menu = {
     id: 1,

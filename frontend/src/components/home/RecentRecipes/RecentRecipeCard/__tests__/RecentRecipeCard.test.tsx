@@ -16,6 +16,7 @@ const RECIPE: RecipeSearchResultItem = {
     calories_per_portion: null,
     isOwner: true,
     isFavourite: false,
+    containsAvoided: false,
 };
 
 describe("RecentRecipeCard", () => {

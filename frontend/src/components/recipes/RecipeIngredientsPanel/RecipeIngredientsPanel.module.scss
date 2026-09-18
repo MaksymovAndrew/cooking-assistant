@@ -130,6 +130,20 @@
         color: var(--success);
     }
 
+    &__avoided-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: var(--s-2);
+        border-radius: var(--r-pill);
+        background: var(--brand);
+        vertical-align: middle;
+    }
+
+    &__sr-only {
+        @include sr-only;
+    }
+
     &__missing-dot {
         display: block;
         flex: none;

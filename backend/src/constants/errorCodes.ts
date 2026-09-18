@@ -38,6 +38,9 @@ export const ERROR_CODES = {
 
     FAVOURITES_REQUIRES_LOGIN: "favourites/requires_login",
 
+    INGREDIENT_NOT_FOUND: "ingredient/not_found",
+    DIET_REQUIRES_LOGIN: "diet/requires_login",
+
     SHOPPING_LIST_ITEM_NOT_FOUND: "shopping_list/item_not_found",
     SHOPPING_LIST_LIMIT_REACHED: "shopping_list/limit_reached",
     SHOPPING_LIST_ORDER_OUT_OF_DATE: "shopping_list/order_out_of_date",

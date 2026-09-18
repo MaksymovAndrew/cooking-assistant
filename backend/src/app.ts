@@ -20,6 +20,7 @@ import { NotFoundError } from "domain/errors/AppError";
 import errorHandler from "middleware/errorHandler";
 import { createGlobalLimiter } from "middleware/rateLimit";
 import createCalorieRouter from "routes/calorie.routes";
+import createDietPreferencesRouter from "routes/dietPreferences.routes";
 import createFavouriteRouter from "routes/favourite.routes";
 import createHealthRouter from "routes/health.routes";
 import createIngredientRouter from "routes/ingredient.routes";
@@ -87,6 +88,10 @@ export function createApp(controllers: Controllers): Express {
     );
     app.use(API_PREFIX, createCalorieRouter(controllers.calorieController));
     app.use(API_PREFIX, createFavouriteRouter(controllers.favouriteController));
+    app.use(
+        API_PREFIX,
+        createDietPreferencesRouter(controllers.dietPreferencesController),
+    );
     app.use(
         API_PREFIX,
         createShoppingListRouter(controllers.shoppingListController),

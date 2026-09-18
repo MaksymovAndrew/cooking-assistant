@@ -29,6 +29,7 @@ interface RecipeCardRecipe {
     ingredients?: RecipeCardIngredient[];
     // null for an anonymous viewer, so the heart only appears where the server knows who is looking
     isFavourite?: boolean | null;
+    containsAvoided?: boolean | null;
 }
 
 interface RecipeCardProps {
@@ -59,6 +60,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             mine={mine}
             variant={variant}
             badge={hasAllergens}
+            avoided={recipe.containsAvoided === true}
             calorieOver={exceedsBudget}
             favourite={
                 typeof recipe.isFavourite === "boolean"

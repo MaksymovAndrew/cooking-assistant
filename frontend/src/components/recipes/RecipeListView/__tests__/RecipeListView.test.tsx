@@ -26,6 +26,7 @@ const RECIPES: RecipeSearchResultItem[] = [
         calories_per_portion: null,
         isOwner: false,
         isFavourite: false,
+        containsAvoided: false,
     },
 ];
 
@@ -38,6 +39,8 @@ const FILTERS: RecipeFilterState = {
     sort: null,
     inPantry: false,
     favourites: false,
+    excludeAllergens: [],
+    hideAvoided: false,
 };
 
 const baseProps = {

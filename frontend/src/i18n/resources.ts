@@ -1,6 +1,7 @@
 import auth from "i18n/locales/en/auth.json";
 import calories from "i18n/locales/en/calories.json";
 import common from "i18n/locales/en/common.json";
+import dietPreferences from "i18n/locales/en/dietPreferences.json";
 import guestLanding from "i18n/locales/en/guestLanding.json";
 import home from "i18n/locales/en/home.json";
 import ingredients from "i18n/locales/en/ingredients.json";
@@ -33,5 +34,6 @@ export const resources = {
         settings,
         calories,
         shoppingList,
+        dietPreferences,
     },
 };

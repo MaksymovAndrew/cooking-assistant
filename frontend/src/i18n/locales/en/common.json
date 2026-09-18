@@ -60,6 +60,7 @@
         "menus": "Menus",
         "ingredients": "Ingredients",
         "stats": "Stats",
+        "shoppingList": "Shopping",
         "settings": "Settings",
         "profile": "Profile",
         "logout": "Logout",
@@ -114,7 +115,12 @@
         "pantry/purchase_not_found": "This purchase no longer exists.",
         "calories/intake_not_found": "This entry no longer exists.",
         "calories/not_available": "Calories aren't available for this item.",
-        "favourites/requires_login": "Log in to see your favourites."
+        "favourites/requires_login": "Log in to see your favourites.",
+        "ingredient/not_found": "This ingredient is no longer in the catalog.",
+        "diet/requires_login": "Log in to hide recipes with what you avoid.",
+        "shopping_list/item_not_found": "This item is no longer on your list.",
+        "shopping_list/limit_reached": "Your shopping list is full. Remove a few items first.",
+        "shopping_list/order_out_of_date": "Your list changed somewhere else. It has been refreshed, try again."
     },
     "errorState": {
         "title": "Something went wrong",

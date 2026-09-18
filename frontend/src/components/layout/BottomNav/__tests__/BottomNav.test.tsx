@@ -7,18 +7,18 @@ import { renderWithProviders, renderWithRouter } from "test/router";
 import { makeTestStore } from "test/store";
 
 describe("BottomNav", () => {
-    it("should render all 5 tabs in the Stats, Menus, Recipes, Ingredients, Profile order", () => {
+    it("should render all 5 tabs in the Shopping, Menus, Recipes, Ingredients, Profile order", () => {
         renderWithRouter(<BottomNav />);
 
         expect(
             screen.getAllByRole("link").map((link) => link.textContent),
-        ).toEqual(["Stats", "Menus", "Recipes", "Ingredients", "Profile"]);
+        ).toEqual(["Shopping", "Menus", "Recipes", "Ingredients", "Profile"]);
     });
 
     it("should mark the tab matching the current route as active", () => {
-        renderWithRouter(<BottomNav />, ["/stats"]);
+        renderWithRouter(<BottomNav />, ["/shopping-list"]);
 
-        expect(screen.getByRole("link", { name: /Stats/ })).toHaveClass(
+        expect(screen.getByRole("link", { name: /Shopping/ })).toHaveClass(
             "bottom-nav__item--active",
         );
         expect(screen.getByRole("link", { name: /Menus/ })).not.toHaveClass(

@@ -1,0 +1,1 @@
+export { ShoppingListProgress } from "./ShoppingListProgress";

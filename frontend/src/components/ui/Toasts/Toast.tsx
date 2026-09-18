@@ -7,6 +7,8 @@ import { useAppDispatch } from "redux/hooks";
 import type { Notification } from "redux/slices/notificationsSlice";
 import { removeNotification } from "redux/slices/notificationsSlice";
 
+import { Link } from "components/ui/Link";
+
 import styles from "./Toast.module.scss";
 
 const AUTO_DISMISS_MS = 4000;
@@ -70,7 +72,20 @@ export const Toast = ({ notification }: { notification: Notification }) => {
             <span className={styles.toast__icon}>
                 <Icon size={ICON_SIZE} aria-hidden="true" />
             </span>
-            <p className={styles.toast__message}>{notification.message}</p>
+            <div className={styles.toast__body}>
+                <p className={styles.toast__message}>{notification.message}</p>
+                {notification.link && (
+                    <Link
+                        href={notification.link.href}
+                        className={styles.toast__link}
+                        onClick={() => {
+                            setIsLeaving(true);
+                        }}
+                    >
+                        {notification.link.label}
+                    </Link>
+                )}
+            </div>
             <button
                 type="button"
                 onClick={() => {

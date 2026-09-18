@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { ALLERGEN_SLUGS } from "constants/allergens";
 import type { Ingredient } from "types/ingredient";
 import type { RecipeTypeSummary } from "types/recipeType";
 
@@ -12,6 +13,7 @@ import type { SegmentedOption } from "components/ui/SegmentedControl";
 import { SegmentedControl } from "components/ui/SegmentedControl";
 
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
+import { resolveAllergen } from "utils/ingredientName";
 
 import { RecipeCalorieRangeFields } from "./RecipeCalorieRangeFields";
 import { RecipeFilterToggles } from "./RecipeFilterToggles";
@@ -125,6 +127,22 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                     value={filters.types}
                     onChange={(next) => {
                         setValue("types", next);
+                    }}
+                />
+            </div>
+
+            <div className={styles["recipe-filter-panel__section"]}>
+                <span className={styles["recipe-filter-panel__label"]}>
+                    {t("filterPanel.excludeAllergensLabel")}
+                </span>
+                <FilterChipGroup
+                    options={ALLERGEN_SLUGS.map((slug) => ({
+                        id: slug,
+                        label: resolveAllergen(slug),
+                    }))}
+                    value={filters.excludeAllergens}
+                    onChange={(next) => {
+                        setValue("excludeAllergens", next);
                     }}
                 />
             </div>

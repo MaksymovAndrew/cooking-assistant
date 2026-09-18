@@ -72,12 +72,23 @@
         border-radius: var(--r-sm);
         background: none;
         color: var(--text-2);
-        cursor: default;
+        cursor: pointer;
         font:
             600 12px Inter,
             sans-serif;
 
         @include focus-ring;
+
+        @include on-hover {
+            border-color: var(--brand);
+            color: var(--brand);
+        }
+
+        &:disabled {
+            border-color: var(--border);
+            color: var(--text-muted);
+            cursor: default;
+        }
 
         @include respond-to(desktop) {
             display: flex;

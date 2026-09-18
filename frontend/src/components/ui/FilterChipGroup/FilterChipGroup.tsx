@@ -1,25 +1,23 @@
-import React from "react";
-
 import styles from "./FilterChipGroup.module.scss";
 
-export interface FilterChipOption {
-    id: number;
+export interface FilterChipOption<T extends string | number = number> {
+    id: T;
     label: string;
 }
 
-export interface FilterChipGroupProps {
-    options: FilterChipOption[];
-    value: number[];
-    onChange: (next: number[]) => void;
+export interface FilterChipGroupProps<T extends string | number = number> {
+    options: FilterChipOption<T>[];
+    value: T[];
+    onChange: (next: T[]) => void;
 }
 
 // multi-select pill row shared by every id-list filter (recipe types, menu categories, ...);
 // owns the add/remove-from-array logic so no popover has to repeat it
-export const FilterChipGroup: React.FC<FilterChipGroupProps> = ({
+export const FilterChipGroup = <T extends string | number = number>({
     options,
     value,
     onChange,
-}) => (
+}: FilterChipGroupProps<T>) => (
     <div className={styles["filter-chip-group"]}>
         {options.map((option) => {
             const selected = value.includes(option.id);

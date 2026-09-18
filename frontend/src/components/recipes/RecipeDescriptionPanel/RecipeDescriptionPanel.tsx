@@ -1,9 +1,14 @@
+import { Ban } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+
+import { useAvoidedIngredients } from "hooks/useAvoidedIngredients";
 
 import { resolveAllergen } from "utils/ingredientName";
 
 import styles from "./RecipeDescriptionPanel.module.scss";
+
+const ALLERGEN_ICON_SIZE = 11;
 
 interface RecipeDescriptionPanelProps {
     content: string;
@@ -15,6 +20,7 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
     allergens,
 }) => {
     const { t } = useTranslation("recipes");
+    const { isAllergenAvoided } = useAvoidedIngredients();
 
     return (
         <div className={styles["recipe-description-panel"]}>
@@ -47,16 +53,45 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
                             styles["recipe-description-panel__allergens"]
                         }
                     >
-                        {allergens.map((allergen) => (
-                            <span
-                                key={allergen}
-                                className={
-                                    styles["recipe-description-panel__allergen"]
-                                }
-                            >
-                                {resolveAllergen(allergen)}
-                            </span>
-                        ))}
+                        {allergens.map((allergen) => {
+                            const isAvoided = isAllergenAvoided(allergen);
+
+                            return (
+                                <span
+                                    key={allergen}
+                                    className={[
+                                        styles[
+                                            "recipe-description-panel__allergen"
+                                        ],
+                                        isAvoided &&
+                                            styles[
+                                                "recipe-description-panel__allergen--avoided"
+                                            ],
+                                    ]
+                                        .filter(Boolean)
+                                        .join(" ")}
+                                >
+                                    {isAvoided && (
+                                        <Ban
+                                            size={ALLERGEN_ICON_SIZE}
+                                            aria-hidden="true"
+                                        />
+                                    )}
+                                    {resolveAllergen(allergen)}
+                                    {isAvoided && (
+                                        <span
+                                            className={
+                                                styles[
+                                                    "recipe-description-panel__sr-only"
+                                                ]
+                                            }
+                                        >
+                                            {t("dietPreferences:avoidedRow")}
+                                        </span>
+                                    )}
+                                </span>
+                            );
+                        })}
                     </div>
                 </>
             )}

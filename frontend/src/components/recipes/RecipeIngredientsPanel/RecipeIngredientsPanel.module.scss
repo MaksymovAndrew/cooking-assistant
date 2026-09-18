@@ -89,6 +89,11 @@
                 background: var(--brand-strong);
                 color: var(--on-brand);
             }
+
+            // only disabled until hydration, so it keeps its look
+            &:disabled {
+                cursor: default;
+            }
         }
     }
 
@@ -123,6 +128,20 @@
     &__have-icon {
         flex: none;
         color: var(--success);
+    }
+
+    &__avoided-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: var(--s-2);
+        border-radius: var(--r-pill);
+        background: var(--brand);
+        vertical-align: middle;
+    }
+
+    &__sr-only {
+        @include sr-only;
     }
 
     &__missing-dot {
@@ -203,6 +222,10 @@
         font:
             400 13px Inter,
             sans-serif;
+    }
+
+    &__banner-add {
+        margin-top: var(--s-2);
     }
 
     &__banner-link {

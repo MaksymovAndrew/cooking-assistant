@@ -54,6 +54,9 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
                     {t(labelKey)}
                 </button>
             ))}
+            <Link href={ROUTES.stats} className={styles["profile-tabs__tab"]}>
+                {t("profilePage.statsTab")}
+            </Link>
             <Link
                 href={ROUTES.settings}
                 className={styles["profile-tabs__tab"]}

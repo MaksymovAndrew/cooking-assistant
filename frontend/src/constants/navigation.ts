@@ -1,3 +1,4 @@
+import { ShoppingCart } from "lucide-react";
 import type React from "react";
 
 import {
@@ -44,6 +45,11 @@ const STATS_ITEM: NavItem = {
     labelKey: "nav.stats",
     Icon: BarChartMark,
 };
+const SHOPPING_LIST_ITEM: NavItem = {
+    href: ROUTES.shoppingList,
+    labelKey: "nav.shoppingList",
+    Icon: ShoppingCart,
+};
 const PROFILE_ITEM: NavItem = {
     href: ROUTES.profile,
     labelKey: "nav.profile",
@@ -55,17 +61,18 @@ const LOGIN_ITEM: NavItem = {
     Icon: UserCircleMark,
 };
 
-// desktop top-bar nav - Recipes / Menus / Ingredients / Stats only; My Menus and My Recipes live under Profile instead
+// desktop top-bar nav - My Menus and My Recipes live under Profile instead
 export const NAV_ITEMS: NavItem[] = [
     RECIPES_ITEM,
     MENUS_ITEM,
     INGREDIENTS_ITEM,
+    SHOPPING_LIST_ITEM,
     STATS_ITEM,
 ];
 
-// tablet/mobile bottom bar - a fixed 5-tab order (Stats, Menus, Recipes, Pantry, Profile) that replaces the desktop top nav on narrow screens; Settings is reachable from Profile instead, it's easy enough to find there
+// tablet/mobile bottom bar - a fixed 5-tab order (Shopping, Menus, Recipes, Pantry, Profile) that replaces the desktop top nav on narrow screens; Stats and Settings are reachable from Profile instead
 export const BOTTOM_NAV_ITEMS: NavItem[] = [
-    STATS_ITEM,
+    SHOPPING_LIST_ITEM,
     MENUS_ITEM,
     RECIPES_ITEM,
     INGREDIENTS_ITEM,

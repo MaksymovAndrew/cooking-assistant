@@ -1,0 +1,87 @@
+@use "styles/abstracts" as *;
+
+.shopping-list-add-form {
+    &__fields {
+        display: grid;
+        grid-template-areas:
+            "name name"
+            "note submit";
+        grid-template-columns: minmax(0, 1fr) 92px;
+        gap: 10px;
+
+        @include respond-to(tablet) {
+            grid-template-areas: "name note submit";
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+            gap: var(--s-3);
+        }
+
+        @include respond-to(desktop) {
+            grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto;
+        }
+
+        // a short landscape phone puts the form in a narrow side column, so it stacks again
+        @include respond-to-short-landscape {
+            grid-template-areas:
+                "name name"
+                "note submit";
+            grid-template-columns: minmax(0, 1fr) 64px;
+            gap: var(--s-2);
+        }
+    }
+
+    &__name {
+        position: relative;
+        grid-area: name;
+    }
+
+    &__name-icon {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        color: var(--brand);
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    &__name-input {
+        padding-left: 40px;
+    }
+
+    &__note {
+        grid-area: note;
+    }
+
+    &__submit {
+        grid-area: submit;
+        height: 44px;
+
+        @include respond-to(tablet) {
+            padding: 0 var(--s-5);
+        }
+    }
+
+    // the Enter hint is for a keyboard; phones get the form alone
+    &__hint {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin: var(--s-3) 0 0 2px;
+            color: var(--text-muted);
+            font:
+                400 12.5px Inter,
+                sans-serif;
+        }
+
+        @include respond-to-short-landscape {
+            display: none;
+        }
+
+        svg {
+            flex: none;
+            color: var(--info);
+        }
+    }
+}

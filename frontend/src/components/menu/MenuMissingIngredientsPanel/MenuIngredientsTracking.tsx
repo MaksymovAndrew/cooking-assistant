@@ -2,21 +2,17 @@ import { Check } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { ROUTES } from "constants/routes";
-
-import { BasketAddMark } from "components/icons";
-import { Link } from "components/ui/Link";
-
 import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
 import type { AggregatedIngredient } from "utils/menuUtils";
+import { roundQuantity } from "utils/roundQuantity";
 
+import { MenuIngredientsActions } from "./MenuIngredientsActions";
 import styles from "./MenuMissingIngredientsPanel.module.scss";
 
 interface MenuIngredientsTrackingProps {
     ingredients: Record<number, AggregatedIngredient>;
 }
 
-const BUTTON_ICON_SIZE = 15;
 const CHECK_ICON_SIZE = 13;
 
 // the pantry-aware section of MenuMissingIngredientsPanel - split out to keep the panel under
@@ -62,7 +58,14 @@ export const MenuIngredientsTracking: React.FC<
                         {entries.map(
                             ([
                                 id,
-                                { slug, name, quantity, unit, sufficient },
+                                {
+                                    slug,
+                                    name,
+                                    quantity,
+                                    missingQuantity,
+                                    unit,
+                                    sufficient,
+                                },
                             ]) => (
                                 <li
                                     key={id}
@@ -116,21 +119,18 @@ export const MenuIngredientsTracking: React.FC<
                                             ]
                                         }
                                     >
-                                        {quantity} {resolveUnit(unit)}
+                                        {roundQuantity(
+                                            sufficient
+                                                ? quantity
+                                                : missingQuantity,
+                                        )}{" "}
+                                        {resolveUnit(unit)}
                                     </span>
                                 </li>
                             ),
                         )}
                     </ul>
-                    <Link
-                        href={ROUTES.ingredients}
-                        className={
-                            styles["menu-missing-ingredients-panel__add"]
-                        }
-                    >
-                        <BasketAddMark size={BUTTON_ICON_SIZE} />
-                        {t("menuDetailsPage.goToPantry")}
-                    </Link>
+                    <MenuIngredientsActions ingredients={ingredients} />
                 </>
             )}
         </>

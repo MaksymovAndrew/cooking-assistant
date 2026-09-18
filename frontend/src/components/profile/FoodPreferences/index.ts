@@ -1,0 +1,1 @@
+export { FoodPreferences } from "./FoodPreferences";

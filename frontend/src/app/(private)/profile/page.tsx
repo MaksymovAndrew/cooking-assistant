@@ -8,6 +8,7 @@ import { PROFILE_TAB, useProfilePage } from "hooks/useProfilePage";
 
 import { AppShell } from "components/layout/AppShell";
 import { EditProfileModal } from "components/profile/EditProfileModal";
+import { FoodPreferences } from "components/profile/FoodPreferences";
 import { ProfileDietaryTab } from "components/profile/ProfileDietaryTab";
 import { ProfileFavouritesTab } from "components/profile/ProfileFavouritesTab";
 import { ProfileHero } from "components/profile/ProfileHero";
@@ -79,7 +80,10 @@ const ProfilePage: React.FC = () => {
                     />
                 )}
                 {profile.activeTab === PROFILE_TAB.dietary && (
-                    <ProfileDietaryTab currentUser={profile.currentUser} />
+                    <div className={styles["profile-page__dietary"]}>
+                        <ProfileDietaryTab currentUser={profile.currentUser} />
+                        <FoodPreferences />
+                    </div>
                 )}
             </div>
 

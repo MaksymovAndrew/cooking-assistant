@@ -12,7 +12,7 @@ const AUTO_DISMISS_MS = 4000;
 const LEAVE_DURATION_MS = 280;
 
 const seeded = (message: string): { items: Notification[] } => ({
-    items: [{ id: "n1", type: "error", message }],
+    items: [{ id: "n1", type: "error", message, link: null }],
 });
 
 describe("Toaster", () => {
@@ -80,10 +80,10 @@ describe("Toaster", () => {
         const store = makeTestStore({
             notifications: {
                 items: [
-                    { id: "n1", type: "info", message: "One" },
-                    { id: "n2", type: "info", message: "Two" },
-                    { id: "n3", type: "info", message: "Three" },
-                    { id: "n4", type: "info", message: "Four" },
+                    { id: "n1", type: "info", message: "One", link: null },
+                    { id: "n2", type: "info", message: "Two", link: null },
+                    { id: "n3", type: "info", message: "Three", link: null },
+                    { id: "n4", type: "info", message: "Four", link: null },
                 ],
             },
         });

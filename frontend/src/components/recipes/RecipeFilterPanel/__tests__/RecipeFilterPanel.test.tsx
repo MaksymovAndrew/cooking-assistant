@@ -38,6 +38,8 @@ const BASE_FILTERS: RecipeFilterState = {
     sort: null,
     inPantry: false,
     favourites: false,
+    excludeAllergens: [],
+    hideAvoided: false,
 };
 
 const setup = (
@@ -300,27 +302,21 @@ describe("RecipeFilterPanel", () => {
         }
     });
 
-    it("should call setValue with true when the pantry toggle is clicked", async () => {
-        const { setValue } = setup();
+    it.each([
+        ["Only what I can make", "inPantry"],
+        ["Only my favourites", "favourites"],
+        ["Hide what I avoid", "hideAvoided"],
+    ])(
+        "should call setValue with true when the %s toggle is clicked",
+        async (label, key) => {
+            const { setValue } = setup();
 
-        await openPanel();
-        await userEvent.click(
-            screen.getByRole("switch", { name: "Only what I can make" }),
-        );
+            await openPanel();
+            await userEvent.click(screen.getByRole("switch", { name: label }));
 
-        expect(setValue).toHaveBeenCalledWith("inPantry", true);
-    });
-
-    it("should call setValue with true when the favourites toggle is clicked", async () => {
-        const { setValue } = setup();
-
-        await openPanel();
-        await userEvent.click(
-            screen.getByRole("switch", { name: "Only my favourites" }),
-        );
-
-        expect(setValue).toHaveBeenCalledWith("favourites", true);
-    });
+            expect(setValue).toHaveBeenCalledWith(key, true);
+        },
+    );
 
     it("should not show the pantry toggle for a guest", async () => {
         setup({}, 0, [], GUEST_STORE);
@@ -351,6 +347,8 @@ describe("RecipeFilterPanel", () => {
             sort: null,
             inPantry: false,
             favourites: false,
+            excludeAllergens: [],
+            hideAvoided: false,
         });
         expect(setValue).not.toHaveBeenCalledWith(
             "search",
@@ -455,5 +453,26 @@ describe("RecipeFilterPanel", () => {
         await userEvent.click(screen.getByRole("button", { name: "Outside" }));
 
         expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    it("should add a picked allergen to the ones already excluded, for a guest too", async () => {
+        const { setValue } = setup(
+            { excludeAllergens: ["milk"] },
+            1,
+            [],
+            GUEST_STORE,
+        );
+
+        await openPanel();
+        await userEvent.click(screen.getByRole("checkbox", { name: "Gluten" }));
+
+        expect(screen.getByRole("checkbox", { name: "Milk" })).toHaveAttribute(
+            "aria-checked",
+            "true",
+        );
+        expect(setValue).toHaveBeenCalledWith("excludeAllergens", [
+            "milk",
+            "gluten",
+        ]);
     });
 });

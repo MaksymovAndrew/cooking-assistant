@@ -70,7 +70,10 @@ export const HomeDashboard: React.FC = () => {
                 />
                 <div className={styles["home-dashboard__rail"]}>
                     <PantryRecipesCard />
-                    <ExpiringSoon items={dashboard.expiringSoon} />
+                    <ExpiringSoon
+                        items={dashboard.expiringSoon}
+                        restockItems={dashboard.allExpiringSoon}
+                    />
                     <WhatsNewCard
                         onOpenAll={openNews}
                         unseenCount={newsBadge.unseenCount}

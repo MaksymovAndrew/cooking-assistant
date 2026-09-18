@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Ban, Heart } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,13 +17,13 @@ interface RecipeFilterTogglesProps {
     setValue: SetFilterValue<RecipeFilterState>;
 }
 
-// the per-viewer filters: both need a session, so neither is offered to a guest
+// the per-viewer filters: each needs a session, so none is offered to a guest
 export const RecipeFilterToggles: React.FC<RecipeFilterTogglesProps> = ({
     filters,
     setValue,
 }) => {
     const { t } = useTranslation("recipes");
-    const { canUsePantry, canFavourite } = useAppSelector(
+    const { canUsePantry, canFavourite, canAvoid } = useAppSelector(
         selectViewerCapabilities,
     );
 
@@ -46,6 +46,16 @@ export const RecipeFilterToggles: React.FC<RecipeFilterTogglesProps> = ({
                     checked={filters.favourites}
                     onChange={(value) => {
                         setValue("favourites", value);
+                    }}
+                />
+            )}
+            {canAvoid && (
+                <FilterToggle
+                    icon={Ban}
+                    label={t("filterPanel.hideAvoidedLabel")}
+                    checked={filters.hideAvoided}
+                    onChange={(value) => {
+                        setValue("hideAvoided", value);
                     }}
                 />
             )}

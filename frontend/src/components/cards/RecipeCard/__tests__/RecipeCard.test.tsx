@@ -109,4 +109,19 @@ describe("RecipeCard", () => {
             screen.queryByRole("button", { name: "Favourite" }),
         ).not.toBeInTheDocument();
     });
+
+    it("should mark a recipe the viewer avoids, and nothing for a guest", () => {
+        const { unmount } = renderWithRouter(
+            <RecipeCard recipe={{ ...RECIPE, containsAvoided: true }} />,
+        );
+
+        expect(screen.getByText("Avoid")).toBeInTheDocument();
+
+        unmount();
+        renderWithRouter(
+            <RecipeCard recipe={{ ...RECIPE, containsAvoided: null }} />,
+        );
+
+        expect(screen.queryByText("Avoid")).not.toBeInTheDocument();
+    });
 });

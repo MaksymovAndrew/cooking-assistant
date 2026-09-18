@@ -28,6 +28,8 @@ export interface RecipeSearchResultItem extends RecipeListItem {
     isOwner: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite: boolean | null;
+    // per viewer: an ingredient or one of its allergens is on their avoid list; null for a guest
+    containsAvoided: boolean | null;
 }
 
 export interface RecipeDetailIngredient extends CatalogIngredientRef {
@@ -55,6 +57,8 @@ export interface RecipeDetails {
     isOwner: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite: boolean | null;
+    // per viewer: an ingredient or one of its allergens is on their avoid list; null for a guest
+    containsAvoided: boolean | null;
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
     // the author's manual value; null means the total above is auto-computed from the ingredients
@@ -75,6 +79,9 @@ export interface RecipeFilterParams {
     sort_order?: string;
     in_pantry?: boolean;
     favourites?: boolean;
+    // comma-separated allergen slugs
+    exclude_allergens?: string;
+    hide_avoided?: boolean;
 }
 
 export interface CreateRecipeIngredient {

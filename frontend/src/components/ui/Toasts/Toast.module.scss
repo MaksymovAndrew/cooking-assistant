@@ -47,13 +47,36 @@
         margin-top: 1px;
     }
 
-    &__message {
+    &__body {
+        display: flex;
         flex: 1;
+        flex-direction: column;
+        gap: var(--s-1);
+        min-width: 0;
+    }
+
+    &__message {
         margin: 0;
         color: var(--text-2);
         font:
             400 13px/1.4 Inter,
             sans-serif;
+    }
+
+    &__link {
+        align-self: flex-start;
+        border-radius: var(--r-sm);
+        color: var(--brand-strong);
+        font:
+            600 13px/1.4 Inter,
+            sans-serif;
+        text-decoration: none;
+
+        @include focus-ring;
+
+        @include on-hover {
+            text-decoration: underline;
+        }
     }
 
     &__dismiss {

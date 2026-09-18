@@ -1,4 +1,4 @@
-export type QueryParam = string | number | boolean | number[] | null;
+export type QueryParam = string | number | boolean | number[] | string[] | null;
 
 // escapes LIKE/ILIKE wildcards in user input so a literal "%"/"_" in a search term is
 // matched literally instead of being treated as a pattern wildcard (backslash is

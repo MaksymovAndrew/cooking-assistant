@@ -7,6 +7,7 @@ import type {
     RecipeSearchRow,
 } from "domain/repositories/recipe.filters";
 
+import { containsAvoidedColumn } from "infrastructure/persistence/pg/containsAvoidedColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
@@ -23,6 +24,7 @@ function buildBaseRecipeSelect(ownerPlaceholder: string): string {
                COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                ${isOwnerColumn("r", ownerPlaceholder)},
                ${isFavouriteColumn("recipe", "r.id", ownerPlaceholder)},
+               ${containsAvoidedColumn("r.id", ownerPlaceholder)},
                rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name, 'allergens', i.allergens)) AS ingredients,
                -- cast: COUNT() is bigint, which pg returns as a string, not a number
                COUNT(*) OVER()::int AS total_count
@@ -39,7 +41,9 @@ function buildRecipeOrderBy(sortOrder?: "asc" | "desc"): string {
         return ` ORDER BY r.cooking_time ${sortOrder === "asc" ? "ASC" : "DESC"}, r.id DESC`;
     }
 
-    return ` ORDER BY r.creation_date DESC, r.id DESC`;
+    // for a signed-in viewer: favourites first, anything they avoid last (favourites among those still lead);
+    // both flags are null for a guest, so the date order is untouched
+    return ` ORDER BY "containsAvoided" ASC, "isFavourite" DESC, r.creation_date DESC, r.id DESC`;
 }
 
 // shared tail of both searches: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed

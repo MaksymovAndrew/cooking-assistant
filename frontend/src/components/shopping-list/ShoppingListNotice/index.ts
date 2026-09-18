@@ -1,0 +1,1 @@
+export { ShoppingListNotice } from "./ShoppingListNotice";

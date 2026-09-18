@@ -76,6 +76,26 @@ test("should list the recipe's ingredient as missing before it's in the pantry",
     await expect(panel.locator('[aria-label="You have enough"]')).toBeHidden();
 });
 
+test("should send the missing ingredient to the shopping list and link to it", async () => {
+    await page.goto(`/menu/${menuId}`);
+    await page
+        .getByRole("button", { name: "Add missing to shopping list" })
+        .click();
+    await expect(page.getByText("Added to your shopping list.")).toBeVisible();
+
+    await page.getByRole("link", { name: "Open list" }).click();
+    await expect(page).toHaveURL(/\/shopping-list$/);
+
+    const toBuy = page.getByRole("region", { name: "To buy" });
+
+    await expect(toBuy.getByText("Garlic")).toBeVisible();
+    await expect(toBuy.getByText("1 clove")).toBeVisible();
+
+    // cleanup: leave the shared account's shopping list as it was
+    await page.getByRole("button", { name: "Remove Garlic" }).click();
+    await expect(toBuy.getByText("Garlic")).toBeHidden();
+});
+
 test("should mark the ingredient as sufficient once enough is stocked in the pantry", async () => {
     await page.goto("/ingredients");
     await page.getByRole("button", { name: "Add ingredient" }).click();

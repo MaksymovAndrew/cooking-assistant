@@ -1,0 +1,397 @@
+@use "styles/abstracts" as *;
+
+.food-preferences {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    &__head {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 20px;
+        }
+    }
+
+    &__title {
+        margin: 0 0 5px;
+        color: var(--text);
+        font:
+            600 20px Fraunces,
+            serif;
+        letter-spacing: -0.02em;
+
+        @include respond-to(tablet) {
+            font-size: 24px;
+        }
+    }
+
+    &__description {
+        margin: 0;
+        color: var(--text-2);
+        font:
+            400 12.5px/1.5 Inter,
+            sans-serif;
+        text-wrap: pretty;
+
+        @include respond-to(tablet) {
+            font-size: 13.5px;
+        }
+    }
+
+    &__summary,
+    &__counter {
+        color: var(--text-muted);
+        font:
+            500 11px "Geist Mono",
+            monospace;
+        white-space: nowrap;
+
+        @include respond-to(tablet) {
+            font-size: 12px;
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--s-3);
+        align-items: start;
+
+        @include respond-to(desktop) {
+            grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+            gap: 18px;
+        }
+
+        @include respond-to-short-landscape {
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        }
+    }
+
+    &__card {
+        min-width: 0;
+        padding: var(--s-4);
+
+        @include respond-to(tablet) {
+            padding: 20px;
+        }
+
+        @include respond-to(desktop) {
+            padding: 22px 24px;
+        }
+    }
+
+    &__card-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 4px;
+        color: var(--brand);
+
+        .food-preferences__counter {
+            margin-left: auto;
+        }
+    }
+
+    &__card-title {
+        margin: 0;
+        color: var(--text);
+        font:
+            600 16px Fraunces,
+            serif;
+
+        @include respond-to(tablet) {
+            font-size: 18px;
+        }
+    }
+
+    &__helper {
+        margin: 0 0 var(--s-3);
+        color: var(--text-muted);
+        font:
+            400 11.5px/1.45 Inter,
+            sans-serif;
+
+        @include respond-to(tablet) {
+            margin-bottom: var(--s-4);
+            font-size: 12.5px;
+        }
+    }
+
+    &__chips,
+    &__avoided {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        @include respond-to(tablet) {
+            gap: var(--s-2);
+        }
+    }
+
+    &__chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        height: 36px;
+        padding: 0 13px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-pill);
+        background: var(--surface-2);
+        color: var(--text-2);
+        font:
+            600 13px Inter,
+            sans-serif;
+        white-space: nowrap;
+        cursor: pointer;
+        transition:
+            background-color var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out),
+            color var(--dur-fast) var(--ease-out);
+
+        @include focus-ring;
+
+        @include on-hover {
+            border-color: var(--brand);
+        }
+
+        @include respond-to(tablet) {
+            height: 34px;
+        }
+
+        @include respond-to-short-landscape {
+            height: 32px;
+        }
+
+        &:disabled {
+            cursor: default;
+        }
+    }
+
+    &__chip--on {
+        border-color: var(--brand);
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+
+    &__search {
+        position: relative;
+    }
+
+    &__results {
+        display: flex;
+        flex-direction: column;
+        margin: var(--s-2) 0 0;
+        padding: 4px 0 0;
+        border-top: 1px solid var(--border);
+        list-style: none;
+
+        @include respond-to(desktop) {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            left: 0;
+            z-index: 5;
+            margin: 0;
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            background: var(--surface);
+            box-shadow: var(--e-2);
+        }
+    }
+
+    &__result {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 44px;
+        padding: 8px 12px;
+        border: none;
+        border-radius: var(--r-sm);
+        background: none;
+        color: var(--text-muted);
+        font:
+            400 14px Inter,
+            sans-serif;
+        text-align: left;
+        cursor: pointer;
+
+        @include focus-ring;
+
+        @include on-hover {
+            background: var(--surface-2);
+        }
+
+        strong {
+            font-weight: 700;
+        }
+    }
+
+    &__result--avoided {
+        opacity: 0.55;
+    }
+
+    &__result-check {
+        color: var(--brand);
+    }
+
+    &__result-name {
+        @include wrap-anywhere;
+
+        flex: 1;
+        min-width: 0;
+        color: var(--text);
+    }
+
+    &__result-tag {
+        color: var(--text-muted);
+        font:
+            500 10px "Geist Mono",
+            monospace;
+    }
+
+    &__no-results {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin: 0;
+        padding: 18px 8px 6px;
+        color: var(--text-2);
+        font:
+            500 13px Inter,
+            sans-serif;
+        text-align: center;
+
+        span {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 400;
+        }
+    }
+
+    &__avoided {
+        margin-top: var(--s-3);
+
+        @include respond-to(tablet) {
+            margin-top: 14px;
+        }
+    }
+
+    &__avoided-chip {
+        @include wrap-anywhere;
+
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        max-width: 100%;
+        min-height: 34px;
+        padding: 6px 6px 6px 13px;
+        border: 1px solid color-mix(in srgb, var(--brand) 38%, var(--border));
+        border-radius: var(--r-pill);
+        background: var(--brand-subtle);
+        color: var(--text);
+        font:
+            500 13px Inter,
+            sans-serif;
+    }
+
+    &__remove {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border: none;
+        border-radius: var(--r-pill);
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition:
+            background-color var(--dur-fast) var(--ease-out),
+            color var(--dur-fast) var(--ease-out);
+
+        @include focus-ring;
+
+        @include on-hover {
+            background: color-mix(in srgb, var(--danger) 14%, transparent);
+            color: var(--danger);
+        }
+
+        &:disabled {
+            cursor: default;
+        }
+    }
+
+    &__empty {
+        margin: 10px 0 0;
+        color: var(--text-muted);
+        font:
+            400 11.5px Inter,
+            sans-serif;
+    }
+
+    &__saved {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 18px;
+        margin: var(--s-3) 0 0;
+        color: var(--success);
+        font:
+            400 12.5px Inter,
+            sans-serif;
+        opacity: 0;
+        transition: opacity var(--dur-base) var(--ease-out);
+
+        @include reduced-motion {
+            transition: none;
+        }
+    }
+
+    &__saved--visible {
+        opacity: 1;
+    }
+
+    &__strip {
+        display: none;
+        margin: 0;
+        padding: 12px 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        background: var(--surface-2);
+        list-style: none;
+
+        @include respond-to(tablet) {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--s-3) 26px;
+        }
+
+        li {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--s-2);
+            color: var(--text-2);
+            font:
+                400 12.5px Inter,
+                sans-serif;
+        }
+
+        svg {
+            flex: none;
+            color: var(--brand);
+        }
+    }
+}

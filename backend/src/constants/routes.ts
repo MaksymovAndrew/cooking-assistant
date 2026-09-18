@@ -33,6 +33,7 @@ export const ROUTES = {
 
     ingredients: {
         list: "/ingredients",
+        avoid: "/ingredient/:id/avoid",
     },
 
     userIngredients: {
@@ -59,6 +60,19 @@ export const ROUTES = {
         intake: "/calorie-intake",
         intakeById: "/calorie-intake/:intakeId",
         goal: "/calorie-goal",
+    },
+
+    dietPreferences: {
+        get: "/diet-preferences",
+        allergen: "/diet-preferences/allergens/:slug",
+    },
+
+    shoppingList: {
+        list: "/shopping-list",
+        byId: "/shopping-list/:id",
+        checked: "/shopping-list/checked",
+        order: "/shopping-list/order",
+        ingredients: "/shopping-list/ingredients",
     },
 } as const;
 

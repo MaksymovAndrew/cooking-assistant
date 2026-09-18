@@ -28,25 +28,9 @@ export const CATEGORY_KEYS = [
 
 export type CategoryKey = (typeof CATEGORY_KEYS)[number];
 
-// EU FIC (1169/2011) Annex II - the 14 mandatory allergens
-export const ALLERGEN_SLUGS = [
-    "gluten",
-    "crustaceans",
-    "eggs",
-    "fish",
-    "peanuts",
-    "soybeans",
-    "milk",
-    "nuts",
-    "celery",
-    "mustard",
-    "sesame",
-    "sulphites",
-    "lupin",
-    "molluscs",
-] as const;
+import type { AllergenSlug } from "constants/allergens";
 
-export type AllergenSlug = (typeof ALLERGEN_SLUGS)[number];
+export { ALLERGEN_SLUGS, type AllergenSlug } from "constants/allergens";
 
 export const UNIT_KEYS = [
     "g",

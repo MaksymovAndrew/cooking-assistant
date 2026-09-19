@@ -137,7 +137,7 @@ src/
 │   ├── robots.ts            allow public, disallow the private prefixes, point at the sitemap
 │   └── (private)/           layout.tsx = PrivateRoute; my-recipes, my-menus, add-recipe,
 │                            change-recipe/[id], add-menu, change-menu/[id], ingredients,
-│                            stats, profile, settings. The two form stylesheets are shared
+│                            shopping-list, stats, profile, settings. The two form stylesheets are shared
 │                            by the group, like the auth one
 │
 ├── api/            the ONLY place axios is touched
@@ -160,10 +160,10 @@ src/
 ├── components/     reusable UI, grouped by domain (each is a folder + index.ts barrel)
 │   ├── layout/        AppShell, AppHeader, MainNav, BottomNav, Logo, PrivateRoute, PageSpinner,
 │   │                  RouteErrorBoundary, MobileSubpageHeader, ScrollToTopButton
-│   ├── ui/            SearchField, FilterPanel, ActiveFilterChips, Button, Chip, Select, ...
+│   ├── ui/            SearchField, FilterPanel, ActiveFilterChips, Button, Chip, Select, ProgressRing, ...
 │   ├── icons/         hand-authored SVG icon components (design-mockup-traced)
 │   ├── forms/         RecipeForm, MenuForm, auth forms, shared fields
-│   └── recipes/, menu/, ingredients/, profile/, settings/, stats/, home/, cards/, modals/,
+│   └── recipes/, menu/, ingredients/, shopping-list/, profile/, settings/, stats/, home/, cards/, modals/,
 │       theme/, avatars/, connectivity/, auth/   domain-specific components
 │
 ├── hooks/          all data fetching + stateful logic (50+ hooks, composed)
@@ -274,6 +274,7 @@ URL.
 | `/add-recipe`, `/change-recipe/:id`                    | Recipe create / edit                | (private) |
 | `/add-menu`, `/change-menu/:id`                        | Menu create / edit                  | (private) |
 | `/ingredients`                                         | IngredientsPage (pantry)            | (private) |
+| `/shopping-list`                                       | ShoppingListPage                    | (private) |
 | `/stats`                                               | StatsPage (charts)                  | (private) |
 | `/profile`, `/settings`                                | ProfilePage, SettingsPage           | (private) |
 | anything else                                          | not-found.tsx (real HTTP 404)       | -         |
@@ -319,9 +320,11 @@ Adding a modal is three edits and no change to the queue itself: a key in `MODAL
 `<Name>ModalInput`/`<Name>Modal` interfaces added to the `ModalInput`/`ActiveModal` unions, a branch in
 `ModalRoot`, and a `dispatch(openModal(...))` at the trigger.
 
-**Toasts are a separate queue on purpose.** `notificationsSlice` is its own FIFO array with dedupe and
+**Toasts are a separate queue on purpose.** `notificationsSlice` is its own FIFO array where a repeated message replaces its
+visible copy (so an error storm shows one toast, and a repeated confirmation shows again), and
 `MAX_VISIBLE = 3` ([components/ui/Toasts/](src/components/ui/Toasts/)). Toasts are non-blocking and
-several are visible at once; modals are blocking and strictly serialized. Don't merge the two.
+several are visible at once; modals are blocking and strictly serialized. Don't merge the two. A toast
+may carry an optional `link` (`{ href, label }`) to where the change landed - the shopping list uses it.
 
 ## Internationalization
 
@@ -335,6 +338,12 @@ it lazily via a dynamic `import()`, called once from `AppShell`'s module scope, 
 via `useTranslation("<namespace>")`; non-React code (Redux middleware, utilities) uses `i18next.t()`
 directly. Every user-visible string must go through i18n - no hardcoded English in components, hooks, or
 Redux middleware.
+
+Units of measurement are the one exception: they are rendered straight from the record's `unit_name`
+(`g`, `kg`, `ml`, `L`, `tsp`, `piece`, ...), the same short forms the `unit_measurement` table stores.
+The catalog used to carry spelled-out names for them, and "250 milliliter" wrapped out of every tight
+quantity row. Reach for a translation layer again only when a second language actually ships, and give
+it short forms then too.
 
 ## Layering, ESLint boundaries, path aliases
 

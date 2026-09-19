@@ -193,13 +193,20 @@
             sans-serif;
     }
 
+    &__marks {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: 6px;
+        margin-left: auto;
+    }
+
     &__allergen-badge {
         display: inline-flex;
         flex: none;
         align-items: center;
         gap: 5px;
         height: 21px;
-        margin-left: auto;
         padding: 0 9px;
         border-radius: var(--r-pill);
         background: color-mix(in srgb, var(--warning) 15%, transparent);

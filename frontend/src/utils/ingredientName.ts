@@ -27,9 +27,6 @@ export const resolvePantryIngredientName = (
         name: ingredient.ingredient_name ?? ingredient.name ?? "",
     });
 
-export const resolveUnit = (unitKey: string): string =>
-    i18next.t(`catalog:unit.${unitKey}`, { defaultValue: unitKey });
-
 export const resolveCategory = (categoryKey: string): string =>
     i18next.t(`catalog:category.${categoryKey}`, { defaultValue: categoryKey });
 

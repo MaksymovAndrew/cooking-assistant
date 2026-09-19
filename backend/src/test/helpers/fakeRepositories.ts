@@ -1,6 +1,7 @@
 import type { RepositoryDeps } from "composition-root";
 
 import type { CalorieRepository } from "domain/repositories/CalorieRepository";
+import type { DietPreferencesRepository } from "domain/repositories/DietPreferencesRepository";
 import type { FavouriteRepository } from "domain/repositories/FavouriteRepository";
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
@@ -8,6 +9,8 @@ import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
+import type { ShoppingListRepository } from "domain/repositories/ShoppingListRepository";
+import type { TagRepository } from "domain/repositories/TagRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
 import type { EmailSender } from "application/ports/EmailSender";
@@ -26,6 +29,9 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     userRepository: jest.Mocked<UserRepository>;
     calorieRepository: jest.Mocked<CalorieRepository>;
     favouriteRepository: jest.Mocked<FavouriteRepository>;
+    dietPreferencesRepository: jest.Mocked<DietPreferencesRepository>;
+    shoppingListRepository: jest.Mocked<ShoppingListRepository>;
+    tagRepository: jest.Mocked<TagRepository>;
     passwordHasher: jest.Mocked<PasswordHasher>;
     tokenService: jest.Mocked<TokenService>;
     emailSender: jest.Mocked<EmailSender>;
@@ -108,6 +114,38 @@ function createFavouriteRepository(): jest.Mocked<FavouriteRepository> {
     };
 }
 
+function createDietPreferencesRepository(): jest.Mocked<DietPreferencesRepository> {
+    return {
+        findByPerson: jest.fn(),
+        addAllergen: jest.fn(),
+        removeAllergen: jest.fn(),
+        addIngredient: jest.fn(),
+        removeIngredient: jest.fn(),
+    };
+}
+
+function createShoppingListRepository(): jest.Mocked<ShoppingListRepository> {
+    return {
+        findByPerson: jest.fn(),
+        addItem: jest.fn(),
+        updateItem: jest.fn(),
+        deleteItem: jest.fn(),
+        deleteChecked: jest.fn(),
+        reorder: jest.fn(),
+        addIngredients: jest.fn(),
+    };
+}
+
+function createTagRepository(): jest.Mocked<TagRepository> {
+    return {
+        findByPerson: jest.fn(),
+        create: jest.fn(),
+        rename: jest.fn(),
+        delete: jest.fn(),
+        setRecipeTags: jest.fn(),
+    };
+}
+
 function createPasswordHasher(): jest.Mocked<PasswordHasher> {
     return {
         hash: jest.fn(),
@@ -141,6 +179,9 @@ export function buildFakeDeps(): FakeRepositoryDeps {
         userRepository: createUserRepository(),
         calorieRepository: createCalorieRepository(),
         favouriteRepository: createFavouriteRepository(),
+        dietPreferencesRepository: createDietPreferencesRepository(),
+        shoppingListRepository: createShoppingListRepository(),
+        tagRepository: createTagRepository(),
         passwordHasher: createPasswordHasher(),
         tokenService: createTokenService(),
         emailSender: createEmailSender(),

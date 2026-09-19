@@ -50,6 +50,7 @@
 
         @include respond-to(desktop) {
             grid-template-columns: 1.65fr minmax(0, 1fr);
+            align-items: start;
         }
 
         @include respond-to-short-landscape {
@@ -58,19 +59,42 @@
         }
     }
 
+    // stacked layouts drop both wrappers so every panel joins the one grid, which is what lets
+    // the stats banner sit between "expiring soon" and "what's new" without a second render
+    &__main,
     &__rail {
-        display: flex;
-        flex-direction: column;
-        gap: var(--s-5);
+        display: contents;
 
+        @include respond-to(desktop) {
+            display: flex;
+            flex-direction: column;
+            gap: var(--s-5);
+        }
+
+        @include respond-to-short-landscape {
+            display: contents;
+        }
+    }
+
+    &__main > :first-child {
+        order: 1;
+    }
+
+    &__rail > * {
+        order: 2;
+    }
+
+    &__rail {
         // News is reachable via the bell button in HomeActions here, so the card is dropped to save height
         @include respond-to-short-landscape {
-            gap: var(--s-3);
-
             > :last-child {
                 display: none;
             }
         }
+    }
+
+    &__stats {
+        order: 3;
     }
 
     &__error {

@@ -1,3 +1,4 @@
+import { ALLERGEN_SLUGS, type AllergenSlug } from "constants/allergens";
 import type { RecipeFilterParams } from "types/recipe";
 
 import type { FilterDef } from "./filterDef";
@@ -6,7 +7,11 @@ import {
     numericRangeFilter,
     textFilter,
 } from "./filterDefFactories";
-import { booleanFilter, enumFilter } from "./filterDefFactories.scalar";
+import {
+    booleanFilter,
+    enumFilter,
+    enumListFilter,
+} from "./filterDefFactories.scalar";
 
 export interface RecipeFilterState {
     search: string;
@@ -17,6 +22,9 @@ export interface RecipeFilterState {
     sort: "asc" | "desc" | null;
     inPantry: boolean;
     favourites: boolean;
+    excludeAllergens: AllergenSlug[];
+    hideAvoided: boolean;
+    tags: number[];
 }
 
 // shared with links that pre-set the filter before navigating (see PantryRecipesCard)
@@ -111,5 +119,25 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
         urlParam: "fav",
         param: "favourites",
         chipLabel: (_value, t) => t("filterPanel.favouritesChip"),
+    }),
+    enumListFilter<AllergenSlug, RecipeFilterParams>({
+        key: "excludeAllergens",
+        urlParam: "without",
+        param: "exclude_allergens",
+        values: ALLERGEN_SLUGS,
+        chipLabel: (value, t) =>
+            t("filterPanel.excludeAllergensChip", { count: value.length }),
+    }),
+    booleanFilter<RecipeFilterParams>({
+        key: "hideAvoided",
+        urlParam: "avoid",
+        param: "hide_avoided",
+        chipLabel: (_value, t) => t("filterPanel.hideAvoidedChip"),
+    }),
+    idListFilter<RecipeFilterParams>({
+        key: "tags",
+        urlParam: "tags",
+        param: "tag_ids",
+        chipLabel: (value, t) => t("tags:filter.chip", { count: value.length }),
     }),
 ];

@@ -28,31 +28,16 @@ export const CATEGORY_KEYS = [
 
 export type CategoryKey = (typeof CATEGORY_KEYS)[number];
 
-// EU FIC (1169/2011) Annex II - the 14 mandatory allergens
-export const ALLERGEN_SLUGS = [
-    "gluten",
-    "crustaceans",
-    "eggs",
-    "fish",
-    "peanuts",
-    "soybeans",
-    "milk",
-    "nuts",
-    "celery",
-    "mustard",
-    "sesame",
-    "sulphites",
-    "lupin",
-    "molluscs",
-] as const;
+import type { AllergenSlug } from "constants/allergens";
 
-export type AllergenSlug = (typeof ALLERGEN_SLUGS)[number];
+export { ALLERGEN_SLUGS, type AllergenSlug } from "constants/allergens";
 
 export const UNIT_KEYS = [
     "g",
     "kg",
     "ml",
-    "l",
+    // capital L: on a row next to a number a lowercase "l" reads as a one
+    "L",
     "tsp",
     "tbsp",
     "piece",
@@ -72,7 +57,7 @@ export const UNIT_COEFFICIENTS: Partial<Record<UnitKey, number>> = {
     g: 1,
     kg: 1000,
     ml: 1,
-    l: 1000,
+    L: 1000,
     tsp: 5,
     tbsp: 15,
 };

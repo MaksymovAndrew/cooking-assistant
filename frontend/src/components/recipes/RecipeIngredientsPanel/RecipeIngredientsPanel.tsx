@@ -1,15 +1,15 @@
-import { Check } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppSelector } from "redux/hooks";
 import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
 
+import { useAvoidedIngredients } from "hooks/useAvoidedIngredients";
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
-import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
-import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolveIngredientName } from "utils/ingredientName";
 
+import { RecipeIngredientRow } from "./RecipeIngredientRow";
 import { RecipeIngredientsBanner } from "./RecipeIngredientsBanner";
 import { RecipeIngredientsHeader } from "./RecipeIngredientsHeader";
 import styles from "./RecipeIngredientsPanel.module.scss";
@@ -25,12 +25,6 @@ interface RecipeIngredientsPanelProps {
     hasCustomCalories: boolean;
 }
 
-const CHECK_ICON_SIZE = 16;
-const DECIMALS = 2;
-
-const scaleQuantity = (quantity: number, scaleFactor: number) =>
-    Number((quantity * scaleFactor).toFixed(DECIMALS));
-
 export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     availability,
     haveCount,
@@ -43,6 +37,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
 }) => {
     const { t } = useTranslation("recipes");
     const { canUsePantry } = useAppSelector(selectViewerCapabilities);
+    const { isIngredientAvoided } = useAvoidedIngredients();
     const sorted = [...availability].sort((a, b) =>
         resolveIngredientName(a).localeCompare(resolveIngredientName(b)),
     );
@@ -58,78 +53,14 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
 
             <ul className={styles["recipe-ingredients-panel__list"]}>
                 {sorted.map((ingredient) => (
-                    <li
+                    <RecipeIngredientRow
                         key={ingredient.id}
-                        className={[
-                            styles["recipe-ingredients-panel__row"],
-                            canUsePantry &&
-                                !ingredient.have &&
-                                styles[
-                                    "recipe-ingredients-panel__row--missing"
-                                ],
-                        ]
-                            .filter(Boolean)
-                            .join(" ")}
-                    >
-                        {canUsePantry &&
-                            (ingredient.have ? (
-                                <Check
-                                    size={CHECK_ICON_SIZE}
-                                    aria-hidden="true"
-                                    className={
-                                        styles[
-                                            "recipe-ingredients-panel__have-icon"
-                                        ]
-                                    }
-                                />
-                            ) : (
-                                <span
-                                    aria-hidden="true"
-                                    className={
-                                        styles[
-                                            "recipe-ingredients-panel__missing-dot"
-                                        ]
-                                    }
-                                />
-                            ))}
-                        <span
-                            className={styles["recipe-ingredients-panel__name"]}
-                        >
-                            {resolveIngredientName(ingredient)}
-                        </span>
-                        <span
-                            className={styles["recipe-ingredients-panel__qty"]}
-                        >
-                            {scaleQuantity(
-                                ingredient.quantity_recipe_ingredients,
-                                portionCount,
-                            )}{" "}
-                            {resolveUnit(ingredient.unit_name)}
-                            {!hasCustomCalories &&
-                                ingredient.calories_per_unit !== null && (
-                                    <span
-                                        className={
-                                            styles[
-                                                "recipe-ingredients-panel__qty-calories"
-                                            ]
-                                        }
-                                    >
-                                        {t(
-                                            "recipeDetailsPage.ingredientCalories",
-                                            {
-                                                count: formatKcal(
-                                                    scaleCaloriesForPortions(
-                                                        ingredient.quantity_recipe_ingredients *
-                                                            ingredient.calories_per_unit,
-                                                        portionCount,
-                                                    ),
-                                                ),
-                                            },
-                                        )}
-                                    </span>
-                                )}
-                        </span>
-                    </li>
+                        ingredient={ingredient}
+                        canUsePantry={canUsePantry}
+                        isAvoided={isIngredientAvoided(ingredient)}
+                        portionCount={portionCount}
+                        hasCustomCalories={hasCustomCalories}
+                    />
                 ))}
             </ul>
 
@@ -148,8 +79,9 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
                 <RecipeIngredientsBanner
                     isOwner={isOwner}
                     haveCount={haveCount}
-                    totalCount={availability.length}
                     missingCount={missingCount}
+                    availability={availability}
+                    portionCount={portionCount}
                 />
             )}
         </div>

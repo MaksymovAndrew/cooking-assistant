@@ -7,7 +7,7 @@ import { useEditableQuantity } from "hooks/useEditableQuantity";
 
 import { NumberInput } from "components/ui/NumberInput";
 
-import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolveIngredientName } from "utils/ingredientName";
 
 import styles from "./AddIngredientModal.module.scss";
 
@@ -51,7 +51,7 @@ export const AddIngredientQuantityStep: React.FC<
                     onChange={editableQuantity.onChange}
                     onBlur={editableQuantity.onBlur}
                 />
-                <span>{resolveUnit(ingredient.unit_name)}</span>
+                <span>{ingredient.unit_name}</span>
             </div>
         </div>
     );

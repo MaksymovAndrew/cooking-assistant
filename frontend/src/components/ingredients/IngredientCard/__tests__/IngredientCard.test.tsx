@@ -30,7 +30,7 @@ describe("IngredientCard", () => {
 
         expect(screen.getByText("Carrot")).toBeInTheDocument();
         expect(screen.getByText("3")).toBeInTheDocument();
-        expect(screen.getByText("kilogram")).toBeInTheDocument();
+        expect(screen.getByText("kg")).toBeInTheDocument();
     });
 
     it("should render the allergens list joined by comma", () => {

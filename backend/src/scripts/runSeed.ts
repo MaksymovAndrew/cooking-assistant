@@ -14,7 +14,7 @@ const seedUnitMeasurements = `
             ('g', 1::double precision),
             ('kg', 1000),
             ('ml', 1),
-            ('l', 1000),
+            ('L', 1000),
             ('tsp', 5),
             ('tbsp', 15),
             ('piece', NULL),

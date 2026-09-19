@@ -6,18 +6,18 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     hasError?: boolean;
 }
 
-export const TextInput: React.FC<TextInputProps> = ({
-    hasError = false,
-    className,
-    ...rest
-}) => {
-    const classNames = [
-        styles["text-input"],
-        hasError && styles["text-input--error"],
-        className,
-    ]
-        .filter(Boolean)
-        .join(" ");
+export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
+    ({ hasError = false, className, ...rest }, ref) => {
+        const classNames = [
+            styles["text-input"],
+            hasError && styles["text-input--error"],
+            className,
+        ]
+            .filter(Boolean)
+            .join(" ");
 
-    return <input className={classNames} {...rest} />;
-};
+        return <input ref={ref} className={classNames} {...rest} />;
+    },
+);
+
+TextInput.displayName = "TextInput";

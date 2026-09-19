@@ -1,0 +1,1 @@
+export { DeleteTagModal } from "./DeleteTagModal";

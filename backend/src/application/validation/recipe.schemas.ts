@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { ALLERGEN_SLUGS } from "constants/allergens";
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
 import {
@@ -121,6 +122,23 @@ export const recipeFiltersSchema = z.object({
         .optional(),
     in_pantry: booleanQuerySchema("In pantry"),
     favourites: booleanQuerySchema("Favourites"),
+    exclude_allergens: z
+        .string({ error: "Exclude allergens must be a string" })
+        .transform((value) => value.split(","))
+        .pipe(
+            z
+                .array(
+                    z.enum(ALLERGEN_SLUGS, {
+                        error: "Exclude allergens must be a comma-separated list of allergens",
+                    }),
+                )
+                .refine((slugs) => hasUniqueItems(slugs), {
+                    message: "Exclude allergens must be unique",
+                }),
+        )
+        .optional(),
+    hide_avoided: booleanQuerySchema("Hide avoided"),
+    tag_ids: idListStringSchema("Tag IDs").optional(),
     limit: limitSchema,
     offset: offsetSchema,
 }) satisfies z.ZodType<RecipeFilters>;

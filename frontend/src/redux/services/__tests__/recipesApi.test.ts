@@ -33,6 +33,8 @@ const LIST: RecipeSearchResultItem[] = [
         ingredients: [{ id: 1, name: "Tomato", allergens: [] }],
         isOwner: false,
         isFavourite: false,
+        containsAvoided: false,
+        tags: [],
     },
 ];
 const PAGE = { items: LIST, total: LIST.length };
@@ -64,6 +66,8 @@ const DETAIL: RecipeDetails = {
     creation_date: "2024-01-01",
     isOwner: true,
     isFavourite: false,
+    containsAvoided: false,
+    tags: [],
     calories_per_portion: null,
     calories_override: null,
 };
@@ -206,6 +210,8 @@ describe("recipesApi", () => {
                 categoryname: "Dinner",
                 isOwner: true,
                 isFavourite: false,
+                containsAvoided: false,
+                tags: [],
             },
         });
         const store = makeTestStore();

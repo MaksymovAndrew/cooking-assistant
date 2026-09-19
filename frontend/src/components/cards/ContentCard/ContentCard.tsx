@@ -34,6 +34,8 @@ interface ContentCardProps {
     variant?: ContentCardVariant;
     mine?: boolean;
     badge?: boolean;
+    // the viewer avoids something in it - a personal mark, shown beside the allergen badge rather than instead of it
+    avoided?: boolean;
     // border-only signal (the calorie icon/text itself is recolored via a metaItem's own `tone`,
     // not through this prop) - kept as its own modifier so it can carry a different border color
     // than the allergen badge, and both can be active on the same card at once
@@ -54,6 +56,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
     variant = "grid",
     mine = false,
     badge = false,
+    avoided = false,
     calorieOver = false,
     favourite = null,
     rating = RECIPE_RATING,
@@ -98,6 +101,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
                 <ContentCardBody
                     isRow={isRow}
                     badge={badge}
+                    avoided={avoided}
                     rating={rating}
                     ratingCount={ratingCount}
                     metaText={metaText}

@@ -28,6 +28,8 @@ const BASE_RECIPE: RecipeDetails = {
     creation_date: "2024-01-01",
     isOwner: false,
     isFavourite: false,
+    containsAvoided: false,
+    tags: [],
     calories_per_portion: 420,
     calories_override: null,
 };

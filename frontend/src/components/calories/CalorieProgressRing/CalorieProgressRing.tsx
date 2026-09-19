@@ -1,5 +1,7 @@
 import React from "react";
 
+import { ProgressRing } from "components/ui/ProgressRing";
+
 import { calorieRingFraction, formatKcal } from "utils/calories";
 import type { CalorieTone } from "utils/computeCalorieSummary";
 
@@ -12,8 +14,9 @@ interface CalorieProgressRingProps {
     goalLabel: string;
 }
 
-const RADIUS = 52;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+const RING_SIZE = 140;
+const RING_THICKNESS = 22;
+const RING_INSET = 7;
 
 const TONE_CLASS: Record<CalorieTone, string> = {
     normal: styles["calorie-progress-ring--normal"],
@@ -26,48 +29,26 @@ export const CalorieProgressRing: React.FC<CalorieProgressRingProps> = ({
     goal,
     tone,
     goalLabel,
-}) => {
-    const fraction = calorieRingFraction(consumed, goal);
-    const dashArray = `${fraction * CIRCUMFERENCE} ${CIRCUMFERENCE}`;
-
-    return (
-        <div
-            data-testid="calorie-progress-ring"
-            className={[styles["calorie-progress-ring"], TONE_CLASS[tone]].join(
-                " ",
-            )}
+}) => (
+    <div
+        data-testid="calorie-progress-ring"
+        className={[styles["calorie-progress-ring"], TONE_CLASS[tone]].join(
+            " ",
+        )}
+    >
+        <ProgressRing
+            fraction={calorieRingFraction(consumed, goal)}
+            size={RING_SIZE}
+            thickness={RING_THICKNESS}
+            inset={RING_INSET}
+            className={styles["calorie-progress-ring__ring"]}
         >
-            <svg
-                viewBox="0 0 140 140"
-                className={styles["calorie-progress-ring__svg"]}
-                aria-hidden="true"
-            >
-                <circle
-                    className={styles["calorie-progress-ring__track"]}
-                    cx="70"
-                    cy="70"
-                    r={RADIUS}
-                    fill="none"
-                />
-                <circle
-                    data-testid="calorie-progress-ring-arc"
-                    className={styles["calorie-progress-ring__arc"]}
-                    cx="70"
-                    cy="70"
-                    r={RADIUS}
-                    fill="none"
-                    strokeDasharray={dashArray}
-                    transform="rotate(-90 70 70)"
-                />
-            </svg>
-            <div className={styles["calorie-progress-ring__center"]}>
-                <span className={styles["calorie-progress-ring__value"]}>
-                    {formatKcal(consumed)}
-                </span>
-                <span className={styles["calorie-progress-ring__label"]}>
-                    {goalLabel}
-                </span>
-            </div>
-        </div>
-    );
-};
+            <span className={styles["calorie-progress-ring__value"]}>
+                {formatKcal(consumed)}
+            </span>
+            <span className={styles["calorie-progress-ring__label"]}>
+                {goalLabel}
+            </span>
+        </ProgressRing>
+    </div>
+);

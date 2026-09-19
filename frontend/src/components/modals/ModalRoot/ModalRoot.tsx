@@ -9,6 +9,7 @@ import { DeleteCalorieIntakeModal } from "components/modals/DeleteCalorieIntakeM
 import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
 import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
 import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
+import { DeleteTagModal } from "components/modals/DeleteTagModal";
 import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
 import { LogIntakeModal } from "components/modals/LogIntakeModal";
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
@@ -141,6 +142,16 @@ export const ModalRoot = () => {
                 modalId={modal.id}
                 menuId={modal.menuId}
                 menuTitle={modal.menuTitle}
+            />
+        );
+    }
+
+    if (modal?.type === MODAL_TYPE.deleteTag) {
+        return (
+            <DeleteTagModal
+                modalId={modal.id}
+                tagId={modal.tagId}
+                tagName={modal.tagName}
             />
         );
     }

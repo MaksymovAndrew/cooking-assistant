@@ -1,12 +1,17 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { API_ROUTES } from "api/endpoints";
+
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
 import { RecipeIngredientsPanel } from "components/recipes/RecipeIngredientsPanel";
 
+import { mockedPost } from "test/apiClientMock";
 import { renderWithProviders, renderWithRouter } from "test/router";
 import { makeTestStore } from "test/store";
+
+jest.mock("api/client");
 
 const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
 const GUEST_STORE = makeTestStore({ session: { status: "guest" } });
@@ -67,6 +72,25 @@ describe("RecipeIngredientsPanel", () => {
         expect(
             screen.getByRole("link", { name: CHECK_PANTRY_LINK }),
         ).toBeInTheDocument();
+    });
+
+    it("should send the missing ingredients to the shopping list for the chosen portions", async () => {
+        mockedPost.mockResolvedValue({ data: null });
+        renderWithProviders(
+            <RecipeIngredientsPanel {...baseProps} portionCount={3} />,
+            { store: makeTestStore({ session: { status: "authed" } }) },
+        );
+
+        await userEvent.click(
+            screen.getByRole("button", {
+                name: "Add missing to shopping list",
+            }),
+        );
+
+        expect(mockedPost).toHaveBeenCalledWith(
+            API_ROUTES.shoppingList.ingredients,
+            { items: [{ ingredient_id: ONION.id, quantity: 3 }] },
+        );
     });
 
     it("should show the pantry-link banner for a visitor", () => {

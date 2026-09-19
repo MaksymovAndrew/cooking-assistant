@@ -1,6 +1,8 @@
 import { Star } from "lucide-react";
 import React from "react";
 
+import { AvoidPill } from "components/ui/AvoidPill";
+
 import styles from "./ContentCard.module.scss";
 import {
     type ContentCardMetaItem,
@@ -15,6 +17,7 @@ const ROW_META_COUNT = 1;
 interface ContentCardBodyProps {
     isRow: boolean;
     badge: boolean;
+    avoided: boolean;
     rating: string;
     ratingCount: string;
     metaText?: string;
@@ -33,6 +36,7 @@ const metaItemClassName = (tone: ContentCardMetaItem["tone"]): string =>
 export const ContentCardBody: React.FC<ContentCardBodyProps> = ({
     isRow,
     badge,
+    avoided,
     rating,
     ratingCount,
     metaText,
@@ -55,7 +59,10 @@ export const ContentCardBody: React.FC<ContentCardBodyProps> = ({
                     <span className={styles["content-card__rating-count"]}>
                         {ratingCount}
                     </span>
-                    {badge && <ContentCardAllergenBadge isRow={isRow} />}
+                    <span className={styles["content-card__marks"]}>
+                        {avoided && <AvoidPill />}
+                        {badge && <ContentCardAllergenBadge isRow={isRow} />}
+                    </span>
                 </span>
             )}
             {metaText ? (
@@ -79,8 +86,13 @@ export const ContentCardBody: React.FC<ContentCardBodyProps> = ({
                             </span>
                         ),
                     )}
-                    {isRow && badge && (
-                        <ContentCardAllergenBadge isRow={isRow} />
+                    {isRow && (avoided || badge) && (
+                        <span className={styles["content-card__marks"]}>
+                            {avoided && <AvoidPill compact />}
+                            {badge && (
+                                <ContentCardAllergenBadge isRow={isRow} />
+                            )}
+                        </span>
                     )}
                 </span>
             )}

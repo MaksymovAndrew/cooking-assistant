@@ -7,7 +7,7 @@ import { BasketAddMark, TrashMark } from "components/icons";
 import { Chip } from "components/ui/Chip";
 
 import { getWorstLotExpiryStatus } from "utils/expiry";
-import { resolvePantryIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolvePantryIngredientName } from "utils/ingredientName";
 
 import { getExpiryPresentation } from "./getExpiryPresentation";
 import styles from "./IngredientCard.module.scss";
@@ -36,7 +36,6 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
     );
     const expiry = getExpiryPresentation(status, t);
     const displayName = resolvePantryIngredientName(ingredient);
-    const displayUnit = resolveUnit(ingredient.unit_name);
 
     return (
         <div
@@ -56,7 +55,7 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
             <div className={styles["ingredient-card__quantity"]}>
                 {ingredient.quantity_person_ingradient}
                 <span className={styles["ingredient-card__unit"]}>
-                    {displayUnit}
+                    {ingredient.unit_name}
                 </span>
             </div>
 

@@ -176,6 +176,7 @@ describe("useHomeDashboard", () => {
 
         expect(result.current.expiringSoonCount).toBe(6);
         expect(result.current.expiringSoon).toHaveLength(5);
+        expect(result.current.allExpiringSoon).toHaveLength(6);
     });
 
     it("should report loading before every cache has resolved", () => {

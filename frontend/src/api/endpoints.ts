@@ -17,6 +17,7 @@ export const API_ROUTES = {
         create: "/api/recipe",
         byId: (id: string | number) => `/api/recipe/${id}`,
         favourite: (id: string | number) => `/api/recipe/${id}/favourite`,
+        tags: (id: string | number) => `/api/recipe/${id}/tags`,
         stats: "/api/recipes-stats",
     },
     recipeTypes: {
@@ -24,6 +25,7 @@ export const API_ROUTES = {
     },
     ingredients: {
         list: "/api/ingredients",
+        avoid: (id: string | number) => `/api/ingredient/${id}/avoid`,
     },
     userIngredients: {
         list: "/api/user-ingredients",
@@ -46,5 +48,20 @@ export const API_ROUTES = {
         intake: "/api/calorie-intake",
         intakeById: (id: string | number) => `/api/calorie-intake/${id}`,
         goal: "/api/calorie-goal",
+    },
+    dietPreferences: {
+        get: "/api/diet-preferences",
+        allergen: (slug: string) => `/api/diet-preferences/allergens/${slug}`,
+    },
+    tags: {
+        list: "/api/tags",
+        byId: (id: string | number) => `/api/tags/${id}`,
+    },
+    shoppingList: {
+        list: "/api/shopping-list",
+        byId: (id: string | number) => `/api/shopping-list/${id}`,
+        checked: "/api/shopping-list/checked",
+        order: "/api/shopping-list/order",
+        ingredients: "/api/shopping-list/ingredients",
     },
 } as const;

@@ -65,7 +65,7 @@ describe("AllRecipesView", () => {
         await userEvent.click(
             await screen.findByRole("button", { name: "Filters" }),
         );
-        await userEvent.click(screen.getByRole("checkbox"));
+        await userEvent.click(screen.getByRole("checkbox", { name: "Soup" }));
 
         expect(
             await screen.findByText(`Recipes: ${TYPE_NAME}`),

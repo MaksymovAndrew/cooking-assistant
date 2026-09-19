@@ -740,22 +740,6 @@
         "club_soda": "Club soda",
         "tonic_water": "Tonic water"
     },
-    "unit": {
-        "g": "gram",
-        "kg": "kilogram",
-        "ml": "milliliter",
-        "l": "liter",
-        "tsp": "tsp",
-        "tbsp": "tbsp",
-        "piece": "piece",
-        "clove": "clove",
-        "bunch": "bunch",
-        "sprig": "sprig",
-        "slice": "slice",
-        "head": "head",
-        "can": "can",
-        "package": "package"
-    },
     "category": {
         "vegetables": "Vegetables",
         "fruits": "Fruits",

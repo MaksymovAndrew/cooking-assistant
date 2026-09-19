@@ -59,7 +59,7 @@ describe("ProfileTabs", () => {
         expect(onLogout).toHaveBeenCalledTimes(1);
     });
 
-    it("should render Settings as a link to the settings page", () => {
+    it("should render Settings as a link and keep app-wide stats off the profile", () => {
         renderWithRouter(
             <ProfileTabs
                 activeTab={PROFILE_TAB.recipes}
@@ -72,5 +72,8 @@ describe("ProfileTabs", () => {
             "href",
             "/settings",
         );
+        expect(
+            screen.queryByRole("link", { name: "Stats" }),
+        ).not.toBeInTheDocument();
     });
 });

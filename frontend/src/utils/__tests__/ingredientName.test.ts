@@ -2,7 +2,6 @@ import {
     resolveAllergen,
     resolveCategory,
     resolveIngredientName,
-    resolveUnit,
 } from "utils/ingredientName";
 
 describe("resolveIngredientName", () => {
@@ -16,16 +15,6 @@ describe("resolveIngredientName", () => {
         expect(
             resolveIngredientName({ slug: "not_in_catalog", name: "Mystery" }),
         ).toBe("Mystery");
-    });
-});
-
-describe("resolveUnit", () => {
-    it("should return the catalog translation for a known unit", () => {
-        expect(resolveUnit("g")).toBe("gram");
-    });
-
-    it("should fall back to the raw key when the unit is unknown", () => {
-        expect(resolveUnit("not_a_unit")).toBe("not_a_unit");
     });
 });
 

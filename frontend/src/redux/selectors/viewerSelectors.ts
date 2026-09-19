@@ -12,6 +12,8 @@ export interface ViewerCapabilities {
     canFavourite: boolean;
     canEditOwn: boolean;
     canUsePantry: boolean;
+    canAvoid: boolean;
+    canTag: boolean;
 }
 
 // components ask "can I?", not "am I logged in?" - every capability maps to isAuthed today, but
@@ -23,5 +25,7 @@ export const selectViewerCapabilities = createSelector(
         canFavourite: isAuthed,
         canEditOwn: isAuthed,
         canUsePantry: isAuthed,
+        canAvoid: isAuthed,
+        canTag: isAuthed,
     }),
 );

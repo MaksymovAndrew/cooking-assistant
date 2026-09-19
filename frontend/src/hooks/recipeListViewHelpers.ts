@@ -15,3 +15,12 @@ export const isRecipeListEmpty = (
     isSuccess: boolean,
     hasLoadedRecipes: boolean,
 ): boolean => isPantryEmpty || (isSuccess && !hasLoadedRecipes);
+
+// the filters that need a session: the controls setting them are hidden from a guest, so one left
+// in the URL is a stale bookmark or an expired session
+export const hasViewerOnlyFilter = (filters: {
+    favourites: boolean;
+    hideAvoided: boolean;
+    tags: number[];
+}): boolean =>
+    filters.favourites || filters.hideAvoided || filters.tags.length > 0;

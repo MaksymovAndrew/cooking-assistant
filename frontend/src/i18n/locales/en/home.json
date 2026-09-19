@@ -41,6 +41,11 @@
         "description": "See which recipes you can make right now with what you already have.",
         "cta": "See recipes"
     },
+    "cookbookStats": {
+        "title": "Cookbook stats",
+        "description": "Averages, extremes and type breakdowns across every recipe here - not just yours.",
+        "cta": "Open stats"
+    },
     "emailVerificationBanner": {
         "unverifiedMessage": "Verify your email to enable password reset for your account.",
         "unverifiedMessageShort": "Verify your email to enable password reset.",

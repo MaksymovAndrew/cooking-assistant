@@ -30,6 +30,8 @@ describe("viewerSelectors", () => {
                 canFavourite: true,
                 canEditOwn: true,
                 canUsePantry: true,
+                canAvoid: true,
+                canTag: true,
             });
         });
 
@@ -39,6 +41,8 @@ describe("viewerSelectors", () => {
                 canFavourite: false,
                 canEditOwn: false,
                 canUsePantry: false,
+                canAvoid: false,
+                canTag: false,
             });
         });
     });

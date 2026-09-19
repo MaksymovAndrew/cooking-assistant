@@ -57,7 +57,7 @@ describe("UserRecipesPage", () => {
         });
 
         await userEvent.click(screen.getByRole("button", { name: "Filters" }));
-        await userEvent.click(screen.getByRole("checkbox"));
+        await userEvent.click(screen.getByRole("checkbox", { name: "Soup" }));
 
         expect(await screen.findByText("Recipes: Soup")).toBeInTheDocument();
         expect(

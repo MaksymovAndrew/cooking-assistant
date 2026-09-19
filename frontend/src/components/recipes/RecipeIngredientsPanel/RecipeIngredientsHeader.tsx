@@ -1,6 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useIsHydrated } from "hooks/useIsHydrated";
+
 import styles from "./RecipeIngredientsPanel.module.scss";
 
 interface RecipeIngredientsHeaderProps {
@@ -14,6 +16,8 @@ export const RecipeIngredientsHeader: React.FC<
     RecipeIngredientsHeaderProps
 > = ({ ingredientCount, portionCount, onIncrement, onDecrement }) => {
     const { t } = useTranslation("recipes");
+    // the stepper is on screen from the server render; a press before hydration would be swallowed
+    const isHydrated = useIsHydrated();
 
     return (
         <div className={styles["recipe-ingredients-panel__header"]}>
@@ -43,6 +47,7 @@ export const RecipeIngredientsHeader: React.FC<
                     <button
                         type="button"
                         aria-label={t("recipeDetailsPage.fewerPortions")}
+                        disabled={!isHydrated}
                         onClick={onDecrement}
                     >
                         −
@@ -51,6 +56,7 @@ export const RecipeIngredientsHeader: React.FC<
                     <button
                         type="button"
                         aria-label={t("recipeDetailsPage.morePortions")}
+                        disabled={!isHydrated}
                         onClick={onIncrement}
                     >
                         +

@@ -13,6 +13,7 @@ import { makeTestStore } from "test/store";
 
 const AUTO_DISMISS_MS = 4000;
 const LEAVE_DURATION_MS = 280;
+const LEAVING_CLASS = "toast--leaving";
 
 const TYPE_CLASSNAMES: Record<NotificationType, string> = {
     success: "toast--success",
@@ -24,6 +25,7 @@ const makeNotification = (type: NotificationType): Notification => ({
     id: "n1",
     type,
     message: "Boom",
+    link: null,
 });
 
 describe("Toast", () => {
@@ -48,6 +50,25 @@ describe("Toast", () => {
         expect(screen.getByText("Boom")).toBeInTheDocument();
     });
 
+    it("should render the follow-up link and start leaving once it is clicked", async () => {
+        renderWithProviders(
+            <Toast
+                notification={{
+                    ...makeNotification("success"),
+                    link: { href: "/shopping-list", label: "Open list" },
+                }}
+            />,
+        );
+
+        const link = screen.getByRole("link", { name: "Open list" });
+
+        expect(link).toHaveAttribute("href", "/shopping-list");
+
+        await userEvent.click(link);
+
+        expect(screen.getByRole("status")).toHaveClass(LEAVING_CLASS);
+    });
+
     it("should start the leave animation when the dismiss button is clicked", async () => {
         renderWithProviders(
             <Toast notification={makeNotification("success")} />,
@@ -55,7 +76,7 @@ describe("Toast", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Dismiss" }));
 
-        expect(screen.getByRole("status")).toHaveClass("toast--leaving");
+        expect(screen.getByRole("status")).toHaveClass(LEAVING_CLASS);
     });
 
     it("should auto-start the leave animation after the auto-dismiss timeout", () => {
@@ -70,7 +91,7 @@ describe("Toast", () => {
                 jest.advanceTimersByTime(AUTO_DISMISS_MS);
             });
 
-            expect(screen.getByRole("status")).toHaveClass("toast--leaving");
+            expect(screen.getByRole("status")).toHaveClass(LEAVING_CLASS);
         } finally {
             jest.useRealTimers();
         }

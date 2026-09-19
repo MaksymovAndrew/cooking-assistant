@@ -22,6 +22,7 @@ export const ROUTES = {
         list: "/recipes",
         byId: "/recipe/:id",
         favourite: "/recipe/:id/favourite",
+        tags: "/recipe/:id/tags",
         byFilters: "/recipes-by-filters",
         byPerson: "/recipes-filters-person",
         stats: "/recipes-stats",
@@ -33,6 +34,7 @@ export const ROUTES = {
 
     ingredients: {
         list: "/ingredients",
+        avoid: "/ingredient/:id/avoid",
     },
 
     userIngredients: {
@@ -59,6 +61,24 @@ export const ROUTES = {
         intake: "/calorie-intake",
         intakeById: "/calorie-intake/:intakeId",
         goal: "/calorie-goal",
+    },
+
+    dietPreferences: {
+        get: "/diet-preferences",
+        allergen: "/diet-preferences/allergens/:slug",
+    },
+
+    tags: {
+        list: "/tags",
+        byId: "/tags/:id",
+    },
+
+    shoppingList: {
+        list: "/shopping-list",
+        byId: "/shopping-list/:id",
+        checked: "/shopping-list/checked",
+        order: "/shopping-list/order",
+        ingredients: "/shopping-list/ingredients",
     },
 } as const;
 

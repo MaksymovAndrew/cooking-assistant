@@ -2,7 +2,7 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
 
-import { ALLERGEN_SLUGS, CATEGORY_KEYS, UNIT_KEYS } from "./catalog.types";
+import { ALLERGEN_SLUGS, CATEGORY_KEYS } from "./catalog.types";
 import rawCatalogData from "./catalogData.json";
 import { parseCatalogData } from "./catalogDataSchema";
 import {
@@ -10,7 +10,6 @@ import {
     CATEGORY_NAMES,
     type Locale,
     LOCALES,
-    UNIT_NAMES,
 } from "./catalogVocabulary";
 
 const catalogData = parseCatalogData(rawCatalogData);
@@ -39,7 +38,6 @@ function ingredientNameFor(
 
 interface LocaleResource {
     ingredient: Record<string, string>;
-    unit: Record<string, string>;
     category: Record<string, string>;
     allergen: Record<string, string>;
 }
@@ -63,9 +61,6 @@ function buildLocaleResource(locale: Locale): {
         ingredient[entry.slug] = name;
     }
 
-    const unit = Object.fromEntries(
-        UNIT_KEYS.map((key) => [key, UNIT_NAMES[key][locale]]),
-    );
     const category = Object.fromEntries(
         CATEGORY_KEYS.map((key) => [key, CATEGORY_NAMES[key][locale]]),
     );
@@ -74,7 +69,7 @@ function buildLocaleResource(locale: Locale): {
     );
 
     return {
-        resource: { ingredient, unit, category, allergen },
+        resource: { ingredient, category, allergen },
         missingIngredients,
     };
 }

@@ -12,7 +12,7 @@ import { Button } from "components/ui/Button";
 import { LinkButton } from "components/ui/LinkButton";
 
 import { formatShortDate } from "utils/dateUtils";
-import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolveIngredientName } from "utils/ingredientName";
 
 import styles from "./ExpiredIngredientsModal.module.scss";
 
@@ -88,9 +88,7 @@ export const ExpiredIngredientsModal = ({
                                     <span>
                                         {t("expiredNoticeModal.lotQuantity", {
                                             quantity: lot.quantity,
-                                            unit: resolveUnit(
-                                                ingredient.unitName,
-                                            ),
+                                            unit: ingredient.unitName,
                                         })}
                                     </span>
                                     <span>

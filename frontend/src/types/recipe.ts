@@ -1,4 +1,5 @@
 import type { CatalogIngredientRef } from "types/catalogIngredientRef";
+import type { Tag } from "types/tag";
 
 export interface RecipeListItem {
     id: number;
@@ -28,6 +29,10 @@ export interface RecipeSearchResultItem extends RecipeListItem {
     isOwner: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite: boolean | null;
+    // per viewer: an ingredient or one of its allergens is on their avoid list; null for a guest
+    containsAvoided: boolean | null;
+    // the viewer's own private tags on this recipe; null for a guest
+    tags: Tag[] | null;
 }
 
 export interface RecipeDetailIngredient extends CatalogIngredientRef {
@@ -55,6 +60,10 @@ export interface RecipeDetails {
     isOwner: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite: boolean | null;
+    // per viewer: an ingredient or one of its allergens is on their avoid list; null for a guest
+    containsAvoided: boolean | null;
+    // the viewer's own private tags on this recipe; null for a guest
+    tags: Tag[] | null;
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
     // the author's manual value; null means the total above is auto-computed from the ingredients
@@ -75,6 +84,11 @@ export interface RecipeFilterParams {
     sort_order?: string;
     in_pantry?: boolean;
     favourites?: boolean;
+    // comma-separated allergen slugs
+    exclude_allergens?: string;
+    hide_avoided?: boolean;
+    // comma-separated ids of the viewer's own tags
+    tag_ids?: string;
 }
 
 export interface CreateRecipeIngredient {

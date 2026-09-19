@@ -90,6 +90,8 @@ export const RecipeDetailsView: React.FC<RecipeDetailsViewProps> = ({
                         hasCustomCalories={recipe.calories_override !== null}
                         content={recipe.content}
                         allergens={allergens}
+                        recipeId={recipe.id}
+                        tags={recipe.tags}
                     />
                 </div>
             </div>

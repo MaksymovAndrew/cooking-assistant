@@ -1,0 +1,1 @@
+export { ShoppingListSkeleton } from "./ShoppingListSkeleton";

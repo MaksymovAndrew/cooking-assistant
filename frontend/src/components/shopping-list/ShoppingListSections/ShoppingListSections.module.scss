@@ -1,0 +1,21 @@
+@use "styles/abstracts" as *;
+
+.shopping-list-sections {
+    &__clear {
+        height: 32px;
+        padding: 0 var(--s-3);
+        border: 1px solid var(--border);
+        border-radius: var(--r-pill);
+        color: var(--text-2);
+        font-size: 12.5px;
+    }
+
+    // below desktop an empty bought card is noise; the desktop rail keeps it so the layout doesn't jump
+    &__bought--empty {
+        display: none;
+
+        @include respond-to(desktop) {
+            display: block;
+        }
+    }
+}

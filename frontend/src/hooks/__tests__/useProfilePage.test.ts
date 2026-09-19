@@ -38,6 +38,8 @@ const RECIPE: RecipeSearchResultItem = {
     ingredients: [],
     isOwner: true,
     isFavourite: false,
+    containsAvoided: false,
+    tags: [],
 };
 const MENU: Menu = {
     id: 1,

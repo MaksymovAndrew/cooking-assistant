@@ -13,7 +13,7 @@ import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
 import { NumberInput } from "components/ui/NumberInput";
 
-import { resolvePantryIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolvePantryIngredientName } from "utils/ingredientName";
 
 import styles from "./RestockIngredientModal.module.scss";
 
@@ -42,7 +42,6 @@ export const RestockIngredientModal = ({
         MIN_QUANTITY,
     );
     const displayName = resolvePantryIngredientName(ingredient);
-    const displayUnit = resolveUnit(ingredient.unit_name);
 
     const handleClose = () => dispatch(closeModal(modalId));
 
@@ -93,7 +92,7 @@ export const RestockIngredientModal = ({
             <p className={styles["restock-modal__current"]}>
                 {t("restockModal.current", {
                     quantity: ingredient.quantity_person_ingradient,
-                    unit: displayUnit,
+                    unit: ingredient.unit_name,
                 })}
             </p>
             <div className={styles["restock-modal__input"]}>
@@ -103,7 +102,7 @@ export const RestockIngredientModal = ({
                     onChange={editableQuantity.onChange}
                     onBlur={editableQuantity.onBlur}
                 />
-                <span>{displayUnit}</span>
+                <span>{ingredient.unit_name}</span>
             </div>
         </BaseModal>
     );

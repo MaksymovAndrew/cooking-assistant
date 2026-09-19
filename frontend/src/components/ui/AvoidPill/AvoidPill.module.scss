@@ -1,0 +1,29 @@
+@use "styles/abstracts" as *;
+
+.avoid-pill {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 5px;
+    height: 21px;
+    padding: 0 9px;
+    border: 1px solid color-mix(in srgb, var(--brand) 45%, transparent);
+    border-radius: var(--r-pill);
+    background: var(--brand-subtle);
+    color: var(--brand);
+    font:
+        600 10px Inter,
+        sans-serif;
+    white-space: nowrap;
+
+    &--compact {
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        padding: 0;
+    }
+
+    &__label {
+        @include sr-only;
+    }
+}

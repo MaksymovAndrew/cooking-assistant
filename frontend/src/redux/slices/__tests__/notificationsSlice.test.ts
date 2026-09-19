@@ -21,11 +21,12 @@ describe("notificationsSlice", () => {
         expect(state.items[0]).toMatchObject({
             type: "success",
             message: "Saved",
+            link: null,
         });
         expect(state.items[0].id.length).toBeGreaterThan(0);
     });
 
-    it("should not add a duplicate of a notification that is still visible", () => {
+    it("should replace a notification that is still visible with its repeat", () => {
         const afterFirst = notificationsReducer(
             undefined,
             addNotification({ type: "error", message: "Network Error" }),
@@ -36,6 +37,7 @@ describe("notificationsSlice", () => {
         );
 
         expect(state.items).toHaveLength(1);
+        expect(state.items[0].id).not.toBe(afterFirst.items[0].id);
     });
 
     it("should add notifications with the same message but different types", () => {
@@ -54,13 +56,15 @@ describe("notificationsSlice", () => {
     it("should remove a notification by id", () => {
         const start = {
             items: [
-                { id: "a", type: "info" as const, message: "x" },
-                { id: "b", type: "info" as const, message: "y" },
+                { id: "a", type: "info" as const, message: "x", link: null },
+                { id: "b", type: "info" as const, message: "y", link: null },
             ],
         };
 
         const state = notificationsReducer(start, removeNotification("a"));
 
-        expect(state.items).toEqual([{ id: "b", type: "info", message: "y" }]);
+        expect(state.items).toEqual([
+            { id: "b", type: "info", message: "y", link: null },
+        ]);
     });
 });

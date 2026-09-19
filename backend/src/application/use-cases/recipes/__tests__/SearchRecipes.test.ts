@@ -284,4 +284,61 @@ describe("SearchRecipes", () => {
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
+
+    it("should pass exclude_allergens through as a list of allergens", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute(null, { exclude_allergens: "gluten,milk" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(null, {
+            exclude_allergens: ["gluten", "milk"],
+        });
+    });
+
+    it("should throw a 400 ValidationError when exclude_allergens names an unknown allergen", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(7, { exclude_allergens: "gluten,chocolate" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "exclude_allergens.1: Exclude allergens must be a comma-separated list of allergens",
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should pass the hide_avoided filter through for a signed-in user", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute(7, { hide_avoided: "true" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
+            hide_avoided: true,
+        });
+    });
+
+    it("should throw a 400 ValidationError when an anonymous request uses hide_avoided", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(null, { hide_avoided: "true" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.DIET_REQUIRES_LOGIN,
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
 });

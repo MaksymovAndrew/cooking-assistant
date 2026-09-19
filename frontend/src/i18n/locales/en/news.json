@@ -2,6 +2,11 @@
     "title": "What's new",
     "newCount": "{{total}} new",
     "items": {
+        "shoppingListAndPreferences": {
+            "date": "2026-09-19",
+            "title": "Shopping list, food preferences and tags",
+            "description": "Everything you still need to buy now lives on its own Shopping list page, and a recipe or menu can send its missing ingredients there in one tap. Tell us which allergens and ingredients you avoid and we will mark and sink those recipes for you, and you can now put your own private tags on any recipe."
+        },
         "favourites": {
             "date": "2026-09-15",
             "title": "Favourites are here",

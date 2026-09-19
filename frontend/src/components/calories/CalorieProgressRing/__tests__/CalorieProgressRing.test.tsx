@@ -46,10 +46,9 @@ describe("CalorieProgressRing", () => {
             "calorie-progress-ring--over",
         );
 
-        const arc = screen.getByTestId("calorie-progress-ring-arc");
-        const dashArray = arc.getAttribute("stroke-dasharray") ?? "";
-        const [drawn, total] = dashArray.split(" ").map(Number);
-
-        expect(drawn).toBeCloseTo(total);
+        expect(screen.getByTestId("progress-ring-arc")).toHaveAttribute(
+            "stroke-dashoffset",
+            "0",
+        );
     });
 });

@@ -740,22 +740,6 @@
         "club_soda": "Woda sodowa",
         "tonic_water": "Tonik"
     },
-    "unit": {
-        "g": "gram",
-        "kg": "kilogram",
-        "ml": "mililitr",
-        "l": "litr",
-        "tsp": "łyżeczka",
-        "tbsp": "łyżka",
-        "piece": "szt.",
-        "clove": "ząbek",
-        "bunch": "pęczek",
-        "sprig": "gałązka",
-        "slice": "kromka",
-        "head": "główka",
-        "can": "puszka",
-        "package": "opakowanie"
-    },
     "category": {
         "vegetables": "Warzywa",
         "fruits": "Owoce",

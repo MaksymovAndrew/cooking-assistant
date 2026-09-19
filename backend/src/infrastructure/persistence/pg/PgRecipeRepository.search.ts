@@ -12,6 +12,7 @@ import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColu
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
 import { RECIPE_FILTER_CLAUSES } from "infrastructure/persistence/pg/recipeFilterClauses";
+import { recipeTagsColumn } from "infrastructure/persistence/pg/recipeTagsColumn";
 import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
 
 interface RecipeSearchQueryRow extends RecipeSearchRow {
@@ -25,6 +26,7 @@ function buildBaseRecipeSelect(ownerPlaceholder: string): string {
                ${isOwnerColumn("r", ownerPlaceholder)},
                ${isFavouriteColumn("recipe", "r.id", ownerPlaceholder)},
                ${containsAvoidedColumn("r.id", ownerPlaceholder)},
+               ${recipeTagsColumn("r.id", ownerPlaceholder)},
                rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name, 'allergens', i.allergens)) AS ingredients,
                -- cast: COUNT() is bigint, which pg returns as a string, not a number
                COUNT(*) OVER()::int AS total_count

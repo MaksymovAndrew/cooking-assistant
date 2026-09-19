@@ -483,7 +483,7 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | GET    | `/recipe/:id`             | Single recipe with ingredients                                                       |
 | PUT    | `/recipe/:id`             | Update a recipe                                                                      |
 | DELETE | `/recipe/:id`             | Delete a recipe                                                                      |
-| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites, allergens, avoided) |
+| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites, allergens, avoided, tags) |
 | GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)                                 |
 | GET    | `/recipes-stats`          | Aggregated stats for the statistics page                                             |
 | PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent)                    |
@@ -577,6 +577,23 @@ An unknown allergen slug is a 400, an ingredient missing from the catalog a 404 
 write for an account deleted while its session was still valid a 404 `auth/user_not_found`. The allergen list
 lives in [src/constants/allergens.ts](src/constants/allergens.ts), shared with the catalog scripts.
 
+### Tags ([src/routes/tag.routes.ts](src/routes/tag.routes.ts))
+
+| Method | Path                | Purpose                                                  |
+| ------ | ------------------- | -------------------------------------------------------- |
+| GET    | `/tags`             | The current user's tags, by name                          |
+| POST   | `/tags`             | Create a tag (201 with the tag)                           |
+| PATCH  | `/tags/:id`         | Rename it (204)                                           |
+| DELETE | `/tags/:id`         | Delete it, unlinking it from every recipe (204)           |
+| PUT    | `/recipe/:id/tags`  | Replace the user's tags on that recipe (204)              |
+
+Tags are private: a name is unique per person regardless of case (`tags/duplicate_name`), there is a
+cap of 50 per person (`tags/limit_reached`) and 10 per recipe, and another person's tag answers 404
+`tags/not_found` rather than admitting it exists. A tag can go on any recipe the user can see, not
+just their own. Search and detail responses carry the requester's own `tags` (`null` for a guest),
+and `tag_ids=3,4` filters the list down to recipes carrying any of them - a guest gets a 400
+`tags/requires_login`.
+
 ### Menu categories ([src/routes/menuCategory.routes.ts](src/routes/menuCategory.routes.ts))
 
 | Method | Path               | Purpose         |
@@ -605,6 +622,10 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
   every foreign key `ON DELETE CASCADE`). Search and detail queries turn it into the per-requester
   `containsAvoided` column (`containsAvoidedColumn.ts`), which also drives the default ranking and
   `hide_avoided`.
+- `person_tags` / `recipe_tag_links` - a person's private tags and what they put them on (both
+  foreign keys `ON DELETE CASCADE`, one unique index on `(person_id, lower(name))`). Search and detail
+  queries turn them into the per-requester `tags` column (`recipeTagsColumn.ts`), which also backs the
+  `tag_ids` filter.
 - `ingredients.id_unit_measurement` -> `unit_measurement`
 - `ingredients` carries metadata: `allergens`, `days_to_expire`, `seasonality`, `storage_condition`
 - `menu` (per-user, with `category_id` -> `menu_category`) to `recipes` through `menu_recipe`

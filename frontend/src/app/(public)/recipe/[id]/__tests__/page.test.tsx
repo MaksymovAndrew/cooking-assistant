@@ -26,6 +26,7 @@ const SAMPLE: RecipeDetails = {
     isOwner: false,
     isFavourite: false,
     containsAvoided: false,
+    tags: [],
     calories_per_portion: null,
     calories_override: null,
 };

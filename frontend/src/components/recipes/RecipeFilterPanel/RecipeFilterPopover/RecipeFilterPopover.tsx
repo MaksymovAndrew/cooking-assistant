@@ -18,6 +18,7 @@ import { resolveAllergen } from "utils/ingredientName";
 import { RecipeCalorieRangeFields } from "./RecipeCalorieRangeFields";
 import { RecipeFilterToggles } from "./RecipeFilterToggles";
 import { RecipeIngredientsFilter } from "./RecipeIngredientsFilter";
+import { RecipeTagsFilter } from "./RecipeTagsFilter";
 import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
 
 interface RecipeFilterPopoverProps {
@@ -146,6 +147,13 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                     }}
                 />
             </div>
+
+            <RecipeTagsFilter
+                value={filters.tags}
+                onChange={(next) => {
+                    setValue("tags", next);
+                }}
+            />
 
             <RecipeIngredientsFilter
                 allIngredients={ingredients}

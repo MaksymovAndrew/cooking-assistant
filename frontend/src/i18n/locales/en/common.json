@@ -118,6 +118,10 @@
         "favourites/requires_login": "Log in to see your favourites.",
         "ingredient/not_found": "This ingredient is no longer in the catalog.",
         "diet/requires_login": "Log in to hide recipes with what you avoid.",
+        "tags/not_found": "This tag no longer exists.",
+        "tags/duplicate_name": "You already have a tag with this name.",
+        "tags/limit_reached": "You have reached the tag limit. Delete one first.",
+        "tags/requires_login": "Log in to filter by your tags.",
         "shopping_list/item_not_found": "This item is no longer on your list.",
         "shopping_list/limit_reached": "Your shopping list is full. Remove a few items first.",
         "shopping_list/order_out_of_date": "Your list changed somewhere else. It has been refreshed, try again."

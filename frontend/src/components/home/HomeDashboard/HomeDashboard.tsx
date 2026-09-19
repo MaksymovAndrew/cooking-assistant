@@ -8,6 +8,7 @@ import { useEmailVerificationNudge } from "hooks/useEmailVerificationNudge";
 import { useHomeDashboard } from "hooks/useHomeDashboard";
 import { useNewsBadge } from "hooks/useNewsBadge";
 
+import { CookbookStatsBanner } from "components/home/CookbookStatsBanner";
 import { EmailVerificationBanner } from "components/home/EmailVerificationBanner";
 import { ExpiringSoon } from "components/home/ExpiringSoon";
 import { GreetingHeader } from "components/home/GreetingHeader";
@@ -63,11 +64,16 @@ export const HomeDashboard: React.FC = () => {
                 kcalGoal={dashboard.kcalGoal}
             />
             <div className={styles["home-dashboard__panels"]}>
-                <RecentRecipes
-                    recipes={dashboard.recentRecipes}
-                    calorieGoal={dashboard.kcalGoal}
-                    calorieRemaining={dashboard.calorieRemaining}
-                />
+                <div className={styles["home-dashboard__main"]}>
+                    <RecentRecipes
+                        recipes={dashboard.recentRecipes}
+                        calorieGoal={dashboard.kcalGoal}
+                        calorieRemaining={dashboard.calorieRemaining}
+                    />
+                    <CookbookStatsBanner
+                        className={styles["home-dashboard__stats"]}
+                    />
+                </div>
                 <div className={styles["home-dashboard__rail"]}>
                     <PantryRecipesCard />
                     <ExpiringSoon

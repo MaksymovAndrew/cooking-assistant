@@ -339,6 +339,12 @@ via `useTranslation("<namespace>")`; non-React code (Redux middleware, utilities
 directly. Every user-visible string must go through i18n - no hardcoded English in components, hooks, or
 Redux middleware.
 
+Units of measurement are the one exception: they are rendered straight from the record's `unit_name`
+(`g`, `kg`, `ml`, `L`, `tsp`, `piece`, ...), the same short forms the `unit_measurement` table stores.
+The catalog used to carry spelled-out names for them, and "250 milliliter" wrapped out of every tight
+quantity row. Reach for a translation layer again only when a second language actually ships, and give
+it short forms then too.
+
 ## Layering, ESLint boundaries, path aliases
 
 - **Bare path aliases**, never `../` across folders: `api/`, `app/`, `components/`, `hooks/`, `utils/`,

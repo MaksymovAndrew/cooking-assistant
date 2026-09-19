@@ -61,6 +61,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
             favourites: false,
             excludeAllergens: [],
             hideAvoided: false,
+            tags: [],
         });
         setPopoverResetKey((key) => key + 1);
     };

@@ -16,11 +16,12 @@ export async function gotoPublicForm(page: Page, path: string): Promise<void> {
 // at the start and requiring a known unit word right after it picks out only the exact ingredient.
 // These are the *displayed* unit words (catalog.json's "en" translations), not the raw catalog
 // unit keys - g/kg/ml/l render as "gram"/"kilogram"/"milliliter"/"liter".
-const CATALOG_UNIT_WORDS = [
-    "gram",
-    "kilogram",
-    "milliliter",
-    "liter",
+// the short forms the UI prints, straight from unit_measurement - they anchor the option's name
+const CATALOG_UNITS = [
+    "g",
+    "kg",
+    "ml",
+    "L",
     "tsp",
     "tbsp",
     "piece",
@@ -45,7 +46,7 @@ export async function selectFromPicker(
 ): Promise<void> {
     await searchBox.fill(query);
 
-    const unitPattern = CATALOG_UNIT_WORDS.join("|");
+    const unitPattern = CATALOG_UNITS.join("|");
     const exactIngredientOption = page.getByRole("button", {
         name: new RegExp(`^${escapeRegExp(query)}\\s(${unitPattern})\\b`, "i"),
     });

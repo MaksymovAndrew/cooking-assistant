@@ -36,7 +36,7 @@ describe("MenuMissingIngredientsPanel", () => {
         expect(screen.getByText("Ingredients")).toBeInTheDocument();
         expect(screen.getByText("1")).toBeInTheDocument();
         expect(screen.getByText("Tomato")).toBeInTheDocument();
-        expect(screen.getByText("2 kilogram")).toBeInTheDocument();
+        expect(screen.getByText("2 kg")).toBeInTheDocument();
         expect(
             screen.getByRole("link", { name: "Go to pantry" }),
         ).toHaveAttribute("href", "/ingredients");
@@ -60,7 +60,7 @@ describe("MenuMissingIngredientsPanel", () => {
             { store: AUTHED_STORE },
         );
 
-        expect(screen.getByText("1.25 kilogram")).toBeInTheDocument();
+        expect(screen.getByText("1.25 kg")).toBeInTheDocument();
     });
 
     it("should send only the shortfall of the missing ingredients to the shopping list", async () => {

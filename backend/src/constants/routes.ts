@@ -22,6 +22,7 @@ export const ROUTES = {
         list: "/recipes",
         byId: "/recipe/:id",
         favourite: "/recipe/:id/favourite",
+        tags: "/recipe/:id/tags",
         byFilters: "/recipes-by-filters",
         byPerson: "/recipes-filters-person",
         stats: "/recipes-stats",
@@ -65,6 +66,11 @@ export const ROUTES = {
     dietPreferences: {
         get: "/diet-preferences",
         allergen: "/diet-preferences/allergens/:slug",
+    },
+
+    tags: {
+        list: "/tags",
+        byId: "/tags/:id",
     },
 
     shoppingList: {

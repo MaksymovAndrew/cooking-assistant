@@ -1,10 +1,13 @@
 import React from "react";
 
+import type { Tag } from "types/tag";
+
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
 import { CalorieDisclaimer } from "components/recipes/CalorieDisclaimer";
 import { RecipeDescriptionPanel } from "components/recipes/RecipeDescriptionPanel";
 import { RecipeIngredientsPanel } from "components/recipes/RecipeIngredientsPanel";
+import { RecipeTagsPanel } from "components/recipes/RecipeTagsPanel";
 
 interface RecipeDetailsSecondaryProps {
     ingredientsAreaClassName: string;
@@ -19,6 +22,9 @@ interface RecipeDetailsSecondaryProps {
     hasCustomCalories: boolean;
     content: string;
     allergens: string[];
+    recipeId: number;
+    // null for a guest - the tag panel is the viewer's own, so it stays off the page for them
+    tags: Tag[] | null;
 }
 
 // the ingredients + description panels, split out of RecipeDetailsPage to keep the page under the pages/ max-lines cap
@@ -35,6 +41,8 @@ export const RecipeDetailsSecondary: React.FC<RecipeDetailsSecondaryProps> = ({
     hasCustomCalories,
     content,
     allergens,
+    recipeId,
+    tags,
 }) => (
     <>
         <div className={ingredientsAreaClassName}>
@@ -52,6 +60,9 @@ export const RecipeDetailsSecondary: React.FC<RecipeDetailsSecondaryProps> = ({
         </div>
         <div className={descriptionAreaClassName}>
             <RecipeDescriptionPanel content={content} allergens={allergens} />
+            {tags !== null && (
+                <RecipeTagsPanel recipeId={recipeId} tags={tags} />
+            )}
         </div>
     </>
 );

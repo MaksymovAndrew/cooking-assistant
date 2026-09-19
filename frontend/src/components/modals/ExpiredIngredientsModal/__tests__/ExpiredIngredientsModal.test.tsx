@@ -18,7 +18,7 @@ const INGREDIENTS: ExpiredPantryIngredient[] = [
         ingredientId: 1,
         slug: "milk",
         name: "Milk",
-        unitName: "l",
+        unitName: "L",
         lots: [
             {
                 quantity: 1,
@@ -77,7 +77,7 @@ describe("ExpiredIngredientsModal", () => {
     it("should list every expired lot's quantity, not just one per ingredient", () => {
         renderOpen();
 
-        expect(screen.getByText("1 liter")).toBeInTheDocument();
+        expect(screen.getByText("1 L")).toBeInTheDocument();
         expect(screen.getByText("6 piece")).toBeInTheDocument();
         expect(screen.getByText("12 piece")).toBeInTheDocument();
     });

@@ -17,6 +17,7 @@ export const API_ROUTES = {
         create: "/api/recipe",
         byId: (id: string | number) => `/api/recipe/${id}`,
         favourite: (id: string | number) => `/api/recipe/${id}/favourite`,
+        tags: (id: string | number) => `/api/recipe/${id}/tags`,
         stats: "/api/recipes-stats",
     },
     recipeTypes: {
@@ -51,6 +52,10 @@ export const API_ROUTES = {
     dietPreferences: {
         get: "/api/diet-preferences",
         allergen: (slug: string) => `/api/diet-preferences/allergens/${slug}`,
+    },
+    tags: {
+        list: "/api/tags",
+        byId: (id: string | number) => `/api/tags/${id}`,
     },
     shoppingList: {
         list: "/api/shopping-list",

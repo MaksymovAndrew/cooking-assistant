@@ -10,6 +10,7 @@ import type { PantryRepository } from "domain/repositories/PantryRepository";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
 import type { ShoppingListRepository } from "domain/repositories/ShoppingListRepository";
+import type { TagRepository } from "domain/repositories/TagRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
 import type { EmailSender } from "application/ports/EmailSender";
@@ -30,6 +31,7 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     favouriteRepository: jest.Mocked<FavouriteRepository>;
     dietPreferencesRepository: jest.Mocked<DietPreferencesRepository>;
     shoppingListRepository: jest.Mocked<ShoppingListRepository>;
+    tagRepository: jest.Mocked<TagRepository>;
     passwordHasher: jest.Mocked<PasswordHasher>;
     tokenService: jest.Mocked<TokenService>;
     emailSender: jest.Mocked<EmailSender>;
@@ -134,6 +136,16 @@ function createShoppingListRepository(): jest.Mocked<ShoppingListRepository> {
     };
 }
 
+function createTagRepository(): jest.Mocked<TagRepository> {
+    return {
+        findByPerson: jest.fn(),
+        create: jest.fn(),
+        rename: jest.fn(),
+        delete: jest.fn(),
+        setRecipeTags: jest.fn(),
+    };
+}
+
 function createPasswordHasher(): jest.Mocked<PasswordHasher> {
     return {
         hash: jest.fn(),
@@ -169,6 +181,7 @@ export function buildFakeDeps(): FakeRepositoryDeps {
         favouriteRepository: createFavouriteRepository(),
         dietPreferencesRepository: createDietPreferencesRepository(),
         shoppingListRepository: createShoppingListRepository(),
+        tagRepository: createTagRepository(),
         passwordHasher: createPasswordHasher(),
         tokenService: createTokenService(),
         emailSender: createEmailSender(),

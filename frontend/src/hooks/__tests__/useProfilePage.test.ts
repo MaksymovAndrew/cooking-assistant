@@ -39,6 +39,7 @@ const RECIPE: RecipeSearchResultItem = {
     isOwner: true,
     isFavourite: false,
     containsAvoided: false,
+    tags: [],
 };
 const MENU: Menu = {
     id: 1,

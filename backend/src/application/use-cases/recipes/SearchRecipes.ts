@@ -33,6 +33,10 @@ export default class SearchRecipes {
                 throw new ValidationError(ERROR_CODES.DIET_REQUIRES_LOGIN);
             }
 
+            if (validFilters.tag_ids) {
+                throw new ValidationError(ERROR_CODES.TAGS_REQUIRES_LOGIN);
+            }
+
             return this.recipeRepository.search(null, validFilters);
         }
 

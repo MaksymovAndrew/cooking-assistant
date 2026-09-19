@@ -40,6 +40,7 @@ const BASE_FILTERS: RecipeFilterState = {
     favourites: false,
     excludeAllergens: [],
     hideAvoided: false,
+    tags: [],
 };
 
 const setup = (
@@ -349,6 +350,7 @@ describe("RecipeFilterPanel", () => {
             favourites: false,
             excludeAllergens: [],
             hideAvoided: false,
+            tags: [],
         });
         expect(setValue).not.toHaveBeenCalledWith(
             "search",

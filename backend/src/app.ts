@@ -28,6 +28,7 @@ import createMenuRouter from "routes/menu.routes";
 import createMenuCategoryRouter from "routes/menuCategory.routes";
 import createRecipeRouter from "routes/recipe.routes";
 import createShoppingListRouter from "routes/shoppingList.routes";
+import createTagRouter from "routes/tag.routes";
 import createTypeRouter from "routes/type.routes";
 import createUserRouter from "routes/user.routes";
 import createUserIngredientsRouter from "routes/userIngredients.routes";
@@ -96,6 +97,7 @@ export function createApp(controllers: Controllers): Express {
         API_PREFIX,
         createShoppingListRouter(controllers.shoppingListController),
     );
+    app.use(API_PREFIX, createTagRouter(controllers.tagController));
 
     app.use((_req, _res, next) => {
         next(new NotFoundError(ERROR_CODES.NOT_FOUND));

@@ -1,6 +1,6 @@
 import type { ShoppingListItem } from "types/shoppingList";
 
-import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolveIngredientName } from "utils/ingredientName";
 import { roundQuantity } from "utils/roundQuantity";
 
 // a catalog item follows the viewer's language through its slug; a typed one keeps what was typed
@@ -23,5 +23,5 @@ export const shoppingListItemQuantity = (
 
     return item.unit_name === null
         ? String(amount)
-        : `${amount} ${resolveUnit(item.unit_name)}`;
+        : `${amount} ${item.unit_name}`;
 };

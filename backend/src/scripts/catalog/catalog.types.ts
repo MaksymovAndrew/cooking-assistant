@@ -36,7 +36,8 @@ export const UNIT_KEYS = [
     "g",
     "kg",
     "ml",
-    "l",
+    // capital L: on a row next to a number a lowercase "l" reads as a one
+    "L",
     "tsp",
     "tbsp",
     "piece",
@@ -56,7 +57,7 @@ export const UNIT_COEFFICIENTS: Partial<Record<UnitKey, number>> = {
     g: 1,
     kg: 1000,
     ml: 1,
-    l: 1000,
+    L: 1000,
     tsp: 5,
     tbsp: 15,
 };

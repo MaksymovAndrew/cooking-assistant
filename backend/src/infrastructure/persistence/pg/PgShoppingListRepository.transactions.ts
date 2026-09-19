@@ -8,10 +8,8 @@ import type {
     ShoppingListItemRow,
 } from "domain/repositories/ShoppingListRepository";
 
-import {
-    inPersonListTransaction,
-    readTotals,
-} from "./PgShoppingListRepository.lock";
+import { inPersonWriteTransaction } from "./personWriteTransaction";
+import { readTotals } from "./PgShoppingListRepository.lock";
 
 export function addItem(
     pool: Pool,
@@ -24,7 +22,7 @@ export function addItem(
         item: null,
     };
 
-    return inPersonListTransaction<ShoppingListAddItemResult>(
+    return inPersonWriteTransaction<ShoppingListAddItemResult>(
         pool,
         personId,
         missingPerson,
@@ -60,7 +58,7 @@ export function reorder(
     ids: number[],
 ): Promise<boolean> {
     // a missing person has no items, so the stale-list check would refuse the order anyway
-    return inPersonListTransaction(pool, personId, false, async (client) => {
+    return inPersonWriteTransaction(pool, personId, false, async (client) => {
         const current = await client.query<{ id: number }>(
             `SELECT id FROM shopping_list_items WHERE person_id = $1`,
             [personId],
@@ -92,7 +90,7 @@ export function addIngredients(
     items: ShoppingListIngredientInput[],
     maxItems: number,
 ): Promise<ShoppingListAddOutcome> {
-    return inPersonListTransaction<ShoppingListAddOutcome>(
+    return inPersonWriteTransaction<ShoppingListAddOutcome>(
         pool,
         personId,
         "person_not_found",

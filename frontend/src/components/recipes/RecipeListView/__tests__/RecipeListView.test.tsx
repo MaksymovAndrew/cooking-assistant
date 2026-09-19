@@ -27,6 +27,7 @@ const RECIPES: RecipeSearchResultItem[] = [
         isOwner: false,
         isFavourite: false,
         containsAvoided: false,
+        tags: [],
     },
 ];
 
@@ -41,6 +42,7 @@ const FILTERS: RecipeFilterState = {
     favourites: false,
     excludeAllergens: [],
     hideAvoided: false,
+    tags: [],
 };
 
 const baseProps = {

@@ -15,6 +15,7 @@ export interface RecipeFilters {
     favourites?: boolean;
     exclude_allergens?: AllergenSlug[];
     hide_avoided?: boolean;
+    tag_ids?: string;
     limit?: number;
     offset?: number;
 }
@@ -26,6 +27,7 @@ export interface RecipeSearchRow {
     isOwner: boolean;
     isFavourite: boolean | null;
     containsAvoided: boolean | null;
+    tags: { id: number; name: string }[] | null;
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;

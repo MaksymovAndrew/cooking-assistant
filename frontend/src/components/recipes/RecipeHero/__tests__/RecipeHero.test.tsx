@@ -29,6 +29,7 @@ const BASE_RECIPE: RecipeDetails = {
     isOwner: false,
     isFavourite: false,
     containsAvoided: false,
+    tags: [],
     calories_per_portion: 420,
     calories_override: null,
 };

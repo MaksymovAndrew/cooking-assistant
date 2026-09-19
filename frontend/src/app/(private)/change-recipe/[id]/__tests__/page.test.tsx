@@ -33,6 +33,7 @@ const SAMPLE: RecipeDetails = {
     isOwner: true,
     isFavourite: false,
     containsAvoided: false,
+    tags: [],
     calories_per_portion: null,
     calories_override: null,
 };

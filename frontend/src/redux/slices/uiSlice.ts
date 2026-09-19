@@ -21,6 +21,7 @@ export const MODAL_TYPE = {
     news: "news",
     offline: "offline",
     restockIngredient: "restockIngredient",
+    deleteTag: "deleteTag",
 } as const;
 
 export interface IngredientHistoryModalInput {
@@ -95,6 +96,12 @@ export interface RestockIngredientModalInput {
 }
 
 // what a caller provides; the id is generated in the action `prepare` step
+export interface DeleteTagModalInput {
+    type: typeof MODAL_TYPE.deleteTag;
+    tagId: number;
+    tagName: string;
+}
+
 export type ModalInput =
     | IngredientHistoryModalInput
     | DeleteRecipeModalInput
@@ -108,7 +115,8 @@ export type ModalInput =
     | LogIntakeModalInput
     | NewsModalInput
     | OfflineModalInput
-    | RestockIngredientModalInput;
+    | RestockIngredientModalInput
+    | DeleteTagModalInput;
 
 // distributes over the union so `modal.type` still narrows to the matching payload
 type WithId<T> = T extends unknown ? T & { id: string } : never;

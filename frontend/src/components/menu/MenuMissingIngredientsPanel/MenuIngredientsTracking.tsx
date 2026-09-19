@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolveIngredientName } from "utils/ingredientName";
 import type { AggregatedIngredient } from "utils/menuUtils";
 import { roundQuantity } from "utils/roundQuantity";
 
@@ -124,7 +124,7 @@ export const MenuIngredientsTracking: React.FC<
                                                 ? quantity
                                                 : missingQuantity,
                                         )}{" "}
-                                        {resolveUnit(unit)}
+                                        {unit}
                                     </span>
                                 </li>
                             ),

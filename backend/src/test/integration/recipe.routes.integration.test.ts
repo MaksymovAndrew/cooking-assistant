@@ -15,6 +15,7 @@ const RECIPE_ROW_EXTRAS = {
     isOwner: false,
     isFavourite: false,
     containsAvoided: false,
+    tags: [],
     type_id: 1,
     creation_date: new Date("2026-01-01T00:00:00.000Z"),
     cooking_time: 30,

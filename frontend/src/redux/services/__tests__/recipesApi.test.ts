@@ -34,6 +34,7 @@ const LIST: RecipeSearchResultItem[] = [
         isOwner: false,
         isFavourite: false,
         containsAvoided: false,
+        tags: [],
     },
 ];
 const PAGE = { items: LIST, total: LIST.length };
@@ -66,6 +67,7 @@ const DETAIL: RecipeDetails = {
     isOwner: true,
     isFavourite: false,
     containsAvoided: false,
+    tags: [],
     calories_per_portion: null,
     calories_override: null,
 };
@@ -209,6 +211,7 @@ describe("recipesApi", () => {
                 isOwner: true,
                 isFavourite: false,
                 containsAvoided: false,
+                tags: [],
             },
         });
         const store = makeTestStore();

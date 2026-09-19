@@ -226,6 +226,9 @@ jobs:
       DB_PORT: "5432"
       DB_NAME: cooking_helper
       JWT_SECRET_KEY: e2e-ci-only-secret-key-0123456789abcdef
+      # the whole suite is one client hammering the API, and every rendered page adds its own
+      # server-side calls - the production default of 300/min rejects the last specs with a 429
+      RATE_LIMIT_MAX: "5000"
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup

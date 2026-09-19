@@ -20,6 +20,8 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.6 - 2026-09-19
+
 ### Project
 
 - Changed: Routine dependency maintenance, including a security fix in response compression.
@@ -28,10 +30,13 @@ changelogs and the tags and now track everything here against one shared version
 
 - Added: A Shopping list page - add items with an optional note, tick them off, reorder what is left to buy and clear the bought ones, with a basket progress ring; on desktop the bought items sit in their own column, and items glide smoothly when they move, get ticked, added or removed.
 - Changed: The calorie ring on the Dietary tab now draws itself in when it appears and when the numbers change.
-- Changed: Shopping takes the Stats tab's place in the mobile bottom bar; Stats is now linked from the profile page, and stays in the desktop top bar.
+- Changed: Shopping takes the Stats tab's place in the mobile bottom bar, and Stats stays in the desktop top bar.
+- Changed: Statistics moved off the profile and onto the home page, as a "Cookbook stats" banner - the numbers there cover every recipe in the app, not your own, so the profile was the wrong home for them.
 - Added: Missing ingredients go on the shopping list in one tap - from a recipe (for the portions you picked), from a menu (just the shortfall) and from the home page's "Expiring soon" card; a confirmation links straight to the list.
 - Added: Food preferences on the Dietary tab - pick the allergens and ingredients you avoid, each saved the moment you tap it. Recipes with any of them move to the bottom of lists and get a soft "Avoid" mark, and the recipe and menu pages point out exactly what you avoid.
 - Added: Two recipe filters - hide everything you avoid, and leave out chosen allergens (open to everyone, no account needed).
+- Added: Private tags on any recipe you can see - create them right on the recipe page, rename or delete them there, and filter the recipe list by them. Only you ever see your tags.
+- Changed: Units are written the short way everywhere - "500 g" and "250 ml" instead of "500 gram" and "250 milliliter" - so quantities fit on one line on a phone and in the recipe form.
 - Fixed: Tapping the portions stepper on a recipe page before it has finished loading no longer silently does nothing - the buttons wait until they can respond.
 
 ### Backend
@@ -39,6 +44,7 @@ changelogs and the tags and now track everything here against one shared version
 - Added: A personal shopping list - add, check off, reorder and clear items, or add catalog ingredients with a quantity; adding an ingredient that is already on the list adds to its quantity instead of duplicating it, so ingredients from several recipes sum up.
 - Changed: A catalog ingredient can go on the shopping list without a quantity; adding it again keeps whatever amount the list already had.
 - Added: Food preferences - a signed-in user can avoid allergens and single ingredients. Recipe lists mark what contains any of them and rank those recipes last (favourites first), and two new filters hide them or leave out chosen allergens.
+- Added: Private recipe tags - up to 50 per person and 10 per recipe, attachable to any recipe the user can see, with a tag filter on the recipe list. Tags stay invisible to everyone else.
 
 ## 4.5 - 2026-09-15
 

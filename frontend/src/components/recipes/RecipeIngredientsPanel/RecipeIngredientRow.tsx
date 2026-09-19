@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 
 import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
-import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolveIngredientName } from "utils/ingredientName";
 import { roundQuantity } from "utils/roundQuantity";
 
 import styles from "./RecipeIngredientsPanel.module.scss";
@@ -85,7 +85,7 @@ export const RecipeIngredientRow: React.FC<RecipeIngredientRowProps> = ({
                 {resolveIngredientName(ingredient)}
             </span>
             <span className={styles["recipe-ingredients-panel__qty"]}>
-                {roundQuantity(quantity)} {resolveUnit(ingredient.unit_name)}
+                {roundQuantity(quantity)} {ingredient.unit_name}
                 {calories !== null && (
                     <span
                         className={

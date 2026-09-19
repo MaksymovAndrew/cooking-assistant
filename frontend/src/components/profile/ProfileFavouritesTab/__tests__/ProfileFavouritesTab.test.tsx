@@ -23,6 +23,7 @@ const RECIPE: RecipeSearchResultItem = {
     isOwner: false,
     isFavourite: true,
     containsAvoided: false,
+    tags: [],
 };
 const MENU: Menu = {
     id: 2,

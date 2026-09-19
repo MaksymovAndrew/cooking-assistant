@@ -9,7 +9,7 @@ import { useEditableQuantity } from "hooks/useEditableQuantity";
 import { GripMark } from "components/icons";
 import { NumberInput } from "components/ui/NumberInput";
 
-import { resolveIngredientName, resolveUnit } from "utils/ingredientName";
+import { resolveIngredientName } from "utils/ingredientName";
 
 import styles from "./SelectedIngredientsList.module.scss";
 
@@ -75,7 +75,7 @@ const SelectedIngredientRow: React.FC<SelectedIngredientRowProps> = ({
                 className={styles["selected-ingredients-list__quantity"]}
             />
             <span className={styles["selected-ingredients-list__unit"]}>
-                {resolveUnit(ingredient.unit_name)}
+                {ingredient.unit_name}
             </span>
             <button
                 type="button"

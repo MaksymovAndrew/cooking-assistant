@@ -12,6 +12,7 @@ import recipes from "i18n/locales/en/recipes.json";
 import settings from "i18n/locales/en/settings.json";
 import shoppingList from "i18n/locales/en/shoppingList.json";
 import stats from "i18n/locales/en/stats.json";
+import tags from "i18n/locales/en/tags.json";
 
 export const DEFAULT_LANGUAGE = "en";
 export const DEFAULT_NAMESPACE = "common";
@@ -35,5 +36,6 @@ export const resources = {
         calories,
         shoppingList,
         dietPreferences,
+        tags,
     },
 };

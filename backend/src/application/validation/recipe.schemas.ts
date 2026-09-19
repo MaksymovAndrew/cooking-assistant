@@ -138,6 +138,7 @@ export const recipeFiltersSchema = z.object({
         )
         .optional(),
     hide_avoided: booleanQuerySchema("Hide avoided"),
+    tag_ids: idListStringSchema("Tag IDs").optional(),
     limit: limitSchema,
     offset: offsetSchema,
 }) satisfies z.ZodType<RecipeFilters>;

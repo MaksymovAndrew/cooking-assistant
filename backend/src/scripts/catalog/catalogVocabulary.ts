@@ -1,5 +1,5 @@
-// hand-written translations for the closed vocabularies (categories, allergens, units) - unlike ingredient names these never come from the translation source, cross-checked against catalog.types.ts's key lists at generation time
-import type { ALLERGEN_SLUGS, CATEGORY_KEYS, UNIT_KEYS } from "./catalog.types";
+// hand-written translations for the closed vocabularies (categories, allergens) - unlike ingredient names these never come from the translation source, cross-checked against catalog.types.ts's key lists at generation time
+import type { ALLERGEN_SLUGS, CATEGORY_KEYS } from "./catalog.types";
 
 export type Locale = "en" | "ru" | "uk" | "pl";
 export const LOCALES: Locale[] = ["en", "ru", "uk", "pl"];
@@ -116,29 +116,4 @@ export const ALLERGEN_NAMES: Record<
     },
     lupin: { en: "Lupin", ru: "Люпин", uk: "Люпин", pl: "Łubin" },
     molluscs: { en: "Molluscs", ru: "Моллюски", uk: "Молюски", pl: "Mięczaki" },
-};
-
-export const UNIT_NAMES: Record<
-    (typeof UNIT_KEYS)[number],
-    Record<Locale, string>
-> = {
-    g: { en: "gram", ru: "грамм", uk: "грам", pl: "gram" },
-    kg: { en: "kilogram", ru: "килограмм", uk: "кілограм", pl: "kilogram" },
-    ml: { en: "milliliter", ru: "миллилитр", uk: "мілілітр", pl: "mililitr" },
-    l: { en: "liter", ru: "литр", uk: "літр", pl: "litr" },
-    tsp: { en: "tsp", ru: "ч. л.", uk: "ч. л.", pl: "łyżeczka" },
-    tbsp: { en: "tbsp", ru: "ст. л.", uk: "ст. л.", pl: "łyżka" },
-    piece: { en: "piece", ru: "шт.", uk: "шт.", pl: "szt." },
-    clove: { en: "clove", ru: "зубчик", uk: "зубчик", pl: "ząbek" },
-    bunch: { en: "bunch", ru: "пучок", uk: "пучок", pl: "pęczek" },
-    sprig: { en: "sprig", ru: "веточка", uk: "гілочка", pl: "gałązka" },
-    slice: { en: "slice", ru: "ломтик", uk: "скибка", pl: "kromka" },
-    head: { en: "head", ru: "головка", uk: "головка", pl: "główka" },
-    can: { en: "can", ru: "банка", uk: "банка", pl: "puszka" },
-    package: {
-        en: "package",
-        ru: "упаковка",
-        uk: "упаковка",
-        pl: "opakowanie",
-    },
 };

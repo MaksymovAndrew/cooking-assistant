@@ -1,0 +1,68 @@
+@use "styles/abstracts" as *;
+
+.cookbook-stats-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-3);
+    padding: var(--s-5);
+
+    @include card-surface;
+
+    // wide on desktop, where it sits under the recent recipes and fills the column
+    @include respond-to(desktop) {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--s-4);
+    }
+
+    &__icon {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: var(--r-sm);
+        background: var(--brand-subtle);
+        color: var(--brand);
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        @include respond-to(desktop) {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        color: var(--text);
+        font:
+            600 15px Fraunces,
+            serif;
+    }
+
+    &__description {
+        margin: 0;
+        color: var(--text-2);
+        font:
+            400 13px/1.45 Inter,
+            sans-serif;
+        text-wrap: pretty;
+    }
+
+    &__cta {
+        align-self: stretch;
+        text-align: center;
+
+        @include respond-to(desktop) {
+            align-self: center;
+            white-space: nowrap;
+        }
+    }
+}

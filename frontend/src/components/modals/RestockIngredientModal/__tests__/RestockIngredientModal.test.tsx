@@ -50,7 +50,7 @@ describe("RestockIngredientModal", () => {
 
         expect(screen.getByText("Buy more Salt")).toBeInTheDocument();
         expect(
-            screen.getByText("You currently have 100 gram."),
+            screen.getByText("You currently have 100 g."),
         ).toBeInTheDocument();
     });
 

@@ -1,0 +1,28 @@
+{
+    "panel": {
+        "title": "My tags",
+        "helper": "Only you can see your tags.",
+        "empty": "No tags on this recipe yet.",
+        "edit": "Edit tags",
+        "done": "Done"
+    },
+    "editor": {
+        "newPlaceholder": "New tag name",
+        "add": "Add tag",
+        "listLabel": "Your tags",
+        "empty": "You have no tags yet. Create your first one above.",
+        "rename": "Rename {{name}}",
+        "delete": "Delete {{name}}",
+        "save": "Save name",
+        "cancel": "Cancel"
+    },
+    "deleteModal": {
+        "title": "Delete this tag?",
+        "message": "\"{{name}}\" will be removed from every recipe you put it on."
+    },
+    "filter": {
+        "label": "My tags",
+        "chip_one": "{{count}} tag",
+        "chip_other": "{{count}} tags"
+    }
+}

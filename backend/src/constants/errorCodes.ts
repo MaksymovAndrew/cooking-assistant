@@ -41,6 +41,11 @@ export const ERROR_CODES = {
     INGREDIENT_NOT_FOUND: "ingredient/not_found",
     DIET_REQUIRES_LOGIN: "diet/requires_login",
 
+    TAG_NOT_FOUND: "tags/not_found",
+    TAG_DUPLICATE_NAME: "tags/duplicate_name",
+    TAG_LIMIT_REACHED: "tags/limit_reached",
+    TAGS_REQUIRES_LOGIN: "tags/requires_login",
+
     SHOPPING_LIST_ITEM_NOT_FOUND: "shopping_list/item_not_found",
     SHOPPING_LIST_LIMIT_REACHED: "shopping_list/limit_reached",
     SHOPPING_LIST_ORDER_OUT_OF_DATE: "shopping_list/order_out_of_date",

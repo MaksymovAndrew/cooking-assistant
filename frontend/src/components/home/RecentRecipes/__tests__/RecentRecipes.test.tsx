@@ -17,6 +17,7 @@ const RECIPE: RecipeSearchResultItem = {
     isOwner: true,
     isFavourite: false,
     containsAvoided: false,
+    tags: [],
 };
 
 describe("RecentRecipes", () => {

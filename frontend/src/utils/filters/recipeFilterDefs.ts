@@ -24,6 +24,7 @@ export interface RecipeFilterState {
     favourites: boolean;
     excludeAllergens: AllergenSlug[];
     hideAvoided: boolean;
+    tags: number[];
 }
 
 // shared with links that pre-set the filter before navigating (see PantryRecipesCard)
@@ -132,5 +133,11 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
         urlParam: "avoid",
         param: "hide_avoided",
         chipLabel: (_value, t) => t("filterPanel.hideAvoidedChip"),
+    }),
+    idListFilter<RecipeFilterParams>({
+        key: "tags",
+        urlParam: "tags",
+        param: "tag_ids",
+        chipLabel: (value, t) => t("tags:filter.chip", { count: value.length }),
     }),
 ];

@@ -31,6 +31,7 @@ describe("viewerSelectors", () => {
                 canEditOwn: true,
                 canUsePantry: true,
                 canAvoid: true,
+                canTag: true,
             });
         });
 
@@ -41,6 +42,7 @@ describe("viewerSelectors", () => {
                 canEditOwn: false,
                 canUsePantry: false,
                 canAvoid: false,
+                canTag: false,
             });
         });
     });

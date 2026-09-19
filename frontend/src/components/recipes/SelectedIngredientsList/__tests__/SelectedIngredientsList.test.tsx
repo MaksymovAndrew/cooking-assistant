@@ -27,7 +27,7 @@ describe("SelectedIngredientsList", () => {
 
         expect(screen.getByText("Potato")).toBeInTheDocument();
         expect(screen.getByRole("spinbutton")).toHaveValue(3);
-        expect(screen.getByText("gram")).toBeInTheDocument();
+        expect(screen.getByText("g")).toBeInTheDocument();
     });
 
     it("should call onQuantityChange with the parsed number when the quantity changes", async () => {

@@ -35,6 +35,7 @@ const RECIPE: RecipeSearchResultItem = {
     isOwner: true,
     isFavourite: false,
     containsAvoided: false,
+    tags: [],
 };
 const FAVOURITE_RECIPE: RecipeSearchResultItem = {
     ...RECIPE,
@@ -43,6 +44,7 @@ const FAVOURITE_RECIPE: RecipeSearchResultItem = {
     isOwner: false,
     isFavourite: true,
     containsAvoided: false,
+    tags: [],
 };
 const MENU: Menu = {
     id: 1,

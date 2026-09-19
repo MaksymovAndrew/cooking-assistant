@@ -6,6 +6,7 @@ import {
     escapeLikePattern,
     type SqlFilterBuilder,
 } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import { tagsFilterClause } from "infrastructure/persistence/pg/tagsFilterClause";
 
 interface RecipeClauseContext {
     userId: number | null;
@@ -179,4 +180,5 @@ export const RECIPE_FILTER_CLAUSES: readonly RecipeFilterClause[] = [
     },
     favouritesFilterClause("recipe", "r.id"),
     ...DIET_FILTER_CLAUSES,
+    tagsFilterClause,
 ];

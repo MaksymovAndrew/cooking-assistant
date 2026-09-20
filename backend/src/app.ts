@@ -71,7 +71,13 @@ export function createApp(controllers: Controllers): Express {
 
     app.use(API_PREFIX, createHealthRouter());
     app.use(createGlobalLimiter());
-    app.use(API_PREFIX, createUserRouter(controllers.userController));
+    app.use(
+        API_PREFIX,
+        createUserRouter(
+            controllers.userController,
+            controllers.userSecurityController,
+        ),
+    );
     app.use(
         API_PREFIX,
         createIngredientRouter(controllers.ingredientController),

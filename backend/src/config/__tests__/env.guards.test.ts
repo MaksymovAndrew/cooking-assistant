@@ -1,7 +1,7 @@
 import {
     assertConsistentEmailConfig,
     assertSecureProductionDb,
-} from "config/env";
+} from "config/env.guards";
 
 describe("assertSecureProductionDb", () => {
     it("should throw when production with default db user", () => {

@@ -32,6 +32,19 @@ const undoOnFailure = async (
 const updatePreferences = (recipe: (preferences: DietPreferences) => void) =>
     dietPreferencesApi.util.updateQueryData("getDietPreferences", null, recipe);
 
+// the four writes differ only in which list they patch and in which direction
+const patchAllergens =
+    (slug: AllergenSlug, change: typeof withAdded) =>
+    (preferences: DietPreferences) => {
+        preferences.allergens = change(preferences.allergens, slug);
+    };
+
+const patchIngredients =
+    (id: number, change: typeof withAdded) =>
+    (preferences: DietPreferences) => {
+        preferences.ingredient_ids = change(preferences.ingredient_ids, id);
+    };
+
 export const dietPreferencesApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getDietPreferences: build.query<DietPreferences, null>({
@@ -44,21 +57,14 @@ export const dietPreferencesApi = baseApi.injectEndpoints({
                 method: "PUT",
             }),
             invalidatesTags: [...DIET_WRITE_TAGS],
-            onQueryStarted: async (
-                slug,
-                { dispatch, queryFulfilled },
-            ): Promise<void> =>
-                undoOnFailure(
+            onQueryStarted: async (slug, { dispatch, queryFulfilled }) => {
+                await undoOnFailure(
                     dispatch(
-                        updatePreferences((preferences) => {
-                            preferences.allergens = withAdded(
-                                preferences.allergens,
-                                slug,
-                            );
-                        }),
+                        updatePreferences(patchAllergens(slug, withAdded)),
                     ),
                     queryFulfilled,
-                ),
+                );
+            },
         }),
         unavoidAllergen: build.mutation<null, AllergenSlug>({
             query: (slug) => ({
@@ -66,21 +72,12 @@ export const dietPreferencesApi = baseApi.injectEndpoints({
                 method: "DELETE",
             }),
             invalidatesTags: [...DIET_WRITE_TAGS],
-            onQueryStarted: async (
-                slug,
-                { dispatch, queryFulfilled },
-            ): Promise<void> =>
-                undoOnFailure(
-                    dispatch(
-                        updatePreferences((preferences) => {
-                            preferences.allergens = without(
-                                preferences.allergens,
-                                slug,
-                            );
-                        }),
-                    ),
+            onQueryStarted: async (slug, { dispatch, queryFulfilled }) => {
+                await undoOnFailure(
+                    dispatch(updatePreferences(patchAllergens(slug, without))),
                     queryFulfilled,
-                ),
+                );
+            },
         }),
         avoidIngredient: build.mutation<null, number>({
             query: (id) => ({
@@ -88,21 +85,14 @@ export const dietPreferencesApi = baseApi.injectEndpoints({
                 method: "PUT",
             }),
             invalidatesTags: [...DIET_WRITE_TAGS],
-            onQueryStarted: async (
-                id,
-                { dispatch, queryFulfilled },
-            ): Promise<void> =>
-                undoOnFailure(
+            onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+                await undoOnFailure(
                     dispatch(
-                        updatePreferences((preferences) => {
-                            preferences.ingredient_ids = withAdded(
-                                preferences.ingredient_ids,
-                                id,
-                            );
-                        }),
+                        updatePreferences(patchIngredients(id, withAdded)),
                     ),
                     queryFulfilled,
-                ),
+                );
+            },
         }),
         unavoidIngredient: build.mutation<null, number>({
             query: (id) => ({
@@ -110,21 +100,12 @@ export const dietPreferencesApi = baseApi.injectEndpoints({
                 method: "DELETE",
             }),
             invalidatesTags: [...DIET_WRITE_TAGS],
-            onQueryStarted: async (
-                id,
-                { dispatch, queryFulfilled },
-            ): Promise<void> =>
-                undoOnFailure(
-                    dispatch(
-                        updatePreferences((preferences) => {
-                            preferences.ingredient_ids = without(
-                                preferences.ingredient_ids,
-                                id,
-                            );
-                        }),
-                    ),
+            onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+                await undoOnFailure(
+                    dispatch(updatePreferences(patchIngredients(id, without))),
                     queryFulfilled,
-                ),
+                );
+            },
         }),
     }),
 });

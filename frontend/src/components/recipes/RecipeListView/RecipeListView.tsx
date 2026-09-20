@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 
-import type { RecipeFilterParams, RecipeSearchResultItem } from "types/recipe";
+import type { RecipeFilterParams } from "types/recipe";
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { ActiveFilterEntry } from "hooks/useListFilters";
@@ -11,39 +10,22 @@ import { RecipeActiveFilters } from "components/recipes/RecipeActiveFilters";
 import type { RecipeFilterPanelProps } from "components/recipes/RecipeFilterPanel";
 import { RecipeFilterPanel } from "components/recipes/RecipeFilterPanel";
 import { RecipeTypeDescriptions } from "components/recipes/RecipeTypeDescriptions";
-import { ErrorState } from "components/ui/ErrorState";
-import { ListLoadMoreFooter } from "components/ui/LoadMore";
 
-import { RecipeListEmptyState } from "./RecipeListEmptyState";
-import { RecipeListGrid } from "./RecipeListGrid";
 import { RecipeListHeader } from "./RecipeListHeader";
+import type { RecipeListResultsProps } from "./RecipeListResults";
+import { RecipeListResults } from "./RecipeListResults";
 import styles from "./RecipeListView.module.scss";
 import { RecipePantryBanner } from "./RecipePantryBanner";
 
-interface RecipeListViewProps extends RecipeFilterPanelProps {
-    recipes: RecipeSearchResultItem[];
-    calorieGoal: number | null;
-    calorieRemaining: number | null;
-    noRecipes: boolean;
+interface RecipeListViewProps
+    extends RecipeFilterPanelProps, RecipeListResultsProps {
     // the full reset, used by RecipeActiveFilters ("Clear all") and the empty state -
     // RecipeFilterPanel now owns a narrower reset scoped to just its own popover fields
     resetFilters: () => void;
-    isPantryEmpty: boolean;
-    error: string | null;
-    onRetry: () => void;
     descriptions: RecipeTypeSummary[];
     heading: string;
     subtitle: string;
-    emptyTitle: string;
-    emptyDescription: string;
-    hasActiveFilters: boolean;
     activeFilters: ActiveFilterEntry<RecipeFilterParams>[];
-    mine?: boolean;
-    loadedCount: number;
-    hasNextPage: boolean;
-    isFetchingNextPage: boolean;
-    fetchNextPage: () => void;
-    loadMoreError: string | null;
 }
 
 export const RecipeListView: React.FC<RecipeListViewProps> = ({
@@ -54,30 +36,17 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     activeCount,
     types,
     ingredients,
-    recipes,
-    calorieGoal,
-    calorieRemaining,
-    noRecipes,
     isPantryEmpty,
     error,
-    onRetry,
     descriptions,
     heading,
     subtitle,
-    emptyTitle,
-    emptyDescription,
     hasActiveFilters,
     activeFilters,
-    mine = false,
     searchPlaceholder,
     total,
-    loadedCount,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-    loadMoreError,
+    ...results
 }) => {
-    const { t } = useTranslation();
     // bumped on every full reset so SearchField remounts and drops any pending, uncommitted
     // debounce - otherwise a search typed just before "Clear all" can commit moments later and
     // silently re-apply a filter the user explicitly just cleared (the prop value alone can't
@@ -114,42 +83,15 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
                 {filters.inPantry && !isPantryEmpty && !error && (
                     <RecipePantryBanner total={total} />
                 )}
-                {error && (
-                    <ErrorState
-                        title={t("errorState.title")}
-                        description={error}
-                        onRetry={onRetry}
-                        retryLabel={t("errorState.retry")}
-                    />
-                )}
-                {!error && noRecipes && (
-                    <RecipeListEmptyState
-                        hasActiveFilters={hasActiveFilters}
-                        isPantryEmpty={isPantryEmpty}
-                        emptyTitle={emptyTitle}
-                        emptyDescription={emptyDescription}
-                        searchQuery={filters.search || null}
-                        clearFilters={handleResetFilters}
-                    />
-                )}
-                {!error && !noRecipes && (
-                    <RecipeListGrid
-                        recipes={recipes}
-                        calorieGoal={calorieGoal}
-                        calorieRemaining={calorieRemaining}
-                        mine={mine}
-                    />
-                )}
-                {!error && !noRecipes && (
-                    <ListLoadMoreFooter
-                        total={total}
-                        loadedCount={loadedCount}
-                        hasNextPage={hasNextPage}
-                        isFetchingNextPage={isFetchingNextPage}
-                        fetchNextPage={fetchNextPage}
-                        loadMoreError={loadMoreError}
-                    />
-                )}
+                <RecipeListResults
+                    {...results}
+                    isPantryEmpty={isPantryEmpty}
+                    error={error}
+                    hasActiveFilters={hasActiveFilters}
+                    total={total}
+                    searchQuery={filters.search || null}
+                    clearFilters={handleResetFilters}
+                />
             </div>
         </AppShell>
     );

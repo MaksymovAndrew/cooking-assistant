@@ -1,13 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 
-import type {
-    RecipeFormChangeMessages,
-    RecipeFormCreateMessages,
-    RecipeFormInitialValues,
-} from "types/recipe";
+import type { RecipeFormInitialValues } from "types/recipe";
 
 import { useDirtyRef } from "hooks/useDirtyRef";
-import { useRecipeFormValidation } from "hooks/useRecipeFormValidation";
+import { useRecipeFormValidators } from "hooks/useRecipeFormValidators";
 import { useSelectedIngredients } from "hooks/useSelectedIngredients";
 
 const BLANK_SNAPSHOT: RecipeFormInitialValues = {
@@ -45,39 +41,16 @@ export const useRecipeForm = () => {
         ingredientsError,
         typeError,
         cookingTimeError,
-        validateCreate: _validateCreate,
-        validateChange: _validateChange,
-    } = useRecipeFormValidation();
-
-    const validateCreate = useCallback(
-        (messages: RecipeFormCreateMessages) =>
-            _validateCreate(
-                {
-                    title,
-                    content,
-                    selectedIngredients,
-                    selectedTypeId,
-                    cookingHours,
-                    cookingMinutes,
-                },
-                messages,
-            ),
-        [
-            title,
-            content,
-            selectedIngredients,
-            selectedTypeId,
-            cookingHours,
-            cookingMinutes,
-            _validateCreate,
-        ],
-    );
-
-    const validateChange = useCallback(
-        (messages: RecipeFormChangeMessages) =>
-            _validateChange({ cookingHours, cookingMinutes }, messages),
-        [cookingHours, cookingMinutes, _validateChange],
-    );
+        validateCreate,
+        validateChange,
+    } = useRecipeFormValidators({
+        title,
+        content,
+        selectedIngredients,
+        selectedTypeId,
+        cookingHours,
+        cookingMinutes,
+    });
 
     const setInitialValues = useCallback(
         (values: RecipeFormInitialValues) => {

@@ -9,31 +9,15 @@ import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
 import { findMenuByIdWithRecipes } from "./PgMenuRepository.detail";
-import { deleteMenuById } from "./PgMenuRepository.mutations";
+import { createMenuInDb, updateMenuInDb } from "./PgMenuRepository.mutations";
 import {
     findAllMenus,
     findAllMenusUnpaginated,
     searchPersonMenus,
 } from "./PgMenuRepository.queries";
 
-interface MenuIdRow {
-    menu_id: number;
-}
-
 export default class PgMenuRepository implements MenuRepository {
     constructor(private pool: Pool) {}
-
-    private buildMenuRecipeInsert(
-        menuId: number | string,
-        recipeIds: number[],
-    ): { placeholders: string; params: (number | string)[] } {
-        const placeholders = recipeIds
-            .map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`)
-            .join(", ");
-        const params = recipeIds.flatMap((recipeId) => [menuId, recipeId]);
-
-        return { placeholders, params };
-    }
 
     async findAll(
         filters: MenuFilters,
@@ -46,65 +30,39 @@ export default class PgMenuRepository implements MenuRepository {
         return findAllMenusUnpaginated(this.pool);
     }
 
-    async create(
-        { menuTitle, menuContent, categoryId, personId }: Menu,
-        recipeIds: number[],
-    ): Promise<unknown> {
-        const client = await this.pool.connect();
-
-        try {
-            await client.query("BEGIN");
-
-            const menuResult = await client.query<MenuIdRow>(
-                `INSERT INTO menu (menu_title, menu_content, category_id, person_id)
-             VALUES ($1, $2, $3, $4)
-             RETURNING menu_id`,
-                [menuTitle, menuContent, categoryId, personId],
-            );
-            const menuId = menuResult.rows[0].menu_id;
-
-            if (recipeIds.length > 0) {
-                const { placeholders, params } = this.buildMenuRecipeInsert(
-                    menuId,
-                    recipeIds,
-                );
-
-                await client.query(
-                    `INSERT INTO menu_recipe (menu_id, recipe_id) VALUES ${placeholders}`,
-                    params,
-                );
-            }
-
-            await client.query("COMMIT");
-
-            return menuId;
-        } catch (error) {
-            await client.query("ROLLBACK");
-            throw error;
-        } finally {
-            client.release();
-        }
+    async create(menu: Menu, recipeIds: number[]): Promise<unknown> {
+        return createMenuInDb(this.pool, menu, recipeIds);
     }
 
     async update(
         id: string | number,
         personId: number,
-        { menuTitle, menuContent, categoryId }: Menu,
+        menu: Menu,
         recipeIds: number[],
     ): Promise<boolean> {
+        return updateMenuInDb(this.pool, id, personId, menu, recipeIds);
+    }
+
+    async findByIdWithRecipes(
+        id: string | number,
+        personId: number | null,
+    ): Promise<unknown> {
+        return findMenuByIdWithRecipes(this.pool, id, personId);
+    }
+
+    async deleteById(id: string | number, personId: number): Promise<boolean> {
+        // explicit delete: legacy database.sql adopters carry a second menu_id FK without CASCADE
         const client = await this.pool.connect();
 
         try {
             await client.query("BEGIN");
 
-            const result = await client.query(
-                `UPDATE menu
-      SET menu_title = $1, menu_content = $2, category_id = $3
-      WHERE menu_id = $4 AND person_id = $5`,
-                [menuTitle, menuContent, categoryId, id, personId],
+            const owned = await client.query(
+                "SELECT menu_id FROM menu WHERE menu_id = $1 AND person_id = $2 FOR UPDATE",
+                [id, personId],
             );
 
-            if (result.rowCount === 0) {
+            if (owned.rowCount === 0) {
                 await client.query("ROLLBACK");
 
                 return false;
@@ -113,18 +71,7 @@ export default class PgMenuRepository implements MenuRepository {
             await client.query("DELETE FROM menu_recipe WHERE menu_id = $1", [
                 id,
             ]);
-
-            if (recipeIds.length > 0) {
-                const { placeholders, params } = this.buildMenuRecipeInsert(
-                    id,
-                    recipeIds,
-                );
-
-                await client.query(
-                    `INSERT INTO menu_recipe (menu_id, recipe_id) VALUES ${placeholders}`,
-                    params,
-                );
-            }
+            await client.query("DELETE FROM menu WHERE menu_id = $1", [id]);
 
             await client.query("COMMIT");
 
@@ -135,17 +82,6 @@ export default class PgMenuRepository implements MenuRepository {
         } finally {
             client.release();
         }
-    }
-
-    async findByIdWithRecipes(
-        id: string | number,
-        personId: number | null,
-    ): Promise<unknown> {
-        return findMenuByIdWithRecipes(this.pool, id, personId);
-    }
-
-    async deleteById(id: string | number, personId: number): Promise<unknown> {
-        return deleteMenuById(this.pool, id, personId);
     }
 
     async searchByPerson(

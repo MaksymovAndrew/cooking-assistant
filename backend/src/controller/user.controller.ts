@@ -3,15 +3,10 @@ import type { RequestHandler } from "express";
 import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "config/cookie";
 import { translateMessage } from "i18n/translate";
 
-import type ChangePassword from "application/use-cases/users/ChangePassword";
-import type ConfirmEmailVerification from "application/use-cases/users/ConfirmEmailVerification";
-import type ConfirmPasswordReset from "application/use-cases/users/ConfirmPasswordReset";
 import type DeleteAccount from "application/use-cases/users/DeleteAccount";
 import type GetCurrentUser from "application/use-cases/users/GetCurrentUser";
 import type LoginUser from "application/use-cases/users/LoginUser";
 import type RegisterUser from "application/use-cases/users/RegisterUser";
-import type RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
-import type RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
 import type UpdateProfile from "application/use-cases/users/UpdateProfile";
 
 import { getOptionalUserId, getUserId } from "controller/requestUser";
@@ -20,49 +15,29 @@ interface UserControllerDependencies {
     registerUser: RegisterUser;
     loginUser: LoginUser;
     getCurrentUser: GetCurrentUser;
-    requestPasswordReset: RequestPasswordReset;
-    confirmPasswordReset: ConfirmPasswordReset;
-    changePassword: ChangePassword;
     updateProfile: UpdateProfile;
     deleteAccount: DeleteAccount;
-    requestEmailVerification: RequestEmailVerification;
-    confirmEmailVerification: ConfirmEmailVerification;
 }
 
 export default class UserController {
     private registerUserUseCase: RegisterUser;
     private loginUserUseCase: LoginUser;
     private getCurrentUserUseCase: GetCurrentUser;
-    private requestPasswordResetUseCase: RequestPasswordReset;
-    private confirmPasswordResetUseCase: ConfirmPasswordReset;
-    private changePasswordUseCase: ChangePassword;
     private updateProfileUseCase: UpdateProfile;
     private deleteAccountUseCase: DeleteAccount;
-    private requestEmailVerificationUseCase: RequestEmailVerification;
-    private confirmEmailVerificationUseCase: ConfirmEmailVerification;
 
     constructor({
         registerUser,
         loginUser,
         getCurrentUser,
-        requestPasswordReset,
-        confirmPasswordReset,
-        changePassword,
         updateProfile,
         deleteAccount,
-        requestEmailVerification,
-        confirmEmailVerification,
     }: UserControllerDependencies) {
         this.registerUserUseCase = registerUser;
         this.loginUserUseCase = loginUser;
         this.getCurrentUserUseCase = getCurrentUser;
-        this.requestPasswordResetUseCase = requestPasswordReset;
-        this.confirmPasswordResetUseCase = confirmPasswordReset;
-        this.changePasswordUseCase = changePassword;
         this.updateProfileUseCase = updateProfile;
         this.deleteAccountUseCase = deleteAccount;
-        this.requestEmailVerificationUseCase = requestEmailVerification;
-        this.confirmEmailVerificationUseCase = confirmEmailVerification;
     }
 
     registerUser: RequestHandler = async (req, res) => {
@@ -98,31 +73,6 @@ export default class UserController {
         res.json(user);
     };
 
-    requestPasswordReset: RequestHandler = async (req, res) => {
-        await this.requestPasswordResetUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
-
-        res.json({ message: translateMessage("passwordResetEmailSent") });
-    };
-
-    confirmPasswordReset: RequestHandler = async (req, res) => {
-        await this.confirmPasswordResetUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
-
-        res.json({ message: translateMessage("passwordReset") });
-    };
-
-    changePassword: RequestHandler = async (req, res) => {
-        await this.changePasswordUseCase.execute(
-            getUserId(req),
-            req.body as Record<string, unknown>,
-        );
-
-        res.json({ message: translateMessage("passwordChanged") });
-    };
-
     updateProfile: RequestHandler = async (req, res) => {
         await this.updateProfileUseCase.execute(
             getUserId(req),
@@ -140,19 +90,5 @@ export default class UserController {
 
         res.clearCookie(AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS);
         res.json({ message: translateMessage("accountDeleted") });
-    };
-
-    requestEmailVerification: RequestHandler = async (req, res) => {
-        await this.requestEmailVerificationUseCase.execute(getUserId(req));
-
-        res.json({ message: translateMessage("verificationEmailSent") });
-    };
-
-    confirmEmailVerification: RequestHandler = async (req, res) => {
-        await this.confirmEmailVerificationUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
-
-        res.json({ message: translateMessage("emailVerified") });
     };
 }

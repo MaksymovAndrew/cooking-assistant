@@ -1,8 +1,5 @@
-import {
-    idListFilter,
-    numericRangeFilter,
-    textFilter,
-} from "utils/filters/filterDefFactories";
+import { idListFilter, textFilter } from "utils/filters/filterDefFactories";
+import { numericRangeFilter } from "utils/filters/filterDefFactories.range";
 import {
     booleanFilter,
     enumFilter,

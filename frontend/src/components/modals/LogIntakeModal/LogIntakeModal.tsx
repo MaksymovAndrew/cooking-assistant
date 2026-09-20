@@ -7,16 +7,12 @@ import { closeModal } from "redux/slices/uiSlice";
 
 import { useCalorieBudget } from "hooks/useCalorieBudget";
 
-import { AlertTriangleMark } from "components/icons";
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
 
-import {
-    formatKcal,
-    roundCalories,
-    scaleCaloriesForPortions,
-} from "utils/calories";
+import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
 
+import { LogIntakeBudget } from "./LogIntakeBudget";
 import styles from "./LogIntakeModal.module.scss";
 
 interface LogIntakeModalProps {
@@ -29,7 +25,6 @@ interface LogIntakeModalProps {
 }
 
 const MIN_PORTIONS = 1;
-const ICON_SIZE = 16;
 
 export const LogIntakeModal = ({
     modalId,
@@ -118,37 +113,12 @@ export const LogIntakeModal = ({
                 </div>
             </div>
 
-            {goal !== null && remaining !== null && (
-                <div className={styles["log-intake-modal__budget"]}>
-                    <p className={styles["log-intake-modal__budget-summary"]}>
-                        {remaining < 0
-                            ? t("dietaryTab.summaryOver", {
-                                  consumed: formatKcal(
-                                      roundCalories(budget.consumed),
-                                  ),
-                                  goal: formatKcal(goal),
-                                  over: formatKcal(-roundCalories(remaining)),
-                              })
-                            : t("dietaryTab.summaryRemaining", {
-                                  consumed: formatKcal(
-                                      roundCalories(budget.consumed),
-                                  ),
-                                  goal: formatKcal(goal),
-                                  remaining: formatKcal(
-                                      roundCalories(remaining),
-                                  ),
-                              })}
-                    </p>
-                    {projectedOver !== null && (
-                        <p className={styles["log-intake-modal__warning"]}>
-                            <AlertTriangleMark size={ICON_SIZE} />
-                            {t("logIntakeModal.projectedOver", {
-                                over: formatKcal(roundCalories(projectedOver)),
-                            })}
-                        </p>
-                    )}
-                </div>
-            )}
+            <LogIntakeBudget
+                goal={goal}
+                remaining={remaining}
+                consumed={budget.consumed}
+                projectedOver={projectedOver}
+            />
 
             <p className={styles["log-intake-modal__total"]}>
                 {t("logIntakeModal.totalLabel", { total: formatKcal(total) })}

@@ -1,4 +1,4 @@
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Check } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -15,6 +15,7 @@ import {
 } from "utils/shoppingListItem";
 
 import styles from "./ShoppingListItemRow.module.scss";
+import { ShoppingListMoveButtons } from "./ShoppingListMoveButtons";
 
 interface ShoppingListItemRowProps {
     item: ShoppingListItem;
@@ -26,7 +27,6 @@ interface ShoppingListItemRowProps {
     isLast: boolean;
 }
 
-const MOVE_ICON_SIZE = 13;
 const TRASH_ICON_SIZE = 18;
 const CHECK_ICON_SIZE = 14;
 
@@ -96,42 +96,14 @@ export const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
             </label>
             <div className={styles["shopping-list-item-row__actions"]}>
                 {onMove && (
-                    <div className={styles["shopping-list-item-row__move"]}>
-                        <button
-                            type="button"
-                            aria-label={t("item.moveUp", { name })}
-                            disabled={isFirst}
-                            className={
-                                styles["shopping-list-item-row__move-button"]
-                            }
-                            onClick={() => {
-                                onMove(item, -1);
-                            }}
-                        >
-                            <ChevronUp
-                                size={MOVE_ICON_SIZE}
-                                strokeWidth={2.2}
-                                aria-hidden="true"
-                            />
-                        </button>
-                        <button
-                            type="button"
-                            aria-label={t("item.moveDown", { name })}
-                            disabled={isLast}
-                            className={
-                                styles["shopping-list-item-row__move-button"]
-                            }
-                            onClick={() => {
-                                onMove(item, 1);
-                            }}
-                        >
-                            <ChevronDown
-                                size={MOVE_ICON_SIZE}
-                                strokeWidth={2.2}
-                                aria-hidden="true"
-                            />
-                        </button>
-                    </div>
+                    <ShoppingListMoveButtons
+                        name={name}
+                        isFirst={isFirst}
+                        isLast={isLast}
+                        onMove={(direction) => {
+                            onMove(item, direction);
+                        }}
+                    />
                 )}
                 <button
                     type="button"

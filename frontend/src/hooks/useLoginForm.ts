@@ -10,18 +10,9 @@ import { useLoginMutation } from "redux/services/authApi";
 import { useAppRouter } from "hooks/useAppRouter";
 
 import { isValidEmail } from "utils/authValidation";
-import {
-    clearLockout,
-    mergeServerRetryAfter,
-    registerFailure,
-    writeLockout,
-} from "utils/loginLockout";
+import { resolveLoginFailure } from "utils/loginFailure";
+import { clearLockout, writeLockout } from "utils/loginLockout";
 import { takeLoginRedirect } from "utils/loginRedirect";
-import {
-    getRateLimitSeconds,
-    isRateLimitError,
-    isServerError,
-} from "utils/queryError";
 
 import { useLoginLockout } from "./useLoginLockout";
 
@@ -109,36 +100,22 @@ export const useLoginForm = () => {
             return;
         }
 
-        if (isRateLimitError(result.error)) {
-            const seconds = getRateLimitSeconds(result.error);
-            // counts as a failed attempt too, so the client ladder stays in sync with an early server rejection
-            const next = mergeServerRetryAfter(
-                registerFailure(lockout),
-                seconds,
-            );
+        const { next, errorKey, seconds } = resolveLoginFailure(
+            result.error,
+            lockout,
+        );
 
+        if (next !== null) {
             writeLockout(next, submittedLogin);
-            applyIfCurrent(currentLoginRef, submittedLogin, () => {
-                setLockout(next);
-                setError(t("errors.tooManyAttempts", { seconds }));
-            });
-
-            return;
         }
 
-        if (isServerError(result.error)) {
-            applyIfCurrent(currentLoginRef, submittedLogin, () => {
-                setError(t("errors.serverError"));
-            });
-        } else {
-            const next = registerFailure(lockout);
-
-            writeLockout(next, submittedLogin);
-            applyIfCurrent(currentLoginRef, submittedLogin, () => {
+        applyIfCurrent(currentLoginRef, submittedLogin, () => {
+            if (next !== null) {
                 setLockout(next);
-                setError(t("errors.invalidCredentials"));
-            });
-        }
+            }
+
+            setError(t(errorKey, { seconds }));
+        });
     }, [
         currentLoginRef,
         isLocked,

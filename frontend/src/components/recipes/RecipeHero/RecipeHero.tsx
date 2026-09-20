@@ -5,6 +5,7 @@ import { FAVOURITE_TARGET } from "constants/favourites";
 import type { RecipeDetails } from "types/recipe";
 
 import { useFavouriteToggle } from "hooks/useFavouriteToggle";
+import { useRecipeHeroLabels } from "hooks/useRecipeHeroLabels";
 
 import { UtensilsMarkSimple } from "components/icons";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
@@ -12,14 +13,6 @@ import { Chip } from "components/ui/Chip";
 import { FavouriteButton } from "components/ui/FavouriteButton";
 import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
 import { OwnerActions } from "components/ui/OwnerActions";
-
-import {
-    formatKcal,
-    roundCalories,
-    scaleCaloriesForPortions,
-} from "utils/calories";
-import { splitCookingTime } from "utils/cookingTimeUtils";
-import { formatFullDate } from "utils/dateUtils";
 
 import styles from "./RecipeHero.module.scss";
 
@@ -53,37 +46,12 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     // deciding the guest branch from it, not from the client session check, keeps the first paint right
     const visitorFavourite = recipe.isFavourite === null ? null : favourite;
     const favouriteLabel = t("recipeDetailsPage.favourite");
-    const { hours, minutes } = splitCookingTime(recipe.cooking_time ?? 0);
-    const durationLabel =
-        hours > 0
-            ? t("recipeDetailsPage.cookingTimeHoursMinutes", {
-                  hours,
-                  minutes,
-              })
-            : t("recipeDetailsPage.cookingTimeMinutes", { minutes });
-    // a recipe can carry no cooking time at all - the column is nullable
-    const formattedCookingTime =
-        recipe.cooking_time === null
-            ? t("recipeDetailsPage.cookingTimeUnavailable")
-            : durationLabel;
-    const formattedDate = formatFullDate(recipe.creation_date);
-    const formattedCalories =
-        recipe.calories_per_portion === null
-            ? t("recipeDetailsPage.caloriesUnavailable")
-            : t("recipeDetailsPage.caloriesPerPortion", {
-                  count: formatKcal(roundCalories(recipe.calories_per_portion)),
-              });
-    const totalCalories =
-        recipe.calories_per_portion === null || portionCount === 1
-            ? null
-            : t("recipeDetailsPage.caloriesTotal", {
-                  count: formatKcal(
-                      scaleCaloriesForPortions(
-                          recipe.calories_per_portion,
-                          portionCount,
-                      ),
-                  ),
-              });
+    const {
+        formattedCookingTime,
+        formattedCalories,
+        totalCalories,
+        formattedDate,
+    } = useRecipeHeroLabels(recipe, portionCount);
 
     return (
         <div className={styles["recipe-hero"]}>

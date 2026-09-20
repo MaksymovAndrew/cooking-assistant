@@ -15,11 +15,10 @@ import { SegmentedControl } from "components/ui/SegmentedControl";
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 import { resolveAllergen } from "utils/ingredientName";
 
-import { RecipeCalorieRangeFields } from "./RecipeCalorieRangeFields";
 import { RecipeFilterToggles } from "./RecipeFilterToggles";
 import { RecipeIngredientsFilter } from "./RecipeIngredientsFilter";
+import { RecipeRangeSections } from "./RecipeRangeSections";
 import { RecipeTagsFilter } from "./RecipeTagsFilter";
-import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
 
 interface RecipeFilterPopoverProps {
     filters: RecipeFilterState;
@@ -49,55 +48,11 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
         <>
             <RecipeFilterToggles filters={filters} setValue={setValue} />
 
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.cookingTimeLabel")}
-                </span>
-                <RecipeTimeRangeFields
-                    key={fieldsResetKey}
-                    minCookingTime={filters.cookingTime.min}
-                    maxCookingTime={filters.cookingTime.max}
-                    setMinCookingTime={(time) => {
-                        setValue(
-                            "cookingTime",
-                            { ...filters.cookingTime, min: time },
-                            { replace: true },
-                        );
-                    }}
-                    setMaxCookingTime={(time) => {
-                        setValue(
-                            "cookingTime",
-                            { ...filters.cookingTime, max: time },
-                            { replace: true },
-                        );
-                    }}
-                />
-            </div>
-
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.caloriesLabel")}
-                </span>
-                <RecipeCalorieRangeFields
-                    key={fieldsResetKey}
-                    minCalories={filters.calories.min}
-                    maxCalories={filters.calories.max}
-                    setMinCalories={(calories) => {
-                        setValue(
-                            "calories",
-                            { ...filters.calories, min: calories },
-                            { replace: true },
-                        );
-                    }}
-                    setMaxCalories={(calories) => {
-                        setValue(
-                            "calories",
-                            { ...filters.calories, max: calories },
-                            { replace: true },
-                        );
-                    }}
-                />
-            </div>
+            <RecipeRangeSections
+                filters={filters}
+                setValue={setValue}
+                fieldsResetKey={fieldsResetKey}
+            />
 
             <div className={styles["recipe-filter-panel__section"]}>
                 <span className={styles["recipe-filter-panel__label"]}>

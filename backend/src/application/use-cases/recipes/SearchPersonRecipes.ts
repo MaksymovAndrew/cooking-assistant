@@ -2,7 +2,7 @@ import type { PaginatedResult } from "domain/repositories/pagination.types";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 
 import { idSchema } from "application/validation/common.schemas";
-import { recipeFiltersSchema } from "application/validation/recipe.schemas";
+import { recipeFiltersSchema } from "application/validation/recipe.filters.schemas";
 import { validate } from "application/validation/validate";
 
 export default class SearchPersonRecipes {

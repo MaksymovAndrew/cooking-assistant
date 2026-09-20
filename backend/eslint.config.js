@@ -187,11 +187,11 @@ module.exports = tseslint.config(
         rules: {
             "max-lines": [
                 "error",
-                { max: 150, skipBlankLines: true, skipComments: true },
+                { max: 120, skipBlankLines: true, skipComments: true },
             ],
             "max-lines-per-function": [
                 "error",
-                { max: 150, skipBlankLines: true, skipComments: true },
+                { max: 120, skipBlankLines: true, skipComments: true },
             ],
             complexity: ["error", 15],
         },

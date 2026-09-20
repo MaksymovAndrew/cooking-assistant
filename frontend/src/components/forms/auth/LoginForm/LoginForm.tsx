@@ -1,24 +1,17 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { ROUTES } from "constants/routes";
 import type { LoginRequest } from "types/auth";
 
 import type { LoginMode } from "hooks/useLoginForm";
 
 import { Button } from "components/ui/Button";
 import { FormErrorBanner } from "components/ui/FormErrorBanner";
-import { FormField } from "components/ui/FormField";
-import { Link } from "components/ui/Link";
-import { PasswordInput } from "components/ui/PasswordInput";
 import { SegmentedControl } from "components/ui/SegmentedControl";
-import { TextInput } from "components/ui/TextInput";
 
 import { LockoutNotice } from "./LockoutNotice";
+import { LoginCredentialFields } from "./LoginCredentialFields";
 import styles from "./LoginForm.module.scss";
-
-const USERNAME_ID = "login-username";
-const PW_FIELD_ID = "login-password";
 
 interface LoginFormProps {
     values: LoginRequest;
@@ -70,47 +63,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     onChange={onModeChange}
                 />
             </div>
-            <FormField
-                htmlFor={USERNAME_ID}
-                label={
-                    loginMode === "email"
-                        ? t("fields.emailLabel")
-                        : t("fields.usernameLabel")
-                }
-            >
-                <TextInput
-                    id={USERNAME_ID}
-                    type={loginMode === "email" ? "email" : "text"}
-                    value={values.login}
-                    hasError={hasCredentialError}
-                    disabled={isLocked || isSubmitting}
-                    onChange={(e) => {
-                        onFieldChange("login", e.target.value);
-                    }}
-                />
-            </FormField>
-            <FormField
-                htmlFor={PW_FIELD_ID}
-                label={t("fields.passwordLabel")}
-                labelRight={
-                    <Link
-                        href={ROUTES.forgotPassword}
-                        className={styles["login-form__forgot-password"]}
-                    >
-                        {t("fields.forgotPasswordLink")}
-                    </Link>
-                }
-            >
-                <PasswordInput
-                    id={PW_FIELD_ID}
-                    value={values.password}
-                    hasError={hasCredentialError}
-                    disabled={isLocked || isSubmitting}
-                    onChange={(e) => {
-                        onFieldChange("password", e.target.value);
-                    }}
-                />
-            </FormField>
+            <LoginCredentialFields
+                values={values}
+                loginMode={loginMode}
+                hasCredentialError={hasCredentialError}
+                isDisabled={isLocked || isSubmitting}
+                onFieldChange={onFieldChange}
+            />
             {isLocked && lockoutRemainingMs !== null ? (
                 <LockoutNotice
                     remainingMs={lockoutRemainingMs}

@@ -3,6 +3,8 @@ import type { Pool } from "pg";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 
+import { loadMissingIngredients } from "./PgMenuRepository.missingIngredients";
+
 interface MenuRow {
     id: number;
     title: string;
@@ -23,27 +25,6 @@ interface MenuRecipeRow {
     calories_per_portion: number | null;
     type_name: string | null;
     ingredients: string[];
-}
-
-interface MissingIngredientRow {
-    recipe_id: number;
-    ingredient_id: number;
-    ingredient_slug: string;
-    ingredient_name: string;
-    needed_quantity: number;
-    missing_quantity: number;
-    unit_name: string;
-    coefficient: number;
-}
-
-interface MissingIngredient {
-    ingredient_id: number;
-    ingredient_slug: string;
-    ingredient_name: string;
-    needed_quantity: number;
-    missing_quantity: number;
-    unit_name: string;
-    coefficient: number;
 }
 
 export async function findMenuByIdWithRecipes(
@@ -95,49 +76,11 @@ export async function findMenuByIdWithRecipes(
 
     const recipeIds = recipeResult.rows.map((recipe) => recipe.recipe_id);
 
-    // fetch missing ingredients for every recipe of the menu in one query, then group in memory -
-    // skipped for a guest (personId null): joining pi.person_id = NULL would match no pantry rows,
-    // so every ingredient would come back as fully missing instead of "unknown, show nothing"
-    const missingByRecipe = new Map<number, MissingIngredient[]>();
-
-    if (recipeIds.length > 0 && personId !== null) {
-        const missingResult = await pool.query<MissingIngredientRow>(
-            `SELECT
-          ri.recipe_id,
-          i.id AS ingredient_id,
-          i.slug AS ingredient_slug,
-          i.name AS ingredient_name,
-          ri.quantity_recipe_ingredients AS needed_quantity,
-          GREATEST(ri.quantity_recipe_ingredients - COALESCE(pi.quantity_person_ingradient, 0), 0) AS missing_quantity,
-          u.unit_name,
-          u.coefficient
-        FROM recipe_ingredients ri
-        LEFT JOIN person_ingredients pi
-          ON ri.ingredient_id = pi.ingredient_id AND pi.person_id = $1
-        LEFT JOIN ingredients i
-          ON ri.ingredient_id = i.id
-        LEFT JOIN unit_measurement u
-          ON i.id_unit_measurement = u.id
-        WHERE ri.recipe_id = ANY($2)
-        GROUP BY ri.recipe_id, i.id, i.slug, i.name, ri.quantity_recipe_ingredients, pi.quantity_person_ingradient, u.unit_name, u.coefficient`,
-            [personId, recipeIds],
-        );
-
-        for (const row of missingResult.rows) {
-            const group = missingByRecipe.get(row.recipe_id) ?? [];
-
-            group.push({
-                ingredient_id: row.ingredient_id,
-                ingredient_slug: row.ingredient_slug,
-                ingredient_name: row.ingredient_name,
-                needed_quantity: row.needed_quantity,
-                missing_quantity: row.missing_quantity,
-                unit_name: row.unit_name,
-                coefficient: row.coefficient,
-            });
-            missingByRecipe.set(row.recipe_id, group);
-        }
-    }
+    const missingByRecipe = await loadMissingIngredients(
+        pool,
+        recipeIds,
+        personId,
+    );
 
     // despite the name, this carries every ingredient requirement, not only shortfalls -
     // fully-stocked ones come back with missing_quantity: 0 so the client can render both states

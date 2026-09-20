@@ -11,35 +11,29 @@ import { CalorieHistoryChart } from "components/calories/CalorieHistoryChart";
 import { CalorieJournal } from "components/calories/CalorieJournal";
 import { CalorieTodayCard } from "components/calories/CalorieTodayCard";
 import { CalorieDisclaimer } from "components/recipes/CalorieDisclaimer";
-import { Button } from "components/ui/Button";
 import { FormCard } from "components/ui/FormCard";
-import { FormErrorBanner } from "components/ui/FormErrorBanner";
-import { FormField } from "components/ui/FormField";
-import { NumberInput } from "components/ui/NumberInput";
 
 import { roundCalories } from "utils/calories";
 import { calorieToneFor } from "utils/computeCalorieSummary";
 
+import { CalorieGoalCard } from "./CalorieGoalCard";
 import styles from "./ProfileDietaryTab.module.scss";
 
 interface ProfileDietaryTabProps {
     currentUser?: CurrentUser | null;
 }
 
-const GOAL_ID = "dietary-calorie-goal";
-const ICON_SIZE = 18;
 const EMPTY_ICON_SIZE = 40;
 
 export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
     currentUser,
 }) => {
     const { t } = useTranslation("calories");
-    const [justSaved, setJustSaved] = useState(false);
-    const onGoalSaved = () => {
-        setJustSaved(true);
-    };
-    const form = useCalorieGoalForm(currentUser, onGoalSaved);
     const budget = useCalorieBudget();
+    const [justSaved, setJustSaved] = useState(false);
+    const form = useCalorieGoalForm(currentUser, () => {
+        setJustSaved(true);
+    });
     // erases the promise (matches EditProfileModal) so a fire-and-forget submit needs no void/catch
     const submitForm = (): unknown => {
         setJustSaved(false);
@@ -55,52 +49,12 @@ export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
     const tone = calorieToneFor(budget);
 
     const goalCard = (
-        <FormCard>
-            <div className={styles["profile-dietary-tab__card-heading"]}>
-                <Flame size={ICON_SIZE} aria-hidden="true" />
-                <h2 className={styles["profile-dietary-tab__card-title"]}>
-                    {t("dietaryTab.goalHeading")}
-                </h2>
-            </div>
-            <p className={styles["profile-dietary-tab__helper"]}>
-                {hasGoal
-                    ? t("dietaryTab.helperPopulated")
-                    : t("dietaryTab.helperEmpty")}
-            </p>
-            <form
-                className={styles["profile-dietary-tab__form"]}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    submitForm();
-                }}
-            >
-                <div className={styles["profile-dietary-tab__form-fields"]}>
-                    <FormField
-                        htmlFor={GOAL_ID}
-                        label={t("dietaryTab.goalLabel")}
-                    >
-                        <NumberInput
-                            id={GOAL_ID}
-                            min={0}
-                            placeholder={t("dietaryTab.goalPlaceholder")}
-                            value={form.goal}
-                            onChange={(e) => {
-                                form.setGoal(e.target.value);
-                            }}
-                        />
-                    </FormField>
-                </div>
-                {form.error && <FormErrorBanner message={form.error} />}
-                <div className={styles["profile-dietary-tab__form-footer"]}>
-                    <Button type="submit">{t("dietaryTab.saveButton")}</Button>
-                    {justSaved && (
-                        <span className={styles["profile-dietary-tab__saved"]}>
-                            {t("dietaryTab.savedIndicator")}
-                        </span>
-                    )}
-                </div>
-            </form>
-        </FormCard>
+        <CalorieGoalCard
+            form={form}
+            hasGoal={hasGoal}
+            justSaved={justSaved}
+            onSubmit={submitForm}
+        />
     );
 
     return (

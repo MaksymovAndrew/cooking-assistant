@@ -1,19 +1,15 @@
-import { Check } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { resolveIngredientName } from "utils/ingredientName";
 import type { AggregatedIngredient } from "utils/menuUtils";
-import { roundQuantity } from "utils/roundQuantity";
 
+import { MenuIngredientRow } from "./MenuIngredientRow";
 import { MenuIngredientsActions } from "./MenuIngredientsActions";
 import styles from "./MenuMissingIngredientsPanel.module.scss";
 
 interface MenuIngredientsTrackingProps {
     ingredients: Record<number, AggregatedIngredient>;
 }
-
-const CHECK_ICON_SIZE = 13;
 
 // the pantry-aware section of MenuMissingIngredientsPanel - split out to keep the panel under
 // the components/ max-lines cap, and only rendered for a viewer with a pantry to check against
@@ -55,80 +51,12 @@ export const MenuIngredientsTracking: React.FC<
                             styles["menu-missing-ingredients-panel__list"]
                         }
                     >
-                        {entries.map(
-                            ([
-                                id,
-                                {
-                                    slug,
-                                    name,
-                                    quantity,
-                                    missingQuantity,
-                                    unit,
-                                    sufficient,
-                                },
-                            ]) => (
-                                <li
-                                    key={id}
-                                    className={[
-                                        styles[
-                                            "menu-missing-ingredients-panel__row"
-                                        ],
-                                        !sufficient &&
-                                            styles[
-                                                "menu-missing-ingredients-panel__row--missing"
-                                            ],
-                                    ]
-                                        .filter(Boolean)
-                                        .join(" ")}
-                                >
-                                    {sufficient ? (
-                                        <Check
-                                            size={CHECK_ICON_SIZE}
-                                            aria-label={t(
-                                                "menuDetailsPage.haveEnough",
-                                            )}
-                                            className={
-                                                styles[
-                                                    "menu-missing-ingredients-panel__check"
-                                                ]
-                                            }
-                                        />
-                                    ) : (
-                                        <span
-                                            aria-hidden="true"
-                                            className={
-                                                styles[
-                                                    "menu-missing-ingredients-panel__missing-dot"
-                                                ]
-                                            }
-                                        />
-                                    )}
-                                    <span
-                                        className={
-                                            styles[
-                                                "menu-missing-ingredients-panel__name"
-                                            ]
-                                        }
-                                    >
-                                        {resolveIngredientName({ slug, name })}
-                                    </span>
-                                    <span
-                                        className={
-                                            styles[
-                                                "menu-missing-ingredients-panel__qty"
-                                            ]
-                                        }
-                                    >
-                                        {roundQuantity(
-                                            sufficient
-                                                ? quantity
-                                                : missingQuantity,
-                                        )}{" "}
-                                        {unit}
-                                    </span>
-                                </li>
-                            ),
-                        )}
+                        {entries.map(([id, ingredient]) => (
+                            <MenuIngredientRow
+                                key={id}
+                                ingredient={ingredient}
+                            />
+                        ))}
                     </ul>
                     <MenuIngredientsActions ingredients={ingredients} />
                 </>

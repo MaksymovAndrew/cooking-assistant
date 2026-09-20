@@ -10,11 +10,8 @@ import type {
     ShoppingListRepository,
 } from "domain/repositories/ShoppingListRepository";
 
-import {
-    addIngredients,
-    addItem,
-    reorder,
-} from "./PgShoppingListRepository.transactions";
+import { addIngredients } from "./PgShoppingListRepository.addIngredients";
+import { addItem, reorder } from "./PgShoppingListRepository.transactions";
 
 const ITEM_COLUMNS = `s.id, s.name, s.note, s.ingredient_id, i.slug AS ingredient_slug, um.unit_name,
        s.quantity, s.checked, s.position`;

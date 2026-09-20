@@ -1,4 +1,4 @@
-import { Check, Leaf, X } from "lucide-react";
+import { Check, Leaf } from "lucide-react";
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,8 +11,7 @@ import { useEscapeKey } from "hooks/useEscapeKey";
 import { FormCard } from "components/ui/FormCard";
 import { SearchField } from "components/ui/SearchField";
 
-import { resolveIngredientName } from "utils/ingredientName";
-
+import { AvoidedIngredientChips } from "./AvoidedIngredientChips";
 import { AvoidIngredientResults } from "./AvoidIngredientResults";
 import styles from "./FoodPreferences.module.scss";
 
@@ -26,7 +25,6 @@ interface AvoidIngredientsCardProps {
 }
 
 const TITLE_ICON_SIZE = 18;
-const REMOVE_ICON_SIZE = 12;
 const SAVED_ICON_SIZE = 15;
 const MAX_RESULTS = 6;
 
@@ -92,46 +90,11 @@ export const AvoidIngredientsCard: React.FC<AvoidIngredientsCardProps> = ({
                     />
                 )}
             </div>
-            {avoidedIngredients.length > 0 ? (
-                <ul className={styles["food-preferences__avoided"]}>
-                    {avoidedIngredients.map((ingredient) => {
-                        const name = resolveIngredientName(ingredient);
-
-                        return (
-                            <li
-                                key={ingredient.id}
-                                className={
-                                    styles["food-preferences__avoided-chip"]
-                                }
-                            >
-                                {name}
-                                <button
-                                    type="button"
-                                    disabled={isDisabled}
-                                    aria-label={t("ingredients.remove", {
-                                        name,
-                                    })}
-                                    onClick={() => {
-                                        onToggle(ingredient);
-                                    }}
-                                    className={
-                                        styles["food-preferences__remove"]
-                                    }
-                                >
-                                    <X
-                                        size={REMOVE_ICON_SIZE}
-                                        aria-hidden="true"
-                                    />
-                                </button>
-                            </li>
-                        );
-                    })}
-                </ul>
-            ) : (
-                <p className={styles["food-preferences__empty"]}>
-                    {t("ingredients.empty")}
-                </p>
-            )}
+            <AvoidedIngredientChips
+                ingredients={avoidedIngredients}
+                isDisabled={isDisabled}
+                onRemove={onToggle}
+            />
             <p
                 role="status"
                 className={[

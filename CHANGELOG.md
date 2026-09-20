@@ -20,6 +20,10 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Project
+
+- Changed: Routine dependency maintenance.
+
 ## 4.6 - 2026-09-19
 
 ### Project

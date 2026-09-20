@@ -3,6 +3,7 @@ import express, { type Router } from "express";
 import { ROUTES } from "constants/routes";
 
 import type UserController from "controller/user.controller";
+import type UserSecurityController from "controller/userSecurity.controller";
 import authenticateToken from "middleware/jwtMiddleware";
 import optionalAuth from "middleware/optionalAuth";
 import {
@@ -20,6 +21,7 @@ import {
 
 export default function createUserRouter(
     userController: UserController,
+    userSecurityController: UserSecurityController,
 ): Router {
     const router = express.Router();
 
@@ -40,18 +42,18 @@ export default function createUserRouter(
     router.post(
         ROUTES.auth.forgotPassword,
         forgotPasswordLimiter,
-        userController.requestPasswordReset,
+        userSecurityController.requestPasswordReset,
     );
     router.post(
         ROUTES.auth.resetPassword,
         resetPasswordLimiter,
-        userController.confirmPasswordReset,
+        userSecurityController.confirmPasswordReset,
     );
     router.post(
         ROUTES.auth.changePassword,
         authenticateToken,
         changePasswordLimiter,
-        userController.changePassword,
+        userSecurityController.changePassword,
     );
     router.patch(
         ROUTES.auth.me,
@@ -68,12 +70,12 @@ export default function createUserRouter(
         ROUTES.auth.resendVerificationEmail,
         authenticateToken,
         resendVerificationLimiter,
-        userController.requestEmailVerification,
+        userSecurityController.requestEmailVerification,
     );
     router.post(
         ROUTES.auth.confirmEmail,
         confirmEmailLimiter,
-        userController.confirmEmailVerification,
+        userSecurityController.confirmEmailVerification,
     );
 
     return router;

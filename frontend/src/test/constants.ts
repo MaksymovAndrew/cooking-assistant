@@ -1,5 +1,6 @@
 import { ROUTES } from "constants/routes";
 import type { RecordAuthor } from "types/media";
+import type { RecordRating } from "types/rating";
 
 // navigation route targets used in navigate() assertions, sourced from the app route constants so expectations can never drift from the real paths
 export const ROUTE_HOME = ROUTES.home;
@@ -27,4 +28,10 @@ export const TEST_AUTHOR: RecordAuthor = {
     surname_initial: "U",
     avatar: null,
     avatar_photo_key: null,
+};
+
+export const TEST_UNRATED: RecordRating = {
+    ratingAverage: null,
+    ratingCount: 0,
+    myRating: null,
 };

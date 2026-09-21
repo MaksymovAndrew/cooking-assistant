@@ -18,7 +18,7 @@ import {
     mockedPost,
     mockedPut,
 } from "test/apiClientMock";
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
@@ -34,6 +34,7 @@ const LIST: RecipeSearchResultItem[] = [
         ingredients: [{ id: 1, name: "Tomato", allergens: [] }],
         isOwner: false,
         photo_key: null,
+        ...TEST_UNRATED,
         author: TEST_AUTHOR,
         isFavourite: false,
         containsAvoided: false,
@@ -69,6 +70,7 @@ const DETAIL: RecipeDetails = {
     creation_date: "2024-01-01",
     isOwner: true,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,

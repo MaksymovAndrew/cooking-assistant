@@ -1,5 +1,6 @@
 import type { CatalogIngredientRef } from "types/catalogIngredientRef";
 import type { RecordAuthor } from "types/media";
+import type { RecordRating } from "types/rating";
 import type { Tag } from "types/tag";
 
 export interface RecipeListItem {
@@ -22,7 +23,7 @@ export interface RecipeSearchIngredient {
 }
 
 // shape returned by GET /api/recipes-by-filters and /api/recipes-filters-person/:id (different ingredient shape from RecipeWithIngredientNames)
-export interface RecipeSearchResultItem extends RecipeListItem {
+export interface RecipeSearchResultItem extends RecipeListItem, RecordRating {
     ingredients: RecipeSearchIngredient[];
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
@@ -49,7 +50,7 @@ export interface RecipeDetailIngredient extends CatalogIngredientRef {
 }
 
 // shape returned by GET /api/recipe/:id (superset of what RecipeDetailsPage + ChangeRecipePage use)
-export interface RecipeDetails {
+export interface RecipeDetails extends RecordRating {
     id: number;
     title: string;
     content: string;
@@ -85,8 +86,9 @@ export interface RecipeFilterParams {
     max_cooking_time?: string;
     min_calories?: string;
     max_calories?: string;
-    // omitted (not empty string - the backend enum-validates "asc"/"desc") falls back to creation_date DESC server-side
+    // omitted (not empty string - the backend enum-validates "asc"/"desc"/"rating") falls back to creation_date DESC server-side
     sort_order?: string;
+    top_rated?: boolean;
     in_pantry?: boolean;
     favourites?: boolean;
     // comma-separated allergen slugs

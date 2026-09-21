@@ -8,7 +8,7 @@ import { RecipeListView } from "components/recipes/RecipeListView";
 
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 const RECIPE_TITLE = "Borscht";
@@ -27,6 +27,7 @@ const RECIPES: RecipeSearchResultItem[] = [
         calories_per_portion: null,
         isOwner: false,
         photo_key: null,
+        ...TEST_UNRATED,
         author: TEST_AUTHOR,
         isFavourite: false,
         containsAvoided: false,
@@ -43,6 +44,7 @@ const FILTERS: RecipeFilterState = {
     sort: null,
     inPantry: false,
     favourites: false,
+    topRated: false,
     excludeAllergens: [],
     hideAvoided: false,
     tags: [],

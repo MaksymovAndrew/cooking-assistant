@@ -23,6 +23,11 @@ export interface ContentCardMetaItem {
     title?: string;
 }
 
+export interface ContentCardRating {
+    average: number | null;
+    count: number;
+}
+
 export interface ContentCardFavouriteState {
     target: FavouriteTarget;
     id: number;

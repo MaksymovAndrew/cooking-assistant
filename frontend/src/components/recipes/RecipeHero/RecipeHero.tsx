@@ -2,18 +2,20 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { FAVOURITE_TARGET } from "constants/favourites";
+import { RATING_TARGET } from "constants/ratings";
 import type { RecipeDetails } from "types/recipe";
 
 import { useFavouriteToggle } from "hooks/useFavouriteToggle";
+import { useRatingControl } from "hooks/useRatingControl";
 import { useRecipeHeroLabels } from "hooks/useRecipeHeroLabels";
 
-import { UtensilsMarkSimple } from "components/icons";
+import { RecipeHeroImage } from "components/recipes/RecipeHero/RecipeHeroImage";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
 import { AuthorByline } from "components/ui/AuthorByline";
 import { Chip } from "components/ui/Chip";
-import { FavouriteButton } from "components/ui/FavouriteButton";
 import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
 import { OwnerActions } from "components/ui/OwnerActions";
+import { StarRatingInput } from "components/ui/StarRatingInput";
 
 import { mediaUrl } from "utils/mediaUrl";
 
@@ -27,9 +29,6 @@ interface RecipeHeroProps {
     onLogIntake?: () => void;
     exceedsBudget?: boolean;
 }
-
-const IMAGE_ICON_SIZE = 56;
-const FAVOURITE_ICON_SIZE = 20;
 
 export const RecipeHero: React.FC<RecipeHeroProps> = ({
     recipe,
@@ -48,6 +47,9 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     // isFavourite is null exactly when the server rendered this record for an anonymous requester -
     // deciding the guest branch from it, not from the client session check, keeps the first paint right
     const visitorFavourite = recipe.isFavourite === null ? null : favourite;
+    const rating = useRatingControl(RATING_TARGET.recipe, recipe.id, recipe);
+    // a signed-in viewer rates anyone's recipe but their own
+    const canRate = visitorFavourite !== null && !recipe.isOwner;
     const photoSrc = mediaUrl(recipe.photo_key, "hero");
     const favouriteLabel = t("recipeDetailsPage.favourite");
     const {
@@ -59,30 +61,12 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
 
     return (
         <div className={styles["recipe-hero"]}>
-            <div className={styles["recipe-hero__image"]}>
-                {photoSrc ? (
-                    // the page's largest element, so it is fetched first rather than lazily
-                    <img
-                        className={styles["recipe-hero__photo"]}
-                        src={photoSrc}
-                        alt={recipe.title}
-                        fetchPriority="high"
-                    />
-                ) : (
-                    <UtensilsMarkSimple
-                        size={IMAGE_ICON_SIZE}
-                        className={styles["recipe-hero__image-icon"]}
-                    />
-                )}
-                {visitorFavourite && (
-                    <FavouriteButton
-                        favourite={visitorFavourite}
-                        label={favouriteLabel}
-                        iconSize={FAVOURITE_ICON_SIZE}
-                        className={styles["recipe-hero__favourite"]}
-                    />
-                )}
-            </div>
+            <RecipeHeroImage
+                photoSrc={photoSrc}
+                title={recipe.title}
+                favourite={visitorFavourite}
+                favouriteLabel={favouriteLabel}
+            />
 
             <Chip variant="type" className={styles["recipe-hero__chip"]}>
                 {recipe.type_name}
@@ -98,9 +82,17 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 formattedCalories={formattedCalories}
                 totalCalories={totalCalories}
                 formattedDate={formattedDate}
-                isOwner={recipe.isOwner}
+                rating={rating}
                 exceedsBudget={exceedsBudget}
             />
+
+            {canRate && (
+                <StarRatingInput
+                    rating={rating}
+                    label={t("common:rating.yourRating")}
+                    className={styles["recipe-hero__rate"]}
+                />
+            )}
 
             {recipe.isOwner ? (
                 <div className={styles["recipe-hero__actions"]}>

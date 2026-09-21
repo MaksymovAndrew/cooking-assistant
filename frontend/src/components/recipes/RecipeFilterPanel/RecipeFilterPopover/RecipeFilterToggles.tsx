@@ -1,4 +1,4 @@
-import { Ban, Heart } from "lucide-react";
+import { Ban, Heart, Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,7 +17,7 @@ interface RecipeFilterTogglesProps {
     setValue: SetFilterValue<RecipeFilterState>;
 }
 
-// the per-viewer filters: each needs a session, so none is offered to a guest
+// the per-viewer filters need a session, so a guest gets only the rating one
 export const RecipeFilterToggles: React.FC<RecipeFilterTogglesProps> = ({
     filters,
     setValue,
@@ -49,6 +49,14 @@ export const RecipeFilterToggles: React.FC<RecipeFilterTogglesProps> = ({
                     }}
                 />
             )}
+            <FilterToggle
+                icon={Star}
+                label={t("filterPanel.topRatedLabel")}
+                checked={filters.topRated}
+                onChange={(value) => {
+                    setValue("topRated", value);
+                }}
+            />
             {canAvoid && (
                 <FilterToggle
                     icon={Ban}

@@ -8,6 +8,7 @@ import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRep
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
 import type { PhotoRepository } from "domain/repositories/PhotoRepository";
+import type { RatingRepository } from "domain/repositories/RatingRepository";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
 import type { ShoppingListRepository } from "domain/repositories/ShoppingListRepository";
@@ -32,6 +33,7 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     userRepository: jest.Mocked<UserRepository>;
     calorieRepository: jest.Mocked<CalorieRepository>;
     favouriteRepository: jest.Mocked<FavouriteRepository>;
+    ratingRepository: jest.Mocked<RatingRepository>;
     dietPreferencesRepository: jest.Mocked<DietPreferencesRepository>;
     shoppingListRepository: jest.Mocked<ShoppingListRepository>;
     tagRepository: jest.Mocked<TagRepository>;
@@ -120,6 +122,13 @@ function createFavouriteRepository(): jest.Mocked<FavouriteRepository> {
     };
 }
 
+function createRatingRepository(): jest.Mocked<RatingRepository> {
+    return {
+        rate: jest.fn(),
+        remove: jest.fn(),
+    };
+}
+
 function createDietPreferencesRepository(): jest.Mocked<DietPreferencesRepository> {
     return {
         findByPerson: jest.fn(),
@@ -201,6 +210,7 @@ export function buildFakeDeps(): FakeRepositoryDeps {
         userRepository: createUserRepository(),
         calorieRepository: createCalorieRepository(),
         favouriteRepository: createFavouriteRepository(),
+        ratingRepository: createRatingRepository(),
         dietPreferencesRepository: createDietPreferencesRepository(),
         shoppingListRepository: createShoppingListRepository(),
         tagRepository: createTagRepository(),

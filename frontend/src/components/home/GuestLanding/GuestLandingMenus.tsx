@@ -60,6 +60,8 @@ export const GuestLandingMenus: React.FC = () => {
                             categoryName={menu.categoryname}
                             recipeCount={menu.recipe_count}
                             photoKey={menu.photo_key}
+                            ratingAverage={menu.ratingAverage}
+                            ratingCount={menu.ratingCount}
                             variant={isMobile ? "row" : "grid"}
                         />
                     ))}

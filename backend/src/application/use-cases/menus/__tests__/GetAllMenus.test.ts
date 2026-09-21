@@ -43,6 +43,39 @@ describe("GetAllMenus", () => {
         );
     });
 
+    it("should let a guest sort by rating and keep only top-rated menus", async () => {
+        const { useCase, menuRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        menuRepository.findAll.mockResolvedValue(paginated);
+
+        await useCase.execute(null, {
+            sort_order: "rating",
+            top_rated: "true",
+        });
+
+        expect(menuRepository.findAll).toHaveBeenCalledWith(
+            { sort_order: "rating", top_rated: true },
+            null,
+        );
+    });
+
+    it("should throw a 400 ValidationError for a sort order menus don't support", async () => {
+        const { useCase, menuRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(7, { sort_order: "asc" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "sort_order: Sort order must be rating",
+        );
+        expect(menuRepository.findAll).not.toHaveBeenCalled();
+    });
+
     it("should pass a null userId through for a guest requester", async () => {
         const { useCase, menuRepository } = setup();
         const paginated = { items: [], total: 0 };

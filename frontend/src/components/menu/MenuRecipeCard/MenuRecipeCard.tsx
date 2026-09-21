@@ -1,12 +1,11 @@
-import { Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { RECIPE_RATING } from "constants/ratings";
 import { recipeDetailsPath } from "constants/routes";
 
 import { UtensilsMark } from "components/icons";
 import { Link } from "components/ui/Link";
+import { RatingSummary } from "components/ui/RatingSummary";
 import { RecordPhoto } from "components/ui/RecordPhoto";
 
 import { formatKcal, roundCalories } from "utils/calories";
@@ -22,6 +21,8 @@ interface MenuRecipeCardRecipe {
     cooking_time: number;
     calories_per_portion: number | null;
     photo_key: string | null;
+    ratingAverage: number | null;
+    ratingCount: number;
 }
 
 interface MenuRecipeCardProps {
@@ -70,10 +71,14 @@ export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
                         {recipe.type_name} · {formattedTime}
                         {formattedCalories && ` · ${formattedCalories}`}
                     </span>
-                    <span className={styles["menu-recipe-card__rating"]}>
-                        <Star size={RATING_ICON_SIZE} aria-hidden="true" />
-                        {RECIPE_RATING}
-                    </span>
+                    <RatingSummary
+                        average={recipe.ratingAverage}
+                        count={recipe.ratingCount}
+                        iconSize={RATING_ICON_SIZE}
+                        className={styles["menu-recipe-card__rating"]}
+                        showCount={false}
+                        hideWhenEmpty
+                    />
                 </span>
             </span>
         </Link>

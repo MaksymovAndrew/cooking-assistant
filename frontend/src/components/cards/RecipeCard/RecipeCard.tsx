@@ -32,6 +32,9 @@ interface RecipeCardRecipe {
     isFavourite?: boolean | null;
     containsAvoided?: boolean | null;
     photo_key?: string | null;
+    // absent where a list doesn't carry the rating totals
+    ratingAverage?: number | null;
+    ratingCount?: number;
 }
 
 interface RecipeCardProps {
@@ -65,6 +68,14 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             badge={hasAllergens}
             avoided={recipe.containsAvoided === true}
             calorieOver={exceedsBudget}
+            rating={
+                typeof recipe.ratingCount === "number"
+                    ? {
+                          average: recipe.ratingAverage ?? null,
+                          count: recipe.ratingCount,
+                      }
+                    : null
+            }
             favourite={
                 typeof recipe.isFavourite === "boolean"
                     ? {

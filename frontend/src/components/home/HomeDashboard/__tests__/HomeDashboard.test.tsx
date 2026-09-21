@@ -9,6 +9,7 @@ import { HomeDashboard } from "components/home/HomeDashboard";
 import { ModalRoot } from "components/modals";
 
 import { mockGetByUrl } from "test/apiClientMock";
+import { TEST_UNRATED } from "test/constants";
 import { renderWithProviders } from "test/router";
 
 jest.mock("api/client");
@@ -22,10 +23,13 @@ const RECIPE: RecipeWithIngredientNames = {
     ingredients: ["beet"],
 };
 
+// the person list is a search result, which also carries the rating totals
+const PERSON_RECIPE = { ...RECIPE, ...TEST_UNRATED };
+
 const stubData = () => {
     mockGetByUrl({
         [API_ROUTES.recipes.list]: [RECIPE],
-        [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
+        [API_ROUTES.recipes.byPerson]: { items: [PERSON_RECIPE], total: 1 },
         [API_ROUTES.menu.allUnpaginated]: [],
         [API_ROUTES.userIngredients.list]: [],
         [API_ROUTES.auth.me]: null,
@@ -54,7 +58,7 @@ describe("HomeDashboard", () => {
     it("should show an error message when a query fails", async () => {
         mockGetByUrl({
             [API_ROUTES.recipes.list]: [RECIPE],
-            [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
+            [API_ROUTES.recipes.byPerson]: { items: [PERSON_RECIPE], total: 1 },
             [API_ROUTES.menu.allUnpaginated]: [],
             [API_ROUTES.auth.me]: null,
         });

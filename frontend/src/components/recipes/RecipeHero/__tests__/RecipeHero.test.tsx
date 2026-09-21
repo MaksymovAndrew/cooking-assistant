@@ -10,7 +10,7 @@ import { RecipeHero } from "components/recipes/RecipeHero";
 import { mediaUrl } from "utils/mediaUrl";
 
 import { mockedPut } from "test/apiClientMock";
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 jest.mock("api/client");
@@ -32,6 +32,7 @@ const BASE_RECIPE: RecipeDetails = {
     creation_date: "2024-01-01",
     isOwner: false,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,
@@ -133,13 +134,39 @@ describe("RecipeHero", () => {
         ).toBeInTheDocument();
     });
 
-    it("should not show the rating stat for a visitor", () => {
-        renderWithRouter(<RecipeHero {...baseProps} />);
+    it("should rate the recipe for a signed-in visitor and move the average at once", async () => {
+        mockedPut.mockResolvedValue({ data: null });
 
-        expect(screen.queryByText("Your rating")).not.toBeInTheDocument();
+        renderWithRouter(
+            <RecipeHero
+                {...baseProps}
+                recipe={{ ...BASE_RECIPE, ratingAverage: 3, ratingCount: 1 }}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("radio", { name: "5 stars" }));
+
+        expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.recipes.rating(1), {
+            value: 5,
+        });
+        expect(screen.getByRole("radio", { name: "5 stars" })).toBeChecked();
+        expect(
+            screen.getByRole("img", {
+                name: "Rated 4.0 out of 5 from 2 ratings",
+            }),
+        ).toBeInTheDocument();
     });
 
-    it("should show owner actions, the rating stat and call onDelete when the viewer owns the recipe", async () => {
+    it("should not offer the stars to a guest", () => {
+        renderWithRouter(<RecipeHero {...baseProps} recipe={GUEST_RECIPE} />);
+
+        expect(screen.queryByRole("radiogroup")).not.toBeInTheDocument();
+        expect(
+            screen.getByRole("img", { name: "No ratings yet" }),
+        ).toBeInTheDocument();
+    });
+
+    it("should show owner actions without the stars and call onDelete when the viewer owns the recipe", async () => {
         const onDelete = jest.fn();
 
         renderWithRouter(
@@ -153,7 +180,7 @@ describe("RecipeHero", () => {
         expect(
             screen.getByRole("link", { name: /Edit recipe/ }),
         ).toHaveAttribute("href", "/change-recipe/1");
-        expect(screen.getByText("Your rating")).toBeInTheDocument();
+        expect(screen.queryByRole("radiogroup")).not.toBeInTheDocument();
 
         await userEvent.click(
             screen.getByRole("button", { name: /Delete recipe/ }),

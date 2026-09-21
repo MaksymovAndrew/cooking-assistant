@@ -11,7 +11,7 @@ import { recipesApi } from "redux/services/recipesApi";
 import { useUpdateMenuPage } from "hooks/useUpdateMenuPage";
 
 import { mockedPut, mockGetByUrl } from "test/apiClientMock";
-import { ROUTE_ALL_MENUS, TEST_AUTHOR } from "test/constants";
+import { ROUTE_ALL_MENUS, TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { setTestParams } from "test/nextNavigationMock";
 import { mockNavigate } from "test/router";
 import { makeTestStore, renderHookWithStore } from "test/store";
@@ -30,6 +30,8 @@ const MENU_RECIPE = {
     creation_date: "2024-01-01",
     calories_per_portion: null,
     photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
 };
 const CATEGORIES = [{ menu_category_id: CATEGORY_ID, category_name: "Lunch" }];
 
@@ -42,6 +44,7 @@ const SAMPLE: MenuDetails = {
         category_id: CATEGORY_ID,
         isOwner: true,
         photo_key: null,
+        ...TEST_UNRATED,
         author: TEST_AUTHOR,
         isFavourite: false,
     },

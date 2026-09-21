@@ -7,6 +7,7 @@ import { buildMenuController } from "./composition-root.menu";
 import { buildPantryController } from "./composition-root.pantry";
 import { createPgDeps } from "./composition-root.pg";
 import { buildPhotoControllers } from "./composition-root.photos";
+import { buildRatingController } from "./composition-root.ratings";
 import { buildRecipeController } from "./composition-root.recipe";
 import { buildReferenceControllers } from "./composition-root.reference";
 import { buildShoppingListController } from "./composition-root.shoppingList";
@@ -26,6 +27,7 @@ export function buildControllers({
     userRepository,
     calorieRepository,
     favouriteRepository,
+    ratingRepository,
     dietPreferencesRepository,
     shoppingListRepository,
     tagRepository,
@@ -72,6 +74,7 @@ export function buildControllers({
         }),
         calorieController: buildCaloriesController(calorieRepository),
         favouriteController: buildFavouriteController(favouriteRepository),
+        ratingController: buildRatingController(ratingRepository),
         ...buildDietPreferencesControllers(dietPreferencesRepository),
         shoppingListController: buildShoppingListController({
             shoppingListRepository,

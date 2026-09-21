@@ -17,6 +17,7 @@ import {
     BTN_EDIT_RECIPE,
     ROUTE_ALL_RECIPES,
     TEST_AUTHOR,
+    TEST_UNRATED,
 } from "test/constants";
 import { mockNavigate, renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
@@ -36,6 +37,7 @@ const SAMPLE: RecipeDetails = {
     creation_date: "2024-01-01",
     isOwner: true,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,

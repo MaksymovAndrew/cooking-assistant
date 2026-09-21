@@ -59,9 +59,8 @@
         }
     }
 
-    &__rating-inline-icon {
-        color: var(--warning);
-        fill: var(--warning);
+    &__rate {
+        margin-bottom: var(--s-5);
     }
 
     &__description {
@@ -124,11 +123,6 @@
         svg {
             color: var(--brand);
         }
-    }
-
-    &__stat-count {
-        color: var(--text-muted);
-        font-size: 12px;
     }
 
     &__stat--calorie-over {

@@ -44,6 +44,10 @@ export const menuFiltersSchema = z.object({
     menu_name: optionalStringSchema("Menu name"),
     category_ids: idListStringSchema("Category IDs").optional(),
     favourites: booleanQuerySchema("Favourites"),
+    sort_order: z
+        .enum(["rating"], { error: "Sort order must be rating" })
+        .optional(),
+    top_rated: booleanQuerySchema("Top rated"),
     limit: limitSchema,
     offset: offsetSchema,
 }) satisfies z.ZodType<MenuFilters>;

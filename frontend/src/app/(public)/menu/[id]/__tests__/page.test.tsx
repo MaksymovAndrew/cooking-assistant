@@ -5,7 +5,7 @@ import type { MenuDetails } from "types/menu";
 import { fetchAsVisitor } from "api/server";
 
 import MenuDetailsPage, { generateMetadata } from "app/(public)/menu/[id]/page";
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 
 jest.mock("api/server", () => ({ fetchAsVisitor: jest.fn() }));
 
@@ -22,6 +22,7 @@ const SAMPLE: MenuDetails = {
         category_id: 2,
         isOwner: false,
         photo_key: null,
+        ...TEST_UNRATED,
         author: TEST_AUTHOR,
         isFavourite: false,
     },

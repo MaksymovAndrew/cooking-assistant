@@ -4,7 +4,7 @@ import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecentRecipeCard } from "components/home/RecentRecipes/RecentRecipeCard";
 
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 const RECIPE: RecipeSearchResultItem = {
@@ -17,6 +17,7 @@ const RECIPE: RecipeSearchResultItem = {
     calories_per_portion: null,
     isOwner: true,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,

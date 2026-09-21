@@ -62,7 +62,7 @@ export const recipeFiltersSchema = z.object({
         positiveIntegerSchema("Max calories").optional(),
     ),
     sort_order: z
-        .enum(["asc", "desc"], {
+        .enum(["asc", "desc", "rating"], {
             error: (issue) => {
                 const expected = issue.values
                     .map((value) => quote(String(value)))
@@ -74,6 +74,7 @@ export const recipeFiltersSchema = z.object({
         .optional(),
     in_pantry: booleanQuerySchema("In pantry"),
     favourites: booleanQuerySchema("Favourites"),
+    top_rated: booleanQuerySchema("Top rated"),
     exclude_allergens: z
         .string({ error: "Exclude allergens must be a string" })
         .transform((value) => value.split(","))

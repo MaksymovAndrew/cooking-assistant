@@ -2,6 +2,7 @@ import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
 import { DIET_FILTER_CLAUSES } from "infrastructure/persistence/pg/dietFilterClauses";
 import { favouritesFilterClause } from "infrastructure/persistence/pg/favouritesFilterClause";
+import { topRatedFilterClause } from "infrastructure/persistence/pg/ratingColumns";
 import { RECIPE_RANGE_FILTER_CLAUSES } from "infrastructure/persistence/pg/recipeRangeFilterClauses";
 import {
     escapeLikePattern,
@@ -120,6 +121,7 @@ export const RECIPE_FILTER_CLAUSES: readonly RecipeFilterClause[] = [
         },
     },
     favouritesFilterClause("recipe", "r.id"),
+    topRatedFilterClause("r"),
     ...DIET_FILTER_CLAUSES,
     tagsFilterClause,
 ];

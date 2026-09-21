@@ -13,7 +13,7 @@ import { recipesApi } from "redux/services/recipesApi";
 import { useProfilePage } from "hooks/useProfilePage";
 
 import { mockGetByUrl } from "test/apiClientMock";
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { makeTestStore, renderHookWithRouter } from "test/store";
 
 jest.mock("api/client");
@@ -40,6 +40,7 @@ const RECIPE: RecipeSearchResultItem = {
     ingredients: [],
     isOwner: true,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,

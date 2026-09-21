@@ -12,7 +12,10 @@ import { FilterChipGroup } from "components/ui/FilterChipGroup";
 import type { SegmentedOption } from "components/ui/SegmentedControl";
 import { SegmentedControl } from "components/ui/SegmentedControl";
 
-import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
+import type {
+    RecipeFilterState,
+    RecipeSort,
+} from "utils/filters/recipeFilterDefs";
 import { resolveAllergen } from "utils/ingredientName";
 
 import { RecipeFilterToggles } from "./RecipeFilterToggles";
@@ -30,9 +33,10 @@ interface RecipeFilterPopoverProps {
     fieldsResetKey?: number;
 }
 
-const SORT_OPTIONS: readonly SegmentedOption<"asc" | "desc">[] = [
+const SORT_OPTIONS: readonly SegmentedOption<RecipeSort>[] = [
     { value: "asc", label: "filterPanel.fastToLong" },
     { value: "desc", label: "filterPanel.longToFast" },
+    { value: "rating", label: "filterPanel.topRated" },
 ];
 
 export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({

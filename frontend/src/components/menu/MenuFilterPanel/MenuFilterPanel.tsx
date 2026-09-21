@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { ArrowDownWideNarrow, Heart, Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -49,7 +49,12 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
     // outside the popover) untouched - resetFilters is the full reset, used by "Clear all".
     // one setValues() call: separate setValue() calls would each read the same pre-reset URL
     const resetPanelFields = () => {
-        setValues({ categories: [], favourites: false });
+        setValues({
+            categories: [],
+            favourites: false,
+            topRated: false,
+            sort: null,
+        });
     };
 
     return (
@@ -82,6 +87,22 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
                         }}
                     />
                 )}
+                <FilterToggle
+                    icon={Star}
+                    label={t("categoryFilter.topRatedLabel")}
+                    checked={filters.topRated}
+                    onChange={(value) => {
+                        setValue("topRated", value);
+                    }}
+                />
+                <FilterToggle
+                    icon={ArrowDownWideNarrow}
+                    label={t("categoryFilter.sortByRatingLabel")}
+                    checked={filters.sort === "rating"}
+                    onChange={(value) => {
+                        setValue("sort", value ? "rating" : null);
+                    }}
+                />
                 <div className={styles["menu-filter-panel__section"]}>
                     <span className={styles["menu-filter-panel__label"]}>
                         {t("categoryFilter.categoryLabel")}

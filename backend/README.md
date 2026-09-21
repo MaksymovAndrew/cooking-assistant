@@ -481,18 +481,20 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 
 ### Recipes ([src/routes/recipe.routes.ts](src/routes/recipe.routes.ts))
 
-| Method | Path                      | Purpose                                                                                    |
-| ------ | ------------------------- | ------------------------------------------------------------------------------------------ |
-| POST   | `/recipe`                 | Create a recipe with ingredients                                                           |
-| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                          |
-| GET    | `/recipe/:id`             | Single recipe with ingredients                                                             |
-| PUT    | `/recipe/:id`             | Update a recipe                                                                            |
-| DELETE | `/recipe/:id`             | Delete a recipe                                                                            |
-| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites, allergens, avoided, tags) |
-| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)                                       |
-| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                                                   |
-| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent)                          |
-| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)                             |
+| Method | Path                      | Purpose                                                                                            |
+| ------ | ------------------------- | -------------------------------------------------------------------------------------------------- |
+| POST   | `/recipe`                 | Create a recipe with ingredients                                                                   |
+| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                                  |
+| GET    | `/recipe/:id`             | Single recipe with ingredients                                                                     |
+| PUT    | `/recipe/:id`             | Update a recipe                                                                                    |
+| DELETE | `/recipe/:id`             | Delete a recipe                                                                                    |
+| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites, rating, allergens, avoided, tags) |
+| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)                                               |
+| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                                                           |
+| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent)                                  |
+| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)                                     |
+| PUT    | `/recipe/:id/rating`      | Rate the recipe `{ value: 1..5 }`, replacing the user's earlier vote (204)                         |
+| DELETE | `/recipe/:id/rating`      | Take the user's vote back (204, idempotent)                                                        |
 
 Every search/list and detail response carries `isOwner` and `isFavourite` computed for the requester;
 `isFavourite` is `null` when the request has no session. `favourites=true` narrows a list to the
@@ -505,6 +507,14 @@ allergens, is on the requester's avoid list, `null` for a guest. Without an expl
 requester's list is ranked by it: favourites first, anything avoided last (favourites still lead among those),
 then newest. `hide_avoided=true` drops those recipes and is refused for a guest with `diet/requires_login`;
 `exclude_allergens=gluten,milk` leaves out recipes with any listed allergen and works for everyone.
+
+Ratings: search and detail responses carry `ratingAverage` (unrounded, `null` for a record nobody has
+rated), `ratingCount` and the requester's own `myRating` (`null` for a guest and for anyone who hasn't
+voted). A rating for a record that does not exist answers `404`, one on the requester's own recipe or menu
+`400 ratings/own_record`. `top_rated=true` keeps records averaging 4 or more and works for everyone;
+`sort_order=rating` ranks by a Bayesian average (`RATING_SORT_PRIOR` in `constants/ratings.ts`), so one
+five-star vote can't outrank fifty votes averaging 4.8. Rating writes live in
+[src/routes/rating.routes.ts](src/routes/rating.routes.ts).
 
 `GET /recipes` and `GET /recipes-stats` both use explicit columns rather than `SELECT r.*`, so
 neither ships a recipe's raw owner `person_id` to the client - the same rule the list/search
@@ -533,17 +543,19 @@ table and aggregating client-side.
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 
-| Method | Path                   | Purpose                                                |
-| ------ | ---------------------- | ------------------------------------------------------ |
-| GET    | `/menu`                | All menus, paginated (category and favourites filters) |
-| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page)   |
-| POST   | `/create-menu`         | Create a menu with recipes                             |
-| GET    | `/menu/:id`            | Menu details + recipes                                 |
-| PUT    | `/menu/:id`            | Update a menu                                          |
-| DELETE | `/menu/:id`            | Delete a menu                                          |
-| GET    | `/menu-filters-person` | The current user's menus (user from cookie)            |
-| PUT    | `/menu/:id/favourite`  | Add the menu to the current user's favourites (204)    |
-| DELETE | `/menu/:id/favourite`  | Remove it from the current user's favourites (204)     |
+| Method | Path                   | Purpose                                                                     |
+| ------ | ---------------------- | --------------------------------------------------------------------------- |
+| GET    | `/menu`                | All menus, paginated (category, favourites and rating filters, rating sort) |
+| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page)                        |
+| POST   | `/create-menu`         | Create a menu with recipes                                                  |
+| GET    | `/menu/:id`            | Menu details + recipes                                                      |
+| PUT    | `/menu/:id`            | Update a menu                                                               |
+| DELETE | `/menu/:id`            | Delete a menu                                                               |
+| GET    | `/menu-filters-person` | The current user's menus (user from cookie)                                 |
+| PUT    | `/menu/:id/favourite`  | Add the menu to the current user's favourites (204)                         |
+| DELETE | `/menu/:id/favourite`  | Remove it from the current user's favourites (204)                          |
+| PUT    | `/menu/:id/rating`     | Rate the menu `{ value: 1..5 }` (204), as for recipes                       |
+| DELETE | `/menu/:id/rating`     | Take the user's vote back (204, idempotent)                                 |
 
 ### Shopping list ([src/routes/shoppingList.routes.ts](src/routes/shoppingList.routes.ts))
 
@@ -644,6 +656,11 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
 - `recipe_favourites` / `menu_favourites` - one row per person and favourited recipe / menu (composite
   primary key, so a repeat add is a no-op). Every foreign key is `ON DELETE CASCADE`: recipe, menu and
   account deletion are hand-written transactions that know nothing about favourites.
+- `recipe_ratings` / `menu_ratings` - one row per person and rated recipe / menu (`value` 1-5; the
+  composite primary key is the one-vote-per-person rule). Every foreign key is `ON DELETE CASCADE`.
+  `recipes` and `menu` carry running `rating_sum` / `rating_count` totals kept by an `AFTER` trigger on
+  the vote tables, never by repository code: a deleted account takes its votes with it through a cascade,
+  and only a trigger sees that. The average is derived from the totals on read, never stored.
 - `person` to `ingredients` through `person_ingredients` (the pantry aggregate, with
   `quantity_person_ingradient` - typo in the real column name, leave it) and `ingredient_purchases`
   (one row per purchase lot). Expiry is computed per lot from `ingredient_purchases.purchase_date`,

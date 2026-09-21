@@ -9,7 +9,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import ProfilePage from "app/(private)/profile/page";
 import { mockGetByUrl } from "test/apiClientMock";
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithProviders } from "test/router";
 
 jest.mock("api/client");
@@ -36,6 +36,7 @@ const RECIPE: RecipeSearchResultItem = {
     ingredients: [],
     isOwner: true,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,

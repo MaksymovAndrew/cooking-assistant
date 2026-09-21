@@ -1,6 +1,7 @@
 import type { MenuFilters } from "domain/repositories/menu.filters";
 
 import { favouritesFilterClause } from "infrastructure/persistence/pg/favouritesFilterClause";
+import { topRatedFilterClause } from "infrastructure/persistence/pg/ratingColumns";
 import {
     escapeLikePattern,
     type SqlFilterBuilder,
@@ -51,4 +52,5 @@ export const MENU_FILTER_CLAUSES: readonly MenuFilterClause[] = [
         },
     },
     favouritesFilterClause("menu", "m.menu_id"),
+    topRatedFilterClause("m"),
 ];

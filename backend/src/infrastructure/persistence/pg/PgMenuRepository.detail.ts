@@ -1,14 +1,21 @@
 import type { Pool } from "pg";
 
-import type { RecordAuthor } from "domain/repositories/recordAuthor";
+import type {
+    RecordAuthor,
+    RecordRating,
+} from "domain/repositories/recordAuthor";
 
 import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
+import {
+    ratingColumns,
+    ratingSummaryColumns,
+} from "infrastructure/persistence/pg/ratingColumns";
 
 import { loadMissingIngredients } from "./PgMenuRepository.missingIngredients";
 
-interface MenuRow {
+interface MenuRow extends RecordRating {
     id: number;
     title: string;
     menuContent: string;
@@ -20,7 +27,7 @@ interface MenuRow {
     author: RecordAuthor;
 }
 
-interface MenuRecipeRow {
+interface MenuRecipeRow extends Omit<RecordRating, "myRating"> {
     recipe_id: number;
     title: string;
     content: string;
@@ -48,7 +55,8 @@ export async function findMenuByIdWithRecipes(
         m.photo_key,
         ${authorColumn("m")},
         ${isOwnerColumn("m", "$2")},
-        ${isFavouriteColumn("menu", "m.menu_id", "$2")}
+        ${isFavouriteColumn("menu", "m.menu_id", "$2")},
+        ${ratingColumns("menu", "m", "$2")}
       FROM menu m
       LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
       WHERE m.menu_id = $1`,
@@ -70,6 +78,7 @@ export async function findMenuByIdWithRecipes(
         r.creation_date,
         r.cooking_time,
         r.photo_key,
+        ${ratingSummaryColumns("r")},
         COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
         rt.type_name AS type_name,
         ARRAY_AGG(i.name) AS ingredients

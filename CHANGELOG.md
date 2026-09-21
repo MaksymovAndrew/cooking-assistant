@@ -25,12 +25,17 @@ changelogs and the tags and now track everything here against one shared version
 - Added: Photos for recipes and menus, and a profile photo for every account. Every upload is checked by its actual contents, re-encoded into a fresh image with location and camera data removed, and stored under a name the server chooses, so an image file cannot smuggle anything else onto the server.
 - Added: Recipes and menus name their author by first name and surname initial, with their avatar - never their login or email.
 - Changed: Deleting a recipe, a menu or an account also deletes its photos.
+- Added: Rate other people's recipes and menus from one to five stars - one vote each, which you can change or take back; nobody can rate their own.
+- Added: Sort recipes and menus by rating, where a single five-star vote can't outrank a well-rated favourite, and keep only those rated four stars and up.
 
 ### Frontend
 
 - Added: Add, replace or remove a photo on the recipe and menu forms; it shows on the cards, the recipe page and as the menu cover.
 - Added: Upload your own profile photo from Edit profile - it shows in the header and on your profile, and removing it brings your chosen avatar back.
 - Added: Recipe and menu pages show who made them.
+- Added: Real star ratings everywhere a recipe or menu appears, with an honest "No ratings yet" until the first vote - the made-up placeholder numbers are gone.
+- Added: Rate a recipe or menu right on its page, with the stars also working from the keyboard.
+- Added: "Top rated" sort and a "Rated 4 stars and up" filter on the recipe and menu lists.
 - Security: The site now sends browser security headers that block it being framed by other sites and restrict where images, plugins and forms may load from.
 - Changed: Pages download less code up front - dialogs now load the moment they are opened.
 

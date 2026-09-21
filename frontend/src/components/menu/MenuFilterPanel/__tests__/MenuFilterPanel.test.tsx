@@ -16,6 +16,8 @@ const BASE_FILTERS: MenuFilterState = {
     search: "",
     categories: [],
     favourites: false,
+    topRated: false,
+    sort: null,
 };
 
 const setup = (overrides: Partial<MenuFilterState> = {}, activeCount = 0) => {
@@ -120,7 +122,33 @@ describe("MenuFilterPanel", () => {
         expect(setValue).toHaveBeenCalledWith("categories", [2]);
     });
 
-    it("should reset the categories and the favourites toggle in one call when Reset filters is clicked, leaving search alone", async () => {
+    it.each([
+        ["Rated 4 stars and up", "topRated", true],
+        ["Top rated first", "sort", "rating"],
+    ])(
+        "should call setValue when the %s toggle is switched on",
+        async (label, key, value) => {
+            const { setValue } = setup();
+
+            await openPanel();
+            await userEvent.click(screen.getByRole("switch", { name: label }));
+
+            expect(setValue).toHaveBeenCalledWith(key, value);
+        },
+    );
+
+    it("should clear the rating sort when its toggle is switched off", async () => {
+        const { setValue } = setup({ sort: "rating" });
+
+        await openPanel();
+        await userEvent.click(
+            screen.getByRole("switch", { name: "Top rated first" }),
+        );
+
+        expect(setValue).toHaveBeenCalledWith("sort", null);
+    });
+
+    it("should reset every popover field in one call when Reset filters is clicked, leaving search alone", async () => {
         const { setValue, setValues } = setup(
             { categories: [1, 2], favourites: true },
             2,
@@ -134,6 +162,8 @@ describe("MenuFilterPanel", () => {
         expect(setValues).toHaveBeenCalledWith({
             categories: [],
             favourites: false,
+            topRated: false,
+            sort: null,
         });
         expect(setValue).not.toHaveBeenCalled();
     });

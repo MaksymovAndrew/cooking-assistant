@@ -13,6 +13,7 @@ import {
     MOCK_ERROR_SERVER,
     ROUTE_ALL_RECIPES,
     TEST_AUTHOR,
+    TEST_UNRATED,
 } from "test/constants";
 import { setTestParams } from "test/nextNavigationMock";
 import { mockNavigate, renderWithProviders } from "test/router";
@@ -33,6 +34,7 @@ const SAMPLE: RecipeDetails = {
     creation_date: "2024-01-01",
     isOwner: true,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,

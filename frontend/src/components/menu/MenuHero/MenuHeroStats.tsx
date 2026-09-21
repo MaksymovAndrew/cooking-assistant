@@ -2,10 +2,10 @@ import { Clock, Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
+import type { RecordRating } from "types/rating";
 
 import { BookMark } from "components/icons";
-import { RecipeRatingStars } from "components/recipes/RecipeRatingStars";
+import { RatingStars } from "components/ui/RatingStars";
 
 import styles from "./MenuHero.module.scss";
 
@@ -13,7 +13,7 @@ interface MenuHeroStatsProps {
     formattedTotalTime: string;
     recipeCount: number;
     formattedCalories: string | null;
-    isOwner: boolean;
+    rating: RecordRating;
     exceedsBudget?: boolean;
 }
 
@@ -23,7 +23,7 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
     formattedTotalTime,
     recipeCount,
     formattedCalories,
-    isOwner,
+    rating,
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("menu");
@@ -55,22 +55,20 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
                         {formattedTotalTime}
                     </span>
                 </div>
-                {isOwner && (
-                    <div
-                        className={[
-                            styles["menu-hero__stat"],
-                            styles["menu-hero__stat--secondary"],
-                        ].join(" ")}
-                    >
-                        <span className={styles["menu-hero__stat-label"]}>
-                            {t("menuDetailsPage.yourRating")}
-                        </span>
-                        <RecipeRatingStars
-                            rating={MENU_RATING}
-                            ratingCount={MENU_RATING_COUNT}
-                        />
-                    </div>
-                )}
+                <div
+                    className={[
+                        styles["menu-hero__stat"],
+                        styles["menu-hero__stat--secondary"],
+                    ].join(" ")}
+                >
+                    <span className={styles["menu-hero__stat-label"]}>
+                        {t("menuDetailsPage.rating")}
+                    </span>
+                    <RatingStars
+                        average={rating.ratingAverage}
+                        count={rating.ratingCount}
+                    />
+                </div>
                 <div className={styles["menu-hero__stat"]}>
                     <span className={styles["menu-hero__stat-label"]}>
                         {t("menuDetailsPage.recipes")}

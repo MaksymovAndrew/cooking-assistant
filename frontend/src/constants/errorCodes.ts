@@ -36,6 +36,8 @@ export const ERROR_CODES = {
 
     FAVOURITES_REQUIRES_LOGIN: "favourites/requires_login",
 
+    RATING_OWN_RECORD: "ratings/own_record",
+
     INGREDIENT_NOT_FOUND: "ingredient/not_found",
     DIET_REQUIRES_LOGIN: "diet/requires_login",
 

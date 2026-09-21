@@ -17,6 +17,7 @@ import {
     BTN_EDIT_MENU,
     ROUTE_ALL_MENUS,
     TEST_AUTHOR,
+    TEST_UNRATED,
 } from "test/constants";
 import { mockNavigate, renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
@@ -33,6 +34,7 @@ const SAMPLE: MenuDetails = {
         category_id: 2,
         isOwner: true,
         photo_key: null,
+        ...TEST_UNRATED,
         author: TEST_AUTHOR,
         isFavourite: false,
     },
@@ -45,6 +47,8 @@ const SAMPLE: MenuDetails = {
             creation_date: "2024-01-01",
             calories_per_portion: null,
             photo_key: null,
+            ratingAverage: null,
+            ratingCount: 0,
             missingIngredients: [
                 {
                     ingredient_id: 7,
@@ -72,6 +76,8 @@ const SAMPLE_WITH_CALORIES: MenuDetails = {
             creation_date: "2024-01-01",
             calories_per_portion: 180,
             photo_key: null,
+            ratingAverage: null,
+            ratingCount: 0,
         },
     ],
 };

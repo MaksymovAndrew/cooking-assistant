@@ -10,11 +10,8 @@ import type { PaginatedResult } from "domain/repositories/pagination.types";
 
 import { findMenuByIdWithRecipes } from "./PgMenuRepository.detail";
 import { createMenuInDb, updateMenuInDb } from "./PgMenuRepository.mutations";
-import {
-    findAllMenus,
-    findAllMenusUnpaginated,
-    searchPersonMenus,
-} from "./PgMenuRepository.queries";
+import { findAllMenus, searchPersonMenus } from "./PgMenuRepository.queries";
+import { findAllMenusUnpaginated } from "./PgMenuRepository.stats";
 
 export default class PgMenuRepository implements MenuRepository {
     constructor(private pool: Pool) {}

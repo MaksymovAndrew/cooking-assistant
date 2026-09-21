@@ -28,6 +28,7 @@ import createMediaRouter from "routes/media.routes";
 import createMenuRouter from "routes/menu.routes";
 import createMenuCategoryRouter from "routes/menuCategory.routes";
 import createPhotoRouter from "routes/photo.routes";
+import createRatingRouter from "routes/rating.routes";
 import createRecipeRouter from "routes/recipe.routes";
 import createShoppingListRouter from "routes/shoppingList.routes";
 import createTagRouter from "routes/tag.routes";
@@ -103,6 +104,7 @@ export function createApp(controllers: Controllers): Express {
     );
     app.use(API_PREFIX, createCalorieRouter(controllers.calorieController));
     app.use(API_PREFIX, createFavouriteRouter(controllers.favouriteController));
+    app.use(API_PREFIX, createRatingRouter(controllers.ratingController));
     app.use(
         API_PREFIX,
         createDietPreferencesRouter(controllers.dietPreferencesController),

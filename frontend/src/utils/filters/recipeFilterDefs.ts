@@ -10,15 +10,24 @@ import {
 } from "./filterDefFactories.scalar";
 import { RECIPE_RANGE_FILTER_DEFS } from "./recipeFilterDefs.ranges";
 
+export type RecipeSort = "asc" | "desc" | "rating";
+
+const SORT_CHIP_KEYS = {
+    asc: "filterPanel.fastToLong",
+    desc: "filterPanel.longToFast",
+    rating: "filterPanel.topRated",
+} as const satisfies Record<RecipeSort, string>;
+
 export interface RecipeFilterState {
     search: string;
     types: number[];
     ingredients: number[];
     cookingTime: { min: string; max: string };
     calories: { min: string; max: string };
-    sort: "asc" | "desc" | null;
+    sort: RecipeSort | null;
     inPantry: boolean;
     favourites: boolean;
+    topRated: boolean;
     excludeAllergens: AllergenSlug[];
     hideAvoided: boolean;
     tags: number[];
@@ -54,18 +63,14 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
             t("filterPanel.ingredientsChip", { count: value.length }),
     }),
     ...RECIPE_RANGE_FILTER_DEFS,
-    enumFilter<"asc" | "desc", RecipeFilterParams>({
+    enumFilter<RecipeSort, RecipeFilterParams>({
         key: "sort",
         urlParam: "sort",
         param: "sort_order",
-        values: ["asc", "desc"],
+        values: ["asc", "desc", "rating"],
         chipLabel: (value, t) =>
             t("filterPanel.sortChip", {
-                sort: t(
-                    value === "asc"
-                        ? "filterPanel.fastToLong"
-                        : "filterPanel.longToFast",
-                ),
+                sort: t(SORT_CHIP_KEYS[value ?? "asc"]),
             }),
     }),
     booleanFilter<RecipeFilterParams>({
@@ -79,6 +84,12 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
         urlParam: "fav",
         param: "favourites",
         chipLabel: (_value, t) => t("filterPanel.favouritesChip"),
+    }),
+    booleanFilter<RecipeFilterParams>({
+        key: "topRated",
+        urlParam: "top",
+        param: "top_rated",
+        chipLabel: (_value, t) => t("filterPanel.topRatedChip"),
     }),
     enumListFilter<AllergenSlug, RecipeFilterParams>({
         key: "excludeAllergens",

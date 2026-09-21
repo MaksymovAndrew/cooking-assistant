@@ -17,6 +17,9 @@ const MENU_ROW_EXTRAS = {
     isFavourite: false,
     recipe_count: 2,
     photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
+    myRating: null,
     author: {
         name: "Bob",
         surname_initial: "C",

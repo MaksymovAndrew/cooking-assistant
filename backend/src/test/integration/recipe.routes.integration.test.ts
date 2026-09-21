@@ -23,6 +23,9 @@ const RECIPE_ROW_EXTRAS = {
     type_name: "Soup",
     ingredients: [],
     photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
+    myRating: null,
     author: {
         name: "Bob",
         surname_initial: "C",

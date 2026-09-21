@@ -24,6 +24,7 @@ export const ROUTES = {
         byId: "/recipe/:id",
         favourite: "/recipe/:id/favourite",
         photo: "/recipe/:id/photo",
+        rating: "/recipe/:id/rating",
         tags: "/recipe/:id/tags",
         byFilters: "/recipes-by-filters",
         byPerson: "/recipes-filters-person",
@@ -53,6 +54,7 @@ export const ROUTES = {
         byId: "/menu/:id",
         favourite: "/menu/:id/favourite",
         photo: "/menu/:id/photo",
+        rating: "/menu/:id/rating",
         byPerson: "/menu-filters-person",
     },
 

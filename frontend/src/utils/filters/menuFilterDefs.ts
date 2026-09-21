@@ -2,12 +2,15 @@ import type { MenuListParams } from "types/menu";
 
 import type { FilterDef } from "./filterDef";
 import { idListFilter, textFilter } from "./filterDefFactories";
-import { booleanFilter } from "./filterDefFactories.scalar";
+import { booleanFilter, enumFilter } from "./filterDefFactories.scalar";
 
 export interface MenuFilterState {
     search: string;
     categories: number[];
     favourites: boolean;
+    topRated: boolean;
+    // menus have one sort besides the default newest-first
+    sort: "rating" | null;
 }
 
 // shared with links that pre-set the filter before navigating (see GuestLandingMenuFilters)
@@ -33,5 +36,18 @@ export const MENU_FILTER_DEFS: readonly FilterDef<unknown, MenuListParams>[] = [
         urlParam: "fav",
         param: "favourites",
         chipLabel: (_value, t) => t("categoryFilter.favouritesChip"),
+    }),
+    booleanFilter<MenuListParams>({
+        key: "topRated",
+        urlParam: "top",
+        param: "top_rated",
+        chipLabel: (_value, t) => t("categoryFilter.topRatedChip"),
+    }),
+    enumFilter<"rating", MenuListParams>({
+        key: "sort",
+        urlParam: "sort",
+        param: "sort_order",
+        values: ["rating"],
+        chipLabel: (_value, t) => t("categoryFilter.sortByRatingChip"),
     }),
 ];

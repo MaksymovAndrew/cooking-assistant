@@ -116,6 +116,7 @@
         "calories/intake_not_found": "This entry no longer exists.",
         "calories/not_available": "Calories aren't available for this item.",
         "favourites/requires_login": "Log in to see your favourites.",
+        "ratings/own_record": "You can't rate your own recipe or menu.",
         "ingredient/not_found": "This ingredient is no longer in the catalog.",
         "diet/requires_login": "Log in to hide recipes with what you avoid.",
         "tags/not_found": "This tag no longer exists.",
@@ -180,5 +181,15 @@
         "replace": "Replace photo",
         "remove": "Remove photo",
         "hint": "JPEG, PNG, WebP or AVIF, up to 10 MB."
+    },
+    "rating": {
+        "summary_one": "Rated {{average}} out of 5 from {{count}} rating",
+        "summary_other": "Rated {{average}} out of 5 from {{count}} ratings",
+        "none": "No ratings yet",
+        "count": "({{count}})",
+        "star_one": "{{count}} star",
+        "star_other": "{{count}} stars",
+        "yourRating": "Your rating",
+        "remove": "Remove my rating"
     }
 }

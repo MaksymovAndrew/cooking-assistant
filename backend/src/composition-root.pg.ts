@@ -11,6 +11,7 @@ import PgMenuCategoryRepository from "infrastructure/persistence/pg/PgMenuCatego
 import PgMenuRepository from "infrastructure/persistence/pg/PgMenuRepository";
 import PgPantryRepository from "infrastructure/persistence/pg/PgPantryRepository";
 import PgPhotoRepository from "infrastructure/persistence/pg/PgPhotoRepository";
+import PgRatingRepository from "infrastructure/persistence/pg/PgRatingRepository";
 import PgRecipeRepository from "infrastructure/persistence/pg/PgRecipeRepository";
 import PgRecipeTypeRepository from "infrastructure/persistence/pg/PgRecipeTypeRepository";
 import PgShoppingListRepository from "infrastructure/persistence/pg/PgShoppingListRepository";
@@ -34,6 +35,7 @@ export function createPgDeps(): RepositoryDeps {
         userRepository: new PgUserRepository(pool),
         calorieRepository: new PgCalorieRepository(pool),
         favouriteRepository: new PgFavouriteRepository(pool),
+        ratingRepository: new PgRatingRepository(pool),
         dietPreferencesRepository: new PgDietPreferencesRepository(pool),
         shoppingListRepository: new PgShoppingListRepository(pool),
         tagRepository: new PgTagRepository(pool),

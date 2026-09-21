@@ -11,6 +11,8 @@ const RECIPE = {
     cooking_time: 85,
     calories_per_portion: null,
     photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
 };
 
 describe("MenuRecipeCard", () => {

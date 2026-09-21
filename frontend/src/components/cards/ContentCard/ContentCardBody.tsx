@@ -1,11 +1,12 @@
-import { Star } from "lucide-react";
 import React from "react";
 
 import { AvoidPill } from "components/ui/AvoidPill";
+import { RatingSummary } from "components/ui/RatingSummary";
 
 import styles from "./ContentCard.module.scss";
 import {
     type ContentCardMetaItem,
+    type ContentCardRating,
     META_ITEM_TONE_CALORIE_OVER,
 } from "./ContentCard.types";
 import { ContentCardAllergenBadge } from "./ContentCardAllergenBadge";
@@ -18,8 +19,7 @@ interface ContentCardBodyProps {
     isRow: boolean;
     badge: boolean;
     avoided: boolean;
-    rating: string;
-    ratingCount: string;
+    rating: ContentCardRating | null;
     metaText?: string;
     metaItems: ContentCardMetaItem[];
 }
@@ -38,7 +38,6 @@ export const ContentCardBody: React.FC<ContentCardBodyProps> = ({
     badge,
     avoided,
     rating,
-    ratingCount,
     metaText,
     metaItems,
 }) => {
@@ -50,15 +49,14 @@ export const ContentCardBody: React.FC<ContentCardBodyProps> = ({
         <>
             {!isRow && (
                 <span className={styles["content-card__rating"]}>
-                    <Star
-                        size={STAR_ICON_SIZE}
-                        aria-hidden="true"
-                        className={styles["content-card__rating-star"]}
-                    />
-                    {rating}
-                    <span className={styles["content-card__rating-count"]}>
-                        {ratingCount}
-                    </span>
+                    {rating && (
+                        <RatingSummary
+                            average={rating.average}
+                            count={rating.count}
+                            iconSize={STAR_ICON_SIZE}
+                            className={styles["content-card__rating-value"]}
+                        />
+                    )}
                     <span className={styles["content-card__marks"]}>
                         {avoided && <AvoidPill />}
                         {badge && <ContentCardAllergenBadge isRow={isRow} />}

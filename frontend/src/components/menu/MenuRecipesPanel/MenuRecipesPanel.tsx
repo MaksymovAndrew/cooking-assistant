@@ -90,6 +90,8 @@ export const MenuRecipesPanel: React.FC<MenuRecipesPanelProps> = ({
                                 calories_per_portion:
                                     recipe.calories_per_portion,
                                 photo_key: recipe.photo_key,
+                                ratingAverage: recipe.ratingAverage,
+                                ratingCount: recipe.ratingCount,
                             }}
                         />
                     ))}

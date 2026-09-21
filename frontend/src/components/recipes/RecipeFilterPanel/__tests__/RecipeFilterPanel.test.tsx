@@ -38,6 +38,7 @@ const BASE_FILTERS: RecipeFilterState = {
     sort: null,
     inPantry: false,
     favourites: false,
+    topRated: false,
     excludeAllergens: [],
     hideAvoided: false,
     tags: [],
@@ -307,6 +308,7 @@ describe("RecipeFilterPanel", () => {
         ["Only what I can make", "inPantry"],
         ["Only my favourites", "favourites"],
         ["Hide what I avoid", "hideAvoided"],
+        ["Rated 4 stars and up", "topRated"],
     ])(
         "should call setValue with true when the %s toggle is clicked",
         async (label, key) => {
@@ -319,12 +321,16 @@ describe("RecipeFilterPanel", () => {
         },
     );
 
-    it("should not show the pantry toggle for a guest", async () => {
+    it("should offer a guest only the rating toggle", async () => {
         setup({}, 0, [], GUEST_STORE);
 
         await openPanel();
 
-        expect(screen.queryByRole("switch")).not.toBeInTheDocument();
+        expect(
+            screen
+                .getAllByRole("switch")
+                .map((toggle) => toggle.getAttribute("aria-label")),
+        ).toEqual(["Rated 4 stars and up"]);
     });
 
     it("should reset only the popover's own fields when Reset filters is clicked, leaving search alone", async () => {
@@ -348,6 +354,7 @@ describe("RecipeFilterPanel", () => {
             sort: null,
             inPantry: false,
             favourites: false,
+            topRated: false,
             excludeAllergens: [],
             hideAvoided: false,
             tags: [],

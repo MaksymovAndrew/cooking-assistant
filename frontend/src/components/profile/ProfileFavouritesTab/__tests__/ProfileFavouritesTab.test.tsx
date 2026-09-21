@@ -6,7 +6,7 @@ import type { RecipeSearchResultItem } from "types/recipe";
 
 import { ProfileFavouritesTab } from "components/profile/ProfileFavouritesTab";
 
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 const RECIPE_TITLE = "Borscht";
@@ -23,6 +23,7 @@ const RECIPE: RecipeSearchResultItem = {
     ingredients: [],
     isOwner: false,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: true,
     containsAvoided: false,

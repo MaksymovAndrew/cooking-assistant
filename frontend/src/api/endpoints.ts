@@ -19,6 +19,7 @@ export const API_ROUTES = {
         byId: (id: string | number) => `/api/recipe/${id}`,
         favourite: (id: string | number) => `/api/recipe/${id}/favourite`,
         photo: (id: string | number) => `/api/recipe/${id}/photo`,
+        rating: (id: string | number) => `/api/recipe/${id}/rating`,
         tags: (id: string | number) => `/api/recipe/${id}/tags`,
         stats: "/api/recipes-stats",
     },
@@ -42,6 +43,7 @@ export const API_ROUTES = {
         byId: (id: string | number) => `/api/menu/${id}`,
         favourite: (id: string | number) => `/api/menu/${id}/favourite`,
         photo: (id: string | number) => `/api/menu/${id}/photo`,
+        rating: (id: string | number) => `/api/menu/${id}/rating`,
         byPerson: "/api/menu-filters-person",
     },
     menuCategories: {

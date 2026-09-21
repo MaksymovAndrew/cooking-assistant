@@ -4,7 +4,7 @@ import type { MenuDetails } from "types/menu";
 
 import { MenuHero } from "components/menu/MenuHero";
 
-import { TEST_AUTHOR } from "test/constants";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 const MENU_TITLE = "Sunday dinners";
@@ -19,6 +19,7 @@ const BASE_MENU: MenuDetails["menu"] = {
     category_id: 1,
     isOwner: false,
     photo_key: null,
+    ...TEST_UNRATED,
     author: TEST_AUTHOR,
     isFavourite: false,
 };
@@ -85,18 +86,45 @@ describe("MenuHero", () => {
         expect(screen.queryByText(/kcal/)).not.toBeInTheDocument();
     });
 
-    it("should not show the star-rating panel for a menu the viewer does not own", () => {
-        renderWithRouter(<MenuHero {...baseProps} />);
+    it("should offer the stars to a signed-in visitor, showing their own vote", () => {
+        renderWithRouter(
+            <MenuHero
+                {...baseProps}
+                menu={{
+                    ...BASE_MENU,
+                    ratingAverage: 4.5,
+                    ratingCount: 2,
+                    myRating: 4,
+                }}
+            />,
+        );
 
-        expect(screen.queryByText("Your rating")).not.toBeInTheDocument();
+        expect(
+            screen.getByRole("radiogroup", { name: "Your rating" }),
+        ).toBeInTheDocument();
+        expect(screen.getByRole("radio", { name: "4 stars" })).toBeChecked();
+        expect(
+            screen.getByRole("button", { name: "Remove my rating" }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("img", {
+                name: "Rated 4.5 out of 5 from 2 ratings",
+            }),
+        ).toBeInTheDocument();
     });
 
-    it("should show the star-rating panel when the viewer owns the menu", () => {
+    it("should not offer the stars on the viewer's own menu", () => {
         renderWithRouter(
             <MenuHero {...baseProps} menu={{ ...BASE_MENU, isOwner: true }} />,
         );
 
-        expect(screen.getByText("Your rating")).toBeInTheDocument();
+        expect(screen.queryByRole("radiogroup")).not.toBeInTheDocument();
+    });
+
+    it("should say an unrated menu has no ratings yet", () => {
+        renderWithRouter(<MenuHero {...baseProps} />);
+
+        expect(screen.getAllByText("No ratings yet")[0]).toBeInTheDocument();
     });
 
     it("should show a cover only when the menu has one", () => {

@@ -51,7 +51,9 @@ const setup = async () => {
 
 describe("useCreateMenuPage", () => {
     it("should create the menu and navigate to menus on valid submit", async () => {
-        mockedPost.mockResolvedValue({ data: null });
+        mockedPost.mockResolvedValue({
+            data: { message: "Menu created", menuId: 42 },
+        });
         const { result } = await setup();
 
         act(() => {

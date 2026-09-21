@@ -10,6 +10,7 @@ export const ROUTES = {
         login: "/login",
         logout: "/logout",
         me: "/me",
+        avatar: "/me/avatar",
         forgotPassword: "/forgot-password",
         resetPassword: "/reset-password",
         changePassword: "/change-password",
@@ -22,6 +23,7 @@ export const ROUTES = {
         list: "/recipes",
         byId: "/recipe/:id",
         favourite: "/recipe/:id/favourite",
+        photo: "/recipe/:id/photo",
         tags: "/recipe/:id/tags",
         byFilters: "/recipes-by-filters",
         byPerson: "/recipes-filters-person",
@@ -50,6 +52,7 @@ export const ROUTES = {
         create: "/create-menu",
         byId: "/menu/:id",
         favourite: "/menu/:id/favourite",
+        photo: "/menu/:id/photo",
         byPerson: "/menu-filters-person",
     },
 
@@ -73,6 +76,10 @@ export const ROUTES = {
         byId: "/tags/:id",
     },
 
+    media: {
+        file: "/media/:file",
+    },
+
     shoppingList: {
         list: "/shopping-list",
         byId: "/shopping-list/:id",
@@ -85,3 +92,6 @@ export const ROUTES = {
 // the probe is the one path referenced outside its own router - request logging filters it out -
 // so the mounted form is derived here rather than written a second time
 export const HEALTH_PATH = `${API_PREFIX}${ROUTES.health}`;
+
+// images are fetched a page's worth at a time, so request logging leaves them out as well
+export const MEDIA_PATH_PREFIX = `${API_PREFIX}${ROUTES.media.file.replace(":file", "")}`;

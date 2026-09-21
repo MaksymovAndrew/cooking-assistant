@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { RecipeFormIngredient } from "types/recipe";
+import type { RecipeFormIngredient } from "types/recipeForm";
 
 import { useEditableQuantity } from "hooks/useEditableQuantity";
 

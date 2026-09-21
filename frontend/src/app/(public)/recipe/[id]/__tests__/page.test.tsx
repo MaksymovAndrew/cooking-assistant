@@ -7,6 +7,7 @@ import { fetchAsVisitor } from "api/server";
 import RecipeDetailsPage, {
     generateMetadata,
 } from "app/(public)/recipe/[id]/page";
+import { TEST_AUTHOR } from "test/constants";
 
 jest.mock("api/server", () => ({ fetchAsVisitor: jest.fn() }));
 
@@ -24,6 +25,8 @@ const SAMPLE: RecipeDetails = {
     cooking_time: 60,
     creation_date: "2024-01-01",
     isOwner: false,
+    photo_key: null,
+    author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,
     tags: [],

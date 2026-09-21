@@ -13,6 +13,7 @@ import { recipesApi } from "redux/services/recipesApi";
 import { useProfilePage } from "hooks/useProfilePage";
 
 import { mockGetByUrl } from "test/apiClientMock";
+import { TEST_AUTHOR } from "test/constants";
 import { makeTestStore, renderHookWithRouter } from "test/store";
 
 jest.mock("api/client");
@@ -26,6 +27,7 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: null,
+    avatar_photo_key: null,
     calorie_goal: null,
 };
 const RECIPE: RecipeSearchResultItem = {
@@ -37,6 +39,8 @@ const RECIPE: RecipeSearchResultItem = {
     calories_per_portion: null,
     ingredients: [],
     isOwner: true,
+    photo_key: null,
+    author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,
     tags: [],

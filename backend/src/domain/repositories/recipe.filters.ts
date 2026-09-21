@@ -1,5 +1,7 @@
 import type { AllergenSlug } from "constants/allergens";
 
+import type { RecordAuthor } from "./recordAuthor";
+
 export interface RecipeFilters {
     recipe_name?: string;
     ingredient_ids?: string;
@@ -34,4 +36,6 @@ export interface RecipeSearchRow {
     calories_per_portion: number | null;
     type_name: string | null;
     ingredients: unknown;
+    photo_key: string | null;
+    author: RecordAuthor;
 }

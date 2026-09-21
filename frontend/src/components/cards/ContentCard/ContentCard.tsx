@@ -26,6 +26,8 @@ interface ContentCardProps {
     href: string;
     title: string;
     imageIcon: ContentCardIcon;
+    // an uploaded photo takes the icon's place; without one the card keeps its glyph
+    imageSrc?: string | null;
     chipLabel: string;
     // icon+label meta row (recipe cards); mutually exclusive with metaText
     metaItems?: ContentCardMetaItem[];
@@ -50,6 +52,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
     href,
     title,
     imageIcon: ImageIcon,
+    imageSrc = null,
     chipLabel,
     metaItems = [],
     metaText,
@@ -83,6 +86,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
             <ContentCardImage
                 isRow={isRow}
                 imageIcon={ImageIcon}
+                imageSrc={imageSrc}
                 chipLabel={chipLabel}
                 favourite={favourite}
             />

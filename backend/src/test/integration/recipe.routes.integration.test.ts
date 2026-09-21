@@ -22,6 +22,13 @@ const RECIPE_ROW_EXTRAS = {
     calories_per_portion: null,
     type_name: "Soup",
     ingredients: [],
+    photo_key: null,
+    author: {
+        name: "Bob",
+        surname_initial: "C",
+        avatar: null,
+        avatar_photo_key: null,
+    },
 };
 
 function makeRecipeBody() {

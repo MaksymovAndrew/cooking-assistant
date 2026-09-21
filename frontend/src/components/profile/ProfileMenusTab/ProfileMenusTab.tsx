@@ -53,6 +53,7 @@ export const ProfileMenusTab: React.FC<ProfileMenusTabProps> = ({
                         title={menu.title}
                         categoryName={menu.categoryname}
                         recipeCount={menu.recipe_count}
+                        photoKey={menu.photo_key}
                         isFavourite={menu.isFavourite}
                         mine={Boolean(menu.isOwner)}
                         variant={isMobile ? "row" : "grid"}

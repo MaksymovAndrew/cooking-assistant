@@ -23,6 +23,7 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: null,
+    avatar_photo_key: null,
     calorie_goal: null,
 };
 

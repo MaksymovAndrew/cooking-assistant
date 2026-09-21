@@ -20,8 +20,18 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Backend
+
+- Added: Photos for recipes and menus, and a profile photo for every account. Every upload is checked by its actual contents, re-encoded into a fresh image with location and camera data removed, and stored under a name the server chooses, so an image file cannot smuggle anything else onto the server.
+- Added: Recipes and menus name their author by first name and surname initial, with their avatar - never their login or email.
+- Changed: Deleting a recipe, a menu or an account also deletes its photos.
+
 ### Frontend
 
+- Added: Add, replace or remove a photo on the recipe and menu forms; it shows on the cards, the recipe page and as the menu cover.
+- Added: Upload your own profile photo from Edit profile - it shows in the header and on your profile, and removing it brings your chosen avatar back.
+- Added: Recipe and menu pages show who made them.
+- Security: The site now sends browser security headers that block it being framed by other sites and restrict where images, plugins and forms may load from.
 - Changed: Pages download less code up front - dialogs now load the moment they are opened.
 
 ### Project

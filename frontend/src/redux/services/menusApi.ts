@@ -64,7 +64,8 @@ export const menusApi = baseApi.injectEndpoints({
             query: (id) => ({ url: API_ROUTES.menu.byId(id) }),
             providesTags: (_result, _error, id) => [{ type: MENU, id }],
         }),
-        createMenu: build.mutation<null, CreateMenuRequest>({
+        // the new menu's id, to attach a cover picked before it existed
+        createMenu: build.mutation<{ menuId: number }, CreateMenuRequest>({
             query: (data) => ({
                 url: API_ROUTES.menu.create,
                 method: "POST",

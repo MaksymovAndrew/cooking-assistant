@@ -1,5 +1,8 @@
 import type { Pool } from "pg";
 
+import type { RecordAuthor } from "domain/repositories/recordAuthor";
+
+import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 
@@ -13,6 +16,8 @@ interface MenuRow {
     category_id: number;
     isOwner: boolean;
     isFavourite: boolean | null;
+    photo_key: string | null;
+    author: RecordAuthor;
 }
 
 interface MenuRecipeRow {
@@ -24,6 +29,7 @@ interface MenuRecipeRow {
     cooking_time: number | null;
     calories_per_portion: number | null;
     type_name: string | null;
+    photo_key: string | null;
     ingredients: string[];
 }
 
@@ -39,6 +45,8 @@ export async function findMenuByIdWithRecipes(
         m.menu_content AS menuContent,
         mc.category_name AS categoryName,
         m.category_id,
+        m.photo_key,
+        ${authorColumn("m")},
         ${isOwnerColumn("m", "$2")},
         ${isFavouriteColumn("menu", "m.menu_id", "$2")}
       FROM menu m
@@ -61,6 +69,7 @@ export async function findMenuByIdWithRecipes(
         r.type_id,
         r.creation_date,
         r.cooking_time,
+        r.photo_key,
         COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
         rt.type_name AS type_name,
         ARRAY_AGG(i.name) AS ingredients

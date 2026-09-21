@@ -6,10 +6,12 @@ import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
 import type { MenuDetails } from "types/menu";
 
 import { MenuHeroStats } from "components/menu/MenuHero/MenuHeroStats";
+import { AuthorByline } from "components/ui/AuthorByline";
 import { Chip } from "components/ui/Chip";
 
 import { formatKcal } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
+import { mediaUrl } from "utils/mediaUrl";
 
 import styles from "./MenuHero.module.scss";
 
@@ -46,8 +48,18 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                   count: formatKcal(Math.round(caloriesPerPortion)),
               });
 
+    const coverSrc = mediaUrl(menu.photo_key, "hero");
+
     return (
         <div className={styles["menu-hero"]}>
+            {coverSrc && (
+                <img
+                    className={styles["menu-hero__cover"]}
+                    src={coverSrc}
+                    alt={menu.title}
+                    fetchPriority="high"
+                />
+            )}
             <div className={styles["menu-hero__header"]}>
                 <div className={styles["menu-hero__title-row"]}>
                     <h1 className={styles["menu-hero__title"]}>{menu.title}</h1>
@@ -64,6 +76,10 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                         </span>
                     </span>
                 </div>
+                <AuthorByline
+                    author={menu.author}
+                    className={styles["menu-hero__author"]}
+                />
             </div>
 
             <MenuHeroStats

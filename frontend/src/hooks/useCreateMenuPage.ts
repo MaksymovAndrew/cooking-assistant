@@ -37,7 +37,8 @@ export const useCreateMenuPage = () => {
             recipeIds: form.selectedRecipes,
         });
 
-        if ("data" in result) {
+        if (result.data) {
+            await form.photo.commit(result.data.menuId);
             form.markClean();
             router.push(ROUTES.allMenus);
         }

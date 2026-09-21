@@ -7,6 +7,7 @@ import type { IngredientRepository } from "domain/repositories/IngredientReposit
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
+import type { PhotoRepository } from "domain/repositories/PhotoRepository";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
 import type { ShoppingListRepository } from "domain/repositories/ShoppingListRepository";
@@ -14,6 +15,8 @@ import type { TagRepository } from "domain/repositories/TagRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
 import type { EmailSender } from "application/ports/EmailSender";
+import type { ImageProcessor } from "application/ports/ImageProcessor";
+import type { MediaStorage } from "application/ports/MediaStorage";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
 
@@ -32,9 +35,12 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     dietPreferencesRepository: jest.Mocked<DietPreferencesRepository>;
     shoppingListRepository: jest.Mocked<ShoppingListRepository>;
     tagRepository: jest.Mocked<TagRepository>;
+    photoRepository: jest.Mocked<PhotoRepository>;
     passwordHasher: jest.Mocked<PasswordHasher>;
     tokenService: jest.Mocked<TokenService>;
     emailSender: jest.Mocked<EmailSender>;
+    imageProcessor: jest.Mocked<ImageProcessor>;
+    mediaStorage: jest.Mocked<MediaStorage>;
 }
 
 function createIngredientRepository(): jest.Mocked<IngredientRepository> {
@@ -168,6 +174,22 @@ function createEmailSender(): jest.Mocked<EmailSender> {
     };
 }
 
+function createPhotoRepository(): jest.Mocked<PhotoRepository> {
+    return {
+        replace: jest.fn(),
+        findKey: jest.fn(),
+        listOwnedKeys: jest.fn(),
+    };
+}
+
+function createMediaStorage(): jest.Mocked<MediaStorage> {
+    return {
+        save: jest.fn(),
+        remove: jest.fn(),
+        locate: jest.fn(),
+    };
+}
+
 export function buildFakeDeps(): FakeRepositoryDeps {
     return {
         ingredientRepository: createIngredientRepository(),
@@ -182,9 +204,12 @@ export function buildFakeDeps(): FakeRepositoryDeps {
         dietPreferencesRepository: createDietPreferencesRepository(),
         shoppingListRepository: createShoppingListRepository(),
         tagRepository: createTagRepository(),
+        photoRepository: createPhotoRepository(),
         passwordHasher: createPasswordHasher(),
         tokenService: createTokenService(),
         emailSender: createEmailSender(),
+        imageProcessor: { toVariants: jest.fn() },
+        mediaStorage: createMediaStorage(),
         frontendOrigin: TEST_FRONTEND_ORIGIN,
     };
 }

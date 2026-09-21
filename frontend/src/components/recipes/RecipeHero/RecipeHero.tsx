@@ -9,10 +9,13 @@ import { useRecipeHeroLabels } from "hooks/useRecipeHeroLabels";
 
 import { UtensilsMarkSimple } from "components/icons";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
+import { AuthorByline } from "components/ui/AuthorByline";
 import { Chip } from "components/ui/Chip";
 import { FavouriteButton } from "components/ui/FavouriteButton";
 import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
 import { OwnerActions } from "components/ui/OwnerActions";
+
+import { mediaUrl } from "utils/mediaUrl";
 
 import styles from "./RecipeHero.module.scss";
 
@@ -45,6 +48,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     // isFavourite is null exactly when the server rendered this record for an anonymous requester -
     // deciding the guest branch from it, not from the client session check, keeps the first paint right
     const visitorFavourite = recipe.isFavourite === null ? null : favourite;
+    const photoSrc = mediaUrl(recipe.photo_key, "hero");
     const favouriteLabel = t("recipeDetailsPage.favourite");
     const {
         formattedCookingTime,
@@ -56,10 +60,20 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     return (
         <div className={styles["recipe-hero"]}>
             <div className={styles["recipe-hero__image"]}>
-                <UtensilsMarkSimple
-                    size={IMAGE_ICON_SIZE}
-                    className={styles["recipe-hero__image-icon"]}
-                />
+                {photoSrc ? (
+                    // the page's largest element, so it is fetched first rather than lazily
+                    <img
+                        className={styles["recipe-hero__photo"]}
+                        src={photoSrc}
+                        alt={recipe.title}
+                        fetchPriority="high"
+                    />
+                ) : (
+                    <UtensilsMarkSimple
+                        size={IMAGE_ICON_SIZE}
+                        className={styles["recipe-hero__image-icon"]}
+                    />
+                )}
                 {visitorFavourite && (
                     <FavouriteButton
                         favourite={visitorFavourite}
@@ -74,6 +88,10 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 {recipe.type_name}
             </Chip>
             <h1 className={styles["recipe-hero__title"]}>{recipe.title}</h1>
+            <AuthorByline
+                author={recipe.author}
+                className={styles["recipe-hero__author"]}
+            />
 
             <RecipeHeroStats
                 formattedCookingTime={formattedCookingTime}

@@ -16,6 +16,7 @@ import {
     BTN_DELETE_MENU,
     BTN_EDIT_MENU,
     ROUTE_ALL_MENUS,
+    TEST_AUTHOR,
 } from "test/constants";
 import { mockNavigate, renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
@@ -31,6 +32,8 @@ const SAMPLE: MenuDetails = {
         menucontent: "quick",
         category_id: 2,
         isOwner: true,
+        photo_key: null,
+        author: TEST_AUTHOR,
         isFavourite: false,
     },
     recipes: [
@@ -41,6 +44,7 @@ const SAMPLE: MenuDetails = {
             cooking_time: 30,
             creation_date: "2024-01-01",
             calories_per_portion: null,
+            photo_key: null,
             missingIngredients: [
                 {
                     ingredient_id: 7,
@@ -67,6 +71,7 @@ const SAMPLE_WITH_CALORIES: MenuDetails = {
             cooking_time: 10,
             creation_date: "2024-01-01",
             calories_per_portion: 180,
+            photo_key: null,
         },
     ],
 };

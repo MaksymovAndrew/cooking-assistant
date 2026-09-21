@@ -1,5 +1,6 @@
 import type { UserRepository } from "domain/repositories/UserRepository";
 
+import type PhotoCleanup from "application/media/PhotoCleanup";
 import type { EmailSender } from "application/ports/EmailSender";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
@@ -29,6 +30,7 @@ export interface UserControllerDeps {
     tokenService: TokenService;
     emailSender: EmailSender;
     frontendOrigin: string;
+    photoCleanup: PhotoCleanup;
 }
 
 export function buildUserControllers({
@@ -37,6 +39,7 @@ export function buildUserControllers({
     tokenService,
     emailSender,
     frontendOrigin,
+    photoCleanup,
 }: UserControllerDeps): UserControllers {
     const userController = new UserController({
         registerUser: new RegisterUser(
@@ -47,7 +50,11 @@ export function buildUserControllers({
         loginUser: new LoginUser(userRepository, passwordHasher, tokenService),
         getCurrentUser: new GetCurrentUser(userRepository),
         updateProfile: new UpdateProfile(userRepository),
-        deleteAccount: new DeleteAccount(userRepository, passwordHasher),
+        deleteAccount: new DeleteAccount(
+            userRepository,
+            passwordHasher,
+            photoCleanup,
+        ),
     });
 
     const userSecurityController = new UserSecurityController({

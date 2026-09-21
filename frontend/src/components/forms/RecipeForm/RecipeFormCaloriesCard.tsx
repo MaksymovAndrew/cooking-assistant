@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { RecipeFormIngredient } from "types/recipe";
+import type { RecipeFormIngredient } from "types/recipeForm";
 
 import { FormCard } from "components/ui/FormCard";
 import { FormField } from "components/ui/FormField";

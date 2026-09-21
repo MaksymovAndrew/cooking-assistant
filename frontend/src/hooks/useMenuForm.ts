@@ -1,14 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useDirtyRef } from "hooks/useDirtyRef";
 import type { MenuFormErrorMessages } from "hooks/useMenuFormValidation";
 import { useMenuFormValidation } from "hooks/useMenuFormValidation";
+import { useRecordPhotoDraft } from "hooks/useRecordPhotoDraft";
 
 export interface MenuFormValues {
     menuTitle: string;
     menuDescription: string;
     selectedCategory: number | null;
     selectedRecipes: number[];
+    photoKey: string | null;
 }
 
 export interface UseMenuFormOptions {
@@ -20,6 +22,7 @@ const BLANK_SNAPSHOT: MenuFormValues = {
     menuDescription: "",
     selectedCategory: null,
     selectedRecipes: [],
+    photoKey: null,
 };
 
 export const useMenuForm = (options: UseMenuFormOptions) => {
@@ -31,6 +34,8 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
     const [selectedRecipes, setSelectedRecipes] = useState<number[]>([]);
     const [initialSnapshot, setInitialSnapshot] =
         useState<MenuFormValues>(BLANK_SNAPSHOT);
+    const photo = useRecordPhotoDraft("menu");
+    const { reset: resetPhoto } = photo;
 
     const { errors, validate } = useMenuFormValidation(options.errorMessages);
 
@@ -86,30 +91,29 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
         [],
     );
 
-    const setInitialValues = useCallback((values: MenuFormValues) => {
-        setMenuTitle(values.menuTitle);
-        setMenuDescription(values.menuDescription);
-        setSelectedCategory(values.selectedCategory);
-        setSelectedRecipes(values.selectedRecipes);
-        setInitialSnapshot(values);
-    }, []);
+    const setInitialValues = useCallback(
+        (values: MenuFormValues) => {
+            setMenuTitle(values.menuTitle);
+            setMenuDescription(values.menuDescription);
+            setSelectedCategory(values.selectedCategory);
+            setSelectedRecipes(values.selectedRecipes);
+            resetPhoto(values.photoKey);
+            setInitialSnapshot(values);
+        },
+        [resetPhoto],
+    );
 
-    const isDirty = useMemo(() => {
-        const current: MenuFormValues = {
-            menuTitle,
-            menuDescription,
-            selectedCategory,
-            selectedRecipes,
-        };
-
-        return JSON.stringify(current) !== JSON.stringify(initialSnapshot);
-    }, [
+    // the photo keeps its own dirty state: a picked file is not a value that serializes
+    const current: MenuFormValues = {
         menuTitle,
         menuDescription,
         selectedCategory,
         selectedRecipes,
-        initialSnapshot,
-    ]);
+        photoKey: initialSnapshot.photoKey,
+    };
+    const isDirty =
+        photo.isDirty ||
+        JSON.stringify(current) !== JSON.stringify(initialSnapshot);
 
     const { isDirtyRef, markClean } = useDirtyRef(isDirty);
 
@@ -118,6 +122,7 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
         menuDescription,
         selectedCategory,
         selectedRecipes,
+        photo,
         errors,
         setMenuTitle,
         setMenuDescription,

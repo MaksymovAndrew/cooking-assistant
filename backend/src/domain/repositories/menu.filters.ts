@@ -1,3 +1,5 @@
+import type { RecordAuthor } from "./recordAuthor";
+
 export interface MenuFilters {
     menu_name?: string;
     category_ids?: string;
@@ -14,4 +16,6 @@ export interface MenuSearchRow {
     isOwner: boolean;
     isFavourite: boolean | null;
     recipe_count: number;
+    photo_key: string | null;
+    author: RecordAuthor;
 }

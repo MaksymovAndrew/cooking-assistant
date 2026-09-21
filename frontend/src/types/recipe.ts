@@ -1,4 +1,5 @@
 import type { CatalogIngredientRef } from "types/catalogIngredientRef";
+import type { RecordAuthor } from "types/media";
 import type { Tag } from "types/tag";
 
 export interface RecipeListItem {
@@ -33,6 +34,8 @@ export interface RecipeSearchResultItem extends RecipeListItem {
     containsAvoided: boolean | null;
     // the viewer's own private tags on this recipe; null for a guest
     tags: Tag[] | null;
+    photo_key: string | null;
+    author: RecordAuthor;
 }
 
 export interface RecipeDetailIngredient extends CatalogIngredientRef {
@@ -68,6 +71,8 @@ export interface RecipeDetails {
     calories_per_portion: number | null;
     // the author's manual value; null means the total above is auto-computed from the ingredients
     calories_override: number | null;
+    photo_key: string | null;
+    author: RecordAuthor;
 }
 
 export interface RecipeFilterParams {
@@ -117,37 +122,4 @@ export interface UpdateRecipeRequest {
     cooking_time: number;
     calories_override: number | null;
     ingredients: UpdateRecipeIngredient[];
-}
-
-export interface RecipeFormIngredient extends CatalogIngredientRef {
-    id: number;
-    name: string;
-    quantity: number;
-    unit_name: string;
-    calories_per_unit: number | null;
-}
-
-export interface RecipeFormInitialValues {
-    title: string;
-    content: string;
-    cookingHours: string;
-    cookingMinutes: string;
-    selectedTypeId: number | null;
-    selectedIngredients: RecipeFormIngredient[];
-    // text state, empty means "compute automatically"; matches cookingHours/cookingMinutes's convention of staying a string until submit
-    caloriesOverride: string;
-}
-
-export interface RecipeFormCreateMessages {
-    errorTitle: string;
-    errorDescription: string;
-    errorIngredients: string;
-    errorType: string;
-    errorCookingTimeFormat: string;
-    errorCookingTimeInvalid: string;
-}
-
-export interface RecipeFormChangeMessages {
-    errorCookingTimeFormat: string;
-    errorCookingTimeInvalid: string;
 }

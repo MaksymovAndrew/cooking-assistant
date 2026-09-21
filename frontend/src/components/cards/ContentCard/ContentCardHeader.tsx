@@ -1,5 +1,7 @@
 import React from "react";
 
+import { RecordPhoto } from "components/ui/RecordPhoto";
+
 import styles from "./ContentCard.module.scss";
 import type {
     ContentCardFavouriteState,
@@ -14,6 +16,7 @@ const ROW_IMAGE_ICON_SIZE = 26;
 interface ContentCardImageProps {
     isRow: boolean;
     imageIcon: ContentCardIcon;
+    imageSrc: string | null;
     chipLabel: string;
     favourite: ContentCardFavouriteState | null;
 }
@@ -22,14 +25,20 @@ interface ContentCardImageProps {
 export const ContentCardImage: React.FC<ContentCardImageProps> = ({
     isRow,
     imageIcon: ImageIcon,
+    imageSrc,
     chipLabel,
     favourite,
 }) => (
     <span className={styles["content-card__image"]}>
-        <ImageIcon
-            size={isRow ? ROW_IMAGE_ICON_SIZE : IMAGE_ICON_SIZE}
-            aria-hidden="true"
-            className={styles["content-card__image-icon"]}
+        <RecordPhoto
+            src={imageSrc}
+            fallback={
+                <ImageIcon
+                    size={isRow ? ROW_IMAGE_ICON_SIZE : IMAGE_ICON_SIZE}
+                    aria-hidden="true"
+                    className={styles["content-card__image-icon"]}
+                />
+            }
         />
         {!isRow && <ContentCardChip isRow={isRow} label={chipLabel} />}
         {!isRow && favourite && (

@@ -23,43 +23,6 @@
         gap: var(--s-5);
     }
 
-    &__photo-card {
-        display: flex;
-        align-items: center;
-        gap: var(--s-4);
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    &__photo-icon {
-        display: flex;
-        flex: none;
-        align-items: center;
-        justify-content: center;
-        width: 64px;
-        height: 64px;
-        border: 2px dashed var(--border);
-        border-radius: var(--r-md);
-        color: var(--text-muted);
-    }
-
-    &__photo-title {
-        display: block;
-        color: var(--text);
-        font:
-            600 14px Inter,
-            sans-serif;
-    }
-
-    &__photo-subtitle {
-        display: block;
-        margin-top: 3px;
-        color: var(--brand);
-        font:
-            400 12px Inter,
-            sans-serif;
-    }
-
     &__type-time-row {
         display: grid;
         grid-template-columns: 1fr;

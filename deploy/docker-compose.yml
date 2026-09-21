@@ -51,6 +51,9 @@ services:
         depends_on:
             postgres:
                 condition: service_healthy
+        volumes:
+            # user-uploaded images; must match MEDIA_DIR in .env, and outlives every redeploy
+            - uploads:/app/uploads
         networks:
             default: {}
             edge:
@@ -100,3 +103,4 @@ networks:
 
 volumes:
     postgres-data:
+    uploads:

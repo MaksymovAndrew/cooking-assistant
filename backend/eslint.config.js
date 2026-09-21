@@ -168,7 +168,7 @@ module.exports = tseslint.config(
                 {
                     ignore: [
                         -1, 0, 1, 2, 200, 201, 204, 400, 401, 403, 404, 409,
-                        429, 500,
+                        413, 429, 500,
                     ],
                     ignoreDefaultValues: true,
                     ignoreClassFieldInitialValues: true,

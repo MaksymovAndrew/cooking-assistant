@@ -14,6 +14,7 @@ import { UtensilsMark } from "components/icons";
 
 import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
+import { mediaUrl } from "utils/mediaUrl";
 import { filterAllergens } from "utils/recipeAllergens";
 
 interface RecipeCardIngredient {
@@ -30,6 +31,7 @@ interface RecipeCardRecipe {
     // null for an anonymous viewer, so the heart only appears where the server knows who is looking
     isFavourite?: boolean | null;
     containsAvoided?: boolean | null;
+    photo_key?: string | null;
 }
 
 interface RecipeCardProps {
@@ -56,6 +58,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             href={recipeDetailsPath(recipe.id)}
             title={recipe.title}
             imageIcon={UtensilsMark}
+            imageSrc={mediaUrl(recipe.photo_key, "card")}
             chipLabel={recipe.type_name}
             mine={mine}
             variant={variant}

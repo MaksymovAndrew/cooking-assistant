@@ -353,7 +353,8 @@ it short forms then too.
 - **`eslint-plugin-boundaries`** declares the layers and enforces (as errors): components may not import
   pages, and only the `api/` layer may import `axios`.
 - Other guards: `simple-import-sort` (layer-aware order), `import/no-cycle`, `no-restricted-imports`
-  banning `../`, a local rule requiring a named constant for any 3+ part logical condition, `max-lines`,
+  banning `../`, a local rule requiring a named constant for any 3+ part logical condition, `max-lines`
+  and `max-lines-per-function` (both 120, blank lines and comments not counted, tests exempt),
   and `complexity`.
 
 ## Testing

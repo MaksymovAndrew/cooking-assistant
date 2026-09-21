@@ -1,4 +1,5 @@
 import { ROUTES } from "constants/routes";
+import type { RecordAuthor } from "types/media";
 
 // navigation route targets used in navigate() assertions, sourced from the app route constants so expectations can never drift from the real paths
 export const ROUTE_HOME = ROUTES.home;
@@ -20,3 +21,10 @@ export const ERROR_RECIPES_REQUIRED = "Please select at least one recipe.";
 export const ERROR_COOKING_TIME_FORMAT = "Enter hours and minutes.";
 
 export const MOCK_ERROR_SERVER = "Server error";
+
+export const TEST_AUTHOR: RecordAuthor = {
+    name: "Test",
+    surname_initial: "U",
+    avatar: null,
+    avatar_photo_key: null,
+};

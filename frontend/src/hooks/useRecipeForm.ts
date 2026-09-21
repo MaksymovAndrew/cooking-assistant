@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
-import type { RecipeFormInitialValues } from "types/recipe";
+import type { RecipeFormInitialValues } from "types/recipeForm";
 
 import { useDirtyRef } from "hooks/useDirtyRef";
 import { useRecipeFormValidators } from "hooks/useRecipeFormValidators";
+import { useRecordPhotoDraft } from "hooks/useRecordPhotoDraft";
 import { useSelectedIngredients } from "hooks/useSelectedIngredients";
 
 const BLANK_SNAPSHOT: RecipeFormInitialValues = {
@@ -14,6 +15,7 @@ const BLANK_SNAPSHOT: RecipeFormInitialValues = {
     selectedTypeId: null,
     selectedIngredients: [],
     caloriesOverride: "",
+    photoKey: null,
 };
 
 export const useRecipeForm = () => {
@@ -25,6 +27,8 @@ export const useRecipeForm = () => {
     const [caloriesOverride, setCaloriesOverride] = useState("");
     const [initialSnapshot, setInitialSnapshot] =
         useState<RecipeFormInitialValues>(BLANK_SNAPSHOT);
+    const photo = useRecordPhotoDraft("recipe");
+    const { reset: resetPhoto } = photo;
 
     const {
         selectedIngredients,
@@ -61,24 +65,14 @@ export const useRecipeForm = () => {
             setSelectedTypeId(values.selectedTypeId);
             setSelectedIngredients(values.selectedIngredients);
             setCaloriesOverride(values.caloriesOverride);
+            resetPhoto(values.photoKey);
             setInitialSnapshot(values);
         },
-        [setSelectedIngredients],
+        [setSelectedIngredients, resetPhoto],
     );
 
-    const isDirty = useMemo(() => {
-        const current: RecipeFormInitialValues = {
-            title,
-            content,
-            cookingHours,
-            cookingMinutes,
-            selectedTypeId,
-            selectedIngredients,
-            caloriesOverride,
-        };
-
-        return JSON.stringify(current) !== JSON.stringify(initialSnapshot);
-    }, [
+    // the photo keeps its own dirty state: a picked file is not a value that serializes
+    const current: RecipeFormInitialValues = {
         title,
         content,
         cookingHours,
@@ -86,8 +80,11 @@ export const useRecipeForm = () => {
         selectedTypeId,
         selectedIngredients,
         caloriesOverride,
-        initialSnapshot,
-    ]);
+        photoKey: initialSnapshot.photoKey,
+    };
+    const isDirty =
+        photo.isDirty ||
+        JSON.stringify(current) !== JSON.stringify(initialSnapshot);
 
     const { isDirtyRef, markClean } = useDirtyRef(isDirty);
 
@@ -105,6 +102,7 @@ export const useRecipeForm = () => {
         setSelectedTypeId,
         caloriesOverride,
         setCaloriesOverride,
+        photo,
         titleError,
         descriptionError,
         ingredientsError,

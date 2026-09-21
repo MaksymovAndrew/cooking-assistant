@@ -4,12 +4,16 @@ import { AVATAR_REGISTRY } from "constants/avatars";
 
 import { UserCircleMark } from "components/icons";
 
+import { mediaUrl } from "utils/mediaUrl";
+
 import styles from "./Avatar.module.scss";
 
 interface AvatarProps {
     initials?: string;
     size?: number;
     avatarKey?: string | null;
+    // an uploaded photo wins over the preset, which is kept so removing the photo restores it
+    photoKey?: string | null;
 }
 
 const DEFAULT_SIZE = 40;
@@ -24,7 +28,27 @@ export const Avatar: React.FC<AvatarProps> = ({
     initials,
     size = DEFAULT_SIZE,
     avatarKey,
+    photoKey,
 }) => {
+    const photoSrc = mediaUrl(photoKey, "card");
+
+    if (photoSrc) {
+        return (
+            <span
+                className={[styles.avatar, styles["avatar--photo"]].join(" ")}
+                style={{ width: size, height: size }}
+            >
+                <img
+                    className={styles.avatar__image}
+                    src={photoSrc}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                />
+            </span>
+        );
+    }
+
     const PresetAvatar = avatarKey ? AVATAR_REGISTRY[avatarKey] : undefined;
 
     if (PresetAvatar) {

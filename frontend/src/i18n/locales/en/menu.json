@@ -97,7 +97,9 @@
         "discardTitle": "Discard changes?",
         "discardMessage": "You have unsaved changes. Are you sure you want to leave this page?",
         "discardConfirm": "Discard changes",
-        "discardCancel": "Keep editing"
+        "discardCancel": "Keep editing",
+        "photoTitle": "Cover photo",
+        "photoAlt": "Cover photo of the menu"
     },
     "menuDetailsPage": {
         "breadcrumb": "Breadcrumb",

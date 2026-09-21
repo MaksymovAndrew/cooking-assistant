@@ -1,9 +1,12 @@
+import PhotoCleanup from "application/media/PhotoCleanup";
+
 import { buildCaloriesController } from "./composition-root.calories";
 import { buildDietPreferencesControllers } from "./composition-root.dietPreferences";
 import { buildFavouriteController } from "./composition-root.favourites";
 import { buildMenuController } from "./composition-root.menu";
 import { buildPantryController } from "./composition-root.pantry";
 import { createPgDeps } from "./composition-root.pg";
+import { buildPhotoControllers } from "./composition-root.photos";
 import { buildRecipeController } from "./composition-root.recipe";
 import { buildReferenceControllers } from "./composition-root.reference";
 import { buildShoppingListController } from "./composition-root.shoppingList";
@@ -26,14 +29,19 @@ export function buildControllers({
     dietPreferencesRepository,
     shoppingListRepository,
     tagRepository,
+    photoRepository,
     passwordHasher,
     tokenService,
     emailSender,
+    imageProcessor,
+    mediaStorage,
     frontendOrigin,
 }: RepositoryDeps): Controllers {
+    const photoCleanup = new PhotoCleanup(photoRepository, mediaStorage);
     const recipeController = buildRecipeController({
         recipeRepository,
         ingredientRepository,
+        photoCleanup,
     });
 
     const userControllers = buildUserControllers({
@@ -42,6 +50,7 @@ export function buildControllers({
         tokenService,
         emailSender,
         frontendOrigin,
+        photoCleanup,
     });
 
     return {
@@ -59,6 +68,7 @@ export function buildControllers({
         menuController: buildMenuController({
             menuRepository,
             recipeRepository,
+            photoCleanup,
         }),
         calorieController: buildCaloriesController(calorieRepository),
         favouriteController: buildFavouriteController(favouriteRepository),
@@ -68,6 +78,11 @@ export function buildControllers({
             ingredientRepository,
         }),
         ...buildTagControllers(tagRepository),
+        ...buildPhotoControllers({
+            photoRepository,
+            imageProcessor,
+            mediaStorage,
+        }),
     };
 }
 

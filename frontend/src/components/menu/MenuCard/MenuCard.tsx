@@ -9,6 +9,8 @@ import type { ContentCardVariant } from "components/cards/ContentCard";
 import { ContentCard } from "components/cards/ContentCard";
 import { NotebookMark } from "components/icons";
 
+import { mediaUrl } from "utils/mediaUrl";
+
 interface MenuCardProps {
     id: number;
     title: string;
@@ -18,6 +20,7 @@ interface MenuCardProps {
     variant?: ContentCardVariant;
     // null or absent for an anonymous viewer, so the heart only appears where the server knows who is looking
     isFavourite?: boolean | null;
+    photoKey?: string | null;
 }
 
 export const MenuCard: React.FC<MenuCardProps> = ({
@@ -28,6 +31,7 @@ export const MenuCard: React.FC<MenuCardProps> = ({
     mine = false,
     variant,
     isFavourite,
+    photoKey,
 }) => {
     const { t } = useTranslation("menu");
 
@@ -36,6 +40,7 @@ export const MenuCard: React.FC<MenuCardProps> = ({
             href={menuDetailsPath(id)}
             title={title}
             imageIcon={NotebookMark}
+            imageSrc={mediaUrl(photoKey, "card")}
             chipLabel={categoryName}
             mine={mine}
             variant={variant}

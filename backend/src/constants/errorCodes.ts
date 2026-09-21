@@ -49,6 +49,11 @@ export const ERROR_CODES = {
     SHOPPING_LIST_ITEM_NOT_FOUND: "shopping_list/item_not_found",
     SHOPPING_LIST_LIMIT_REACHED: "shopping_list/limit_reached",
     SHOPPING_LIST_ORDER_OUT_OF_DATE: "shopping_list/order_out_of_date",
+
+    MEDIA_UNSUPPORTED_TYPE: "media/unsupported_type",
+    MEDIA_UNREADABLE: "media/unreadable",
+    MEDIA_TOO_LARGE: "media/too_large",
+    MEDIA_NOT_FOUND: "media/not_found",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

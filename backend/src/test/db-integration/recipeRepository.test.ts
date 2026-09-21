@@ -16,6 +16,8 @@ interface RecipeDetail {
     id: number;
     title: string;
     isOwner: boolean;
+    photo_key: string | null;
+    author: Record<string, unknown>;
     calories_per_portion: number | null;
     ingredients: {
         id: number;
@@ -149,6 +151,31 @@ describe("PgRecipeRepository (real Postgres)", () => {
         )) as RecipeDetail;
 
         expect(asGuest.isOwner).toBe(false);
+    });
+
+    it("should name the author by first name and surname initial, never by login or email", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+        const recipe = Recipe.forCreation({
+            title: "Signed dish",
+            content: "Shows who made it.",
+            person_id: ownerId,
+            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
+        });
+
+        const created = (await repository.create(recipe)) as { id: number };
+
+        const asGuest = (await repository.findByIdWithIngredients(
+            created.id,
+            null,
+        )) as RecipeDetail;
+
+        expect(asGuest.author).toEqual({
+            name: "Test",
+            surname_initial: "U",
+            avatar: null,
+            avatar_photo_key: null,
+        });
+        expect(asGuest.photo_key).toBeNull();
     });
 
     it("should refuse to update a recipe owned by someone else", async () => {

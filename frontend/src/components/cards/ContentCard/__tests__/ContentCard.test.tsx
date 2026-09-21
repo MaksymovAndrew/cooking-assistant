@@ -150,4 +150,13 @@ describe("ContentCard", () => {
         expect(screen.getByText(COOKING_TIME_LABEL)).toBeInTheDocument();
         expect(screen.queryByText("Mar 12, 2026")).not.toBeInTheDocument();
     });
+
+    it("should show an uploaded photo in place of the icon", () => {
+        renderCard({ imageSrc: "blob:test/photo" });
+
+        expect(screen.getByRole("presentation")).toHaveAttribute(
+            "src",
+            "blob:test/photo",
+        );
+    });
 });

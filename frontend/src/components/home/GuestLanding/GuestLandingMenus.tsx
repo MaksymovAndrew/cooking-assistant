@@ -59,6 +59,7 @@ export const GuestLandingMenus: React.FC = () => {
                             title={menu.title}
                             categoryName={menu.categoryname}
                             recipeCount={menu.recipe_count}
+                            photoKey={menu.photo_key}
                             variant={isMobile ? "row" : "grid"}
                         />
                     ))}

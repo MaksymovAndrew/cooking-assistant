@@ -67,7 +67,8 @@ export const recipesApi = baseApi.injectEndpoints({
             query: (id) => ({ url: API_ROUTES.recipes.byId(id) }),
             providesTags: (_result, _error, id) => [{ type: RECIPE, id }],
         }),
-        createRecipe: build.mutation<null, CreateRecipeRequest>({
+        // the created row; only its id is read, to attach a photo picked before it existed
+        createRecipe: build.mutation<{ id: number }, CreateRecipeRequest>({
             query: (data) => ({
                 url: API_ROUTES.recipes.create,
                 method: "POST",

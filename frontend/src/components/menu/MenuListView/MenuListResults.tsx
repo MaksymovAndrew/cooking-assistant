@@ -85,6 +85,7 @@ export const MenuListResults: React.FC<Props> = ({
                         title={menu.title}
                         categoryName={menu.categoryname}
                         recipeCount={menu.recipe_count}
+                        photoKey={menu.photo_key}
                         isFavourite={menu.isFavourite}
                         mine={mine || Boolean(menu.isOwner)}
                     />

@@ -4,6 +4,7 @@ import type { RecipeSearchResultItem } from "types/recipe";
 
 import { ProfileRecipesTab } from "components/profile/ProfileRecipesTab";
 
+import { TEST_AUTHOR } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 const RECIPE: RecipeSearchResultItem = {
@@ -15,6 +16,8 @@ const RECIPE: RecipeSearchResultItem = {
     ingredients: [],
     calories_per_portion: null,
     isOwner: true,
+    photo_key: null,
+    author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,
     tags: [],

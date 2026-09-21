@@ -31,12 +31,14 @@
     }
 
     &__image {
+        position: relative;
         display: flex;
         flex: none;
         align-items: center;
         justify-content: center;
         width: 64px;
         height: 48px;
+        overflow: hidden;
         border-radius: var(--r-sm);
         background: linear-gradient(
             135deg,

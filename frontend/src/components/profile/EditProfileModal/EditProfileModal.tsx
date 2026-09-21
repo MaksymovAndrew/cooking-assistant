@@ -6,7 +6,6 @@ import type { CurrentUser } from "types/auth";
 import { useEditProfileForm } from "hooks/useEditProfileForm";
 
 import { BaseModal } from "components/modals/BaseModal";
-import { AvatarPicker } from "components/profile/AvatarPicker";
 import { Button } from "components/ui/Button";
 import { FormErrorBanner } from "components/ui/FormErrorBanner";
 import { FormField } from "components/ui/FormField";
@@ -14,6 +13,7 @@ import { TextInput } from "components/ui/TextInput";
 
 import { getInitials } from "utils/getInitials";
 
+import { EditProfileAvatarFields } from "./EditProfileAvatarFields";
 import styles from "./EditProfileModal.module.scss";
 
 interface EditProfileModalProps {
@@ -90,18 +90,12 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                         }}
                     />
                 </FormField>
-                <div className={styles["edit-profile-modal__avatar-section"]}>
-                    <span
-                        className={styles["edit-profile-modal__avatar-label"]}
-                    >
-                        {t("editProfileModal.avatarLabel")}
-                    </span>
-                    <AvatarPicker
-                        value={form.avatar}
-                        onChange={form.setAvatar}
-                        initials={initials}
-                    />
-                </div>
+                <EditProfileAvatarFields
+                    photo={form.photo}
+                    avatar={form.avatar}
+                    onAvatarChange={form.setAvatar}
+                    initials={initials}
+                />
                 {form.error && <FormErrorBanner message={form.error} />}
             </form>
         </BaseModal>

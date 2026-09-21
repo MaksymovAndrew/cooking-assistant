@@ -14,7 +14,7 @@ import {
     TRUST_PROXY_HOPS,
 } from "config/security";
 import { ERROR_CODES } from "constants/errorCodes";
-import { API_PREFIX, HEALTH_PATH } from "constants/routes";
+import { API_PREFIX, HEALTH_PATH, MEDIA_PATH_PREFIX } from "constants/routes";
 import { NotFoundError } from "domain/errors/AppError";
 
 import errorHandler from "middleware/errorHandler";
@@ -24,8 +24,10 @@ import createDietPreferencesRouter from "routes/dietPreferences.routes";
 import createFavouriteRouter from "routes/favourite.routes";
 import createHealthRouter from "routes/health.routes";
 import createIngredientRouter from "routes/ingredient.routes";
+import createMediaRouter from "routes/media.routes";
 import createMenuRouter from "routes/menu.routes";
 import createMenuCategoryRouter from "routes/menuCategory.routes";
+import createPhotoRouter from "routes/photo.routes";
 import createRecipeRouter from "routes/recipe.routes";
 import createShoppingListRouter from "routes/shoppingList.routes";
 import createTagRouter from "routes/tag.routes";
@@ -37,10 +39,13 @@ import type { Controllers } from "./composition-root";
 
 // req.url is the raw request target: a prober's cache-buster query and a trailing slash are both
 // served by the same route, so neither may slip past the filter
-const isHealthProbe = (req: { url?: string }): boolean => {
+const isQuietRequest = (req: { url?: string }): boolean => {
     const [pathname = ""] = (req.url ?? "").split("?");
 
-    return pathname.replace(/\/$/, "") === HEALTH_PATH;
+    return (
+        pathname.replace(/\/$/, "") === HEALTH_PATH ||
+        pathname.startsWith(MEDIA_PATH_PREFIX)
+    );
 };
 
 export function createApp(controllers: Controllers): Express {
@@ -56,7 +61,7 @@ export function createApp(controllers: Controllers): Express {
             redact: ["req.headers.authorization", "req.headers.cookie"],
             // the liveness probe runs every 15s and says nothing; at 3 rotated files of 10 MB it
             // was crowding out the logs that do
-            autoLogging: { ignore: isHealthProbe },
+            autoLogging: { ignore: isQuietRequest },
         }),
     );
     app.use(
@@ -70,6 +75,9 @@ export function createApp(controllers: Controllers): Express {
     app.use(cookieParser());
 
     app.use(API_PREFIX, createHealthRouter());
+    // ahead of the global limiter: a list page asks for a card image per row, and immutable
+    // caching already keeps repeat views off the server
+    app.use(API_PREFIX, createMediaRouter(controllers.mediaController));
     app.use(createGlobalLimiter());
     app.use(
         API_PREFIX,
@@ -104,6 +112,7 @@ export function createApp(controllers: Controllers): Express {
         createShoppingListRouter(controllers.shoppingListController),
     );
     app.use(API_PREFIX, createTagRouter(controllers.tagController));
+    app.use(API_PREFIX, createPhotoRouter(controllers.photoController));
 
     app.use((_req, _res, next) => {
         next(new NotFoundError(ERROR_CODES.NOT_FOUND));

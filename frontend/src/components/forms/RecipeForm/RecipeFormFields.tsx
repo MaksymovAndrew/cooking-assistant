@@ -5,6 +5,7 @@ import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { useRecipeForm } from "hooks/useRecipeForm";
 
+import { FormPhotoCard } from "components/forms/FormPhotoCard";
 import { CookingTimeField } from "components/recipes/CookingTimeField";
 import { RecipeTypeSelect } from "components/recipes/RecipeTypeSelect";
 import { FormCard } from "components/ui/FormCard";
@@ -14,7 +15,6 @@ import { TextInput } from "components/ui/TextInput";
 
 import styles from "./RecipeForm.module.scss";
 import { RecipeFormCaloriesCard } from "./RecipeFormCaloriesCard";
-import { RecipeFormPhotoCard } from "./RecipeFormPhotoCard";
 
 type RecipePageKey = "createRecipePage" | "changeRecipePage";
 
@@ -35,7 +35,11 @@ export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
 
     return (
         <>
-            <RecipeFormPhotoCard />
+            <FormPhotoCard
+                photo={form.photo}
+                title={t("recipeForm.photoTitle")}
+                alt={t("recipeForm.photoAlt")}
+            />
 
             <FormCard>
                 <FormField

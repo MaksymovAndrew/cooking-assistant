@@ -4,6 +4,7 @@ export const API_ROUTES = {
         register: "/api/register",
         logout: "/api/logout",
         me: "/api/me",
+        avatar: "/api/me/avatar",
         forgotPassword: "/api/forgot-password",
         resetPassword: "/api/reset-password",
         changePassword: "/api/change-password",
@@ -17,6 +18,7 @@ export const API_ROUTES = {
         create: "/api/recipe",
         byId: (id: string | number) => `/api/recipe/${id}`,
         favourite: (id: string | number) => `/api/recipe/${id}/favourite`,
+        photo: (id: string | number) => `/api/recipe/${id}/photo`,
         tags: (id: string | number) => `/api/recipe/${id}/tags`,
         stats: "/api/recipes-stats",
     },
@@ -39,6 +41,7 @@ export const API_ROUTES = {
         create: "/api/create-menu",
         byId: (id: string | number) => `/api/menu/${id}`,
         favourite: (id: string | number) => `/api/menu/${id}/favourite`,
+        photo: (id: string | number) => `/api/menu/${id}/photo`,
         byPerson: "/api/menu-filters-person",
     },
     menuCategories: {
@@ -56,6 +59,9 @@ export const API_ROUTES = {
     tags: {
         list: "/api/tags",
         byId: (id: string | number) => `/api/tags/${id}`,
+    },
+    media: {
+        file: (key: string, width: number) => `/api/media/${key}-${width}.webp`,
     },
     shoppingList: {
         list: "/api/shopping-list",

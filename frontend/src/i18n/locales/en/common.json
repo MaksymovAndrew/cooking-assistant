@@ -124,7 +124,11 @@
         "tags/requires_login": "Log in to filter by your tags.",
         "shopping_list/item_not_found": "This item is no longer on your list.",
         "shopping_list/limit_reached": "Your shopping list is full. Remove a few items first.",
-        "shopping_list/order_out_of_date": "Your list changed somewhere else. It has been refreshed, try again."
+        "shopping_list/order_out_of_date": "Your list changed somewhere else. It has been refreshed, try again.",
+        "media/unsupported_type": "Choose a JPEG, PNG, WebP or AVIF photo.",
+        "media/unreadable": "This photo could not be opened. Try another one.",
+        "media/too_large": "This photo is too large. Choose one under 10 MB.",
+        "media/not_found": "This photo is no longer available."
     },
     "errorState": {
         "title": "Something went wrong",
@@ -167,5 +171,14 @@
     "routeError": {
         "description": "An unexpected error interrupted this page. Your data is safe - try again.",
         "goHome": "Go to homepage"
+    },
+    "author": {
+        "byline": "by {{name}} {{initial}}."
+    },
+    "photo": {
+        "choose": "Add a photo",
+        "replace": "Replace photo",
+        "remove": "Remove photo",
+        "hint": "JPEG, PNG, WebP or AVIF, up to 10 MB."
     }
 }

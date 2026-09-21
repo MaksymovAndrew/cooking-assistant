@@ -7,6 +7,7 @@ import type {
     RecipeSearchRow,
 } from "domain/repositories/recipe.filters";
 
+import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
 import { containsAvoidedColumn } from "infrastructure/persistence/pg/containsAvoidedColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
@@ -21,8 +22,9 @@ interface RecipeSearchQueryRow extends RecipeSearchRow {
 
 function buildBaseRecipeSelect(ownerPlaceholder: string): string {
     return `
-        SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
+        SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time, r.photo_key,
                COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
+               ${authorColumn("r")},
                ${isOwnerColumn("r", ownerPlaceholder)},
                ${isFavouriteColumn("recipe", "r.id", ownerPlaceholder)},
                ${containsAvoidedColumn("r.id", ownerPlaceholder)},

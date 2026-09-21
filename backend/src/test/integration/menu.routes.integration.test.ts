@@ -16,6 +16,13 @@ const MENU_ROW_EXTRAS = {
     isOwner: false,
     isFavourite: false,
     recipe_count: 2,
+    photo_key: null,
+    author: {
+        name: "Bob",
+        surname_initial: "C",
+        avatar: null,
+        avatar_photo_key: null,
+    },
 };
 
 function makeMenuBody() {

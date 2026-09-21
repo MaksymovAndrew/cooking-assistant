@@ -79,6 +79,7 @@ RATE_LIMIT_MAX=<global per-client request cap per window; default 300>
 RATE_LIMIT_WINDOW_MS=<global rate-limit window in ms; default 60000>
 CORS_ORIGIN=<allowed frontend origin>
 COOKIE_DOMAIN=<empty in dev; shared parent domain in production>
+MEDIA_DIR=<directory uploaded photos are written to; default uploads, relative to the working directory>
 RESEND_API_KEY=<Resend API key; leave empty to use the logging fallback>
 EMAIL_FROM=<e.g. noreply@example.com; leave empty to use the logging fallback>
 ```
@@ -100,6 +101,10 @@ the link instead of sending it, so the flows work end to end without a real Rese
 set, both must be set - the app fails fast on startup otherwise
 ([src/config/env.ts](src/config/env.ts)'s `assertConsistentEmailConfig`). With both set,
 `ResendEmailService` calls Resend's REST API via native `fetch`.
+
+`MEDIA_DIR` is where uploaded photos land. In the image it resolves to `/app/uploads`, which the
+Dockerfile creates and hands to the unprivileged `node` user, and production mounts the `uploads` named
+volume there so photos outlive every container. Locally the default `backend/uploads/` is gitignored.
 
 When you add a new env key, add it (without a value) to [.env.example](.env.example) too.
 
@@ -476,18 +481,18 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 
 ### Recipes ([src/routes/recipe.routes.ts](src/routes/recipe.routes.ts))
 
-| Method | Path                      | Purpose                                                                              |
-| ------ | ------------------------- | ------------------------------------------------------------------------------------ |
-| POST   | `/recipe`                 | Create a recipe with ingredients                                                     |
-| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                    |
-| GET    | `/recipe/:id`             | Single recipe with ingredients                                                       |
-| PUT    | `/recipe/:id`             | Update a recipe                                                                      |
-| DELETE | `/recipe/:id`             | Delete a recipe                                                                      |
+| Method | Path                      | Purpose                                                                                    |
+| ------ | ------------------------- | ------------------------------------------------------------------------------------------ |
+| POST   | `/recipe`                 | Create a recipe with ingredients                                                           |
+| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                          |
+| GET    | `/recipe/:id`             | Single recipe with ingredients                                                             |
+| PUT    | `/recipe/:id`             | Update a recipe                                                                            |
+| DELETE | `/recipe/:id`             | Delete a recipe                                                                            |
 | GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites, allergens, avoided, tags) |
-| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)                                 |
-| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                                             |
-| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent)                    |
-| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)                       |
+| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)                                       |
+| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                                                   |
+| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent)                          |
+| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)                             |
 
 Every search/list and detail response carries `isOwner` and `isFavourite` computed for the requester;
 `isFavourite` is `null` when the request has no session. `favourites=true` narrows a list to the
@@ -579,13 +584,13 @@ lives in [src/constants/allergens.ts](src/constants/allergens.ts), shared with t
 
 ### Tags ([src/routes/tag.routes.ts](src/routes/tag.routes.ts))
 
-| Method | Path                | Purpose                                                  |
-| ------ | ------------------- | -------------------------------------------------------- |
-| GET    | `/tags`             | The current user's tags, by name                          |
-| POST   | `/tags`             | Create a tag (201 with the tag)                           |
-| PATCH  | `/tags/:id`         | Rename it (204)                                           |
-| DELETE | `/tags/:id`         | Delete it, unlinking it from every recipe (204)           |
-| PUT    | `/recipe/:id/tags`  | Replace the user's tags on that recipe (204)              |
+| Method | Path               | Purpose                                         |
+| ------ | ------------------ | ----------------------------------------------- |
+| GET    | `/tags`            | The current user's tags, by name                |
+| POST   | `/tags`            | Create a tag (201 with the tag)                 |
+| PATCH  | `/tags/:id`        | Rename it (204)                                 |
+| DELETE | `/tags/:id`        | Delete it, unlinking it from every recipe (204) |
+| PUT    | `/recipe/:id/tags` | Replace the user's tags on that recipe (204)    |
 
 Tags are private: a name is unique per person regardless of case (`tags/duplicate_name`), there is a
 cap of 50 per person (`tags/limit_reached`) and 10 per recipe, and another person's tag answers 404
@@ -593,6 +598,34 @@ cap of 50 per person (`tags/limit_reached`) and 10 per recipe, and another perso
 just their own. Search and detail responses carry the requester's own `tags` (`null` for a guest),
 and `tag_ids=3,4` filters the list down to recipes carrying any of them - a guest gets a 400
 `tags/requires_login`.
+
+### Photos ([src/routes/photo.routes.ts](src/routes/photo.routes.ts), [src/routes/media.routes.ts](src/routes/media.routes.ts))
+
+| Method | Path                      | Purpose                                                       |
+| ------ | ------------------------- | ------------------------------------------------------------- |
+| PUT    | `/recipe/:id/photo`       | Set or replace a recipe's photo (owner only, `{ photo_key }`) |
+| DELETE | `/recipe/:id/photo`       | Remove it (204)                                               |
+| PUT    | `/menu/:id/photo`         | Set or replace a menu's cover (owner only, `{ photo_key }`)   |
+| DELETE | `/menu/:id/photo`         | Remove it (204)                                               |
+| PUT    | `/me/avatar`              | Set or replace the current user's photo (`{ photo_key }`)     |
+| DELETE | `/me/avatar`              | Remove it (204)                                               |
+| GET    | `/media/:key-:width.webp` | Serve a stored photo (public, 400 or 1200 px wide)            |
+
+The upload body is the image itself (any `Content-Type`, up to 10 MB), read by `express.raw` on these
+routes only, after auth and a per-user limiter (20 uploads per 10 minutes). The server never trusts
+the name or type it is told: it sniffs the bytes for JPEG, PNG, WebP or AVIF (anything else, SVG
+included, is `media/unsupported_type`), then `sharp` decodes and re-encodes the picture to WebP at
+400 and 1200 px - capped at 40 megapixels, refusing truncated files (`media/unreadable`), applying the
+EXIF orientation and dropping every piece of metadata, GPS included. Only the re-encoded files are
+kept, under a server-generated UUID, written before the database points at them; the previous photo's
+files are deleted after the new key is stored. Deleting a recipe, a menu or an account deletes its
+photos too (`PhotoCleanup`).
+
+`GET /media/...` is mounted before the global limiter and left out of request logs, since a page of
+cards is dozens of image requests. It accepts only the exact file-name shape the server generates and
+answers `image/webp` with `X-Content-Type-Options: nosniff`, `Content-Disposition: inline`, a year-long
+immutable cache (a new photo is a new key) and `Cross-Origin-Resource-Policy: same-site`, so the app
+domain may load it while any other site may not.
 
 ### Menu categories ([src/routes/menuCategory.routes.ts](src/routes/menuCategory.routes.ts))
 
@@ -626,6 +659,11 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
   foreign keys `ON DELETE CASCADE`, one unique index on `(person_id, lower(name))`). Search and detail
   queries turn them into the per-requester `tags` column (`recipeTagsColumn.ts`), which also backs the
   `tag_ids` filter.
+- `recipes.photo_key`, `menu.photo_key` and `person.avatar_photo_key` - nullable UUIDs naming the
+  stored photo files. `person.avatar` keeps the preset avatar key beside the photo, so removing the
+  photo brings the preset back. Search and detail responses carry the record's `photo_key` and an
+  `author` object (`authorColumn.ts`: first name, surname initial, preset avatar and photo - never the
+  login or email).
 - `ingredients.id_unit_measurement` -> `unit_measurement`
 - `ingredients` carries metadata: `allergens`, `days_to_expire`, `seasonality`, `storage_condition`
 - `menu` (per-user, with `category_id` -> `menu_category`) to `recipes` through `menu_recipe`

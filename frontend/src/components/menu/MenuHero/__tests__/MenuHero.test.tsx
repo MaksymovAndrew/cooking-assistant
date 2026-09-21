@@ -4,18 +4,22 @@ import type { MenuDetails } from "types/menu";
 
 import { MenuHero } from "components/menu/MenuHero";
 
+import { TEST_AUTHOR } from "test/constants";
 import { renderWithRouter } from "test/router";
 
+const MENU_TITLE = "Sunday dinners";
 const CALORIES_LABEL = "620 kcal";
 const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 
 const BASE_MENU: MenuDetails["menu"] = {
     id: 1,
-    title: "Sunday dinners",
+    title: MENU_TITLE,
     categoryname: "Dinner",
     menucontent: "Slow-cooked, soul-warming Sunday evening meals.",
     category_id: 1,
     isOwner: false,
+    photo_key: null,
+    author: TEST_AUTHOR,
     isFavourite: false,
 };
 
@@ -31,7 +35,7 @@ describe("MenuHero", () => {
         renderWithRouter(<MenuHero {...baseProps} />);
 
         expect(
-            screen.getByRole("heading", { name: "Sunday dinners" }),
+            screen.getByRole("heading", { name: MENU_TITLE }),
         ).toBeInTheDocument();
         expect(screen.getByText("Dinner")).toBeInTheDocument();
         expect(
@@ -93,5 +97,30 @@ describe("MenuHero", () => {
         );
 
         expect(screen.getByText("Your rating")).toBeInTheDocument();
+    });
+
+    it("should show a cover only when the menu has one", () => {
+        const { unmount } = renderWithRouter(<MenuHero {...baseProps} />);
+
+        expect(screen.queryByAltText(MENU_TITLE)).not.toBeInTheDocument();
+        unmount();
+
+        renderWithRouter(
+            <MenuHero
+                {...baseProps}
+                menu={{
+                    ...BASE_MENU,
+                    photo_key: "0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b",
+                }}
+            />,
+        );
+
+        expect(screen.getByAltText(MENU_TITLE)).toBeInTheDocument();
+    });
+
+    it("should credit the author by first name and surname initial", () => {
+        renderWithRouter(<MenuHero {...baseProps} />);
+
+        expect(screen.getByText("by Test U.")).toBeInTheDocument();
     });
 });

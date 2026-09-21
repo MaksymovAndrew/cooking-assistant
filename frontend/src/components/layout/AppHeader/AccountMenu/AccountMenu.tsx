@@ -19,6 +19,7 @@ interface AccountMenuProps {
     surname?: string;
     login?: string;
     avatar?: string | null;
+    avatarPhotoKey?: string | null;
     onLogout: () => void;
 }
 
@@ -32,12 +33,17 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
     surname,
     login,
     avatar,
+    avatarPhotoKey,
     onLogout,
 }) => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const initials = name && surname ? getInitials(name, surname) : undefined;
+    const avatarProps = {
+        initials: name && surname ? getInitials(name, surname) : undefined,
+        avatarKey: avatar,
+        photoKey: avatarPhotoKey,
+    };
     const displayName = name && surname ? `${name} ${surname}` : login;
 
     const closeMenu = () => {
@@ -62,11 +68,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
                 disabled={!isHydrated}
                 className={styles["account-menu__trigger"]}
             >
-                <Avatar
-                    initials={initials}
-                    size={TRIGGER_AVATAR_SIZE}
-                    avatarKey={avatar}
-                />
+                <Avatar {...avatarProps} size={TRIGGER_AVATAR_SIZE} />
                 <ChevronDown
                     size={CHEVRON_SIZE}
                     aria-hidden="true"
@@ -76,11 +78,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
             {isOpen && (
                 <div role="menu" className={styles["account-menu__panel"]}>
                     <div className={styles["account-menu__header"]}>
-                        <Avatar
-                            initials={initials}
-                            size={HEADER_AVATAR_SIZE}
-                            avatarKey={avatar}
-                        />
+                        <Avatar {...avatarProps} size={HEADER_AVATAR_SIZE} />
                         <span className={styles["account-menu__identity"]}>
                             <span className={styles["account-menu__name"]}>
                                 {displayName}

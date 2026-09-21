@@ -125,6 +125,7 @@ describe("user routes", () => {
             email: EMAIL,
             email_verified_at: null,
             avatar: null,
+            avatar_photo_key: null,
             calorie_goal: null,
         };
 
@@ -350,6 +351,7 @@ describe("user routes", () => {
             email: EMAIL,
             email_verified_at: null,
             avatar: null,
+            avatar_photo_key: null,
             calorie_goal: null,
         });
         deps.tokenService.generatePurposeToken.mockReturnValue(VERIFY_TOKEN);
@@ -458,6 +460,7 @@ describe("user routes", () => {
             password: HASHED_CURRENT_PASSWORD,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
+        deps.photoRepository.listOwnedKeys.mockResolvedValue([]);
 
         const res = await request(app)
             .delete("/api/me")

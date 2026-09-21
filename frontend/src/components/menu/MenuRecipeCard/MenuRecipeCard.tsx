@@ -7,9 +7,11 @@ import { recipeDetailsPath } from "constants/routes";
 
 import { UtensilsMark } from "components/icons";
 import { Link } from "components/ui/Link";
+import { RecordPhoto } from "components/ui/RecordPhoto";
 
 import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
+import { mediaUrl } from "utils/mediaUrl";
 
 import styles from "./MenuRecipeCard.module.scss";
 
@@ -19,6 +21,7 @@ interface MenuRecipeCardRecipe {
     type_name: string;
     cooking_time: number;
     calories_per_portion: number | null;
+    photo_key: string | null;
 }
 
 interface MenuRecipeCardProps {
@@ -48,9 +51,14 @@ export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
             className={styles["menu-recipe-card"]}
         >
             <span className={styles["menu-recipe-card__image"]}>
-                <UtensilsMark
-                    size={IMAGE_ICON_SIZE}
-                    className={styles["menu-recipe-card__image-icon"]}
+                <RecordPhoto
+                    src={mediaUrl(recipe.photo_key, "card")}
+                    fallback={
+                        <UtensilsMark
+                            size={IMAGE_ICON_SIZE}
+                            className={styles["menu-recipe-card__image-icon"]}
+                        />
+                    }
                 />
             </span>
             <span className={styles["menu-recipe-card__body"]}>

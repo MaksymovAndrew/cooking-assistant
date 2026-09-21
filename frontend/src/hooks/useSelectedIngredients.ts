@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 import type { Ingredient } from "types/ingredient";
-import type { RecipeFormIngredient } from "types/recipe";
+import type { RecipeFormIngredient } from "types/recipeForm";
 
 export const useSelectedIngredients = () => {
     const [selectedIngredients, setSelectedIngredients] = useState<

@@ -14,7 +14,6 @@
         "minutesLabel": "Minutes",
         "cookingTimeHint": "Hours & minutes",
         "photoTitle": "Recipe photo",
-        "photoComingSoon": "Coming soon",
         "itemsAdded_one": "{{count}} item added",
         "itemsAdded_other": "{{count}} items added",
         "perPortionHint": "Amounts are per portion — they scale automatically.",
@@ -27,7 +26,8 @@
         "discardTitle": "Discard changes?",
         "discardMessage": "You have unsaved changes. Are you sure you want to leave this page?",
         "discardConfirm": "Discard changes",
-        "discardCancel": "Keep editing"
+        "discardCancel": "Keep editing",
+        "photoAlt": "Photo of the recipe"
     },
     "ingredientPicker": {
         "searchPlaceholder": "Search ingredients...",

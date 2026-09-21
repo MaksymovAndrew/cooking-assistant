@@ -34,6 +34,7 @@ const ProfilePage: React.FC = () => {
                     login={profile.currentUser?.login}
                     createdAt={profile.currentUser?.created_at}
                     avatar={profile.currentUser?.avatar}
+                    avatarPhotoKey={profile.currentUser?.avatar_photo_key}
                     recipesCount={profile.recipesCount}
                     menusCount={profile.menusCount}
                     favouritesCount={profile.favouritesCount}

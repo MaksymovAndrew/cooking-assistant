@@ -4,7 +4,7 @@ import type {
     RecipeFormChangeMessages,
     RecipeFormCreateMessages,
     RecipeFormIngredient,
-} from "types/recipe";
+} from "types/recipeForm";
 
 import { useRecipeFormValidation } from "hooks/useRecipeFormValidation";
 

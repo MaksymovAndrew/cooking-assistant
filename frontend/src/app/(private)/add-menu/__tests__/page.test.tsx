@@ -37,7 +37,9 @@ describe("CreateMenuPage", () => {
             [API_ROUTES.menuCategories.list]: SAMPLE_CATEGORIES,
             [API_ROUTES.recipes.list]: SAMPLE_RECIPES,
         });
-        mockedPost.mockResolvedValue({ data: null });
+        mockedPost.mockResolvedValue({
+            data: { message: "Menu created", menuId: 42 },
+        });
 
         renderWithRouter(<CreateMenuPage />);
 

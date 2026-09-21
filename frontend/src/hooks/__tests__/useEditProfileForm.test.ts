@@ -6,7 +6,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import { useEditProfileForm } from "hooks/useEditProfileForm";
 
-import { mockedPatch } from "test/apiClientMock";
+import { mockedPatch, mockedPut } from "test/apiClientMock";
 import { renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
@@ -20,8 +20,11 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: "tomato",
+    avatar_photo_key: null,
     calorie_goal: null,
 };
+
+const PHOTO_KEY = "0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b";
 
 const renderEditProfileForm = (
     currentUser: CurrentUser | undefined,
@@ -67,6 +70,28 @@ describe("useEditProfileForm", () => {
             surname: "Cook",
             avatar: "sushi",
         });
+        expect(onSuccess).toHaveBeenCalledTimes(1);
+    });
+
+    it("should upload a picked photo only after the profile is saved", async () => {
+        mockedPatch.mockResolvedValue({ data: null });
+        mockedPut.mockResolvedValue({ data: { photo_key: PHOTO_KEY } });
+        const onSuccess = jest.fn();
+        const photo = new File(["image"], "me.png", { type: "image/png" });
+
+        const { result } = renderEditProfileForm(CURRENT_USER, onSuccess);
+
+        act(() => {
+            result.current.photo.choose(photo);
+        });
+
+        expect(mockedPut).not.toHaveBeenCalled();
+
+        await act(async () => {
+            await result.current.handleSubmit();
+        });
+
+        expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.auth.avatar, photo);
         expect(onSuccess).toHaveBeenCalledTimes(1);
     });
 

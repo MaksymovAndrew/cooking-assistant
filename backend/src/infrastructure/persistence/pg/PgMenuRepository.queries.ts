@@ -7,6 +7,7 @@ import type {
 } from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
+import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { MENU_FILTER_CLAUSES } from "infrastructure/persistence/pg/menuFilterClauses";
@@ -30,6 +31,8 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
+        m.photo_key,
+        ${authorColumn("m")},
         ${isOwnerColumn("m", ownerPlaceholder)},
         ${isFavouriteColumn("menu", "m.menu_id", ownerPlaceholder)},
         COUNT(DISTINCT mr.recipe_id)::int AS recipe_count,

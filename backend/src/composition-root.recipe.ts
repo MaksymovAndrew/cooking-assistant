@@ -1,6 +1,7 @@
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 
+import type PhotoCleanup from "application/media/PhotoCleanup";
 import CreateRecipe from "application/use-cases/recipes/CreateRecipe";
 import DeleteRecipe from "application/use-cases/recipes/DeleteRecipe";
 import GetAllRecipes from "application/use-cases/recipes/GetAllRecipes";
@@ -16,18 +17,20 @@ import RecipeController from "controller/recipe.controller";
 export interface RecipeControllerDeps {
     recipeRepository: RecipeRepository;
     ingredientRepository: IngredientRepository;
+    photoCleanup: PhotoCleanup;
 }
 
 export function buildRecipeController({
     recipeRepository,
     ingredientRepository,
+    photoCleanup,
 }: RecipeControllerDeps): RecipeController {
     return new RecipeController({
         createRecipe: new CreateRecipe(recipeRepository, ingredientRepository),
         getAllRecipes: new GetAllRecipes(recipeRepository),
         getRecipeById: new GetRecipeById(recipeRepository),
         updateRecipe: new UpdateRecipe(recipeRepository, ingredientRepository),
-        deleteRecipe: new DeleteRecipe(recipeRepository),
+        deleteRecipe: new DeleteRecipe(recipeRepository, photoCleanup),
         searchRecipes: new SearchRecipes(recipeRepository),
         searchPersonRecipes: new SearchPersonRecipes(recipeRepository),
         getRecipeStats: new GetRecipeStats(recipeRepository),

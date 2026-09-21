@@ -1,0 +1,1 @@
+export { RecordPhoto } from "./RecordPhoto";

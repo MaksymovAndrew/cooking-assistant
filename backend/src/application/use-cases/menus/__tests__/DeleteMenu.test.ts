@@ -1,15 +1,21 @@
 import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 
+import PhotoCleanup from "application/media/PhotoCleanup";
 import DeleteMenu from "application/use-cases/menus/DeleteMenu";
 
 import { catchError } from "test/helpers/assertions";
 
 function setup() {
     const menuRepository = { deleteById: jest.fn() };
-    const useCase = new DeleteMenu(menuRepository);
+    const photoRepository = { findKey: jest.fn(), listOwnedKeys: jest.fn() };
+    const mediaStorage = { remove: jest.fn() };
+    const useCase = new DeleteMenu(
+        menuRepository,
+        new PhotoCleanup(photoRepository, mediaStorage),
+    );
 
-    return { useCase, menuRepository };
+    return { useCase, menuRepository, photoRepository, mediaStorage };
 }
 
 describe("DeleteMenu", () => {
@@ -49,5 +55,30 @@ describe("DeleteMenu", () => {
         await useCase.execute(9, 7);
 
         expect(menuRepository.deleteById).toHaveBeenCalledWith(9, 7);
+    });
+
+    it("should remove the menu's cover once the menu is deleted", async () => {
+        const { useCase, menuRepository, photoRepository, mediaStorage } =
+            setup();
+
+        photoRepository.findKey.mockResolvedValue("cover-key");
+        menuRepository.deleteById.mockResolvedValue(true);
+
+        await useCase.execute(9, 7);
+
+        expect(photoRepository.findKey).toHaveBeenCalledWith(7, "menu", 9);
+        expect(mediaStorage.remove).toHaveBeenCalledWith("cover-key");
+    });
+
+    it("should not touch storage when the menu has no cover", async () => {
+        const { useCase, menuRepository, photoRepository, mediaStorage } =
+            setup();
+
+        photoRepository.findKey.mockResolvedValue(null);
+        menuRepository.deleteById.mockResolvedValue(true);
+
+        await useCase.execute(9, 7);
+
+        expect(mediaStorage.remove).not.toHaveBeenCalled();
     });
 });

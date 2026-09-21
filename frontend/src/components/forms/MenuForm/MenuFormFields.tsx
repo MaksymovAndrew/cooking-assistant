@@ -5,6 +5,7 @@ import type { MenuCategory } from "types/menu";
 
 import type { useMenuForm } from "hooks/useMenuForm";
 
+import { FormPhotoCard } from "components/forms/FormPhotoCard";
 import { MenuCategorySelect } from "components/menu/MenuCategorySelect";
 import { FormCard } from "components/ui/FormCard";
 import { FormField } from "components/ui/FormField";
@@ -30,6 +31,12 @@ export const MenuFormFields: React.FC<MenuFormFieldsProps> = ({
 
     return (
         <>
+            <FormPhotoCard
+                photo={form.photo}
+                title={t("menuForm.photoTitle")}
+                alt={t("menuForm.photoAlt")}
+            />
+
             <FormCard>
                 <FormField
                     htmlFor={`${idPrefix}-title`}

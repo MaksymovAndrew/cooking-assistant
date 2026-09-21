@@ -75,6 +75,8 @@ export const envSchema = z.object({
     // both optional - absence picks LoggingEmailService over ResendEmailService (see composition-root.ts)
     RESEND_API_KEY: z.preprocess(emptyToUndefined, z.string().optional()),
     EMAIL_FROM: z.preprocess(emptyToUndefined, z.string().optional()),
+    // uploaded images; relative paths resolve against the working directory
+    MEDIA_DIR: envStringSchema("uploads"),
     LOG_LEVEL: z
         .preprocess(
             emptyToUndefined,

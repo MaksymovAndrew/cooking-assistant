@@ -5,7 +5,7 @@ import type {
     RecipeFormChangeMessages,
     RecipeFormCreateMessages,
     RecipeFormIngredient,
-} from "types/recipe";
+} from "types/recipeForm";
 
 const MAX_HOURS = 99;
 

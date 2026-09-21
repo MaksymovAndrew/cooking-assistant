@@ -1,8 +1,10 @@
-import { act, renderHook } from "@testing-library/react";
+import { act } from "@testing-library/react";
 
 import type { Ingredient } from "types/ingredient";
 
 import { useRecipeForm } from "hooks/useRecipeForm";
+
+import { renderHookWithStore } from "test/store";
 
 const INGREDIENT: Ingredient = {
     id: 1,
@@ -42,12 +44,13 @@ const fillValid = (form: ReturnType<typeof useRecipeForm>) => {
             },
         ],
         caloriesOverride: "",
+        photoKey: null,
     });
 };
 
 describe("useRecipeForm", () => {
     it("should initialise with empty state", () => {
-        const { result } = renderHook(() => useRecipeForm());
+        const { result } = renderHookWithStore(() => useRecipeForm());
 
         expect(result.current.title).toBe("");
         expect(result.current.selectedIngredients).toEqual([]);
@@ -55,7 +58,7 @@ describe("useRecipeForm", () => {
     });
 
     it("should update fields through their setters", () => {
-        const { result } = renderHook(() => useRecipeForm());
+        const { result } = renderHookWithStore(() => useRecipeForm());
 
         act(() => {
             result.current.setTitle("Borscht");
@@ -67,7 +70,7 @@ describe("useRecipeForm", () => {
     });
 
     it("should toggle an ingredient into and back out of the selection", () => {
-        const { result } = renderHook(() => useRecipeForm());
+        const { result } = renderHookWithStore(() => useRecipeForm());
 
         act(() => {
             result.current.toggleIngredientSelection(INGREDIENT);
@@ -83,7 +86,7 @@ describe("useRecipeForm", () => {
     });
 
     it("should clamp an ingredient quantity to a minimum of one", () => {
-        const { result } = renderHook(() => useRecipeForm());
+        const { result } = renderHookWithStore(() => useRecipeForm());
 
         act(() => {
             result.current.toggleIngredientSelection(INGREDIENT);
@@ -96,7 +99,7 @@ describe("useRecipeForm", () => {
     });
 
     it("should populate every field via setInitialValues", () => {
-        const { result } = renderHook(() => useRecipeForm());
+        const { result } = renderHookWithStore(() => useRecipeForm());
 
         act(() => {
             fillValid(result.current);
@@ -110,7 +113,7 @@ describe("useRecipeForm", () => {
     });
 
     it("should not be dirty right after setInitialValues, but dirty after a further edit", () => {
-        const { result } = renderHook(() => useRecipeForm());
+        const { result } = renderHookWithStore(() => useRecipeForm());
 
         act(() => {
             fillValid(result.current);
@@ -126,7 +129,7 @@ describe("useRecipeForm", () => {
     });
 
     it("should fail validateCreate and set the title error when empty", () => {
-        const { result } = renderHook(() => useRecipeForm());
+        const { result } = renderHookWithStore(() => useRecipeForm());
 
         let valid = true;
 
@@ -139,7 +142,7 @@ describe("useRecipeForm", () => {
     });
 
     it("should pass validateCreate when every field is valid", () => {
-        const { result } = renderHook(() => useRecipeForm());
+        const { result } = renderHookWithStore(() => useRecipeForm());
 
         act(() => {
             fillValid(result.current);

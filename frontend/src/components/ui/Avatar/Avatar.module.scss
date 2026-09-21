@@ -13,4 +13,15 @@
     &--preset {
         background: var(--brand-subtle);
     }
+
+    &--photo {
+        overflow: hidden;
+        background: var(--surface-2);
+    }
+
+    &__image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 }

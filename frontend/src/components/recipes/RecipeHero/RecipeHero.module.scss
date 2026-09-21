@@ -8,6 +8,7 @@
         justify-content: center;
         aspect-ratio: 4 / 3;
         margin-bottom: var(--s-5);
+        overflow: hidden;
         border-radius: var(--r-lg);
         background: linear-gradient(
             135deg,
@@ -19,6 +20,14 @@
 
     &__image-icon {
         opacity: 0.45;
+    }
+
+    &__photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     &__favourite {
@@ -45,13 +54,17 @@
     &__title {
         @include wrap-anywhere;
 
-        margin: 0 0 var(--s-4);
+        margin: 0 0 var(--s-2);
         color: var(--text);
         letter-spacing: -0.02em;
         font:
             600 clamp(28px, 4vw, 38px) Fraunces,
             serif;
         line-height: 1.08;
+    }
+
+    &__author {
+        margin: 0 0 var(--s-4);
     }
 
     &__stats {

@@ -18,6 +18,7 @@ interface ProfileHeroProps {
     login?: string;
     createdAt?: string;
     avatar?: string | null;
+    avatarPhotoKey?: string | null;
     recipesCount: number;
     menusCount: number;
     favouritesCount: number;
@@ -36,6 +37,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
     login,
     createdAt,
     avatar,
+    avatarPhotoKey,
     recipesCount,
     menusCount,
     favouritesCount,
@@ -49,7 +51,12 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
 
     return (
         <div className={styles["profile-hero"]}>
-            <Avatar initials={initials} size={AVATAR_SIZE} avatarKey={avatar} />
+            <Avatar
+                initials={initials}
+                size={AVATAR_SIZE}
+                avatarKey={avatar}
+                photoKey={avatarPhotoKey}
+            />
             <div className={styles["profile-hero__identity"]}>
                 <h1 className={styles["profile-hero__name"]}>{displayName}</h1>
                 {createdAt && (

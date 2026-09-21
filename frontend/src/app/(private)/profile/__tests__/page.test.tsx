@@ -9,6 +9,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import ProfilePage from "app/(private)/profile/page";
 import { mockGetByUrl } from "test/apiClientMock";
+import { TEST_AUTHOR } from "test/constants";
 import { renderWithProviders } from "test/router";
 
 jest.mock("api/client");
@@ -22,6 +23,7 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: null,
+    avatar_photo_key: null,
     calorie_goal: null,
 };
 const RECIPE: RecipeSearchResultItem = {
@@ -33,6 +35,8 @@ const RECIPE: RecipeSearchResultItem = {
     calories_per_portion: null,
     ingredients: [],
     isOwner: true,
+    photo_key: null,
+    author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,
     tags: [],

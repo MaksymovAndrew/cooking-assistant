@@ -1,5 +1,7 @@
 import "dotenv/config";
 
+import path from "node:path";
+
 import {
     assertConsistentEmailConfig,
     assertSecureProductionDb,
@@ -39,6 +41,7 @@ export const config = {
     cookieDomain: env.COOKIE_DOMAIN,
     resendApiKey: env.RESEND_API_KEY,
     emailFrom: env.EMAIL_FROM,
+    mediaDir: path.resolve(env.MEDIA_DIR),
     logLevel: env.LOG_LEVEL ?? "info",
     // default to no trusted proxy in dev so a spoofed X-Forwarded-For cannot re-key the rate limiter; one hop in production (configurable per topology)
     trustProxyHops: env.TRUST_PROXY_HOPS ?? (isProduction ? 1 : 0),

@@ -1,3 +1,5 @@
+import type { RecordAuthor } from "types/media";
+
 export interface Menu {
     id: number;
     title: string;
@@ -10,6 +12,9 @@ export interface Menu {
     isOwner?: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite?: boolean | null;
+    // present on the browse/person lists only, like isOwner
+    photo_key?: string | null;
+    author?: RecordAuthor;
 }
 
 // shape returned by GET /api/menus (unpaginated) - the plain menu list plus each menu's recipe
@@ -43,6 +48,7 @@ export interface MenuDetailRecipe {
     creation_date: string;
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
+    photo_key: string | null;
     missingIngredients?: MissingIngredient[];
 }
 
@@ -56,6 +62,8 @@ export interface MenuDetails {
         category_id: number;
         isOwner: boolean;
         isFavourite: boolean | null;
+        photo_key: string | null;
+        author: RecordAuthor;
     };
     recipes: MenuDetailRecipe[];
     // distinct allergen slugs across every recipe of the menu

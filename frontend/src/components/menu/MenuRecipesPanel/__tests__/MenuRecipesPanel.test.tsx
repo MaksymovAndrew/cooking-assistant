@@ -24,6 +24,7 @@ const RECIPES: MenuDetailRecipe[] = [
         cooking_time: 60,
         creation_date: "2024-01-01",
         calories_per_portion: null,
+        photo_key: null,
     },
     {
         recipe_id: 2,
@@ -32,6 +33,7 @@ const RECIPES: MenuDetailRecipe[] = [
         cooking_time: 20,
         creation_date: "2024-01-02",
         calories_per_portion: null,
+        photo_key: null,
     },
 ];
 

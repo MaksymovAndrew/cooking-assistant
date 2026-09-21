@@ -91,7 +91,7 @@ describe("RecipeDetailsView", () => {
             MODAL_TYPE.deleteRecipe,
         );
 
-        const dialog = screen.getByRole("dialog");
+        const dialog = await screen.findByRole("dialog");
 
         await userEvent.click(
             within(dialog).getByRole("button", { name: BTN_DELETE_RECIPE }),

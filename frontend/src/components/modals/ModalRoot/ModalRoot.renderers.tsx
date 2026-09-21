@@ -1,15 +1,17 @@
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
-import { OfflineModal } from "components/connectivity/OfflineModal";
-import { CalorieLimitModal } from "components/modals/CalorieLimitModal";
-import { DeleteCalorieIntakeModal } from "components/modals/DeleteCalorieIntakeModal";
-import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
-import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
-import { LogIntakeModal } from "components/modals/LogIntakeModal";
-import { NewsModal } from "components/modals/NewsModal";
-import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
-import { RestockIngredientModal } from "components/modals/RestockIngredientModal";
+import {
+    CalorieLimitModal,
+    DeleteCalorieIntakeModal,
+    DeleteIngredientModal,
+    ExpiredIngredientsModal,
+    LogIntakeModal,
+    NewsModal,
+    OfflineModal,
+    PurchaseHistoryModal,
+    RestockIngredientModal,
+} from "./ModalRoot.lazy";
 
 // the calorie-feature modals manage their own dispatch/close internally (like DeleteIngredientModal), so they only need the modal itself
 const renderCalorieModal = (modal: ActiveModal | null) => {

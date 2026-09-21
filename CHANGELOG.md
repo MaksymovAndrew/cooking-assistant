@@ -20,6 +20,10 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Frontend
+
+- Changed: Pages download less code up front - dialogs now load the moment they are opened.
+
 ### Project
 
 - Changed: Routine dependency maintenance.

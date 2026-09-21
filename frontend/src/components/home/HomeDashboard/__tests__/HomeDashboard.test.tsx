@@ -81,7 +81,7 @@ describe("HomeDashboard", () => {
             await screen.findByRole("button", { name: "News" }),
         );
 
-        expect(screen.getByRole("dialog")).toBeInTheDocument();
+        expect(await screen.findByRole("dialog")).toBeInTheDocument();
 
         await userEvent.click(screen.getByRole("button", { name: "Close" }));
 

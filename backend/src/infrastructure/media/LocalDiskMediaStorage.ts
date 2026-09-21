@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { logger } from "config/logger";
 
-import { IMAGE_WIDTHS, mediaFileName } from "application/media/mediaFiles";
+import { IMAGE_VARIANTS, mediaFileName } from "application/media/mediaFiles";
 import type { ImageVariant } from "application/ports/ImageProcessor";
 import type { MediaStorage } from "application/ports/MediaStorage";
 
@@ -27,7 +27,7 @@ export default class LocalDiskMediaStorage implements MediaStorage {
         await Promise.all(
             variants.map((variant) =>
                 writeFile(
-                    this.pathFor(mediaFileName(key, variant.width)),
+                    this.pathFor(mediaFileName(key, variant.spec)),
                     variant.data,
                     { flag: "wx" },
                 ),
@@ -37,8 +37,8 @@ export default class LocalDiskMediaStorage implements MediaStorage {
 
     async remove(key: string): Promise<void> {
         await Promise.all(
-            IMAGE_WIDTHS.map(async (width) => {
-                const file = this.pathFor(mediaFileName(key, width));
+            IMAGE_VARIANTS.map(async (spec) => {
+                const file = this.pathFor(mediaFileName(key, spec));
 
                 try {
                     await rm(file, { force: true });

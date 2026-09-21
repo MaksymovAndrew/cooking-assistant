@@ -7,7 +7,7 @@ import {
     roundCalories,
     scaleCaloriesForPortions,
 } from "utils/calories";
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatRecipeDuration } from "utils/cookingTimeUtils";
 import { formatFullDate } from "utils/dateUtils";
 
 interface RecipeHeroLabels {
@@ -22,18 +22,13 @@ export const useRecipeHeroLabels = (
     portionCount: number,
 ): RecipeHeroLabels => {
     const { t } = useTranslation("recipes");
-    const { hours, minutes } = splitCookingTime(recipe.cooking_time ?? 0);
-    const durationLabel =
-        hours > 0
-            ? t("recipeDetailsPage.cookingTimeHoursMinutes", { hours, minutes })
-            : t("recipeDetailsPage.cookingTimeMinutes", { minutes });
 
     return {
         // a recipe can carry no cooking time at all - the column is nullable
         formattedCookingTime:
             recipe.cooking_time === null
                 ? t("recipeDetailsPage.cookingTimeUnavailable")
-                : durationLabel,
+                : formatRecipeDuration(t, recipe.cooking_time),
         formattedCalories:
             recipe.calories_per_portion === null
                 ? t("recipeDetailsPage.caloriesUnavailable")

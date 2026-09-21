@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { cache } from "react";
 
 import { menuDetailsPath } from "constants/routes";
 import type { MenuDetails } from "types/menu";
 
-import { API_ROUTES } from "api/endpoints";
-import { fetchAsVisitor } from "api/server";
-
+import { JsonLd } from "components/seo/JsonLd";
 import { DEFAULT_LANGUAGE } from "i18n/resources";
 import { getServerTranslation } from "i18n/server";
 
 import { toMetaDescription } from "utils/metaDescription";
+import { photoSocialImage, socialMetadata } from "utils/socialMetadata";
 
+import { loadMenu } from "./loadMenu";
 import { MenuDetailsView } from "./MenuDetailsView";
+import { menuJsonLd } from "./menuJsonLd";
 
 const NAMESPACE = "menu";
 
@@ -21,10 +21,22 @@ interface MenuPageProps {
     params: Promise<{ id: string }>;
 }
 
-// generateMetadata and the page itself both need the menu; cache() makes that one request
-const loadMenu = cache(async (id: string): Promise<MenuDetails | null> =>
-    fetchAsVisitor<MenuDetails>(API_ROUTES.menu.byId(id)),
-);
+const describeMenu = async (menu: MenuDetails): Promise<string> => {
+    const t = await getServerTranslation(DEFAULT_LANGUAGE, NAMESPACE);
+    // the category column is nullable, so a menu can have none to name
+    const fallbackKey =
+        menu.menu.categoryname === null
+            ? "menuDetailsPage.metaFallbackDescriptionUncategorised"
+            : "menuDetailsPage.metaFallbackDescription";
+
+    return toMetaDescription(
+        menu.menu.menucontent,
+        t(fallbackKey, {
+            category: menu.menu.categoryname?.toLowerCase(),
+            count: menu.recipes.length,
+        }),
+    );
+};
 
 export const generateMetadata = async ({
     params,
@@ -36,32 +48,20 @@ export const generateMetadata = async ({
         return {};
     }
 
-    const t = await getServerTranslation(DEFAULT_LANGUAGE, NAMESPACE);
-    // the category column is nullable, so a menu can have none to name
-    const fallbackKey =
-        menu.menu.categoryname === null
-            ? "menuDetailsPage.metaFallbackDescriptionUncategorised"
-            : "menuDetailsPage.metaFallbackDescription";
-    const description = toMetaDescription(
-        menu.menu.menucontent,
-        t(fallbackKey, {
-            category: menu.menu.categoryname?.toLowerCase(),
-            count: menu.recipes.length,
-        }),
-    );
+    const description = await describeMenu(menu);
     const url = menuDetailsPath(menu.menu.id);
 
     return {
         title: menu.menu.title,
         description,
         alternates: { canonical: url },
-        openGraph: {
+        ...socialMetadata({
             type: "article",
             url,
             title: menu.menu.title,
             description,
-        },
-        twitter: { title: menu.menu.title, description },
+            image: photoSocialImage(menu.menu.photo_key, menu.menu.title),
+        }),
     };
 };
 
@@ -73,7 +73,12 @@ const MenuDetailsPage = async ({ params }: MenuPageProps) => {
         notFound();
     }
 
-    return <MenuDetailsView menu={menu} />;
+    return (
+        <>
+            <JsonLd data={menuJsonLd(menu, await describeMenu(menu))} />
+            <MenuDetailsView menu={menu} />
+        </>
+    );
 };
 
 export default MenuDetailsPage;

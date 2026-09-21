@@ -31,13 +31,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
             siteName: title,
             title,
             description: shortDescription,
-            images: [{ url: ICON_PATH, type: "image/svg+xml" }],
         },
         twitter: {
-            card: "summary",
+            card: "summary_large_image",
             title,
             description: shortDescription,
-            images: [ICON_PATH],
         },
     };
 };

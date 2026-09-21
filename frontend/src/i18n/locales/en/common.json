@@ -191,5 +191,12 @@
         "star_other": "{{count}} stars",
         "yourRating": "Your rating",
         "remove": "Remove my rating"
+    },
+    "social": {
+        "tagline": "Recipes, menus and your pantry in one kitchen",
+        "rating_one": "Rated {{average}} from {{count}} vote",
+        "rating_other": "Rated {{average}} from {{count}} votes",
+        "recipeCardAlt": "Recipe card: title, cooking time, calories and rating",
+        "menuCardAlt": "Menu card: title, recipes and rating"
     }
 }

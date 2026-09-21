@@ -27,6 +27,7 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: Deleting a recipe, a menu or an account also deletes its photos.
 - Added: Rate other people's recipes and menus from one to five stars - one vote each, which you can change or take back; nobody can rate their own.
 - Added: Sort recipes and menus by rating, where a single five-star vote can't outrank a well-rated favourite, and keep only those rated four stars and up.
+- Added: Every photo is also kept as a picture framed for link previews, so a shared recipe or menu shows its photo in any messenger.
 
 ### Frontend
 
@@ -36,6 +37,8 @@ changelogs and the tags and now track everything here against one shared version
 - Added: Real star ratings everywhere a recipe or menu appears, with an honest "No ratings yet" until the first vote - the made-up placeholder numbers are gone.
 - Added: Rate a recipe or menu right on its page, with the stars also working from the keyboard.
 - Added: "Top rated" sort and a "Rated 4 stars and up" filter on the recipe and menu lists.
+- Added: Shared links to a recipe, a menu or the site now show a picture - the recipe's own photo, or a card with its name, cooking time, calories and rating.
+- Added: Recipe pages describe their ingredients, steps, cooking time, calories and rating to search engines, so a recipe can show up as a rich result; menu pages list their recipes the same way.
 - Security: The site now sends browser security headers that block it being framed by other sites and restrict where images, plugins and forms may load from.
 - Changed: Pages download less code up front - dialogs now load the moment they are opened.
 

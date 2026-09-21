@@ -2,14 +2,18 @@ import { notFound } from "next/navigation";
 
 import type { RecipeDetails } from "types/recipe";
 
+import { API_ROUTES } from "api/endpoints";
 import { fetchAsVisitor } from "api/server";
 
 import RecipeDetailsPage, {
     generateMetadata,
 } from "app/(public)/recipe/[id]/page";
+import { mockGetByUrl } from "test/apiClientMock";
 import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
+import { renderWithProviders } from "test/router";
 
 jest.mock("api/server", () => ({ fetchAsVisitor: jest.fn() }));
+jest.mock("api/client");
 
 const mockedFetch = fetchAsVisitor as jest.MockedFunction<
     typeof fetchAsVisitor
@@ -71,6 +75,35 @@ describe("recipe details page", () => {
         expect(metadata.description).toBe("A recipe with 0 ingredients.");
     });
 
+    it("should preview a recipe with a photo as that photo, on a large card", async () => {
+        mockedFetch.mockResolvedValue({
+            ...SAMPLE,
+            photo_key: "0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b",
+        });
+
+        const metadata = await generateMetadata({ params });
+
+        expect(metadata.openGraph?.images).toEqual([
+            expect.objectContaining({ type: "image/jpeg", alt: "Borscht" }),
+        ]);
+        expect(metadata.twitter).toEqual(
+            expect.objectContaining({ card: "summary_large_image" }),
+        );
+    });
+
+    it("should put the recipe on the page as structured data", async () => {
+        mockedFetch.mockResolvedValue(SAMPLE);
+        mockGetByUrl({ [API_ROUTES.userIngredients.list]: [] });
+
+        const { container } = renderWithProviders(
+            await RecipeDetailsPage({ params }),
+        );
+
+        expect(JSON.parse(container.firstChild?.textContent ?? "")).toEqual(
+            expect.objectContaining({ "@type": "Recipe", name: "Borscht" }),
+        );
+    });
+
     it("should carry no metadata for a recipe that does not exist", async () => {
         mockedFetch.mockResolvedValue(null);
 
@@ -80,8 +113,7 @@ describe("recipe details page", () => {
     it("should answer 404 for a recipe that does not exist", async () => {
         mockedFetch.mockResolvedValue(null);
 
-        await RecipeDetailsPage({ params });
-
+        await expect(RecipeDetailsPage({ params })).rejects.toThrow();
         expect(notFound).toHaveBeenCalled();
     });
 });

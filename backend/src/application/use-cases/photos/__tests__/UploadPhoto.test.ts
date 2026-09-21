@@ -2,15 +2,16 @@ import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 import type { PhotoTarget } from "domain/repositories/PhotoRepository";
 
+import { IMAGE_VARIANTS } from "application/media/mediaFiles";
 import UploadPhoto from "application/use-cases/photos/UploadPhoto";
 
 import { catchError } from "test/helpers/assertions";
 
 const JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
-const VARIANTS = [
-    { width: 400, data: Buffer.from("small") },
-    { width: 1200, data: Buffer.from("large") },
-];
+const VARIANTS = IMAGE_VARIANTS.map((spec) => ({
+    spec,
+    data: Buffer.from(spec.name),
+}));
 const UUID = /^[0-9a-f-]{36}$/;
 
 function setup(target: PhotoTarget = "recipe") {
@@ -30,7 +31,7 @@ function setup(target: PhotoTarget = "recipe") {
 }
 
 describe("UploadPhoto", () => {
-    it("should store both sizes and point the record at the new key", async () => {
+    it("should store every variant and point the record at the new key", async () => {
         const { useCase, photoRepository, imageProcessor, mediaStorage } =
             setup();
 
@@ -41,7 +42,7 @@ describe("UploadPhoto", () => {
         expect(key).toMatch(UUID);
         expect(imageProcessor.toVariants).toHaveBeenCalledWith(
             JPEG,
-            [400, 1200],
+            IMAGE_VARIANTS,
         );
         expect(mediaStorage.save).toHaveBeenCalledWith(key, VARIANTS);
         expect(photoRepository.replace).toHaveBeenCalledWith(

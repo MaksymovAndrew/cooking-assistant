@@ -3,9 +3,11 @@ import sharp from "sharp";
 
 import { logger } from "config/logger";
 
+import { IMAGE_VARIANTS } from "application/media/mediaFiles";
+
 import SharpImageProcessor from "infrastructure/media/SharpImageProcessor";
 
-const WIDTHS = [400, 1200];
+const [CARD, HERO, SOCIAL] = IMAGE_VARIANTS;
 const PNG_SIGNATURE = Buffer.from([
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
 ]);
@@ -55,38 +57,54 @@ function solidImage(width: number, height: number) {
 }
 
 describe("SharpImageProcessor", () => {
-    it("should produce a WebP at every requested width", async () => {
+    it("should produce every variant in its own format and frame", async () => {
         const input = await solidImage(1600, 900).png().toBuffer();
 
         const variants = await new SharpImageProcessor().toVariants(
             input,
-            WIDTHS,
+            IMAGE_VARIANTS,
         );
 
         const sizes = await Promise.all(
-            (variants ?? []).map(async ({ width, data }) => {
+            (variants ?? []).map(async ({ spec, data }) => {
                 const metadata = await sharp(data).metadata();
 
-                return [width, metadata.format, metadata.width];
+                return [
+                    spec.name,
+                    metadata.format,
+                    metadata.width,
+                    metadata.height,
+                ];
             }),
         );
 
         expect(sizes).toEqual([
-            [400, "webp", 400],
-            [1200, "webp", 1200],
+            ["400", "webp", 400, 225],
+            ["1200", "webp", 1200, 675],
+            ["og", "jpeg", 1200, 630],
         ]);
     });
 
     it("should never enlarge an image smaller than the target width", async () => {
         const input = await solidImage(300, 200).jpeg().toBuffer();
 
-        const variants = await new SharpImageProcessor().toVariants(
-            input,
-            [1200],
-        );
+        const variants = await new SharpImageProcessor().toVariants(input, [
+            HERO,
+        ]);
         const metadata = await sharp(variants?.[0].data).metadata();
 
         expect(metadata.width).toBe(300);
+    });
+
+    it("should fill the link preview frame exactly, even from a small photo", async () => {
+        const input = await solidImage(300, 400).jpeg().toBuffer();
+
+        const variants = await new SharpImageProcessor().toVariants(input, [
+            SOCIAL,
+        ]);
+        const metadata = await sharp(variants?.[0].data).metadata();
+
+        expect([metadata.width, metadata.height]).toEqual([1200, 630]);
     });
 
     it("should drop the EXIF data of the original, location included", async () => {
@@ -100,10 +118,9 @@ describe("SharpImageProcessor", () => {
 
         expect((await sharp(input).metadata()).exif).toBeDefined();
 
-        const variants = await new SharpImageProcessor().toVariants(
-            input,
-            [400],
-        );
+        const variants = await new SharpImageProcessor().toVariants(input, [
+            CARD,
+        ]);
 
         expect(
             (await sharp(variants?.[0].data).metadata()).exif,
@@ -116,10 +133,9 @@ describe("SharpImageProcessor", () => {
             .withMetadata({ orientation: 6 })
             .toBuffer();
 
-        const variants = await new SharpImageProcessor().toVariants(
-            input,
-            [400],
-        );
+        const variants = await new SharpImageProcessor().toVariants(input, [
+            CARD,
+        ]);
         const metadata = await sharp(variants?.[0].data).metadata();
 
         expect(metadata.height).toBeGreaterThan(metadata.width);
@@ -130,7 +146,7 @@ describe("SharpImageProcessor", () => {
 
         const variants = await new SharpImageProcessor().toVariants(
             decompressionBomb(),
-            WIDTHS,
+            IMAGE_VARIANTS,
         );
 
         expect(variants).toBeNull();
@@ -146,7 +162,7 @@ describe("SharpImageProcessor", () => {
 
         const variants = await new SharpImageProcessor().toVariants(
             input.subarray(0, input.length / 2),
-            WIDTHS,
+            IMAGE_VARIANTS,
         );
 
         expect(variants).toBeNull();
@@ -158,8 +174,8 @@ describe("SharpImageProcessor", () => {
         const input = await solidImage(500, 500).png().toBuffer();
 
         const [refused, accepted] = await Promise.all([
-            processor.toVariants(Buffer.from("not an image"), WIDTHS),
-            processor.toVariants(input, [400]),
+            processor.toVariants(Buffer.from("not an image"), IMAGE_VARIANTS),
+            processor.toVariants(input, [CARD]),
         ]);
 
         expect(refused).toBeNull();

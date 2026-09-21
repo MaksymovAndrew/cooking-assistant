@@ -3,6 +3,7 @@ export const RATING_TARGET = {
     menu: "menu",
 } as const;
 
+export const MIN_RATING = 1;
 export const MAX_RATING = 5;
 
 // every star value, lowest first - the order the stars are drawn in

@@ -8,7 +8,7 @@ import type {
 } from "domain/repositories/PhotoRepository";
 
 import { detectImageFormat } from "application/media/detectImageFormat";
-import { IMAGE_WIDTHS } from "application/media/mediaFiles";
+import { IMAGE_VARIANTS } from "application/media/mediaFiles";
 import type { ImageProcessor } from "application/ports/ImageProcessor";
 import type { MediaStorage } from "application/ports/MediaStorage";
 import { idSchema } from "application/validation/common.schemas";
@@ -40,7 +40,7 @@ export default class UploadPhoto {
 
         const variants = await this.imageProcessor.toVariants(
             input,
-            IMAGE_WIDTHS,
+            IMAGE_VARIANTS,
         );
 
         if (!variants) {

@@ -19,6 +19,12 @@ describe("mediaUrl", () => {
         );
     });
 
+    it("should point a link preview at the fixed-frame JPEG", () => {
+        expect(mediaUrl(KEY, "social")).toBe(
+            `${API_BASE_URL}${API_ROUTES.media.social(KEY)}`,
+        );
+    });
+
     it("should return null for a record without a photo", () => {
         expect(mediaUrl(null, "card")).toBeNull();
     });

@@ -1,5 +1,6 @@
 import {
     formatCookingTimeInput,
+    isoDuration,
     parseCookingTime,
     splitCookingTime,
 } from "utils/cookingTimeUtils";
@@ -67,5 +68,23 @@ describe("splitCookingTime", () => {
 
     it("should handle zero", () => {
         expect(splitCookingTime(0)).toEqual({ hours: 0, minutes: 0 });
+    });
+});
+
+describe("isoDuration", () => {
+    it("should write hours and minutes the way schema.org reads them", () => {
+        expect(isoDuration(90)).toBe("PT1H30M");
+    });
+
+    it("should leave out the hours under an hour", () => {
+        expect(isoDuration(45)).toBe("PT45M");
+    });
+
+    it("should leave out the minutes on a whole hour", () => {
+        expect(isoDuration(120)).toBe("PT2H");
+    });
+
+    it("should still name a unit for zero", () => {
+        expect(isoDuration(0)).toBe("PT0M");
     });
 });

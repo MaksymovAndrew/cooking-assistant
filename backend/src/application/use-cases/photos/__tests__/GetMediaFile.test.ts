@@ -22,8 +22,21 @@ describe("GetMediaFile", () => {
 
         const file = await useCase.execute(`${KEY}-400.webp`);
 
-        expect(file).toBe("/media/file.webp");
+        expect(file).toEqual({
+            path: "/media/file.webp",
+            contentType: "image/webp",
+        });
         expect(mediaStorage.locate).toHaveBeenCalledWith(`${KEY}-400.webp`);
+    });
+
+    it("should type the link preview variant as a JPEG", async () => {
+        const { useCase, mediaStorage } = setup();
+
+        mediaStorage.locate.mockResolvedValue("/media/file.jpg");
+
+        const file = await useCase.execute(`${KEY}-og.jpg`);
+
+        expect(file.contentType).toBe("image/jpeg");
     });
 
     it("should answer 404 when the file is not stored", async () => {
@@ -44,6 +57,8 @@ describe("GetMediaFile", () => {
         "../../etc/passwd",
         `${KEY}-400.svg`,
         `${KEY}-800.webp`,
+        `${KEY}-og.webp`,
+        `${KEY}-400.jpg`,
         `${KEY.toUpperCase()}-400.webp`,
         ".env",
     ])("should never ask the storage for %s", async (fileName) => {

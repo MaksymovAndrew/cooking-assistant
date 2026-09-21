@@ -621,13 +621,15 @@ and `tag_ids=3,4` filters the list down to recipes carrying any of them - a gues
 | DELETE | `/menu/:id/photo`         | Remove it (204)                                               |
 | PUT    | `/me/avatar`              | Set or replace the current user's photo (`{ photo_key }`)     |
 | DELETE | `/me/avatar`              | Remove it (204)                                               |
-| GET    | `/media/:key-:width.webp` | Serve a stored photo (public, 400 or 1200 px wide)            |
+| GET    | `/media/:file`            | Serve a stored photo (public; see the renditions below)       |
 
 The upload body is the image itself (any `Content-Type`, up to 10 MB), read by `express.raw` on these
 routes only, after auth and a per-user limiter (20 uploads per 10 minutes). The server never trusts
 the name or type it is told: it sniffs the bytes for JPEG, PNG, WebP or AVIF (anything else, SVG
-included, is `media/unsupported_type`), then `sharp` decodes and re-encodes the picture to WebP at
-400 and 1200 px - capped at 40 megapixels, refusing truncated files (`media/unreadable`), applying the
+included, is `media/unsupported_type`), then `sharp` decodes and re-encodes the picture into three
+renditions - WebP at 400 and 1200 px (`<key>-400.webp`, `<key>-1200.webp`, scaled down, never up) and
+a 1200x630 JPEG cropped around the most prominent region (`<key>-og.jpg`), which link previews use
+because every messenger renders JPEG in that frame - capped at 40 megapixels, refusing truncated files (`media/unreadable`), applying the
 EXIF orientation and dropping every piece of metadata, GPS included. Only the re-encoded files are
 kept, under a server-generated UUID, written before the database points at them; the previous photo's
 files are deleted after the new key is stored. Deleting a recipe, a menu or an account deletes its
@@ -635,7 +637,8 @@ photos too (`PhotoCleanup`).
 
 `GET /media/...` is mounted before the global limiter and left out of request logs, since a page of
 cards is dozens of image requests. It accepts only the exact file-name shape the server generates and
-answers `image/webp` with `X-Content-Type-Options: nosniff`, `Content-Disposition: inline`, a year-long
+answers `image/webp` or `image/jpeg` - taken from that name, never from the request - with
+`X-Content-Type-Options: nosniff`, `Content-Disposition: inline`, a year-long
 immutable cache (a new photo is a new key) and `Cross-Origin-Resource-Policy: same-site`, so the app
 domain may load it while any other site may not.
 

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { resolveSiteUrl } from "config/site";
+import { absoluteSiteUrl } from "config/site";
 import { PRIVATE_PATH_PREFIXES } from "constants/routes";
 
 const SITEMAP_PATH = "/sitemap.xml";
@@ -9,7 +9,7 @@ const SITEMAP_PATH = "/sitemap.xml";
 // the requests, since every one of those pages answers with the login redirect anyway
 const robots = (): MetadataRoute.Robots => ({
     rules: { userAgent: "*", allow: "/", disallow: PRIVATE_PATH_PREFIXES },
-    sitemap: new URL(SITEMAP_PATH, resolveSiteUrl()).toString(),
+    sitemap: absoluteSiteUrl(SITEMAP_PATH),
 });
 
 export default robots;

@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+
 import { MINUTES_PER_HOUR } from "constants/time";
 
 const MAX_HOURS = 99;
@@ -42,4 +44,25 @@ export const formatCookingTimeInput = (totalMinutes: number): string => {
     const { hours, minutes } = splitCookingTime(totalMinutes);
 
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+};
+
+// t is bound to the "recipes" namespace
+export const formatRecipeDuration = (
+    t: TFunction,
+    totalMinutes: number,
+): string => {
+    const { hours, minutes } = splitCookingTime(totalMinutes);
+
+    return hours > 0
+        ? t("recipeDetailsPage.cookingTimeHoursMinutes", { hours, minutes })
+        : t("recipeDetailsPage.cookingTimeMinutes", { minutes });
+};
+
+// the ISO 8601 form schema.org reads: 90 -> "PT1H30M", 45 -> "PT45M", 120 -> "PT2H"
+export const isoDuration = (totalMinutes: number): string => {
+    const { hours, minutes } = splitCookingTime(totalMinutes);
+    const hoursPart = hours > 0 ? `${hours}H` : "";
+    const minutesPart = minutes > 0 || hours === 0 ? `${minutes}M` : "";
+
+    return `PT${hoursPart}${minutesPart}`;
 };

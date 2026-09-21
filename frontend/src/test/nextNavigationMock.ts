@@ -72,7 +72,10 @@ const router = {
 
 export const useRouter = () => router;
 
-export const notFound = jest.fn();
+// the real one throws to stop the render; one that returned would let a page render past it
+export const notFound = jest.fn((): never => {
+    throw new Error("NEXT_NOT_FOUND");
+});
 export const redirect = jest.fn();
 
 // the real one re-throws Next's own control-flow errors and ignores everything else; nothing

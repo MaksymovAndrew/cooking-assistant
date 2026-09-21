@@ -2,13 +2,15 @@ import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
+import { IMAGE_VARIANTS } from "application/media/mediaFiles";
+
 import LocalDiskMediaStorage from "infrastructure/media/LocalDiskMediaStorage";
 
 const KEY = "0b1c2d3e-1111-2222-3333-444455556666";
-const VARIANTS = [
-    { width: 400, data: Buffer.from("small") },
-    { width: 1200, data: Buffer.from("large") },
-];
+const VARIANTS = IMAGE_VARIANTS.map((spec) => ({
+    spec,
+    data: Buffer.from(spec.name),
+}));
 
 describe("LocalDiskMediaStorage", () => {
     let directory: string;
@@ -21,7 +23,7 @@ describe("LocalDiskMediaStorage", () => {
         await rm(directory, { recursive: true, force: true });
     });
 
-    it("should write one file per width under the generated key", async () => {
+    it("should write one file per variant under the generated key", async () => {
         const storage = new LocalDiskMediaStorage(directory);
 
         await storage.save(KEY, VARIANTS);
@@ -29,10 +31,11 @@ describe("LocalDiskMediaStorage", () => {
         expect((await readdir(directory)).sort()).toEqual([
             `${KEY}-1200.webp`,
             `${KEY}-400.webp`,
+            `${KEY}-og.jpg`,
         ]);
         expect(
             await readFile(path.join(directory, `${KEY}-400.webp`), "utf8"),
-        ).toBe("small");
+        ).toBe("400");
     });
 
     it("should create its directory on the first save", async () => {
@@ -41,7 +44,7 @@ describe("LocalDiskMediaStorage", () => {
 
         await storage.save(KEY, VARIANTS);
 
-        expect(await readdir(nested)).toHaveLength(2);
+        expect(await readdir(nested)).toHaveLength(IMAGE_VARIANTS.length);
     });
 
     it("should refuse to overwrite a stored file", async () => {
@@ -76,7 +79,7 @@ describe("LocalDiskMediaStorage", () => {
         expect(await storage.locate("../../package.json")).toBeNull();
     });
 
-    it("should remove every width of a key", async () => {
+    it("should remove every variant of a key", async () => {
         const storage = new LocalDiskMediaStorage(directory);
 
         await storage.save(KEY, VARIANTS);

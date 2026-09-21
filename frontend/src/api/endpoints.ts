@@ -64,6 +64,7 @@ export const API_ROUTES = {
     },
     media: {
         file: (key: string, width: number) => `/api/media/${key}-${width}.webp`,
+        social: (key: string) => `/api/media/${key}-og.jpg`,
     },
     shoppingList: {
         list: "/api/shopping-list",

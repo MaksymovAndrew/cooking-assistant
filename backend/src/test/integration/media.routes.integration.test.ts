@@ -52,6 +52,19 @@ describe("media routes", () => {
         expect(res.headers["cross-origin-resource-policy"]).toBe("same-site");
     });
 
+    it("should serve the link preview variant as a JPEG", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.mediaStorage.locate.mockResolvedValue(storedFile);
+
+        const res = await request(app).get(
+            `/api/media/${FILE_NAME.replace("400.webp", "og.jpg")}`,
+        );
+
+        expect(res.status).toBe(200);
+        expect(res.headers["content-type"]).toBe("image/jpeg");
+    });
+
     it("should answer 404 for a file that is not stored", async () => {
         const { app, deps } = buildTestApp();
 

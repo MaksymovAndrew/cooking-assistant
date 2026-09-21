@@ -2,6 +2,8 @@ import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
 
+import { IMAGE_VARIANTS } from "application/media/mediaFiles";
+
 import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
@@ -9,7 +11,10 @@ const RECIPE_PHOTO_PATH = "/api/recipe/5/photo";
 const CONTENT_TYPE = "Content-Type";
 const IMAGE_JPEG = "image/jpeg";
 const JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
-const VARIANTS = [{ width: 400, data: Buffer.from("small") }];
+const VARIANTS = IMAGE_VARIANTS.map((spec) => ({
+    spec,
+    data: Buffer.from(spec.name),
+}));
 const UUID = /^[0-9a-f-]{36}$/;
 // one byte over the 10 MB upload limit
 const OVERSIZED = Buffer.alloc(10 * 1024 * 1024 + 1);
@@ -52,7 +57,7 @@ describe("photo routes", () => {
         expect(body.photo_key).toMatch(UUID);
         expect(deps.imageProcessor.toVariants).toHaveBeenCalledWith(
             JPEG,
-            [400, 1200],
+            IMAGE_VARIANTS,
         );
         expect(deps.photoRepository.replace).toHaveBeenCalledWith(
             7,

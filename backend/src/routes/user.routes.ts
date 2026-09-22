@@ -60,6 +60,11 @@ export default function createUserRouter(
         authenticateToken,
         userController.updateProfile,
     );
+    router.put(
+        ROUTES.auth.locale,
+        authenticateToken,
+        userController.updateLocale,
+    );
     router.delete(
         ROUTES.auth.me,
         authenticateToken,

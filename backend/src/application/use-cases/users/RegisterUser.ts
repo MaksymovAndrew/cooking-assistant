@@ -1,3 +1,4 @@
+import type { Locale } from "constants/locales";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
 import type { PasswordHasher } from "application/ports/PasswordHasher";
@@ -12,7 +13,7 @@ export default class RegisterUser {
         private tokenService: Pick<TokenService, "generate">,
     ) {}
 
-    async execute(input: unknown): Promise<{ token: string }> {
+    async execute(input: unknown, locale: Locale): Promise<{ token: string }> {
         const data = validate(registerUserSchema, input);
         const hashedPassword = await this.passwordHasher.hash(data.password);
 
@@ -22,6 +23,7 @@ export default class RegisterUser {
             login: data.login,
             password: hashedPassword,
             email: data.email,
+            locale,
         });
 
         return { token: this.tokenService.generate(id) };

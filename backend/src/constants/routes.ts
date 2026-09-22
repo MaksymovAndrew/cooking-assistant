@@ -10,6 +10,7 @@ export const ROUTES = {
         login: "/login",
         logout: "/logout",
         me: "/me",
+        locale: "/me/locale",
         avatar: "/me/avatar",
         forgotPassword: "/forgot-password",
         resetPassword: "/reset-password",

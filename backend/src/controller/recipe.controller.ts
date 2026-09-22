@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 
+import { requestLocale } from "i18n/requestLocale";
 import { translateMessage } from "i18n/translate";
 
 import type CreateRecipe from "application/use-cases/recipes/CreateRecipe";
@@ -117,7 +118,9 @@ export default class RecipeController {
     deleteRecipe: RequestHandler<{ id: string }> = async (req, res) => {
         await this.deleteRecipeUseCase.execute(req.params.id, getUserId(req));
 
-        res.json({ message: translateMessage("recipeDeleted") });
+        res.json({
+            message: translateMessage("recipeDeleted", requestLocale(req)),
+        });
     };
 
     getRecipesStats: RequestHandler = async (_req, res) => {

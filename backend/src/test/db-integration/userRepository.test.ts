@@ -1,6 +1,7 @@
 import type { Pool } from "pg";
 
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { Menu } from "domain/entities/Menu";
 import Recipe from "domain/entities/Recipe";
 import { AppError } from "domain/errors/AppError";
@@ -42,6 +43,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Lovelace",
             login: unique("newuser"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("ada"),
         });
 
@@ -56,6 +58,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "User",
             login,
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("first"),
         });
 
@@ -65,6 +68,7 @@ describe("PgUserRepository (real Postgres)", () => {
                 surname: "User",
                 login,
                 password: PASSWORD,
+                locale: DEFAULT_LOCALE,
                 email: uniqueEmail("second"),
             }),
         );
@@ -82,6 +86,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "User",
             login: unique("emailowner"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email,
         });
 
@@ -91,6 +96,7 @@ describe("PgUserRepository (real Postgres)", () => {
                 surname: "User",
                 login: unique("emailthief"),
                 password: PASSWORD,
+                locale: DEFAULT_LOCALE,
                 email,
             }),
         );
@@ -108,6 +114,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Hopper",
             login,
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("grace"),
         });
 
@@ -135,6 +142,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Turing",
             login,
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email,
         });
 
@@ -147,6 +155,7 @@ describe("PgUserRepository (real Postgres)", () => {
                 login,
                 email,
                 email_verified_at: null,
+                locale: DEFAULT_LOCALE,
             }),
         );
         expect(found).not.toHaveProperty("password");
@@ -164,6 +173,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Hamilton",
             login: unique("byemail"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email,
         });
 
@@ -185,6 +195,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Perlman",
             login,
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("radia"),
         });
 
@@ -206,6 +217,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Bouman",
             login: unique("creds-email"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email,
         });
 
@@ -227,6 +239,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Hopper",
             login: unique("reset-candidate"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email,
         });
 
@@ -236,6 +249,7 @@ describe("PgUserRepository (real Postgres)", () => {
             id: created.id,
             password: PASSWORD,
             email_verified_at: null,
+            locale: DEFAULT_LOCALE,
         });
 
         const missing = await repository.findPasswordResetCandidateByEmail(
@@ -251,6 +265,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Lamarr",
             login: unique("changepw"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("hedy"),
         });
 
@@ -267,6 +282,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Jackson",
             login: unique("verify"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("mary"),
         });
 
@@ -286,6 +302,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Ride",
             login: unique("profile"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("sally"),
         });
 
@@ -306,6 +323,23 @@ describe("PgUserRepository (real Postgres)", () => {
         );
     });
 
+    it("should store the account's language", async () => {
+        const created = await repository.create({
+            name: "Katherine",
+            surname: "Johnson",
+            login: unique("locale"),
+            password: PASSWORD,
+            locale: DEFAULT_LOCALE,
+            email: uniqueEmail("katherine"),
+        });
+
+        await repository.updateLocale(created.id, DEFAULT_LOCALE);
+
+        const found = await repository.findById(created.id);
+
+        expect(found?.locale).toBe(DEFAULT_LOCALE);
+    });
+
     // exercises the real transactional cascade - a person's recipe linked into someone
     // ELSE's menu, their own menu, and their own pantry data - since menu.person_id and
     // menu_recipe.recipe_id have no ON DELETE CASCADE, mocked-repository tests can't catch a
@@ -320,6 +354,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "ToDelete",
             login: unique("delete-owner"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("delete-owner"),
         });
         const otherPerson = await repository.create({
@@ -327,6 +362,7 @@ describe("PgUserRepository (real Postgres)", () => {
             surname: "Person",
             login: unique("delete-other"),
             password: PASSWORD,
+            locale: DEFAULT_LOCALE,
             email: uniqueEmail("delete-other"),
         });
         const ownerId = owner.id;

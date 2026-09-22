@@ -1,6 +1,7 @@
 import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
 import { translateMessage } from "i18n/translate";
 
@@ -206,7 +207,7 @@ describe("recipe routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("recipeDeleted"),
+            message: translateMessage("recipeDeleted", DEFAULT_LOCALE),
         });
         expect(deps.recipeRepository.deleteById).toHaveBeenCalledWith(12, 7);
     });

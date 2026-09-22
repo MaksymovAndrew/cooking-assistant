@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 
+import { requestLocale } from "i18n/requestLocale";
 import { translateMessage } from "i18n/translate";
 
 import type ChangePassword from "application/use-cases/users/ChangePassword";
@@ -44,7 +45,12 @@ export default class UserSecurityController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: translateMessage("passwordResetEmailSent") });
+        res.json({
+            message: translateMessage(
+                "passwordResetEmailSent",
+                requestLocale(req),
+            ),
+        });
     };
 
     confirmPasswordReset: RequestHandler = async (req, res) => {
@@ -52,7 +58,9 @@ export default class UserSecurityController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: translateMessage("passwordReset") });
+        res.json({
+            message: translateMessage("passwordReset", requestLocale(req)),
+        });
     };
 
     changePassword: RequestHandler = async (req, res) => {
@@ -61,13 +69,20 @@ export default class UserSecurityController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: translateMessage("passwordChanged") });
+        res.json({
+            message: translateMessage("passwordChanged", requestLocale(req)),
+        });
     };
 
     requestEmailVerification: RequestHandler = async (req, res) => {
         await this.requestEmailVerificationUseCase.execute(getUserId(req));
 
-        res.json({ message: translateMessage("verificationEmailSent") });
+        res.json({
+            message: translateMessage(
+                "verificationEmailSent",
+                requestLocale(req),
+            ),
+        });
     };
 
     confirmEmailVerification: RequestHandler = async (req, res) => {
@@ -75,6 +90,8 @@ export default class UserSecurityController {
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: translateMessage("emailVerified") });
+        res.json({
+            message: translateMessage("emailVerified", requestLocale(req)),
+        });
     };
 }

@@ -13,6 +13,7 @@ import LoginUser from "application/use-cases/users/LoginUser";
 import RegisterUser from "application/use-cases/users/RegisterUser";
 import RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
 import RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
+import UpdateLocale from "application/use-cases/users/UpdateLocale";
 import UpdateProfile from "application/use-cases/users/UpdateProfile";
 
 import UserController from "controller/user.controller";
@@ -50,6 +51,7 @@ export function buildUserControllers({
         loginUser: new LoginUser(userRepository, passwordHasher, tokenService),
         getCurrentUser: new GetCurrentUser(userRepository),
         updateProfile: new UpdateProfile(userRepository),
+        updateLocale: new UpdateLocale(userRepository),
         deleteAccount: new DeleteAccount(
             userRepository,
             passwordHasher,

@@ -185,7 +185,9 @@ Pages/hooks never import `axios` directly - the ESLint boundaries rule blocks it
 Data flow: page/hook -> RTK Query hook (`redux/services/*`) -> `axiosBaseQuery` -> `apiClient`.
 
 - **[client.ts](src/api/client.ts)** - one `apiClient = axios.create({ baseURL, withCredentials: true })`
-  with the single response interceptor described above.
+  with the single response interceptor described above, plus a request interceptor that sends the
+  language the app is showing as `Accept-Language` - the server answers in it, and stores it on a new
+  account for its emails.
 - **[endpoints.ts](src/api/endpoints.ts)** - `API_ROUTES`, a single typed source of truth for every path,
   grouped by domain; parameterized routes are builder functions, e.g. `API_ROUTES.recipes.byId(id)`.
 - **[httpError.ts](src/api/httpError.ts)** - normalizes any axios error into a user-facing message, a

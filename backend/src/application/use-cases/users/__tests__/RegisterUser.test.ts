@@ -1,4 +1,5 @@
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { ValidationError } from "domain/errors/AppError";
 
 import RegisterUser from "application/use-cases/users/RegisterUser";
@@ -28,13 +29,16 @@ describe("RegisterUser", () => {
             deps.tokenService,
         );
 
-        const result = await useCase.execute({
-            name: "Bob",
-            surname: "Cook",
-            login: "bob",
-            email: EMAIL,
-            password: "secret1!",
-        });
+        const result = await useCase.execute(
+            {
+                name: "Bob",
+                surname: "Cook",
+                login: "bob",
+                email: EMAIL,
+                password: "secret1!",
+            },
+            DEFAULT_LOCALE,
+        );
 
         expect(deps.passwordHasher.hash).toHaveBeenCalledWith("secret1!");
         expect(deps.userRepository.create).toHaveBeenCalledWith({
@@ -43,6 +47,7 @@ describe("RegisterUser", () => {
             login: "bob",
             email: EMAIL,
             password: HASHED_PASSWORD,
+            locale: DEFAULT_LOCALE,
         });
         expect(deps.tokenService.generate).toHaveBeenCalledWith(5);
         expect(result).toEqual({ token: TOKEN });
@@ -59,13 +64,16 @@ describe("RegisterUser", () => {
             deps.tokenService,
         );
 
-        await useCase.execute({
-            name: " Bob",
-            surname: "Cook ",
-            login: " bob ",
-            email: EMAIL,
-            password: "secret1!",
-        });
+        await useCase.execute(
+            {
+                name: " Bob",
+                surname: "Cook ",
+                login: " bob ",
+                email: EMAIL,
+                password: "secret1!",
+            },
+            DEFAULT_LOCALE,
+        );
 
         expect(deps.userRepository.create).toHaveBeenCalledWith({
             name: "Bob",
@@ -73,6 +81,7 @@ describe("RegisterUser", () => {
             login: "bob",
             email: EMAIL,
             password: HASHED_PASSWORD,
+            locale: DEFAULT_LOCALE,
         });
     });
 
@@ -85,13 +94,16 @@ describe("RegisterUser", () => {
         );
 
         const error = await catchError(
-            useCase.execute({
-                name: "Bob",
-                surname: "Cook",
-                login: "bob",
-                email: EMAIL,
-                password: "",
-            }),
+            useCase.execute(
+                {
+                    name: "Bob",
+                    surname: "Cook",
+                    login: "bob",
+                    email: EMAIL,
+                    password: "",
+                },
+                DEFAULT_LOCALE,
+            ),
         );
 
         expect(error).toBeAppError(
@@ -113,13 +125,16 @@ describe("RegisterUser", () => {
         );
 
         const error = await catchError(
-            useCase.execute({
-                name: "Bob",
-                surname: "Cook",
-                login: "bob",
-                email: "not-an-email",
-                password: "secret1!",
-            }),
+            useCase.execute(
+                {
+                    name: "Bob",
+                    surname: "Cook",
+                    login: "bob",
+                    email: "not-an-email",
+                    password: "secret1!",
+                },
+                DEFAULT_LOCALE,
+            ),
         );
 
         expect(error).toBeAppError(
@@ -142,13 +157,16 @@ describe("RegisterUser", () => {
             deps.tokenService,
         );
 
-        await useCase.execute({
-            name: "Bob",
-            surname: "Cook",
-            login: "bob",
-            email: "Bob@Example.com",
-            password: "secret1!",
-        });
+        await useCase.execute(
+            {
+                name: "Bob",
+                surname: "Cook",
+                login: "bob",
+                email: "Bob@Example.com",
+                password: "secret1!",
+            },
+            DEFAULT_LOCALE,
+        );
 
         expect(deps.userRepository.create).toHaveBeenCalledWith(
             expect.objectContaining({ email: EMAIL }),

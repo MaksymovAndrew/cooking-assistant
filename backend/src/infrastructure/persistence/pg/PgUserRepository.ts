@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import type { Locale } from "constants/locales";
 import type {
     NewUser,
     PasswordResetCandidate,
@@ -10,11 +11,12 @@ import type {
     UserRepository,
 } from "domain/repositories/UserRepository";
 
+import { deleteUser } from "./PgUserRepository.delete";
 import { uniqueViolationError } from "./PgUserRepository.errors";
 
 const PUBLIC_USER_COLUMNS =
     "id, name, surname, login, created_at, email, email_verified_at, avatar, " +
-    "avatar_photo_key, calorie_goal";
+    "avatar_photo_key, calorie_goal, locale";
 
 export default class PgUserRepository implements UserRepository {
     constructor(private pool: Pool) {}
@@ -70,7 +72,7 @@ export default class PgUserRepository implements UserRepository {
         email: string,
     ): Promise<PasswordResetCandidate | null> {
         const result = await this.pool.query<PasswordResetCandidate>(
-            `SELECT id, password, email_verified_at FROM person WHERE email = $1`,
+            `SELECT id, password, email_verified_at, locale FROM person WHERE email = $1`,
             [email],
         );
 
@@ -83,11 +85,12 @@ export default class PgUserRepository implements UserRepository {
         login,
         password,
         email,
+        locale,
     }: NewUser): Promise<{ id: number }> {
         try {
             const result = await this.pool.query<{ id: number }>(
-                `INSERT INTO person (name, surname, login, password, email) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-                [name, surname, login, password, email],
+                `INSERT INTO person (name, surname, login, password, email, locale) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+                [name, surname, login, password, email, locale],
             );
 
             return result.rows[0];
@@ -113,6 +116,13 @@ export default class PgUserRepository implements UserRepository {
         );
     }
 
+    async updateLocale(id: number, locale: Locale): Promise<void> {
+        await this.pool.query(`UPDATE person SET locale = $1 WHERE id = $2`, [
+            locale,
+            id,
+        ]);
+    }
+
     async markEmailVerified(id: number): Promise<void> {
         await this.pool.query(
             `UPDATE person SET email_verified_at = now() WHERE id = $1`,
@@ -120,27 +130,7 @@ export default class PgUserRepository implements UserRepository {
         );
     }
 
-    // transactional cascade-by-hand: menu.person_id and menu_recipe.recipe_id have no ON DELETE
-    // CASCADE, so clear them before deleting the person (recipes/pantry/purchases cascade cleanly)
     async delete(id: number): Promise<void> {
-        const client = await this.pool.connect();
-
-        try {
-            await client.query("BEGIN");
-
-            await client.query(
-                `DELETE FROM menu_recipe WHERE recipe_id IN (SELECT id FROM recipes WHERE person_id = $1)`,
-                [id],
-            );
-            await client.query(`DELETE FROM menu WHERE person_id = $1`, [id]);
-            await client.query(`DELETE FROM person WHERE id = $1`, [id]);
-
-            await client.query("COMMIT");
-        } catch (error) {
-            await client.query("ROLLBACK");
-            throw error;
-        } finally {
-            client.release();
-        }
+        await deleteUser(this.pool, id);
     }
 }

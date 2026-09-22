@@ -1,3 +1,5 @@
+import type { Locale } from "constants/locales";
+
 export interface UserRecord {
     id: number;
     password: string;
@@ -10,6 +12,7 @@ export interface NewUser {
     login: string;
     password: string;
     email: string;
+    locale: Locale;
 }
 
 // the safe, public-facing shape of a person row - no password. email is always set (required at
@@ -25,6 +28,7 @@ export interface PublicUser {
     avatar: string | null;
     avatar_photo_key: string | null;
     calorie_goal: number | null;
+    locale: Locale;
 }
 
 // the editable profile fields; avatar is a preset key or null (no avatar - fall back to initials)
@@ -40,12 +44,13 @@ export interface UserCredentials {
     password: string;
 }
 
-// just enough for RequestPasswordReset to decide silently-noop vs proceed, and to bind the
-// reset token to the current password hash, in a single query
+// just enough for RequestPasswordReset to decide silently-noop vs proceed, to bind the
+// reset token to the current password hash, and to write in the account's language, in a single query
 export interface PasswordResetCandidate {
     id: number;
     password: string;
     email_verified_at: string | null;
+    locale: Locale;
 }
 
 export interface UserRepository {
@@ -60,6 +65,7 @@ export interface UserRepository {
     create(user: NewUser): Promise<{ id: number }>;
     updatePassword(id: number, hashedPassword: string): Promise<void>;
     updateProfile(id: number, data: ProfileUpdate): Promise<void>;
+    updateLocale(id: number, locale: Locale): Promise<void>;
     markEmailVerified(id: number): Promise<void>;
     delete(id: number): Promise<void>;
 }

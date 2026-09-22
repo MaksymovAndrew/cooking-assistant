@@ -1,4 +1,5 @@
 import { logger } from "config/logger";
+import { DEFAULT_LOCALE } from "constants/locales";
 
 import LoggingEmailService from "infrastructure/email/LoggingEmailService";
 
@@ -12,10 +13,10 @@ describe("LoggingEmailService", () => {
         const infoSpy = jest.spyOn(logger, "info").mockImplementation();
         const service = new LoggingEmailService();
 
-        await service.sendPasswordResetEmail(TO, LINK);
+        await service.sendPasswordResetEmail(TO, LINK, DEFAULT_LOCALE);
 
         expect(infoSpy).toHaveBeenCalledWith(
-            { to: TO, link: LINK },
+            { to: TO, link: LINK, locale: DEFAULT_LOCALE },
             expect.any(String),
         );
     });
@@ -24,10 +25,10 @@ describe("LoggingEmailService", () => {
         const infoSpy = jest.spyOn(logger, "info").mockImplementation();
         const service = new LoggingEmailService();
 
-        await service.sendVerificationEmail(TO, LINK);
+        await service.sendVerificationEmail(TO, LINK, DEFAULT_LOCALE);
 
         expect(infoSpy).toHaveBeenCalledWith(
-            { to: TO, link: LINK },
+            { to: TO, link: LINK, locale: DEFAULT_LOCALE },
             expect.any(String),
         );
     });

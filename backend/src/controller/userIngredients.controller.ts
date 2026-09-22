@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 
+import { requestLocale } from "i18n/requestLocale";
 import { translateMessage } from "i18n/translate";
 
 import type AddUserIngredients from "application/use-cases/pantry/AddUserIngredients";
@@ -54,7 +55,7 @@ export default class UserIngredientsController {
         await this.addUserIngredientsUseCase.execute(userId, ingredients);
 
         res.status(200).json({
-            message: translateMessage("ingredientsUpdated"),
+            message: translateMessage("ingredientsUpdated", requestLocale(req)),
         });
     };
 
@@ -70,7 +71,7 @@ export default class UserIngredientsController {
         );
 
         res.json({
-            message: translateMessage("ingredientDeleted"),
+            message: translateMessage("ingredientDeleted", requestLocale(req)),
         });
     };
 
@@ -88,7 +89,7 @@ export default class UserIngredientsController {
         );
 
         res.status(200).json({
-            message: translateMessage("purchaseUpdated"),
+            message: translateMessage("purchaseUpdated", requestLocale(req)),
         });
     };
 

@@ -2,6 +2,7 @@ import type { IncomingHttpHeaders } from "http";
 import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
@@ -35,13 +36,16 @@ describe("user routes", () => {
         });
 
         expect(res.status).toBe(201);
-        expect(res.body).toEqual({ message: translateMessage("registered") });
+        expect(res.body).toEqual({
+            message: translateMessage("registered", DEFAULT_LOCALE),
+        });
         expect(deps.userRepository.create).toHaveBeenCalledWith({
             name: "Bob",
             surname: "Cook",
             login: "bob",
             email: EMAIL,
             password: "hashed-secret",
+            locale: DEFAULT_LOCALE,
         });
 
         const headers = res.headers as IncomingHttpHeaders;
@@ -69,7 +73,9 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         // token lives only in the cookie, never in the response body
-        expect(res.body).toEqual({ message: translateMessage("loggedIn") });
+        expect(res.body).toEqual({
+            message: translateMessage("loggedIn", DEFAULT_LOCALE),
+        });
 
         const headers = res.headers as IncomingHttpHeaders;
         const setCookie = headers["set-cookie"]?.join(";") ?? "";
@@ -106,7 +112,9 @@ describe("user routes", () => {
         const res = await request(app).post("/api/logout");
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: translateMessage("loggedOut") });
+        expect(res.body).toEqual({
+            message: translateMessage("loggedOut", DEFAULT_LOCALE),
+        });
         const logoutHeaders = res.headers as IncomingHttpHeaders;
 
         expect(logoutHeaders["set-cookie"]?.join(";") ?? "").toContain(
@@ -127,6 +135,7 @@ describe("user routes", () => {
             avatar: null,
             avatar_photo_key: null,
             calorie_goal: null,
+            locale: DEFAULT_LOCALE,
         };
 
         deps.userRepository.findById.mockResolvedValue(currentUser);
@@ -200,6 +209,7 @@ describe("user routes", () => {
                 id: 7,
                 password: "hashed-current-secret",
                 email_verified_at: "2026-01-01T00:00:00.000Z",
+                locale: DEFAULT_LOCALE,
             },
         );
         deps.tokenService.generatePurposeToken.mockReturnValue("reset-token");
@@ -210,11 +220,12 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("passwordResetEmailSent"),
+            message: translateMessage("passwordResetEmailSent", DEFAULT_LOCALE),
         });
         expect(deps.emailSender.sendPasswordResetEmail).toHaveBeenCalledWith(
             EMAIL,
             `${deps.frontendOrigin}/reset-password?token=reset-token`,
+            DEFAULT_LOCALE,
         );
     });
 
@@ -231,7 +242,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("passwordResetEmailSent"),
+            message: translateMessage("passwordResetEmailSent", DEFAULT_LOCALE),
         });
         expect(deps.emailSender.sendPasswordResetEmail).not.toHaveBeenCalled();
     });
@@ -253,7 +264,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("passwordReset"),
+            message: translateMessage("passwordReset", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.updatePassword).toHaveBeenCalledWith(
             7,
@@ -310,7 +321,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("passwordChanged"),
+            message: translateMessage("passwordChanged", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.updatePassword).toHaveBeenCalledWith(
             1,
@@ -353,6 +364,7 @@ describe("user routes", () => {
             avatar: null,
             avatar_photo_key: null,
             calorie_goal: null,
+            locale: DEFAULT_LOCALE,
         });
         deps.tokenService.generatePurposeToken.mockReturnValue(VERIFY_TOKEN);
 
@@ -362,11 +374,12 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("verificationEmailSent"),
+            message: translateMessage("verificationEmailSent", DEFAULT_LOCALE),
         });
         expect(deps.emailSender.sendVerificationEmail).toHaveBeenCalledWith(
             EMAIL,
             `${deps.frontendOrigin}/verify-email?token=verify-token`,
+            DEFAULT_LOCALE,
         );
     });
 
@@ -381,7 +394,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("emailVerified"),
+            message: translateMessage("emailVerified", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.markEmailVerified).toHaveBeenCalledWith(1);
     });
@@ -421,7 +434,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("profileUpdated"),
+            message: translateMessage("profileUpdated", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.updateProfile).toHaveBeenCalledWith(1, {
             name: "Claude",
@@ -469,7 +482,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("accountDeleted"),
+            message: translateMessage("accountDeleted", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.delete).toHaveBeenCalledWith(1);
 

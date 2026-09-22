@@ -318,9 +318,18 @@ repository method (see menu/pantry repos).
   `frontend/src/i18n/locales/en/common.json`, guarded by a frontend sync test.
 - **No display text in `AppError`.** It holds `code`, `status` and an optional `detail` (request-specific
   context, e.g. the zod issue list on `validation_error`). `errorHandler` resolves the text at the HTTP
-  edge - `detail ?? translateError(code)` - which is where a request locale will be read once a second
-  language exists. Adding a locale is a new `i18n/locales/<locale>/` folder plus one entry in
-  `CATALOGS` ([src/i18n/translate.ts](src/i18n/translate.ts)); `satisfies Catalog` rejects a locale missing any key.
+  edge - `detail ?? translateError(code, locale)`.
+- **Every piece of server copy is written in a locale, and there are exactly two sources for it.** A
+  response - error text and `{ message }` bodies alike - follows the request: `requestLocale(req)`
+  ([src/i18n/requestLocale.ts](src/i18n/requestLocale.ts)) picks the best match for `Accept-Language`
+  among `LOCALES` ([src/constants/locales.ts](src/constants/locales.ts)), falling back to `en`; the app
+  sends the language it is showing, so a signed-in visitor's choice arrives that way. An email follows
+  the recipient's stored `person.locale` instead, since it is read long after the request - registration
+  stores the request's language, and `PUT /me/locale` changes it. The translate functions take the locale
+  as a required argument, so a call site cannot quietly default to English. Adding a locale is one
+  `LOCALES` entry, a new `i18n/locales/<locale>/` folder and one entry in `CATALOGS`
+  ([src/i18n/translate.ts](src/i18n/translate.ts)); `satisfies Record<Locale, Catalog>` rejects a locale
+  missing any key.
 - **Internal failures are not `AppError`s.** A misconfiguration or programming error (missing JWT secret,
   a route without `req.user`) throws a plain `Error`; every 5xx is answered as `server_error` and never
   leaks its message.
@@ -466,6 +475,7 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | POST   | `/logout`                    | Clear the `authToken` cookie, return `{ message: "Logged out" }` (public)                                                 |
 | GET    | `/me`                        | Return the current user (including `email`, `email_verified_at`) from the cookie (session check)                          |
 | PATCH  | `/me`                        | Update the current user's profile (`name`, `surname`, `avatar`)                                                           |
+| PUT    | `/me/locale`                 | Set the account's language (`{ locale }`, one of the server's catalogs) - what its emails are written in (204)            |
 | DELETE | `/me`                        | Delete the current user's account; rate-limited by user id                                                                |
 | POST   | `/forgot-password`           | Request a password reset link by `email`; always a generic response; rate-limited by email, every request counts (public) |
 | POST   | `/reset-password`            | Set a new password from a `{ token, newPassword }` reset link (public)                                                    |

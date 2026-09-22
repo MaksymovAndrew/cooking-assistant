@@ -33,6 +33,10 @@ export default class RequestEmailVerification {
         );
         const link = `${this.frontendOrigin}/verify-email?token=${token}`;
 
-        await this.emailSender.sendVerificationEmail(user.email, link);
+        await this.emailSender.sendVerificationEmail(
+            user.email,
+            link,
+            user.locale,
+        );
     }
 }

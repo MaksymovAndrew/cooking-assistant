@@ -1,3 +1,5 @@
+import { DEFAULT_LOCALE } from "constants/locales";
+
 import ResendEmailService from "infrastructure/email/ResendEmailService";
 
 import { TEST_FRONTEND_ORIGIN } from "test/helpers/testConstants";
@@ -19,7 +21,7 @@ describe("ResendEmailService", () => {
             .mockResolvedValue(new Response(null, { status: 200 }));
         const service = new ResendEmailService(API_KEY, FROM);
 
-        await service.sendPasswordResetEmail(TO, LINK);
+        await service.sendPasswordResetEmail(TO, LINK, DEFAULT_LOCALE);
 
         expect(fetchSpy).toHaveBeenCalledTimes(1);
         const [url, init] = fetchSpy.mock.calls[0];
@@ -47,7 +49,7 @@ describe("ResendEmailService", () => {
             .mockResolvedValue(new Response(null, { status: 200 }));
         const service = new ResendEmailService(API_KEY, FROM);
 
-        await service.sendVerificationEmail(TO, LINK);
+        await service.sendVerificationEmail(TO, LINK, DEFAULT_LOCALE);
 
         const [, init] = fetchSpy.mock.calls[0];
         const body = JSON.parse(init?.body as string) as {
@@ -65,8 +67,8 @@ describe("ResendEmailService", () => {
         );
         const service = new ResendEmailService(API_KEY, FROM);
 
-        await expect(service.sendPasswordResetEmail(TO, LINK)).rejects.toThrow(
-            "Failed to send email",
-        );
+        await expect(
+            service.sendPasswordResetEmail(TO, LINK, DEFAULT_LOCALE),
+        ).rejects.toThrow("Failed to send email");
     });
 });

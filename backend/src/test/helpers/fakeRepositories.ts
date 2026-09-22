@@ -99,6 +99,7 @@ function createUserRepository(): jest.Mocked<UserRepository> {
         create: jest.fn(),
         updatePassword: jest.fn(),
         updateProfile: jest.fn(),
+        updateLocale: jest.fn(),
         markEmailVerified: jest.fn(),
         delete: jest.fn(),
     };

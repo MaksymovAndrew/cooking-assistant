@@ -1,5 +1,6 @@
 import {
     assertConsistentEmailConfig,
+    assertProductionSecrets,
     assertSecureProductionDb,
 } from "config/env.guards";
 
@@ -71,5 +72,28 @@ describe("assertConsistentEmailConfig", () => {
         expect(() => {
             assertConsistentEmailConfig({ emailFrom: "noreply@example.com" });
         }).toThrow("RESEND_API_KEY and EMAIL_FROM must be set together");
+    });
+});
+
+describe("assertProductionSecrets", () => {
+    it("should throw when production has no JWT secret", () => {
+        expect(() => {
+            assertProductionSecrets({ isProduction: true });
+        }).toThrow("refusing to start in production without JWT_SECRET_KEY");
+    });
+
+    it("should not throw when production has a JWT secret", () => {
+        expect(() => {
+            assertProductionSecrets({
+                isProduction: true,
+                jwtSecret: "a-long-enough-test-secret-value-1234",
+            });
+        }).not.toThrow();
+    });
+
+    it("should not throw in development without a JWT secret", () => {
+        expect(() => {
+            assertProductionSecrets({ isProduction: false });
+        }).not.toThrow();
     });
 });

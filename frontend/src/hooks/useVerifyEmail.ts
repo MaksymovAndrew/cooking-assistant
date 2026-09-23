@@ -1,7 +1,8 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { useConfirmEmailMutation, useGetMeQuery } from "redux/services/authApi";
+import { useConfirmEmailMutation } from "redux/services/accountSecurityApi";
+import { useGetMeQuery } from "redux/services/authApi";
 
 export type VerifyEmailStatus = "loading" | "success" | "invalid";
 

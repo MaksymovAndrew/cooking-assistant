@@ -1,5 +1,6 @@
 import type { Recipe } from "domain/entities/Recipe";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
+import type { DeletedRecord } from "domain/repositories/PhotoRepository";
 import type {
     RecipeFilters,
     RecipeSearchRow,
@@ -18,7 +19,11 @@ export interface RecipeRepository {
         personId: number,
         data: Recipe,
     ): Promise<unknown>;
-    deleteById(id: string | number, personId: number): Promise<unknown>;
+    // null when the record doesn't exist or belongs to someone else
+    deleteById(
+        id: string | number,
+        personId: number,
+    ): Promise<DeletedRecord | null>;
     search(
         userId: number | null,
         filters: RecipeFilters,

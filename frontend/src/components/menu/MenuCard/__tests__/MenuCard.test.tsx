@@ -6,18 +6,11 @@ import { renderWithRouter } from "test/router";
 
 const TITLE = "Weekday menu";
 const CATEGORY = "Lunch";
-const RECIPE_COUNT = 6;
+const MENU = { id: 1, title: TITLE, categoryname: CATEGORY, recipe_count: 6 };
 
 describe("MenuCard", () => {
     it("should render the menu title as a link to its details page", () => {
-        renderWithRouter(
-            <MenuCard
-                id={1}
-                title={TITLE}
-                categoryName={CATEGORY}
-                recipeCount={RECIPE_COUNT}
-            />,
-        );
+        renderWithRouter(<MenuCard menu={MENU} />);
 
         expect(
             screen.getByRole("link", { name: new RegExp(TITLE) }),
@@ -25,27 +18,13 @@ describe("MenuCard", () => {
     });
 
     it("should render the category as the chip label", () => {
-        renderWithRouter(
-            <MenuCard
-                id={1}
-                title={TITLE}
-                categoryName={CATEGORY}
-                recipeCount={RECIPE_COUNT}
-            />,
-        );
+        renderWithRouter(<MenuCard menu={MENU} />);
 
         expect(screen.getByText(CATEGORY)).toBeInTheDocument();
     });
 
     it("should render the category and recipe count as the meta line", () => {
-        renderWithRouter(
-            <MenuCard
-                id={1}
-                title={TITLE}
-                categoryName={CATEGORY}
-                recipeCount={RECIPE_COUNT}
-            />,
-        );
+        renderWithRouter(<MenuCard menu={MENU} />);
 
         expect(
             screen.getByText("Category: Lunch · 6 recipes"),
@@ -53,15 +32,7 @@ describe("MenuCard", () => {
     });
 
     it("should render a pressed heart for a menu the viewer favourited", () => {
-        renderWithRouter(
-            <MenuCard
-                id={1}
-                title={TITLE}
-                categoryName={CATEGORY}
-                recipeCount={RECIPE_COUNT}
-                isFavourite
-            />,
-        );
+        renderWithRouter(<MenuCard menu={{ ...MENU, isFavourite: true }} />);
 
         expect(
             screen.getByRole("button", { name: "Favourite" }),
@@ -69,14 +40,7 @@ describe("MenuCard", () => {
     });
 
     it("should not render a favourite button without a per-viewer flag", () => {
-        renderWithRouter(
-            <MenuCard
-                id={1}
-                title={TITLE}
-                categoryName={CATEGORY}
-                recipeCount={RECIPE_COUNT}
-            />,
-        );
+        renderWithRouter(<MenuCard menu={MENU} />);
 
         expect(
             screen.queryByRole("button", { name: "Favourite" }),
@@ -84,15 +48,7 @@ describe("MenuCard", () => {
     });
 
     it("should apply the mine class when mine is true", () => {
-        renderWithRouter(
-            <MenuCard
-                id={1}
-                title={TITLE}
-                categoryName={CATEGORY}
-                recipeCount={RECIPE_COUNT}
-                mine
-            />,
-        );
+        renderWithRouter(<MenuCard menu={MENU} mine />);
 
         expect(screen.getByRole("article")).toHaveClass("content-card--mine");
     });

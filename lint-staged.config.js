@@ -7,31 +7,43 @@ const backendDir = path.join(__dirname, "backend");
 const frontendDir = path.join(__dirname, "frontend");
 const backendFwd = backendDir.replace(/\\/g, "/");
 const frontendFwd = frontendDir.replace(/\\/g, "/");
+// Windows caps a command line at ~8k characters, so a large commit runs in batches
+const BATCH_SIZE = 30;
+
+const inBatches = (items) => {
+    const batches = [];
+
+    for (let i = 0; i < items.length; i += BATCH_SIZE) {
+        batches.push(items.slice(i, i + BATCH_SIZE).join(" "));
+    }
+
+    return batches;
+};
+
+const relativeTo = (dir, files) =>
+    files.map((f) => path.relative(dir, f).replace(/\\/g, "/").trim());
+
+const prettierCommands = (files) =>
+    inBatches(relativeTo(__dirname, files).map((f) => `"${f}"`)).map(
+        (batch) => `prettier --write ${batch}`,
+    );
+
+const eslintCommands = (dir, dirFwd, files) =>
+    inBatches(relativeTo(dir, files)).map(
+        (batch) =>
+            `node -e "require('child_process').execSync('npx eslint --fix ${batch}',{stdio:'inherit',cwd:'${dirFwd}',shell:true})"`,
+    );
 
 module.exports = {
-    "backend/**/*.ts": (files) => {
-        const relPaths = files
-            .map((f) => path.relative(backendDir, f).replace(/\\/g, "/").trim())
-            .join(" ");
-        const absPaths = files.map((f) => `"${f.replace(/\\/g, "/")}"`).join(" ");
+    "backend/**/*.ts": (files) => [
+        ...eslintCommands(backendDir, backendFwd, files),
+        ...prettierCommands(files),
+    ],
 
-        return [
-            `node -e "require('child_process').execSync('npx eslint --fix ${relPaths}',{stdio:'inherit',cwd:'${backendFwd}',shell:true})"`,
-            `prettier --write ${absPaths}`,
-        ];
-    },
-
-    "frontend/**/*.{ts,tsx}": (files) => {
-        const relPaths = files
-            .map((f) => path.relative(frontendDir, f).replace(/\\/g, "/").trim())
-            .join(" ");
-        const absPaths = files.map((f) => `"${f.replace(/\\/g, "/")}"`).join(" ");
-
-        return [
-            `node -e "require('child_process').execSync('npx eslint --fix ${relPaths}',{stdio:'inherit',cwd:'${frontendFwd}',shell:true})"`,
-            `prettier --write ${absPaths}`,
-        ];
-    },
+    "frontend/**/*.{ts,tsx}": (files) => [
+        ...eslintCommands(frontendDir, frontendFwd, files),
+        ...prettierCommands(files),
+    ],
 
     "frontend/**/*.{css,scss}": [
         "./frontend/node_modules/.bin/stylelint --fix",

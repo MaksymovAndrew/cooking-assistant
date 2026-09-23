@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { Provider } from "react-redux";
 
+import type { SessionStatus } from "redux/slices/sessionSlice";
 import { createStore } from "redux/store";
 
 import { useOfflineNotice } from "hooks/useOfflineNotice";
@@ -18,6 +19,10 @@ import i18n from "i18n/index";
 
 interface ProvidersProps {
     children: ReactNode;
+}
+
+interface RootProvidersProps extends ProvidersProps {
+    initialSessionStatus: SessionStatus;
 }
 
 // always-mounted, app-wide behaviour: renders nothing of its own beyond the overlay roots,
@@ -35,8 +40,11 @@ const AppRuntime = ({ children }: ProvidersProps) => {
     );
 };
 
-export const Providers = ({ children }: ProvidersProps) => {
-    const [store] = useState(createStore);
+export const Providers = ({
+    children,
+    initialSessionStatus,
+}: RootProvidersProps) => {
+    const [store] = useState(() => createStore(initialSessionStatus));
 
     // enables refetchOnFocus / refetchOnReconnect
     useEffect(() => setupListeners(store.dispatch), [store]);

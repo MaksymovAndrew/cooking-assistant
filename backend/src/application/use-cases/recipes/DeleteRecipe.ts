@@ -15,11 +15,6 @@ export default class DeleteRecipe {
     async execute(id: string | number, personId: number): Promise<void> {
         const recipeId = validate(idSchema, id);
         const validPersonId = validate(idSchema, personId);
-        const photoKey = await this.photoCleanup.keyOf(
-            validPersonId,
-            "recipe",
-            recipeId,
-        );
         const deleted = await this.recipeRepository.deleteById(
             recipeId,
             validPersonId,
@@ -29,6 +24,6 @@ export default class DeleteRecipe {
             throw new NotFoundError(ERROR_CODES.RECIPE_NOT_FOUND);
         }
 
-        await this.photoCleanup.removeAll([photoKey]);
+        await this.photoCleanup.removeAll([deleted.photoKey]);
     }
 }

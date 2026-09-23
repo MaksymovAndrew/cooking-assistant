@@ -257,7 +257,10 @@ Next has no router-level navigation blocker, so the app builds one and closes th
 ### Hydration
 
 A server-rendered page is on screen before React hydrates, so anything that would differ in that window
-has to say so. [src/hooks/useIsHydrated.ts](src/hooks/useIsHydrated.ts) is false for the server render
+has to say so. The session is the first of them: the root layout reads whether the request carried the auth
+cookie and seeds the store with `guest` when it did not, so a visitor who cannot be signed in gets the guest
+navigation in the first byte instead of watching the signed-in one collapse after `/me` answers. With a
+cookie the status stays `checking` and `/me` still decides. [src/hooks/useIsHydrated.ts](src/hooks/useIsHydrated.ts) is false for the server render
 and the first client render, true from the next one on: `useLoginLockout` uses it to read stored state
 without a mismatch, and `Button` uses it to keep a `type="submit"` button disabled until hydration - a
 submit landing earlier is a native browser submit that would put every field, passwords included, in the
@@ -356,8 +359,9 @@ it short forms then too.
   pages, and only the `api/` layer may import `axios`.
 - Other guards: `simple-import-sort` (layer-aware order), `import/no-cycle`, `no-restricted-imports`
   banning `../`, a local rule requiring a named constant for any 3+ part logical condition, `max-lines`
-  and `max-lines-per-function` (both 120, blank lines and comments not counted, tests exempt),
-  and `complexity`.
+  and `max-lines-per-function` (both 250, blank lines and comments not counted, tests exempt - a
+  hard ceiling; the working norm is 100, see "File size and where code lives" in
+  [AGENTS.md](../AGENTS.md)), and `complexity`.
 
 ## Testing
 
@@ -413,4 +417,4 @@ The whole project shares one version and one changelog at the repo root. This pa
 - [Root README](../README.md) - project overview and monorepo scripts
 - [Backend README](../backend/README.md) - API server
 - [CHANGELOG.md](../CHANGELOG.md) - project changelog
-- [CLAUDE.md](../CLAUDE.md) - notes for AI tooling
+- [AGENTS.md](../AGENTS.md) - notes for AI coding agents

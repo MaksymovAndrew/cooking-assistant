@@ -413,9 +413,7 @@
         "nameUk": "Селера черешкова",
         "namePl": "seler naciowy",
         "unit": "bunch",
-        "allergens": [
-            "celery"
-        ],
+        "allergens": ["celery"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -429,9 +427,7 @@
         "nameUk": "Корінь селери",
         "namePl": "Seler korzeniowy",
         "unit": "piece",
-        "allergens": [
-            "celery"
-        ],
+        "allergens": ["celery"],
         "daysToExpire": 30,
         "seasonality": "Autumn, Winter",
         "storageCondition": "+4 - +8°C",
@@ -3805,9 +3801,7 @@
         "nameUk": "Лосось",
         "namePl": "Łosoś",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3821,9 +3815,7 @@
         "nameUk": "Форель",
         "namePl": "Pstrąg",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3837,9 +3829,7 @@
         "nameUk": "Тунець",
         "namePl": "Tuńczyk",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3853,9 +3843,7 @@
         "nameUk": "Тріска",
         "namePl": "Dorsz",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3869,9 +3857,7 @@
         "nameUk": "Пікша",
         "namePl": "Plamiak",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3885,9 +3871,7 @@
         "nameUk": "Палтус",
         "namePl": "Halibut",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3901,9 +3885,7 @@
         "nameUk": "Скумбрія",
         "namePl": "makrela",
         "unit": "piece",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3917,9 +3899,7 @@
         "nameUk": "Салака",
         "namePl": "śledź",
         "unit": "piece",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3933,9 +3913,7 @@
         "nameUk": "сардина європейська",
         "namePl": "sardynka europejska",
         "unit": "piece",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3949,9 +3927,7 @@
         "nameUk": "Анчоусові",
         "namePl": "Sardelowate",
         "unit": "piece",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3965,9 +3941,7 @@
         "nameUk": "Морський окунь",
         "namePl": "Labraks",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3981,9 +3955,7 @@
         "nameUk": "Дорадо",
         "namePl": "Dorada",
         "unit": "piece",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -3997,9 +3969,7 @@
         "nameUk": "Щука",
         "namePl": "Szczupak",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4013,9 +3983,7 @@
         "nameUk": "Окунь",
         "namePl": "Okoń",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4029,9 +3997,7 @@
         "nameUk": "Сом",
         "namePl": "Sum",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4045,9 +4011,7 @@
         "nameUk": "Короп",
         "namePl": "Karp",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4061,9 +4025,7 @@
         "nameUk": "Камбала",
         "namePl": "Flądra",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4077,9 +4039,7 @@
         "nameUk": "Риба-меч",
         "namePl": "Miecznik",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4093,9 +4053,7 @@
         "nameUk": "Вугор",
         "namePl": "Węgorz",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4109,9 +4067,7 @@
         "nameUk": "Копчений лосось",
         "namePl": "Wędzony łosoś",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4125,9 +4081,7 @@
         "nameUk": "Солона тріска",
         "namePl": "Solony dorsz",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4141,9 +4095,7 @@
         "nameUk": "Риб'яча ікра",
         "namePl": "Ikra rybia",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4157,9 +4109,7 @@
         "nameUk": "Ікра",
         "namePl": "Kawior",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4173,9 +4123,7 @@
         "nameUk": "Тиляпія",
         "namePl": "Tilapia",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4189,9 +4137,7 @@
         "nameUk": "Махі-махі",
         "namePl": "Mahi mahi",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4205,9 +4151,7 @@
         "nameUk": "Морський чорт",
         "namePl": "Żabnica",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4221,9 +4165,7 @@
         "nameUk": "Минтай",
         "namePl": "Mintaj",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4237,9 +4179,7 @@
         "nameUk": "Червоний люціан",
         "namePl": "Lucjan",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4253,9 +4193,7 @@
         "nameUk": "Групер",
         "namePl": "Grouper",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4269,9 +4207,7 @@
         "nameUk": "Тайлфіш",
         "namePl": "Tilefish",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4285,9 +4221,7 @@
         "nameUk": "Кефаль",
         "namePl": "Barwena",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4301,9 +4235,7 @@
         "nameUk": "Сиг",
         "namePl": "Sieja",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4317,9 +4249,7 @@
         "nameUk": "Чорна тріска (сейбл)",
         "namePl": "Sablefish",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4333,9 +4263,7 @@
         "nameUk": "Блакитна риба (блюфіш)",
         "namePl": "Bluefish",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4349,9 +4277,7 @@
         "nameUk": "Акула",
         "namePl": "Rekin",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4365,9 +4291,7 @@
         "nameUk": "Осетр",
         "namePl": "Jesiotr",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4381,9 +4305,7 @@
         "nameUk": "Корюшка",
         "namePl": "Stynka",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4397,9 +4319,7 @@
         "nameUk": "Жовтопірий тунець",
         "namePl": "Tuńczyk żółtopłetwy",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4413,9 +4333,7 @@
         "nameUk": "Горбуша",
         "namePl": "Gorbusza",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4429,9 +4347,7 @@
         "nameUk": "Нерка",
         "namePl": "Nerka",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4445,9 +4361,7 @@
         "nameUk": "Морський язик дувр",
         "namePl": "Sola",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4461,9 +4375,7 @@
         "nameUk": "Арктичний голець",
         "namePl": "Golec arktyczny",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4477,9 +4389,7 @@
         "nameUk": "Помпано",
         "namePl": "Pompano",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4493,9 +4403,7 @@
         "nameUk": "Горбань",
         "namePl": "Croaker",
         "unit": "g",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4509,9 +4417,7 @@
         "nameUk": "Креветки",
         "namePl": "Krewetka",
         "unit": "g",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4525,9 +4431,7 @@
         "nameUk": "Королівська креветка",
         "namePl": "Krewetka królewska",
         "unit": "piece",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4541,9 +4445,7 @@
         "nameUk": "Крабове м'ясо",
         "namePl": "Mięso krabowe",
         "unit": "g",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4557,9 +4459,7 @@
         "nameUk": "Омар",
         "namePl": "homary",
         "unit": "piece",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 1,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4573,9 +4473,7 @@
         "nameUk": "річкові раки",
         "namePl": "rak",
         "unit": "g",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 1,
         "seasonality": "Summer",
         "storageCondition": "+4 - +8°C",
@@ -4589,9 +4487,7 @@
         "nameUk": "Мідії",
         "namePl": "Małże",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4605,9 +4501,7 @@
         "nameUk": "Молюски",
         "namePl": "Małże jadalne",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4621,9 +4515,7 @@
         "nameUk": "Устриця",
         "namePl": "Ostrygi",
         "unit": "piece",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4637,9 +4529,7 @@
         "nameUk": "Гребінцеві",
         "namePl": "Przegrzebkowate",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4653,9 +4543,7 @@
         "nameUk": "Кальмари",
         "namePl": "kałamarnice",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4669,9 +4557,7 @@
         "nameUk": "Восьминіг",
         "namePl": "Ośmiornica",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4685,9 +4571,7 @@
         "nameUk": "Равлики",
         "namePl": "Ślimaki",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4743,9 +4627,7 @@
         "nameUk": "Раки",
         "namePl": "Raki",
         "unit": "g",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 1,
         "seasonality": "Spring, Summer",
         "storageCondition": "+4 - +8°C",
@@ -4759,9 +4641,7 @@
         "nameUk": "Лангустин",
         "namePl": "Langustynka",
         "unit": "piece",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 1,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4775,9 +4655,7 @@
         "nameUk": "Королівський краб",
         "namePl": "Krab królewski",
         "unit": "g",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4791,9 +4669,7 @@
         "nameUk": "Сніговий краб",
         "namePl": "Krab śnieżny",
         "unit": "g",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4807,9 +4683,7 @@
         "nameUk": "Літорина",
         "namePl": "Ślimak morski (littorina)",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4823,9 +4697,7 @@
         "nameUk": "Морське вушко",
         "namePl": "Mięczak",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4839,9 +4711,7 @@
         "nameUk": "Ікра морського їжака",
         "namePl": "Jeżowiec",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 1,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4855,9 +4725,7 @@
         "nameUk": "Серцевидкові",
         "namePl": "Sercówka pospolita",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4871,9 +4739,7 @@
         "nameUk": "Морський живець",
         "namePl": "Skorupiak nożowiec",
         "unit": "g",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4915,9 +4781,7 @@
         "nameUk": "Молоко",
         "namePl": "mleko",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4931,9 +4795,7 @@
         "nameUk": "Знежирене молоко",
         "namePl": "odtłuszczone mleko",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4947,9 +4809,7 @@
         "nameUk": "сколотини",
         "namePl": "maślanka",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4963,9 +4823,7 @@
         "nameUk": "Вершки жирні",
         "namePl": "Śmietana kremówka",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4979,9 +4837,7 @@
         "nameUk": "Вершки легкі",
         "namePl": "Śmietanka lekka",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -4995,9 +4851,7 @@
         "nameUk": "Сметана",
         "namePl": "Kwaśna śmietana",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5011,9 +4865,7 @@
         "nameUk": "Крем-фреш",
         "namePl": "Crème fraîche",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5027,9 +4879,7 @@
         "nameUk": "Йогурт",
         "namePl": "Jogurt",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5043,9 +4893,7 @@
         "nameUk": "Грецький йогурт",
         "namePl": "jogurt grecki",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5059,9 +4907,7 @@
         "nameUk": "Кефір",
         "namePl": "Kefir",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5075,9 +4921,7 @@
         "nameUk": "mасло вершкове",
         "namePl": "masło",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 60,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5091,9 +4935,7 @@
         "nameUk": "Ґгі",
         "namePl": "ghi",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -5107,9 +4949,7 @@
         "nameUk": "Згущене молоко",
         "namePl": "Mleko skondensowane",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -5123,9 +4963,7 @@
         "nameUk": "Концентроване молоко",
         "namePl": "Mleko zagęszczone",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -5139,9 +4977,7 @@
         "nameUk": "сухе молоко",
         "namePl": "mleko w proszku",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -5155,9 +4991,7 @@
         "nameUk": "Збиті вершки",
         "namePl": "bita śmietana",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5199,9 +5033,7 @@
         "nameUk": "Мигдальне молоко",
         "namePl": "Mleko migdałowe",
         "unit": "ml",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5215,9 +5047,7 @@
         "nameUk": "вівсяне молоко",
         "namePl": "mleko owsiane",
         "unit": "ml",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5231,9 +5061,7 @@
         "nameUk": "Соєве молоко",
         "namePl": "Mleko sojowe",
         "unit": "ml",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5247,9 +5075,7 @@
         "nameUk": "Молоко 2%",
         "namePl": "Mleko 2%",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5263,9 +5089,7 @@
         "nameUk": "Загущені вершки",
         "namePl": "Gęsta śmietana (clotted cream)",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5279,9 +5103,7 @@
         "nameUk": "домашній сир",
         "namePl": "Twaróg",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5295,9 +5117,7 @@
         "nameUk": "Скір",
         "namePl": "Skyr",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5311,9 +5131,7 @@
         "nameUk": "Лабне",
         "namePl": "Labneh",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5327,9 +5145,7 @@
         "nameUk": "Подвійні вершки",
         "namePl": "Podwójna śmietana",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5357,9 +5173,7 @@
         "nameUk": "Молоко з кешью",
         "namePl": "Mleko z nerkowca",
         "unit": "ml",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5373,9 +5187,7 @@
         "nameUk": "Вершки навпіл з молоком",
         "namePl": "Śmietanka half-and-half",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5389,9 +5201,7 @@
         "nameUk": "Айран",
         "namePl": "Ayran",
         "unit": "ml",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5405,9 +5215,7 @@
         "nameUk": "яйце",
         "namePl": "jajo",
         "unit": "piece",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5421,9 +5229,7 @@
         "nameUk": "Яєчний білок",
         "namePl": "białka jaj",
         "unit": "ml",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 4,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5437,9 +5243,7 @@
         "nameUk": "Жовток",
         "namePl": "żółtko jaja",
         "unit": "piece",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5453,9 +5257,7 @@
         "nameUk": "Перепелине яйце",
         "namePl": "Jajko przepiórcze",
         "unit": "piece",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5469,9 +5271,7 @@
         "nameUk": "Качине яйце",
         "namePl": "Jajko kacze",
         "unit": "piece",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5485,9 +5285,7 @@
         "nameUk": "Гусяче яйце",
         "namePl": "Jajko gęsie",
         "unit": "piece",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5501,9 +5299,7 @@
         "nameUk": "Індиче яйце",
         "namePl": "Jajko indycze",
         "unit": "piece",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5517,9 +5313,7 @@
         "nameUk": "Чеддер",
         "namePl": "cheddar",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5533,9 +5327,7 @@
         "nameUk": "Моцарела",
         "namePl": "mozzarella",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5549,9 +5341,7 @@
         "nameUk": "Пармезан",
         "namePl": "Parmezan",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5565,9 +5355,7 @@
         "nameUk": "Фета",
         "namePl": "Ser szopski",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5581,9 +5369,7 @@
         "nameUk": "Гауда",
         "namePl": "gouda",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5597,9 +5383,7 @@
         "nameUk": "Брі",
         "namePl": "Brie",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5613,9 +5397,7 @@
         "nameUk": "Камамбер",
         "namePl": "camembert",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5629,9 +5411,7 @@
         "nameUk": "Блакитні сири",
         "namePl": "Niebieski ser",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5645,9 +5425,7 @@
         "nameUk": "Ґорґонцола",
         "namePl": "Gorgonzola ChNP",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5661,9 +5439,7 @@
         "nameUk": "Рікота",
         "namePl": "ricotta",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5677,9 +5453,7 @@
         "nameUk": "Домашній сир",
         "namePl": "serek wiejski",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5693,9 +5467,7 @@
         "nameUk": "Вершковий сир",
         "namePl": "serek śmietankowy",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5709,9 +5481,7 @@
         "nameUk": "Маскарпоне",
         "namePl": "Mascarpone",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5725,9 +5495,7 @@
         "nameUk": "Швейцарський сир",
         "namePl": "Ser szwajcarski",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5741,9 +5509,7 @@
         "nameUk": "Проволоне",
         "namePl": "Provolone",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5757,9 +5523,7 @@
         "nameUk": "халлумі",
         "namePl": "halloumi",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5773,9 +5537,7 @@
         "nameUk": "Буррата",
         "namePl": "Burrata",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5789,9 +5551,7 @@
         "nameUk": "Козячий сир",
         "namePl": "ser kozi",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5805,9 +5565,7 @@
         "nameUk": "Сир колбі",
         "namePl": "Ser colby",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5821,9 +5579,7 @@
         "nameUk": "Сир монтерей джек",
         "namePl": "monterey jack",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5837,9 +5593,7 @@
         "nameUk": "Сир мюнстер",
         "namePl": "Ser muenster",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5853,9 +5607,7 @@
         "nameUk": "Сир романо",
         "namePl": "Ser romano",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5869,9 +5621,7 @@
         "nameUk": "Рокфор",
         "namePl": "Ser roquefort",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5885,9 +5635,7 @@
         "nameUk": "Едам",
         "namePl": "edam",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5901,9 +5649,7 @@
         "nameUk": "Фонтіна",
         "namePl": "Ser fontina",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5917,9 +5663,7 @@
         "nameUk": "Сир грюйєр",
         "namePl": "Ser gruyère",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5933,9 +5677,7 @@
         "nameUk": "Сир нешатель",
         "namePl": "Ser neufchâtel",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5949,9 +5691,7 @@
         "nameUk": "Сир тильзит",
         "namePl": "Ser tylżycki",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5965,9 +5705,7 @@
         "nameUk": "Американський сир",
         "namePl": "Ser amerykański",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5981,9 +5719,7 @@
         "nameUk": "Сир кесо фреско",
         "namePl": "Ser queso fresco",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -5997,9 +5733,7 @@
         "nameUk": "Сир кесо бланко",
         "namePl": "Ser queso blanco",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6013,9 +5747,7 @@
         "nameUk": "Азіаго",
         "namePl": "Ser asiago",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 60,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6029,9 +5761,7 @@
         "nameUk": "Сир панір",
         "namePl": "Ser paneer",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6045,9 +5775,7 @@
         "nameUk": "Сир манчего",
         "namePl": "Ser manchego",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6061,9 +5789,7 @@
         "nameUk": "Емменталь",
         "namePl": "ementaler",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6077,9 +5803,7 @@
         "nameUk": "Сир хаварті",
         "namePl": "Ser havarti",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6093,9 +5817,7 @@
         "nameUk": "Сир пеппер джек",
         "namePl": "Ser pepper jack",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6109,9 +5831,7 @@
         "nameUk": "Копчена гауда",
         "namePl": "Wędzona gouda",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6125,9 +5845,7 @@
         "nameUk": "Бокончіні",
         "namePl": "Bocconcini",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6141,9 +5859,7 @@
         "nameUk": "Сир стілтон",
         "namePl": "Ser stilton",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6157,9 +5873,7 @@
         "nameUk": "Сир таледжо",
         "namePl": "Ser taleggio",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6173,9 +5887,7 @@
         "nameUk": "Сирна косичка",
         "namePl": "Ser w warkoczykach",
         "unit": "piece",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6189,9 +5901,7 @@
         "nameUk": "Сир чешир",
         "namePl": "Ser cheshire",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6289,9 +5999,7 @@
         "nameUk": "Овес",
         "namePl": "Owies",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6305,9 +6013,7 @@
         "nameUk": "перлова крупа",
         "namePl": "kasza perłowa",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6321,9 +6027,7 @@
         "nameUk": "булгур",
         "namePl": "kasza bulgur",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6337,9 +6041,7 @@
         "nameUk": "Кус-кус",
         "namePl": "Kuskus",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6381,9 +6083,7 @@
         "nameUk": "Манна крупа",
         "namePl": "semolina",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6537,9 +6237,7 @@
         "nameUk": "Соєві боби",
         "namePl": "Soja warzywna",
         "unit": "g",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6553,9 +6251,7 @@
         "nameUk": "Едамаме",
         "namePl": "Edamame",
         "unit": "g",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "daysToExpire": 270,
         "seasonality": "All seasons",
         "storageCondition": "-18°C",
@@ -6569,9 +6265,7 @@
         "nameUk": "Тофу",
         "namePl": "tofu",
         "unit": "g",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6585,9 +6279,7 @@
         "nameUk": "Темпе",
         "namePl": "Tempeh",
         "unit": "g",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -6615,9 +6307,7 @@
         "nameUk": "спельта",
         "namePl": "orkisz",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6659,9 +6349,7 @@
         "nameUk": "Фрике",
         "namePl": "Freekeh",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6829,9 +6517,7 @@
         "nameUk": "спагеті",
         "namePl": "spaghetti",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6845,9 +6531,7 @@
         "nameUk": "пенне",
         "namePl": "penne",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6861,9 +6545,7 @@
         "nameUk": "Фузілі",
         "namePl": "Fusilli",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6877,9 +6559,7 @@
         "nameUk": "Фарфале",
         "namePl": "Farfalle",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6893,9 +6573,7 @@
         "nameUk": "лазанья",
         "namePl": "lasagne",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6909,9 +6587,7 @@
         "nameUk": "Феттучіне",
         "namePl": "Fettuccine",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6925,9 +6601,7 @@
         "nameUk": "Макарони",
         "namePl": "Makaron rurki",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6941,10 +6615,7 @@
         "nameUk": "Яєчна локшина",
         "namePl": "Makaron jajeczny",
         "unit": "g",
-        "allergens": [
-            "gluten",
-            "eggs"
-        ],
+        "allergens": ["gluten", "eggs"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6972,9 +6643,7 @@
         "nameUk": "Соба",
         "namePl": "Makaron soba",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -6988,9 +6657,7 @@
         "nameUk": "Удон",
         "namePl": "Makaron udon",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7004,11 +6671,7 @@
         "nameUk": "Равіолі",
         "namePl": "Ravioli",
         "unit": "g",
-        "allergens": [
-            "gluten",
-            "eggs",
-            "milk"
-        ],
+        "allergens": ["gluten", "eggs", "milk"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7022,9 +6685,7 @@
         "nameUk": "Ньокі",
         "namePl": "Gnocchi",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7038,9 +6699,7 @@
         "nameUk": "лінґвіне",
         "namePl": "Linguine",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7054,9 +6713,7 @@
         "nameUk": "Орзо",
         "namePl": "Makaron orzo",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7070,9 +6727,7 @@
         "nameUk": "Ригатоні",
         "namePl": "Rigatoni",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7086,11 +6741,7 @@
         "nameUk": "Тортеліні",
         "namePl": "Tortellini",
         "unit": "g",
-        "allergens": [
-            "gluten",
-            "eggs",
-            "milk"
-        ],
+        "allergens": ["gluten", "eggs", "milk"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7104,9 +6755,7 @@
         "nameUk": "Ореккьєте",
         "namePl": "Orecchiette",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7120,9 +6769,7 @@
         "nameUk": "Ангельське волосся (паста)",
         "namePl": "Makaron włosy anielskie",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7136,9 +6783,7 @@
         "nameUk": "тальятеле",
         "namePl": "Tagliatelle",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7152,9 +6797,7 @@
         "nameUk": "Папарделле",
         "namePl": "Pappardelle",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7168,9 +6811,7 @@
         "nameUk": "Каннелоні",
         "namePl": "Cannelloni",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7184,9 +6825,7 @@
         "nameUk": "Букатіні",
         "namePl": "Bucatini",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7200,9 +6839,7 @@
         "nameUk": "Борошно пшеничне",
         "namePl": "mąka pszenna",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7216,9 +6853,7 @@
         "nameUk": "Цільнозернове борошно",
         "namePl": "Mąka pszenna pełnoziarnista",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7232,9 +6867,7 @@
         "nameUk": "Хлібопекарське борошно",
         "namePl": "Mąka chlebowa",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7248,9 +6881,7 @@
         "nameUk": "Борошно для тортів",
         "namePl": "Mąka tortowa",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7264,9 +6895,7 @@
         "nameUk": "Житнє борошно",
         "namePl": "mąka żytnia",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7308,9 +6937,7 @@
         "nameUk": "Мигдальне борошно",
         "namePl": "mąka migdałowa",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7380,9 +7007,7 @@
         "nameUk": "Паніровка",
         "namePl": "bułka tarta",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7396,9 +7021,7 @@
         "nameUk": "Панко",
         "namePl": "Panko",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7412,9 +7035,7 @@
         "nameUk": "Білий хліб",
         "namePl": "Chleb biały",
         "unit": "slice",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7428,9 +7049,7 @@
         "nameUk": "Цільнозерновий хліб",
         "namePl": "Chleb pełnoziarnisty",
         "unit": "slice",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7444,9 +7063,7 @@
         "nameUk": "французький багет",
         "namePl": "bagietka",
         "unit": "piece",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7460,9 +7077,7 @@
         "nameUk": "піта",
         "namePl": "pita",
         "unit": "piece",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7476,9 +7091,7 @@
         "nameUk": "Пшенична тортилья",
         "namePl": "Tortilla pszenna",
         "unit": "piece",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7506,10 +7119,7 @@
         "nameUk": "Листкове тісто",
         "namePl": "Ciasto francuskie",
         "unit": "g",
-        "allergens": [
-            "gluten",
-            "milk"
-        ],
+        "allergens": ["gluten", "milk"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7523,9 +7133,7 @@
         "nameUk": "Тісто філо",
         "namePl": "Ciasto filo",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7539,9 +7147,7 @@
         "nameUk": "Тісто для піци",
         "namePl": "Ciasto na pizzę",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7555,9 +7161,7 @@
         "nameUk": "Борошно полби",
         "namePl": "mąka orkiszowa",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7613,9 +7217,7 @@
         "nameUk": "Житній хліб",
         "namePl": "chleb żytni",
         "unit": "slice",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7629,9 +7231,7 @@
         "nameUk": "Хліб на заквасці",
         "namePl": "Chleb na zakwasie",
         "unit": "slice",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7645,9 +7245,7 @@
         "nameUk": "Чіабатта",
         "namePl": "Ciabatta",
         "unit": "piece",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 3,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7661,9 +7259,7 @@
         "nameUk": "Англійський маффін",
         "namePl": "Angielska bułeczka muffin",
         "unit": "piece",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7677,9 +7273,7 @@
         "nameUk": "Бейгл",
         "namePl": "Bajgiel",
         "unit": "piece",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7693,9 +7287,7 @@
         "nameUk": "Крендель (претцель)",
         "namePl": "Precel",
         "unit": "g",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7709,10 +7301,7 @@
         "nameUk": "Круасан",
         "namePl": "Croissant",
         "unit": "piece",
-        "allergens": [
-            "gluten",
-            "milk"
-        ],
+        "allergens": ["gluten", "milk"],
         "daysToExpire": 3,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -7726,9 +7315,7 @@
         "nameUk": "Наан",
         "namePl": "Chleb naan",
         "unit": "piece",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -7742,9 +7329,7 @@
         "nameUk": "Мигдаль",
         "namePl": "migdały",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7758,9 +7343,7 @@
         "nameUk": "Волоський горіх",
         "namePl": "orzech włoski",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7774,9 +7357,7 @@
         "nameUk": "Горіх пекан",
         "namePl": "orzeszki pekan",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7790,9 +7371,7 @@
         "nameUk": "Кеш'ю",
         "namePl": "orzechy nerkowca",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7806,9 +7385,7 @@
         "nameUk": "Фісташки",
         "namePl": "Pistacje",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7822,9 +7399,7 @@
         "nameUk": "ліщинні горіхи",
         "namePl": "orzechy laskowe",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7838,9 +7413,7 @@
         "nameUk": "Арахіс",
         "namePl": "orzeszki",
         "unit": "g",
-        "allergens": [
-            "peanuts"
-        ],
+        "allergens": ["peanuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7854,9 +7427,7 @@
         "nameUk": "Арахісова паста",
         "namePl": "masło z orzeszków ziemnych",
         "unit": "g",
-        "allergens": [
-            "peanuts"
-        ],
+        "allergens": ["peanuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7870,9 +7441,7 @@
         "nameUk": "Горіх бразильський",
         "namePl": "orzechy brazylijskie",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7886,9 +7455,7 @@
         "nameUk": "Горіх макадамія",
         "namePl": "Orzechy makadamia",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7902,9 +7469,7 @@
         "nameUk": "кедрові горішки",
         "namePl": "orzeszki piniowe",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -7918,9 +7483,7 @@
         "nameUk": "каштан",
         "namePl": "kasztany",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 30,
         "seasonality": "Autumn",
         "storageCondition": "+4 - +8°C",
@@ -7962,9 +7525,7 @@
         "nameUk": "Кунжутне насіння",
         "namePl": "nasiona sezamu",
         "unit": "g",
-        "allergens": [
-            "sesame"
-        ],
+        "allergens": ["sesame"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -8020,9 +7581,7 @@
         "nameUk": "Тахіні",
         "namePl": "tahini",
         "unit": "g",
-        "allergens": [
-            "sesame"
-        ],
+        "allergens": ["sesame"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -8036,9 +7595,7 @@
         "nameUk": "Мигдальна паста",
         "namePl": "Masło migdałowe",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -8052,9 +7609,7 @@
         "nameUk": "Паста з кеш'ю",
         "namePl": "Masło z nerkowca",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -8082,9 +7637,7 @@
         "nameUk": "Засмажені в цукрі горіхи пекан",
         "namePl": "Kandyzowane orzechy pekan",
         "unit": "g",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -8112,10 +7665,7 @@
         "nameUk": "горіх",
         "namePl": "orzech",
         "unit": "g",
-        "allergens": [
-            "nuts",
-            "peanuts"
-        ],
+        "allergens": ["nuts", "peanuts"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -8199,9 +7749,7 @@
         "nameUk": "Кунжутна олія",
         "namePl": "Olej sezamowy",
         "unit": "ml",
-        "allergens": [
-            "sesame"
-        ],
+        "allergens": ["sesame"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dark place, room temperature",
@@ -8215,9 +7763,7 @@
         "nameUk": "Арахісова олія",
         "namePl": "Olej arachidowy",
         "unit": "ml",
-        "allergens": [
-            "peanuts"
-        ],
+        "allergens": ["peanuts"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dark place, room temperature",
@@ -8315,9 +7861,7 @@
         "nameUk": "Волоська горіхова олія",
         "namePl": "Olej z orzecha włoskiego",
         "unit": "ml",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -8709,9 +8253,7 @@
         "nameUk": "Бульйонний кубик",
         "namePl": "Kostka bulionowa",
         "unit": "piece",
-        "allergens": [
-            "celery"
-        ],
+        "allergens": ["celery"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -8795,9 +8337,7 @@
         "nameUk": "Насіння гірчиці",
         "namePl": "ziarno gorczycy",
         "unit": "g",
-        "allergens": [
-            "mustard"
-        ],
+        "allergens": ["mustard"],
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9091,9 +8631,7 @@
         "nameUk": "Насіння селери",
         "namePl": "nasiona selera",
         "unit": "g",
-        "allergens": [
-            "celery"
-        ],
+        "allergens": ["celery"],
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9191,10 +8729,7 @@
         "nameUk": "соєвий соус",
         "namePl": "sos sojowy",
         "unit": "ml",
-        "allergens": [
-            "soybeans",
-            "gluten"
-        ],
+        "allergens": ["soybeans", "gluten"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9208,9 +8743,7 @@
         "nameUk": "Рибний соус",
         "namePl": "sos rybny",
         "unit": "ml",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9224,9 +8757,7 @@
         "nameUk": "Устричний соус",
         "namePl": "Sos ostrygowy",
         "unit": "ml",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9240,9 +8771,7 @@
         "nameUk": "Вустерський соус",
         "namePl": "Sos Worcestershire",
         "unit": "ml",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9284,9 +8813,7 @@
         "nameUk": "гірчиця",
         "namePl": "musztarda",
         "unit": "ml",
-        "allergens": [
-            "mustard"
-        ],
+        "allergens": ["mustard"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9300,9 +8827,7 @@
         "nameUk": "Діжонська гірчиця",
         "namePl": "Musztarda Dijon",
         "unit": "ml",
-        "allergens": [
-            "mustard"
-        ],
+        "allergens": ["mustard"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9316,9 +8841,7 @@
         "nameUk": "майонез",
         "namePl": "majonez",
         "unit": "ml",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 60,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9346,10 +8869,7 @@
         "nameUk": "Соус хойсін",
         "namePl": "Sos hoisin",
         "unit": "ml",
-        "allergens": [
-            "soybeans",
-            "gluten"
-        ],
+        "allergens": ["soybeans", "gluten"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9391,10 +8911,7 @@
         "nameUk": "песто",
         "namePl": "pesto",
         "unit": "ml",
-        "allergens": [
-            "nuts",
-            "milk"
-        ],
+        "allergens": ["nuts", "milk"],
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9408,9 +8925,7 @@
         "nameUk": "Соус тахіні",
         "namePl": "Sos tahini",
         "unit": "ml",
-        "allergens": [
-            "sesame"
-        ],
+        "allergens": ["sesame"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9452,9 +8967,7 @@
         "nameUk": "бальзамічний оцет",
         "namePl": "ocet balsamiczny",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 1825,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9482,9 +8995,7 @@
         "nameUk": "Червоний винний оцет",
         "namePl": "ocet winny czerwony",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 1825,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9512,10 +9023,7 @@
         "nameUk": "Соус теріякі",
         "namePl": "sos teriyaki",
         "unit": "ml",
-        "allergens": [
-            "soybeans",
-            "gluten"
-        ],
+        "allergens": ["soybeans", "gluten"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9529,10 +9037,7 @@
         "nameUk": "Соус ранч",
         "namePl": "Sos ranch",
         "unit": "ml",
-        "allergens": [
-            "milk",
-            "eggs"
-        ],
+        "allergens": ["milk", "eggs"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9560,9 +9065,7 @@
         "nameUk": "Соус тисяча островів",
         "namePl": "Sos tysiąca wysp",
         "unit": "ml",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9576,10 +9079,7 @@
         "nameUk": "Соус цезар",
         "namePl": "Sos cezar",
         "unit": "ml",
-        "allergens": [
-            "eggs",
-            "fish"
-        ],
+        "allergens": ["eggs", "fish"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9621,9 +9121,7 @@
         "nameUk": "Айолі",
         "namePl": "Aioli",
         "unit": "ml",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9665,9 +9163,7 @@
         "nameUk": "Бальзамічна глазур",
         "namePl": "Glazura balsamiczna",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9681,9 +9177,7 @@
         "nameUk": "Хересний оцет",
         "namePl": "Ocet sherry",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 1825,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9753,9 +9247,7 @@
         "nameUk": "Медова гірчиця",
         "namePl": "Musztarda miodowa",
         "unit": "ml",
-        "allergens": [
-            "mustard"
-        ],
+        "allergens": ["mustard"],
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -9895,10 +9387,7 @@
         "nameUk": "чорний шоколад",
         "namePl": "gorzka czekolada",
         "unit": "g",
-        "allergens": [
-            "milk",
-            "soybeans"
-        ],
+        "allergens": ["milk", "soybeans"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9912,10 +9401,7 @@
         "nameUk": "Молочний шоколад",
         "namePl": "Czekolada mleczna",
         "unit": "g",
-        "allergens": [
-            "milk",
-            "soybeans"
-        ],
+        "allergens": ["milk", "soybeans"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -9929,10 +9415,7 @@
         "nameUk": "Шоколадні краплі",
         "namePl": "Kawałki czekolady",
         "unit": "g",
-        "allergens": [
-            "milk",
-            "soybeans"
-        ],
+        "allergens": ["milk", "soybeans"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -10100,9 +9583,7 @@
         "nameUk": "Тунець консервований",
         "namePl": "Tuńczyk w puszce",
         "unit": "can",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -10242,9 +9723,7 @@
         "nameUk": "Сардини консервовані",
         "namePl": "Sardynki w puszce",
         "unit": "can",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -10258,9 +9737,7 @@
         "nameUk": "Анчоуси консервовані",
         "namePl": "Anchois w puszce",
         "unit": "can",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -10414,9 +9891,7 @@
         "nameUk": "Консервоване крабове м'ясо",
         "namePl": "Krab z puszki",
         "unit": "can",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -10570,9 +10045,7 @@
         "nameUk": "Червоне вино",
         "namePl": "Wino czerwone",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
@@ -10586,9 +10059,7 @@
         "nameUk": "Біле вино",
         "namePl": "Białe wino",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -10602,9 +10073,7 @@
         "nameUk": "Пиво",
         "namePl": "piwo",
         "unit": "ml",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -10618,9 +10087,7 @@
         "nameUk": "Кулінарний херес",
         "namePl": "Wytrawne wino sherry do gotowania",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -10760,9 +10227,7 @@
         "nameUk": "Рожеве вино",
         "namePl": "Wino różowe",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
@@ -10776,9 +10241,7 @@
         "nameUk": "Портвейн",
         "namePl": "Porto",
         "unit": "ml",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
@@ -10848,9 +10311,7 @@
         "nameUk": "Суміш для гарячого шоколаду",
         "namePl": "Mieszanka do gorącej czekolady",
         "unit": "g",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",

@@ -8,7 +8,7 @@ import { mediaUrl } from "utils/mediaUrl";
 
 import styles from "./Avatar.module.scss";
 
-interface AvatarProps {
+export interface AvatarProps {
     initials?: string;
     size?: number;
     avatarKey?: string | null;

@@ -1,7 +1,8 @@
 export type TokenPurpose = "password-reset" | "verify-email";
 
 export interface TokenService {
-    generate(id: number): string;
+    // the session version is sealed into the token; raising it in the database ends the session
+    generate(id: number, sessionVersion: number): string;
     // bindingSource ties the token to a piece of state so it stops verifying once that state changes
     generatePurposeToken(
         id: number,

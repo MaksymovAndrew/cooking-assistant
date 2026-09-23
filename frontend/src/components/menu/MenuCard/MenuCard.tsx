@@ -3,64 +3,57 @@ import { useTranslation } from "react-i18next";
 
 import { FAVOURITE_TARGET } from "constants/favourites";
 import { menuDetailsPath } from "constants/routes";
+import type { Menu } from "types/menu";
 
 import type { ContentCardVariant } from "components/cards/ContentCard";
-import { ContentCard } from "components/cards/ContentCard";
+import {
+    cardFavourite,
+    cardRating,
+    ContentCard,
+} from "components/cards/ContentCard";
 import { NotebookMark } from "components/icons";
 
 import { mediaUrl } from "utils/mediaUrl";
 
+type MenuCardMenu = Pick<
+    Menu,
+    | "id"
+    | "title"
+    | "categoryname"
+    | "recipe_count"
+    | "isFavourite"
+    | "photo_key"
+    | "ratingAverage"
+    | "ratingCount"
+>;
+
 interface MenuCardProps {
-    id: number;
-    title: string;
-    categoryName: string;
-    recipeCount: number;
+    menu: MenuCardMenu;
     mine?: boolean;
     variant?: ContentCardVariant;
-    // null or absent for an anonymous viewer, so the heart only appears where the server knows who is looking
-    isFavourite?: boolean | null;
-    photoKey?: string | null;
-    // absent where a list doesn't carry the rating totals
-    ratingAverage?: number | null;
-    ratingCount?: number;
 }
 
 export const MenuCard: React.FC<MenuCardProps> = ({
-    id,
-    title,
-    categoryName,
-    recipeCount,
+    menu,
     mine = false,
     variant,
-    isFavourite,
-    photoKey,
-    ratingAverage = null,
-    ratingCount,
 }) => {
     const { t } = useTranslation("menu");
 
     return (
         <ContentCard
-            href={menuDetailsPath(id)}
-            title={title}
+            href={menuDetailsPath(menu.id)}
+            title={menu.title}
             imageIcon={NotebookMark}
-            imageSrc={mediaUrl(photoKey, "card")}
-            chipLabel={categoryName}
+            imageSrc={mediaUrl(menu.photo_key, "card")}
+            chipLabel={menu.categoryname}
             mine={mine}
             variant={variant}
-            rating={
-                typeof ratingCount === "number"
-                    ? { average: ratingAverage, count: ratingCount }
-                    : null
-            }
-            favourite={
-                typeof isFavourite === "boolean"
-                    ? { target: FAVOURITE_TARGET.menu, id, isFavourite }
-                    : null
-            }
+            rating={cardRating(menu)}
+            favourite={cardFavourite(FAVOURITE_TARGET.menu, menu)}
             metaText={t("menuCard.meta", {
-                category: categoryName,
-                count: recipeCount,
+                category: menu.categoryname,
+                count: menu.recipe_count,
             })}
         />
     );

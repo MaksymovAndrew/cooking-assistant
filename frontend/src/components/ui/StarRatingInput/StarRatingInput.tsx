@@ -1,4 +1,3 @@
-import { Star } from "lucide-react";
 import React, { useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -6,6 +5,7 @@ import { RATING_VALUES } from "constants/ratings";
 
 import type { RatingControl } from "hooks/useRatingControl";
 
+import { RatingStar } from "./RatingStar";
 import { starKeyTarget } from "./starKeyTarget";
 import styles from "./StarRatingInput.module.scss";
 
@@ -14,8 +14,6 @@ interface StarRatingInputProps {
     label: string;
     className?: string;
 }
-
-const STAR_ICON_SIZE = 24;
 
 // arrows move focus and preview a value without sending anything; Enter, Space or a click commits,
 // so browsing the stars by keyboard doesn't fire a request per keypress
@@ -63,26 +61,18 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
                 className={styles["star-rating-input__stars"]}
             >
                 {RATING_VALUES.map((starValue) => (
-                    <button
+                    <RatingStar
                         key={starValue}
-                        ref={(element) => {
+                        starRef={(element) => {
                             starRefs.current[starValue - 1] = element;
                         }}
-                        type="button"
-                        role="radio"
-                        aria-checked={value === starValue}
-                        aria-label={t("rating.star", { count: starValue })}
-                        tabIndex={starValue === tabStop ? 0 : -1}
+                        label={t("rating.star", { count: starValue })}
+                        isChecked={value === starValue}
+                        isLit={starValue <= shown}
+                        isTabStop={starValue === tabStop}
                         disabled={disabled}
-                        className={[
-                            styles["star-rating-input__star"],
-                            starValue <= shown &&
-                                styles["star-rating-input__star--on"],
-                        ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        onClick={() => {
-                            // pressing the chosen star again takes the vote back
+                        // pressing the chosen star again takes the vote back
+                        onCommit={() => {
                             if (starValue === value) {
                                 clear();
                             } else {
@@ -92,21 +82,10 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
                         onKeyDown={(event) => {
                             handleKeyDown(event, starValue);
                         }}
-                        onMouseEnter={() => {
-                            setPreview(starValue);
+                        onPreview={(isPreviewing) => {
+                            setPreview(isPreviewing ? starValue : null);
                         }}
-                        onMouseLeave={() => {
-                            setPreview(null);
-                        }}
-                        onFocus={() => {
-                            setPreview(starValue);
-                        }}
-                        onBlur={() => {
-                            setPreview(null);
-                        }}
-                    >
-                        <Star size={STAR_ICON_SIZE} aria-hidden="true" />
-                    </button>
+                    />
                 ))}
             </div>
             {value !== null && (

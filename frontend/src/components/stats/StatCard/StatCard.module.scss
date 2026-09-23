@@ -1,6 +1,8 @@
 @use "styles/abstracts" as *;
 
 .stat-card {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
     padding: var(--s-5);
     border: 1px solid var(--border);

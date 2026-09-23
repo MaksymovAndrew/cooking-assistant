@@ -21,7 +21,10 @@ describe("RegisterUser", () => {
         const deps = makeDeps();
 
         deps.passwordHasher.hash.mockResolvedValue(HASHED_PASSWORD);
-        deps.userRepository.create.mockResolvedValue({ id: 5 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 5,
+            session_version: 0,
+        });
         deps.tokenService.generate.mockReturnValue(TOKEN);
         const useCase = new RegisterUser(
             deps.userRepository,
@@ -49,7 +52,7 @@ describe("RegisterUser", () => {
             password: HASHED_PASSWORD,
             locale: DEFAULT_LOCALE,
         });
-        expect(deps.tokenService.generate).toHaveBeenCalledWith(5);
+        expect(deps.tokenService.generate).toHaveBeenCalledWith(5, 0);
         expect(result).toEqual({ token: TOKEN });
     });
 
@@ -57,7 +60,10 @@ describe("RegisterUser", () => {
         const deps = makeDeps();
 
         deps.passwordHasher.hash.mockResolvedValue(HASHED_PASSWORD);
-        deps.userRepository.create.mockResolvedValue({ id: 5 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 5,
+            session_version: 0,
+        });
         const useCase = new RegisterUser(
             deps.userRepository,
             deps.passwordHasher,
@@ -150,7 +156,10 @@ describe("RegisterUser", () => {
         const deps = makeDeps();
 
         deps.passwordHasher.hash.mockResolvedValue(HASHED_PASSWORD);
-        deps.userRepository.create.mockResolvedValue({ id: 5 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 5,
+            session_version: 0,
+        });
         const useCase = new RegisterUser(
             deps.userRepository,
             deps.passwordHasher,

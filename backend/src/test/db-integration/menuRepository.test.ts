@@ -250,7 +250,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         );
 
         expect(updateResult).toBe(false);
-        expect(deleteResult).toBe(false);
+        expect(deleteResult).toBeNull();
 
         const stillOriginal = (await menuRepository.findByIdWithRecipes(
             menuId,
@@ -279,7 +279,7 @@ describe("PgMenuRepository (real Postgres)", () => {
             ownerId,
         );
 
-        expect(deleted).toBe(true);
+        expect(deleted).toEqual({ photoKey: null });
         expect(afterDelete).toBeNull();
     });
 

@@ -3,10 +3,11 @@ import express, { type Router } from "express";
 import { ROUTES } from "constants/routes";
 
 import type RatingController from "controller/rating.controller";
-import authenticateToken from "middleware/jwtMiddleware";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 
 export default function createRatingRouter(
     ratingController: RatingController,
+    { authenticateToken }: SessionAuth,
 ): Router {
     const router = express.Router();
 

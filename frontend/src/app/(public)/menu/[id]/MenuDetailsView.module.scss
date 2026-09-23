@@ -61,23 +61,27 @@
         }
     }
 
-    &__ingredients-area {
+    // the areas are named only with the aside: without a template, a named grid-area makes the browser
+    // invent implicit tracks and lays all three blocks side by side in one row
+    &__grid--with-aside &__ingredients-area {
         @include respond-to(desktop) {
             grid-area: ingredients;
         }
     }
 
-    &__actions-area {
+    &__grid--with-aside &__actions-area {
         @include respond-to(desktop) {
             grid-area: actions;
         }
     }
 
-    &__recipes-area {
-        min-width: 0;
-
+    &__grid--with-aside &__recipes-area {
         @include respond-to(desktop) {
             grid-area: recipes;
         }
+    }
+
+    &__recipes-area {
+        min-width: 0;
     }
 }

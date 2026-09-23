@@ -19,22 +19,9 @@ import { NotFoundError } from "domain/errors/AppError";
 
 import errorHandler from "middleware/errorHandler";
 import { createGlobalLimiter } from "middleware/rateLimit";
-import createCalorieRouter from "routes/calorie.routes";
-import createDietPreferencesRouter from "routes/dietPreferences.routes";
-import createFavouriteRouter from "routes/favourite.routes";
+import { createDomainRouters } from "routes/domainRouters";
 import createHealthRouter from "routes/health.routes";
-import createIngredientRouter from "routes/ingredient.routes";
 import createMediaRouter from "routes/media.routes";
-import createMenuRouter from "routes/menu.routes";
-import createMenuCategoryRouter from "routes/menuCategory.routes";
-import createPhotoRouter from "routes/photo.routes";
-import createRatingRouter from "routes/rating.routes";
-import createRecipeRouter from "routes/recipe.routes";
-import createShoppingListRouter from "routes/shoppingList.routes";
-import createTagRouter from "routes/tag.routes";
-import createTypeRouter from "routes/type.routes";
-import createUserRouter from "routes/user.routes";
-import createUserIngredientsRouter from "routes/userIngredients.routes";
 
 import type { Controllers } from "./composition-root";
 
@@ -80,41 +67,9 @@ export function createApp(controllers: Controllers): Express {
     // caching already keeps repeat views off the server
     app.use(API_PREFIX, createMediaRouter(controllers.mediaController));
     app.use(createGlobalLimiter());
-    app.use(
-        API_PREFIX,
-        createUserRouter(
-            controllers.userController,
-            controllers.userSecurityController,
-        ),
-    );
-    app.use(
-        API_PREFIX,
-        createIngredientRouter(controllers.ingredientController),
-    );
-    app.use(API_PREFIX, createRecipeRouter(controllers.recipeController));
-    app.use(API_PREFIX, createTypeRouter(controllers.recipeTypeController));
-    app.use(
-        API_PREFIX,
-        createUserIngredientsRouter(controllers.userIngredientsController),
-    );
-    app.use(API_PREFIX, createMenuRouter(controllers.menuController));
-    app.use(
-        API_PREFIX,
-        createMenuCategoryRouter(controllers.menuCategoryController),
-    );
-    app.use(API_PREFIX, createCalorieRouter(controllers.calorieController));
-    app.use(API_PREFIX, createFavouriteRouter(controllers.favouriteController));
-    app.use(API_PREFIX, createRatingRouter(controllers.ratingController));
-    app.use(
-        API_PREFIX,
-        createDietPreferencesRouter(controllers.dietPreferencesController),
-    );
-    app.use(
-        API_PREFIX,
-        createShoppingListRouter(controllers.shoppingListController),
-    );
-    app.use(API_PREFIX, createTagRouter(controllers.tagController));
-    app.use(API_PREFIX, createPhotoRouter(controllers.photoController));
+    for (const router of createDomainRouters(controllers)) {
+        app.use(API_PREFIX, router);
+    }
 
     app.use((_req, _res, next) => {
         next(new NotFoundError(ERROR_CODES.NOT_FOUND));

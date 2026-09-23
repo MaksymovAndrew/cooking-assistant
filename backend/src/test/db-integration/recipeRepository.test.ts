@@ -262,11 +262,11 @@ describe("PgRecipeRepository (real Postgres)", () => {
             otherPersonId,
         );
 
-        expect(deniedForOther).toBe(false);
+        expect(deniedForOther).toBeNull();
 
         const deletedByOwner = await repository.deleteById(created.id, ownerId);
 
-        expect(deletedByOwner).toBe(true);
+        expect(deletedByOwner).toEqual({ photoKey: null });
 
         const afterDelete = await repository.findByIdWithIngredients(
             created.id,

@@ -17,14 +17,13 @@ describe("DeleteAccount", () => {
             delete: jest.fn(),
         },
         passwordHasher: { compare: jest.fn() },
-        photoRepository: { findKey: jest.fn(), listOwnedKeys: jest.fn() },
         mediaStorage: { remove: jest.fn() },
     });
     const makeUseCase = (deps: ReturnType<typeof makeDeps>) =>
         new DeleteAccount(
             deps.userRepository,
             deps.passwordHasher,
-            new PhotoCleanup(deps.photoRepository, deps.mediaStorage),
+            new PhotoCleanup(deps.mediaStorage),
         );
 
     it("should delete the account when the password is correct", async () => {
@@ -35,7 +34,7 @@ describe("DeleteAccount", () => {
             password: CURRENT_HASH,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
-        deps.photoRepository.listOwnedKeys.mockResolvedValue([]);
+        deps.userRepository.delete.mockResolvedValue([]);
         const useCase = makeUseCase(deps);
 
         await useCase.execute(USER_ID, { password: PASSWORD });
@@ -95,7 +94,7 @@ describe("DeleteAccount", () => {
             password: CURRENT_HASH,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
-        deps.photoRepository.listOwnedKeys.mockResolvedValue([
+        deps.userRepository.delete.mockResolvedValue([
             "recipe-key",
             "avatar-key",
         ]);
@@ -103,9 +102,6 @@ describe("DeleteAccount", () => {
 
         await useCase.execute(USER_ID, { password: PASSWORD });
 
-        expect(deps.photoRepository.listOwnedKeys).toHaveBeenCalledWith(
-            USER_ID,
-        );
         expect(deps.mediaStorage.remove).toHaveBeenCalledWith("recipe-key");
         expect(deps.mediaStorage.remove).toHaveBeenCalledWith("avatar-key");
     });

@@ -1,5 +1,7 @@
 import PhotoCleanup from "application/media/PhotoCleanup";
 
+import { createSessionAuth } from "middleware/jwtMiddleware";
+
 import { buildCaloriesController } from "./composition-root.calories";
 import { buildDietPreferencesControllers } from "./composition-root.dietPreferences";
 import { buildFavouriteController } from "./composition-root.favourites";
@@ -8,7 +10,7 @@ import { buildPantryController } from "./composition-root.pantry";
 import { createPgDeps } from "./composition-root.pg";
 import { buildPhotoControllers } from "./composition-root.photos";
 import { buildRatingController } from "./composition-root.ratings";
-import { buildRecipeController } from "./composition-root.recipe";
+import { buildRecipeControllers } from "./composition-root.recipe";
 import { buildReferenceControllers } from "./composition-root.reference";
 import { buildShoppingListController } from "./composition-root.shoppingList";
 import { buildTagControllers } from "./composition-root.tags";
@@ -39,13 +41,7 @@ export function buildControllers({
     mediaStorage,
     frontendOrigin,
 }: RepositoryDeps): Controllers {
-    const photoCleanup = new PhotoCleanup(photoRepository, mediaStorage);
-    const recipeController = buildRecipeController({
-        recipeRepository,
-        ingredientRepository,
-        photoCleanup,
-    });
-
+    const photoCleanup = new PhotoCleanup(mediaStorage);
     const userControllers = buildUserControllers({
         userRepository,
         passwordHasher,
@@ -56,13 +52,18 @@ export function buildControllers({
     });
 
     return {
+        auth: createSessionAuth(userRepository),
         ...buildReferenceControllers({
             ingredientRepository,
             recipeTypeRepository,
             menuCategoryRepository,
         }),
         ...userControllers,
-        recipeController,
+        ...buildRecipeControllers({
+            recipeRepository,
+            ingredientRepository,
+            photoCleanup,
+        }),
         userIngredientsController: buildPantryController({
             pantryRepository,
             ingredientRepository,

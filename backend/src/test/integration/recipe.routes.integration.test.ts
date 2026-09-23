@@ -199,7 +199,7 @@ describe("recipe routes", () => {
     it("should delete a recipe owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
 
-        deps.recipeRepository.deleteById.mockResolvedValue(true);
+        deps.recipeRepository.deleteById.mockResolvedValue({ photoKey: null });
 
         const res = await request(app)
             .delete(RECIPE_12_PATH)

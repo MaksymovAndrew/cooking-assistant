@@ -8,7 +8,7 @@ import type {
     TagRepository,
 } from "domain/repositories/TagRepository";
 
-import { inPersonWriteTransaction } from "./personWriteTransaction";
+import { createTag } from "./PgTagRepository.create";
 import { setRecipeTags } from "./PgTagRepository.recipeLinks";
 
 export default class PgTagRepository implements TagRepository {
@@ -28,49 +28,7 @@ export default class PgTagRepository implements TagRepository {
         name: string,
         maxTags: number,
     ): Promise<CreateTagResult> {
-        const missingPerson: CreateTagResult = {
-            outcome: "person_not_found",
-            tag: null,
-        };
-
-        return inPersonWriteTransaction<CreateTagResult>(
-            this.pool,
-            personId,
-            missingPerson,
-            async (client) => {
-                const counted = await client.query<{ total: number }>(
-                    `SELECT COUNT(*)::int AS total FROM person_tags WHERE person_id = $1`,
-                    [personId],
-                );
-
-                if (counted.rows[0].total >= maxTags) {
-                    return {
-                        commit: false,
-                        result: { outcome: "limit_reached", tag: null },
-                    };
-                }
-
-                const inserted = await client.query<Tag>(
-                    `INSERT INTO person_tags (person_id, name)
-                     VALUES ($1, $2)
-                     ON CONFLICT (person_id, lower(name)) DO NOTHING
-                     RETURNING id, name`,
-                    [personId, name],
-                );
-
-                if (inserted.rowCount === 0) {
-                    return {
-                        commit: false,
-                        result: { outcome: "duplicate_name", tag: null },
-                    };
-                }
-
-                return {
-                    commit: true,
-                    result: { outcome: "created", tag: inserted.rows[0] },
-                };
-            },
-        );
+        return createTag(this.pool, personId, name, maxTags);
     }
 
     // one statement, so the name check and the update share a snapshot

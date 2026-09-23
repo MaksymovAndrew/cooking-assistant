@@ -2,7 +2,7 @@ import type { TFunction } from "i18next";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useForgotPasswordMutation } from "redux/services/authApi";
+import { useForgotPasswordMutation } from "redux/services/accountSecurityApi";
 
 import { isValidEmail } from "utils/authValidation";
 import {

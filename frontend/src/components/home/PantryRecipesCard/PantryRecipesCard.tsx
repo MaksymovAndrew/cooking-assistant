@@ -7,7 +7,7 @@ import { BasketMark } from "components/icons";
 import { LinkButton } from "components/ui/LinkButton";
 
 import { BOOLEAN_URL_TRUE } from "utils/filters/filterDefFactories.scalar";
-import { RECIPE_PANTRY_URL_PARAM } from "utils/filters/recipeFilterDefs";
+import { RECIPE_PANTRY_URL_PARAM } from "utils/filters/recipeFilterDefs.toggles";
 
 import styles from "./PantryRecipesCard.module.scss";
 

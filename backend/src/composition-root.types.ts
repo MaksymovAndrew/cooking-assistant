@@ -23,12 +23,13 @@ import type CalorieController from "controller/calorie.controller";
 import type FavouriteController from "controller/favourite.controller";
 import type MenuController from "controller/menu.controller";
 import type RatingController from "controller/rating.controller";
-import type RecipeController from "controller/recipe.controller";
 import type ShoppingListController from "controller/shoppingList.controller";
 import type UserIngredientsController from "controller/userIngredients.controller";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 
 import type { DietPreferencesControllers } from "./composition-root.dietPreferences";
 import type { PhotoControllers } from "./composition-root.photos";
+import type { RecipeControllers } from "./composition-root.recipe";
 import type { ReferenceControllers } from "./composition-root.reference";
 import type { TagControllers } from "./composition-root.tags";
 import type { UserControllers } from "./composition-root.user";
@@ -62,8 +63,9 @@ export interface Controllers
         DietPreferencesControllers,
         TagControllers,
         UserControllers,
-        PhotoControllers {
-    recipeController: RecipeController;
+        PhotoControllers,
+        RecipeControllers {
+    auth: SessionAuth;
     userIngredientsController: UserIngredientsController;
     menuController: MenuController;
     calorieController: CalorieController;

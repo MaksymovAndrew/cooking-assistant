@@ -1,17 +1,12 @@
 import { useCallback, useState } from "react";
 
+import type { MenuFormErrorMessages, MenuFormValues } from "types/menuForm";
+
 import { useDirtyRef } from "hooks/useDirtyRef";
-import type { MenuFormErrorMessages } from "hooks/useMenuFormValidation";
 import { useMenuFormValidation } from "hooks/useMenuFormValidation";
 import { useRecordPhotoDraft } from "hooks/useRecordPhotoDraft";
 
-export interface MenuFormValues {
-    menuTitle: string;
-    menuDescription: string;
-    selectedCategory: number | null;
-    selectedRecipes: number[];
-    photoKey: string | null;
-}
+import { moveBefore, toggleValue } from "utils/listOrder";
 
 export interface UseMenuFormOptions {
     errorMessages: MenuFormErrorMessages;
@@ -57,36 +52,14 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
     );
 
     const toggleRecipeSelection = useCallback((recipeId: number) => {
-        setSelectedRecipes((prevSelected) =>
-            prevSelected.includes(recipeId)
-                ? prevSelected.filter((id) => id !== recipeId)
-                : [...prevSelected, recipeId],
-        );
+        setSelectedRecipes((prev) => toggleValue(prev, recipeId));
     }, []);
 
     const reorderSelectedRecipes = useCallback(
         (fromId: number, toId: number) => {
-            setSelectedRecipes((prev) => {
-                const fromIndex = prev.indexOf(fromId);
-                const toIndex = prev.indexOf(toId);
-                const isNoOpReorder =
-                    fromIndex === -1 || toIndex === -1 || fromIndex === toIndex;
-
-                if (isNoOpReorder) {
-                    return prev;
-                }
-
-                const next = [...prev];
-                const [moved] = next.splice(fromIndex, 1);
-                // removing `moved` shifts every later index left by one, so a forward move must
-                // land one slot earlier than the target's pre-removal index or it overshoots past
-                // the drop target instead of landing right before it
-                const insertAt = fromIndex < toIndex ? toIndex - 1 : toIndex;
-
-                next.splice(insertAt, 0, moved);
-
-                return next;
-            });
+            setSelectedRecipes((prev) =>
+                moveBefore(prev, prev.indexOf(fromId), prev.indexOf(toId)),
+            );
         },
         [],
     );

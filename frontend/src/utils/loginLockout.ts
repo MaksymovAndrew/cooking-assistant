@@ -3,11 +3,7 @@ import {
     FAILURE_RESET_IDLE_MINUTES,
     LOCKOUT_LADDER_MINUTES,
 } from "constants/loginLockout";
-import {
-    MS_PER_MINUTE,
-    MS_PER_SECOND,
-    SECONDS_PER_MINUTE,
-} from "constants/time";
+import { MS_PER_MINUTE, MS_PER_SECOND } from "constants/time";
 
 // the ladder values live in constants/loginLockout.ts; re-exported so form/hook consumers keep one import site for the whole lockout API
 export { ATTEMPTS_PER_LOCK, LOCKOUT_LADDER_MINUTES };
@@ -79,6 +75,19 @@ export const clearLockout = (login: string, prefix?: string): void => {
     localStorage.removeItem(storageKey(login, prefix));
 };
 
+// how long the lock earned by this many failures lasts - the ladder's top step repeats from then on
+export const ladderStageMs = (failures: number): number =>
+    LOCKOUT_LADDER_MINUTES[
+        Math.min(
+            Math.floor(failures / ATTEMPTS_PER_LOCK) - 1,
+            LOCKOUT_LADDER_MINUTES.length - 1,
+        )
+    ] * MS_PER_MINUTE;
+
+// the full length of the current lock, for the countdown's progress bar; null below the first step
+export const lockoutDurationMs = (state: LockoutState): number | null =>
+    state.failures >= ATTEMPTS_PER_LOCK ? ladderStageMs(state.failures) : null;
+
 // bumps the counter and locks once it hits the next ATTEMPTS_PER_LOCK multiple; a stale-enough streak resets first
 export const registerFailure = (state: LockoutState): LockoutState => {
     const now = Date.now();
@@ -97,12 +106,7 @@ export const registerFailure = (state: LockoutState): LockoutState => {
         };
     }
 
-    const stageIndex = Math.min(
-        failures / ATTEMPTS_PER_LOCK - 1,
-        LOCKOUT_LADDER_MINUTES.length - 1,
-    );
-    const lockedUntil =
-        now + LOCKOUT_LADDER_MINUTES[stageIndex] * MS_PER_MINUTE;
+    const lockedUntil = now + ladderStageMs(failures);
 
     return { failures, lockedUntil, lastFailureAt: now };
 };
@@ -116,12 +120,4 @@ export const mergeServerRetryAfter = (
     const lockedUntil = Math.max(state.lockedUntil ?? 0, serverLockedUntil);
 
     return { ...state, lockedUntil };
-};
-
-export const formatCountdown = (remainingMs: number): string => {
-    const totalSeconds = Math.max(0, Math.ceil(remainingMs / MS_PER_SECOND));
-    const minutes = Math.floor(totalSeconds / SECONDS_PER_MINUTE);
-    const seconds = totalSeconds % SECONDS_PER_MINUTE;
-
-    return `${minutes}:${String(seconds).padStart(2, "0")}`;
 };

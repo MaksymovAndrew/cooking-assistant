@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 
+import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "config/cookie";
 import { requestLocale } from "i18n/requestLocale";
 import { translateMessage } from "i18n/translate";
 
@@ -64,11 +65,12 @@ export default class UserSecurityController {
     };
 
     changePassword: RequestHandler = async (req, res) => {
-        await this.changePasswordUseCase.execute(
+        const { token } = await this.changePasswordUseCase.execute(
             getUserId(req),
             req.body as Record<string, unknown>,
         );
 
+        res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
         res.json({
             message: translateMessage("passwordChanged", requestLocale(req)),
         });

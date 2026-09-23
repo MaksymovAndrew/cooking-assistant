@@ -35,9 +35,8 @@ export default class DeleteAccount {
             throw new UnauthorizedError(ERROR_CODES.CURRENT_PASSWORD_INCORRECT);
         }
 
-        const photoKeys = await this.photoCleanup.keysOwnedBy(userId);
+        const photoKeys = await this.userRepository.delete(userId);
 
-        await this.userRepository.delete(userId);
         await this.photoCleanup.removeAll(photoKeys);
     }
 }

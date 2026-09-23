@@ -14,6 +14,7 @@ import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
 
 import { LogIntakeBudget } from "./LogIntakeBudget";
 import styles from "./LogIntakeModal.module.scss";
+import { MIN_PORTIONS, PortionStepper } from "./PortionStepper";
 
 interface LogIntakeModalProps {
     modalId: string;
@@ -23,8 +24,6 @@ interface LogIntakeModalProps {
     caloriesPerPortion: number;
     initialPortions?: number;
 }
-
-const MIN_PORTIONS = 1;
 
 export const LogIntakeModal = ({
     modalId,
@@ -84,34 +83,7 @@ export const LogIntakeModal = ({
         >
             <p className={styles["log-intake-modal__title"]}>{title}</p>
 
-            <div className={styles["log-intake-modal__stepper"]}>
-                <span className={styles["log-intake-modal__stepper-label"]}>
-                    {t("logIntakeModal.portionsLabel")}
-                </span>
-                <div className={styles["log-intake-modal__stepper-control"]}>
-                    <button
-                        type="button"
-                        aria-label={t("logIntakeModal.fewerPortions")}
-                        onClick={() => {
-                            setPortions((count) =>
-                                Math.max(MIN_PORTIONS, count - 1),
-                            );
-                        }}
-                    >
-                        −
-                    </button>
-                    <span>{portions}</span>
-                    <button
-                        type="button"
-                        aria-label={t("logIntakeModal.morePortions")}
-                        onClick={() => {
-                            setPortions((count) => count + 1);
-                        }}
-                    >
-                        +
-                    </button>
-                </div>
-            </div>
+            <PortionStepper portions={portions} onChange={setPortions} />
 
             <LogIntakeBudget
                 goal={goal}

@@ -8,12 +8,10 @@ import type {
 import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
-import {
-    ratingColumns,
-    ratingSummaryColumns,
-} from "infrastructure/persistence/pg/ratingColumns";
+import { ratingColumns } from "infrastructure/persistence/pg/ratingColumns";
 
 import { loadMissingIngredients } from "./PgMenuRepository.missingIngredients";
+import { loadMenuRecipes } from "./PgMenuRepository.recipes";
 
 interface MenuRow extends RecordRating {
     id: number;
@@ -25,19 +23,6 @@ interface MenuRow extends RecordRating {
     isFavourite: boolean | null;
     photo_key: string | null;
     author: RecordAuthor;
-}
-
-interface MenuRecipeRow extends Omit<RecordRating, "myRating"> {
-    recipe_id: number;
-    title: string;
-    content: string;
-    type_id: number | null;
-    creation_date: Date;
-    cooking_time: number | null;
-    calories_per_portion: number | null;
-    type_name: string | null;
-    photo_key: string | null;
-    ingredients: string[];
 }
 
 export async function findMenuByIdWithRecipes(
@@ -69,30 +54,8 @@ export async function findMenuByIdWithRecipes(
 
     const menu = menuResult.rows[0];
 
-    const recipeResult = await pool.query<MenuRecipeRow>(
-        `SELECT
-        r.id AS recipe_id,
-        r.title,
-        r.content,
-        r.type_id,
-        r.creation_date,
-        r.cooking_time,
-        r.photo_key,
-        ${ratingSummaryColumns("r")},
-        COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
-        rt.type_name AS type_name,
-        ARRAY_AGG(i.name) AS ingredients
-      FROM recipes r
-      JOIN menu_recipe mr ON r.id = mr.recipe_id
-      LEFT JOIN recipe_ingredients ri ON ri.recipe_id = r.id
-      LEFT JOIN ingredients i ON i.id = ri.ingredient_id
-      LEFT JOIN recipe_types rt ON rt.id = r.type_id
-      WHERE mr.menu_id = $1
-      GROUP BY r.id, rt.type_name`,
-        [id],
-    );
-
-    const recipeIds = recipeResult.rows.map((recipe) => recipe.recipe_id);
+    const recipes = await loadMenuRecipes(pool, id);
+    const recipeIds = recipes.map((recipe) => recipe.recipe_id);
 
     const missingByRecipe = await loadMissingIngredients(
         pool,
@@ -102,7 +65,7 @@ export async function findMenuByIdWithRecipes(
 
     // despite the name, this carries every ingredient requirement, not only shortfalls -
     // fully-stocked ones come back with missing_quantity: 0 so the client can render both states
-    const recipesWithDetails = recipeResult.rows.map((recipe) => ({
+    const recipesWithDetails = recipes.map((recipe) => ({
         ...recipe,
         missingIngredients: missingByRecipe.get(recipe.recipe_id) ?? [],
     }));

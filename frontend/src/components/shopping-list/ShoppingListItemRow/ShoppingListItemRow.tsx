@@ -1,4 +1,3 @@
-import { Check } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +13,7 @@ import {
     shoppingListItemQuantity,
 } from "utils/shoppingListItem";
 
+import { ShoppingListCheckbox } from "./ShoppingListCheckbox";
 import styles from "./ShoppingListItemRow.module.scss";
 import { ShoppingListMoveButtons } from "./ShoppingListMoveButtons";
 
@@ -28,7 +28,6 @@ interface ShoppingListItemRowProps {
 }
 
 const TRASH_ICON_SIZE = 18;
-const CHECK_ICON_SIZE = 14;
 
 export const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
     item,
@@ -53,23 +52,13 @@ export const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
                 .filter(Boolean)
                 .join(" ")}
         >
-            <span className={styles["shopping-list-item-row__check"]}>
-                <input
-                    id={checkboxId}
-                    type="checkbox"
-                    checked={item.checked}
-                    className={styles["shopping-list-item-row__input"]}
-                    onChange={() => {
-                        onToggle(item);
-                    }}
-                />
-                <span
-                    aria-hidden="true"
-                    className={styles["shopping-list-item-row__box"]}
-                >
-                    <Check size={CHECK_ICON_SIZE} strokeWidth={3} />
-                </span>
-            </span>
+            <ShoppingListCheckbox
+                id={checkboxId}
+                checked={item.checked}
+                onChange={() => {
+                    onToggle(item);
+                }}
+            />
             <label
                 htmlFor={checkboxId}
                 className={styles["shopping-list-item-row__body"]}

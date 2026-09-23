@@ -13,13 +13,12 @@ import { RecipeHeroImage } from "components/recipes/RecipeHero/RecipeHeroImage";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
 import { AuthorByline } from "components/ui/AuthorByline";
 import { Chip } from "components/ui/Chip";
-import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
-import { OwnerActions } from "components/ui/OwnerActions";
 import { StarRatingInput } from "components/ui/StarRatingInput";
 
 import { mediaUrl } from "utils/mediaUrl";
 
 import styles from "./RecipeHero.module.scss";
+import { RecipeHeroActions } from "./RecipeHeroActions";
 
 interface RecipeHeroProps {
     recipe: RecipeDetails;
@@ -94,30 +93,15 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 />
             )}
 
-            {recipe.isOwner ? (
-                <div className={styles["recipe-hero__actions"]}>
-                    <OwnerActions
-                        editTo={editTo}
-                        onDelete={onDelete}
-                        editLabel={t("recipeDetailsPage.editButton")}
-                        deleteLabel={t("recipeDetailsPage.deleteButton")}
-                        favourite={favourite}
-                        favouriteLabel={favouriteLabel}
-                        onLogIntake={onLogIntake}
-                        logIntakeLabel={t("recipeDetailsPage.logIntake")}
-                    />
-                </div>
-            ) : (
-                <div className={styles["recipe-hero__visitor-actions-wrap"]}>
-                    <HeroVisitorActions
-                        favourite={visitorFavourite}
-                        favouriteLabel={favouriteLabel}
-                        guestCtaLabel={t("recipeDetailsPage.guestCta")}
-                        logIntakeLabel={t("recipeDetailsPage.logIntake")}
-                        onLogIntake={onLogIntake}
-                    />
-                </div>
-            )}
+            <RecipeHeroActions
+                isOwner={recipe.isOwner}
+                favourite={favourite}
+                visitorFavourite={visitorFavourite}
+                favouriteLabel={favouriteLabel}
+                editTo={editTo}
+                onDelete={onDelete}
+                onLogIntake={onLogIntake}
+            />
         </div>
     );
 };

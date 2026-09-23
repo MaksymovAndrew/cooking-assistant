@@ -8,6 +8,7 @@ import { BookMark } from "components/icons";
 import { RatingStars } from "components/ui/RatingStars";
 
 import styles from "./MenuHero.module.scss";
+import { MenuHeroMobileMeta } from "./MenuHeroMobileMeta";
 
 interface MenuHeroStatsProps {
     formattedTotalTime: string;
@@ -33,12 +34,6 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
     const caloriesStatClassName = [
         styles["menu-hero__stat"],
         exceedsBudget && styles["menu-hero__stat--calorie-over"],
-    ]
-        .filter(Boolean)
-        .join(" ");
-    const caloriesMobileClassName = [
-        styles["menu-hero__mobile-meta-item"],
-        exceedsBudget && styles["menu-hero__mobile-meta-item--calorie-over"],
     ]
         .filter(Boolean)
         .join(" ");
@@ -94,27 +89,12 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
                 )}
             </div>
 
-            <div className={styles["menu-hero__mobile-meta"]}>
-                <span className={styles["menu-hero__mobile-meta-item"]}>
-                    <Clock size={STAT_ICON_SIZE} aria-hidden="true" />
-                    {formattedTotalTime}
-                </span>
-                <span className={styles["menu-hero__mobile-meta-item"]}>
-                    <BookMark size={STAT_ICON_SIZE} />
-                    {t("menuDetailsPage.recipesCaption", {
-                        count: recipeCount,
-                    })}
-                </span>
-                {formattedCalories !== null && (
-                    <span
-                        className={caloriesMobileClassName}
-                        title={caloriesOverTooltip}
-                    >
-                        <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {formattedCalories}
-                    </span>
-                )}
-            </div>
+            <MenuHeroMobileMeta
+                formattedTotalTime={formattedTotalTime}
+                recipeCount={recipeCount}
+                formattedCalories={formattedCalories}
+                exceedsBudget={exceedsBudget}
+            />
         </>
     );
 };

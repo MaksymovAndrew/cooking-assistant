@@ -9,12 +9,12 @@ describe("JwtTokenService", () => {
     it("should sign a token with the user id that verifies under HS256", () => {
         const service = new JwtTokenService();
 
-        const token = service.generate(7);
+        const token = service.generate(7, 2);
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY ?? "", {
             algorithms: ["HS256"],
         });
 
-        expect(decoded).toMatchObject({ id: 7 });
+        expect(decoded).toMatchObject({ id: 7, sv: 2 });
     });
 
     describe("generatePurposeToken / verifyPurposeToken", () => {
@@ -47,7 +47,7 @@ describe("JwtTokenService", () => {
         it("should reject a session token (no purpose claim) as a purpose token", () => {
             const service = new JwtTokenService();
 
-            const token = service.generate(7);
+            const token = service.generate(7, 0);
 
             expect(
                 service.verifyPurposeToken(token, PASSWORD_RESET),

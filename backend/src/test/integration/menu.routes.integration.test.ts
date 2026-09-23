@@ -282,7 +282,7 @@ describe("menu routes", () => {
     it("should delete a menu owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
 
-        deps.menuRepository.deleteById.mockResolvedValue(true);
+        deps.menuRepository.deleteById.mockResolvedValue({ photoKey: null });
 
         const res = await request(app)
             .delete(MENU_9_PATH)

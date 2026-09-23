@@ -41,8 +41,10 @@ function fingerprintBinding(bindingSource: string): string {
 }
 
 export default class JwtTokenService implements TokenService {
-    generate(id: number): string {
-        return jwt.sign({ id, typ: SESSION_TOKEN_TYPE }, requireJwtSecret(), {
+    generate(id: number, sessionVersion: number): string {
+        const payload = { id, typ: SESSION_TOKEN_TYPE, sv: sessionVersion };
+
+        return jwt.sign(payload, requireJwtSecret(), {
             expiresIn: "24h",
             algorithm: "HS256",
         });

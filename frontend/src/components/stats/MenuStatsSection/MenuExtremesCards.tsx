@@ -4,14 +4,12 @@ import { useTranslation } from "react-i18next";
 import { menuDetailsPath } from "constants/routes";
 import type { MenuStatistics } from "types/stats";
 
-import { StatCard } from "components/stats/StatCard";
-import { TwoColumnStatList } from "components/stats/TwoColumnStatList";
+import {
+    extremeItems,
+    StatExtremesGrid,
+} from "components/stats/StatExtremesGrid";
 
 import { formatKcalCompact } from "utils/calories";
-
-import styles from "./MenuStatsSection.module.scss";
-
-const EXTREME_LIST_LIMIT = 3;
 
 interface MenuExtremesCardsProps {
     stats: MenuStatistics;
@@ -23,104 +21,47 @@ export const MenuExtremesCards: React.FC<MenuExtremesCardsProps> = ({
     formatTime,
 }) => {
     const { t } = useTranslation("stats");
-    const formatCalories = (calories: number) =>
-        t("statsPage.caloriesValue", { count: formatKcalCompact(calories) });
+    const items = <T extends { id: number; title: string }>(
+        records: T[],
+        value: (record: T) => string,
+    ) => extremeItems(records, value, menuDetailsPath);
+    const time = (record: { total_cooking_time: number }) =>
+        formatTime(record.total_cooking_time);
+    const recipes = (record: { recipe_count: number }) =>
+        String(record.recipe_count);
+    const calories = (record: { total_calories: number }) =>
+        t("statsPage.caloriesValue", {
+            count: formatKcalCompact(record.total_calories),
+        });
 
     return (
-        <div className={styles["menu-stats-section__extremes-grid"]}>
-            <StatCard>
-                <h2 className={styles["menu-stats-section__card-title"]}>
-                    {t("statsPage.totalTimeExtremesHeading")}
-                </h2>
-                <TwoColumnStatList
-                    left={{
-                        label: t("statsPage.fastest"),
-                        tone: "success",
-                        items: stats.fastestMenus
-                            .slice(0, EXTREME_LIST_LIMIT)
-                            .map((m) => ({
-                                key: m.id,
-                                name: m.title,
-                                value: formatTime(m.total_cooking_time),
-                                href: menuDetailsPath(m.id),
-                            })),
-                    }}
-                    right={{
-                        label: t("statsPage.slowest"),
-                        tone: "warning",
-                        items: stats.slowestMenus
-                            .slice(0, EXTREME_LIST_LIMIT)
-                            .map((m) => ({
-                                key: m.id,
-                                name: m.title,
-                                value: formatTime(m.total_cooking_time),
-                                href: menuDetailsPath(m.id),
-                            })),
-                    }}
-                />
-            </StatCard>
-            <StatCard>
-                <h2 className={styles["menu-stats-section__card-title"]}>
-                    {t("statsPage.recipeCountsHeading")}
-                </h2>
-                <TwoColumnStatList
-                    left={{
-                        label: t("statsPage.most"),
-                        tone: "brand",
-                        items: stats.mostRecipesMenus
-                            .slice(0, EXTREME_LIST_LIMIT)
-                            .map((m) => ({
-                                key: m.id,
-                                name: m.title,
-                                value: String(m.recipe_count),
-                                href: menuDetailsPath(m.id),
-                            })),
-                    }}
-                    right={{
-                        label: t("statsPage.least"),
-                        tone: "muted",
-                        items: stats.leastRecipesMenus
-                            .slice(0, EXTREME_LIST_LIMIT)
-                            .map((m) => ({
-                                key: m.id,
-                                name: m.title,
-                                value: String(m.recipe_count),
-                                href: menuDetailsPath(m.id),
-                            })),
-                    }}
-                />
-            </StatCard>
-            <StatCard>
-                <h2 className={styles["menu-stats-section__card-title"]}>
-                    {t("statsPage.calorieExtremesHeading")}
-                </h2>
-                <TwoColumnStatList
-                    left={{
-                        label: t("statsPage.most"),
-                        tone: "brand",
-                        items: stats.mostCaloricMenus
-                            .slice(0, EXTREME_LIST_LIMIT)
-                            .map((m) => ({
-                                key: m.id,
-                                name: m.title,
-                                value: formatCalories(m.total_calories),
-                                href: menuDetailsPath(m.id),
-                            })),
-                    }}
-                    right={{
-                        label: t("statsPage.least"),
-                        tone: "muted",
-                        items: stats.leastCaloricMenus
-                            .slice(0, EXTREME_LIST_LIMIT)
-                            .map((m) => ({
-                                key: m.id,
-                                name: m.title,
-                                value: formatCalories(m.total_calories),
-                                href: menuDetailsPath(m.id),
-                            })),
-                    }}
-                />
-            </StatCard>
-        </div>
+        <StatExtremesGrid
+            cards={[
+                {
+                    heading: t("statsPage.totalTimeExtremesHeading"),
+                    pair: "time",
+                    columns: [
+                        items(stats.fastestMenus, time),
+                        items(stats.slowestMenus, time),
+                    ],
+                },
+                {
+                    heading: t("statsPage.recipeCountsHeading"),
+                    pair: "amount",
+                    columns: [
+                        items(stats.mostRecipesMenus, recipes),
+                        items(stats.leastRecipesMenus, recipes),
+                    ],
+                },
+                {
+                    heading: t("statsPage.calorieExtremesHeading"),
+                    pair: "amount",
+                    columns: [
+                        items(stats.mostCaloricMenus, calories),
+                        items(stats.leastCaloricMenus, calories),
+                    ],
+                },
+            ]}
+        />
     );
 };

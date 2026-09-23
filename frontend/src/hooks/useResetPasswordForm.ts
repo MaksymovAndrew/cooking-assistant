@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { ERROR_CODES } from "constants/errorCodes";
 import { ROUTES } from "constants/routes";
 
-import { useResetPasswordMutation } from "redux/services/authApi";
+import { useResetPasswordMutation } from "redux/services/accountSecurityApi";
 
 import { useAppRouter } from "hooks/useAppRouter";
 

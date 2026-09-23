@@ -1,8 +1,8 @@
 import type { LockoutState } from "utils/loginLockout";
 import {
     clearLockout,
-    formatCountdown,
     LOCKOUT_LADDER_MINUTES,
+    lockoutDurationMs,
     mergeServerRetryAfter,
     readLockout,
     registerFailure,
@@ -173,16 +173,21 @@ describe("localStorage persistence", () => {
     });
 });
 
-describe("formatCountdown", () => {
-    it("should format a sub-minute duration as 0:ss", () => {
-        expect(formatCountdown(5_000)).toBe("0:05");
+describe("lockoutDurationMs", () => {
+    it("should be null below the first lock", () => {
+        expect(lockoutDurationMs({ ...EMPTY, failures: 4 })).toBeNull();
     });
 
-    it("should format a multi-minute duration as m:ss", () => {
-        expect(formatCountdown(2 * MINUTE_MS + 9_000)).toBe("2:09");
+    it("should last the first step at the first lock", () => {
+        expect(lockoutDurationMs({ ...EMPTY, failures: 5 })).toBe(
+            LOCKOUT_LADDER_MINUTES[0] * MINUTE_MS,
+        );
     });
 
-    it("should never go below 0:00", () => {
-        expect(formatCountdown(-5_000)).toBe("0:00");
+    it("should stay on the top step once the ladder runs out", () => {
+        expect(lockoutDurationMs({ ...EMPTY, failures: 50 })).toBe(
+            LOCKOUT_LADDER_MINUTES[LOCKOUT_LADDER_MINUTES.length - 1] *
+                MINUTE_MS,
+        );
     });
 });

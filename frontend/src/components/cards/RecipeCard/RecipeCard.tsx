@@ -7,6 +7,8 @@ import { recipeDetailsPath } from "constants/routes";
 
 import type { ContentCardVariant } from "components/cards/ContentCard";
 import {
+    cardFavourite,
+    cardRating,
     ContentCard,
     META_ITEM_TONE_CALORIE_OVER,
 } from "components/cards/ContentCard";
@@ -28,11 +30,9 @@ interface RecipeCardRecipe {
     cooking_time: number;
     calories_per_portion: number | null;
     ingredients?: RecipeCardIngredient[];
-    // null for an anonymous viewer, so the heart only appears where the server knows who is looking
     isFavourite?: boolean | null;
     containsAvoided?: boolean | null;
     photo_key?: string | null;
-    // absent where a list doesn't carry the rating totals
     ratingAverage?: number | null;
     ratingCount?: number;
 }
@@ -68,23 +68,8 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             badge={hasAllergens}
             avoided={recipe.containsAvoided === true}
             calorieOver={exceedsBudget}
-            rating={
-                typeof recipe.ratingCount === "number"
-                    ? {
-                          average: recipe.ratingAverage ?? null,
-                          count: recipe.ratingCount,
-                      }
-                    : null
-            }
-            favourite={
-                typeof recipe.isFavourite === "boolean"
-                    ? {
-                          target: FAVOURITE_TARGET.recipe,
-                          id: recipe.id,
-                          isFavourite: recipe.isFavourite,
-                      }
-                    : null
-            }
+            rating={cardRating(recipe)}
+            favourite={cardFavourite(FAVOURITE_TARGET.recipe, recipe)}
             metaItems={[
                 {
                     icon: Clock,

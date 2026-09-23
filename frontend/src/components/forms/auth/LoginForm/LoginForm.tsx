@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 
 import type { LoginRequest } from "types/auth";
 
-import type { LoginMode } from "hooks/useLoginForm";
-
 import { Button } from "components/ui/Button";
 import { FormErrorBanner } from "components/ui/FormErrorBanner";
 import { SegmentedControl } from "components/ui/SegmentedControl";
+
+import type { LoginMode } from "utils/loginForm";
 
 import { LockoutNotice } from "./LockoutNotice";
 import { LoginCredentialFields } from "./LoginCredentialFields";

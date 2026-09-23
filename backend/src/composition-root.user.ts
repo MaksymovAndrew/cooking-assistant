@@ -71,7 +71,11 @@ export function buildUserControllers({
             passwordHasher,
             tokenService,
         ),
-        changePassword: new ChangePassword(userRepository, passwordHasher),
+        changePassword: new ChangePassword(
+            userRepository,
+            passwordHasher,
+            tokenService,
+        ),
         requestEmailVerification: new RequestEmailVerification(
             userRepository,
             tokenService,

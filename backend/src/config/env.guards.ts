@@ -27,3 +27,15 @@ export function assertConsistentEmailConfig(cfg: {
         );
     }
 }
+
+// JWT code reads the key lazily, so without this a production deploy boots healthy and 500s on every login
+export function assertProductionSecrets(cfg: {
+    isProduction: boolean;
+    jwtSecret?: string;
+}): void {
+    if (cfg.isProduction && !cfg.jwtSecret) {
+        throw new Error(
+            "Invalid environment configuration: refusing to start in production without JWT_SECRET_KEY.",
+        );
+    }
+}

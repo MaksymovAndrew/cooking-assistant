@@ -7,6 +7,7 @@ import type {
 } from "domain/repositories/menu.filters";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
+import type { DeletedRecord } from "domain/repositories/PhotoRepository";
 
 import { findMenuByIdWithRecipes } from "./PgMenuRepository.detail";
 import { createMenuInDb, updateMenuInDb } from "./PgMenuRepository.mutations";
@@ -47,7 +48,10 @@ export default class PgMenuRepository implements MenuRepository {
         return findMenuByIdWithRecipes(this.pool, id, personId);
     }
 
-    async deleteById(id: string | number, personId: number): Promise<boolean> {
+    async deleteById(
+        id: string | number,
+        personId: number,
+    ): Promise<DeletedRecord | null> {
         // explicit delete: legacy database.sql adopters carry a second menu_id FK without CASCADE
         const client = await this.pool.connect();
 
@@ -62,17 +66,20 @@ export default class PgMenuRepository implements MenuRepository {
             if (owned.rowCount === 0) {
                 await client.query("ROLLBACK");
 
-                return false;
+                return null;
             }
 
             await client.query("DELETE FROM menu_recipe WHERE menu_id = $1", [
                 id,
             ]);
-            await client.query("DELETE FROM menu WHERE menu_id = $1", [id]);
+            const result = await client.query<{ photo_key: string | null }>(
+                "DELETE FROM menu WHERE menu_id = $1 RETURNING photo_key",
+                [id],
+            );
 
             await client.query("COMMIT");
 
-            return true;
+            return { photoKey: result.rows[0].photo_key };
         } catch (error) {
             await client.query("ROLLBACK");
             throw error;

@@ -1,14 +1,11 @@
-import { ALLERGEN_SLUGS, type AllergenSlug } from "constants/allergens";
+import type { AllergenSlug } from "constants/allergens";
 import type { RecipeFilterParams } from "types/recipe";
 
 import type { FilterDef } from "./filterDef";
 import { idListFilter, textFilter } from "./filterDefFactories";
-import {
-    booleanFilter,
-    enumFilter,
-    enumListFilter,
-} from "./filterDefFactories.scalar";
+import { enumFilter } from "./filterDefFactories.enum";
 import { RECIPE_RANGE_FILTER_DEFS } from "./recipeFilterDefs.ranges";
+import { RECIPE_TOGGLE_FILTER_DEFS } from "./recipeFilterDefs.toggles";
 
 export type RecipeSort = "asc" | "desc" | "rating";
 
@@ -33,8 +30,6 @@ export interface RecipeFilterState {
     tags: number[];
 }
 
-// shared with links that pre-set the filter before navigating (see PantryRecipesCard)
-export const RECIPE_PANTRY_URL_PARAM = "pantry";
 // shared with links that pre-set the filter before navigating (see GuestLandingRecipeFilters)
 export const RECIPE_TYPE_URL_PARAM = "types";
 
@@ -73,38 +68,7 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
                 sort: t(SORT_CHIP_KEYS[value ?? "asc"]),
             }),
     }),
-    booleanFilter<RecipeFilterParams>({
-        key: "inPantry",
-        urlParam: RECIPE_PANTRY_URL_PARAM,
-        param: "in_pantry",
-        chipLabel: (_value, t) => t("filterPanel.inPantryChip"),
-    }),
-    booleanFilter<RecipeFilterParams>({
-        key: "favourites",
-        urlParam: "fav",
-        param: "favourites",
-        chipLabel: (_value, t) => t("filterPanel.favouritesChip"),
-    }),
-    booleanFilter<RecipeFilterParams>({
-        key: "topRated",
-        urlParam: "top",
-        param: "top_rated",
-        chipLabel: (_value, t) => t("filterPanel.topRatedChip"),
-    }),
-    enumListFilter<AllergenSlug, RecipeFilterParams>({
-        key: "excludeAllergens",
-        urlParam: "without",
-        param: "exclude_allergens",
-        values: ALLERGEN_SLUGS,
-        chipLabel: (value, t) =>
-            t("filterPanel.excludeAllergensChip", { count: value.length }),
-    }),
-    booleanFilter<RecipeFilterParams>({
-        key: "hideAvoided",
-        urlParam: "avoid",
-        param: "hide_avoided",
-        chipLabel: (_value, t) => t("filterPanel.hideAvoidedChip"),
-    }),
+    ...RECIPE_TOGGLE_FILTER_DEFS,
     idListFilter<RecipeFilterParams>({
         key: "tags",
         urlParam: "tags",

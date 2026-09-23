@@ -6,11 +6,10 @@ import type { Ingredient } from "types/ingredient";
 import { useCategorizedIngredients } from "hooks/useCategorizedIngredients";
 import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 
-import { IngredientCategoryPanel } from "components/ingredients/IngredientCategoryPanel";
-import { IngredientResultRow } from "components/ingredients/IngredientResultRow";
 import { SearchField } from "components/ui/SearchField";
 
 import styles from "./IngredientPicker.module.scss";
+import { IngredientPickerDropdown } from "./IngredientPickerDropdown";
 
 interface IngredientPickerProps {
     allIngredients: Ingredient[];
@@ -31,15 +30,7 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const {
-        query,
-        setQuery,
-        trimmedQuery,
-        activeCategory,
-        setActiveCategory,
-        categories,
-        visibleIngredients,
-    } = useCategorizedIngredients({
+    const search = useCategorizedIngredients({
         ingredients: allIngredients,
         maxSearchResults: MAX_RESULTS,
     });
@@ -50,14 +41,14 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
 
     const handleSelect = (ingredient: Ingredient) => {
         onToggle(ingredient);
-        setQuery("");
+        search.setQuery("");
         inputRef.current?.focus();
     };
 
     // reopens the dropdown on typing after it's been dismissed with Escape - Escape doesn't blur the
     // input, so onFocus alone never fires again and results would stay hidden until a manual re-click
     const handleQueryChange = (value: string) => {
-        setQuery(value);
+        search.setQuery(value);
         setIsOpen(true);
     };
 
@@ -72,7 +63,7 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
             <SearchField
                 ref={inputRef}
                 id="ingredient-picker-search"
-                value={query}
+                value={search.query}
                 onChange={handleQueryChange}
                 onFocus={() => {
                     setIsOpen(true);
@@ -81,43 +72,11 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
                 className={styles["ingredient-picker__search"]}
             />
             {isOpen && (
-                <div className={styles["ingredient-picker__results-wrapper"]}>
-                    {!trimmedQuery && (
-                        <IngredientCategoryPanel
-                            categories={categories}
-                            activeCategory={activeCategory}
-                            onSelectCategory={setActiveCategory}
-                            onBack={() => {
-                                setActiveCategory(null);
-                            }}
-                        />
-                    )}
-                    {(trimmedQuery || activeCategory) && (
-                        <ul className={styles["ingredient-picker__results"]}>
-                            {visibleIngredients.length === 0 ? (
-                                <li
-                                    className={
-                                        styles["ingredient-picker__empty"]
-                                    }
-                                >
-                                    {t("ingredientPicker.noMatches")}
-                                </li>
-                            ) : (
-                                visibleIngredients.map((ingredient) => (
-                                    <IngredientResultRow
-                                        key={ingredient.id}
-                                        ingredient={ingredient}
-                                        query={trimmedQuery}
-                                        isSelected={selectedIds.includes(
-                                            ingredient.id,
-                                        )}
-                                        onSelect={handleSelect}
-                                    />
-                                ))
-                            )}
-                        </ul>
-                    )}
-                </div>
+                <IngredientPickerDropdown
+                    search={search}
+                    selectedIds={selectedIds}
+                    onSelect={handleSelect}
+                />
             )}
         </div>
     );

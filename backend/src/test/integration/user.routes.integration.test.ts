@@ -24,7 +24,10 @@ describe("user routes", () => {
         const { app, deps } = buildTestApp();
 
         deps.passwordHasher.hash.mockResolvedValue("hashed-secret");
-        deps.userRepository.create.mockResolvedValue({ id: 7 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 7,
+            session_version: 0,
+        });
         deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
 
         const res = await request(app).post("/api/register").send({
@@ -62,6 +65,7 @@ describe("user routes", () => {
             id: 7,
             login: "bob",
             password: "hash",
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
         deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
@@ -91,6 +95,7 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsByEmail.mockResolvedValue({
             id: 7,
             password: "hash",
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
         deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
@@ -254,6 +259,7 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 7,
             password: "hashed-current-secret",
+            session_version: 0,
         });
         deps.passwordHasher.hash.mockResolvedValue(HASHED_NEW_PASSWORD);
 
@@ -305,11 +311,14 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
             password: HASHED_CURRENT_PASSWORD,
+            session_version: 0,
         });
         deps.passwordHasher.compare
             .mockResolvedValueOnce(true) // current password check
             .mockResolvedValueOnce(false); // new-password-same-as-current check
         deps.passwordHasher.hash.mockResolvedValue(HASHED_NEW_PASSWORD);
+        deps.userRepository.updatePassword.mockResolvedValue(1);
+        deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
 
         const res = await request(app)
             .post(CHANGE_PASSWORD_PATH)
@@ -327,6 +336,31 @@ describe("user routes", () => {
             1,
             HASHED_NEW_PASSWORD,
         );
+        // the session that changed the password is re-issued under the raised version
+        expect(deps.tokenService.generate).toHaveBeenCalledWith(1, 1);
+        const headers = res.headers as IncomingHttpHeaders;
+
+        expect(headers["set-cookie"]?.join(";") ?? "").toContain(
+            `authToken=${TOKEN_VALUE}`,
+        );
+    });
+
+    it("should reject a session issued before the password last changed", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.userRepository.findSessionVersion.mockResolvedValue(1);
+
+        const res = await request(app)
+            .post(CHANGE_PASSWORD_PATH)
+            .set("Cookie", authCookie())
+            .send({
+                currentPassword: CURRENT_PASSWORD,
+                newPassword: NEW_PASSWORD,
+            });
+
+        expect(res.status).toBe(403);
+        expect(res.body).toEqual(errorBody(ERROR_CODES.SESSION_EXPIRED));
+        expect(deps.userRepository.findCredentialsById).not.toHaveBeenCalled();
     });
 
     it("should reject change-password with the wrong current password", async () => {
@@ -335,6 +369,7 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
             password: HASHED_CURRENT_PASSWORD,
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(false);
 
@@ -471,9 +506,10 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
             password: HASHED_CURRENT_PASSWORD,
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
-        deps.photoRepository.listOwnedKeys.mockResolvedValue([]);
+        deps.userRepository.delete.mockResolvedValue([]);
 
         const res = await request(app)
             .delete("/api/me")
@@ -497,6 +533,7 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
             password: HASHED_CURRENT_PASSWORD,
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(false);
 

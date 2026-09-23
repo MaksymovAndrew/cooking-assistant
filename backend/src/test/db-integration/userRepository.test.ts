@@ -48,6 +48,7 @@ describe("PgUserRepository (real Postgres)", () => {
         });
 
         expect(typeof created.id).toBe("number");
+        expect(created.session_version).toBe(0);
     });
 
     it("should reject a duplicate login with a 409", async () => {
@@ -201,7 +202,11 @@ describe("PgUserRepository (real Postgres)", () => {
 
         const found = await repository.findCredentialsById(created.id);
 
-        expect(found).toEqual({ id: created.id, password: PASSWORD });
+        expect(found).toEqual({
+            id: created.id,
+            password: PASSWORD,
+            session_version: 0,
+        });
 
         const missing = await repository.findCredentialsById(
             created.id + 1_000_000,
@@ -223,7 +228,11 @@ describe("PgUserRepository (real Postgres)", () => {
 
         const found = await repository.findCredentialsByEmail(email);
 
-        expect(found).toEqual({ id: created.id, password: PASSWORD });
+        expect(found).toEqual({
+            id: created.id,
+            password: PASSWORD,
+            session_version: 0,
+        });
 
         const missing = await repository.findCredentialsByEmail(
             uniqueEmail("missing-creds"),
@@ -269,11 +278,24 @@ describe("PgUserRepository (real Postgres)", () => {
             email: uniqueEmail("hedy"),
         });
 
-        await repository.updatePassword(created.id, "new-hashed-password");
+        const raised = await repository.updatePassword(
+            created.id,
+            "new-hashed-password",
+        );
 
         const found = await repository.findCredentialsById(created.id);
 
         expect(found?.password).toBe("new-hashed-password");
+        // every session issued under the old password stops matching
+        expect(raised).toBe(1);
+        expect(await repository.findSessionVersion(created.id)).toBe(1);
+    });
+
+    it("should report no session version for an account that does not exist", async () => {
+        expect(await repository.findSessionVersion(2_000_000_000)).toBeNull();
+        expect(
+            await repository.updatePassword(2_000_000_000, "unused"),
+        ).toBeNull();
     });
 
     it("should mark the email as verified", async () => {

@@ -1,8 +1,12 @@
 @use "styles/abstracts" as *;
 
+// a card beside a taller donut stretches to its height, so the few rows spread over it rather than
+// huddling at the top of an otherwise empty card
 .stat-bar-list {
     display: flex;
+    flex: 1;
     flex-direction: column;
+    justify-content: space-evenly;
     gap: var(--s-3);
     margin: 0;
     list-style: none;

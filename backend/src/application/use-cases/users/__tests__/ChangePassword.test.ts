@@ -22,6 +22,7 @@ describe("ChangePassword", () => {
             updatePassword: jest.fn(),
         },
         passwordHasher: { compare: jest.fn(), hash: jest.fn() },
+        tokenService: { generate: jest.fn() },
     });
 
     it("should hash and set the new password when the current password is correct", async () => {
@@ -30,21 +31,27 @@ describe("ChangePassword", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: USER_ID,
             password: CURRENT_HASH,
+            session_version: 0,
         });
         deps.passwordHasher.compare
             .mockResolvedValueOnce(true) // current password check
             .mockResolvedValueOnce(false); // new-password-same-as-current check
         deps.passwordHasher.hash.mockResolvedValue(NEW_HASH);
+        deps.userRepository.updatePassword.mockResolvedValue(1);
+        deps.tokenService.generate.mockReturnValue("fresh-token");
         const useCase = new ChangePassword(
             deps.userRepository,
             deps.passwordHasher,
+            deps.tokenService,
         );
 
-        await useCase.execute(USER_ID, {
+        const result = await useCase.execute(USER_ID, {
             currentPassword: CURRENT_PASSWORD,
             newPassword: NEW_PASSWORD,
         });
 
+        expect(result).toEqual({ token: "fresh-token" });
+        expect(deps.tokenService.generate).toHaveBeenCalledWith(USER_ID, 1);
         expect(deps.passwordHasher.compare).toHaveBeenNthCalledWith(
             1,
             CURRENT_PASSWORD,
@@ -68,11 +75,13 @@ describe("ChangePassword", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: USER_ID,
             password: CURRENT_HASH,
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
         const useCase = new ChangePassword(
             deps.userRepository,
             deps.passwordHasher,
+            deps.tokenService,
         );
 
         const error = await catchError(
@@ -97,11 +106,13 @@ describe("ChangePassword", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: USER_ID,
             password: CURRENT_HASH,
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(false);
         const useCase = new ChangePassword(
             deps.userRepository,
             deps.passwordHasher,
+            deps.tokenService,
         );
 
         const error = await catchError(
@@ -126,6 +137,7 @@ describe("ChangePassword", () => {
         const useCase = new ChangePassword(
             deps.userRepository,
             deps.passwordHasher,
+            deps.tokenService,
         );
 
         const error = await catchError(
@@ -148,6 +160,7 @@ describe("ChangePassword", () => {
         const useCase = new ChangePassword(
             deps.userRepository,
             deps.passwordHasher,
+            deps.tokenService,
         );
 
         await expect(

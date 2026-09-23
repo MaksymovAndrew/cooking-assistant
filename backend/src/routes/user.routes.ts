@@ -4,8 +4,7 @@ import { ROUTES } from "constants/routes";
 
 import type UserController from "controller/user.controller";
 import type UserSecurityController from "controller/userSecurity.controller";
-import authenticateToken from "middleware/jwtMiddleware";
-import optionalAuth from "middleware/optionalAuth";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 import {
     changePasswordLimiter,
     confirmEmailLimiter,
@@ -22,6 +21,7 @@ import {
 export default function createUserRouter(
     userController: UserController,
     userSecurityController: UserSecurityController,
+    { authenticateToken, optionalAuth }: SessionAuth,
 ): Router {
     const router = express.Router();
 

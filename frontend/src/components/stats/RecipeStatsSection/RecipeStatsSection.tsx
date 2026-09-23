@@ -8,7 +8,7 @@ import { RecipeTypeChart } from "components/stats/RecipeTypeChart";
 import { StatBarList } from "components/stats/StatBarList";
 import { StatCard } from "components/stats/StatCard";
 
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatCompactDuration } from "utils/cookingTimeUtils";
 
 import { RecipeExtremesCards } from "./RecipeExtremesCards";
 import styles from "./RecipeStatsSection.module.scss";
@@ -33,13 +33,8 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
         ]),
     );
 
-    const formatCompactTime = (totalMinutes: number): string => {
-        const { hours, minutes } = splitCookingTime(totalMinutes);
-
-        return hours > 0
-            ? t("statsPage.timeCompactHoursMinutes", { hours, minutes })
-            : t("statsPage.timeMinutesOnly", { minutes });
-    };
+    const formatCompactTime = (totalMinutes: number): string =>
+        formatCompactDuration(t, totalMinutes);
 
     return (
         <section className={styles["recipe-stats-section"]}>

@@ -81,14 +81,7 @@ export const MenuListResults: React.FC<Props> = ({
                 {menus.map((menu) => (
                     <MenuCard
                         key={menu.id}
-                        id={menu.id}
-                        title={menu.title}
-                        categoryName={menu.categoryname}
-                        recipeCount={menu.recipe_count}
-                        photoKey={menu.photo_key}
-                        ratingAverage={menu.ratingAverage}
-                        ratingCount={menu.ratingCount}
-                        isFavourite={menu.isFavourite}
+                        menu={menu}
                         mine={mine || Boolean(menu.isOwner)}
                     />
                 ))}

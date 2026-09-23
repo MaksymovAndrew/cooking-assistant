@@ -1,4 +1,5 @@
 import { getErrorMessage } from "redux/middleware/notificationsListener";
+import { accountSecurityApi } from "redux/services/accountSecurityApi";
 import { authApi } from "redux/services/authApi";
 import { caloriesApi } from "redux/services/caloriesApi";
 import { menusApi } from "redux/services/menusApi";
@@ -165,7 +166,7 @@ describe("notificationsListener", () => {
         const store = makeTestStore();
 
         await store.dispatch(
-            authApi.endpoints.forgotPassword.initiate({
+            accountSecurityApi.endpoints.forgotPassword.initiate({
                 email: "tester@example.com",
             }),
         );
@@ -182,7 +183,7 @@ describe("notificationsListener", () => {
         const store = makeTestStore();
 
         await store.dispatch(
-            authApi.endpoints.resetPassword.initiate({
+            accountSecurityApi.endpoints.resetPassword.initiate({
                 token: "bad-token",
                 newPassword: NEW_PASSWORD,
             }),
@@ -203,7 +204,7 @@ describe("notificationsListener", () => {
         const store = makeTestStore();
 
         await store.dispatch(
-            authApi.endpoints.changePassword.initiate({
+            accountSecurityApi.endpoints.changePassword.initiate({
                 currentPassword: "wrong",
                 newPassword: NEW_PASSWORD,
             }),
@@ -285,7 +286,7 @@ describe("notificationsListener success toasts", () => {
         const store = makeTestStore();
 
         await store.dispatch(
-            authApi.endpoints.changePassword.initiate({
+            accountSecurityApi.endpoints.changePassword.initiate({
                 currentPassword: "old-secret",
                 newPassword: NEW_PASSWORD,
             }),

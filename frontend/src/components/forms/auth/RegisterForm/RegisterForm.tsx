@@ -7,9 +7,9 @@ import { Button } from "components/ui/Button";
 import { FormErrorBanner } from "components/ui/FormErrorBanner";
 import { FormField } from "components/ui/FormField";
 import { PasswordInput } from "components/ui/PasswordInput";
-import { TextInput } from "components/ui/TextInput";
 
 import styles from "./RegisterForm.module.scss";
+import { RegisterTextField } from "./RegisterTextField";
 
 const NAME_ID = "register-name";
 const SURNAME_ID = "register-surname";
@@ -35,6 +35,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     submitError,
 }) => {
     const { t } = useTranslation("auth");
+    const fieldProps = { values, errors, onFieldChange };
 
     return (
         <form
@@ -45,64 +46,32 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             }}
         >
             <div className={styles["register-form__name-row"]}>
-                <FormField
-                    htmlFor={NAME_ID}
+                <RegisterTextField
+                    field="name"
+                    id={NAME_ID}
                     label={t("fields.nameLabel")}
-                    error={errors.name}
-                >
-                    <TextInput
-                        id={NAME_ID}
-                        value={values.name}
-                        hasError={Boolean(errors.name)}
-                        onChange={(e) => {
-                            onFieldChange("name", e.target.value);
-                        }}
-                    />
-                </FormField>
-                <FormField
-                    htmlFor={SURNAME_ID}
+                    {...fieldProps}
+                />
+                <RegisterTextField
+                    field="surname"
+                    id={SURNAME_ID}
                     label={t("fields.surnameLabel")}
-                    error={errors.surname}
-                >
-                    <TextInput
-                        id={SURNAME_ID}
-                        value={values.surname}
-                        hasError={Boolean(errors.surname)}
-                        onChange={(e) => {
-                            onFieldChange("surname", e.target.value);
-                        }}
-                    />
-                </FormField>
+                    {...fieldProps}
+                />
             </div>
-            <FormField
-                htmlFor={USERNAME_ID}
+            <RegisterTextField
+                field="login"
+                id={USERNAME_ID}
                 label={t("fields.usernameLabel")}
-                error={errors.login}
-            >
-                <TextInput
-                    id={USERNAME_ID}
-                    value={values.login}
-                    hasError={Boolean(errors.login)}
-                    onChange={(e) => {
-                        onFieldChange("login", e.target.value);
-                    }}
-                />
-            </FormField>
-            <FormField
-                htmlFor={EMAIL_ID}
+                {...fieldProps}
+            />
+            <RegisterTextField
+                field="email"
+                id={EMAIL_ID}
                 label={t("fields.emailLabel")}
-                error={errors.email}
-            >
-                <TextInput
-                    id={EMAIL_ID}
-                    type="email"
-                    value={values.email}
-                    hasError={Boolean(errors.email)}
-                    onChange={(e) => {
-                        onFieldChange("email", e.target.value);
-                    }}
-                />
-            </FormField>
+                type="email"
+                {...fieldProps}
+            />
             <FormField
                 htmlFor={PW_FIELD_ID}
                 label={t("fields.passwordLabel")}

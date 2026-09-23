@@ -4,6 +4,7 @@ import type {
     MenuSearchRow,
 } from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
+import type { DeletedRecord } from "domain/repositories/PhotoRepository";
 
 export interface MenuRepository {
     findAll(
@@ -22,7 +23,11 @@ export interface MenuRepository {
         menu: Menu,
         recipeIds: number[],
     ): Promise<boolean>;
-    deleteById(id: string | number, personId: number): Promise<unknown>;
+    // null when the record doesn't exist or belongs to someone else
+    deleteById(
+        id: string | number,
+        personId: number,
+    ): Promise<DeletedRecord | null>;
     searchByPerson(
         personId: number,
         filters: MenuFilters,

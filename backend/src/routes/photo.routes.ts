@@ -4,13 +4,14 @@ import { ROUTES } from "constants/routes";
 
 import type PhotoController from "controller/photo.controller";
 import { readImageBody } from "middleware/imageUpload";
-import authenticateToken from "middleware/jwtMiddleware";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 import { uploadLimiter } from "middleware/rateLimit";
 
 // authentication and the quota run before the body is read, so an anonymous or throttled client
 // never gets to stream ten megabytes at us
 export default function createPhotoRouter(
     photoController: PhotoController,
+    { authenticateToken }: SessionAuth,
 ): Router {
     const router = express.Router();
     const upload = [authenticateToken, uploadLimiter, ...readImageBody];

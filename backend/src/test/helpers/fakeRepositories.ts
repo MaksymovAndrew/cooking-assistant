@@ -102,6 +102,10 @@ function createUserRepository(): jest.Mocked<UserRepository> {
         updateLocale: jest.fn(),
         markEmailVerified: jest.fn(),
         delete: jest.fn(),
+        // matches the version authCookie() signs, so a test session stays live by default
+        findSessionVersion: jest.fn((_id: number) =>
+            Promise.resolve<number | null>(0),
+        ),
     };
 }
 
@@ -187,8 +191,6 @@ function createEmailSender(): jest.Mocked<EmailSender> {
 function createPhotoRepository(): jest.Mocked<PhotoRepository> {
     return {
         replace: jest.fn(),
-        findKey: jest.fn(),
-        listOwnedKeys: jest.fn(),
     };
 }
 

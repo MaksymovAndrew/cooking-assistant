@@ -8,14 +8,13 @@ import { catchError } from "test/helpers/assertions";
 
 function setup() {
     const menuRepository = { deleteById: jest.fn() };
-    const photoRepository = { findKey: jest.fn(), listOwnedKeys: jest.fn() };
     const mediaStorage = { remove: jest.fn() };
     const useCase = new DeleteMenu(
         menuRepository,
-        new PhotoCleanup(photoRepository, mediaStorage),
+        new PhotoCleanup(mediaStorage),
     );
 
-    return { useCase, menuRepository, photoRepository, mediaStorage };
+    return { useCase, menuRepository, mediaStorage };
 }
 
 describe("DeleteMenu", () => {
@@ -36,7 +35,7 @@ describe("DeleteMenu", () => {
     it("should throw a 404 NotFoundError when the menu does not belong to the user", async () => {
         const { useCase, menuRepository } = setup();
 
-        menuRepository.deleteById.mockResolvedValue(false);
+        menuRepository.deleteById.mockResolvedValue(null);
 
         const error = await catchError(useCase.execute(9, 7));
 
@@ -50,7 +49,7 @@ describe("DeleteMenu", () => {
     it("should delete the menu when it belongs to the user", async () => {
         const { useCase, menuRepository } = setup();
 
-        menuRepository.deleteById.mockResolvedValue(true);
+        menuRepository.deleteById.mockResolvedValue({ photoKey: null });
 
         await useCase.execute(9, 7);
 
@@ -58,24 +57,19 @@ describe("DeleteMenu", () => {
     });
 
     it("should remove the menu's cover once the menu is deleted", async () => {
-        const { useCase, menuRepository, photoRepository, mediaStorage } =
-            setup();
+        const { useCase, menuRepository, mediaStorage } = setup();
 
-        photoRepository.findKey.mockResolvedValue("cover-key");
-        menuRepository.deleteById.mockResolvedValue(true);
+        menuRepository.deleteById.mockResolvedValue({ photoKey: "cover-key" });
 
         await useCase.execute(9, 7);
 
-        expect(photoRepository.findKey).toHaveBeenCalledWith(7, "menu", 9);
         expect(mediaStorage.remove).toHaveBeenCalledWith("cover-key");
     });
 
     it("should not touch storage when the menu has no cover", async () => {
-        const { useCase, menuRepository, photoRepository, mediaStorage } =
-            setup();
+        const { useCase, menuRepository, mediaStorage } = setup();
 
-        photoRepository.findKey.mockResolvedValue(null);
-        menuRepository.deleteById.mockResolvedValue(true);
+        menuRepository.deleteById.mockResolvedValue({ photoKey: null });
 
         await useCase.execute(9, 7);
 

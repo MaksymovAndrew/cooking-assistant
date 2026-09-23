@@ -185,13 +185,14 @@ module.exports = tseslint.config(
         files: ["**/*.ts"],
         ignores: ["**/__tests__/**/*.ts", "src/test/**/*.ts"],
         rules: {
+            // a hard ceiling only - the working norm is 100 lines, see "File size and where code lives" in AGENTS.md
             "max-lines": [
                 "error",
-                { max: 120, skipBlankLines: true, skipComments: true },
+                { max: 250, skipBlankLines: true, skipComments: true },
             ],
             "max-lines-per-function": [
                 "error",
-                { max: 120, skipBlankLines: true, skipComments: true },
+                { max: 250, skipBlankLines: true, skipComments: true },
             ],
             complexity: ["error", 15],
         },

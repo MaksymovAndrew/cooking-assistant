@@ -9,20 +9,6 @@ export interface AggregatedIngredient {
     sufficient: boolean;
 }
 
-export const groupRecipesByType = (
-    recipes: MenuDetailRecipe[],
-): Record<string, MenuDetailRecipe[]> =>
-    recipes.reduce((groups: Record<string, MenuDetailRecipe[]>, recipe) => {
-        const { type_name } = recipe;
-
-        if (!(type_name in groups)) {
-            groups[type_name] = [];
-        }
-        groups[type_name].push(recipe);
-
-        return groups;
-    }, {});
-
 // every ingredient used anywhere in the menu, not just what's missing - keyed by ingredient_id (not name) so it stays correct once ingredient names are translated
 export const aggregateMenuIngredients = (
     recipes: MenuDetailRecipe[],

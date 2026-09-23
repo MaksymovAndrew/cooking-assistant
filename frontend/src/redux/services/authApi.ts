@@ -1,12 +1,8 @@
 import type {
-    ChangePasswordRequest,
-    ConfirmEmailRequest,
     CurrentUser,
     DeleteAccountRequest,
-    ForgotPasswordRequest,
     LoginRequest,
     RegisterRequest,
-    ResetPasswordRequest,
     UpdateProfileRequest,
 } from "types/auth";
 
@@ -43,27 +39,6 @@ export const authApi = baseApi.injectEndpoints({
             query: () => ({ url: API_ROUTES.auth.logout, method: "POST" }),
             invalidatesTags: ["Me"],
         }),
-        forgotPassword: build.mutation<null, ForgotPasswordRequest>({
-            query: (data) => ({
-                url: API_ROUTES.auth.forgotPassword,
-                method: "POST",
-                data,
-            }),
-        }),
-        resetPassword: build.mutation<null, ResetPasswordRequest>({
-            query: (data) => ({
-                url: API_ROUTES.auth.resetPassword,
-                method: "POST",
-                data,
-            }),
-        }),
-        changePassword: build.mutation<null, ChangePasswordRequest>({
-            query: (data) => ({
-                url: API_ROUTES.auth.changePassword,
-                method: "POST",
-                data,
-            }),
-        }),
         updateProfile: build.mutation<null, UpdateProfileRequest>({
             query: (data) => ({
                 url: API_ROUTES.auth.me,
@@ -81,20 +56,6 @@ export const authApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: (_result, error) => (error ? [] : ["Me"]),
         }),
-        requestEmailVerification: build.mutation<null, null>({
-            query: () => ({
-                url: API_ROUTES.auth.resendVerificationEmail,
-                method: "POST",
-            }),
-        }),
-        confirmEmail: build.mutation<null, ConfirmEmailRequest>({
-            query: (data) => ({
-                url: API_ROUTES.auth.confirmEmail,
-                method: "POST",
-                data,
-            }),
-            invalidatesTags: ["Me"],
-        }),
     }),
 });
 
@@ -103,11 +64,6 @@ export const {
     useLoginMutation,
     useRegisterMutation,
     useLogoutMutation,
-    useForgotPasswordMutation,
-    useResetPasswordMutation,
-    useChangePasswordMutation,
     useUpdateProfileMutation,
     useDeleteAccountMutation,
-    useRequestEmailVerificationMutation,
-    useConfirmEmailMutation,
 } = authApi;

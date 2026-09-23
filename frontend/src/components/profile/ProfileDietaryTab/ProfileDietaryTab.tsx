@@ -1,6 +1,4 @@
-import { Flame } from "lucide-react";
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 
 import type { CurrentUser } from "types/auth";
 
@@ -17,18 +15,16 @@ import { roundCalories } from "utils/calories";
 import { calorieToneFor } from "utils/computeCalorieSummary";
 
 import { CalorieGoalCard } from "./CalorieGoalCard";
+import { DietaryEmptyIntro } from "./DietaryEmptyIntro";
 import styles from "./ProfileDietaryTab.module.scss";
 
 interface ProfileDietaryTabProps {
     currentUser?: CurrentUser | null;
 }
 
-const EMPTY_ICON_SIZE = 40;
-
 export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
     currentUser,
 }) => {
-    const { t } = useTranslation("calories");
     const budget = useCalorieBudget();
     const [justSaved, setJustSaved] = useState(false);
     const form = useCalorieGoalForm(currentUser, () => {
@@ -87,29 +83,7 @@ export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
                 </div>
             ) : (
                 <div className={styles["profile-dietary-tab__empty"]}>
-                    <div className={styles["profile-dietary-tab__empty-intro"]}>
-                        <span
-                            className={
-                                styles["profile-dietary-tab__empty-icon"]
-                            }
-                        >
-                            <Flame size={EMPTY_ICON_SIZE} aria-hidden="true" />
-                        </span>
-                        <h2
-                            className={
-                                styles["profile-dietary-tab__empty-title"]
-                            }
-                        >
-                            {t("dietaryTab.emptyTitle")}
-                        </h2>
-                        <p
-                            className={
-                                styles["profile-dietary-tab__empty-description"]
-                            }
-                        >
-                            {t("dietaryTab.emptyDescription")}
-                        </p>
-                    </div>
+                    <DietaryEmptyIntro />
                     {goalCard}
                 </div>
             )}

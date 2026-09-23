@@ -90,8 +90,9 @@ EMAIL_FROM=<e.g. noreply@example.com; leave empty to use the logging fallback>
 
 `JWT_SECRET_KEY` is used by [src/middleware/jwtMiddleware.ts](src/middleware/jwtMiddleware.ts) (verifies
 tokens) and [src/infrastructure/security/JwtTokenService.ts](src/infrastructure/security/JwtTokenService.ts)
-(signs them at login). It must be at least 32 characters (validated on startup). Without it, login and
-every protected route return a 500 configuration error.
+(signs them at login). It must be at least 32 characters (validated on startup), and in production the server refuses to start
+without it at all. In development, without it, login and every protected route return a 500 configuration
+error.
 The rest of the env is validated with zod on startup; invalid ports or logger levels fail fast with a
 clear configuration error. `LOG_LEVEL` controls the pino logger level and defaults to `info` when unset.
 
@@ -250,7 +251,8 @@ backend/
     │   └── email/             ResendEmailService, LoggingEmailService (dev/CI fallback), createEmailSender factory
     │
     ├── middleware/
-    │   ├── jwtMiddleware.ts  authenticateToken - verifies the JWT from the authToken cookie, attaches req.user
+    │   ├── jwtMiddleware.ts  createSessionAuth - authenticateToken and optionalAuth: verify the JWT from the
+    │   │                     authToken cookie and its session version, attach req.user
     │   ├── rateLimit.ts      createGlobalLimiter + per-route limiters: login/register (each with a
     │   │                     stricter per-login limiter and a looser per-IP one), forgotPassword,
     │   │                     resetPassword, changePassword, resendVerification, confirmEmail, deleteAccount
@@ -359,13 +361,17 @@ Auth is an **httpOnly cookie** (`authToken`) - the token is never in a response 
 reads it. Cookie name and options live in [src/config/cookie.ts](src/config/cookie.ts).
 
 1. `POST /api/login` verifies the password via `BcryptPasswordHasher` and signs an HS256 JWT (payload
-   `{ id }`, `expiresIn: "24h"`) via `JwtTokenService`. The controller sets it with
+   `{ id, typ: "session", sv }`, `expiresIn: "24h"`) via `JwtTokenService`, where `sv` is the account's
+   `session_version`. The controller sets it with
    `res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS)` (`httpOnly`, `sameSite: "lax"`, `secure` in
    production, `domain` from `COOKIE_DOMAIN`, `maxAge` 24h) and responds `{ message: "Logged in" }`.
 2. The browser sends the cookie automatically on later requests (`cookie-parser` + CORS `credentials: true`).
 3. [src/middleware/jwtMiddleware.ts](src/middleware/jwtMiddleware.ts) reads the JWT from
-   `req.cookies[AUTH_COOKIE_NAME]`, verifies it with `JWT_SECRET_KEY` (HS256 only) - `401` if the cookie is
-   missing, `403` if it is invalid/expired - then attaches `req.user = { id }` and calls `next()`.
+   `req.cookies[AUTH_COOKIE_NAME]`, verifies it with `JWT_SECRET_KEY` (HS256 only) and compares its `sv` with
+   the account's current `session_version` - `401` if the cookie is missing, `403` if it is invalid, expired
+   or issued before the password last changed - then attaches `req.user = { id }` and calls `next()`.
+   Changing or resetting the password raises `session_version`, so every other session ends at once;
+   `/change-password` re-issues the cookie for the session that made the change.
 4. `GET /api/me` (protected) returns `{ id, ..., email, email_verified_at }` so the client can check its
    session and email-verification state. `POST /api/logout` (public) clears the cookie and returns
    `{ message: "Logged out" }`.
@@ -643,7 +649,8 @@ because every messenger renders JPEG in that frame - capped at 40 megapixels, re
 EXIF orientation and dropping every piece of metadata, GPS included. Only the re-encoded files are
 kept, under a server-generated UUID, written before the database points at them; the previous photo's
 files are deleted after the new key is stored. Deleting a recipe, a menu or an account deletes its
-photos too (`PhotoCleanup`).
+photos too: the delete statement returns the keys it removed (`DELETE ... RETURNING`), and `PhotoCleanup`
+removes those files once the transaction commits, so an upload racing the delete cannot orphan its files.
 
 `GET /media/...` is mounted before the global limiter and left out of request logs, since a page of
 cards is dozens of image requests. It accepts only the exact file-name shape the server generates and
@@ -727,4 +734,4 @@ The whole project shares one version and one changelog at the repo root. This pa
 - [Root README](../README.md) - project overview and monorepo scripts
 - [Frontend README](../frontend/README.md) - React client
 - [CHANGELOG.md](../CHANGELOG.md) - project changelog
-- [CLAUDE.md](../CLAUDE.md) - notes for AI tooling
+- [AGENTS.md](../AGENTS.md) - notes for AI coding agents

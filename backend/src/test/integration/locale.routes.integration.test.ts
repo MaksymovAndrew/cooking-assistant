@@ -76,7 +76,10 @@ describe("locale routes", () => {
     it("should register the account in the language the request asked for", async () => {
         const { app, deps } = buildTestApp();
 
-        deps.userRepository.create.mockResolvedValue({ id: 7 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 7,
+            session_version: 0,
+        });
         deps.tokenService.generate.mockReturnValue("token-value");
 
         await request(app)

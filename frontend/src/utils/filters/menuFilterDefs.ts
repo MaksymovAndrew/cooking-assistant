@@ -2,7 +2,8 @@ import type { MenuListParams } from "types/menu";
 
 import type { FilterDef } from "./filterDef";
 import { idListFilter, textFilter } from "./filterDefFactories";
-import { booleanFilter, enumFilter } from "./filterDefFactories.scalar";
+import { enumFilter } from "./filterDefFactories.enum";
+import { booleanFilter } from "./filterDefFactories.scalar";
 
 export interface MenuFilterState {
     search: string;

@@ -1,4 +1,3 @@
-import { ArrowDownWideNarrow, Heart, Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,12 +10,12 @@ import type { SetFilterValue, SetFilterValues } from "hooks/useListFilters";
 
 import { FilterChipGroup } from "components/ui/FilterChipGroup";
 import { FilterPanel } from "components/ui/FilterPanel";
-import { FilterToggle } from "components/ui/FilterToggle";
 import { SearchField } from "components/ui/SearchField";
 
 import type { MenuFilterState } from "utils/filters/menuFilterDefs";
 
 import styles from "./MenuFilterPanel.module.scss";
+import { MenuFilterToggles } from "./MenuFilterToggles";
 
 export interface MenuFilterPanelProps {
     filters: MenuFilterState;
@@ -77,31 +76,10 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
                 activeCount={activeCount}
                 onReset={resetPanelFields}
             >
-                {canFavourite && (
-                    <FilterToggle
-                        icon={Heart}
-                        label={t("categoryFilter.favouritesLabel")}
-                        checked={filters.favourites}
-                        onChange={(value) => {
-                            setValue("favourites", value);
-                        }}
-                    />
-                )}
-                <FilterToggle
-                    icon={Star}
-                    label={t("categoryFilter.topRatedLabel")}
-                    checked={filters.topRated}
-                    onChange={(value) => {
-                        setValue("topRated", value);
-                    }}
-                />
-                <FilterToggle
-                    icon={ArrowDownWideNarrow}
-                    label={t("categoryFilter.sortByRatingLabel")}
-                    checked={filters.sort === "rating"}
-                    onChange={(value) => {
-                        setValue("sort", value ? "rating" : null);
-                    }}
+                <MenuFilterToggles
+                    filters={filters}
+                    setValue={setValue}
+                    canFavourite={canFavourite}
                 />
                 <div className={styles["menu-filter-panel__section"]}>
                     <span className={styles["menu-filter-panel__label"]}>

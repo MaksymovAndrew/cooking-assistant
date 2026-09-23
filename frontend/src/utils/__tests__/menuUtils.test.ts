@@ -1,6 +1,6 @@
 import type { MenuDetailRecipe } from "types/menu";
 
-import { aggregateMenuIngredients, groupRecipesByType } from "utils/menuUtils";
+import { aggregateMenuIngredients } from "utils/menuUtils";
 
 const makeRecipe = (
     id: number,
@@ -13,42 +13,6 @@ const makeRecipe = (
         type_name,
         missingIngredients,
     }) as MenuDetailRecipe;
-
-describe("groupRecipesByType", () => {
-    it("should return an empty object for an empty list", () => {
-        expect(groupRecipesByType([])).toEqual({});
-    });
-
-    it("should group recipes with the same type_name together", () => {
-        const recipes = [
-            makeRecipe(1, "Soup"),
-            makeRecipe(2, "Soup"),
-            makeRecipe(3, "Salad"),
-        ];
-
-        const result = groupRecipesByType(recipes);
-
-        expect(result.Soup).toHaveLength(2);
-        expect(result.Salad).toHaveLength(1);
-    });
-
-    it("should create a separate group for each distinct type", () => {
-        const recipes = [
-            makeRecipe(1, "A"),
-            makeRecipe(2, "B"),
-            makeRecipe(3, "C"),
-        ];
-
-        expect(Object.keys(groupRecipesByType(recipes))).toHaveLength(3);
-    });
-
-    it("should preserve the original recipe objects in each group", () => {
-        const recipe = makeRecipe(99, "Soup");
-        const result = groupRecipesByType([recipe]);
-
-        expect(result.Soup[0]).toBe(recipe);
-    });
-});
 
 describe("aggregateMenuIngredients", () => {
     it("should return an empty object for an empty list", () => {

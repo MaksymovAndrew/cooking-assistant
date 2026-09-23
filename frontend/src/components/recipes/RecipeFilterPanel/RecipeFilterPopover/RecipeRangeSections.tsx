@@ -3,12 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import type { SetFilterValue } from "hooks/useListFilters";
 
-import styles from "components/recipes/RecipeFilterPanel/RecipeFilterPanel.module.scss";
-
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
-import { RecipeCalorieRangeFields } from "./RecipeCalorieRangeFields";
-import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
+import { FilterSection } from "./FilterSection";
+import { RecipeRangeFields } from "./RecipeRangeFields";
 
 interface RecipeRangeSectionsProps {
     filters: RecipeFilterState;
@@ -18,6 +16,11 @@ interface RecipeRangeSectionsProps {
     fieldsResetKey?: number;
 }
 
+const RANGE_SECTIONS = [
+    { key: "cookingTime", labelKey: "filterPanel.cookingTimeLabel" },
+    { key: "calories", labelKey: "filterPanel.caloriesLabel" },
+] as const;
+
 export const RecipeRangeSections: React.FC<RecipeRangeSectionsProps> = ({
     filters,
     setValue,
@@ -25,57 +28,15 @@ export const RecipeRangeSections: React.FC<RecipeRangeSectionsProps> = ({
 }) => {
     const { t } = useTranslation("recipes");
 
-    return (
-        <>
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.cookingTimeLabel")}
-                </span>
-                <RecipeTimeRangeFields
-                    key={fieldsResetKey}
-                    minCookingTime={filters.cookingTime.min}
-                    maxCookingTime={filters.cookingTime.max}
-                    setMinCookingTime={(time) => {
-                        setValue(
-                            "cookingTime",
-                            { ...filters.cookingTime, min: time },
-                            { replace: true },
-                        );
-                    }}
-                    setMaxCookingTime={(time) => {
-                        setValue(
-                            "cookingTime",
-                            { ...filters.cookingTime, max: time },
-                            { replace: true },
-                        );
-                    }}
-                />
-            </div>
-
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.caloriesLabel")}
-                </span>
-                <RecipeCalorieRangeFields
-                    key={fieldsResetKey}
-                    minCalories={filters.calories.min}
-                    maxCalories={filters.calories.max}
-                    setMinCalories={(calories) => {
-                        setValue(
-                            "calories",
-                            { ...filters.calories, min: calories },
-                            { replace: true },
-                        );
-                    }}
-                    setMaxCalories={(calories) => {
-                        setValue(
-                            "calories",
-                            { ...filters.calories, max: calories },
-                            { replace: true },
-                        );
-                    }}
-                />
-            </div>
-        </>
-    );
+    return RANGE_SECTIONS.map(({ key, labelKey }) => (
+        <FilterSection key={key} label={t(labelKey)}>
+            <RecipeRangeFields
+                key={fieldsResetKey}
+                value={filters[key]}
+                onChange={(range) => {
+                    setValue(key, range, { replace: true });
+                }}
+            />
+        </FilterSection>
+    ));
 };

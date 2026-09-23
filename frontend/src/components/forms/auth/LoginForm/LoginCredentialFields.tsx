@@ -4,12 +4,12 @@ import { useTranslation } from "react-i18next";
 import { ROUTES } from "constants/routes";
 import type { LoginRequest } from "types/auth";
 
-import type { LoginMode } from "hooks/useLoginForm";
-
 import { FormField } from "components/ui/FormField";
 import { Link } from "components/ui/Link";
 import { PasswordInput } from "components/ui/PasswordInput";
 import { TextInput } from "components/ui/TextInput";
+
+import type { LoginMode } from "utils/loginForm";
 
 import styles from "./LoginForm.module.scss";
 

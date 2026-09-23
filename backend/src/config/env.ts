@@ -4,6 +4,7 @@ import path from "node:path";
 
 import {
     assertConsistentEmailConfig,
+    assertProductionSecrets,
     assertSecureProductionDb,
 } from "./env.guards";
 import { envSchema } from "./env.schema";
@@ -62,3 +63,4 @@ export function requireJwtSecret(): string {
 // run at config load so every consumer of config.db (the app, the migrate runner, and the seed script) is guarded, not just the HTTP entry point
 assertSecureProductionDb(config);
 assertConsistentEmailConfig(config);
+assertProductionSecrets({ isProduction, jwtSecret: env.JWT_SECRET_KEY });

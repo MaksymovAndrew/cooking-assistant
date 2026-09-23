@@ -20,6 +20,8 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.7 - 2026-09-22
+
 ### Backend
 
 - Added: Photos for recipes and menus, and a profile photo for every account. Every upload is checked by its actual contents, re-encoded into a fresh image with location and camera data removed, and stored under a name the server chooses, so an image file cannot smuggle anything else onto the server.
@@ -29,6 +31,8 @@ changelogs and the tags and now track everything here against one shared version
 - Added: Sort recipes and menus by rating, where a single five-star vote can't outrank a well-rated favourite, and keep only those rated four stars and up.
 - Added: Every photo is also kept as a picture framed for link previews, so a shared recipe or menu shows its photo in any messenger.
 - Added: Every account remembers its language, and the server answers and writes its emails in it - groundwork for the app's upcoming translations, with English the only language so far.
+- Fixed: The server now refuses to start in production without its sign-in secret configured, instead of starting and then failing every sign-in.
+- Security: Changing or resetting your password now signs you out everywhere else at once, so a session someone else got hold of stops working immediately; the browser you changed it in stays signed in. Everyone is asked to sign in once more after this update.
 
 ### Frontend
 
@@ -43,6 +47,12 @@ changelogs and the tags and now track everything here against one shared version
 - Added: The app tells the server which language it is showing, so a new account's emails come in the same language.
 - Security: The site now sends browser security headers that block it being framed by other sites and restrict where images, plugins and forms may load from.
 - Changed: Pages download less code up front - dialogs now load the moment they are opened.
+- Fixed: A menu page no longer leaves a wide empty area beside its recipes when the ingredients panel has nothing to show.
+- Fixed: Today's calorie total now counts a meal logged while the page is already open.
+- Fixed: A cooking time or calorie filter value the search cannot use no longer appears as an active filter.
+- Fixed: Visitors who are not signed in no longer see the signed-in navigation for a moment when a page opens.
+- Fixed: A recipe or menu address with a malformed id now answers "page not found" instead of an error page.
+- Changed: The average-time cards on Stats now fill their space instead of leaving it empty.
 
 ### Project
 

@@ -59,7 +59,7 @@ so the same URL (with your machine's IP instead of `localhost`) works from a pho
 cooking-assistant/
 ├── package.json     orchestration scripts (concurrently)
 ├── CHANGELOG.md     single changelog for the whole project
-├── CLAUDE.md        notes for AI tooling (also useful for humans)
+├── AGENTS.md        notes for AI coding agents (also useful for humans)
 ├── e2e/             Playwright smoke suite (npm run test:e2e)
 ├── backend/         Express + PostgreSQL API on :3000  (see backend/README.md)
 └── frontend/        React + Next.js app on :8080       (see frontend/README.md)

@@ -3,17 +3,19 @@ import { z } from "zod";
 import type { MenuFilters } from "domain/repositories/menu.filters";
 
 import {
-    booleanQuerySchema,
     hasUniqueItems,
-    idListStringSchema,
     idSchema,
-    limitSchema,
     nonEmptyStringSchema,
-    offsetSchema,
     optionalStringSchema,
     positiveIntegerSchema,
     requiredOrInvalidType,
 } from "./common.schemas";
+import {
+    booleanQuerySchema,
+    idListStringSchema,
+    limitSchema,
+    offsetSchema,
+} from "./query.schemas";
 
 const recipeIdSchema = positiveIntegerSchema("Recipe ID");
 

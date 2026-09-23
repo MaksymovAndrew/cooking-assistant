@@ -3,10 +3,11 @@ import express, { type Router } from "express";
 import { ROUTES } from "constants/routes";
 
 import type UserIngredientsController from "controller/userIngredients.controller";
-import authenticateToken from "middleware/jwtMiddleware";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 
 export default function createUserIngredientsRouter(
     userIngredientsController: UserIngredientsController,
+    { authenticateToken }: SessionAuth,
 ): Router {
     const router = express.Router();
 

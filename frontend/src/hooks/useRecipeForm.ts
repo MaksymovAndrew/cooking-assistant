@@ -30,24 +30,10 @@ export const useRecipeForm = () => {
     const photo = useRecordPhotoDraft("recipe");
     const { reset: resetPhoto } = photo;
 
-    const {
-        selectedIngredients,
-        setSelectedIngredients,
-        toggleIngredientSelection,
-        updateIngredientQuantity,
-        removeIngredient,
-        reorderIngredients,
-    } = useSelectedIngredients();
+    const { setSelectedIngredients, ...ingredients } = useSelectedIngredients();
+    const { selectedIngredients } = ingredients;
 
-    const {
-        titleError,
-        descriptionError,
-        ingredientsError,
-        typeError,
-        cookingTimeError,
-        validateCreate,
-        validateChange,
-    } = useRecipeFormValidators({
+    const validation = useRecipeFormValidators({
         title,
         content,
         selectedIngredients,
@@ -97,23 +83,13 @@ export const useRecipeForm = () => {
         setCookingHours,
         cookingMinutes,
         setCookingMinutes,
-        selectedIngredients,
         selectedTypeId,
         setSelectedTypeId,
         caloriesOverride,
         setCaloriesOverride,
         photo,
-        titleError,
-        descriptionError,
-        ingredientsError,
-        typeError,
-        cookingTimeError,
-        toggleIngredientSelection,
-        updateIngredientQuantity,
-        removeIngredient,
-        reorderIngredients,
-        validateCreate,
-        validateChange,
+        ...ingredients,
+        ...validation,
         setInitialValues,
         isDirty,
         isDirtyRef,

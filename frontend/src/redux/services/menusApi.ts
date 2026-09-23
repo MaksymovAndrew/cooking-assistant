@@ -1,4 +1,3 @@
-import { PAGE_SIZE } from "constants/pagination";
 import type {
     CreateMenuRequest,
     Menu,
@@ -17,7 +16,7 @@ import {
     listProvidesTags,
     listTag,
 } from "./cacheTags";
-import { getNextOffsetParam } from "./infiniteQueryHelpers";
+import { offsetPagedQuery } from "./infiniteQueryHelpers";
 
 const MENU = "Menu" as const;
 const MENU_LIST = listTag(MENU);
@@ -31,14 +30,7 @@ export const menusApi = baseApi.injectEndpoints({
             MenuListParams,
             number
         >({
-            infiniteQueryOptions: {
-                initialPageParam: 0,
-                getNextPageParam: getNextOffsetParam,
-            },
-            query: ({ queryArg, pageParam }) => ({
-                url: API_ROUTES.menu.list,
-                params: { ...queryArg, limit: PAGE_SIZE, offset: pageParam },
-            }),
+            ...offsetPagedQuery(API_ROUTES.menu.list),
             providesTags: (result) => infiniteListProvidesTags(MENU, result),
         }),
         getMenusByPerson: build.infiniteQuery<
@@ -46,14 +38,7 @@ export const menusApi = baseApi.injectEndpoints({
             MenuListParams,
             number
         >({
-            infiniteQueryOptions: {
-                initialPageParam: 0,
-                getNextPageParam: getNextOffsetParam,
-            },
-            query: ({ queryArg, pageParam }) => ({
-                url: API_ROUTES.menu.byPerson,
-                params: { ...queryArg, limit: PAGE_SIZE, offset: pageParam },
-            }),
+            ...offsetPagedQuery(API_ROUTES.menu.byPerson),
             providesTags: (result) => infiniteListProvidesTags(MENU, result),
         }),
         getAllMenus: build.query<MenuWithStats[], null>({

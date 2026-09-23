@@ -17,7 +17,7 @@ export default class RegisterUser {
         const data = validate(registerUserSchema, input);
         const hashedPassword = await this.passwordHasher.hash(data.password);
 
-        const { id } = await this.userRepository.create({
+        const { id, session_version } = await this.userRepository.create({
             name: data.name,
             surname: data.surname,
             login: data.login,
@@ -26,6 +26,6 @@ export default class RegisterUser {
             locale,
         });
 
-        return { token: this.tokenService.generate(id) };
+        return { token: this.tokenService.generate(id, session_version) };
     }
 }

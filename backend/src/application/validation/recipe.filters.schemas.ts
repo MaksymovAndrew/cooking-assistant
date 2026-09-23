@@ -4,15 +4,17 @@ import { ALLERGEN_SLUGS } from "constants/allergens";
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
 import {
-    booleanQuerySchema,
     hasUniqueItems,
-    idListStringSchema,
-    limitSchema,
-    offsetSchema,
     optionalStringSchema,
     positiveIntegerSchema,
     toNumber,
 } from "./common.schemas";
+import {
+    booleanQuerySchema,
+    idListStringSchema,
+    limitSchema,
+    offsetSchema,
+} from "./query.schemas";
 
 // caps how many ids this filter accepts, since the catalog has hundreds of entries and a search match can surface many
 const MAX_INGREDIENT_FILTER_IDS = 20;

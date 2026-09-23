@@ -87,6 +87,7 @@ describe("LoginUser", () => {
         userRepository.findByLogin.mockResolvedValue({
             id: 7,
             password: "hash",
+            session_version: 2,
         });
         passwordHasher.compare.mockResolvedValue(true);
         tokenService.generate.mockReturnValue("jwt-token");
@@ -103,6 +104,7 @@ describe("LoginUser", () => {
         userRepository.findByLogin.mockResolvedValue({
             id: 7,
             password: "hash",
+            session_version: 2,
         });
         passwordHasher.compare.mockResolvedValue(true);
         tokenService.generate.mockReturnValue("jwt-token");
@@ -112,7 +114,7 @@ describe("LoginUser", () => {
         );
 
         expect(passwordHasher.compare).toHaveBeenCalledWith("secret", "hash");
-        expect(tokenService.generate).toHaveBeenCalledWith(7);
+        expect(tokenService.generate).toHaveBeenCalledWith(7, 2);
         expect(result).toEqual({ token: "jwt-token" });
     });
 
@@ -123,6 +125,7 @@ describe("LoginUser", () => {
         userRepository.findCredentialsByEmail.mockResolvedValue({
             id: 9,
             password: "hash",
+            session_version: 2,
         });
         passwordHasher.compare.mockResolvedValue(true);
         tokenService.generate.mockReturnValue("jwt-token");
@@ -135,7 +138,7 @@ describe("LoginUser", () => {
             "bob@example.com",
         );
         expect(userRepository.findByLogin).not.toHaveBeenCalled();
-        expect(tokenService.generate).toHaveBeenCalledWith(9);
+        expect(tokenService.generate).toHaveBeenCalledWith(9, 2);
         expect(result).toEqual({ token: "jwt-token" });
     });
 

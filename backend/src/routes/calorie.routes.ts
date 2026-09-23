@@ -3,10 +3,11 @@ import express, { type Router } from "express";
 import { ROUTES } from "constants/routes";
 
 import type CalorieController from "controller/calorie.controller";
-import authenticateToken from "middleware/jwtMiddleware";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 
 export default function createCalorieRouter(
     calorieController: CalorieController,
+    { authenticateToken }: SessionAuth,
 ): Router {
     const router = express.Router();
 

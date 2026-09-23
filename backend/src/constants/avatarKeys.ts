@@ -15,5 +15,3 @@ export const AVATAR_KEYS = [
     "herb",
     "bread",
 ] as const;
-
-export type AvatarKey = (typeof AVATAR_KEYS)[number];

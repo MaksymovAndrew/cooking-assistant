@@ -10,9 +10,28 @@ const RECIPE = {
     type_name: "Main course",
     cooking_time: 85,
     calories_per_portion: null,
+    photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
 };
 
 describe("MenuRecipeCard", () => {
+    it("should show the recipe's photo in place of the glyph", () => {
+        renderWithRouter(
+            <MenuRecipeCard
+                recipe={{
+                    ...RECIPE,
+                    photo_key: "0b1c2d3e-1111-2222-3333-444455556666",
+                }}
+            />,
+        );
+
+        expect(screen.getByRole("presentation")).toHaveAttribute(
+            "src",
+            "http://localhost:3000/api/media/0b1c2d3e-1111-2222-3333-444455556666-400.webp",
+        );
+    });
+
     it("should link to the recipe details page", () => {
         renderWithRouter(<MenuRecipeCard recipe={RECIPE} />);
 

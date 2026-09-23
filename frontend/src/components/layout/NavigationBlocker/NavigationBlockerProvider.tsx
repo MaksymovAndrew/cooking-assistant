@@ -1,54 +1,14 @@
 "use client";
 
 import type { ReactNode, RefObject } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
+import { clearGuardEntry, pushGuardEntry } from "./guardHistoryEntry";
 import type { NavigationBlockerValue } from "./navigationBlockerContext";
 import { NavigationBlockerContext } from "./navigationBlockerContext";
+import { useBrowserExitGuards } from "./useBrowserExitGuards";
 
 type DirtyRef = RefObject<boolean>;
-
-// marks the duplicate history entry the back button is absorbed by
-const GUARD_STATE_KEY = "unsavedChangesGuard";
-// past the duplicate entry and past the one the user actually asked to leave
-const STEPS_BACK_ON_PROCEED = -2;
-
-const readHistoryState = (): Record<string, unknown> => {
-    const state: unknown = window.history.state;
-
-    return typeof state === "object" && state !== null
-        ? (state as Record<string, unknown>)
-        : {};
-};
-
-const isGuardEntry = (state: unknown): boolean =>
-    typeof state === "object" && state !== null && GUARD_STATE_KEY in state;
-
-// the router keeps its own bookkeeping in history.state, so the marker is added to it rather
-// than replacing it - a blank entry would leave the router unable to restore this route
-const pushGuardEntry = () => {
-    window.history.pushState(
-        { ...readHistoryState(), [GUARD_STATE_KEY]: true },
-        "",
-        window.location.href,
-    );
-};
-
-// an entry cannot be removed, but it can stop being a guard: once there is nothing to protect,
-// the marker goes so a later back or forward onto it behaves like any other entry
-const clearGuardEntry = () => {
-    if (!isGuardEntry(window.history.state)) {
-        return;
-    }
-
-    const withoutMarker = Object.fromEntries(
-        Object.entries(readHistoryState()).filter(
-            ([key]) => key !== GUARD_STATE_KEY,
-        ),
-    );
-
-    window.history.replaceState(withoutMarker, "", window.location.href);
-};
 
 interface NavigationBlockerProviderProps {
     children: ReactNode;
@@ -121,44 +81,7 @@ export const NavigationBlockerProvider = ({
         setPending(null);
     }, []);
 
-    useEffect(() => {
-        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            if (hasUnsavedChanges()) {
-                event.preventDefault();
-            }
-        };
-
-        window.addEventListener("beforeunload", handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [hasUnsavedChanges]);
-
-    useEffect(() => {
-        const handlePopState = (event: PopStateEvent) => {
-            // arriving on the duplicate entry itself, backwards or forwards: it carries the same
-            // URL as its neighbour, so there is nothing to show and nothing to block
-            if (isGuardEntry(event.state)) {
-                return;
-            }
-
-            if (!guardEntryPushed.current || !hasUnsavedChanges()) {
-                return;
-            }
-
-            pushGuardEntry();
-            defer(() => {
-                window.history.go(STEPS_BACK_ON_PROCEED);
-            });
-        };
-
-        window.addEventListener("popstate", handlePopState);
-
-        return () => {
-            window.removeEventListener("popstate", handlePopState);
-        };
-    }, [defer, hasUnsavedChanges]);
+    useBrowserExitGuards(hasUnsavedChanges, guardEntryPushed, defer);
 
     const value = useMemo<NavigationBlockerValue>(
         () => ({

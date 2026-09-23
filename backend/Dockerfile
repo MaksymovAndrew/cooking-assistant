@@ -38,10 +38,16 @@ COPY --from=builder /app/dist ./dist
 # The Container Apps Job runs: node dist/scripts/deploy-db.js (migrate + seed)
 COPY migrations/ ./migrations/
 
+# Uploaded images live on a named volume mounted here. The directory must exist in the image,
+# owned by `node`: Docker seeds an empty named volume from the image's directory, ownership
+# included - mounted at a path the image lacks, the volume is created root-owned and the first
+# upload fails with EACCES.
+RUN mkdir -p /app/uploads && chown node:node /app/uploads
+
 EXPOSE 3000
 
-# Drop root: the official node images ship an unprivileged `node` user, and the app
-# only ever reads from disk (it logs to stdout), so nothing needs write access.
+# Drop root: the official node images ship an unprivileged `node` user. The uploads directory
+# above is the only place it writes; everything else it reads, and it logs to stdout.
 USER node
 
 # Exec form (JSON array) so SIGTERM reaches node directly — enables graceful shutdown.

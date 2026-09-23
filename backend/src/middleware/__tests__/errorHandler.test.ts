@@ -12,6 +12,13 @@ import errorHandler from "middleware/errorHandler";
 
 import { errorBody } from "test/helpers/errorBody";
 
+// no Accept-Language match - the default language
+function makeRequest() {
+    return Object.assign({} as Request, {
+        acceptsLanguages: jest.fn().mockReturnValue(false),
+    });
+}
+
 function makeResponse(headersSent = false) {
     return {
         headersSent,
@@ -23,7 +30,7 @@ function makeResponse(headersSent = false) {
 describe("errorHandler", () => {
     it("should respond with the AppError status, catalog text and code", () => {
         const err = new NotFoundError(ERROR_CODES.RECIPE_NOT_FOUND);
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
@@ -41,7 +48,7 @@ describe("errorHandler", () => {
             ERROR_CODES.VALIDATION_ERROR,
             "limit: Limit must be at most 100",
         );
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
@@ -60,7 +67,7 @@ describe("errorHandler", () => {
             503,
             "pool down",
         );
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
@@ -75,7 +82,7 @@ describe("errorHandler", () => {
 
     it("should hide the message of a regular Error behind server_error", () => {
         const err = new Error("duplicate key value violates unique constraint");
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
@@ -92,7 +99,7 @@ describe("errorHandler", () => {
         const err = Object.assign(new Error("Unexpected token in JSON"), {
             status: 400,
         });
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
@@ -108,7 +115,7 @@ describe("errorHandler", () => {
 
     it("should fall back to the bad_request text when a 4xx non-AppError has no message", () => {
         const err = Object.assign(new Error(""), { status: 422 });
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
@@ -121,7 +128,7 @@ describe("errorHandler", () => {
     });
 
     it("should respond with 500 and server_error for a non-Error", () => {
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
@@ -136,7 +143,7 @@ describe("errorHandler", () => {
 
     it("should use 500 when the error object has a numeric status of 0", () => {
         const err = Object.assign({}, { status: 0 });
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
 
@@ -153,7 +160,7 @@ describe("errorHandler", () => {
         const errorSpy = jest.spyOn(logger, "error");
         const err = new NotFoundError(ERROR_CODES.MENU_NOT_FOUND);
 
-        errorHandler(err, {} as Request, makeResponse(), jest.fn());
+        errorHandler(err, makeRequest(), makeResponse(), jest.fn());
 
         expect(warnSpy).toHaveBeenCalledWith(
             { status: 404, code: ERROR_CODES.MENU_NOT_FOUND },
@@ -167,7 +174,7 @@ describe("errorHandler", () => {
         const errorSpy = jest.spyOn(logger, "error");
         const err = new Error("connection refused");
 
-        errorHandler(err, {} as Request, makeResponse(), jest.fn());
+        errorHandler(err, makeRequest(), makeResponse(), jest.fn());
 
         expect(errorSpy).toHaveBeenCalledWith(err);
         expect(warnSpy).not.toHaveBeenCalled();
@@ -175,7 +182,7 @@ describe("errorHandler", () => {
 
     it("should pass the error to next when headers were sent", () => {
         const err = new Error("Too late");
-        const req = {} as Request;
+        const req = makeRequest();
         const res = makeResponse(true);
         const next = jest.fn() as NextFunction;
 

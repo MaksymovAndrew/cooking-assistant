@@ -18,6 +18,21 @@ describe("Avatar", () => {
         expect(screen.queryByText("AB")).not.toBeInTheDocument();
     });
 
+    it("should render an uploaded photo ahead of the preset", () => {
+        render(
+            <Avatar
+                initials="AB"
+                avatarKey="tomato"
+                photoKey="0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b"
+            />,
+        );
+
+        expect(screen.getByRole("presentation")).toBeInTheDocument();
+        expect(
+            screen.queryByTestId(AVATAR_PRESET_TEST_ID),
+        ).not.toBeInTheDocument();
+    });
+
     it("should fall back to initials when avatarKey is unknown", () => {
         render(<Avatar initials="AB" avatarKey="not-a-real-avatar" />);
 

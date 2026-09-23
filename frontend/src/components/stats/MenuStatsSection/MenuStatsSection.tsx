@@ -6,29 +6,20 @@ import type { MenuStatistics } from "types/stats";
 import { MenuCategoryChart } from "components/stats/MenuCategoryChart";
 import { StatBarList } from "components/stats/StatBarList";
 import { StatCard } from "components/stats/StatCard";
-import { StatTile } from "components/stats/StatTile";
 
-import { formatKcal } from "utils/calories";
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatCompactDuration } from "utils/cookingTimeUtils";
 
 import { MenuExtremesCards } from "./MenuExtremesCards";
 import styles from "./MenuStatsSection.module.scss";
-
-const AVG_RECIPES_FRACTION_DIGITS = 1;
+import { MenuStatsTiles } from "./MenuStatsTiles";
 
 export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
     stats,
 }) => {
     const { t } = useTranslation("stats");
-    const perMenuCaption = t("statsPage.perMenuCaption");
 
-    const formatCompactTime = (totalMinutes: number): string => {
-        const { hours, minutes } = splitCookingTime(totalMinutes);
-
-        return hours > 0
-            ? t("statsPage.timeCompactHoursMinutes", { hours, minutes })
-            : t("statsPage.timeMinutesOnly", { minutes });
-    };
+    const formatCompactTime = (totalMinutes: number): string =>
+        formatCompactDuration(t, totalMinutes);
 
     return (
         <section className={styles["menu-stats-section"]}>
@@ -36,59 +27,7 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
                 {t("statsPage.menuSectionHeading")}
             </h1>
 
-            <div className={styles["menu-stats-section__tiles"]}>
-                <StatTile
-                    label={t("statsPage.totalMenusTile")}
-                    value={stats.menusCount}
-                    caption={t("statsPage.acrossAppCaption")}
-                />
-                <StatTile
-                    label={t("statsPage.avgTotalTimeTile")}
-                    value={
-                        stats.averageTotalTime !== null
-                            ? formatCompactTime(stats.averageTotalTime)
-                            : "—"
-                    }
-                    caption={perMenuCaption}
-                />
-                <StatTile
-                    label={t("statsPage.avgRecipesTile")}
-                    value={
-                        stats.averageRecipesPerMenu !== null
-                            ? stats.averageRecipesPerMenu.toFixed(
-                                  AVG_RECIPES_FRACTION_DIGITS,
-                              )
-                            : "—"
-                    }
-                    caption={perMenuCaption}
-                />
-                <StatTile
-                    label={t("statsPage.mostUsedCategoryTile")}
-                    value={stats.mostUsedCategory?.categoryname ?? "—"}
-                    valueVariant="text"
-                    caption={
-                        stats.mostUsedCategory
-                            ? t("statsPage.mostUsedCategoryCaption", {
-                                  count: stats.mostUsedCategory.menuCount,
-                                  total: stats.menusCount,
-                              })
-                            : undefined
-                    }
-                />
-                <StatTile
-                    label={t("statsPage.avgCaloriesTile")}
-                    value={
-                        stats.averageCaloriesOverall !== null
-                            ? t("statsPage.caloriesValue", {
-                                  count: formatKcal(
-                                      stats.averageCaloriesOverall,
-                                  ),
-                              })
-                            : "—"
-                    }
-                    caption={perMenuCaption}
-                />
-            </div>
+            <MenuStatsTiles stats={stats} formatTime={formatCompactTime} />
 
             <div className={styles["menu-stats-section__grid"]}>
                 <StatCard>

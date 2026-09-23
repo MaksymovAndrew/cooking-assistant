@@ -79,6 +79,7 @@ RATE_LIMIT_MAX=<global per-client request cap per window; default 300>
 RATE_LIMIT_WINDOW_MS=<global rate-limit window in ms; default 60000>
 CORS_ORIGIN=<allowed frontend origin>
 COOKIE_DOMAIN=<empty in dev; shared parent domain in production>
+MEDIA_DIR=<directory uploaded photos are written to; default uploads, relative to the working directory>
 RESEND_API_KEY=<Resend API key; leave empty to use the logging fallback>
 EMAIL_FROM=<e.g. noreply@example.com; leave empty to use the logging fallback>
 ```
@@ -89,8 +90,9 @@ EMAIL_FROM=<e.g. noreply@example.com; leave empty to use the logging fallback>
 
 `JWT_SECRET_KEY` is used by [src/middleware/jwtMiddleware.ts](src/middleware/jwtMiddleware.ts) (verifies
 tokens) and [src/infrastructure/security/JwtTokenService.ts](src/infrastructure/security/JwtTokenService.ts)
-(signs them at login). It must be at least 32 characters (validated on startup). Without it, login and
-every protected route return a 500 configuration error.
+(signs them at login). It must be at least 32 characters (validated on startup), and in production the server refuses to start
+without it at all. In development, without it, login and every protected route return a 500 configuration
+error.
 The rest of the env is validated with zod on startup; invalid ports or logger levels fail fast with a
 clear configuration error. `LOG_LEVEL` controls the pino logger level and defaults to `info` when unset.
 
@@ -100,6 +102,10 @@ the link instead of sending it, so the flows work end to end without a real Rese
 set, both must be set - the app fails fast on startup otherwise
 ([src/config/env.ts](src/config/env.ts)'s `assertConsistentEmailConfig`). With both set,
 `ResendEmailService` calls Resend's REST API via native `fetch`.
+
+`MEDIA_DIR` is where uploaded photos land. In the image it resolves to `/app/uploads`, which the
+Dockerfile creates and hands to the unprivileged `node` user, and production mounts the `uploads` named
+volume there so photos outlive every container. Locally the default `backend/uploads/` is gitignored.
 
 When you add a new env key, add it (without a value) to [.env.example](.env.example) too.
 
@@ -245,7 +251,8 @@ backend/
     │   └── email/             ResendEmailService, LoggingEmailService (dev/CI fallback), createEmailSender factory
     │
     ├── middleware/
-    │   ├── jwtMiddleware.ts  authenticateToken - verifies the JWT from the authToken cookie, attaches req.user
+    │   ├── jwtMiddleware.ts  createSessionAuth - authenticateToken and optionalAuth: verify the JWT from the
+    │   │                     authToken cookie and its session version, attach req.user
     │   ├── rateLimit.ts      createGlobalLimiter + per-route limiters: login/register (each with a
     │   │                     stricter per-login limiter and a looser per-IP one), forgotPassword,
     │   │                     resetPassword, changePassword, resendVerification, confirmEmail, deleteAccount
@@ -313,9 +320,18 @@ repository method (see menu/pantry repos).
   `frontend/src/i18n/locales/en/common.json`, guarded by a frontend sync test.
 - **No display text in `AppError`.** It holds `code`, `status` and an optional `detail` (request-specific
   context, e.g. the zod issue list on `validation_error`). `errorHandler` resolves the text at the HTTP
-  edge - `detail ?? translateError(code)` - which is where a request locale will be read once a second
-  language exists. Adding a locale is a new `i18n/locales/<locale>/` folder plus one entry in
-  `CATALOGS` ([src/i18n/translate.ts](src/i18n/translate.ts)); `satisfies Catalog` rejects a locale missing any key.
+  edge - `detail ?? translateError(code, locale)`.
+- **Every piece of server copy is written in a locale, and there are exactly two sources for it.** A
+  response - error text and `{ message }` bodies alike - follows the request: `requestLocale(req)`
+  ([src/i18n/requestLocale.ts](src/i18n/requestLocale.ts)) picks the best match for `Accept-Language`
+  among `LOCALES` ([src/constants/locales.ts](src/constants/locales.ts)), falling back to `en`; the app
+  sends the language it is showing, so a signed-in visitor's choice arrives that way. An email follows
+  the recipient's stored `person.locale` instead, since it is read long after the request - registration
+  stores the request's language, and `PUT /me/locale` changes it. The translate functions take the locale
+  as a required argument, so a call site cannot quietly default to English. Adding a locale is one
+  `LOCALES` entry, a new `i18n/locales/<locale>/` folder and one entry in `CATALOGS`
+  ([src/i18n/translate.ts](src/i18n/translate.ts)); `satisfies Record<Locale, Catalog>` rejects a locale
+  missing any key.
 - **Internal failures are not `AppError`s.** A misconfiguration or programming error (missing JWT secret,
   a route without `req.user`) throws a plain `Error`; every 5xx is answered as `server_error` and never
   leaks its message.
@@ -345,13 +361,17 @@ Auth is an **httpOnly cookie** (`authToken`) - the token is never in a response 
 reads it. Cookie name and options live in [src/config/cookie.ts](src/config/cookie.ts).
 
 1. `POST /api/login` verifies the password via `BcryptPasswordHasher` and signs an HS256 JWT (payload
-   `{ id }`, `expiresIn: "24h"`) via `JwtTokenService`. The controller sets it with
+   `{ id, typ: "session", sv }`, `expiresIn: "24h"`) via `JwtTokenService`, where `sv` is the account's
+   `session_version`. The controller sets it with
    `res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS)` (`httpOnly`, `sameSite: "lax"`, `secure` in
    production, `domain` from `COOKIE_DOMAIN`, `maxAge` 24h) and responds `{ message: "Logged in" }`.
 2. The browser sends the cookie automatically on later requests (`cookie-parser` + CORS `credentials: true`).
 3. [src/middleware/jwtMiddleware.ts](src/middleware/jwtMiddleware.ts) reads the JWT from
-   `req.cookies[AUTH_COOKIE_NAME]`, verifies it with `JWT_SECRET_KEY` (HS256 only) - `401` if the cookie is
-   missing, `403` if it is invalid/expired - then attaches `req.user = { id }` and calls `next()`.
+   `req.cookies[AUTH_COOKIE_NAME]`, verifies it with `JWT_SECRET_KEY` (HS256 only) and compares its `sv` with
+   the account's current `session_version` - `401` if the cookie is missing, `403` if it is invalid, expired
+   or issued before the password last changed - then attaches `req.user = { id }` and calls `next()`.
+   Changing or resetting the password raises `session_version`, so every other session ends at once;
+   `/change-password` re-issues the cookie for the session that made the change.
 4. `GET /api/me` (protected) returns `{ id, ..., email, email_verified_at }` so the client can check its
    session and email-verification state. `POST /api/logout` (public) clears the cookie and returns
    `{ message: "Logged out" }`.
@@ -461,6 +481,7 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | POST   | `/logout`                    | Clear the `authToken` cookie, return `{ message: "Logged out" }` (public)                                                 |
 | GET    | `/me`                        | Return the current user (including `email`, `email_verified_at`) from the cookie (session check)                          |
 | PATCH  | `/me`                        | Update the current user's profile (`name`, `surname`, `avatar`)                                                           |
+| PUT    | `/me/locale`                 | Set the account's language (`{ locale }`, one of the server's catalogs) - what its emails are written in (204)            |
 | DELETE | `/me`                        | Delete the current user's account; rate-limited by user id                                                                |
 | POST   | `/forgot-password`           | Request a password reset link by `email`; always a generic response; rate-limited by email, every request counts (public) |
 | POST   | `/reset-password`            | Set a new password from a `{ token, newPassword }` reset link (public)                                                    |
@@ -476,18 +497,20 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 
 ### Recipes ([src/routes/recipe.routes.ts](src/routes/recipe.routes.ts))
 
-| Method | Path                      | Purpose                                                                              |
-| ------ | ------------------------- | ------------------------------------------------------------------------------------ |
-| POST   | `/recipe`                 | Create a recipe with ingredients                                                     |
-| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                    |
-| GET    | `/recipe/:id`             | Single recipe with ingredients                                                       |
-| PUT    | `/recipe/:id`             | Update a recipe                                                                      |
-| DELETE | `/recipe/:id`             | Delete a recipe                                                                      |
-| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites, allergens, avoided, tags) |
-| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)                                 |
-| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                                             |
-| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent)                    |
-| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)                       |
+| Method | Path                      | Purpose                                                                                            |
+| ------ | ------------------------- | -------------------------------------------------------------------------------------------------- |
+| POST   | `/recipe`                 | Create a recipe with ingredients                                                                   |
+| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                                  |
+| GET    | `/recipe/:id`             | Single recipe with ingredients                                                                     |
+| PUT    | `/recipe/:id`             | Update a recipe                                                                                    |
+| DELETE | `/recipe/:id`             | Delete a recipe                                                                                    |
+| GET    | `/recipes-by-filters`     | Filter (name, type, ingredients, time, date, pantry, favourites, rating, allergens, avoided, tags) |
+| GET    | `/recipes-filters-person` | Filter the current user's recipes (user from cookie)                                               |
+| GET    | `/recipes-stats`          | Aggregated stats for the statistics page                                                           |
+| PUT    | `/recipe/:id/favourite`   | Add the recipe to the current user's favourites (204, idempotent)                                  |
+| DELETE | `/recipe/:id/favourite`   | Remove it from the current user's favourites (204, idempotent)                                     |
+| PUT    | `/recipe/:id/rating`      | Rate the recipe `{ value: 1..5 }`, replacing the user's earlier vote (204)                         |
+| DELETE | `/recipe/:id/rating`      | Take the user's vote back (204, idempotent)                                                        |
 
 Every search/list and detail response carries `isOwner` and `isFavourite` computed for the requester;
 `isFavourite` is `null` when the request has no session. `favourites=true` narrows a list to the
@@ -500,6 +523,14 @@ allergens, is on the requester's avoid list, `null` for a guest. Without an expl
 requester's list is ranked by it: favourites first, anything avoided last (favourites still lead among those),
 then newest. `hide_avoided=true` drops those recipes and is refused for a guest with `diet/requires_login`;
 `exclude_allergens=gluten,milk` leaves out recipes with any listed allergen and works for everyone.
+
+Ratings: search and detail responses carry `ratingAverage` (unrounded, `null` for a record nobody has
+rated), `ratingCount` and the requester's own `myRating` (`null` for a guest and for anyone who hasn't
+voted). A rating for a record that does not exist answers `404`, one on the requester's own recipe or menu
+`400 ratings/own_record`. `top_rated=true` keeps records averaging 4 or more and works for everyone;
+`sort_order=rating` ranks by a Bayesian average (`RATING_SORT_PRIOR` in `constants/ratings.ts`), so one
+five-star vote can't outrank fifty votes averaging 4.8. Rating writes live in
+[src/routes/rating.routes.ts](src/routes/rating.routes.ts).
 
 `GET /recipes` and `GET /recipes-stats` both use explicit columns rather than `SELECT r.*`, so
 neither ships a recipe's raw owner `person_id` to the client - the same rule the list/search
@@ -528,17 +559,19 @@ table and aggregating client-side.
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 
-| Method | Path                   | Purpose                                                |
-| ------ | ---------------------- | ------------------------------------------------------ |
-| GET    | `/menu`                | All menus, paginated (category and favourites filters) |
-| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page)   |
-| POST   | `/create-menu`         | Create a menu with recipes                             |
-| GET    | `/menu/:id`            | Menu details + recipes                                 |
-| PUT    | `/menu/:id`            | Update a menu                                          |
-| DELETE | `/menu/:id`            | Delete a menu                                          |
-| GET    | `/menu-filters-person` | The current user's menus (user from cookie)            |
-| PUT    | `/menu/:id/favourite`  | Add the menu to the current user's favourites (204)    |
-| DELETE | `/menu/:id/favourite`  | Remove it from the current user's favourites (204)     |
+| Method | Path                   | Purpose                                                                     |
+| ------ | ---------------------- | --------------------------------------------------------------------------- |
+| GET    | `/menu`                | All menus, paginated (category, favourites and rating filters, rating sort) |
+| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page)                        |
+| POST   | `/create-menu`         | Create a menu with recipes                                                  |
+| GET    | `/menu/:id`            | Menu details + recipes                                                      |
+| PUT    | `/menu/:id`            | Update a menu                                                               |
+| DELETE | `/menu/:id`            | Delete a menu                                                               |
+| GET    | `/menu-filters-person` | The current user's menus (user from cookie)                                 |
+| PUT    | `/menu/:id/favourite`  | Add the menu to the current user's favourites (204)                         |
+| DELETE | `/menu/:id/favourite`  | Remove it from the current user's favourites (204)                          |
+| PUT    | `/menu/:id/rating`     | Rate the menu `{ value: 1..5 }` (204), as for recipes                       |
+| DELETE | `/menu/:id/rating`     | Take the user's vote back (204, idempotent)                                 |
 
 ### Shopping list ([src/routes/shoppingList.routes.ts](src/routes/shoppingList.routes.ts))
 
@@ -579,13 +612,13 @@ lives in [src/constants/allergens.ts](src/constants/allergens.ts), shared with t
 
 ### Tags ([src/routes/tag.routes.ts](src/routes/tag.routes.ts))
 
-| Method | Path                | Purpose                                                  |
-| ------ | ------------------- | -------------------------------------------------------- |
-| GET    | `/tags`             | The current user's tags, by name                          |
-| POST   | `/tags`             | Create a tag (201 with the tag)                           |
-| PATCH  | `/tags/:id`         | Rename it (204)                                           |
-| DELETE | `/tags/:id`         | Delete it, unlinking it from every recipe (204)           |
-| PUT    | `/recipe/:id/tags`  | Replace the user's tags on that recipe (204)              |
+| Method | Path               | Purpose                                         |
+| ------ | ------------------ | ----------------------------------------------- |
+| GET    | `/tags`            | The current user's tags, by name                |
+| POST   | `/tags`            | Create a tag (201 with the tag)                 |
+| PATCH  | `/tags/:id`        | Rename it (204)                                 |
+| DELETE | `/tags/:id`        | Delete it, unlinking it from every recipe (204) |
+| PUT    | `/recipe/:id/tags` | Replace the user's tags on that recipe (204)    |
 
 Tags are private: a name is unique per person regardless of case (`tags/duplicate_name`), there is a
 cap of 50 per person (`tags/limit_reached`) and 10 per recipe, and another person's tag answers 404
@@ -593,6 +626,38 @@ cap of 50 per person (`tags/limit_reached`) and 10 per recipe, and another perso
 just their own. Search and detail responses carry the requester's own `tags` (`null` for a guest),
 and `tag_ids=3,4` filters the list down to recipes carrying any of them - a guest gets a 400
 `tags/requires_login`.
+
+### Photos ([src/routes/photo.routes.ts](src/routes/photo.routes.ts), [src/routes/media.routes.ts](src/routes/media.routes.ts))
+
+| Method | Path                      | Purpose                                                       |
+| ------ | ------------------------- | ------------------------------------------------------------- |
+| PUT    | `/recipe/:id/photo`       | Set or replace a recipe's photo (owner only, `{ photo_key }`) |
+| DELETE | `/recipe/:id/photo`       | Remove it (204)                                               |
+| PUT    | `/menu/:id/photo`         | Set or replace a menu's cover (owner only, `{ photo_key }`)   |
+| DELETE | `/menu/:id/photo`         | Remove it (204)                                               |
+| PUT    | `/me/avatar`              | Set or replace the current user's photo (`{ photo_key }`)     |
+| DELETE | `/me/avatar`              | Remove it (204)                                               |
+| GET    | `/media/:file`            | Serve a stored photo (public; see the renditions below)       |
+
+The upload body is the image itself (any `Content-Type`, up to 10 MB), read by `express.raw` on these
+routes only, after auth and a per-user limiter (20 uploads per 10 minutes). The server never trusts
+the name or type it is told: it sniffs the bytes for JPEG, PNG, WebP or AVIF (anything else, SVG
+included, is `media/unsupported_type`), then `sharp` decodes and re-encodes the picture into three
+renditions - WebP at 400 and 1200 px (`<key>-400.webp`, `<key>-1200.webp`, scaled down, never up) and
+a 1200x630 JPEG cropped around the most prominent region (`<key>-og.jpg`), which link previews use
+because every messenger renders JPEG in that frame - capped at 40 megapixels, refusing truncated files (`media/unreadable`), applying the
+EXIF orientation and dropping every piece of metadata, GPS included. Only the re-encoded files are
+kept, under a server-generated UUID, written before the database points at them; the previous photo's
+files are deleted after the new key is stored. Deleting a recipe, a menu or an account deletes its
+photos too: the delete statement returns the keys it removed (`DELETE ... RETURNING`), and `PhotoCleanup`
+removes those files once the transaction commits, so an upload racing the delete cannot orphan its files.
+
+`GET /media/...` is mounted before the global limiter and left out of request logs, since a page of
+cards is dozens of image requests. It accepts only the exact file-name shape the server generates and
+answers `image/webp` or `image/jpeg` - taken from that name, never from the request - with
+`X-Content-Type-Options: nosniff`, `Content-Disposition: inline`, a year-long
+immutable cache (a new photo is a new key) and `Cross-Origin-Resource-Policy: same-site`, so the app
+domain may load it while any other site may not.
 
 ### Menu categories ([src/routes/menuCategory.routes.ts](src/routes/menuCategory.routes.ts))
 
@@ -611,6 +676,11 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
 - `recipe_favourites` / `menu_favourites` - one row per person and favourited recipe / menu (composite
   primary key, so a repeat add is a no-op). Every foreign key is `ON DELETE CASCADE`: recipe, menu and
   account deletion are hand-written transactions that know nothing about favourites.
+- `recipe_ratings` / `menu_ratings` - one row per person and rated recipe / menu (`value` 1-5; the
+  composite primary key is the one-vote-per-person rule). Every foreign key is `ON DELETE CASCADE`.
+  `recipes` and `menu` carry running `rating_sum` / `rating_count` totals kept by an `AFTER` trigger on
+  the vote tables, never by repository code: a deleted account takes its votes with it through a cascade,
+  and only a trigger sees that. The average is derived from the totals on read, never stored.
 - `person` to `ingredients` through `person_ingredients` (the pantry aggregate, with
   `quantity_person_ingradient` - typo in the real column name, leave it) and `ingredient_purchases`
   (one row per purchase lot). Expiry is computed per lot from `ingredient_purchases.purchase_date`,
@@ -626,6 +696,11 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
   foreign keys `ON DELETE CASCADE`, one unique index on `(person_id, lower(name))`). Search and detail
   queries turn them into the per-requester `tags` column (`recipeTagsColumn.ts`), which also backs the
   `tag_ids` filter.
+- `recipes.photo_key`, `menu.photo_key` and `person.avatar_photo_key` - nullable UUIDs naming the
+  stored photo files. `person.avatar` keeps the preset avatar key beside the photo, so removing the
+  photo brings the preset back. Search and detail responses carry the record's `photo_key` and an
+  `author` object (`authorColumn.ts`: first name, surname initial, preset avatar and photo - never the
+  login or email).
 - `ingredients.id_unit_measurement` -> `unit_measurement`
 - `ingredients` carries metadata: `allergens`, `days_to_expire`, `seasonality`, `storage_condition`
 - `menu` (per-user, with `category_id` -> `menu_category`) to `recipes` through `menu_recipe`
@@ -659,4 +734,4 @@ The whole project shares one version and one changelog at the repo root. This pa
 - [Root README](../README.md) - project overview and monorepo scripts
 - [Frontend README](../frontend/README.md) - React client
 - [CHANGELOG.md](../CHANGELOG.md) - project changelog
-- [CLAUDE.md](../CLAUDE.md) - notes for AI tooling
+- [AGENTS.md](../AGENTS.md) - notes for AI coding agents

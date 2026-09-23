@@ -3,8 +3,8 @@ import express, { type Router } from "express";
 import { ROUTES } from "constants/routes";
 
 import type UserController from "controller/user.controller";
-import authenticateToken from "middleware/jwtMiddleware";
-import optionalAuth from "middleware/optionalAuth";
+import type UserSecurityController from "controller/userSecurity.controller";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 import {
     changePasswordLimiter,
     confirmEmailLimiter,
@@ -20,6 +20,8 @@ import {
 
 export default function createUserRouter(
     userController: UserController,
+    userSecurityController: UserSecurityController,
+    { authenticateToken, optionalAuth }: SessionAuth,
 ): Router {
     const router = express.Router();
 
@@ -40,23 +42,28 @@ export default function createUserRouter(
     router.post(
         ROUTES.auth.forgotPassword,
         forgotPasswordLimiter,
-        userController.requestPasswordReset,
+        userSecurityController.requestPasswordReset,
     );
     router.post(
         ROUTES.auth.resetPassword,
         resetPasswordLimiter,
-        userController.confirmPasswordReset,
+        userSecurityController.confirmPasswordReset,
     );
     router.post(
         ROUTES.auth.changePassword,
         authenticateToken,
         changePasswordLimiter,
-        userController.changePassword,
+        userSecurityController.changePassword,
     );
     router.patch(
         ROUTES.auth.me,
         authenticateToken,
         userController.updateProfile,
+    );
+    router.put(
+        ROUTES.auth.locale,
+        authenticateToken,
+        userController.updateLocale,
     );
     router.delete(
         ROUTES.auth.me,
@@ -68,12 +75,12 @@ export default function createUserRouter(
         ROUTES.auth.resendVerificationEmail,
         authenticateToken,
         resendVerificationLimiter,
-        userController.requestEmailVerification,
+        userSecurityController.requestEmailVerification,
     );
     router.post(
         ROUTES.auth.confirmEmail,
         confirmEmailLimiter,
-        userController.confirmEmailVerification,
+        userSecurityController.confirmEmailVerification,
     );
 
     return router;

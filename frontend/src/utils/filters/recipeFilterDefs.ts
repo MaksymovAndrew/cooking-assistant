@@ -1,17 +1,19 @@
-import { ALLERGEN_SLUGS, type AllergenSlug } from "constants/allergens";
+import type { AllergenSlug } from "constants/allergens";
 import type { RecipeFilterParams } from "types/recipe";
 
 import type { FilterDef } from "./filterDef";
-import {
-    idListFilter,
-    numericRangeFilter,
-    textFilter,
-} from "./filterDefFactories";
-import {
-    booleanFilter,
-    enumFilter,
-    enumListFilter,
-} from "./filterDefFactories.scalar";
+import { idListFilter, textFilter } from "./filterDefFactories";
+import { enumFilter } from "./filterDefFactories.enum";
+import { RECIPE_RANGE_FILTER_DEFS } from "./recipeFilterDefs.ranges";
+import { RECIPE_TOGGLE_FILTER_DEFS } from "./recipeFilterDefs.toggles";
+
+export type RecipeSort = "asc" | "desc" | "rating";
+
+const SORT_CHIP_KEYS = {
+    asc: "filterPanel.fastToLong",
+    desc: "filterPanel.longToFast",
+    rating: "filterPanel.topRated",
+} as const satisfies Record<RecipeSort, string>;
 
 export interface RecipeFilterState {
     search: string;
@@ -19,16 +21,15 @@ export interface RecipeFilterState {
     ingredients: number[];
     cookingTime: { min: string; max: string };
     calories: { min: string; max: string };
-    sort: "asc" | "desc" | null;
+    sort: RecipeSort | null;
     inPantry: boolean;
     favourites: boolean;
+    topRated: boolean;
     excludeAllergens: AllergenSlug[];
     hideAvoided: boolean;
     tags: number[];
 }
 
-// shared with links that pre-set the filter before navigating (see PantryRecipesCard)
-export const RECIPE_PANTRY_URL_PARAM = "pantry";
 // shared with links that pre-set the filter before navigating (see GuestLandingRecipeFilters)
 export const RECIPE_TYPE_URL_PARAM = "types";
 
@@ -56,84 +57,18 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
         chipLabel: (value, t) =>
             t("filterPanel.ingredientsChip", { count: value.length }),
     }),
-    numericRangeFilter<RecipeFilterParams>({
-        key: "cookingTime",
-        urlParam: "time",
-        minParam: "min_cooking_time",
-        maxParam: "max_cooking_time",
-        chipLabel: (value, t) => {
-            if (value.min !== "" && value.max !== "") {
-                return t("filterPanel.timeChipRange", {
-                    min: value.min,
-                    max: value.max,
-                });
-            }
-            if (value.min !== "") {
-                return t("filterPanel.timeChipMin", { minutes: value.min });
-            }
-
-            return t("filterPanel.timeChipMax", { minutes: value.max });
-        },
-    }),
-    numericRangeFilter<RecipeFilterParams>({
-        key: "calories",
-        urlParam: "kcal",
-        minParam: "min_calories",
-        maxParam: "max_calories",
-        chipLabel: (value, t) => {
-            if (value.min !== "" && value.max !== "") {
-                return t("filterPanel.caloriesChipRange", {
-                    min: value.min,
-                    max: value.max,
-                });
-            }
-            if (value.min !== "") {
-                return t("filterPanel.caloriesChipMin", { kcal: value.min });
-            }
-
-            return t("filterPanel.caloriesChipMax", { kcal: value.max });
-        },
-    }),
-    enumFilter<"asc" | "desc", RecipeFilterParams>({
+    ...RECIPE_RANGE_FILTER_DEFS,
+    enumFilter<RecipeSort, RecipeFilterParams>({
         key: "sort",
         urlParam: "sort",
         param: "sort_order",
-        values: ["asc", "desc"],
+        values: ["asc", "desc", "rating"],
         chipLabel: (value, t) =>
             t("filterPanel.sortChip", {
-                sort: t(
-                    value === "asc"
-                        ? "filterPanel.fastToLong"
-                        : "filterPanel.longToFast",
-                ),
+                sort: t(SORT_CHIP_KEYS[value ?? "asc"]),
             }),
     }),
-    booleanFilter<RecipeFilterParams>({
-        key: "inPantry",
-        urlParam: RECIPE_PANTRY_URL_PARAM,
-        param: "in_pantry",
-        chipLabel: (_value, t) => t("filterPanel.inPantryChip"),
-    }),
-    booleanFilter<RecipeFilterParams>({
-        key: "favourites",
-        urlParam: "fav",
-        param: "favourites",
-        chipLabel: (_value, t) => t("filterPanel.favouritesChip"),
-    }),
-    enumListFilter<AllergenSlug, RecipeFilterParams>({
-        key: "excludeAllergens",
-        urlParam: "without",
-        param: "exclude_allergens",
-        values: ALLERGEN_SLUGS,
-        chipLabel: (value, t) =>
-            t("filterPanel.excludeAllergensChip", { count: value.length }),
-    }),
-    booleanFilter<RecipeFilterParams>({
-        key: "hideAvoided",
-        urlParam: "avoid",
-        param: "hide_avoided",
-        chipLabel: (_value, t) => t("filterPanel.hideAvoidedChip"),
-    }),
+    ...RECIPE_TOGGLE_FILTER_DEFS,
     idListFilter<RecipeFilterParams>({
         key: "tags",
         urlParam: "tags",

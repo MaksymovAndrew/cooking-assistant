@@ -36,6 +36,10 @@ export default class RequestPasswordReset {
         );
         const link = `${this.frontendOrigin}/reset-password?token=${token}`;
 
-        await this.emailSender.sendPasswordResetEmail(email, link);
+        await this.emailSender.sendPasswordResetEmail(
+            email,
+            link,
+            candidate.locale,
+        );
     }
 }

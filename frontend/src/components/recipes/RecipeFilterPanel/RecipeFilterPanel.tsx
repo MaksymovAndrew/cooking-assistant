@@ -59,6 +59,7 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
             sort: null,
             inPantry: false,
             favourites: false,
+            topRated: false,
             excludeAllergens: [],
             hideAvoided: false,
             tags: [],

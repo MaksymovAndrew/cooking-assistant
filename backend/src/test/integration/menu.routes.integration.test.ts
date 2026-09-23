@@ -1,6 +1,7 @@
 import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
@@ -16,6 +17,16 @@ const MENU_ROW_EXTRAS = {
     isOwner: false,
     isFavourite: false,
     recipe_count: 2,
+    photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
+    myRating: null,
+    author: {
+        name: "Bob",
+        surname_initial: "C",
+        avatar: null,
+        avatar_photo_key: null,
+    },
 };
 
 function makeMenuBody() {
@@ -138,7 +149,7 @@ describe("menu routes", () => {
 
         expect(res.status).toBe(201);
         expect(res.body).toEqual({
-            message: translateMessage("menuCreated"),
+            message: translateMessage("menuCreated", DEFAULT_LOCALE),
             menuId: 9,
         });
         expect(deps.menuRepository.create.mock.calls[0][0]).toMatchObject({
@@ -246,7 +257,9 @@ describe("menu routes", () => {
             .send(makeMenuBody());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: translateMessage("menuUpdated") });
+        expect(res.body).toEqual({
+            message: translateMessage("menuUpdated", DEFAULT_LOCALE),
+        });
         expect(deps.menuRepository.update.mock.calls[0][0]).toBe(9);
         expect(deps.menuRepository.update.mock.calls[0][1]).toBe(7);
     });
@@ -269,14 +282,16 @@ describe("menu routes", () => {
     it("should delete a menu owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
 
-        deps.menuRepository.deleteById.mockResolvedValue(true);
+        deps.menuRepository.deleteById.mockResolvedValue({ photoKey: null });
 
         const res = await request(app)
             .delete(MENU_9_PATH)
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: translateMessage("menuDeleted") });
+        expect(res.body).toEqual({
+            message: translateMessage("menuDeleted", DEFAULT_LOCALE),
+        });
         expect(deps.menuRepository.deleteById).toHaveBeenCalledWith(9, 7);
     });
 

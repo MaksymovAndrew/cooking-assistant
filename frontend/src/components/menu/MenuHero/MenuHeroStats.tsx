@@ -2,18 +2,19 @@ import { Clock, Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
+import type { RecordRating } from "types/rating";
 
 import { BookMark } from "components/icons";
-import { RecipeRatingStars } from "components/recipes/RecipeRatingStars";
+import { RatingStars } from "components/ui/RatingStars";
 
 import styles from "./MenuHero.module.scss";
+import { MenuHeroMobileMeta } from "./MenuHeroMobileMeta";
 
 interface MenuHeroStatsProps {
     formattedTotalTime: string;
     recipeCount: number;
     formattedCalories: string | null;
-    isOwner: boolean;
+    rating: RecordRating;
     exceedsBudget?: boolean;
 }
 
@@ -23,7 +24,7 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
     formattedTotalTime,
     recipeCount,
     formattedCalories,
-    isOwner,
+    rating,
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("menu");
@@ -33,12 +34,6 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
     const caloriesStatClassName = [
         styles["menu-hero__stat"],
         exceedsBudget && styles["menu-hero__stat--calorie-over"],
-    ]
-        .filter(Boolean)
-        .join(" ");
-    const caloriesMobileClassName = [
-        styles["menu-hero__mobile-meta-item"],
-        exceedsBudget && styles["menu-hero__mobile-meta-item--calorie-over"],
     ]
         .filter(Boolean)
         .join(" ");
@@ -55,22 +50,20 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
                         {formattedTotalTime}
                     </span>
                 </div>
-                {isOwner && (
-                    <div
-                        className={[
-                            styles["menu-hero__stat"],
-                            styles["menu-hero__stat--secondary"],
-                        ].join(" ")}
-                    >
-                        <span className={styles["menu-hero__stat-label"]}>
-                            {t("menuDetailsPage.yourRating")}
-                        </span>
-                        <RecipeRatingStars
-                            rating={MENU_RATING}
-                            ratingCount={MENU_RATING_COUNT}
-                        />
-                    </div>
-                )}
+                <div
+                    className={[
+                        styles["menu-hero__stat"],
+                        styles["menu-hero__stat--secondary"],
+                    ].join(" ")}
+                >
+                    <span className={styles["menu-hero__stat-label"]}>
+                        {t("menuDetailsPage.rating")}
+                    </span>
+                    <RatingStars
+                        average={rating.ratingAverage}
+                        count={rating.ratingCount}
+                    />
+                </div>
                 <div className={styles["menu-hero__stat"]}>
                     <span className={styles["menu-hero__stat-label"]}>
                         {t("menuDetailsPage.recipes")}
@@ -96,27 +89,12 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
                 )}
             </div>
 
-            <div className={styles["menu-hero__mobile-meta"]}>
-                <span className={styles["menu-hero__mobile-meta-item"]}>
-                    <Clock size={STAT_ICON_SIZE} aria-hidden="true" />
-                    {formattedTotalTime}
-                </span>
-                <span className={styles["menu-hero__mobile-meta-item"]}>
-                    <BookMark size={STAT_ICON_SIZE} />
-                    {t("menuDetailsPage.recipesCaption", {
-                        count: recipeCount,
-                    })}
-                </span>
-                {formattedCalories !== null && (
-                    <span
-                        className={caloriesMobileClassName}
-                        title={caloriesOverTooltip}
-                    >
-                        <Flame size={STAT_ICON_SIZE} aria-hidden="true" />
-                        {formattedCalories}
-                    </span>
-                )}
-            </div>
+            <MenuHeroMobileMeta
+                formattedTotalTime={formattedTotalTime}
+                recipeCount={recipeCount}
+                formattedCalories={formattedCalories}
+                exceedsBudget={exceedsBudget}
+            />
         </>
     );
 };

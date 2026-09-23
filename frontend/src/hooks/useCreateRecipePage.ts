@@ -62,7 +62,8 @@ export const useCreateRecipePage = () => {
                     : Number(form.caloriesOverride),
         });
 
-        if ("data" in result) {
+        if (result.data) {
+            await form.photo.commit(result.data.id);
             form.markClean();
             router.push(ROUTES.allRecipes);
         }

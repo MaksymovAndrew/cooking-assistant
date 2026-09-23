@@ -1,5 +1,6 @@
 import type { InfiniteData } from "@reduxjs/toolkit/query";
 
+import { PAGE_SIZE } from "constants/pagination";
 import type { PaginatedResult } from "types/pagination";
 
 // the next OFFSET to request, or undefined once every item has been loaded - shared getNextPageParam for every offset-paginated infiniteQuery endpoint
@@ -11,6 +12,24 @@ export const getNextOffsetParam = (
 
     return loaded < lastPage.total ? loaded : undefined;
 };
+
+// the paging half of every offset-paginated list endpoint - one page of PAGE_SIZE rows per request
+export const offsetPagedQuery = <TArg extends object>(url: string) => ({
+    infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: getNextOffsetParam,
+    },
+    query: ({
+        queryArg,
+        pageParam,
+    }: {
+        queryArg: TArg;
+        pageParam: number;
+    }) => ({
+        url,
+        params: { ...queryArg, limit: PAGE_SIZE, offset: pageParam },
+    }),
+});
 
 export const flattenPages = <T>(
     data: InfiniteData<PaginatedResult<T>, number> | undefined,

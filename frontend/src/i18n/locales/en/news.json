@@ -2,6 +2,11 @@
     "title": "What's new",
     "newCount": "{{total}} new",
     "items": {
+        "photosAndRatings": {
+            "date": "2026-09-22",
+            "title": "Photos and real star ratings",
+            "description": "Recipes and menus can finally have a photo, and your profile can have one too - they show on the cards, on the page and in the preview when you share a link. Ratings are real now: give any recipe or menu one to five stars, change your mind or take your vote back, and sort the lists by what people actually rated best. Changing your password now also signs you out on every other device, so you may be asked to sign in once more."
+        },
         "shoppingListAndPreferences": {
             "date": "2026-09-19",
             "title": "Shopping list, food preferences and tags",

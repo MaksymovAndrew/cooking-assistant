@@ -7,19 +7,21 @@ import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { SetFilterValue } from "hooks/useListFilters";
 
-import styles from "components/recipes/RecipeFilterPanel/RecipeFilterPanel.module.scss";
 import { FilterChipGroup } from "components/ui/FilterChipGroup";
 import type { SegmentedOption } from "components/ui/SegmentedControl";
 import { SegmentedControl } from "components/ui/SegmentedControl";
 
-import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
+import type {
+    RecipeFilterState,
+    RecipeSort,
+} from "utils/filters/recipeFilterDefs";
 import { resolveAllergen } from "utils/ingredientName";
 
-import { RecipeCalorieRangeFields } from "./RecipeCalorieRangeFields";
+import { FilterSection } from "./FilterSection";
 import { RecipeFilterToggles } from "./RecipeFilterToggles";
 import { RecipeIngredientsFilter } from "./RecipeIngredientsFilter";
+import { RecipeRangeSections } from "./RecipeRangeSections";
 import { RecipeTagsFilter } from "./RecipeTagsFilter";
-import { RecipeTimeRangeFields } from "./RecipeTimeRangeFields";
 
 interface RecipeFilterPopoverProps {
     filters: RecipeFilterState;
@@ -31,9 +33,10 @@ interface RecipeFilterPopoverProps {
     fieldsResetKey?: number;
 }
 
-const SORT_OPTIONS: readonly SegmentedOption<"asc" | "desc">[] = [
+const SORT_OPTIONS: readonly SegmentedOption<RecipeSort>[] = [
     { value: "asc", label: "filterPanel.fastToLong" },
     { value: "desc", label: "filterPanel.longToFast" },
+    { value: "rating", label: "filterPanel.topRated" },
 ];
 
 export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
@@ -49,60 +52,13 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
         <>
             <RecipeFilterToggles filters={filters} setValue={setValue} />
 
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.cookingTimeLabel")}
-                </span>
-                <RecipeTimeRangeFields
-                    key={fieldsResetKey}
-                    minCookingTime={filters.cookingTime.min}
-                    maxCookingTime={filters.cookingTime.max}
-                    setMinCookingTime={(time) => {
-                        setValue(
-                            "cookingTime",
-                            { ...filters.cookingTime, min: time },
-                            { replace: true },
-                        );
-                    }}
-                    setMaxCookingTime={(time) => {
-                        setValue(
-                            "cookingTime",
-                            { ...filters.cookingTime, max: time },
-                            { replace: true },
-                        );
-                    }}
-                />
-            </div>
+            <RecipeRangeSections
+                filters={filters}
+                setValue={setValue}
+                fieldsResetKey={fieldsResetKey}
+            />
 
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.caloriesLabel")}
-                </span>
-                <RecipeCalorieRangeFields
-                    key={fieldsResetKey}
-                    minCalories={filters.calories.min}
-                    maxCalories={filters.calories.max}
-                    setMinCalories={(calories) => {
-                        setValue(
-                            "calories",
-                            { ...filters.calories, min: calories },
-                            { replace: true },
-                        );
-                    }}
-                    setMaxCalories={(calories) => {
-                        setValue(
-                            "calories",
-                            { ...filters.calories, max: calories },
-                            { replace: true },
-                        );
-                    }}
-                />
-            </div>
-
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.sortLabel")}
-                </span>
+            <FilterSection label={t("filterPanel.sortLabel")}>
                 <SegmentedControl
                     label={t("filterPanel.sortLabel")}
                     value={filters.sort}
@@ -114,12 +70,9 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                         label: t(option.label),
                     }))}
                 />
-            </div>
+            </FilterSection>
 
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.typeLabel")}
-                </span>
+            <FilterSection label={t("filterPanel.typeLabel")}>
                 <FilterChipGroup
                     options={types.map((type) => ({
                         id: type.id,
@@ -130,12 +83,9 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                         setValue("types", next);
                     }}
                 />
-            </div>
+            </FilterSection>
 
-            <div className={styles["recipe-filter-panel__section"]}>
-                <span className={styles["recipe-filter-panel__label"]}>
-                    {t("filterPanel.excludeAllergensLabel")}
-                </span>
+            <FilterSection label={t("filterPanel.excludeAllergensLabel")}>
                 <FilterChipGroup
                     options={ALLERGEN_SLUGS.map((slug) => ({
                         id: slug,
@@ -146,7 +96,7 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                         setValue("excludeAllergens", next);
                     }}
                 />
-            </div>
+            </FilterSection>
 
             <RecipeTagsFilter
                 value={filters.tags}

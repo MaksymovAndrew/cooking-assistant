@@ -18,6 +18,7 @@ import {
     mockedPost,
     mockedPut,
 } from "test/apiClientMock";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
@@ -41,6 +42,9 @@ const DETAIL: MenuDetails = {
         menucontent: "x",
         category_id: 2,
         isOwner: true,
+        photo_key: null,
+        ...TEST_UNRATED,
+        author: TEST_AUTHOR,
         isFavourite: false,
     },
     recipes: [],

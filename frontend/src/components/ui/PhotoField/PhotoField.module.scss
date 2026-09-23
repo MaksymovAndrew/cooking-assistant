@@ -1,0 +1,58 @@
+@use "styles/abstracts" as *;
+
+.photo-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+
+    &__frame {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        border: 2px dashed var(--border);
+        border-radius: var(--r-md);
+        background: var(--surface-2);
+
+        &--round {
+            width: 88px;
+            aspect-ratio: 1;
+            border-radius: var(--r-pill);
+        }
+    }
+
+    &__image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &__placeholder {
+        color: var(--text-muted);
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-2);
+    }
+
+    &__hint {
+        margin: 0;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+
+    &__error {
+        margin: 0;
+        color: var(--danger);
+        font:
+            500 12px Inter,
+            sans-serif;
+    }
+}

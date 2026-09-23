@@ -16,6 +16,8 @@ import {
     BTN_DELETE_RECIPE,
     BTN_EDIT_RECIPE,
     ROUTE_ALL_RECIPES,
+    TEST_AUTHOR,
+    TEST_UNRATED,
 } from "test/constants";
 import { mockNavigate, renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
@@ -34,6 +36,9 @@ const SAMPLE: RecipeDetails = {
     cooking_time: 60,
     creation_date: "2024-01-01",
     isOwner: true,
+    photo_key: null,
+    ...TEST_UNRATED,
+    author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,
     tags: [],
@@ -91,7 +96,7 @@ describe("RecipeDetailsView", () => {
             MODAL_TYPE.deleteRecipe,
         );
 
-        const dialog = screen.getByRole("dialog");
+        const dialog = await screen.findByRole("dialog");
 
         await userEvent.click(
             within(dialog).getByRole("button", { name: BTN_DELETE_RECIPE }),

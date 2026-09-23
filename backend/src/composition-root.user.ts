@@ -1,5 +1,6 @@
 import type { UserRepository } from "domain/repositories/UserRepository";
 
+import type PhotoCleanup from "application/media/PhotoCleanup";
 import type { EmailSender } from "application/ports/EmailSender";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
@@ -12,27 +13,36 @@ import LoginUser from "application/use-cases/users/LoginUser";
 import RegisterUser from "application/use-cases/users/RegisterUser";
 import RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
 import RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
+import UpdateLocale from "application/use-cases/users/UpdateLocale";
 import UpdateProfile from "application/use-cases/users/UpdateProfile";
 
 import UserController from "controller/user.controller";
+import UserSecurityController from "controller/userSecurity.controller";
 
 // split out of composition-root.ts, which hit the file's line-count lint cap once this was inlined
+export interface UserControllers {
+    userController: UserController;
+    userSecurityController: UserSecurityController;
+}
+
 export interface UserControllerDeps {
     userRepository: UserRepository;
     passwordHasher: PasswordHasher;
     tokenService: TokenService;
     emailSender: EmailSender;
     frontendOrigin: string;
+    photoCleanup: PhotoCleanup;
 }
 
-export function buildUserController({
+export function buildUserControllers({
     userRepository,
     passwordHasher,
     tokenService,
     emailSender,
     frontendOrigin,
-}: UserControllerDeps): UserController {
-    return new UserController({
+    photoCleanup,
+}: UserControllerDeps): UserControllers {
+    const userController = new UserController({
         registerUser: new RegisterUser(
             userRepository,
             passwordHasher,
@@ -40,6 +50,16 @@ export function buildUserController({
         ),
         loginUser: new LoginUser(userRepository, passwordHasher, tokenService),
         getCurrentUser: new GetCurrentUser(userRepository),
+        updateProfile: new UpdateProfile(userRepository),
+        updateLocale: new UpdateLocale(userRepository),
+        deleteAccount: new DeleteAccount(
+            userRepository,
+            passwordHasher,
+            photoCleanup,
+        ),
+    });
+
+    const userSecurityController = new UserSecurityController({
         requestPasswordReset: new RequestPasswordReset(
             userRepository,
             tokenService,
@@ -51,9 +71,11 @@ export function buildUserController({
             passwordHasher,
             tokenService,
         ),
-        changePassword: new ChangePassword(userRepository, passwordHasher),
-        updateProfile: new UpdateProfile(userRepository),
-        deleteAccount: new DeleteAccount(userRepository, passwordHasher),
+        changePassword: new ChangePassword(
+            userRepository,
+            passwordHasher,
+            tokenService,
+        ),
         requestEmailVerification: new RequestEmailVerification(
             userRepository,
             tokenService,
@@ -65,4 +87,6 @@ export function buildUserController({
             tokenService,
         ),
     });
+
+    return { userController, userSecurityController };
 }

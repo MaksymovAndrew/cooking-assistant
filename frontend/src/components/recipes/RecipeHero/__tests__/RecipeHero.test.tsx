@@ -7,11 +7,15 @@ import { API_ROUTES } from "api/endpoints";
 
 import { RecipeHero } from "components/recipes/RecipeHero";
 
+import { mediaUrl } from "utils/mediaUrl";
+
 import { mockedPut } from "test/apiClientMock";
+import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 jest.mock("api/client");
 
+const RECIPE_TITLE = "Slow-roasted ragù";
 const LOG_INTAKE_BUTTON = "Log intake";
 const GUEST_CTA = "Log in for the full experience";
 const CALORIES_PER_PORTION_LABEL = "420 kcal / portion";
@@ -19,7 +23,7 @@ const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 
 const BASE_RECIPE: RecipeDetails = {
     id: 1,
-    title: "Slow-roasted ragù",
+    title: RECIPE_TITLE,
     content: "A deeply savoury slow-cooked ragù.",
     ingredients: [],
     type_id: 1,
@@ -27,6 +31,9 @@ const BASE_RECIPE: RecipeDetails = {
     cooking_time: 85,
     creation_date: "2024-01-01",
     isOwner: false,
+    photo_key: null,
+    ...TEST_UNRATED,
+    author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,
     tags: [],
@@ -61,7 +68,7 @@ describe("RecipeHero", () => {
         renderWithRouter(<RecipeHero {...baseProps} />);
 
         expect(
-            screen.getByRole("heading", { name: "Slow-roasted ragù" }),
+            screen.getByRole("heading", { name: RECIPE_TITLE }),
         ).toBeInTheDocument();
         expect(screen.getByText("Main course")).toBeInTheDocument();
     });
@@ -127,13 +134,39 @@ describe("RecipeHero", () => {
         ).toBeInTheDocument();
     });
 
-    it("should not show the rating stat for a visitor", () => {
-        renderWithRouter(<RecipeHero {...baseProps} />);
+    it("should rate the recipe for a signed-in visitor and move the average at once", async () => {
+        mockedPut.mockResolvedValue({ data: null });
 
-        expect(screen.queryByText("Your rating")).not.toBeInTheDocument();
+        renderWithRouter(
+            <RecipeHero
+                {...baseProps}
+                recipe={{ ...BASE_RECIPE, ratingAverage: 3, ratingCount: 1 }}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("radio", { name: "5 stars" }));
+
+        expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.recipes.rating(1), {
+            value: 5,
+        });
+        expect(screen.getByRole("radio", { name: "5 stars" })).toBeChecked();
+        expect(
+            screen.getByRole("img", {
+                name: "Rated 4.0 out of 5 from 2 ratings",
+            }),
+        ).toBeInTheDocument();
     });
 
-    it("should show owner actions, the rating stat and call onDelete when the viewer owns the recipe", async () => {
+    it("should not offer the stars to a guest", () => {
+        renderWithRouter(<RecipeHero {...baseProps} recipe={GUEST_RECIPE} />);
+
+        expect(screen.queryByRole("radiogroup")).not.toBeInTheDocument();
+        expect(
+            screen.getByRole("img", { name: "No ratings yet" }),
+        ).toBeInTheDocument();
+    });
+
+    it("should show owner actions without the stars and call onDelete when the viewer owns the recipe", async () => {
         const onDelete = jest.fn();
 
         renderWithRouter(
@@ -147,7 +180,7 @@ describe("RecipeHero", () => {
         expect(
             screen.getByRole("link", { name: /Edit recipe/ }),
         ).toHaveAttribute("href", "/change-recipe/1");
-        expect(screen.getByText("Your rating")).toBeInTheDocument();
+        expect(screen.queryByRole("radiogroup")).not.toBeInTheDocument();
 
         await userEvent.click(
             screen.getByRole("button", { name: /Delete recipe/ }),
@@ -258,5 +291,28 @@ describe("RecipeHero", () => {
         );
 
         expect(onLogIntake).toHaveBeenCalledTimes(1);
+    });
+
+    it("should show the recipe photo named after the recipe", () => {
+        renderWithRouter(
+            <RecipeHero
+                {...baseProps}
+                recipe={{
+                    ...BASE_RECIPE,
+                    photo_key: "0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b",
+                }}
+            />,
+        );
+
+        expect(screen.getByAltText(RECIPE_TITLE)).toHaveAttribute(
+            "src",
+            mediaUrl("0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b", "hero"),
+        );
+    });
+
+    it("should credit the author by first name and surname initial", () => {
+        renderWithRouter(<RecipeHero {...baseProps} />);
+
+        expect(screen.getByText("by Test U.")).toBeInTheDocument();
     });
 });

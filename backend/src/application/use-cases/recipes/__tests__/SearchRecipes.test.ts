@@ -167,7 +167,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "sort_order: Invalid enum value. Expected 'asc' | 'desc', received 'junk'",
+            "sort_order: Invalid enum value. Expected 'asc' | 'desc' | 'rating', received 'junk'",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });

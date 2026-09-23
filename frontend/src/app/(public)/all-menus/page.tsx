@@ -5,6 +5,8 @@ import { ROUTES } from "constants/routes";
 import { DEFAULT_LANGUAGE } from "i18n/resources";
 import { getServerTranslation } from "i18n/server";
 
+import { socialMetadata } from "utils/socialMetadata";
+
 import { AllMenusView } from "./AllMenusView";
 
 const NAMESPACE = "menu";
@@ -20,13 +22,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
         title,
         description,
         alternates: { canonical: ROUTES.allMenus },
-        openGraph: {
+        ...socialMetadata({
             type: "website",
             url: ROUTES.allMenus,
             title,
             description,
-        },
-        twitter: { title, description },
+            image: null,
+        }),
     };
 };
 

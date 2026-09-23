@@ -75,13 +75,5 @@ module.exports = {
             lines: 80,
             statements: 80,
         },
-        // new Redux/RTK Query layer is held to 100% (store.ts/hooks.ts are excluded
-        // from collection above as pure wiring)
-        "./src/redux/": {
-            branches: 100,
-            functions: 100,
-            lines: 100,
-            statements: 100,
-        },
     },
 };

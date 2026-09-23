@@ -1,19 +1,13 @@
-import { Check, Leaf, X } from "lucide-react";
-import React, { useRef } from "react";
+import { Check, Leaf } from "lucide-react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { Ingredient } from "types/ingredient";
 
-import { useCategorizedIngredients } from "hooks/useCategorizedIngredients";
-import { useClickOutside } from "hooks/useClickOutside";
-import { useEscapeKey } from "hooks/useEscapeKey";
-
 import { FormCard } from "components/ui/FormCard";
-import { SearchField } from "components/ui/SearchField";
 
-import { resolveIngredientName } from "utils/ingredientName";
-
-import { AvoidIngredientResults } from "./AvoidIngredientResults";
+import { AvoidedIngredientChips } from "./AvoidedIngredientChips";
+import { AvoidIngredientSearch } from "./AvoidIngredientSearch";
 import styles from "./FoodPreferences.module.scss";
 
 interface AvoidIngredientsCardProps {
@@ -26,9 +20,7 @@ interface AvoidIngredientsCardProps {
 }
 
 const TITLE_ICON_SIZE = 18;
-const REMOVE_ICON_SIZE = 12;
 const SAVED_ICON_SIZE = 15;
-const MAX_RESULTS = 6;
 
 export const AvoidIngredientsCard: React.FC<AvoidIngredientsCardProps> = ({
     catalog,
@@ -39,27 +31,6 @@ export const AvoidIngredientsCard: React.FC<AvoidIngredientsCardProps> = ({
     onToggle,
 }) => {
     const { t } = useTranslation("dietPreferences");
-    const searchRef = useRef<HTMLDivElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
-    const { query, setQuery, trimmedQuery, visibleIngredients } =
-        useCategorizedIngredients({
-            ingredients: catalog,
-            maxSearchResults: MAX_RESULTS,
-        });
-    const hasQuery = trimmedQuery !== "";
-
-    const closeResults = () => {
-        setQuery("");
-    };
-
-    useClickOutside(searchRef, closeResults, hasQuery);
-    useEscapeKey(closeResults, hasQuery);
-
-    const handleSelect = (ingredient: Ingredient) => {
-        onToggle(ingredient);
-        setQuery("");
-        inputRef.current?.focus();
-    };
 
     return (
         <FormCard className={styles["food-preferences__card"]}>
@@ -75,63 +46,17 @@ export const AvoidIngredientsCard: React.FC<AvoidIngredientsCardProps> = ({
             <p className={styles["food-preferences__helper"]}>
                 {t("ingredients.helper")}
             </p>
-            <div ref={searchRef} className={styles["food-preferences__search"]}>
-                <SearchField
-                    ref={inputRef}
-                    value={query}
-                    onChange={setQuery}
-                    placeholder={t("ingredients.searchPlaceholder")}
-                />
-                {hasQuery && (
-                    <AvoidIngredientResults
-                        query={trimmedQuery}
-                        results={visibleIngredients}
-                        ingredientIds={ingredientIds}
-                        isDisabled={isDisabled}
-                        onSelect={handleSelect}
-                    />
-                )}
-            </div>
-            {avoidedIngredients.length > 0 ? (
-                <ul className={styles["food-preferences__avoided"]}>
-                    {avoidedIngredients.map((ingredient) => {
-                        const name = resolveIngredientName(ingredient);
-
-                        return (
-                            <li
-                                key={ingredient.id}
-                                className={
-                                    styles["food-preferences__avoided-chip"]
-                                }
-                            >
-                                {name}
-                                <button
-                                    type="button"
-                                    disabled={isDisabled}
-                                    aria-label={t("ingredients.remove", {
-                                        name,
-                                    })}
-                                    onClick={() => {
-                                        onToggle(ingredient);
-                                    }}
-                                    className={
-                                        styles["food-preferences__remove"]
-                                    }
-                                >
-                                    <X
-                                        size={REMOVE_ICON_SIZE}
-                                        aria-hidden="true"
-                                    />
-                                </button>
-                            </li>
-                        );
-                    })}
-                </ul>
-            ) : (
-                <p className={styles["food-preferences__empty"]}>
-                    {t("ingredients.empty")}
-                </p>
-            )}
+            <AvoidIngredientSearch
+                catalog={catalog}
+                ingredientIds={ingredientIds}
+                isDisabled={isDisabled}
+                onSelect={onToggle}
+            />
+            <AvoidedIngredientChips
+                ingredients={avoidedIngredients}
+                isDisabled={isDisabled}
+                onRemove={onToggle}
+            />
             <p
                 role="status"
                 className={[

@@ -19,4 +19,12 @@
             sans-serif;
         color: var(--text-2);
     }
+
+    &__avatar-note {
+        margin: 0;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
 }

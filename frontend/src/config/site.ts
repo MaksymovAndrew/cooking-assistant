@@ -18,3 +18,7 @@ export const resolveSiteUrl = (): string => {
 
     return DEV_SITE_URL;
 };
+
+// an absolute URL passes through unchanged, which is what a photo on the API domain needs
+export const absoluteSiteUrl = (path: string): string =>
+    new URL(path, resolveSiteUrl()).toString();

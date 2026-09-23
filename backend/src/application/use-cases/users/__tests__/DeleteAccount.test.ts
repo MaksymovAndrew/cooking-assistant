@@ -1,6 +1,7 @@
 import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, UnauthorizedError } from "domain/errors/AppError";
 
+import PhotoCleanup from "application/media/PhotoCleanup";
 import DeleteAccount from "application/use-cases/users/DeleteAccount";
 
 import { catchError } from "test/helpers/assertions";
@@ -16,7 +17,14 @@ describe("DeleteAccount", () => {
             delete: jest.fn(),
         },
         passwordHasher: { compare: jest.fn() },
+        mediaStorage: { remove: jest.fn() },
     });
+    const makeUseCase = (deps: ReturnType<typeof makeDeps>) =>
+        new DeleteAccount(
+            deps.userRepository,
+            deps.passwordHasher,
+            new PhotoCleanup(deps.mediaStorage),
+        );
 
     it("should delete the account when the password is correct", async () => {
         const deps = makeDeps();
@@ -26,10 +34,8 @@ describe("DeleteAccount", () => {
             password: CURRENT_HASH,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
-        const useCase = new DeleteAccount(
-            deps.userRepository,
-            deps.passwordHasher,
-        );
+        deps.userRepository.delete.mockResolvedValue([]);
+        const useCase = makeUseCase(deps);
 
         await useCase.execute(USER_ID, { password: PASSWORD });
 
@@ -48,10 +54,7 @@ describe("DeleteAccount", () => {
             password: CURRENT_HASH,
         });
         deps.passwordHasher.compare.mockResolvedValue(false);
-        const useCase = new DeleteAccount(
-            deps.userRepository,
-            deps.passwordHasher,
-        );
+        const useCase = makeUseCase(deps);
 
         const error = await catchError(
             useCase.execute(USER_ID, { password: "wrong-password" }),
@@ -69,10 +72,7 @@ describe("DeleteAccount", () => {
         const deps = makeDeps();
 
         deps.userRepository.findCredentialsById.mockResolvedValue(null);
-        const useCase = new DeleteAccount(
-            deps.userRepository,
-            deps.passwordHasher,
-        );
+        const useCase = makeUseCase(deps);
 
         const error = await catchError(
             useCase.execute(USER_ID, { password: PASSWORD }),
@@ -86,12 +86,29 @@ describe("DeleteAccount", () => {
         expect(deps.passwordHasher.compare).not.toHaveBeenCalled();
     });
 
+    it("should remove every photo the account owned after deleting it", async () => {
+        const deps = makeDeps();
+
+        deps.userRepository.findCredentialsById.mockResolvedValue({
+            id: USER_ID,
+            password: CURRENT_HASH,
+        });
+        deps.passwordHasher.compare.mockResolvedValue(true);
+        deps.userRepository.delete.mockResolvedValue([
+            "recipe-key",
+            "avatar-key",
+        ]);
+        const useCase = makeUseCase(deps);
+
+        await useCase.execute(USER_ID, { password: PASSWORD });
+
+        expect(deps.mediaStorage.remove).toHaveBeenCalledWith("recipe-key");
+        expect(deps.mediaStorage.remove).toHaveBeenCalledWith("avatar-key");
+    });
+
     it("should throw a validation error for an empty password", async () => {
         const deps = makeDeps();
-        const useCase = new DeleteAccount(
-            deps.userRepository,
-            deps.passwordHasher,
-        );
+        const useCase = makeUseCase(deps);
 
         await expect(
             useCase.execute(USER_ID, { password: "" }),

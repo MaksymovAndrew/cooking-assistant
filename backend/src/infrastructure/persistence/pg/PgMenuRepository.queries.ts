@@ -7,10 +7,15 @@ import type {
 } from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
+import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { MENU_FILTER_CLAUSES } from "infrastructure/persistence/pg/menuFilterClauses";
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
+import {
+    ratingColumns,
+    ratingSortOrder,
+} from "infrastructure/persistence/pg/ratingColumns";
 import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
 
 interface MenuSearchQueryRow extends MenuSearchRow {
@@ -21,7 +26,7 @@ interface MenuSearchQueryRow extends MenuSearchRow {
 const MENU_LIST_GROUP_BY = ` GROUP BY m.menu_id, mc.category_name`;
 
 // menu_id is the primary key, so ordering by it is already a deterministic tie-breaker
-const MENU_ORDER_BY = ` ORDER BY m.menu_id DESC`;
+export const MENU_ORDER_BY = ` ORDER BY m.menu_id DESC`;
 
 function buildMenuListSelect(ownerPlaceholder: string): string {
     return `
@@ -30,8 +35,11 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
+        m.photo_key,
+        ${authorColumn("m")},
         ${isOwnerColumn("m", ownerPlaceholder)},
         ${isFavouriteColumn("menu", "m.menu_id", ownerPlaceholder)},
+        ${ratingColumns("menu", "m", ownerPlaceholder)},
         COUNT(DISTINCT mr.recipe_id)::int AS recipe_count,
         -- cast: COUNT() is bigint, which pg returns as a string, not a number
         COUNT(*) OVER()::int AS total_count
@@ -56,7 +64,11 @@ async function runMenuSearch(
         }
     }
 
-    let query = `${buildMenuListSelect(ownerPlaceholder)}${builder.whereClause()}${MENU_LIST_GROUP_BY}${MENU_ORDER_BY}`;
+    const orderBy =
+        filters.sort_order === "rating"
+            ? ` ORDER BY ${ratingSortOrder("m")}, m.menu_id DESC`
+            : MENU_ORDER_BY;
+    let query = `${buildMenuListSelect(ownerPlaceholder)}${builder.whereClause()}${MENU_LIST_GROUP_BY}${orderBy}`;
 
     const [limitPlaceholder, offsetPlaceholder] = builder.bindTail(
         filters.limit ?? PAGINATION.DEFAULT_LIMIT,
@@ -92,41 +104,4 @@ export async function searchPersonMenus(
         filters,
         personId,
     );
-}
-
-interface MenuRow {
-    id: number;
-    title: string;
-    categoryName: string;
-    menuContent: string;
-    recipe_count: number;
-    total_cooking_time: number;
-    total_calories: number | null;
-}
-
-// unbounded, no filters/pagination - the statistics page needs every menu (incl. recipe count/total cooking time) for the averages and extremes
-export async function findAllMenusUnpaginated(pool: Pool): Promise<unknown[]> {
-    const result = await pool.query<MenuRow>(`
-      SELECT
-        m.menu_id AS id,
-        m.menu_title AS title,
-        mc.category_name AS categoryName,
-        m.menu_content AS menuContent,
-        COUNT(mr.recipe_id)::int AS recipe_count,
-        COALESCE(SUM(r.cooking_time), 0)::int AS total_cooking_time,
-        -- null (not a silently undercounted number) once any of the menu's recipes lacks calorie data - same rule PgCalorieRepository.findMenuCalories already uses for a single menu
-        CASE
-          WHEN bool_or(r.id IS NOT NULL AND COALESCE(r.calories_override, r.calories_computed) IS NULL)
-            THEN NULL
-          ELSE SUM(COALESCE(r.calories_override, r.calories_computed))
-        END AS total_calories
-      FROM menu m
-             LEFT JOIN menu_category mc ON m.category_id = mc.menu_category_id
-             LEFT JOIN menu_recipe mr ON mr.menu_id = m.menu_id
-             LEFT JOIN recipes r ON r.id = mr.recipe_id
-      GROUP BY m.menu_id, mc.category_name
-      ${MENU_ORDER_BY}
-    `);
-
-    return result.rows;
 }

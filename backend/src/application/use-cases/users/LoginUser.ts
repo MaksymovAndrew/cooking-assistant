@@ -42,7 +42,7 @@ export default class LoginUser {
             throw new UnauthorizedError(ERROR_CODES.INVALID_LOGIN_OR_PASSWORD);
         }
 
-        const token = this.tokenService.generate(user.id);
+        const token = this.tokenService.generate(user.id, user.session_version);
 
         return { token };
     }

@@ -1,13 +1,10 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
-import type {
-    RecipeFormChangeMessages,
-    RecipeFormCreateMessages,
-    RecipeFormInitialValues,
-} from "types/recipe";
+import type { RecipeFormInitialValues } from "types/recipeForm";
 
 import { useDirtyRef } from "hooks/useDirtyRef";
-import { useRecipeFormValidation } from "hooks/useRecipeFormValidation";
+import { useRecipeFormValidators } from "hooks/useRecipeFormValidators";
+import { useRecordPhotoDraft } from "hooks/useRecordPhotoDraft";
 import { useSelectedIngredients } from "hooks/useSelectedIngredients";
 
 const BLANK_SNAPSHOT: RecipeFormInitialValues = {
@@ -18,6 +15,7 @@ const BLANK_SNAPSHOT: RecipeFormInitialValues = {
     selectedTypeId: null,
     selectedIngredients: [],
     caloriesOverride: "",
+    photoKey: null,
 };
 
 export const useRecipeForm = () => {
@@ -29,55 +27,20 @@ export const useRecipeForm = () => {
     const [caloriesOverride, setCaloriesOverride] = useState("");
     const [initialSnapshot, setInitialSnapshot] =
         useState<RecipeFormInitialValues>(BLANK_SNAPSHOT);
+    const photo = useRecordPhotoDraft("recipe");
+    const { reset: resetPhoto } = photo;
 
-    const {
+    const { setSelectedIngredients, ...ingredients } = useSelectedIngredients();
+    const { selectedIngredients } = ingredients;
+
+    const validation = useRecipeFormValidators({
+        title,
+        content,
         selectedIngredients,
-        setSelectedIngredients,
-        toggleIngredientSelection,
-        updateIngredientQuantity,
-        removeIngredient,
-        reorderIngredients,
-    } = useSelectedIngredients();
-
-    const {
-        titleError,
-        descriptionError,
-        ingredientsError,
-        typeError,
-        cookingTimeError,
-        validateCreate: _validateCreate,
-        validateChange: _validateChange,
-    } = useRecipeFormValidation();
-
-    const validateCreate = useCallback(
-        (messages: RecipeFormCreateMessages) =>
-            _validateCreate(
-                {
-                    title,
-                    content,
-                    selectedIngredients,
-                    selectedTypeId,
-                    cookingHours,
-                    cookingMinutes,
-                },
-                messages,
-            ),
-        [
-            title,
-            content,
-            selectedIngredients,
-            selectedTypeId,
-            cookingHours,
-            cookingMinutes,
-            _validateCreate,
-        ],
-    );
-
-    const validateChange = useCallback(
-        (messages: RecipeFormChangeMessages) =>
-            _validateChange({ cookingHours, cookingMinutes }, messages),
-        [cookingHours, cookingMinutes, _validateChange],
-    );
+        selectedTypeId,
+        cookingHours,
+        cookingMinutes,
+    });
 
     const setInitialValues = useCallback(
         (values: RecipeFormInitialValues) => {
@@ -88,24 +51,14 @@ export const useRecipeForm = () => {
             setSelectedTypeId(values.selectedTypeId);
             setSelectedIngredients(values.selectedIngredients);
             setCaloriesOverride(values.caloriesOverride);
+            resetPhoto(values.photoKey);
             setInitialSnapshot(values);
         },
-        [setSelectedIngredients],
+        [setSelectedIngredients, resetPhoto],
     );
 
-    const isDirty = useMemo(() => {
-        const current: RecipeFormInitialValues = {
-            title,
-            content,
-            cookingHours,
-            cookingMinutes,
-            selectedTypeId,
-            selectedIngredients,
-            caloriesOverride,
-        };
-
-        return JSON.stringify(current) !== JSON.stringify(initialSnapshot);
-    }, [
+    // the photo keeps its own dirty state: a picked file is not a value that serializes
+    const current: RecipeFormInitialValues = {
         title,
         content,
         cookingHours,
@@ -113,8 +66,11 @@ export const useRecipeForm = () => {
         selectedTypeId,
         selectedIngredients,
         caloriesOverride,
-        initialSnapshot,
-    ]);
+        photoKey: initialSnapshot.photoKey,
+    };
+    const isDirty =
+        photo.isDirty ||
+        JSON.stringify(current) !== JSON.stringify(initialSnapshot);
 
     const { isDirtyRef, markClean } = useDirtyRef(isDirty);
 
@@ -127,22 +83,13 @@ export const useRecipeForm = () => {
         setCookingHours,
         cookingMinutes,
         setCookingMinutes,
-        selectedIngredients,
         selectedTypeId,
         setSelectedTypeId,
         caloriesOverride,
         setCaloriesOverride,
-        titleError,
-        descriptionError,
-        ingredientsError,
-        typeError,
-        cookingTimeError,
-        toggleIngredientSelection,
-        updateIngredientQuantity,
-        removeIngredient,
-        reorderIngredients,
-        validateCreate,
-        validateChange,
+        photo,
+        ...ingredients,
+        ...validation,
         setInitialValues,
         isDirty,
         isDirtyRef,

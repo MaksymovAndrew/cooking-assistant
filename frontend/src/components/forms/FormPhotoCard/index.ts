@@ -1,0 +1,1 @@
+export { FormPhotoCard } from "./FormPhotoCard";

@@ -1,78 +1,23 @@
-import type { CalorieRepository } from "domain/repositories/CalorieRepository";
-import type { DietPreferencesRepository } from "domain/repositories/DietPreferencesRepository";
-import type { FavouriteRepository } from "domain/repositories/FavouriteRepository";
-import type { IngredientRepository } from "domain/repositories/IngredientRepository";
-import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
-import type { MenuRepository } from "domain/repositories/MenuRepository";
-import type { PantryRepository } from "domain/repositories/PantryRepository";
-import type { RecipeRepository } from "domain/repositories/RecipeRepository";
-import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
-import type { ShoppingListRepository } from "domain/repositories/ShoppingListRepository";
-import type { TagRepository } from "domain/repositories/TagRepository";
-import type { UserRepository } from "domain/repositories/UserRepository";
+import PhotoCleanup from "application/media/PhotoCleanup";
 
-import type { EmailSender } from "application/ports/EmailSender";
-import type { PasswordHasher } from "application/ports/PasswordHasher";
-import type { TokenService } from "application/ports/TokenService";
-
-import type CalorieController from "controller/calorie.controller";
-import type FavouriteController from "controller/favourite.controller";
-import type MenuController from "controller/menu.controller";
-import type RecipeController from "controller/recipe.controller";
-import type ShoppingListController from "controller/shoppingList.controller";
-import type UserController from "controller/user.controller";
-import type UserIngredientsController from "controller/userIngredients.controller";
+import { createSessionAuth } from "middleware/jwtMiddleware";
 
 import { buildCaloriesController } from "./composition-root.calories";
-import {
-    buildDietPreferencesControllers,
-    type DietPreferencesControllers,
-} from "./composition-root.dietPreferences";
+import { buildDietPreferencesControllers } from "./composition-root.dietPreferences";
 import { buildFavouriteController } from "./composition-root.favourites";
 import { buildMenuController } from "./composition-root.menu";
 import { buildPantryController } from "./composition-root.pantry";
 import { createPgDeps } from "./composition-root.pg";
-import { buildRecipeController } from "./composition-root.recipe";
-import {
-    buildReferenceControllers,
-    type ReferenceControllers,
-} from "./composition-root.reference";
+import { buildPhotoControllers } from "./composition-root.photos";
+import { buildRatingController } from "./composition-root.ratings";
+import { buildRecipeControllers } from "./composition-root.recipe";
+import { buildReferenceControllers } from "./composition-root.reference";
 import { buildShoppingListController } from "./composition-root.shoppingList";
-import {
-    buildTagControllers,
-    type TagControllers,
-} from "./composition-root.tags";
-import { buildUserController } from "./composition-root.user";
+import { buildTagControllers } from "./composition-root.tags";
+import type { Controllers, RepositoryDeps } from "./composition-root.types";
+import { buildUserControllers } from "./composition-root.user";
 
-export interface RepositoryDeps {
-    ingredientRepository: IngredientRepository;
-    recipeRepository: RecipeRepository;
-    recipeTypeRepository: RecipeTypeRepository;
-    menuRepository: MenuRepository;
-    menuCategoryRepository: MenuCategoryRepository;
-    pantryRepository: PantryRepository;
-    userRepository: UserRepository;
-    calorieRepository: CalorieRepository;
-    favouriteRepository: FavouriteRepository;
-    dietPreferencesRepository: DietPreferencesRepository;
-    shoppingListRepository: ShoppingListRepository;
-    tagRepository: TagRepository;
-    passwordHasher: PasswordHasher;
-    tokenService: TokenService;
-    emailSender: EmailSender;
-    frontendOrigin: string;
-}
-
-export interface Controllers
-    extends ReferenceControllers, DietPreferencesControllers, TagControllers {
-    userController: UserController;
-    recipeController: RecipeController;
-    userIngredientsController: UserIngredientsController;
-    menuController: MenuController;
-    calorieController: CalorieController;
-    favouriteController: FavouriteController;
-    shoppingListController: ShoppingListController;
-}
+export type { Controllers, RepositoryDeps };
 
 export function buildControllers({
     ingredientRepository,
@@ -84,35 +29,41 @@ export function buildControllers({
     userRepository,
     calorieRepository,
     favouriteRepository,
+    ratingRepository,
     dietPreferencesRepository,
     shoppingListRepository,
     tagRepository,
+    photoRepository,
     passwordHasher,
     tokenService,
     emailSender,
+    imageProcessor,
+    mediaStorage,
     frontendOrigin,
 }: RepositoryDeps): Controllers {
-    const recipeController = buildRecipeController({
-        recipeRepository,
-        ingredientRepository,
-    });
-
-    const userController = buildUserController({
+    const photoCleanup = new PhotoCleanup(mediaStorage);
+    const userControllers = buildUserControllers({
         userRepository,
         passwordHasher,
         tokenService,
         emailSender,
         frontendOrigin,
+        photoCleanup,
     });
 
     return {
+        auth: createSessionAuth(userRepository),
         ...buildReferenceControllers({
             ingredientRepository,
             recipeTypeRepository,
             menuCategoryRepository,
         }),
-        userController,
-        recipeController,
+        ...userControllers,
+        ...buildRecipeControllers({
+            recipeRepository,
+            ingredientRepository,
+            photoCleanup,
+        }),
         userIngredientsController: buildPantryController({
             pantryRepository,
             ingredientRepository,
@@ -120,15 +71,22 @@ export function buildControllers({
         menuController: buildMenuController({
             menuRepository,
             recipeRepository,
+            photoCleanup,
         }),
         calorieController: buildCaloriesController(calorieRepository),
         favouriteController: buildFavouriteController(favouriteRepository),
+        ratingController: buildRatingController(ratingRepository),
         ...buildDietPreferencesControllers(dietPreferencesRepository),
         shoppingListController: buildShoppingListController({
             shoppingListRepository,
             ingredientRepository,
         }),
         ...buildTagControllers(tagRepository),
+        ...buildPhotoControllers({
+            photoRepository,
+            imageProcessor,
+            mediaStorage,
+        }),
     };
 }
 

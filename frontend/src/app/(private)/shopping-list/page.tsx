@@ -1,6 +1,5 @@
 "use client";
 
-import { ShoppingCart } from "lucide-react";
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -12,11 +11,9 @@ import { AppShell } from "components/layout/AppShell";
 import { ShoppingListAddForm } from "components/shopping-list/ShoppingListAddForm";
 import { ShoppingListHeader } from "components/shopping-list/ShoppingListHeader";
 import { ShoppingListSections } from "components/shopping-list/ShoppingListSections";
-import { ShoppingListSkeleton } from "components/shopping-list/ShoppingListSkeleton";
-import { EmptyState } from "components/ui/EmptyState";
-import { ErrorState } from "components/ui/ErrorState";
 
 import styles from "./page.module.scss";
+import { ShoppingListStatus } from "./ShoppingListStatus";
 
 const ShoppingListPage: React.FC = () => {
     const { t } = useTranslation("shoppingList");
@@ -27,33 +24,6 @@ const ShoppingListPage: React.FC = () => {
     useFlipAnimation(layoutRef, list.layoutKey);
 
     usePageTitle(t("page.heading"));
-
-    const renderStatus = () => {
-        if (list.isError) {
-            return (
-                <ErrorState
-                    title={t("page.error")}
-                    description={t("page.errorDescription")}
-                    onRetry={list.retry}
-                    retryLabel={t("page.retry")}
-                />
-            );
-        }
-
-        if (list.isLoading) {
-            return <ShoppingListSkeleton />;
-        }
-
-        return (
-            <div className={styles["shopping-list-page__empty"]}>
-                <EmptyState
-                    icon={ShoppingCart}
-                    title={t("empty.title")}
-                    description={t("empty.description")}
-                />
-            </div>
-        );
-    };
 
     return (
         <AppShell>
@@ -88,7 +58,11 @@ const ShoppingListPage: React.FC = () => {
 
                     {!hasList && (
                         <div className={styles["shopping-list-page__status"]}>
-                            {renderStatus()}
+                            <ShoppingListStatus
+                                isError={list.isError}
+                                isLoading={list.isLoading}
+                                onRetry={list.retry}
+                            />
                         </div>
                     )}
 

@@ -57,8 +57,8 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     const visitorFavourite = isFavourite === null ? null : favourite;
     const menuIngredients = aggregateMenuIngredients(recipes);
     const menuAllergens = filterAllergens(allergens);
-    // the aside is empty and unrendered for a guest with an allergen-free menu - see
-    // MenuMissingIngredientsPanel's own early return - so the grid must not reserve its column
+    // the aside is empty for a guest with an allergen-free menu - see MenuMissingIngredientsPanel's
+    // own early return - so neither the grid column nor an empty row gap is reserved for it
     const showIngredientsAside = canUsePantry || menuAllergens.length > 0;
     const gridClassName = showIngredientsAside
         ? `${styles["menu-details-page__grid"]} ${styles["menu-details-page__grid--with-aside"]}`
@@ -68,12 +68,14 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
 
     return (
         <div className={gridClassName}>
-            <div className={styles["menu-details-page__ingredients-area"]}>
-                <MenuMissingIngredientsPanel
-                    ingredients={menuIngredients}
-                    allergens={menuAllergens}
-                />
-            </div>
+            {showIngredientsAside && (
+                <div className={styles["menu-details-page__ingredients-area"]}>
+                    <MenuMissingIngredientsPanel
+                        ingredients={menuIngredients}
+                        allergens={menuAllergens}
+                    />
+                </div>
+            )}
             <div className={styles["menu-details-page__actions-area"]}>
                 {isOwner ? (
                     <MenuHeroActions

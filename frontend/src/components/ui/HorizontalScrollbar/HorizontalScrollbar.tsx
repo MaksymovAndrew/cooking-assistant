@@ -1,34 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import styles from "./HorizontalScrollbar.module.scss";
+import { computeThumb, type ThumbMetrics } from "./thumbMetrics";
 
 interface HorizontalScrollbarProps {
     scrollRef: React.RefObject<HTMLElement | null>;
 }
-
-interface ThumbMetrics {
-    widthPercent: number;
-    offsetPercent: number;
-}
-
-const PERCENT_MULTIPLIER = 100;
-
-const computeThumb = (el: HTMLElement): ThumbMetrics | null => {
-    const { scrollWidth, clientWidth, scrollLeft } = el;
-
-    if (scrollWidth <= clientWidth) {
-        return null;
-    }
-
-    const widthPercent = (clientWidth / scrollWidth) * PERCENT_MULTIPLIER;
-    const maxScrollLeft = scrollWidth - clientWidth;
-    const offsetPercent =
-        maxScrollLeft > 0
-            ? (scrollLeft / maxScrollLeft) * (PERCENT_MULTIPLIER - widthPercent)
-            : 0;
-
-    return { widthPercent, offsetPercent };
-};
 
 // a custom track+thumb for any horizontally-scrollable element - the native
 // scrollbar is invisible on touch and only shows on desktop hover, so this

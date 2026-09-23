@@ -1,8 +1,15 @@
 import type { Pool } from "pg";
 
+import type {
+    RecordAuthor,
+    RecordRating,
+} from "domain/repositories/recordAuthor";
+
+import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
 import { containsAvoidedColumn } from "infrastructure/persistence/pg/containsAvoidedColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
+import { ratingColumns } from "infrastructure/persistence/pg/ratingColumns";
 import { recipeTagsColumn } from "infrastructure/persistence/pg/recipeTagsColumn";
 
 interface RecipeTag {
@@ -20,7 +27,7 @@ interface RecipeListRow {
     ingredients: string[];
 }
 
-interface RecipeDetailRow {
+interface RecipeDetailRow extends RecordRating {
     id: number;
     title: string;
     content: string;
@@ -36,6 +43,8 @@ interface RecipeDetailRow {
     containsAvoided: boolean | null;
     tags: RecipeTag[] | null;
     calories_per_portion: number | null;
+    photo_key: string | null;
+    author: RecordAuthor;
 }
 
 // explicit columns - r.* would leak the owner's raw person_id to every caller (this list is not
@@ -61,11 +70,13 @@ export async function findRecipeByIdWithIngredients(
 ): Promise<unknown> {
     const result = await pool.query<RecipeDetailRow>(
         `SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
-                  r.calories_override, r.calories_computed,
+                  r.calories_override, r.calories_computed, r.photo_key,
+                  ${authorColumn("r")},
                   ${isOwnerColumn("r", "$2")},
                   ${isFavouriteColumn("recipe", "r.id", "$2")},
                   ${containsAvoidedColumn("r.id", "$2")},
                   ${recipeTagsColumn("r.id", "$2")},
+                  ${ratingColumns("recipe", "r", "$2")},
                   COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                   json_agg(
                       json_build_object(

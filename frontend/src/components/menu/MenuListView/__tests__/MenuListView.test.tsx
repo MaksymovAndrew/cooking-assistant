@@ -27,6 +27,8 @@ const FILTERS: MenuFilterState = {
     search: "",
     categories: [],
     favourites: false,
+    topRated: false,
+    sort: null,
 };
 
 const baseProps = {

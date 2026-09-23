@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { ERROR_CODES } from "constants/errorCodes";
 
-import { useChangePasswordMutation } from "redux/services/authApi";
+import { useChangePasswordMutation } from "redux/services/accountSecurityApi";
 
 import { isValidPassword } from "utils/authValidation";
 import { getQueryErrorCode } from "utils/queryError";

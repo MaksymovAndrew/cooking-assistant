@@ -40,6 +40,7 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: null,
+    avatar_photo_key: null,
     calorie_goal: null,
 };
 
@@ -299,6 +300,8 @@ describe("useMenuListView", () => {
             search: "",
             categories: [],
             favourites: false,
+            topRated: false,
+            sort: null,
         });
     });
 
@@ -313,6 +316,8 @@ describe("useMenuListView", () => {
             search: "brunch",
             categories: [1, 2],
             favourites: false,
+            topRated: false,
+            sort: null,
         });
         expect(result.current.activeCount).toBe(2);
     });
@@ -326,6 +331,21 @@ describe("useMenuListView", () => {
             params: {
                 menu_name: "brunch",
                 category_ids: "1,2",
+                limit: PAGE_SIZE,
+                offset: 0,
+            },
+        });
+    });
+
+    it("should send the top-rated filter and the rating sort", async () => {
+        mockEmptyMenuList();
+
+        await setup(MENU_SOURCE.all, ["/test?top=1&sort=rating"]);
+
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.list, {
+            params: {
+                top_rated: true,
+                sort_order: "rating",
                 limit: PAGE_SIZE,
                 offset: 0,
             },

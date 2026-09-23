@@ -11,7 +11,7 @@ import { recipeTypesApi } from "redux/services/recipeTypesApi";
 import { useUpdateRecipePage } from "hooks/useUpdateRecipePage";
 
 import { mockedPut, mockGetByUrl } from "test/apiClientMock";
-import { ROUTE_ALL_RECIPES } from "test/constants";
+import { ROUTE_ALL_RECIPES, TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { setTestParams } from "test/nextNavigationMock";
 import { mockNavigate } from "test/router";
 import { makeTestStore, renderHookWithStore } from "test/store";
@@ -29,6 +29,9 @@ const SAMPLE: RecipeDetails = {
     cooking_time: 60,
     creation_date: "2024-01-01",
     isOwner: true,
+    photo_key: null,
+    ...TEST_UNRATED,
+    author: TEST_AUTHOR,
     isFavourite: false,
     containsAvoided: false,
     tags: [],

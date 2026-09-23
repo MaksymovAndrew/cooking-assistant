@@ -1,4 +1,5 @@
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { ValidationError } from "domain/errors/AppError";
 
 import RegisterUser from "application/use-cases/users/RegisterUser";
@@ -20,7 +21,10 @@ describe("RegisterUser", () => {
         const deps = makeDeps();
 
         deps.passwordHasher.hash.mockResolvedValue(HASHED_PASSWORD);
-        deps.userRepository.create.mockResolvedValue({ id: 5 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 5,
+            session_version: 0,
+        });
         deps.tokenService.generate.mockReturnValue(TOKEN);
         const useCase = new RegisterUser(
             deps.userRepository,
@@ -28,13 +32,16 @@ describe("RegisterUser", () => {
             deps.tokenService,
         );
 
-        const result = await useCase.execute({
-            name: "Bob",
-            surname: "Cook",
-            login: "bob",
-            email: EMAIL,
-            password: "secret1!",
-        });
+        const result = await useCase.execute(
+            {
+                name: "Bob",
+                surname: "Cook",
+                login: "bob",
+                email: EMAIL,
+                password: "secret1!",
+            },
+            DEFAULT_LOCALE,
+        );
 
         expect(deps.passwordHasher.hash).toHaveBeenCalledWith("secret1!");
         expect(deps.userRepository.create).toHaveBeenCalledWith({
@@ -43,8 +50,9 @@ describe("RegisterUser", () => {
             login: "bob",
             email: EMAIL,
             password: HASHED_PASSWORD,
+            locale: DEFAULT_LOCALE,
         });
-        expect(deps.tokenService.generate).toHaveBeenCalledWith(5);
+        expect(deps.tokenService.generate).toHaveBeenCalledWith(5, 0);
         expect(result).toEqual({ token: TOKEN });
     });
 
@@ -52,20 +60,26 @@ describe("RegisterUser", () => {
         const deps = makeDeps();
 
         deps.passwordHasher.hash.mockResolvedValue(HASHED_PASSWORD);
-        deps.userRepository.create.mockResolvedValue({ id: 5 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 5,
+            session_version: 0,
+        });
         const useCase = new RegisterUser(
             deps.userRepository,
             deps.passwordHasher,
             deps.tokenService,
         );
 
-        await useCase.execute({
-            name: " Bob",
-            surname: "Cook ",
-            login: " bob ",
-            email: EMAIL,
-            password: "secret1!",
-        });
+        await useCase.execute(
+            {
+                name: " Bob",
+                surname: "Cook ",
+                login: " bob ",
+                email: EMAIL,
+                password: "secret1!",
+            },
+            DEFAULT_LOCALE,
+        );
 
         expect(deps.userRepository.create).toHaveBeenCalledWith({
             name: "Bob",
@@ -73,6 +87,7 @@ describe("RegisterUser", () => {
             login: "bob",
             email: EMAIL,
             password: HASHED_PASSWORD,
+            locale: DEFAULT_LOCALE,
         });
     });
 
@@ -85,13 +100,16 @@ describe("RegisterUser", () => {
         );
 
         const error = await catchError(
-            useCase.execute({
-                name: "Bob",
-                surname: "Cook",
-                login: "bob",
-                email: EMAIL,
-                password: "",
-            }),
+            useCase.execute(
+                {
+                    name: "Bob",
+                    surname: "Cook",
+                    login: "bob",
+                    email: EMAIL,
+                    password: "",
+                },
+                DEFAULT_LOCALE,
+            ),
         );
 
         expect(error).toBeAppError(
@@ -113,13 +131,16 @@ describe("RegisterUser", () => {
         );
 
         const error = await catchError(
-            useCase.execute({
-                name: "Bob",
-                surname: "Cook",
-                login: "bob",
-                email: "not-an-email",
-                password: "secret1!",
-            }),
+            useCase.execute(
+                {
+                    name: "Bob",
+                    surname: "Cook",
+                    login: "bob",
+                    email: "not-an-email",
+                    password: "secret1!",
+                },
+                DEFAULT_LOCALE,
+            ),
         );
 
         expect(error).toBeAppError(
@@ -135,20 +156,26 @@ describe("RegisterUser", () => {
         const deps = makeDeps();
 
         deps.passwordHasher.hash.mockResolvedValue(HASHED_PASSWORD);
-        deps.userRepository.create.mockResolvedValue({ id: 5 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 5,
+            session_version: 0,
+        });
         const useCase = new RegisterUser(
             deps.userRepository,
             deps.passwordHasher,
             deps.tokenService,
         );
 
-        await useCase.execute({
-            name: "Bob",
-            surname: "Cook",
-            login: "bob",
-            email: "Bob@Example.com",
-            password: "secret1!",
-        });
+        await useCase.execute(
+            {
+                name: "Bob",
+                surname: "Cook",
+                login: "bob",
+                email: "Bob@Example.com",
+                password: "secret1!",
+            },
+            DEFAULT_LOCALE,
+        );
 
         expect(deps.userRepository.create).toHaveBeenCalledWith(
             expect.objectContaining({ email: EMAIL }),

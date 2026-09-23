@@ -1,6 +1,7 @@
 import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
@@ -114,7 +115,7 @@ describe("calorie routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("intakeDeleted"),
+            message: translateMessage("intakeDeleted", DEFAULT_LOCALE),
         });
         expect(deps.calorieRepository.deleteIntake).toHaveBeenCalledWith(7, 11);
     });
@@ -146,7 +147,7 @@ describe("calorie routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("calorieGoalUpdated"),
+            message: translateMessage("calorieGoalUpdated", DEFAULT_LOCALE),
         });
         expect(deps.calorieRepository.updateGoal).toHaveBeenCalledWith(7, {
             calorie_goal: 2000,

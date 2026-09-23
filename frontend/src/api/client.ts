@@ -1,5 +1,10 @@
-import type { AxiosError, AxiosInstance } from "axios";
+import type {
+    AxiosError,
+    AxiosInstance,
+    InternalAxiosRequestConfig,
+} from "axios";
 import axios from "axios";
+import i18next from "i18next";
 export { isAxiosError } from "axios";
 
 import { API_BASE_URL } from "config/env";
@@ -8,6 +13,8 @@ import {
     HTTP_STATUS_UNAUTHORIZED,
 } from "constants/http";
 import { PUBLIC_PATHS } from "constants/routes";
+
+import { DEFAULT_LANGUAGE } from "i18n/resources";
 
 import { matchRoutePattern } from "utils/matchRoutePattern";
 
@@ -43,4 +50,17 @@ export function handleAuthError(error: AxiosError): Promise<never> {
     return Promise.reject(error);
 }
 
+// the server writes its messages, and a new account's emails, in the language the app is showing
+export function withAppLanguage(
+    config: InternalAxiosRequestConfig,
+): InternalAxiosRequestConfig {
+    config.headers.set(
+        "Accept-Language",
+        i18next.resolvedLanguage ?? DEFAULT_LANGUAGE,
+    );
+
+    return config;
+}
+
+apiClient.interceptors.request.use(withAppLanguage);
 apiClient.interceptors.response.use((response) => response, handleAuthError);

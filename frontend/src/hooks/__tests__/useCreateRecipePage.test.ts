@@ -51,7 +51,7 @@ const setup = async () => {
 
 describe("useCreateRecipePage", () => {
     it("should create the recipe and navigate home on valid submit", async () => {
-        mockedPost.mockResolvedValue({ data: null });
+        mockedPost.mockResolvedValue({ data: { id: 42 } });
         const { result } = await setup();
 
         act(() => {
@@ -82,7 +82,7 @@ describe("useCreateRecipePage", () => {
     });
 
     it("should send a manual calories override as a number", async () => {
-        mockedPost.mockResolvedValue({ data: null });
+        mockedPost.mockResolvedValue({ data: { id: 42 } });
         const { result } = await setup();
 
         act(() => {

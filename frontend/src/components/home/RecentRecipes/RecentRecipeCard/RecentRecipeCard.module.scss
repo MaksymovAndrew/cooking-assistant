@@ -36,10 +36,12 @@
     }
 
     &__image {
+        position: relative;
         display: flex;
         flex: none;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
         width: 64px;
         height: 48px;
         border-radius: var(--r-sm);

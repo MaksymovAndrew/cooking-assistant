@@ -1,138 +1,61 @@
 import { useCallback, useState } from "react";
 
-import { MINUTES_PER_HOUR } from "constants/time";
 import type {
     RecipeFormChangeMessages,
     RecipeFormCreateMessages,
-    RecipeFormIngredient,
-} from "types/recipe";
+} from "types/recipeForm";
 
-const MAX_HOURS = 99;
+import type {
+    RecipeFormErrors,
+    RecipeFormValues,
+} from "utils/recipeFormValidation";
+import {
+    cookingTimeError,
+    hasRecipeFormErrors,
+    recipeFormErrors,
+} from "utils/recipeFormValidation";
 
-const isValidCookingTime = (
-    hours: string,
-    minutes: string,
-    setCookingTimeError: (e: string | null) => void,
-    messages: {
-        errorCookingTimeFormat: string;
-        errorCookingTimeInvalid: string;
-    },
-): boolean => {
-    if (hours.trim() === "" || minutes.trim() === "") {
-        setCookingTimeError(messages.errorCookingTimeFormat);
-
-        return false;
-    }
-
-    const parsedHours = Number(hours);
-    const parsedMinutes = Number(minutes);
-    const isInvalid =
-        !Number.isInteger(parsedHours) ||
-        !Number.isInteger(parsedMinutes) ||
-        parsedHours < 0 ||
-        parsedHours > MAX_HOURS ||
-        parsedMinutes < 0 ||
-        parsedMinutes >= MINUTES_PER_HOUR ||
-        (parsedHours === 0 && parsedMinutes === 0);
-
-    if (isInvalid) {
-        setCookingTimeError(messages.errorCookingTimeInvalid);
-
-        return false;
-    }
-
-    return true;
+const NO_ERRORS: RecipeFormErrors = {
+    titleError: null,
+    descriptionError: null,
+    ingredientsError: null,
+    typeError: null,
+    cookingTimeError: null,
 };
 
+// the rules live in utils/recipeFormValidation; this only keeps their verdict on screen
 export const useRecipeFormValidation = () => {
-    const [titleError, setTitleError] = useState<string | null>(null);
-    const [descriptionError, setDescriptionError] = useState<string | null>(
-        null,
-    );
-    const [ingredientsError, setIngredientsError] = useState<string | null>(
-        null,
-    );
-    const [typeError, setTypeError] = useState<string | null>(null);
-    const [cookingTimeError, setCookingTimeError] = useState<string | null>(
-        null,
-    );
+    const [errors, setErrors] = useState<RecipeFormErrors>(NO_ERRORS);
 
     const validateCreate = useCallback(
-        (
-            values: {
-                title: string;
-                content: string;
-                selectedIngredients: RecipeFormIngredient[];
-                selectedTypeId: number | null;
-                cookingHours: string;
-                cookingMinutes: string;
-            },
-            messages: RecipeFormCreateMessages,
-        ): boolean => {
-            let valid = true;
+        (values: RecipeFormValues, messages: RecipeFormCreateMessages) => {
+            const next = recipeFormErrors(values, messages);
 
-            if (!values.title.trim()) {
-                setTitleError(messages.errorTitle);
-                valid = false;
-            } else {
-                setTitleError(null);
-            }
+            setErrors(next);
 
-            if (!values.content.trim()) {
-                setDescriptionError(messages.errorDescription);
-                valid = false;
-            } else {
-                setDescriptionError(null);
-            }
-
-            if (values.selectedIngredients.length === 0) {
-                setIngredientsError(messages.errorIngredients);
-                valid = false;
-            } else {
-                setIngredientsError(null);
-            }
-
-            if (values.selectedTypeId === null) {
-                setTypeError(messages.errorType);
-                valid = false;
-            } else {
-                setTypeError(null);
-            }
-
-            setCookingTimeError(null);
-            const timeValid = isValidCookingTime(
-                values.cookingHours,
-                values.cookingMinutes,
-                setCookingTimeError,
-                messages,
-            );
-
-            return valid && timeValid;
+            return !hasRecipeFormErrors(next);
         },
         [],
     );
 
+    // an edit only re-checks the cooking time; the other fields keep whatever they showed
     const validateChange = useCallback(
         (
-            values: { cookingHours: string; cookingMinutes: string },
+            values: Pick<RecipeFormValues, "cookingHours" | "cookingMinutes">,
             messages: RecipeFormChangeMessages,
-        ): boolean =>
-            isValidCookingTime(
+        ) => {
+            const error = cookingTimeError(
                 values.cookingHours,
                 values.cookingMinutes,
-                setCookingTimeError,
                 messages,
-            ),
+            );
+
+            setErrors((current) => ({ ...current, cookingTimeError: error }));
+
+            return error === null;
+        },
         [],
     );
 
-    return {
-        titleError,
-        descriptionError,
-        ingredientsError,
-        typeError,
-        cookingTimeError,
-        validateCreate,
-        validateChange,
-    };
+    return { ...errors, validateCreate, validateChange };
 };

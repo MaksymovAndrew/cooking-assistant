@@ -1,13 +1,12 @@
+import i18next from "i18next";
+
+import { idListFilter, textFilter } from "utils/filters/filterDefFactories";
 import {
-    idListFilter,
-    numericRangeFilter,
-    textFilter,
-} from "utils/filters/filterDefFactories";
-import {
-    booleanFilter,
     enumFilter,
     enumListFilter,
-} from "utils/filters/filterDefFactories.scalar";
+} from "utils/filters/filterDefFactories.enum";
+import { numericRangeFilter } from "utils/filters/filterDefFactories.range";
+import { booleanFilter } from "utils/filters/filterDefFactories.scalar";
 
 interface TestParams {
     q?: string;
@@ -127,6 +126,30 @@ describe("numericRangeFilter", () => {
         expect(def.isActive({ min: "", max: "" })).toBe(false);
         expect(def.isActive({ min: "10", max: "" })).toBe(true);
         expect(def.isActive({ min: "", max: "60" })).toBe(true);
+    });
+
+    it("should not be active when every bound it holds is dropped from the request", () => {
+        expect(def.isActive({ min: "-5", max: "" })).toBe(false);
+        expect(def.isActive({ min: "0", max: "abc" })).toBe(false);
+    });
+});
+
+describe("numericRangeFilter chipLabel", () => {
+    const def = numericRangeFilter<TestParams>({
+        key: "range",
+        urlParam: "val",
+        minParam: "min_val",
+        maxParam: "max_val",
+        chipLabel: (value) => `${value.min}-${value.max}`,
+    });
+
+    it("should name only the bounds the request carries", () => {
+        expect(def.chipLabel?.({ min: "-5", max: "60" }, i18next.t)).toBe(
+            "-60",
+        );
+        expect(def.chipLabel?.({ min: "50", max: "10" }, i18next.t)).toBe(
+            "50-",
+        );
     });
 });
 

@@ -7,6 +7,8 @@ import type { IngredientRepository } from "domain/repositories/IngredientReposit
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
+import type { PhotoRepository } from "domain/repositories/PhotoRepository";
+import type { RatingRepository } from "domain/repositories/RatingRepository";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
 import type { ShoppingListRepository } from "domain/repositories/ShoppingListRepository";
@@ -14,6 +16,8 @@ import type { TagRepository } from "domain/repositories/TagRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
 import type { EmailSender } from "application/ports/EmailSender";
+import type { ImageProcessor } from "application/ports/ImageProcessor";
+import type { MediaStorage } from "application/ports/MediaStorage";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
 
@@ -29,12 +33,16 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     userRepository: jest.Mocked<UserRepository>;
     calorieRepository: jest.Mocked<CalorieRepository>;
     favouriteRepository: jest.Mocked<FavouriteRepository>;
+    ratingRepository: jest.Mocked<RatingRepository>;
     dietPreferencesRepository: jest.Mocked<DietPreferencesRepository>;
     shoppingListRepository: jest.Mocked<ShoppingListRepository>;
     tagRepository: jest.Mocked<TagRepository>;
+    photoRepository: jest.Mocked<PhotoRepository>;
     passwordHasher: jest.Mocked<PasswordHasher>;
     tokenService: jest.Mocked<TokenService>;
     emailSender: jest.Mocked<EmailSender>;
+    imageProcessor: jest.Mocked<ImageProcessor>;
+    mediaStorage: jest.Mocked<MediaStorage>;
 }
 
 function createIngredientRepository(): jest.Mocked<IngredientRepository> {
@@ -91,8 +99,13 @@ function createUserRepository(): jest.Mocked<UserRepository> {
         create: jest.fn(),
         updatePassword: jest.fn(),
         updateProfile: jest.fn(),
+        updateLocale: jest.fn(),
         markEmailVerified: jest.fn(),
         delete: jest.fn(),
+        // matches the version authCookie() signs, so a test session stays live by default
+        findSessionVersion: jest.fn((_id: number) =>
+            Promise.resolve<number | null>(0),
+        ),
     };
 }
 
@@ -110,6 +123,13 @@ function createCalorieRepository(): jest.Mocked<CalorieRepository> {
 function createFavouriteRepository(): jest.Mocked<FavouriteRepository> {
     return {
         add: jest.fn(),
+        remove: jest.fn(),
+    };
+}
+
+function createRatingRepository(): jest.Mocked<RatingRepository> {
+    return {
+        rate: jest.fn(),
         remove: jest.fn(),
     };
 }
@@ -168,6 +188,20 @@ function createEmailSender(): jest.Mocked<EmailSender> {
     };
 }
 
+function createPhotoRepository(): jest.Mocked<PhotoRepository> {
+    return {
+        replace: jest.fn(),
+    };
+}
+
+function createMediaStorage(): jest.Mocked<MediaStorage> {
+    return {
+        save: jest.fn(),
+        remove: jest.fn(),
+        locate: jest.fn(),
+    };
+}
+
 export function buildFakeDeps(): FakeRepositoryDeps {
     return {
         ingredientRepository: createIngredientRepository(),
@@ -179,12 +213,16 @@ export function buildFakeDeps(): FakeRepositoryDeps {
         userRepository: createUserRepository(),
         calorieRepository: createCalorieRepository(),
         favouriteRepository: createFavouriteRepository(),
+        ratingRepository: createRatingRepository(),
         dietPreferencesRepository: createDietPreferencesRepository(),
         shoppingListRepository: createShoppingListRepository(),
         tagRepository: createTagRepository(),
+        photoRepository: createPhotoRepository(),
         passwordHasher: createPasswordHasher(),
         tokenService: createTokenService(),
         emailSender: createEmailSender(),
+        imageProcessor: { toVariants: jest.fn() },
+        mediaStorage: createMediaStorage(),
         frontendOrigin: TEST_FRONTEND_ORIGIN,
     };
 }

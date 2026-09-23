@@ -46,18 +46,6 @@
         }
     }
 
-    // same reflow reasoning as __tiles - the extremes row holds 3 cards, not the 2 __grid assumes
-    &__extremes-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: var(--s-5);
-        margin-bottom: var(--s-5);
-
-        @include respond-to(desktop) {
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        }
-    }
-
     &__card-title {
         margin: 0 0 4px;
         color: var(--text);

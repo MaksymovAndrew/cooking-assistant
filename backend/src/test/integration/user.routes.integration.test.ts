@@ -2,6 +2,7 @@ import type { IncomingHttpHeaders } from "http";
 import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
@@ -23,7 +24,10 @@ describe("user routes", () => {
         const { app, deps } = buildTestApp();
 
         deps.passwordHasher.hash.mockResolvedValue("hashed-secret");
-        deps.userRepository.create.mockResolvedValue({ id: 7 });
+        deps.userRepository.create.mockResolvedValue({
+            id: 7,
+            session_version: 0,
+        });
         deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
 
         const res = await request(app).post("/api/register").send({
@@ -35,13 +39,16 @@ describe("user routes", () => {
         });
 
         expect(res.status).toBe(201);
-        expect(res.body).toEqual({ message: translateMessage("registered") });
+        expect(res.body).toEqual({
+            message: translateMessage("registered", DEFAULT_LOCALE),
+        });
         expect(deps.userRepository.create).toHaveBeenCalledWith({
             name: "Bob",
             surname: "Cook",
             login: "bob",
             email: EMAIL,
             password: "hashed-secret",
+            locale: DEFAULT_LOCALE,
         });
 
         const headers = res.headers as IncomingHttpHeaders;
@@ -58,6 +65,7 @@ describe("user routes", () => {
             id: 7,
             login: "bob",
             password: "hash",
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
         deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
@@ -69,7 +77,9 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         // token lives only in the cookie, never in the response body
-        expect(res.body).toEqual({ message: translateMessage("loggedIn") });
+        expect(res.body).toEqual({
+            message: translateMessage("loggedIn", DEFAULT_LOCALE),
+        });
 
         const headers = res.headers as IncomingHttpHeaders;
         const setCookie = headers["set-cookie"]?.join(";") ?? "";
@@ -85,6 +95,7 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsByEmail.mockResolvedValue({
             id: 7,
             password: "hash",
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
         deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
@@ -106,7 +117,9 @@ describe("user routes", () => {
         const res = await request(app).post("/api/logout");
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ message: translateMessage("loggedOut") });
+        expect(res.body).toEqual({
+            message: translateMessage("loggedOut", DEFAULT_LOCALE),
+        });
         const logoutHeaders = res.headers as IncomingHttpHeaders;
 
         expect(logoutHeaders["set-cookie"]?.join(";") ?? "").toContain(
@@ -125,7 +138,9 @@ describe("user routes", () => {
             email: EMAIL,
             email_verified_at: null,
             avatar: null,
+            avatar_photo_key: null,
             calorie_goal: null,
+            locale: DEFAULT_LOCALE,
         };
 
         deps.userRepository.findById.mockResolvedValue(currentUser);
@@ -199,6 +214,7 @@ describe("user routes", () => {
                 id: 7,
                 password: "hashed-current-secret",
                 email_verified_at: "2026-01-01T00:00:00.000Z",
+                locale: DEFAULT_LOCALE,
             },
         );
         deps.tokenService.generatePurposeToken.mockReturnValue("reset-token");
@@ -209,11 +225,12 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("passwordResetEmailSent"),
+            message: translateMessage("passwordResetEmailSent", DEFAULT_LOCALE),
         });
         expect(deps.emailSender.sendPasswordResetEmail).toHaveBeenCalledWith(
             EMAIL,
             `${deps.frontendOrigin}/reset-password?token=reset-token`,
+            DEFAULT_LOCALE,
         );
     });
 
@@ -230,7 +247,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("passwordResetEmailSent"),
+            message: translateMessage("passwordResetEmailSent", DEFAULT_LOCALE),
         });
         expect(deps.emailSender.sendPasswordResetEmail).not.toHaveBeenCalled();
     });
@@ -242,6 +259,7 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 7,
             password: "hashed-current-secret",
+            session_version: 0,
         });
         deps.passwordHasher.hash.mockResolvedValue(HASHED_NEW_PASSWORD);
 
@@ -252,7 +270,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("passwordReset"),
+            message: translateMessage("passwordReset", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.updatePassword).toHaveBeenCalledWith(
             7,
@@ -293,11 +311,14 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
             password: HASHED_CURRENT_PASSWORD,
+            session_version: 0,
         });
         deps.passwordHasher.compare
             .mockResolvedValueOnce(true) // current password check
             .mockResolvedValueOnce(false); // new-password-same-as-current check
         deps.passwordHasher.hash.mockResolvedValue(HASHED_NEW_PASSWORD);
+        deps.userRepository.updatePassword.mockResolvedValue(1);
+        deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
 
         const res = await request(app)
             .post(CHANGE_PASSWORD_PATH)
@@ -309,12 +330,37 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("passwordChanged"),
+            message: translateMessage("passwordChanged", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.updatePassword).toHaveBeenCalledWith(
             1,
             HASHED_NEW_PASSWORD,
         );
+        // the session that changed the password is re-issued under the raised version
+        expect(deps.tokenService.generate).toHaveBeenCalledWith(1, 1);
+        const headers = res.headers as IncomingHttpHeaders;
+
+        expect(headers["set-cookie"]?.join(";") ?? "").toContain(
+            `authToken=${TOKEN_VALUE}`,
+        );
+    });
+
+    it("should reject a session issued before the password last changed", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.userRepository.findSessionVersion.mockResolvedValue(1);
+
+        const res = await request(app)
+            .post(CHANGE_PASSWORD_PATH)
+            .set("Cookie", authCookie())
+            .send({
+                currentPassword: CURRENT_PASSWORD,
+                newPassword: NEW_PASSWORD,
+            });
+
+        expect(res.status).toBe(403);
+        expect(res.body).toEqual(errorBody(ERROR_CODES.SESSION_EXPIRED));
+        expect(deps.userRepository.findCredentialsById).not.toHaveBeenCalled();
     });
 
     it("should reject change-password with the wrong current password", async () => {
@@ -323,6 +369,7 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
             password: HASHED_CURRENT_PASSWORD,
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(false);
 
@@ -350,7 +397,9 @@ describe("user routes", () => {
             email: EMAIL,
             email_verified_at: null,
             avatar: null,
+            avatar_photo_key: null,
             calorie_goal: null,
+            locale: DEFAULT_LOCALE,
         });
         deps.tokenService.generatePurposeToken.mockReturnValue(VERIFY_TOKEN);
 
@@ -360,11 +409,12 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("verificationEmailSent"),
+            message: translateMessage("verificationEmailSent", DEFAULT_LOCALE),
         });
         expect(deps.emailSender.sendVerificationEmail).toHaveBeenCalledWith(
             EMAIL,
             `${deps.frontendOrigin}/verify-email?token=verify-token`,
+            DEFAULT_LOCALE,
         );
     });
 
@@ -379,7 +429,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("emailVerified"),
+            message: translateMessage("emailVerified", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.markEmailVerified).toHaveBeenCalledWith(1);
     });
@@ -419,7 +469,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("profileUpdated"),
+            message: translateMessage("profileUpdated", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.updateProfile).toHaveBeenCalledWith(1, {
             name: "Claude",
@@ -456,8 +506,10 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
             password: HASHED_CURRENT_PASSWORD,
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(true);
+        deps.userRepository.delete.mockResolvedValue([]);
 
         const res = await request(app)
             .delete("/api/me")
@@ -466,7 +518,7 @@ describe("user routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("accountDeleted"),
+            message: translateMessage("accountDeleted", DEFAULT_LOCALE),
         });
         expect(deps.userRepository.delete).toHaveBeenCalledWith(1);
 
@@ -481,6 +533,7 @@ describe("user routes", () => {
         deps.userRepository.findCredentialsById.mockResolvedValue({
             id: 1,
             password: HASHED_CURRENT_PASSWORD,
+            session_version: 0,
         });
         deps.passwordHasher.compare.mockResolvedValue(false);
 

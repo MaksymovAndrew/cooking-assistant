@@ -200,7 +200,7 @@ describe("IngredientsPage", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Buy more" }));
 
-        const quantityInput = screen.getByRole("spinbutton");
+        const quantityInput = await screen.findByRole("spinbutton");
 
         await userEvent.clear(quantityInput);
         await userEvent.type(quantityInput, "4");
@@ -229,7 +229,7 @@ describe("IngredientsPage", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Delete" }));
 
-        expect(screen.getByText(deleteMessage)).toBeInTheDocument();
+        expect(await screen.findByText(deleteMessage)).toBeInTheDocument();
     });
 
     it("should close the delete confirmation modal when Cancel is clicked", async () => {

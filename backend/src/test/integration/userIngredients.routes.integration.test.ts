@@ -1,6 +1,7 @@
 import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
@@ -45,7 +46,7 @@ describe("user ingredient routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("ingredientsUpdated"),
+            message: translateMessage("ingredientsUpdated", DEFAULT_LOCALE),
         });
         expect(deps.pantryRepository.addIngredients).toHaveBeenCalledWith(7, [
             { id: 3, quantity_person_ingradient: 2 },
@@ -63,7 +64,7 @@ describe("user ingredient routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("ingredientDeleted"),
+            message: translateMessage("ingredientDeleted", DEFAULT_LOCALE),
         });
         expect(deps.pantryRepository.deleteIngredient).toHaveBeenCalledWith(
             7,
@@ -83,7 +84,7 @@ describe("user ingredient routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("purchaseUpdated"),
+            message: translateMessage("purchaseUpdated", DEFAULT_LOCALE),
         });
         expect(
             deps.pantryRepository.updatePurchaseQuantity,

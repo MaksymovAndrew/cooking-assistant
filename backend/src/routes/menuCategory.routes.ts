@@ -3,10 +3,11 @@ import express, { type Router } from "express";
 import { ROUTES } from "constants/routes";
 
 import type MenuCategoryController from "controller/menuCategory.controller";
-import optionalAuth from "middleware/optionalAuth";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 
 export default function createMenuCategoryRouter(
     menuCategoryController: MenuCategoryController,
+    { optionalAuth }: SessionAuth,
 ): Router {
     const router = express.Router();
 

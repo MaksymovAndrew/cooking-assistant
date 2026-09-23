@@ -126,16 +126,26 @@ describe("ContentCard", () => {
         ).not.toContainElement(heart);
     });
 
-    it("should show a star rating in the grid variant", () => {
-        renderCard();
+    it("should show the average and the vote count in the grid variant", () => {
+        renderCard({ rating: { average: 4.25, count: 12 } });
 
-        expect(screen.getByText("4.2")).toBeInTheDocument();
+        expect(screen.getByText("4.3")).toBeInTheDocument();
+        expect(screen.getByText("(12)")).toBeInTheDocument();
+        expect(
+            screen.getByText("Rated 4.3 out of 5 from 12 ratings"),
+        ).toBeInTheDocument();
+    });
+
+    it("should say a record has no ratings yet rather than show a zero", () => {
+        renderCard({ rating: { average: null, count: 0 } });
+
+        expect(screen.getByText("No ratings yet")).toBeInTheDocument();
     });
 
     it("should not show a star rating in the row variant", () => {
-        renderCard({ variant: "row" });
+        renderCard({ variant: "row", rating: { average: 4.25, count: 12 } });
 
-        expect(screen.queryByText("4.2")).not.toBeInTheDocument();
+        expect(screen.queryByText("4.3")).not.toBeInTheDocument();
     });
 
     it("should only show the first meta item in the row variant", () => {
@@ -149,5 +159,14 @@ describe("ContentCard", () => {
 
         expect(screen.getByText(COOKING_TIME_LABEL)).toBeInTheDocument();
         expect(screen.queryByText("Mar 12, 2026")).not.toBeInTheDocument();
+    });
+
+    it("should show an uploaded photo in place of the icon", () => {
+        renderCard({ imageSrc: "blob:test/photo" });
+
+        expect(screen.getByRole("presentation")).toHaveAttribute(
+            "src",
+            "blob:test/photo",
+        );
     });
 });

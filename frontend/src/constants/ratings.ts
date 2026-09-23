@@ -1,6 +1,10 @@
-// no rating data exists on the backend yet - fixed decorative placeholders, shared so every recipe/menu rating shows the same numbers
-export const RECIPE_RATING = "4.2";
-export const RECIPE_RATING_COUNT = "(128)";
+export const RATING_TARGET = {
+    recipe: "recipe",
+    menu: "menu",
+} as const;
 
-export const MENU_RATING = "4.6";
-export const MENU_RATING_COUNT = "(34)";
+export const MIN_RATING = 1;
+export const MAX_RATING = 5;
+
+// every star value, lowest first - the order the stars are drawn in
+export const RATING_VALUES = [1, 2, 3, 4, 5] as const;

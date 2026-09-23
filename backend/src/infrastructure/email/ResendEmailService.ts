@@ -1,4 +1,5 @@
 import { logger } from "config/logger";
+import type { Locale } from "constants/locales";
 import { getEmailCopy } from "i18n/translate";
 
 import type { EmailSender } from "application/ports/EmailSender";
@@ -61,8 +62,12 @@ export default class ResendEmailService implements EmailSender {
         private from: string,
     ) {}
 
-    async sendPasswordResetEmail(to: string, link: string): Promise<void> {
-        const { brandName, passwordReset } = getEmailCopy();
+    async sendPasswordResetEmail(
+        to: string,
+        link: string,
+        locale: Locale,
+    ): Promise<void> {
+        const { brandName, passwordReset } = getEmailCopy(locale);
 
         await this.send(
             to,
@@ -71,8 +76,12 @@ export default class ResendEmailService implements EmailSender {
         );
     }
 
-    async sendVerificationEmail(to: string, link: string): Promise<void> {
-        const { brandName, verification } = getEmailCopy();
+    async sendVerificationEmail(
+        to: string,
+        link: string,
+        locale: Locale,
+    ): Promise<void> {
+        const { brandName, verification } = getEmailCopy(locale);
 
         await this.send(
             to,

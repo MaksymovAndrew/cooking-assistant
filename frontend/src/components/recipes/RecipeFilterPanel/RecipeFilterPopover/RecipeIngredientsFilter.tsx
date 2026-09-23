@@ -11,6 +11,9 @@ import { SearchField } from "components/ui/SearchField";
 
 import { resolveIngredientName } from "utils/ingredientName";
 
+import { FilterSection } from "./FilterSection";
+import { IngredientFilterResults } from "./IngredientFilterResults";
+
 interface RecipeIngredientsFilterProps {
     allIngredients: Ingredient[];
     selectedIds: number[];
@@ -60,10 +63,7 @@ export const RecipeIngredientsFilter: React.FC<
     };
 
     return (
-        <div className={styles["recipe-filter-panel__section"]}>
-            <span className={styles["recipe-filter-panel__label"]}>
-                {t("filterPanel.ingredientsLabel")}
-            </span>
+        <FilterSection label={t("filterPanel.ingredientsLabel")}>
             <SearchField
                 ref={inputRef}
                 value={query}
@@ -71,39 +71,10 @@ export const RecipeIngredientsFilter: React.FC<
                 placeholder={t("ingredientPicker.searchPlaceholder")}
             />
             {trimmedQuery && (
-                <ul
-                    className={
-                        styles["recipe-filter-panel__ingredients-results"]
-                    }
-                >
-                    {visibleIngredients.length === 0 ? (
-                        <li
-                            className={
-                                styles["recipe-filter-panel__ingredients-empty"]
-                            }
-                        >
-                            {t("ingredientPicker.noMatches")}
-                        </li>
-                    ) : (
-                        visibleIngredients.map((ingredient) => (
-                            <li key={ingredient.id}>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        handleSelect(ingredient);
-                                    }}
-                                    className={
-                                        styles[
-                                            "recipe-filter-panel__ingredients-result"
-                                        ]
-                                    }
-                                >
-                                    {resolveIngredientName(ingredient)}
-                                </button>
-                            </li>
-                        ))
-                    )}
-                </ul>
+                <IngredientFilterResults
+                    results={visibleIngredients}
+                    onSelect={handleSelect}
+                />
             )}
             {selectedIngredients.length > 0 && (
                 <div
@@ -122,6 +93,6 @@ export const RecipeIngredientsFilter: React.FC<
                     ))}
                 </div>
             )}
-        </div>
+        </FilterSection>
     );
 };

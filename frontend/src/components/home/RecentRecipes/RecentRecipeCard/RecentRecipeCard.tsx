@@ -1,16 +1,18 @@
-import { Flame, Star } from "lucide-react";
+import { Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { RECIPE_RATING } from "constants/ratings";
 import { recipeDetailsPath } from "constants/routes";
 import type { RecipeSearchResultItem } from "types/recipe";
 
 import { DonburiMarkCompact } from "components/icons";
 import { Link } from "components/ui/Link";
+import { RatingSummary } from "components/ui/RatingSummary";
+import { RecordPhoto } from "components/ui/RecordPhoto";
 
 import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
+import { mediaUrl } from "utils/mediaUrl";
 
 import styles from "./RecentRecipeCard.module.scss";
 
@@ -48,9 +50,14 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
                 className={styles["recent-recipe-card__image"]}
                 aria-hidden="true"
             >
-                <DonburiMarkCompact
-                    size={IMAGE_ICON_SIZE}
-                    className={styles["recent-recipe-card__image-icon"]}
+                <RecordPhoto
+                    src={mediaUrl(recipe.photo_key, "card")}
+                    fallback={
+                        <DonburiMarkCompact
+                            size={IMAGE_ICON_SIZE}
+                            className={styles["recent-recipe-card__image-icon"]}
+                        />
+                    }
                 />
             </div>
             <div className={styles["recent-recipe-card__body"]}>
@@ -76,13 +83,14 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
                             })}
                         </span>
                     )}
-                    <span
+                    <RatingSummary
+                        average={recipe.ratingAverage}
+                        count={recipe.ratingCount}
+                        iconSize={STAR_ICON_SIZE}
                         className={styles["recent-recipe-card__rating"]}
-                        aria-hidden="true"
-                    >
-                        <Star size={STAR_ICON_SIZE} />
-                        {RECIPE_RATING}
-                    </span>
+                        showCount={false}
+                        hideWhenEmpty
+                    />
                 </div>
             </div>
         </Link>

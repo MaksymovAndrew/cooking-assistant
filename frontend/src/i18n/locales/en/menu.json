@@ -26,6 +26,10 @@
         "categoryChip_other": "{{count}} categories",
         "favouritesLabel": "Only my favourites",
         "favouritesChip": "Favourites",
+        "topRatedLabel": "Rated 4 stars and up",
+        "topRatedChip": "4+ stars",
+        "sortByRatingLabel": "Top rated first",
+        "sortByRatingChip": "Top rated first",
         "removeFilter": "Remove"
     },
     "recipePicker": {
@@ -97,7 +101,9 @@
         "discardTitle": "Discard changes?",
         "discardMessage": "You have unsaved changes. Are you sure you want to leave this page?",
         "discardConfirm": "Discard changes",
-        "discardCancel": "Keep editing"
+        "discardCancel": "Keep editing",
+        "photoTitle": "Cover photo",
+        "photoAlt": "Cover photo of the menu"
     },
     "menuDetailsPage": {
         "breadcrumb": "Breadcrumb",
@@ -107,7 +113,7 @@
         "totalTimeMinutes": "{{minutes}} min",
         "caloriesValue": "{{count}} kcal",
         "calories": "Calories",
-        "yourRating": "Your rating",
+        "rating": "Rating",
         "recipes": "Recipes",
         "recipesCaption_one": "{{count}} recipe",
         "recipesCaption_other": "{{count}} recipes",

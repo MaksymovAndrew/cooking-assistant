@@ -1,19 +1,12 @@
 import { useCallback, useState } from "react";
 
-import type { MenuFormValues } from "hooks/useMenuForm";
+import type { MenuFormErrorMessages, MenuFormValues } from "types/menuForm";
 
 export interface MenuFormErrors {
     menuTitleError: string | null;
     menuDescriptionError: string | null;
     categoryError: string | null;
     recipesError: string | null;
-}
-
-export interface MenuFormErrorMessages {
-    emptyTitle: string;
-    emptyDescription: string;
-    noCategory: string;
-    noRecipes: string;
 }
 
 export const useMenuFormValidation = (messages: MenuFormErrorMessages) => {
@@ -27,7 +20,7 @@ export const useMenuFormValidation = (messages: MenuFormErrorMessages) => {
     const [recipesError, setRecipesError] = useState<string | null>(null);
 
     const validate = useCallback(
-        (values: MenuFormValues): boolean => {
+        (values: Omit<MenuFormValues, "photoKey">): boolean => {
             let valid = true;
 
             if (!values.menuTitle.trim()) {

@@ -3,9 +3,12 @@ import express, { type Router } from "express";
 import { ROUTES } from "constants/routes";
 
 import type TagController from "controller/tag.controller";
-import authenticateToken from "middleware/jwtMiddleware";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 
-export default function createTagRouter(tagController: TagController): Router {
+export default function createTagRouter(
+    tagController: TagController,
+    { authenticateToken }: SessionAuth,
+): Router {
     const router = express.Router();
 
     router.get(ROUTES.tags.list, authenticateToken, tagController.getTags);

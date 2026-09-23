@@ -1,5 +1,5 @@
 // hand-written translations for the closed vocabularies (categories, allergens) - unlike ingredient names these never come from the translation source, cross-checked against catalog.types.ts's key lists at generation time
-import type { ALLERGEN_SLUGS, CATEGORY_KEYS } from "./catalog.types";
+import type { CATEGORY_KEYS } from "./catalog.types";
 
 export type Locale = "en" | "ru" | "uk" | "pl";
 export const LOCALES: Locale[] = ["en", "ru", "uk", "pl"];
@@ -81,39 +81,4 @@ export const CATEGORY_NAMES: Record<
         pl: "Konserwy",
     },
     beverages: { en: "Beverages", ru: "Напитки", uk: "Напої", pl: "Napoje" },
-};
-
-export const ALLERGEN_NAMES: Record<
-    (typeof ALLERGEN_SLUGS)[number],
-    Record<Locale, string>
-> = {
-    gluten: { en: "Gluten", ru: "Глютен", uk: "Глютен", pl: "Gluten" },
-    crustaceans: {
-        en: "Crustaceans",
-        ru: "Ракообразные",
-        uk: "Ракоподібні",
-        pl: "Skorupiaki",
-    },
-    eggs: { en: "Eggs", ru: "Яйца", uk: "Яйця", pl: "Jaja" },
-    fish: { en: "Fish", ru: "Рыба", uk: "Риба", pl: "Ryby" },
-    peanuts: {
-        en: "Peanuts",
-        ru: "Арахис",
-        uk: "Арахіс",
-        pl: "Orzeszki ziemne",
-    },
-    soybeans: { en: "Soybeans", ru: "Соя", uk: "Соя", pl: "Soja" },
-    milk: { en: "Milk", ru: "Молоко", uk: "Молоко", pl: "Mleko" },
-    nuts: { en: "Tree nuts", ru: "Орехи", uk: "Горіхи", pl: "Orzechy" },
-    celery: { en: "Celery", ru: "Сельдерей", uk: "Селера", pl: "Seler" },
-    mustard: { en: "Mustard", ru: "Горчица", uk: "Гірчиця", pl: "Gorczyca" },
-    sesame: { en: "Sesame", ru: "Кунжут", uk: "Кунжут", pl: "Sezam" },
-    sulphites: {
-        en: "Sulphites",
-        ru: "Сульфиты",
-        uk: "Сульфіти",
-        pl: "Siarczyny",
-    },
-    lupin: { en: "Lupin", ru: "Люпин", uk: "Люпин", pl: "Łubin" },
-    molluscs: { en: "Molluscs", ru: "Моллюски", uk: "Молюски", pl: "Mięczaki" },
 };

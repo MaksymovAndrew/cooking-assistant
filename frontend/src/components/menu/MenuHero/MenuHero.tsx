@@ -1,15 +1,20 @@
-import { Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { MENU_RATING, MENU_RATING_COUNT } from "constants/ratings";
+import { RATING_TARGET } from "constants/ratings";
 import type { MenuDetails } from "types/menu";
 
+import { useRatingControl } from "hooks/useRatingControl";
+
 import { MenuHeroStats } from "components/menu/MenuHero/MenuHeroStats";
+import { AuthorByline } from "components/ui/AuthorByline";
 import { Chip } from "components/ui/Chip";
+import { RatingSummary } from "components/ui/RatingSummary";
+import { StarRatingInput } from "components/ui/StarRatingInput";
 
 import { formatKcal } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
+import { mediaUrl } from "utils/mediaUrl";
 
 import styles from "./MenuHero.module.scss";
 
@@ -46,33 +51,53 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                   count: formatKcal(Math.round(caloriesPerPortion)),
               });
 
+    const coverSrc = mediaUrl(menu.photo_key, "hero");
+    const rating = useRatingControl(RATING_TARGET.menu, menu.id, menu);
+    // a signed-in viewer rates anyone's menu but their own; isFavourite is null only for a guest
+    const canRate = menu.isFavourite !== null && !menu.isOwner;
+
     return (
         <div className={styles["menu-hero"]}>
+            {coverSrc && (
+                <img
+                    className={styles["menu-hero__cover"]}
+                    src={coverSrc}
+                    alt={menu.title}
+                    fetchPriority="high"
+                />
+            )}
             <div className={styles["menu-hero__header"]}>
                 <div className={styles["menu-hero__title-row"]}>
                     <h1 className={styles["menu-hero__title"]}>{menu.title}</h1>
                     <Chip variant="type">{menu.categoryname}</Chip>
-                    <span className={styles["menu-hero__rating-inline"]}>
-                        <Star
-                            size={RATING_ICON_SIZE}
-                            aria-hidden="true"
-                            className={styles["menu-hero__rating-inline-icon"]}
-                        />
-                        {MENU_RATING}
-                        <span className={styles["menu-hero__stat-count"]}>
-                            {MENU_RATING_COUNT}
-                        </span>
-                    </span>
+                    <RatingSummary
+                        average={rating.ratingAverage}
+                        count={rating.ratingCount}
+                        iconSize={RATING_ICON_SIZE}
+                        className={styles["menu-hero__rating-inline"]}
+                    />
                 </div>
+                <AuthorByline
+                    author={menu.author}
+                    className={styles["menu-hero__author"]}
+                />
             </div>
 
             <MenuHeroStats
                 formattedTotalTime={formattedTotalTime}
                 recipeCount={recipeCount}
                 formattedCalories={formattedCalories}
-                isOwner={menu.isOwner}
+                rating={rating}
                 exceedsBudget={exceedsBudget}
             />
+
+            {canRate && (
+                <StarRatingInput
+                    rating={rating}
+                    label={t("common:rating.yourRating")}
+                    className={styles["menu-hero__rate"]}
+                />
+            )}
 
             {menu.menucontent && (
                 <p className={styles["menu-hero__description"]}>

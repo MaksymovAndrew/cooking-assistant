@@ -1,3 +1,6 @@
+import type { RecordAuthor } from "types/media";
+import type { RecordRating } from "types/rating";
+
 export interface Menu {
     id: number;
     title: string;
@@ -10,6 +13,13 @@ export interface Menu {
     isOwner?: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite?: boolean | null;
+    // present on the browse/person lists only, like isOwner
+    photo_key?: string | null;
+    author?: RecordAuthor;
+    // present on the browse/person lists only, like isOwner
+    ratingAverage?: number | null;
+    ratingCount?: number;
+    myRating?: number | null;
 }
 
 // shape returned by GET /api/menus (unpaginated) - the plain menu list plus each menu's recipe
@@ -35,7 +45,7 @@ export interface MissingIngredient {
     unit_name: string;
 }
 
-export interface MenuDetailRecipe {
+export interface MenuDetailRecipe extends Omit<RecordRating, "myRating"> {
     recipe_id: number;
     title: string;
     type_name: string;
@@ -43,11 +53,12 @@ export interface MenuDetailRecipe {
     creation_date: string;
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
+    photo_key: string | null;
     missingIngredients?: MissingIngredient[];
 }
 
 export interface MenuDetails {
-    menu: {
+    menu: RecordRating & {
         id: number;
         title: string;
         // a menu row may carry no category: the column is nullable
@@ -56,6 +67,8 @@ export interface MenuDetails {
         category_id: number;
         isOwner: boolean;
         isFavourite: boolean | null;
+        photo_key: string | null;
+        author: RecordAuthor;
     };
     recipes: MenuDetailRecipe[];
     // distinct allergen slugs across every recipe of the menu
@@ -66,6 +79,8 @@ export interface MenuListParams {
     menu_name?: string;
     category_ids?: string;
     favourites?: boolean;
+    sort_order?: "rating";
+    top_rated?: boolean;
 }
 
 export interface CreateMenuRequest {

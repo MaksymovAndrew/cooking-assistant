@@ -21,6 +21,9 @@ const RECIPE: MenuDetailRecipe = {
     cooking_time: 30,
     creation_date: "2024-01-01",
     calories_per_portion: null,
+    photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
     missingIngredients: [
         {
             ingredient_id: 7,

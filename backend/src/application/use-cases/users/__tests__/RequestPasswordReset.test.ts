@@ -1,3 +1,5 @@
+import { DEFAULT_LOCALE } from "constants/locales";
+
 import RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
 
 import { TEST_FRONTEND_ORIGIN } from "test/helpers/testConstants";
@@ -24,6 +26,7 @@ describe("RequestPasswordReset", () => {
                 id: 5,
                 password: HASHED_PASSWORD,
                 email_verified_at: "2026-01-01T00:00:00.000Z",
+                locale: DEFAULT_LOCALE,
             },
         );
         deps.tokenService.generatePurposeToken.mockReturnValue(RESET_TOKEN);
@@ -48,6 +51,7 @@ describe("RequestPasswordReset", () => {
         expect(deps.emailSender.sendPasswordResetEmail).toHaveBeenCalledWith(
             EMAIL,
             `${FRONTEND_ORIGIN}/reset-password?token=${RESET_TOKEN}`,
+            DEFAULT_LOCALE,
         );
     });
 

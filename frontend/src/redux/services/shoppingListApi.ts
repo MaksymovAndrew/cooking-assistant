@@ -9,8 +9,13 @@ import type {
 import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
+import { applyOrder, tickItem } from "./shoppingListApi.optimistic";
+import { undoOnFailure } from "./undoOnFailure";
 
 const SHOPPING_LIST = "ShoppingList" as const;
+
+const updateItems = (recipe: (items: ShoppingListItem[]) => void) =>
+    shoppingListApi.util.updateQueryData("getShoppingList", null, recipe);
 
 export const shoppingListApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
@@ -52,29 +57,11 @@ export const shoppingListApi = baseApi.injectEndpoints({
                 data: { checked },
             }),
             invalidatesTags: [SHOPPING_LIST],
-            onQueryStarted: async (
-                { id, checked },
-                { dispatch, queryFulfilled },
-            ) => {
-                const patch = dispatch(
-                    shoppingListApi.util.updateQueryData(
-                        "getShoppingList",
-                        null,
-                        (items) => {
-                            const item = items.find((entry) => entry.id === id);
-
-                            if (item) {
-                                item.checked = checked;
-                            }
-                        },
-                    ),
+            onQueryStarted: async (item, { dispatch, queryFulfilled }) => {
+                await undoOnFailure(
+                    dispatch(updateItems(tickItem(item.id, item.checked))),
+                    queryFulfilled,
                 );
-
-                try {
-                    await queryFulfilled;
-                } catch {
-                    patch.undo();
-                }
             },
         }),
         deleteShoppingListItem: build.mutation<null, number>({
@@ -100,23 +87,10 @@ export const shoppingListApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: [SHOPPING_LIST],
             onQueryStarted: async ({ ids }, { dispatch, queryFulfilled }) => {
-                const patch = dispatch(
-                    shoppingListApi.util.updateQueryData(
-                        "getShoppingList",
-                        null,
-                        (items) => {
-                            items.sort(
-                                (a, b) => ids.indexOf(a.id) - ids.indexOf(b.id),
-                            );
-                        },
-                    ),
+                await undoOnFailure(
+                    dispatch(updateItems(applyOrder(ids))),
+                    queryFulfilled,
                 );
-
-                try {
-                    await queryFulfilled;
-                } catch {
-                    patch.undo();
-                }
             },
         }),
     }),

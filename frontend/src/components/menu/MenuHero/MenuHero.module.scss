@@ -1,8 +1,23 @@
 @use "styles/abstracts" as *;
 
 .menu-hero {
+    &__cover {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        max-height: 360px;
+        margin-bottom: var(--s-5);
+        border-radius: var(--r-lg);
+        background: var(--surface-2);
+        object-fit: cover;
+    }
+
     &__header {
         margin-bottom: var(--s-3);
+    }
+
+    &__author {
+        margin: var(--s-2) 0 0;
     }
 
     &__title-row {
@@ -44,9 +59,8 @@
         }
     }
 
-    &__rating-inline-icon {
-        color: var(--warning);
-        fill: var(--warning);
+    &__rate {
+        margin-bottom: var(--s-5);
     }
 
     &__description {
@@ -109,11 +123,6 @@
         svg {
             color: var(--brand);
         }
-    }
-
-    &__stat-count {
-        color: var(--text-muted);
-        font-size: 12px;
     }
 
     &__stat--calorie-over {

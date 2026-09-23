@@ -1,4 +1,4 @@
-import { act } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 
 import type { ExpiredPantryIngredient } from "types/expiry";
 import type { PantryIngredient } from "types/userIngredient";
@@ -26,43 +26,43 @@ import { renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
 
 jest.mock("components/modals/PurchaseHistoryModal", () => ({
-    PurchaseHistoryModal: jest.fn(() => null),
+    PurchaseHistoryModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/DeleteRecipeModal", () => ({
-    DeleteRecipeModal: jest.fn(() => null),
+    DeleteRecipeModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/DeleteMenuModal", () => ({
-    DeleteMenuModal: jest.fn(() => null),
+    DeleteMenuModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/DeleteIngredientModal", () => ({
-    DeleteIngredientModal: jest.fn(() => null),
+    DeleteIngredientModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/RestockIngredientModal", () => ({
-    RestockIngredientModal: jest.fn(() => null),
+    RestockIngredientModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/LogoutConfirmModal", () => ({
-    LogoutConfirmModal: jest.fn(() => null),
+    LogoutConfirmModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/ThemeChangeConfirmModal", () => ({
-    ThemeChangeConfirmModal: jest.fn(() => null),
+    ThemeChangeConfirmModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/ExpiredIngredientsModal", () => ({
-    ExpiredIngredientsModal: jest.fn(() => null),
+    ExpiredIngredientsModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/DeleteCalorieIntakeModal", () => ({
-    DeleteCalorieIntakeModal: jest.fn(() => null),
+    DeleteCalorieIntakeModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/CalorieLimitModal", () => ({
-    CalorieLimitModal: jest.fn(() => null),
+    CalorieLimitModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/LogIntakeModal", () => ({
-    LogIntakeModal: jest.fn(() => null),
+    LogIntakeModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/modals/NewsModal", () => ({
-    NewsModal: jest.fn(() => null),
+    NewsModal: jest.fn(() => <div data-testid="modal" />),
 }));
 jest.mock("components/connectivity/OfflineModal", () => ({
-    OfflineModal: jest.fn(() => null),
+    OfflineModal: jest.fn(() => <div data-testid="modal" />),
 }));
 
 const mockedModal = jest.mocked(PurchaseHistoryModal);
@@ -97,11 +97,18 @@ const MODAL: ActiveModal = {
     ingredientName: "Salt",
 };
 
+// the modals load lazily, so a render is only settled once the chosen one has appeared
+const renderModalRoot = async (store = makeTestStore()) => {
+    const view = renderWithProviders(<ModalRoot />, { store });
+
+    await screen.findByTestId("modal");
+
+    return view;
+};
+
 describe("ModalRoot", () => {
-    it("should render the history modal for the ingredientHistory type", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({ ui: { queue: [MODAL] } }),
-        });
+    it("should render the history modal for the ingredientHistory type", async () => {
+        await renderModalRoot(makeTestStore({ ui: { queue: [MODAL] } }));
 
         expect(mockedModal).toHaveBeenCalled();
 
@@ -111,10 +118,10 @@ describe("ModalRoot", () => {
         expect(props.ingredientName).toBe("Salt");
     });
 
-    it("should close the modal when the child requests it", () => {
+    it("should close the modal when the child requests it", async () => {
         const store = makeTestStore({ ui: { queue: [MODAL] } });
 
-        renderWithProviders(<ModalRoot />, { store });
+        await renderModalRoot(store);
 
         const props = mockedModal.mock.calls[0][0];
 
@@ -134,9 +141,9 @@ describe("ModalRoot", () => {
         expect(mockedModal).not.toHaveBeenCalled();
     });
 
-    it("should render the delete-recipe modal with its id, recipe id and title", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the delete-recipe modal with its id, recipe id and title", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -148,7 +155,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedDeleteRecipe.mock.calls[0][0];
 
@@ -157,9 +164,9 @@ describe("ModalRoot", () => {
         expect(props.recipeTitle).toBe("Slow-roasted ragù");
     });
 
-    it("should render the delete-menu modal with its id and menu id", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the delete-menu modal with its id and menu id", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -171,7 +178,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedDeleteMenu.mock.calls[0][0];
 
@@ -179,9 +186,9 @@ describe("ModalRoot", () => {
         expect(props.menuId).toBe(7);
     });
 
-    it("should render the delete-ingredient modal with its id and ingredient", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the delete-ingredient modal with its id and ingredient", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -192,7 +199,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedDeleteIngredient.mock.calls[0][0];
 
@@ -200,9 +207,9 @@ describe("ModalRoot", () => {
         expect(props.ingredient).toEqual(INGREDIENT);
     });
 
-    it("should render the restock-ingredient modal with its id and ingredient", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the restock-ingredient modal with its id and ingredient", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -213,7 +220,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedRestockIngredient.mock.calls[0][0];
 
@@ -221,21 +228,21 @@ describe("ModalRoot", () => {
         expect(props.ingredient).toEqual(INGREDIENT);
     });
 
-    it("should render the logout modal with its id", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the logout modal with its id", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: { queue: [{ id: "modal-5", type: MODAL_TYPE.logout }] },
             }),
-        });
+        );
 
         const props = mockedLogout.mock.calls[0][0];
 
         expect(props.modalId).toBe("modal-5");
     });
 
-    it("should render the theme-change modal with its id and next mode", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the theme-change modal with its id and next mode", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -246,7 +253,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedThemeChange.mock.calls[0][0];
 
@@ -254,7 +261,7 @@ describe("ModalRoot", () => {
         expect(props.nextMode).toBe("dark");
     });
 
-    it("should render the expired-ingredients modal with its id and ingredient list", () => {
+    it("should render the expired-ingredients modal with its id and ingredient list", async () => {
         const ingredients: ExpiredPantryIngredient[] = [
             {
                 ingredientId: 1,
@@ -271,8 +278,8 @@ describe("ModalRoot", () => {
             },
         ];
 
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -283,7 +290,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedExpiredIngredients.mock.calls[0][0];
 
@@ -291,9 +298,9 @@ describe("ModalRoot", () => {
         expect(props.ingredients).toEqual(ingredients);
     });
 
-    it("should render the delete-calorie-intake modal with its id, intake id and title", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the delete-calorie-intake modal with its id, intake id and title", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -305,7 +312,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedDeleteCalorieIntake.mock.calls[0][0];
 
@@ -314,9 +321,9 @@ describe("ModalRoot", () => {
         expect(props.title).toBe("Miso ramen");
     });
 
-    it("should render the calorie-limit modal with its id, consumed and goal", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the calorie-limit modal with its id, consumed and goal", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -328,7 +335,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedCalorieLimit.mock.calls[0][0];
 
@@ -337,29 +344,29 @@ describe("ModalRoot", () => {
         expect(props.goal).toBe(2200);
     });
 
-    it("should render the news modal with its id", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the news modal with its id", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: { queue: [{ id: "modal-11", type: MODAL_TYPE.news }] },
             }),
-        });
+        );
 
         expect(mockedNews.mock.calls[0][0].modalId).toBe("modal-11");
     });
 
-    it("should render the offline modal with its id", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the offline modal with its id", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: { queue: [{ id: "modal-12", type: MODAL_TYPE.offline }] },
             }),
-        });
+        );
 
         expect(mockedOffline.mock.calls[0][0].modalId).toBe("modal-12");
     });
 
-    it("should render only the head of the queue", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render only the head of the queue", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         { id: "modal-13", type: MODAL_TYPE.logout },
@@ -367,15 +374,15 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         expect(mockedLogout).toHaveBeenCalled();
         expect(mockedNews).not.toHaveBeenCalled();
     });
 
-    it("should render the log-intake modal with its id, recipe/menu ids, title and calories", () => {
-        renderWithProviders(<ModalRoot />, {
-            store: makeTestStore({
+    it("should render the log-intake modal with its id, recipe/menu ids, title and calories", async () => {
+        await renderModalRoot(
+            makeTestStore({
                 ui: {
                     queue: [
                         {
@@ -388,7 +395,7 @@ describe("ModalRoot", () => {
                     ],
                 },
             }),
-        });
+        );
 
         const props = mockedLogIntake.mock.calls[0][0];
 

@@ -8,7 +8,12 @@ import { API_ROUTES } from "api/endpoints";
 
 import ChangeMenuPage from "app/(private)/change-menu/[id]/page";
 import { mockedPut, mockGetByUrl } from "test/apiClientMock";
-import { ERROR_RECIPES_REQUIRED, ROUTE_ALL_MENUS } from "test/constants";
+import {
+    ERROR_RECIPES_REQUIRED,
+    ROUTE_ALL_MENUS,
+    TEST_AUTHOR,
+    TEST_UNRATED,
+} from "test/constants";
 import { setTestParams } from "test/nextNavigationMock";
 import { mockNavigate, renderWithProviders } from "test/router";
 
@@ -33,6 +38,9 @@ const MENU_RECIPE = {
     cooking_time: 60,
     creation_date: "2024-01-01",
     calories_per_portion: null,
+    photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
 };
 const CATEGORIES = [{ menu_category_id: CATEGORY_ID, category_name: "Lunch" }];
 
@@ -44,6 +52,9 @@ const SAMPLE: MenuDetails = {
         menucontent: "quick",
         category_id: CATEGORY_ID,
         isOwner: true,
+        photo_key: null,
+        ...TEST_UNRATED,
+        author: TEST_AUTHOR,
         isFavourite: false,
     },
     recipes: [],

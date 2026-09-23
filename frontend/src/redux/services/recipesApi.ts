@@ -1,4 +1,3 @@
-import { PAGE_SIZE } from "constants/pagination";
 import type { PaginatedResult } from "types/pagination";
 import type {
     CreateRecipeRequest,
@@ -18,7 +17,7 @@ import {
     listProvidesTags,
     listTag,
 } from "./cacheTags";
-import { getNextOffsetParam } from "./infiniteQueryHelpers";
+import { offsetPagedQuery } from "./infiniteQueryHelpers";
 
 const RECIPE = "Recipe" as const;
 const RECIPE_LIST = listTag(RECIPE);
@@ -30,14 +29,7 @@ export const recipesApi = baseApi.injectEndpoints({
             RecipeFilterParams,
             number
         >({
-            infiniteQueryOptions: {
-                initialPageParam: 0,
-                getNextPageParam: getNextOffsetParam,
-            },
-            query: ({ queryArg, pageParam }) => ({
-                url: API_ROUTES.recipes.byFilters,
-                params: { ...queryArg, limit: PAGE_SIZE, offset: pageParam },
-            }),
+            ...offsetPagedQuery(API_ROUTES.recipes.byFilters),
             providesTags: (result) => infiniteListProvidesTags(RECIPE, result),
         }),
         getRecipesByPerson: build.infiniteQuery<
@@ -45,14 +37,7 @@ export const recipesApi = baseApi.injectEndpoints({
             RecipeFilterParams,
             number
         >({
-            infiniteQueryOptions: {
-                initialPageParam: 0,
-                getNextPageParam: getNextOffsetParam,
-            },
-            query: ({ queryArg, pageParam }) => ({
-                url: API_ROUTES.recipes.byPerson,
-                params: { ...queryArg, limit: PAGE_SIZE, offset: pageParam },
-            }),
+            ...offsetPagedQuery(API_ROUTES.recipes.byPerson),
             providesTags: (result) => infiniteListProvidesTags(RECIPE, result),
         }),
         getAllRecipes: build.query<RecipeWithIngredientNames[], null>({
@@ -67,7 +52,8 @@ export const recipesApi = baseApi.injectEndpoints({
             query: (id) => ({ url: API_ROUTES.recipes.byId(id) }),
             providesTags: (_result, _error, id) => [{ type: RECIPE, id }],
         }),
-        createRecipe: build.mutation<null, CreateRecipeRequest>({
+        // the created row; only its id is read, to attach a photo picked before it existed
+        createRecipe: build.mutation<{ id: number }, CreateRecipeRequest>({
             query: (data) => ({
                 url: API_ROUTES.recipes.create,
                 method: "POST",

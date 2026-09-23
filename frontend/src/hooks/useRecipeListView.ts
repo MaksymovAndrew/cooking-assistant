@@ -12,7 +12,6 @@ import {
     useGetRecipesByPersonInfiniteQuery,
 } from "redux/services/recipesApi";
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
-import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
 
 import { useCalorieBudget } from "hooks/useCalorieBudget";
 
@@ -20,13 +19,9 @@ import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 import { RECIPE_FILTER_DEFS } from "utils/filters/recipeFilterDefs";
 import { getQueryErrorMessage } from "utils/queryError";
 
-import {
-    hasViewerOnlyFilter,
-    isPantryFilterEmpty,
-    isRecipeListEmpty,
-} from "./recipeListViewHelpers";
+import { isRecipeListEmpty } from "./recipeListViewHelpers";
 import { useListFilters } from "./useListFilters";
-import { useViewerFilterGate } from "./useViewerFilterGate";
+import { useRecipeListGate } from "./useRecipeListGate";
 
 export type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
@@ -56,39 +51,11 @@ export const useRecipeListView = (source: RecipeSource) => {
     // feeds the ingredients filter's search-and-pick UI - already cached by the ingredient picker/pantry pages, so this is a read, not a new request
     const { data: ingredientCatalog = [] } = useGetIngredientsQuery(null);
 
-    // skipped until the session is confirmed authed - not just "not yet known to be a guest" -
-    // so this list stays reachable without a 401 tripping the global auth redirect on a page
-    // that's public now, including during the initial checking window
-    const { isAuthed, isAwaitingSession } = useViewerFilterGate(
-        hasViewerOnlyFilter(filters),
-    );
-    // already fetched by the pantry page/home dashboard - a cache read, not a new request
-    const {
-        data: pantry = [],
-        isLoading: isPantryLoading,
-        isUninitialized: isPantryUninitialized,
-    } = useGetUserIngredientsQuery(null, { skip: !isAuthed });
-    const isPantryEmpty = isPantryFilterEmpty(
-        filters.inPantry,
-        pantry.length,
-        isPantryLoading,
-        isPantryUninitialized,
+    const { queryParams, isHeldBack, isPantryEmpty } = useRecipeListGate(
+        filters,
+        params,
     );
 
-    // a guest can't use in_pantry, favourites, hide_avoided or tag_ids (the controls that set them are hidden for them) - if one is still set
-    // in the URL (a stale bookmark, or a session that expired mid-visit), isPantryUninitialized
-    // never resolves since the pantry query itself stays skipped, so drop the filter here too
-    // instead of sending a request the backend rejects with a 400
-    const queryParams = isAuthed
-        ? params
-        : {
-              ...params,
-              in_pantry: undefined,
-              favourites: undefined,
-              hide_avoided: undefined,
-              tag_ids: undefined,
-          };
-    const isHeldBack = isPantryEmpty || isAwaitingSession;
     const isPerson = source === RECIPE_SOURCE.person;
     const byFilters = useGetRecipesByFiltersInfiniteQuery(queryParams, {
         skip: isPerson || isHeldBack,

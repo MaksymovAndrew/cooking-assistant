@@ -1,17 +1,14 @@
 import type { RequestHandler } from "express";
 
 import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "config/cookie";
+import { requestLocale } from "i18n/requestLocale";
 import { translateMessage } from "i18n/translate";
 
-import type ChangePassword from "application/use-cases/users/ChangePassword";
-import type ConfirmEmailVerification from "application/use-cases/users/ConfirmEmailVerification";
-import type ConfirmPasswordReset from "application/use-cases/users/ConfirmPasswordReset";
 import type DeleteAccount from "application/use-cases/users/DeleteAccount";
 import type GetCurrentUser from "application/use-cases/users/GetCurrentUser";
 import type LoginUser from "application/use-cases/users/LoginUser";
 import type RegisterUser from "application/use-cases/users/RegisterUser";
-import type RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
-import type RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
+import type UpdateLocale from "application/use-cases/users/UpdateLocale";
 import type UpdateProfile from "application/use-cases/users/UpdateProfile";
 
 import { getOptionalUserId, getUserId } from "controller/requestUser";
@@ -20,58 +17,45 @@ interface UserControllerDependencies {
     registerUser: RegisterUser;
     loginUser: LoginUser;
     getCurrentUser: GetCurrentUser;
-    requestPasswordReset: RequestPasswordReset;
-    confirmPasswordReset: ConfirmPasswordReset;
-    changePassword: ChangePassword;
     updateProfile: UpdateProfile;
+    updateLocale: UpdateLocale;
     deleteAccount: DeleteAccount;
-    requestEmailVerification: RequestEmailVerification;
-    confirmEmailVerification: ConfirmEmailVerification;
 }
 
 export default class UserController {
     private registerUserUseCase: RegisterUser;
     private loginUserUseCase: LoginUser;
     private getCurrentUserUseCase: GetCurrentUser;
-    private requestPasswordResetUseCase: RequestPasswordReset;
-    private confirmPasswordResetUseCase: ConfirmPasswordReset;
-    private changePasswordUseCase: ChangePassword;
     private updateProfileUseCase: UpdateProfile;
+    private updateLocaleUseCase: UpdateLocale;
     private deleteAccountUseCase: DeleteAccount;
-    private requestEmailVerificationUseCase: RequestEmailVerification;
-    private confirmEmailVerificationUseCase: ConfirmEmailVerification;
 
     constructor({
         registerUser,
         loginUser,
         getCurrentUser,
-        requestPasswordReset,
-        confirmPasswordReset,
-        changePassword,
         updateProfile,
+        updateLocale,
         deleteAccount,
-        requestEmailVerification,
-        confirmEmailVerification,
     }: UserControllerDependencies) {
         this.registerUserUseCase = registerUser;
         this.loginUserUseCase = loginUser;
         this.getCurrentUserUseCase = getCurrentUser;
-        this.requestPasswordResetUseCase = requestPasswordReset;
-        this.confirmPasswordResetUseCase = confirmPasswordReset;
-        this.changePasswordUseCase = changePassword;
         this.updateProfileUseCase = updateProfile;
+        this.updateLocaleUseCase = updateLocale;
         this.deleteAccountUseCase = deleteAccount;
-        this.requestEmailVerificationUseCase = requestEmailVerification;
-        this.confirmEmailVerificationUseCase = confirmEmailVerification;
     }
 
     registerUser: RequestHandler = async (req, res) => {
         const { token } = await this.registerUserUseCase.execute(
             req.body as Record<string, unknown>,
+            requestLocale(req),
         );
 
         res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
-        res.status(201).json({ message: translateMessage("registered") });
+        res.status(201).json({
+            message: translateMessage("registered", requestLocale(req)),
+        });
     };
 
     loginUser: RequestHandler = async (req, res) => {
@@ -80,12 +64,14 @@ export default class UserController {
         );
 
         res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
-        res.json({ message: translateMessage("loggedIn") });
+        res.json({ message: translateMessage("loggedIn", requestLocale(req)) });
     };
 
-    logout: RequestHandler = (_req, res) => {
+    logout: RequestHandler = (req, res) => {
         res.clearCookie(AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS);
-        res.json({ message: translateMessage("loggedOut") });
+        res.json({
+            message: translateMessage("loggedOut", requestLocale(req)),
+        });
     };
 
     me: RequestHandler = async (req, res) => {
@@ -98,38 +84,24 @@ export default class UserController {
         res.json(user);
     };
 
-    requestPasswordReset: RequestHandler = async (req, res) => {
-        await this.requestPasswordResetUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
-
-        res.json({ message: translateMessage("passwordResetEmailSent") });
-    };
-
-    confirmPasswordReset: RequestHandler = async (req, res) => {
-        await this.confirmPasswordResetUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
-
-        res.json({ message: translateMessage("passwordReset") });
-    };
-
-    changePassword: RequestHandler = async (req, res) => {
-        await this.changePasswordUseCase.execute(
-            getUserId(req),
-            req.body as Record<string, unknown>,
-        );
-
-        res.json({ message: translateMessage("passwordChanged") });
-    };
-
     updateProfile: RequestHandler = async (req, res) => {
         await this.updateProfileUseCase.execute(
             getUserId(req),
             req.body as Record<string, unknown>,
         );
 
-        res.json({ message: translateMessage("profileUpdated") });
+        res.json({
+            message: translateMessage("profileUpdated", requestLocale(req)),
+        });
+    };
+
+    updateLocale: RequestHandler = async (req, res) => {
+        await this.updateLocaleUseCase.execute(
+            getUserId(req),
+            req.body as Record<string, unknown>,
+        );
+
+        res.status(204).end();
     };
 
     deleteAccount: RequestHandler = async (req, res) => {
@@ -139,20 +111,8 @@ export default class UserController {
         );
 
         res.clearCookie(AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS);
-        res.json({ message: translateMessage("accountDeleted") });
-    };
-
-    requestEmailVerification: RequestHandler = async (req, res) => {
-        await this.requestEmailVerificationUseCase.execute(getUserId(req));
-
-        res.json({ message: translateMessage("verificationEmailSent") });
-    };
-
-    confirmEmailVerification: RequestHandler = async (req, res) => {
-        await this.confirmEmailVerificationUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
-
-        res.json({ message: translateMessage("emailVerified") });
+        res.json({
+            message: translateMessage("accountDeleted", requestLocale(req)),
+        });
     };
 }

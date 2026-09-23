@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { AVATAR_KEYS } from "constants/avatarKeys";
+import { LOCALES } from "constants/locales";
 
 import {
     nonEmptyStringSchema,
@@ -85,6 +86,10 @@ export const updateProfileSchema = z.object({
     name: trimmedStringSchema("Name"),
     surname: trimmedStringSchema("Surname"),
     avatar: z.enum(AVATAR_KEYS).nullable(),
+});
+
+export const updateLocaleSchema = z.object({
+    locale: z.enum(LOCALES),
 });
 
 export const deleteAccountSchema = z.object({

@@ -24,8 +24,6 @@ export interface RecipeCreationInput {
     calories_override?: number | null;
 }
 
-export type RecipeUpdateInput = Omit<RecipeCreationInput, "person_id">;
-
 export type RecipeCreationData = Omit<RecipeCreationInput, "ingredients"> & {
     ingredients: RecipeIngredient[];
 };

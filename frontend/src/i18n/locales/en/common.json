@@ -116,6 +116,7 @@
         "calories/intake_not_found": "This entry no longer exists.",
         "calories/not_available": "Calories aren't available for this item.",
         "favourites/requires_login": "Log in to see your favourites.",
+        "ratings/own_record": "You can't rate your own recipe or menu.",
         "ingredient/not_found": "This ingredient is no longer in the catalog.",
         "diet/requires_login": "Log in to hide recipes with what you avoid.",
         "tags/not_found": "This tag no longer exists.",
@@ -124,7 +125,11 @@
         "tags/requires_login": "Log in to filter by your tags.",
         "shopping_list/item_not_found": "This item is no longer on your list.",
         "shopping_list/limit_reached": "Your shopping list is full. Remove a few items first.",
-        "shopping_list/order_out_of_date": "Your list changed somewhere else. It has been refreshed, try again."
+        "shopping_list/order_out_of_date": "Your list changed somewhere else. It has been refreshed, try again.",
+        "media/unsupported_type": "Choose a JPEG, PNG, WebP or AVIF photo.",
+        "media/unreadable": "This photo could not be opened. Try another one.",
+        "media/too_large": "This photo is too large. Choose one under 10 MB.",
+        "media/not_found": "This photo is no longer available."
     },
     "errorState": {
         "title": "Something went wrong",
@@ -167,5 +172,31 @@
     "routeError": {
         "description": "An unexpected error interrupted this page. Your data is safe - try again.",
         "goHome": "Go to homepage"
+    },
+    "author": {
+        "byline": "by {{name}} {{initial}}."
+    },
+    "photo": {
+        "choose": "Add a photo",
+        "replace": "Replace photo",
+        "remove": "Remove photo",
+        "hint": "JPEG, PNG, WebP or AVIF, up to 10 MB."
+    },
+    "rating": {
+        "summary_one": "Rated {{average}} out of 5 from {{count}} rating",
+        "summary_other": "Rated {{average}} out of 5 from {{count}} ratings",
+        "none": "No ratings yet",
+        "count": "({{count}})",
+        "star_one": "{{count}} star",
+        "star_other": "{{count}} stars",
+        "yourRating": "Your rating",
+        "remove": "Remove my rating"
+    },
+    "social": {
+        "tagline": "Recipes, menus and your pantry in one kitchen",
+        "rating_one": "Rated {{average}} from {{count}} vote",
+        "rating_other": "Rated {{average}} from {{count}} votes",
+        "recipeCardAlt": "Recipe card: title, cooking time, calories and rating",
+        "menuCardAlt": "Menu card: title, recipes and rating"
     }
 }

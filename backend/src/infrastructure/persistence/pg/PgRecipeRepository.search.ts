@@ -7,10 +7,15 @@ import type {
     RecipeSearchRow,
 } from "domain/repositories/recipe.filters";
 
+import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
 import { containsAvoidedColumn } from "infrastructure/persistence/pg/containsAvoidedColumn";
 import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
 import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
 import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
+import {
+    ratingColumns,
+    ratingSortOrder,
+} from "infrastructure/persistence/pg/ratingColumns";
 import { RECIPE_FILTER_CLAUSES } from "infrastructure/persistence/pg/recipeFilterClauses";
 import { recipeTagsColumn } from "infrastructure/persistence/pg/recipeTagsColumn";
 import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
@@ -21,12 +26,14 @@ interface RecipeSearchQueryRow extends RecipeSearchRow {
 
 function buildBaseRecipeSelect(ownerPlaceholder: string): string {
     return `
-        SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
+        SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time, r.photo_key,
                COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
+               ${authorColumn("r")},
                ${isOwnerColumn("r", ownerPlaceholder)},
                ${isFavouriteColumn("recipe", "r.id", ownerPlaceholder)},
                ${containsAvoidedColumn("r.id", ownerPlaceholder)},
                ${recipeTagsColumn("r.id", ownerPlaceholder)},
+               ${ratingColumns("recipe", "r", ownerPlaceholder)},
                rt.type_name, json_agg(json_build_object('id', i.id, 'name', i.name, 'allergens', i.allergens)) AS ingredients,
                -- cast: COUNT() is bigint, which pg returns as a string, not a number
                COUNT(*) OVER()::int AS total_count
@@ -38,7 +45,11 @@ function buildBaseRecipeSelect(ownerPlaceholder: string): string {
 }
 
 // every branch ends with the ", id" tie-breaker so OFFSET pagination never duplicates or skips rows
-function buildRecipeOrderBy(sortOrder?: "asc" | "desc"): string {
+function buildRecipeOrderBy(sortOrder?: RecipeFilters["sort_order"]): string {
+    if (sortOrder === "rating") {
+        return ` ORDER BY ${ratingSortOrder("r")}, r.id DESC`;
+    }
+
     if (sortOrder) {
         return ` ORDER BY r.cooking_time ${sortOrder === "asc" ? "ASC" : "DESC"}, r.id DESC`;
     }

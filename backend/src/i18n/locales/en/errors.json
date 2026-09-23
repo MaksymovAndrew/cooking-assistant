@@ -35,6 +35,8 @@
 
     "favourites/requires_login": "Log in to see your favourites",
 
+    "ratings/own_record": "You can't rate your own recipe or menu",
+
     "ingredient/not_found": "Ingredient not found",
     "diet/requires_login": "Log in to hide recipes with what you avoid",
 
@@ -45,5 +47,10 @@
 
     "shopping_list/item_not_found": "Shopping list item not found",
     "shopping_list/limit_reached": "The shopping list is full",
-    "shopping_list/order_out_of_date": "The shopping list has changed, refresh and try again"
+    "shopping_list/order_out_of_date": "The shopping list has changed, refresh and try again",
+
+    "media/unsupported_type": "Only JPEG, PNG, WebP or AVIF images can be uploaded",
+    "media/unreadable": "The image could not be read",
+    "media/too_large": "The image is too large",
+    "media/not_found": "Image not found"
 }

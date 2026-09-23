@@ -2,6 +2,7 @@ import type { CurrentUser } from "types/auth";
 
 import { authApi } from "redux/services/authApi";
 import { loggedOut, sessionReducer } from "redux/slices/sessionSlice";
+import { createStore } from "redux/store";
 
 import { makeAxiosError, mockedGet, mockedPost } from "test/apiClientMock";
 import { makeTestStore } from "test/store";
@@ -17,6 +18,7 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: null,
+    avatar_photo_key: null,
     calorie_goal: null,
 };
 
@@ -25,6 +27,13 @@ describe("sessionSlice", () => {
         const state = sessionReducer(undefined, { type: "@@INIT" });
 
         expect(state.status).toBe("checking");
+    });
+
+    it("should start a store as the status the server determined", () => {
+        expect(createStore("guest").getState().session.status).toBe("guest");
+        expect(createStore("checking").getState().session.status).toBe(
+            "checking",
+        );
     });
 
     it("should set the status to guest on the loggedOut action", () => {

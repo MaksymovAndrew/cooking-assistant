@@ -1,9 +1,11 @@
 import "styles/global.scss";
 
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 
 import { resolveSiteUrl } from "config/site";
+import { AUTH_COOKIE_NAME } from "constants/auth";
 
 import { DEFAULT_LANGUAGE } from "i18n/resources";
 import { getServerTranslation } from "i18n/server";
@@ -31,13 +33,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
             siteName: title,
             title,
             description: shortDescription,
-            images: [{ url: ICON_PATH, type: "image/svg+xml" }],
         },
         twitter: {
-            card: "summary",
+            card: "summary_large_image",
             title,
             description: shortDescription,
-            images: [ICON_PATH],
         },
     };
 };
@@ -53,16 +53,28 @@ interface RootLayoutProps {
     children: ReactNode;
 }
 
+// without a session cookie the visitor is a guest from the first byte, so the server renders the guest
+// navigation instead of the signed-in one collapsing after hydration; with one, /me still decides
 // suppressHydrationWarning: the pre-paint script sets data-theme before React hydrates
-const RootLayout = ({ children }: RootLayoutProps) => (
-    <html lang={DEFAULT_LANGUAGE} suppressHydrationWarning>
-        <head>
-            <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        </head>
-        <body>
-            <Providers>{children}</Providers>
-        </body>
-    </html>
-);
+const RootLayout = async ({ children }: RootLayoutProps) => {
+    const hasSessionCookie = (await cookies()).has(AUTH_COOKIE_NAME);
+
+    return (
+        <html lang={DEFAULT_LANGUAGE} suppressHydrationWarning>
+            <head>
+                <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+            </head>
+            <body>
+                <Providers
+                    initialSessionStatus={
+                        hasSessionCookie ? "checking" : "guest"
+                    }
+                >
+                    {children}
+                </Providers>
+            </body>
+        </html>
+    );
+};
 
 export default RootLayout;

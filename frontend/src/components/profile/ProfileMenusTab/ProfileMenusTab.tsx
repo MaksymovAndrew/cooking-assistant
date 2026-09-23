@@ -49,11 +49,7 @@ export const ProfileMenusTab: React.FC<ProfileMenusTabProps> = ({
                 {menus.map((menu) => (
                     <MenuCard
                         key={menu.id}
-                        id={menu.id}
-                        title={menu.title}
-                        categoryName={menu.categoryname}
-                        recipeCount={menu.recipe_count}
-                        isFavourite={menu.isFavourite}
+                        menu={menu}
                         mine={Boolean(menu.isOwner)}
                         variant={isMobile ? "row" : "grid"}
                     />

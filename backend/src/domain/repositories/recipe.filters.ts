@@ -1,5 +1,7 @@
 import type { AllergenSlug } from "constants/allergens";
 
+import type { RecordAuthor, RecordRating } from "./recordAuthor";
+
 export interface RecipeFilters {
     recipe_name?: string;
     ingredient_ids?: string;
@@ -10,7 +12,9 @@ export interface RecipeFilters {
     max_cooking_time?: number;
     min_calories?: number;
     max_calories?: number;
-    sort_order?: "asc" | "desc";
+    // asc/desc order by cooking time
+    sort_order?: "asc" | "desc" | "rating";
+    top_rated?: boolean;
     in_pantry?: boolean;
     favourites?: boolean;
     exclude_allergens?: AllergenSlug[];
@@ -20,7 +24,7 @@ export interface RecipeFilters {
     offset?: number;
 }
 
-export interface RecipeSearchRow {
+export interface RecipeSearchRow extends RecordRating {
     id: number;
     title: string;
     content: string;
@@ -34,4 +38,6 @@ export interface RecipeSearchRow {
     calories_per_portion: number | null;
     type_name: string | null;
     ingredients: unknown;
+    photo_key: string | null;
+    author: RecordAuthor;
 }

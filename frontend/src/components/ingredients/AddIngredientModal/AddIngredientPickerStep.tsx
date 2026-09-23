@@ -6,13 +6,13 @@ import type { PantryIngredient } from "types/userIngredient";
 
 import { useCategorizedIngredients } from "hooks/useCategorizedIngredients";
 
-import { Chip } from "components/ui/Chip";
 import { SearchField } from "components/ui/SearchField";
 
-import { resolveIngredientName } from "utils/ingredientName";
+import { pantryAddCandidates } from "utils/pantryAddCandidates";
 
 import { AddIngredientDropdown } from "./AddIngredientDropdown";
 import styles from "./AddIngredientModal.module.scss";
+import { SelectedIngredientChips } from "./SelectedIngredientChips";
 
 interface AddIngredientPickerStepProps {
     containerRef: RefObject<HTMLDivElement | null>;
@@ -28,7 +28,7 @@ interface AddIngredientPickerStepProps {
 const MAX_RESULTS = 8;
 
 // the "pick ingredients" step of AddIngredientModal - search/category browsing plus the
-// removable chips for what's selected so far, split out to stay under the file's max-lines cap
+// removable chips for what's selected so far
 export const AddIngredientPickerStep: React.FC<
     AddIngredientPickerStepProps
 > = ({
@@ -43,22 +43,14 @@ export const AddIngredientPickerStep: React.FC<
 }) => {
     const { t } = useTranslation("ingredients");
 
-    const ownedIds = useMemo(
-        () => new Set(personIngredients.map((item) => item.id)),
-        [personIngredients],
-    );
-    const selectedIds = useMemo(
-        () => new Set(selectedIngredients),
-        [selectedIngredients],
-    );
     const availableIngredients = useMemo(
         () =>
-            allIngredients.filter(
-                (ingredient) =>
-                    !ownedIds.has(ingredient.id) &&
-                    !selectedIds.has(ingredient.id),
+            pantryAddCandidates(
+                allIngredients,
+                personIngredients,
+                selectedIngredients,
             ),
-        [allIngredients, ownedIds, selectedIds],
+        [allIngredients, personIngredients, selectedIngredients],
     );
     const {
         query,
@@ -110,21 +102,10 @@ export const AddIngredientPickerStep: React.FC<
                 />
             )}
 
-            {newlySelected.length > 0 && (
-                <div className={styles["add-ingredient-modal__selected"]}>
-                    {newlySelected.map((ingredient) => (
-                        <Chip
-                            key={ingredient.id}
-                            removable
-                            onRemove={() => {
-                                onToggle(ingredient.id);
-                            }}
-                        >
-                            {resolveIngredientName(ingredient)}
-                        </Chip>
-                    ))}
-                </div>
-            )}
+            <SelectedIngredientChips
+                ingredients={newlySelected}
+                onRemove={onToggle}
+            />
         </div>
     );
 };

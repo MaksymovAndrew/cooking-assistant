@@ -1,6 +1,7 @@
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 
+import type PhotoCleanup from "application/media/PhotoCleanup";
 import CreateMenu from "application/use-cases/menus/CreateMenu";
 import DeleteMenu from "application/use-cases/menus/DeleteMenu";
 import GetAllMenus from "application/use-cases/menus/GetAllMenus";
@@ -14,11 +15,13 @@ import MenuController from "controller/menu.controller";
 interface MenuControllerDependencies {
     menuRepository: MenuRepository;
     recipeRepository: RecipeRepository;
+    photoCleanup: PhotoCleanup;
 }
 
 export function buildMenuController({
     menuRepository,
     recipeRepository,
+    photoCleanup,
 }: MenuControllerDependencies): MenuController {
     return new MenuController({
         getAllMenus: new GetAllMenus(menuRepository),
@@ -26,7 +29,7 @@ export function buildMenuController({
         createMenu: new CreateMenu(menuRepository, recipeRepository),
         getMenuById: new GetMenuById(menuRepository),
         updateMenu: new UpdateMenu(menuRepository, recipeRepository),
-        deleteMenu: new DeleteMenu(menuRepository),
+        deleteMenu: new DeleteMenu(menuRepository, photoCleanup),
         searchPersonMenus: new SearchPersonMenus(menuRepository),
     });
 }

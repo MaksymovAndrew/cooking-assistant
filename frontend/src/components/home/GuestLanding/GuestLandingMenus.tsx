@@ -55,10 +55,7 @@ export const GuestLandingMenus: React.FC = () => {
                     {menus.map((menu) => (
                         <MenuCard
                             key={menu.id}
-                            id={menu.id}
-                            title={menu.title}
-                            categoryName={menu.categoryname}
-                            recipeCount={menu.recipe_count}
+                            menu={menu}
                             variant={isMobile ? "row" : "grid"}
                         />
                     ))}

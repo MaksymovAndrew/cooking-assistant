@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { resolveSiteUrl } from "config/site";
+import { absoluteSiteUrl } from "config/site";
 import { menuDetailsPath, recipeDetailsPath, ROUTES } from "constants/routes";
 import type { PaginatedResult } from "types/pagination";
 
@@ -51,7 +51,6 @@ const loadPaths = async (
 // listed without a session, so nothing here can be personalised: the private area has no
 // public URL to offer and never appears
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
-    const siteUrl = resolveSiteUrl();
     const [recipes, menus] = await Promise.all([
         loadPaths(API_ROUTES.recipes.byFilters, (recipe) =>
             recipeDetailsPath(recipe.id),
@@ -65,7 +64,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
         ROUTES.allMenus,
         ...recipes,
         ...menus,
-    ].map((path) => ({ url: new URL(path, siteUrl).toString() }));
+    ].map((path) => ({ url: absoluteSiteUrl(path) }));
 };
 
 export default sitemap;

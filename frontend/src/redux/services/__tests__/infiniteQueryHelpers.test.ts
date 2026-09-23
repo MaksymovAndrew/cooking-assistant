@@ -1,7 +1,10 @@
+import { PAGE_SIZE } from "constants/pagination";
+
 import {
     flattenPages,
     getNextOffsetParam,
     getPaginatedTotal,
+    offsetPagedQuery,
 } from "redux/services/infiniteQueryHelpers";
 
 describe("getNextOffsetParam", () => {
@@ -51,5 +54,24 @@ describe("getPaginatedTotal", () => {
 
     it("should return 0 when there is no data", () => {
         expect(getPaginatedTotal(undefined)).toBe(0);
+    });
+});
+
+const ITEMS_URL = "/api/items";
+
+describe("offsetPagedQuery", () => {
+    it("should start paging from offset zero", () => {
+        expect(
+            offsetPagedQuery(ITEMS_URL).infiniteQueryOptions.initialPageParam,
+        ).toBe(0);
+    });
+
+    it("should request one page of rows at the given offset with the filters", () => {
+        const { query } = offsetPagedQuery<{ search: string }>(ITEMS_URL);
+
+        expect(query({ queryArg: { search: "soup" }, pageParam: 40 })).toEqual({
+            url: ITEMS_URL,
+            params: { search: "soup", limit: PAGE_SIZE, offset: 40 },
+        });
     });
 });

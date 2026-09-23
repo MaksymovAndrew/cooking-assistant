@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 
+import { requestLocale } from "i18n/requestLocale";
 import { translateMessage } from "i18n/translate";
 
 import type CreateMenu from "application/use-cases/menus/CreateMenu";
@@ -73,7 +74,7 @@ export default class MenuController {
         });
 
         res.status(201).json({
-            message: translateMessage("menuCreated"),
+            message: translateMessage("menuCreated", requestLocale(req)),
             menuId,
         });
     };
@@ -93,13 +94,17 @@ export default class MenuController {
 
         await this.updateMenuUseCase.execute(req.params.id, personId, body);
 
-        res.status(200).json({ message: translateMessage("menuUpdated") });
+        res.status(200).json({
+            message: translateMessage("menuUpdated", requestLocale(req)),
+        });
     };
 
     remove: RequestHandler<{ id: string }> = async (req, res) => {
         await this.deleteMenuUseCase.execute(req.params.id, getUserId(req));
 
-        res.status(200).json({ message: translateMessage("menuDeleted") });
+        res.status(200).json({
+            message: translateMessage("menuDeleted", requestLocale(req)),
+        });
     };
 
     searchByPerson: RequestHandler = async (req, res) => {

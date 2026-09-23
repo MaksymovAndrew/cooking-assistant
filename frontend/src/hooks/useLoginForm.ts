@@ -1,4 +1,3 @@
-import type { RefObject } from "react";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,36 +8,18 @@ import { useLoginMutation } from "redux/services/authApi";
 
 import { useAppRouter } from "hooks/useAppRouter";
 
-import { isValidEmail } from "utils/authValidation";
+import { resolveLoginFailure } from "utils/loginFailure";
 import {
-    clearLockout,
-    mergeServerRetryAfter,
-    registerFailure,
-    writeLockout,
-} from "utils/loginLockout";
+    applyIfCurrent,
+    loginInputErrorKey,
+    type LoginMode,
+} from "utils/loginForm";
+import { clearLockout, EMPTY_LOCKOUT, writeLockout } from "utils/loginLockout";
 import { takeLoginRedirect } from "utils/loginRedirect";
-import {
-    getRateLimitSeconds,
-    isRateLimitError,
-    isServerError,
-} from "utils/queryError";
 
 import { useLoginLockout } from "./useLoginLockout";
 
-export type LoginMode = "username" | "email";
-
 const EMPTY_FORM: LoginRequest = { login: "", password: "" };
-
-// runs `update` only if `login` is still the identifier on screen, guarding against a stale response overwriting a since-changed account's state
-function applyIfCurrent(
-    currentLoginRef: RefObject<string>,
-    login: string,
-    update: () => void,
-): void {
-    if (currentLoginRef.current === login) {
-        update();
-    }
-}
 
 // a failed login shows one generic message, never revealing whether the username or the password was wrong
 export const useLoginForm = () => {
@@ -77,14 +58,10 @@ export const useLoginForm = () => {
 
         setError(null);
 
-        if (!values.login || !values.password) {
-            setError(t("errors.allFieldsRequired"));
+        const inputErrorKey = loginInputErrorKey(values, loginMode);
 
-            return;
-        }
-
-        if (loginMode === "email" && !isValidEmail(values.login)) {
-            setError(t("errors.email"));
+        if (inputErrorKey !== null) {
+            setError(t(inputErrorKey));
 
             return;
         }
@@ -96,11 +73,7 @@ export const useLoginForm = () => {
         if ("data" in result) {
             clearLockout(submittedLogin);
             applyIfCurrent(currentLoginRef, submittedLogin, () => {
-                setLockout({
-                    failures: 0,
-                    lockedUntil: null,
-                    lastFailureAt: null,
-                });
+                setLockout(EMPTY_LOCKOUT);
             });
             // return the user to the page they were trying to reach (e.g. a private route, or a
             // guest-only "Log in" CTA) instead of always dropping them on the home dashboard
@@ -109,36 +82,22 @@ export const useLoginForm = () => {
             return;
         }
 
-        if (isRateLimitError(result.error)) {
-            const seconds = getRateLimitSeconds(result.error);
-            // counts as a failed attempt too, so the client ladder stays in sync with an early server rejection
-            const next = mergeServerRetryAfter(
-                registerFailure(lockout),
-                seconds,
-            );
+        const { next, errorKey, seconds } = resolveLoginFailure(
+            result.error,
+            lockout,
+        );
 
+        if (next !== null) {
             writeLockout(next, submittedLogin);
-            applyIfCurrent(currentLoginRef, submittedLogin, () => {
-                setLockout(next);
-                setError(t("errors.tooManyAttempts", { seconds }));
-            });
-
-            return;
         }
 
-        if (isServerError(result.error)) {
-            applyIfCurrent(currentLoginRef, submittedLogin, () => {
-                setError(t("errors.serverError"));
-            });
-        } else {
-            const next = registerFailure(lockout);
-
-            writeLockout(next, submittedLogin);
-            applyIfCurrent(currentLoginRef, submittedLogin, () => {
+        applyIfCurrent(currentLoginRef, submittedLogin, () => {
+            if (next !== null) {
                 setLockout(next);
-                setError(t("errors.invalidCredentials"));
-            });
-        }
+            }
+
+            setError(t(errorKey, { seconds }));
+        });
     }, [
         currentLoginRef,
         isLocked,

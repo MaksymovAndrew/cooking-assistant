@@ -1,0 +1,21 @@
+@use "styles/abstracts" as *;
+
+// the extremes row holds 3 cards, not the 2 the section grid assumes, so it reflows on its own
+.stat-extremes-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+    margin-bottom: var(--s-5);
+
+    @include respond-to(desktop) {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    &__title {
+        margin: 0 0 4px;
+        color: var(--text);
+        font:
+            600 16px Fraunces,
+            serif;
+    }
+}

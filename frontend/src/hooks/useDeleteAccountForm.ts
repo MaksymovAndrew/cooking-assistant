@@ -1,32 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ERROR_CODES } from "constants/errorCodes";
 import { ROUTES } from "constants/routes";
-import { MS_PER_MINUTE } from "constants/time";
 
 import { useDeleteAccountMutation } from "redux/services/authApi";
 
 import { useAppRouter } from "hooks/useAppRouter";
+import { useLockoutCountdown } from "hooks/useLockoutCountdown";
 
+import { resolveDeleteAccountFailure } from "utils/deleteAccountFailure";
 import {
-    ATTEMPTS_PER_LOCK,
     clearLockout,
     DELETE_ACCOUNT_STORAGE_KEY_PREFIX,
-    LOCKOUT_LADDER_MINUTES,
-    mergeServerRetryAfter,
     readLockout,
-    registerFailure,
     writeLockout,
 } from "utils/loginLockout";
-import {
-    getQueryErrorCode,
-    getRateLimitSeconds,
-    isRateLimitError,
-    isServerError,
-} from "utils/queryError";
-
-const TICK_INTERVAL_MS = 1000;
 
 export const useDeleteAccountForm = (login: string) => {
     const { t } = useTranslation("settings");
@@ -39,45 +27,10 @@ export const useDeleteAccountForm = (login: string) => {
     const [lockout, setLockout] = useState(() =>
         readLockout(login, DELETE_ACCOUNT_STORAGE_KEY_PREFIX),
     );
-    const [now, setNow] = useState(() => Date.now());
-
-    const { lockedUntil } = lockout;
-
-    useEffect(() => {
-        if (lockedUntil === null) {
-            return undefined;
-        }
-
-        const tick = () => {
-            const currentNow = Date.now();
-
-            setNow(currentNow);
-
-            if (currentNow >= lockedUntil) {
-                setLockout((prev) => ({ ...prev, lockedUntil: null }));
-                setError(null);
-            }
-        };
-
-        tick();
-        const interval = setInterval(tick, TICK_INTERVAL_MS);
-
-        return () => {
-            clearInterval(interval);
-        };
-    }, [lockedUntil]);
-
-    const isLocked = lockedUntil !== null && now < lockedUntil;
-    const lockoutRemainingMs = isLocked ? lockedUntil - now : null;
-    const lockoutTotalMs =
-        isLocked && lockout.failures >= ATTEMPTS_PER_LOCK
-            ? LOCKOUT_LADDER_MINUTES[
-                  Math.min(
-                      Math.floor(lockout.failures / ATTEMPTS_PER_LOCK) - 1,
-                      LOCKOUT_LADDER_MINUTES.length - 1,
-                  )
-              ] * MS_PER_MINUTE
-            : null;
+    const { isLocked, lockoutRemainingMs, lockoutTotalMs } =
+        useLockoutCountdown(lockout, setLockout, () => {
+            setError(null);
+        });
 
     const handleSubmit = useCallback(async () => {
         if (isLocked) return;
@@ -99,42 +52,18 @@ export const useDeleteAccountForm = (login: string) => {
             return;
         }
 
-        if (isRateLimitError(result.error)) {
-            const seconds = getRateLimitSeconds(result.error);
-            const next = mergeServerRetryAfter(
-                registerFailure(lockout),
-                seconds,
+        const failure = resolveDeleteAccountFailure(result.error, lockout);
+
+        if (failure.next) {
+            writeLockout(
+                failure.next,
+                login,
+                DELETE_ACCOUNT_STORAGE_KEY_PREFIX,
             );
-
-            writeLockout(next, login, DELETE_ACCOUNT_STORAGE_KEY_PREFIX);
-            setLockout(next);
-            setError(
-                t("deleteAccountModal.errors.tooManyAttempts", { seconds }),
-            );
-
-            return;
+            setLockout(failure.next);
         }
 
-        if (isServerError(result.error)) {
-            setError(t("deleteAccountModal.errors.genericError"));
-
-            return;
-        }
-
-        if (
-            getQueryErrorCode(result.error) ===
-            ERROR_CODES.CURRENT_PASSWORD_INCORRECT
-        ) {
-            const next = registerFailure(lockout);
-
-            writeLockout(next, login, DELETE_ACCOUNT_STORAGE_KEY_PREFIX);
-            setLockout(next);
-            setError(t("deleteAccountModal.errors.incorrectPassword"));
-
-            return;
-        }
-
-        setError(t("deleteAccountModal.errors.genericError"));
+        setError(t(failure.errorKey, { seconds: failure.seconds }));
     }, [deleteAccount, isLocked, lockout, login, router, password, t]);
 
     return {

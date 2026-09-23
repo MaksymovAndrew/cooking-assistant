@@ -2,17 +2,16 @@ import type { Pool } from "pg";
 
 import type {
     AverageCookingTime,
-    RecipeCalorieEntry,
-    RecipeIngredientCountEntry,
     RecipeStatisticsDto,
-    RecipeTimeEntry,
     RecipeTypeStat,
 } from "domain/repositories/recipeStats.types";
 
-const EXTREMES_LIMIT = 3;
-// effective per-portion calories: the author's manual value wins, otherwise the ingredient total
-const CALORIES_PER_PORTION_SQL =
-    "COALESCE(r.calories_override, r.calories_computed)";
+import {
+    calorieExtremes,
+    CALORIES_PER_PORTION_SQL,
+    cookingTimeExtremes,
+    ingredientCountExtremes,
+} from "./PgRecipeRepository.extremes";
 
 interface OverallRow {
     recipesCount: number;
@@ -33,12 +32,12 @@ export async function getRecipeStats(pool: Pool): Promise<RecipeStatisticsDto> {
         { rows: overallRows },
         { rows: stats },
         { rows: averageCookingTimesByType },
-        { rows: fastestRecipes },
-        { rows: slowestRecipes },
-        { rows: mostIngredientsRecipes },
-        { rows: leastIngredientsRecipes },
-        { rows: mostCaloricRecipes },
-        { rows: leastCaloricRecipes },
+        fastestRecipes,
+        slowestRecipes,
+        mostIngredientsRecipes,
+        leastIngredientsRecipes,
+        mostCaloricRecipes,
+        leastCaloricRecipes,
     ] = await Promise.all([
         pool.query<OverallRow>(
             `SELECT COUNT(*)::int AS "recipesCount",
@@ -59,48 +58,12 @@ export async function getRecipeStats(pool: Pool): Promise<RecipeStatisticsDto> {
                     JOIN recipe_types rt ON r.type_id = rt.id
              GROUP BY rt.type_name`,
         ),
-        pool.query<RecipeTimeEntry>(
-            `SELECT r.id, r.title, r.cooking_time AS "cookingTime"
-             FROM recipes r
-             ORDER BY r.cooking_time ASC, r.id ASC
-             LIMIT ${EXTREMES_LIMIT}`,
-        ),
-        pool.query<RecipeTimeEntry>(
-            `SELECT r.id, r.title, r.cooking_time AS "cookingTime"
-             FROM recipes r
-             ORDER BY r.cooking_time DESC, r.id ASC
-             LIMIT ${EXTREMES_LIMIT}`,
-        ),
-        pool.query<RecipeIngredientCountEntry>(
-            `SELECT r.id, r.title, COUNT(ri.ingredient_id)::int AS "ingredientCount"
-             FROM recipes r
-                    JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-             GROUP BY r.id, r.title
-             ORDER BY "ingredientCount" DESC, r.id ASC
-             LIMIT ${EXTREMES_LIMIT}`,
-        ),
-        pool.query<RecipeIngredientCountEntry>(
-            `SELECT r.id, r.title, COUNT(ri.ingredient_id)::int AS "ingredientCount"
-             FROM recipes r
-                    JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-             GROUP BY r.id, r.title
-             ORDER BY "ingredientCount" ASC, r.id ASC
-             LIMIT ${EXTREMES_LIMIT}`,
-        ),
-        pool.query<RecipeCalorieEntry>(
-            `SELECT r.id, r.title, ${CALORIES_PER_PORTION_SQL} AS "caloriesPerPortion"
-             FROM recipes r
-             WHERE ${CALORIES_PER_PORTION_SQL} IS NOT NULL
-             ORDER BY "caloriesPerPortion" DESC, r.id ASC
-             LIMIT ${EXTREMES_LIMIT}`,
-        ),
-        pool.query<RecipeCalorieEntry>(
-            `SELECT r.id, r.title, ${CALORIES_PER_PORTION_SQL} AS "caloriesPerPortion"
-             FROM recipes r
-             WHERE ${CALORIES_PER_PORTION_SQL} IS NOT NULL
-             ORDER BY "caloriesPerPortion" ASC, r.id ASC
-             LIMIT ${EXTREMES_LIMIT}`,
-        ),
+        cookingTimeExtremes(pool, "ASC"),
+        cookingTimeExtremes(pool, "DESC"),
+        ingredientCountExtremes(pool, "DESC"),
+        ingredientCountExtremes(pool, "ASC"),
+        calorieExtremes(pool, "DESC"),
+        calorieExtremes(pool, "ASC"),
     ]);
     const overall = overallRows[0];
 

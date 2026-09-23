@@ -3,7 +3,7 @@ import { AxiosError, AxiosHeaders } from "axios";
 
 import { ROUTES } from "constants/routes";
 
-import { handleAuthError } from "api/client";
+import { handleAuthError, withAppLanguage } from "api/client";
 import { API_ROUTES } from "api/endpoints";
 import { redirectToLogin } from "api/redirect";
 
@@ -130,5 +130,13 @@ describe("handleAuthError", () => {
         await expect(handleAuthError(error)).rejects.toBe(error);
 
         expect(jest.mocked(redirectToLogin)).toHaveBeenCalled();
+    });
+});
+
+describe("withAppLanguage", () => {
+    it("should tell the server the language the app is showing", () => {
+        const config = withAppLanguage({ headers: new AxiosHeaders() });
+
+        expect(config.headers.get("Accept-Language")).toBe("en");
     });
 });

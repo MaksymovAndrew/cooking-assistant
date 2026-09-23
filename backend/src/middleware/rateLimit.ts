@@ -10,6 +10,7 @@ import {
     GLOBAL_RATE_LIMIT,
     IP_RATE_LIMIT,
     REGISTER_IP_RATE_LIMIT,
+    UPLOAD_RATE_LIMIT,
 } from "config/security";
 import { ERROR_CODES } from "constants/errorCodes";
 import { AppError } from "domain/errors/AppError";
@@ -106,6 +107,12 @@ export const confirmEmailLimiter = createLimiter(
     isTestMode,
     ipLimiterKey,
     IP_RATE_LIMIT,
+);
+
+export const uploadLimiter = createLimiter(
+    isTestMode,
+    userIdLimiterKey,
+    UPLOAD_RATE_LIMIT,
 );
 
 // NOT test-bypassed like loginLimiter/registerLimiter - an integration test asserts the live RateLimit-Limit header

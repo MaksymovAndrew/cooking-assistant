@@ -1,6 +1,9 @@
+import type { Locale } from "constants/locales";
+
 export interface UserRecord {
     id: number;
     password: string;
+    session_version: number;
     [key: string]: unknown;
 }
 
@@ -10,6 +13,7 @@ export interface NewUser {
     login: string;
     password: string;
     email: string;
+    locale: Locale;
 }
 
 // the safe, public-facing shape of a person row - no password. email is always set (required at
@@ -23,7 +27,9 @@ export interface PublicUser {
     email: string;
     email_verified_at: string | null;
     avatar: string | null;
+    avatar_photo_key: string | null;
     calorie_goal: number | null;
+    locale: Locale;
 }
 
 // the editable profile fields; avatar is a preset key or null (no avatar - fall back to initials)
@@ -37,14 +43,16 @@ export interface ProfileUpdate {
 export interface UserCredentials {
     id: number;
     password: string;
+    session_version: number;
 }
 
-// just enough for RequestPasswordReset to decide silently-noop vs proceed, and to bind the
-// reset token to the current password hash, in a single query
+// just enough for RequestPasswordReset to decide silently-noop vs proceed, to bind the
+// reset token to the current password hash, and to write in the account's language, in a single query
 export interface PasswordResetCandidate {
     id: number;
     password: string;
     email_verified_at: string | null;
+    locale: Locale;
 }
 
 export interface UserRepository {
@@ -56,9 +64,15 @@ export interface UserRepository {
     findPasswordResetCandidateByEmail(
         email: string,
     ): Promise<PasswordResetCandidate | null>;
-    create(user: NewUser): Promise<{ id: number }>;
-    updatePassword(id: number, hashedPassword: string): Promise<void>;
+    create(user: NewUser): Promise<{ id: number; session_version: number }>;
+    // raises the session version too, ending every session issued under the old password; null
+    // when the account is gone
+    updatePassword(id: number, hashedPassword: string): Promise<number | null>;
+    // what a session token must carry to still be valid; null once the account is gone
+    findSessionVersion(id: number): Promise<number | null>;
     updateProfile(id: number, data: ProfileUpdate): Promise<void>;
+    updateLocale(id: number, locale: Locale): Promise<void>;
     markEmailVerified(id: number): Promise<void>;
-    delete(id: number): Promise<void>;
+    // the photo keys the account held, for removing the files once it is gone
+    delete(id: number): Promise<string[]>;
 }

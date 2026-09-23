@@ -7,6 +7,8 @@ import { recipeDetailsPath } from "constants/routes";
 
 import type { ContentCardVariant } from "components/cards/ContentCard";
 import {
+    cardFavourite,
+    cardRating,
     ContentCard,
     META_ITEM_TONE_CALORIE_OVER,
 } from "components/cards/ContentCard";
@@ -14,6 +16,7 @@ import { UtensilsMark } from "components/icons";
 
 import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
+import { mediaUrl } from "utils/mediaUrl";
 import { filterAllergens } from "utils/recipeAllergens";
 
 interface RecipeCardIngredient {
@@ -27,9 +30,11 @@ interface RecipeCardRecipe {
     cooking_time: number;
     calories_per_portion: number | null;
     ingredients?: RecipeCardIngredient[];
-    // null for an anonymous viewer, so the heart only appears where the server knows who is looking
     isFavourite?: boolean | null;
     containsAvoided?: boolean | null;
+    photo_key?: string | null;
+    ratingAverage?: number | null;
+    ratingCount?: number;
 }
 
 interface RecipeCardProps {
@@ -56,21 +61,15 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             href={recipeDetailsPath(recipe.id)}
             title={recipe.title}
             imageIcon={UtensilsMark}
+            imageSrc={mediaUrl(recipe.photo_key, "card")}
             chipLabel={recipe.type_name}
             mine={mine}
             variant={variant}
             badge={hasAllergens}
             avoided={recipe.containsAvoided === true}
             calorieOver={exceedsBudget}
-            favourite={
-                typeof recipe.isFavourite === "boolean"
-                    ? {
-                          target: FAVOURITE_TARGET.recipe,
-                          id: recipe.id,
-                          isFavourite: recipe.isFavourite,
-                      }
-                    : null
-            }
+            rating={cardRating(recipe)}
+            favourite={cardFavourite(FAVOURITE_TARGET.recipe, recipe)}
             metaItems={[
                 {
                     icon: Clock,

@@ -2,8 +2,7 @@ import type { Pool } from "pg";
 
 import { Menu } from "domain/entities/Menu";
 import Recipe from "domain/entities/Recipe";
-
-import type { MenuFilters } from "application/use-cases/menus/menu.types";
+import type { MenuFilters } from "domain/repositories/menu.filters";
 
 import PgMenuRepository from "infrastructure/persistence/pg/PgMenuRepository";
 import PgRecipeRepository from "infrastructure/persistence/pg/PgRecipeRepository";

@@ -1,0 +1,10 @@
+.form-photo-card {
+    &__title {
+        display: block;
+        margin-bottom: var(--s-3);
+        color: var(--text-2);
+        font:
+            600 13px Inter,
+            sans-serif;
+    }
+}

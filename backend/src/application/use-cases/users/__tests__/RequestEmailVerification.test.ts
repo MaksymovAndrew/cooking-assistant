@@ -1,4 +1,5 @@
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 
 import RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
@@ -25,6 +26,7 @@ describe("RequestEmailVerification", () => {
             id: USER_ID,
             email: EMAIL,
             email_verified_at: null,
+            locale: DEFAULT_LOCALE,
         });
         deps.tokenService.generatePurposeToken.mockReturnValue(VERIFY_TOKEN);
         const useCase = new RequestEmailVerification(
@@ -39,6 +41,7 @@ describe("RequestEmailVerification", () => {
         expect(deps.emailSender.sendVerificationEmail).toHaveBeenCalledWith(
             EMAIL,
             `${FRONTEND_ORIGIN}/verify-email?token=${VERIFY_TOKEN}`,
+            DEFAULT_LOCALE,
         );
     });
 

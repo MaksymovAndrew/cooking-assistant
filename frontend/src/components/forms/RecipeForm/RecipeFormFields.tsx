@@ -1,26 +1,20 @@
-import { ImageOff } from "lucide-react";
-import React, { useMemo } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { useRecipeForm } from "hooks/useRecipeForm";
 
+import { FormPhotoCard } from "components/forms/FormPhotoCard";
 import { CookingTimeField } from "components/recipes/CookingTimeField";
 import { RecipeTypeSelect } from "components/recipes/RecipeTypeSelect";
 import { FormCard } from "components/ui/FormCard";
 import { FormField } from "components/ui/FormField";
-import { NumberInput } from "components/ui/NumberInput";
 import { Textarea } from "components/ui/Textarea";
 import { TextInput } from "components/ui/TextInput";
 
-import {
-    formatKcal,
-    roundCalories,
-    sumIngredientCalories,
-} from "utils/calories";
-
 import styles from "./RecipeForm.module.scss";
+import { RecipeFormCaloriesCard } from "./RecipeFormCaloriesCard";
 
 type RecipePageKey = "createRecipePage" | "changeRecipePage";
 
@@ -31,8 +25,6 @@ interface RecipeFormFieldsProps {
     idPrefix: string;
 }
 
-const PHOTO_ICON_SIZE = 24;
-
 export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
     form,
     allTypes,
@@ -41,27 +33,13 @@ export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
 }) => {
     const { t } = useTranslation("recipes");
 
-    // so the field's hint matches what an empty override would actually compute to server-side
-    const autoCalories = useMemo(
-        () => sumIngredientCalories(form.selectedIngredients),
-        [form.selectedIngredients],
-    );
-
     return (
         <>
-            <FormCard className={styles["recipe-form__photo-card"]}>
-                <span className={styles["recipe-form__photo-icon"]}>
-                    <ImageOff size={PHOTO_ICON_SIZE} aria-hidden="true" />
-                </span>
-                <span>
-                    <span className={styles["recipe-form__photo-title"]}>
-                        {t("recipeForm.photoTitle")}
-                    </span>
-                    <span className={styles["recipe-form__photo-subtitle"]}>
-                        {t("recipeForm.photoComingSoon")}
-                    </span>
-                </span>
-            </FormCard>
+            <FormPhotoCard
+                photo={form.photo}
+                title={t("recipeForm.photoTitle")}
+                alt={t("recipeForm.photoAlt")}
+            />
 
             <FormCard>
                 <FormField
@@ -121,30 +99,12 @@ export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
                 </FormField>
             </FormCard>
 
-            <FormCard>
-                <FormField
-                    htmlFor={`${idPrefix}-calories`}
-                    label={t("recipeForm.caloriesOverrideLabel")}
-                >
-                    <NumberInput
-                        id={`${idPrefix}-calories`}
-                        min={0}
-                        value={form.caloriesOverride}
-                        onChange={(e) => {
-                            form.setCaloriesOverride(e.target.value);
-                        }}
-                    />
-                    <p className={styles["recipe-form__calories-hint"]}>
-                        {form.selectedIngredients.length > 0
-                            ? t("recipeForm.caloriesAutoHint", {
-                                  count: formatKcal(
-                                      roundCalories(autoCalories),
-                                  ),
-                              })
-                            : t("recipeForm.caloriesAutoHintEmpty")}
-                    </p>
-                </FormField>
-            </FormCard>
+            <RecipeFormCaloriesCard
+                id={`${idPrefix}-calories`}
+                value={form.caloriesOverride}
+                ingredients={form.selectedIngredients}
+                onChange={form.setCaloriesOverride}
+            />
         </>
     );
 };

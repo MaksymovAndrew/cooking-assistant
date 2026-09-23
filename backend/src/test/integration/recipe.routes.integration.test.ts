@@ -1,6 +1,7 @@
 import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
+import { DEFAULT_LOCALE } from "constants/locales";
 import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
 import { translateMessage } from "i18n/translate";
 
@@ -22,6 +23,16 @@ const RECIPE_ROW_EXTRAS = {
     calories_per_portion: null,
     type_name: "Soup",
     ingredients: [],
+    photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
+    myRating: null,
+    author: {
+        name: "Bob",
+        surname_initial: "C",
+        avatar: null,
+        avatar_photo_key: null,
+    },
 };
 
 function makeRecipeBody() {
@@ -188,7 +199,7 @@ describe("recipe routes", () => {
     it("should delete a recipe owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
 
-        deps.recipeRepository.deleteById.mockResolvedValue(true);
+        deps.recipeRepository.deleteById.mockResolvedValue({ photoKey: null });
 
         const res = await request(app)
             .delete(RECIPE_12_PATH)
@@ -196,7 +207,7 @@ describe("recipe routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: translateMessage("recipeDeleted"),
+            message: translateMessage("recipeDeleted", DEFAULT_LOCALE),
         });
         expect(deps.recipeRepository.deleteById).toHaveBeenCalledWith(12, 7);
     });

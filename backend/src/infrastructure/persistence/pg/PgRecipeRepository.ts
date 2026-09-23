@@ -2,6 +2,7 @@ import type { Pool } from "pg";
 
 import type { Recipe } from "domain/entities/Recipe";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
+import type { DeletedRecord } from "domain/repositories/PhotoRepository";
 import type {
     RecipeFilters,
     RecipeSearchRow,
@@ -9,6 +10,7 @@ import type {
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
 
+import { deleteRecipeById } from "./PgRecipeRepository.delete";
 import {
     createRecipeInDb,
     updateRecipeInDb,
@@ -83,46 +85,8 @@ export default class PgRecipeRepository implements RecipeRepository {
     async deleteById(
         recipeId: string | number,
         personId: number,
-    ): Promise<boolean> {
-        const client = await this.pool.connect();
-
-        try {
-            await client.query("BEGIN");
-
-            const owned = await client.query(
-                `SELECT id FROM recipes WHERE id = $1 AND person_id = $2 FOR UPDATE`,
-                [recipeId, personId],
-            );
-
-            if (owned.rowCount === 0) {
-                await client.query("ROLLBACK");
-
-                return false;
-            }
-
-            await client.query(`DELETE FROM menu_recipe WHERE recipe_id = $1`, [
-                recipeId,
-            ]);
-
-            await client.query(
-                `DELETE FROM recipe_ingredients WHERE recipe_id = $1`,
-                [recipeId],
-            );
-
-            const result = await client.query(
-                `DELETE FROM recipes WHERE id = $1 RETURNING *`,
-                [recipeId],
-            );
-
-            await client.query("COMMIT");
-
-            return Boolean(result.rowCount);
-        } catch (error) {
-            await client.query("ROLLBACK");
-            throw error;
-        } finally {
-            client.release();
-        }
+    ): Promise<DeletedRecord | null> {
+        return deleteRecipeById(this.pool, recipeId, personId);
     }
 
     async getStats(): Promise<RecipeStatisticsDto> {

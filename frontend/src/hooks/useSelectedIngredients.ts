@@ -1,7 +1,9 @@
 import { useCallback, useState } from "react";
 
 import type { Ingredient } from "types/ingredient";
-import type { RecipeFormIngredient } from "types/recipe";
+import type { RecipeFormIngredient } from "types/recipeForm";
+
+import { moveBefore } from "utils/listOrder";
 
 export const useSelectedIngredients = () => {
     const [selectedIngredients, setSelectedIngredients] = useState<
@@ -50,27 +52,13 @@ export const useSelectedIngredients = () => {
     }, []);
 
     const reorderIngredients = useCallback((fromId: number, toId: number) => {
-        setSelectedIngredients((prev) => {
-            const fromIndex = prev.findIndex((i) => i.id === fromId);
-            const toIndex = prev.findIndex((i) => i.id === toId);
-            const isNoOpReorder =
-                fromIndex === -1 || toIndex === -1 || fromIndex === toIndex;
-
-            if (isNoOpReorder) {
-                return prev;
-            }
-
-            const next = [...prev];
-            const [moved] = next.splice(fromIndex, 1);
-            // removing `moved` shifts every later index left by one, so a forward move must
-            // land one slot earlier than the target's pre-removal index or it overshoots past
-            // the drop target instead of landing right before it
-            const insertAt = fromIndex < toIndex ? toIndex - 1 : toIndex;
-
-            next.splice(insertAt, 0, moved);
-
-            return next;
-        });
+        setSelectedIngredients((prev) =>
+            moveBefore(
+                prev,
+                prev.findIndex((i) => i.id === fromId),
+                prev.findIndex((i) => i.id === toId),
+            ),
+        );
     }, []);
 
     return {

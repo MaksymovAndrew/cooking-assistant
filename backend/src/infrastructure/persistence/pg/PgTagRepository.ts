@@ -8,7 +8,8 @@ import type {
     TagRepository,
 } from "domain/repositories/TagRepository";
 
-import { inPersonWriteTransaction } from "./personWriteTransaction";
+import { createTag } from "./PgTagRepository.create";
+import { setRecipeTags } from "./PgTagRepository.recipeLinks";
 
 export default class PgTagRepository implements TagRepository {
     constructor(private pool: Pool) {}
@@ -27,49 +28,7 @@ export default class PgTagRepository implements TagRepository {
         name: string,
         maxTags: number,
     ): Promise<CreateTagResult> {
-        const missingPerson: CreateTagResult = {
-            outcome: "person_not_found",
-            tag: null,
-        };
-
-        return inPersonWriteTransaction<CreateTagResult>(
-            this.pool,
-            personId,
-            missingPerson,
-            async (client) => {
-                const counted = await client.query<{ total: number }>(
-                    `SELECT COUNT(*)::int AS total FROM person_tags WHERE person_id = $1`,
-                    [personId],
-                );
-
-                if (counted.rows[0].total >= maxTags) {
-                    return {
-                        commit: false,
-                        result: { outcome: "limit_reached", tag: null },
-                    };
-                }
-
-                const inserted = await client.query<Tag>(
-                    `INSERT INTO person_tags (person_id, name)
-                     VALUES ($1, $2)
-                     ON CONFLICT (person_id, lower(name)) DO NOTHING
-                     RETURNING id, name`,
-                    [personId, name],
-                );
-
-                if (inserted.rowCount === 0) {
-                    return {
-                        commit: false,
-                        result: { outcome: "duplicate_name", tag: null },
-                    };
-                }
-
-                return {
-                    commit: true,
-                    result: { outcome: "created", tag: inserted.rows[0] },
-                };
-            },
-        );
+        return createTag(this.pool, personId, name, maxTags);
     }
 
     // one statement, so the name check and the update share a snapshot
@@ -113,48 +72,11 @@ export default class PgTagRepository implements TagRepository {
         return (result.rowCount ?? 0) > 0;
     }
 
-    // one statement: both writes see the same recipe and ownership checks, so a half-applied set is impossible
-    async setRecipeTags(
+    setRecipeTags(
         personId: number,
         recipeId: number,
         tagIds: number[],
     ): Promise<SetRecipeTagsOutcome> {
-        const result = await this.pool.query<{
-            recipe_found: boolean;
-            tags_found: boolean;
-        }>(
-            `WITH target AS (
-                 SELECT id FROM recipes WHERE id = $2
-             ),
-             owned AS (
-                 SELECT id FROM person_tags WHERE person_id = $1 AND id = ANY($3::int[])
-             ),
-             checks AS (
-                 SELECT EXISTS (SELECT 1 FROM target) AS recipe_found,
-                        (SELECT COUNT(*) FROM owned) = $4::int AS tags_found
-             ),
-             removed AS (
-                 DELETE FROM recipe_tag_links link
-                 USING person_tags pt, checks
-                 WHERE link.tag_id = pt.id AND pt.person_id = $1 AND link.recipe_id = $2
-                   AND NOT (link.tag_id = ANY($3::int[]))
-                   AND checks.recipe_found AND checks.tags_found
-             ),
-             added AS (
-                 INSERT INTO recipe_tag_links (tag_id, recipe_id)
-                 SELECT owned.id, target.id FROM owned, target, checks
-                 WHERE checks.recipe_found AND checks.tags_found
-                 ON CONFLICT DO NOTHING
-             )
-             SELECT recipe_found, tags_found FROM checks`,
-            [personId, recipeId, tagIds, tagIds.length],
-        );
-        const { recipe_found, tags_found } = result.rows[0];
-
-        if (!recipe_found) {
-            return "recipe_not_found";
-        }
-
-        return tags_found ? "saved" : "tags_not_found";
+        return setRecipeTags(this.pool, personId, recipeId, tagIds);
     }
 }

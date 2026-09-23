@@ -7,13 +7,12 @@ import { getChartColor } from "components/stats/PieChartCard/chartColors";
 import { RecipeTypeChart } from "components/stats/RecipeTypeChart";
 import { StatBarList } from "components/stats/StatBarList";
 import { StatCard } from "components/stats/StatCard";
-import { StatTile } from "components/stats/StatTile";
 
-import { formatKcal } from "utils/calories";
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatCompactDuration } from "utils/cookingTimeUtils";
 
 import { RecipeExtremesCards } from "./RecipeExtremesCards";
 import styles from "./RecipeStatsSection.module.scss";
+import { RecipeStatsTiles } from "./RecipeStatsTiles";
 
 interface RecipeStatsSectionProps {
     stats: RecipeStatistics;
@@ -34,13 +33,8 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
         ]),
     );
 
-    const formatCompactTime = (totalMinutes: number): string => {
-        const { hours, minutes } = splitCookingTime(totalMinutes);
-
-        return hours > 0
-            ? t("statsPage.timeCompactHoursMinutes", { hours, minutes })
-            : t("statsPage.timeMinutesOnly", { minutes });
-    };
+    const formatCompactTime = (totalMinutes: number): string =>
+        formatCompactDuration(t, totalMinutes);
 
     return (
         <section className={styles["recipe-stats-section"]}>
@@ -48,53 +42,11 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
                 {t("statsPage.recipeSectionHeading")}
             </h1>
 
-            <div className={styles["recipe-stats-section__tiles"]}>
-                <StatTile
-                    label={t("statsPage.totalRecipesTile")}
-                    value={stats.recipesCount}
-                    caption={t("statsPage.acrossAppCaption")}
-                />
-                <StatTile
-                    label={t("statsPage.totalMenusTile")}
-                    value={menusCount}
-                    caption={t("statsPage.acrossAppCaption")}
-                />
-                <StatTile
-                    label={t("statsPage.avgCookingTimeTile")}
-                    value={
-                        stats.averageCookingTimeOverall !== null
-                            ? formatCompactTime(stats.averageCookingTimeOverall)
-                            : "—"
-                    }
-                    caption={t("statsPage.avgCookingTimeCaption")}
-                />
-                <StatTile
-                    label={t("statsPage.mostUsedTypeTile")}
-                    value={stats.mostUsedType?.typeName ?? "—"}
-                    valueVariant="text"
-                    caption={
-                        stats.mostUsedType
-                            ? t("statsPage.mostUsedCaption", {
-                                  count: stats.mostUsedType.count,
-                                  total: stats.recipesCount,
-                              })
-                            : undefined
-                    }
-                />
-                <StatTile
-                    label={t("statsPage.avgCaloriesTile")}
-                    value={
-                        stats.averageCaloriesOverall !== null
-                            ? t("statsPage.caloriesValue", {
-                                  count: formatKcal(
-                                      stats.averageCaloriesOverall,
-                                  ),
-                              })
-                            : "—"
-                    }
-                    caption={t("statsPage.perRecipeCaption")}
-                />
-            </div>
+            <RecipeStatsTiles
+                stats={stats}
+                menusCount={menusCount}
+                formatTime={formatCompactTime}
+            />
 
             <div className={styles["recipe-stats-section__grid"]}>
                 <StatCard>

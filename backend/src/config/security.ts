@@ -28,7 +28,18 @@ export const TRUST_PROXY_HOPS = config.trustProxyHops;
 
 export const JSON_BODY_LIMIT = "100kb";
 
+// an upload is the raw image bytes, parsed on the upload routes only; phone photos run to ~8 MB
+export const IMAGE_UPLOAD_LIMIT = "10mb";
+
 export const CORS_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
+
+// a stored image never changes (a new upload gets a new key), and only the app's own site may
+// embed it - helmet's default same-origin would block the app domain, which is another subdomain
+export const MEDIA_RESPONSE_HEADERS = {
+    "Cache-Control": `public, max-age=${ONE_YEAR_IN_SECONDS}, immutable`,
+    "Content-Disposition": "inline",
+    "Cross-Origin-Resource-Policy": "same-site",
+};
 
 export const HSTS_OPTIONS = {
     maxAge: ONE_YEAR_IN_SECONDS,
@@ -64,6 +75,14 @@ export const REGISTER_IP_RATE_LIMIT: Partial<RateLimitOptions> = {
     ...AUTH_RATE_LIMIT,
     limit: 20,
     skipSuccessfulRequests: false,
+};
+
+// every upload is a full decode and re-encode, so each request counts against the user
+export const UPLOAD_RATE_LIMIT: Partial<RateLimitOptions> = {
+    windowMs: 10 * ONE_MINUTE_IN_MS,
+    limit: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
 };
 
 // guards forgot-password/resend-verification: both always respond 200 by design (anti-enumeration), so every request counts, not just failures

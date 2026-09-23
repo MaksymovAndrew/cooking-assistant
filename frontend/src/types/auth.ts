@@ -12,6 +12,7 @@ export interface CurrentUser {
     email: string;
     email_verified_at: string | null;
     avatar: string | null;
+    avatar_photo_key: string | null;
     calorie_goal: number | null;
 }
 

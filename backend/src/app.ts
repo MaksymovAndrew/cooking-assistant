@@ -14,33 +14,26 @@ import {
     TRUST_PROXY_HOPS,
 } from "config/security";
 import { ERROR_CODES } from "constants/errorCodes";
-import { API_PREFIX, HEALTH_PATH } from "constants/routes";
+import { API_PREFIX, HEALTH_PATH, MEDIA_PATH_PREFIX } from "constants/routes";
 import { NotFoundError } from "domain/errors/AppError";
 
 import errorHandler from "middleware/errorHandler";
 import { createGlobalLimiter } from "middleware/rateLimit";
-import createCalorieRouter from "routes/calorie.routes";
-import createDietPreferencesRouter from "routes/dietPreferences.routes";
-import createFavouriteRouter from "routes/favourite.routes";
+import { createDomainRouters } from "routes/domainRouters";
 import createHealthRouter from "routes/health.routes";
-import createIngredientRouter from "routes/ingredient.routes";
-import createMenuRouter from "routes/menu.routes";
-import createMenuCategoryRouter from "routes/menuCategory.routes";
-import createRecipeRouter from "routes/recipe.routes";
-import createShoppingListRouter from "routes/shoppingList.routes";
-import createTagRouter from "routes/tag.routes";
-import createTypeRouter from "routes/type.routes";
-import createUserRouter from "routes/user.routes";
-import createUserIngredientsRouter from "routes/userIngredients.routes";
+import createMediaRouter from "routes/media.routes";
 
 import type { Controllers } from "./composition-root";
 
 // req.url is the raw request target: a prober's cache-buster query and a trailing slash are both
 // served by the same route, so neither may slip past the filter
-const isHealthProbe = (req: { url?: string }): boolean => {
+const isQuietRequest = (req: { url?: string }): boolean => {
     const [pathname = ""] = (req.url ?? "").split("?");
 
-    return pathname.replace(/\/$/, "") === HEALTH_PATH;
+    return (
+        pathname.replace(/\/$/, "") === HEALTH_PATH ||
+        pathname.startsWith(MEDIA_PATH_PREFIX)
+    );
 };
 
 export function createApp(controllers: Controllers): Express {
@@ -56,7 +49,7 @@ export function createApp(controllers: Controllers): Express {
             redact: ["req.headers.authorization", "req.headers.cookie"],
             // the liveness probe runs every 15s and says nothing; at 3 rotated files of 10 MB it
             // was crowding out the logs that do
-            autoLogging: { ignore: isHealthProbe },
+            autoLogging: { ignore: isQuietRequest },
         }),
     );
     app.use(
@@ -70,34 +63,13 @@ export function createApp(controllers: Controllers): Express {
     app.use(cookieParser());
 
     app.use(API_PREFIX, createHealthRouter());
+    // ahead of the global limiter: a list page asks for a card image per row, and immutable
+    // caching already keeps repeat views off the server
+    app.use(API_PREFIX, createMediaRouter(controllers.mediaController));
     app.use(createGlobalLimiter());
-    app.use(API_PREFIX, createUserRouter(controllers.userController));
-    app.use(
-        API_PREFIX,
-        createIngredientRouter(controllers.ingredientController),
-    );
-    app.use(API_PREFIX, createRecipeRouter(controllers.recipeController));
-    app.use(API_PREFIX, createTypeRouter(controllers.recipeTypeController));
-    app.use(
-        API_PREFIX,
-        createUserIngredientsRouter(controllers.userIngredientsController),
-    );
-    app.use(API_PREFIX, createMenuRouter(controllers.menuController));
-    app.use(
-        API_PREFIX,
-        createMenuCategoryRouter(controllers.menuCategoryController),
-    );
-    app.use(API_PREFIX, createCalorieRouter(controllers.calorieController));
-    app.use(API_PREFIX, createFavouriteRouter(controllers.favouriteController));
-    app.use(
-        API_PREFIX,
-        createDietPreferencesRouter(controllers.dietPreferencesController),
-    );
-    app.use(
-        API_PREFIX,
-        createShoppingListRouter(controllers.shoppingListController),
-    );
-    app.use(API_PREFIX, createTagRouter(controllers.tagController));
+    for (const router of createDomainRouters(controllers)) {
+        app.use(API_PREFIX, router);
+    }
 
     app.use((_req, _res, next) => {
         next(new NotFoundError(ERROR_CODES.NOT_FOUND));

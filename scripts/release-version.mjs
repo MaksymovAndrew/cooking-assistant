@@ -1,4 +1,4 @@
-// manages the shared release version (see CLAUDE.md "Versioning")
+// manages the shared release version (see AGENTS.md "Versioning")
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";

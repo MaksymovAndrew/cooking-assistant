@@ -1,4 +1,6 @@
 import type { CatalogIngredientRef } from "types/catalogIngredientRef";
+import type { RecordAuthor } from "types/media";
+import type { RecordRating } from "types/rating";
 import type { Tag } from "types/tag";
 
 export interface RecipeListItem {
@@ -21,7 +23,7 @@ export interface RecipeSearchIngredient {
 }
 
 // shape returned by GET /api/recipes-by-filters and /api/recipes-filters-person/:id (different ingredient shape from RecipeWithIngredientNames)
-export interface RecipeSearchResultItem extends RecipeListItem {
+export interface RecipeSearchResultItem extends RecipeListItem, RecordRating {
     ingredients: RecipeSearchIngredient[];
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
@@ -33,6 +35,8 @@ export interface RecipeSearchResultItem extends RecipeListItem {
     containsAvoided: boolean | null;
     // the viewer's own private tags on this recipe; null for a guest
     tags: Tag[] | null;
+    photo_key: string | null;
+    author: RecordAuthor;
 }
 
 export interface RecipeDetailIngredient extends CatalogIngredientRef {
@@ -46,7 +50,7 @@ export interface RecipeDetailIngredient extends CatalogIngredientRef {
 }
 
 // shape returned by GET /api/recipe/:id (superset of what RecipeDetailsPage + ChangeRecipePage use)
-export interface RecipeDetails {
+export interface RecipeDetails extends RecordRating {
     id: number;
     title: string;
     content: string;
@@ -68,6 +72,8 @@ export interface RecipeDetails {
     calories_per_portion: number | null;
     // the author's manual value; null means the total above is auto-computed from the ingredients
     calories_override: number | null;
+    photo_key: string | null;
+    author: RecordAuthor;
 }
 
 export interface RecipeFilterParams {
@@ -80,8 +86,9 @@ export interface RecipeFilterParams {
     max_cooking_time?: string;
     min_calories?: string;
     max_calories?: string;
-    // omitted (not empty string - the backend enum-validates "asc"/"desc") falls back to creation_date DESC server-side
+    // omitted (not empty string - the backend enum-validates "asc"/"desc"/"rating") falls back to creation_date DESC server-side
     sort_order?: string;
+    top_rated?: boolean;
     in_pantry?: boolean;
     favourites?: boolean;
     // comma-separated allergen slugs
@@ -117,37 +124,4 @@ export interface UpdateRecipeRequest {
     cooking_time: number;
     calories_override: number | null;
     ingredients: UpdateRecipeIngredient[];
-}
-
-export interface RecipeFormIngredient extends CatalogIngredientRef {
-    id: number;
-    name: string;
-    quantity: number;
-    unit_name: string;
-    calories_per_unit: number | null;
-}
-
-export interface RecipeFormInitialValues {
-    title: string;
-    content: string;
-    cookingHours: string;
-    cookingMinutes: string;
-    selectedTypeId: number | null;
-    selectedIngredients: RecipeFormIngredient[];
-    // text state, empty means "compute automatically"; matches cookingHours/cookingMinutes's convention of staying a string until submit
-    caloriesOverride: string;
-}
-
-export interface RecipeFormCreateMessages {
-    errorTitle: string;
-    errorDescription: string;
-    errorIngredients: string;
-    errorType: string;
-    errorCookingTimeFormat: string;
-    errorCookingTimeInvalid: string;
-}
-
-export interface RecipeFormChangeMessages {
-    errorCookingTimeFormat: string;
-    errorCookingTimeInvalid: string;
 }

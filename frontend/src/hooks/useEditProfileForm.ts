@@ -5,6 +5,8 @@ import type { CurrentUser } from "types/auth";
 
 import { useUpdateProfileMutation } from "redux/services/authApi";
 
+import { useAvatarPhotoDraft } from "hooks/useAvatarPhotoDraft";
+
 export const useEditProfileForm = (
     currentUser: CurrentUser | null | undefined,
     onSuccess: () => void,
@@ -19,6 +21,7 @@ export const useEditProfileForm = (
         currentUser?.avatar ?? null,
     );
     const [error, setError] = useState<string | null>(null);
+    const photo = useAvatarPhotoDraft(currentUser?.avatar_photo_key ?? null);
 
     const handleSubmit = useCallback(async () => {
         setError(null);
@@ -34,13 +37,14 @@ export const useEditProfileForm = (
         const result = await updateProfile({ name, surname, avatar });
 
         if ("data" in result) {
+            await photo.commit();
             onSuccess();
 
             return;
         }
 
         setError(t("editProfileModal.errors.genericError"));
-    }, [avatar, name, onSuccess, surname, t, updateProfile]);
+    }, [avatar, name, onSuccess, photo, surname, t, updateProfile]);
 
     return {
         name,
@@ -49,6 +53,7 @@ export const useEditProfileForm = (
         setSurname,
         avatar,
         setAvatar,
+        photo,
         error,
         handleSubmit,
         isSubmitting,

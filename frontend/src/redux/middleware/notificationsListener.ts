@@ -1,4 +1,3 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
 import {
     createListenerMiddleware,
     isAnyOf,
@@ -6,13 +5,13 @@ import {
 } from "@reduxjs/toolkit";
 import i18next from "i18next";
 
+import { accountSecurityApi } from "redux/services/accountSecurityApi";
 import { authApi } from "redux/services/authApi";
 import type { AxiosBaseQueryError } from "redux/services/axiosBaseQuery";
 import { caloriesApi } from "redux/services/caloriesApi";
-import { menusApi } from "redux/services/menusApi";
-import { recipesApi } from "redux/services/recipesApi";
-import { userIngredientsApi } from "redux/services/userIngredientsApi";
 import { addNotification } from "redux/slices/notificationsSlice";
+
+import { registerSuccessToasts } from "./successToasts";
 
 const isQueryError = (payload: unknown): payload is AxiosBaseQueryError => {
     if (typeof payload !== "object" || payload === null) {
@@ -34,12 +33,12 @@ export const isSelfHandledRejection = isAnyOf(
     authApi.endpoints.register.matchRejected,
     authApi.endpoints.getMe.matchRejected,
     authApi.endpoints.logout.matchRejected,
-    authApi.endpoints.forgotPassword.matchRejected,
-    authApi.endpoints.resetPassword.matchRejected,
-    authApi.endpoints.changePassword.matchRejected,
+    accountSecurityApi.endpoints.forgotPassword.matchRejected,
+    accountSecurityApi.endpoints.resetPassword.matchRejected,
+    accountSecurityApi.endpoints.changePassword.matchRejected,
     authApi.endpoints.updateProfile.matchRejected,
     // confirmEmail's page renders its own rich success/failure state - a toast would be redundant
-    authApi.endpoints.confirmEmail.matchRejected,
+    accountSecurityApi.endpoints.confirmEmail.matchRejected,
     // useCalorieGoalForm already renders its own inline error, same as updateProfile above
     caloriesApi.endpoints.updateCalorieGoal.matchRejected,
 );
@@ -63,70 +62,4 @@ notificationsListener.startListening({
     },
 });
 
-// only mutations that keep the user on the same page get a success toast - navigating away is the signal
-const registerSuccessToast = <Payload>(
-    matcher: (action: unknown) => action is PayloadAction<Payload>,
-    messageKey: string,
-) => {
-    notificationsListener.startListening({
-        matcher,
-        effect: (_action, listenerApi) => {
-            listenerApi.dispatch(
-                addNotification({
-                    type: "success",
-                    message: i18next.t(messageKey),
-                }),
-            );
-        },
-    });
-};
-
-registerSuccessToast(
-    recipesApi.endpoints.deleteRecipe.matchFulfilled,
-    "notifications.recipeDeleted",
-);
-registerSuccessToast(
-    menusApi.endpoints.deleteMenu.matchFulfilled,
-    "notifications.menuDeleted",
-);
-registerSuccessToast(
-    userIngredientsApi.endpoints.deleteUserIngredient.matchFulfilled,
-    "notifications.ingredientDeleted",
-);
-registerSuccessToast(
-    caloriesApi.endpoints.deleteCalorieIntake.matchFulfilled,
-    "notifications.calorieIntakeDeleted",
-);
-registerSuccessToast(
-    caloriesApi.endpoints.logCalorieIntake.matchFulfilled,
-    "notifications.intakeLogged",
-);
-registerSuccessToast(
-    userIngredientsApi.endpoints.saveUserIngredient.matchFulfilled,
-    "notifications.ingredientsSaved",
-);
-registerSuccessToast(
-    userIngredientsApi.endpoints.updatePurchase.matchFulfilled,
-    "notifications.purchaseSaved",
-);
-registerSuccessToast(
-    authApi.endpoints.changePassword.matchFulfilled,
-    "notifications.passwordChanged",
-);
-registerSuccessToast(
-    authApi.endpoints.updateProfile.matchFulfilled,
-    "notifications.profileUpdated",
-);
-registerSuccessToast(
-    authApi.endpoints.deleteAccount.matchFulfilled,
-    "notifications.accountDeleted",
-);
-registerSuccessToast(
-    authApi.endpoints.requestEmailVerification.matchFulfilled,
-    "notifications.verificationEmailSent",
-);
-// a deliberate logout gets its own confirmation - distinct from the silent hard-redirect that happens when a session merely expires
-registerSuccessToast(
-    authApi.endpoints.logout.matchFulfilled,
-    "notifications.loggedOut",
-);
+registerSuccessToasts(notificationsListener);

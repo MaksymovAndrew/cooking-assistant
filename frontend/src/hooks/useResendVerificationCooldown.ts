@@ -4,7 +4,7 @@ import { MS_PER_MINUTE } from "constants/time";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { selectResendCooldownUntil } from "redux/selectors/emailVerificationSelectors";
-import { useRequestEmailVerificationMutation } from "redux/services/authApi";
+import { useRequestEmailVerificationMutation } from "redux/services/accountSecurityApi";
 import {
     resendCooldownExpired,
     resendCooldownStarted,

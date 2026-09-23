@@ -3,11 +3,11 @@ import express, { type Router } from "express";
 import { ROUTES } from "constants/routes";
 
 import type MenuController from "controller/menu.controller";
-import authenticateToken from "middleware/jwtMiddleware";
-import optionalAuth from "middleware/optionalAuth";
+import type { SessionAuth } from "middleware/jwtMiddleware";
 
 export default function createMenuRouter(
     menuController: MenuController,
+    { authenticateToken, optionalAuth }: SessionAuth,
 ): Router {
     const router = express.Router();
 

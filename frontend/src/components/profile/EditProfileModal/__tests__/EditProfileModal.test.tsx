@@ -7,7 +7,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import { EditProfileModal } from "components/profile/EditProfileModal";
 
-import { mockedPatch } from "test/apiClientMock";
+import { mockedPatch, mockedPut } from "test/apiClientMock";
 import { renderWithProviders } from "test/router";
 
 jest.mock("api/client");
@@ -21,6 +21,7 @@ const CURRENT_USER: CurrentUser = {
     email: "claude@example.com",
     email_verified_at: null,
     avatar: "tomato",
+    avatar_photo_key: null,
     calorie_goal: null,
 };
 
@@ -108,5 +109,32 @@ describe("EditProfileModal", () => {
             surname: "Cook",
             avatar: null,
         });
+    });
+
+    it("should upload a picked photo on save and note that it replaces the avatar", async () => {
+        mockedPatch.mockResolvedValue({ data: null });
+        mockedPut.mockResolvedValue({
+            data: { photo_key: "0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b" },
+        });
+        const photo = new File(["image"], "me.png", { type: "image/png" });
+
+        renderWithProviders(
+            <EditProfileModal currentUser={CURRENT_USER} onClose={jest.fn()} />,
+        );
+
+        expect(
+            screen.queryByText("Your photo is shown instead of the avatar."),
+        ).not.toBeInTheDocument();
+
+        await userEvent.upload(screen.getByTestId("photo-input"), photo);
+
+        expect(screen.getByAltText("Your profile photo")).toBeInTheDocument();
+        expect(
+            screen.getByText("Your photo is shown instead of the avatar."),
+        ).toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+        expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.auth.avatar, photo);
     });
 });

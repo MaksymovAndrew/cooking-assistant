@@ -20,6 +20,44 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.7 - 2026-09-22
+
+### Backend
+
+- Added: Photos for recipes and menus, and a profile photo for every account. Every upload is checked by its actual contents, re-encoded into a fresh image with location and camera data removed, and stored under a name the server chooses, so an image file cannot smuggle anything else onto the server.
+- Added: Recipes and menus name their author by first name and surname initial, with their avatar - never their login or email.
+- Changed: Deleting a recipe, a menu or an account also deletes its photos.
+- Added: Rate other people's recipes and menus from one to five stars - one vote each, which you can change or take back; nobody can rate their own.
+- Added: Sort recipes and menus by rating, where a single five-star vote can't outrank a well-rated favourite, and keep only those rated four stars and up.
+- Added: Every photo is also kept as a picture framed for link previews, so a shared recipe or menu shows its photo in any messenger.
+- Added: Every account remembers its language, and the server answers and writes its emails in it - groundwork for the app's upcoming translations, with English the only language so far.
+- Fixed: The server now refuses to start in production without its sign-in secret configured, instead of starting and then failing every sign-in.
+- Security: Changing or resetting your password now signs you out everywhere else at once, so a session someone else got hold of stops working immediately; the browser you changed it in stays signed in. Everyone is asked to sign in once more after this update.
+
+### Frontend
+
+- Added: Add, replace or remove a photo on the recipe and menu forms; it shows on the cards, the recipe page and as the menu cover.
+- Added: Upload your own profile photo from Edit profile - it shows in the header and on your profile, and removing it brings your chosen avatar back.
+- Added: Recipe and menu pages show who made them.
+- Added: Real star ratings everywhere a recipe or menu appears, with an honest "No ratings yet" until the first vote - the made-up placeholder numbers are gone.
+- Added: Rate a recipe or menu right on its page, with the stars also working from the keyboard.
+- Added: "Top rated" sort and a "Rated 4 stars and up" filter on the recipe and menu lists.
+- Added: Shared links to a recipe, a menu or the site now show a picture - the recipe's own photo, or a card with its name, cooking time, calories and rating.
+- Added: Recipe pages describe their ingredients, steps, cooking time, calories and rating to search engines, so a recipe can show up as a rich result; menu pages list their recipes the same way.
+- Added: The app tells the server which language it is showing, so a new account's emails come in the same language.
+- Security: The site now sends browser security headers that block it being framed by other sites and restrict where images, plugins and forms may load from.
+- Changed: Pages download less code up front - dialogs now load the moment they are opened.
+- Fixed: A menu page no longer leaves a wide empty area beside its recipes when the ingredients panel has nothing to show.
+- Fixed: Today's calorie total now counts a meal logged while the page is already open.
+- Fixed: A cooking time or calorie filter value the search cannot use no longer appears as an active filter.
+- Fixed: Visitors who are not signed in no longer see the signed-in navigation for a moment when a page opens.
+- Fixed: A recipe or menu address with a malformed id now answers "page not found" instead of an error page.
+- Changed: The average-time cards on Stats now fill their space instead of leaving it empty.
+
+### Project
+
+- Changed: Routine dependency maintenance.
+
 ## 4.6 - 2026-09-19
 
 ### Project

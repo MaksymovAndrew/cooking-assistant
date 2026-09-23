@@ -42,6 +42,7 @@ export const useUpdateMenuPage = () => {
             menuDescription: menu.menu.menucontent || "",
             selectedCategory: menu.menu.category_id,
             selectedRecipes: menu.recipes.map((recipe) => recipe.recipe_id),
+            photoKey: menu.menu.photo_key,
         });
     }, [menu, setInitialValues]);
 
@@ -62,6 +63,7 @@ export const useUpdateMenuPage = () => {
         });
 
         if ("data" in result) {
+            await form.photo.commit(Number(id));
             form.markClean();
             router.push(ROUTES.allMenus);
         }

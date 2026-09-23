@@ -59,6 +59,7 @@ export const useUpdateRecipePage = () => {
                 recipe.calories_override === null
                     ? ""
                     : String(recipe.calories_override),
+            photoKey: recipe.photo_key,
         });
     }, [recipe, setInitialValues]);
 
@@ -104,6 +105,7 @@ export const useUpdateRecipePage = () => {
         });
 
         if ("data" in result) {
+            await form.photo.commit(Number(id));
             form.markClean();
             router.push(ROUTES.allRecipes);
         }

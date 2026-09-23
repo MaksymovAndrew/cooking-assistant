@@ -37,7 +37,7 @@ describe("CreateRecipePage", () => {
             [API_ROUTES.ingredients.list]: SAMPLE_INGREDIENTS,
             [API_ROUTES.recipeTypes.list]: SAMPLE_TYPES,
         });
-        mockedPost.mockResolvedValue({ data: null });
+        mockedPost.mockResolvedValue({ data: { id: 42 } });
 
         renderWithRouter(<CreateRecipePage />);
 

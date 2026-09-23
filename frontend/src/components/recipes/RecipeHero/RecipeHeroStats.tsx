@@ -2,9 +2,9 @@ import { Calendar, Clock, Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { RECIPE_RATING, RECIPE_RATING_COUNT } from "constants/ratings";
+import type { RecordRating } from "types/rating";
 
-import { RecipeRatingStars } from "components/recipes/RecipeRatingStars";
+import { RatingStars } from "components/ui/RatingStars";
 
 import styles from "./RecipeHero.module.scss";
 
@@ -13,7 +13,7 @@ interface RecipeHeroStatsProps {
     formattedCalories: string;
     totalCalories: string | null;
     formattedDate: string;
-    isOwner: boolean;
+    rating: RecordRating;
     exceedsBudget?: boolean;
 }
 
@@ -25,7 +25,7 @@ export const RecipeHeroStats: React.FC<RecipeHeroStatsProps> = ({
     formattedCalories,
     totalCalories,
     formattedDate,
-    isOwner,
+    rating,
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
@@ -77,17 +77,15 @@ export const RecipeHeroStats: React.FC<RecipeHeroStatsProps> = ({
                     {formattedDate}
                 </span>
             </div>
-            {isOwner && (
-                <div className={SECONDARY_STAT_CLASS}>
-                    <span className={styles["recipe-hero__stat-label"]}>
-                        {t("recipeDetailsPage.yourRating")}
-                    </span>
-                    <RecipeRatingStars
-                        rating={RECIPE_RATING}
-                        ratingCount={RECIPE_RATING_COUNT}
-                    />
-                </div>
-            )}
+            <div className={SECONDARY_STAT_CLASS}>
+                <span className={styles["recipe-hero__stat-label"]}>
+                    {t("recipeDetailsPage.rating")}
+                </span>
+                <RatingStars
+                    average={rating.ratingAverage}
+                    count={rating.ratingCount}
+                />
+            </div>
         </div>
     );
 };

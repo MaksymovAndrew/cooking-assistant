@@ -1,7 +1,5 @@
 import React from "react";
 
-import { RECIPE_RATING, RECIPE_RATING_COUNT } from "constants/ratings";
-
 import { Link } from "components/ui/Link";
 
 import styles from "./ContentCard.module.scss";
@@ -9,6 +7,7 @@ import type {
     ContentCardFavouriteState,
     ContentCardIcon,
     ContentCardMetaItem,
+    ContentCardRating,
     ContentCardVariant,
 } from "./ContentCard.types";
 import { ContentCardBody } from "./ContentCardBody";
@@ -18,6 +17,7 @@ export type {
     ContentCardFavouriteState,
     ContentCardIcon,
     ContentCardMetaItem,
+    ContentCardRating,
     ContentCardVariant,
 } from "./ContentCard.types";
 export { META_ITEM_TONE_CALORIE_OVER } from "./ContentCard.types";
@@ -26,6 +26,8 @@ interface ContentCardProps {
     href: string;
     title: string;
     imageIcon: ContentCardIcon;
+    // an uploaded photo takes the icon's place; without one the card keeps its glyph
+    imageSrc?: string | null;
     chipLabel: string;
     // icon+label meta row (recipe cards); mutually exclusive with metaText
     metaItems?: ContentCardMetaItem[];
@@ -42,14 +44,15 @@ interface ContentCardProps {
     calorieOver?: boolean;
     // null hides the heart - a guest's card, or a record fetched without a per-viewer flag
     favourite?: ContentCardFavouriteState | null;
-    rating?: string;
-    ratingCount?: string;
+    // null leaves the rating out - a record fetched without its rating totals
+    rating?: ContentCardRating | null;
 }
 
 export const ContentCard: React.FC<ContentCardProps> = ({
     href,
     title,
     imageIcon: ImageIcon,
+    imageSrc = null,
     chipLabel,
     metaItems = [],
     metaText,
@@ -59,8 +62,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
     avoided = false,
     calorieOver = false,
     favourite = null,
-    rating = RECIPE_RATING,
-    ratingCount = RECIPE_RATING_COUNT,
+    rating = null,
 }) => {
     const isRow = variant === "row";
 
@@ -83,6 +85,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
             <ContentCardImage
                 isRow={isRow}
                 imageIcon={ImageIcon}
+                imageSrc={imageSrc}
                 chipLabel={chipLabel}
                 favourite={favourite}
             />
@@ -103,7 +106,6 @@ export const ContentCard: React.FC<ContentCardProps> = ({
                     badge={badge}
                     avoided={avoided}
                     rating={rating}
-                    ratingCount={ratingCount}
                     metaText={metaText}
                     metaItems={metaItems}
                 />

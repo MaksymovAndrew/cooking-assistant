@@ -1,8 +1,9 @@
-﻿import { act, renderHook } from "@testing-library/react";
+import { act } from "@testing-library/react";
 
 import { useMenuForm } from "hooks/useMenuForm";
 
 import { ERROR_RECIPES_REQUIRED } from "test/constants";
+import { renderHookWithStore } from "test/store";
 
 const ERROR_MESSAGES = {
     emptyTitle: "Menu title cannot be empty.",
@@ -13,7 +14,7 @@ const ERROR_MESSAGES = {
 
 describe("useMenuForm", () => {
     it("should initialise with empty form state", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -23,7 +24,7 @@ describe("useMenuForm", () => {
     });
 
     it("should set errors when form is invalid", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -43,7 +44,7 @@ describe("useMenuForm", () => {
     });
 
     it("should toggle recipe selection", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -61,7 +62,7 @@ describe("useMenuForm", () => {
     });
 
     it("should populate form via setInitialValues", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -71,6 +72,7 @@ describe("useMenuForm", () => {
                 menuDescription: "All soups",
                 selectedCategory: 2,
                 selectedRecipes: [1, 3],
+                photoKey: null,
             });
         });
 
@@ -80,7 +82,7 @@ describe("useMenuForm", () => {
     });
 
     it("should return true when all fields are valid", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -90,6 +92,7 @@ describe("useMenuForm", () => {
                 menuDescription: "Good meals",
                 selectedCategory: 1,
                 selectedRecipes: [2],
+                photoKey: null,
             });
         });
 
@@ -106,7 +109,7 @@ describe("useMenuForm", () => {
     });
 
     it("should set categoryError when category is null", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -125,7 +128,7 @@ describe("useMenuForm", () => {
     });
 
     it("should set recipesError when no recipes selected", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -135,6 +138,7 @@ describe("useMenuForm", () => {
                 menuDescription: "Desc",
                 selectedCategory: 1,
                 selectedRecipes: [],
+                photoKey: null,
             });
         });
 
@@ -148,7 +152,7 @@ describe("useMenuForm", () => {
     });
 
     it("should treat whitespace-only title as empty and set error", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -166,7 +170,7 @@ describe("useMenuForm", () => {
     });
 
     it("should clear errors on a subsequent successful validation", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -182,6 +186,7 @@ describe("useMenuForm", () => {
                 menuDescription: "Fixed desc",
                 selectedCategory: 1,
                 selectedRecipes: [3],
+                photoKey: null,
             });
         });
 
@@ -199,7 +204,7 @@ describe("useMenuForm", () => {
     // past other rows must land it there too, not one slot further (a splice-based reorder has
     // to adjust the target index for the shift caused by removing the dragged item)
     it("should move a recipe to land right before a target further down the list", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -218,7 +223,7 @@ describe("useMenuForm", () => {
     });
 
     it("should move a recipe to land right before a target further up the list", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 
@@ -237,7 +242,7 @@ describe("useMenuForm", () => {
     });
 
     it("should do nothing when reordering an unknown recipe id", () => {
-        const { result } = renderHook(() =>
+        const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
         );
 

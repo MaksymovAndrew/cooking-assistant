@@ -31,6 +31,9 @@ backend/src/test/db-integration/.connection.json
 # Local secrets - keep .env out of git, commit .env.example instead
 .env
 
+# user-uploaded images in local development
+backend/uploads/
+
 /orc/
 
 # Editor directories and files

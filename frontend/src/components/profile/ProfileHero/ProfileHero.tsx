@@ -6,11 +6,11 @@ import { EditMark } from "components/icons";
 import { Avatar } from "components/ui/Avatar";
 import { Button } from "components/ui/Button";
 
-import { formatKcal } from "utils/calories";
 import { formatJoinedDate } from "utils/dateUtils";
-import { getInitials } from "utils/getInitials";
+import { personDisplayName, personInitials } from "utils/personName";
 
 import styles from "./ProfileHero.module.scss";
+import { ProfileHeroStats } from "./ProfileHeroStats";
 
 interface ProfileHeroProps {
     name?: string;
@@ -18,6 +18,7 @@ interface ProfileHeroProps {
     login?: string;
     createdAt?: string;
     avatar?: string | null;
+    avatarPhotoKey?: string | null;
     recipesCount: number;
     menusCount: number;
     favouritesCount: number;
@@ -36,6 +37,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
     login,
     createdAt,
     avatar,
+    avatarPhotoKey,
     recipesCount,
     menusCount,
     favouritesCount,
@@ -44,12 +46,17 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
     onEditProfile,
 }) => {
     const { t } = useTranslation("profile");
-    const initials = name && surname ? getInitials(name, surname) : undefined;
-    const displayName = name && surname ? `${name} ${surname}` : login;
+    const initials = personInitials({ name, surname });
+    const displayName = personDisplayName({ name, surname, login });
 
     return (
         <div className={styles["profile-hero"]}>
-            <Avatar initials={initials} size={AVATAR_SIZE} avatarKey={avatar} />
+            <Avatar
+                initials={initials}
+                size={AVATAR_SIZE}
+                avatarKey={avatar}
+                photoKey={avatarPhotoKey}
+            />
             <div className={styles["profile-hero__identity"]}>
                 <h1 className={styles["profile-hero__name"]}>{displayName}</h1>
                 {createdAt && (
@@ -69,40 +76,12 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
                 <LogOut size={LOGOUT_ICON_SIZE} aria-hidden="true" />
             </button>
             <div className={styles["profile-hero__spacer"]} />
-            <div className={styles["profile-hero__stats"]}>
-                <div className={styles["profile-hero__stat"]}>
-                    <span className={styles["profile-hero__stat-value"]}>
-                        {recipesCount}
-                    </span>
-                    <span className={styles["profile-hero__stat-label"]}>
-                        {t("profilePage.recipesStat")}
-                    </span>
-                </div>
-                <div className={styles["profile-hero__stat"]}>
-                    <span className={styles["profile-hero__stat-value"]}>
-                        {menusCount}
-                    </span>
-                    <span className={styles["profile-hero__stat-label"]}>
-                        {t("profilePage.menusStat")}
-                    </span>
-                </div>
-                <div className={styles["profile-hero__stat"]}>
-                    <span className={styles["profile-hero__stat-value"]}>
-                        {favouritesCount}
-                    </span>
-                    <span className={styles["profile-hero__stat-label"]}>
-                        {t("profilePage.favouritesStat")}
-                    </span>
-                </div>
-                <div className={styles["profile-hero__stat"]}>
-                    <span className={styles["profile-hero__stat-value"]}>
-                        {formatKcal(kcalToday)}
-                    </span>
-                    <span className={styles["profile-hero__stat-label"]}>
-                        {t("profilePage.kcalTodayStat")}
-                    </span>
-                </div>
-            </div>
+            <ProfileHeroStats
+                recipesCount={recipesCount}
+                menusCount={menusCount}
+                favouritesCount={favouritesCount}
+                kcalToday={kcalToday}
+            />
             <div className={styles["profile-hero__actions"]}>
                 <Button
                     type="button"

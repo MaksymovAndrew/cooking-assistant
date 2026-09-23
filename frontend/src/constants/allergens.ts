@@ -17,6 +17,3 @@ export const ALLERGEN_SLUGS = [
 ] as const;
 
 export type AllergenSlug = (typeof ALLERGEN_SLUGS)[number];
-
-export const isAllergenSlug = (value: string): value is AllergenSlug =>
-    ALLERGEN_SLUGS.some((slug) => slug === value);

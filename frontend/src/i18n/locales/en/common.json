@@ -178,6 +178,9 @@
     },
     "photo": {
         "choose": "Add a photo",
+        "dragHint": "or drag one here",
+        "dropToAdd": "Drop the photo here",
+        "dropToReplace": "Drop to replace the photo",
         "replace": "Replace photo",
         "remove": "Remove photo",
         "hint": "JPEG, PNG, WebP or AVIF, up to 10 MB."

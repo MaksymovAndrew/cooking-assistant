@@ -16,6 +16,7 @@ BACKEND_CONTAINER=cooking-assistant-backend-1
 FRONTEND_CONTAINER=cooking-assistant-frontend-1
 HEALTH_TIMEOUT_SECONDS=150
 POLL_INTERVAL_SECONDS=5
+BACKUP_COPY_RETENTION_DAYS=14
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 die() { echo "[$(date '+%H:%M:%S')] ERROR: $*" >&2; exit 1; }
@@ -60,6 +61,22 @@ roll_back() {
     die "deploy failed, previous version restored"
 }
 
+# this project's images only, minus the running tag and the rollback target; other projects on the
+# box keep their own history, so a blanket `docker image prune -a` is off the table
+stale_images() {
+    docker image ls --format '{{.Repository}} {{.Tag}}' \
+        | awk -v current="$TAG" -v previous="$PREVIOUS_TAG" \
+            '$1 ~ /\/cooking-(backend|frontend)$/ && $2 != current && $2 != previous && $2 != "<none>" { print $1 ":" $2 }'
+}
+
+clean_up() {
+    stale_images | xargs -r docker image rm >/dev/null 2>&1 || true
+    docker image prune -f --filter 'until=168h' >/dev/null 2>&1 || true
+    # the copies made by hand before replacing a server file
+    find /srv/bin "$STACK_DIR" -maxdepth 1 -name '*.bak-*' -mtime +"$BACKUP_COPY_RETENTION_DAYS" \
+        -delete 2>/dev/null || true
+}
+
 log "deploying $OWNER/$TAG (current: $PREVIOUS_TAG)"
 write_release "$REGISTRY/$OWNER/cooking-backend" "$REGISTRY/$OWNER/cooking-frontend" "$TAG"
 
@@ -83,4 +100,5 @@ until stack_healthy; do
 done
 
 log "deployed $TAG successfully"
-docker image prune -f --filter 'until=168h' >/dev/null 2>&1 || true
+clean_up
+log "cleaned up: kept images $TAG and $PREVIOUS_TAG, dropped stale .bak copies"

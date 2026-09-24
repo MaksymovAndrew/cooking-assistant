@@ -20,6 +20,19 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Backend
+
+- Changed: The local `.env` file is read by Node itself, so the app has one dependency fewer.
+
+### Frontend
+
+- Added: Drag a photo onto a recipe, menu or profile form to add it, or click the empty frame to pick one. Once a photo is in, two buttons over it replace or remove it - they appear on hover, and stay visible on touch screens - and dropping another photo on top replaces it.
+
+### Project
+
+- Changed: Node 24 LTS everywhere - local development, CI and both production images.
+- Changed: A deploy now cleans up after itself: old app images are removed (the current one and the rollback target stay), along with stale backup copies of server files.
+
 ## 4.7 - 2026-09-22
 
 ### Backend

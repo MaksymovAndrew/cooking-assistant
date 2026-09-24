@@ -18,7 +18,7 @@ shopping list of what you are missing. React + TypeScript on the front, Express 
 
 ## Quick start
 
-You need Node 22+, PostgreSQL 14+, and a Postgres client (pgAdmin / DBeaver / psql).
+You need Node 24+, PostgreSQL 14+, and a Postgres client (pgAdmin / DBeaver / psql).
 
 ```bash
 # 1. Clone

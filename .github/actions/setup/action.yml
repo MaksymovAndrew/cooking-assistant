@@ -1,5 +1,5 @@
 name: Setup Node and install deps
-description: Set up Node 22 with npm caching and install dependencies
+description: Set up Node 24 with npm caching and install dependencies
 
 inputs:
   cache-dependency-path:

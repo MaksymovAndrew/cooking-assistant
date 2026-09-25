@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { menuDetailsPath } from "constants/routes";
 import type { MenuStatistics } from "types/stats";
 
+import { useLocale } from "hooks/useLocale";
+
 import {
     extremeItems,
     StatExtremesGrid,
@@ -21,6 +23,7 @@ export const MenuExtremesCards: React.FC<MenuExtremesCardsProps> = ({
     formatTime,
 }) => {
     const { t } = useTranslation("stats");
+    const locale = useLocale();
     const items = <T extends { id: number; title: string }>(
         records: T[],
         value: (record: T) => string,
@@ -31,7 +34,7 @@ export const MenuExtremesCards: React.FC<MenuExtremesCardsProps> = ({
         String(record.recipe_count);
     const calories = (record: { total_calories: number }) =>
         t("statsPage.caloriesValue", {
-            count: formatKcalCompact(record.total_calories),
+            count: formatKcalCompact(record.total_calories, locale),
         });
 
     return (

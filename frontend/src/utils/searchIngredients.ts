@@ -1,4 +1,4 @@
-import i18next from "i18next";
+import type { TFunction } from "i18next";
 
 import type { Ingredient } from "types/ingredient";
 
@@ -14,19 +14,18 @@ export const searchIngredients = (
     ingredients: Ingredient[],
     categories: CategoryLabel[],
     query: string,
+    t: TFunction,
+    locale: string,
 ): Ingredient[] => {
     // resolve each name once (i18next lookup) and reuse it for both matching and sorting, instead of re-resolving per comparison
     const names = new Map<number, string>(
         ingredients.map((ingredient) => [
             ingredient.id,
-            resolveIngredientName(ingredient),
+            resolveIngredientName(t, ingredient),
         ]),
     );
     const byCachedName = (a: Ingredient, b: Ingredient): number =>
-        (names.get(a.id) ?? "").localeCompare(
-            names.get(b.id) ?? "",
-            i18next.language,
-        );
+        (names.get(a.id) ?? "").localeCompare(names.get(b.id) ?? "", locale);
 
     const startsWithMatches: Ingredient[] = [];
     const containsMatches: Ingredient[] = [];

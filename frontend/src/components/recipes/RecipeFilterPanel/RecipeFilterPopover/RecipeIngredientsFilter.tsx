@@ -88,7 +88,7 @@ export const RecipeIngredientsFilter: React.FC<
                                 handleRemove(ingredient.id);
                             }}
                         >
-                            {resolveIngredientName(ingredient)}
+                            {resolveIngredientName(t, ingredient)}
                         </Chip>
                     ))}
                 </div>

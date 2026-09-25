@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { FAVOURITE_TARGET } from "constants/favourites";
 import { recipeDetailsPath } from "constants/routes";
 
+import { useLocale } from "hooks/useLocale";
+
 import type { ContentCardVariant } from "components/cards/ContentCard";
 import {
     cardFavourite,
@@ -51,6 +53,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
+    const locale = useLocale();
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const hasAllergens =
         filterAllergens((recipe.ingredients ?? []).flatMap((i) => i.allergens))
@@ -85,6 +88,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
                                       roundCalories(
                                           recipe.calories_per_portion,
                                       ),
+                                      locale,
                                   ),
                               }),
                               ...(exceedsBudget

@@ -1,5 +1,7 @@
 import { fetchPublic } from "api/server";
 
+import { splitLocale } from "utils/localePath";
+
 import sitemap from "app/sitemap";
 
 jest.mock("api/server", () => ({ fetchPublic: jest.fn() }));
@@ -22,8 +24,13 @@ const respondWith = (
     });
 };
 
+const SITE = "http://localhost:8080";
+
+// the default-language address of every page, which is the one without a prefix
 const urls = async (): Promise<string[]> =>
-    (await sitemap()).map((entry) => entry.url);
+    (await sitemap())
+        .map((entry) => entry.url)
+        .filter((url) => splitLocale(new URL(url).pathname).locale === null);
 
 describe("sitemap", () => {
     it("should list the browse pages and every public recipe and menu", async () => {
@@ -58,6 +65,29 @@ describe("sitemap", () => {
         await expect(urls()).resolves.toContain(
             "http://localhost:8080/recipe/101",
         );
+    });
+
+    it("should list every page in every language, each naming the others", async () => {
+        respondWith({ "/api/recipes-by-filters": page([1], 1) });
+
+        const entries = await sitemap();
+        const recipe = entries.filter((entry) =>
+            entry.url.endsWith("/recipe/1"),
+        );
+
+        expect(recipe.map((entry) => entry.url)).toEqual([
+            `${SITE}/recipe/1`,
+            `${SITE}/pl/recipe/1`,
+            `${SITE}/ru/recipe/1`,
+            `${SITE}/uk/recipe/1`,
+        ]);
+        expect(recipe[0].alternates?.languages).toEqual({
+            en: `${SITE}/recipe/1`,
+            pl: `${SITE}/pl/recipe/1`,
+            ru: `${SITE}/ru/recipe/1`,
+            uk: `${SITE}/uk/recipe/1`,
+        });
+        expect(entries.map((entry) => entry.url)).toContain(`${SITE}/uk`);
     });
 
     it("should stop when the api answers with nothing", async () => {

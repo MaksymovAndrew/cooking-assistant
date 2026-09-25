@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { recipeDetailsPath } from "constants/routes";
 import type { RecipeSearchResultItem } from "types/recipe";
 
+import { useLocale } from "hooks/useLocale";
+
 import { DonburiMarkCompact } from "components/icons";
 import { Link } from "components/ui/Link";
 import { RatingSummary } from "components/ui/RatingSummary";
@@ -29,6 +31,7 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("home");
+    const locale = useLocale();
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const timeLabel =
         hours > 0
@@ -79,6 +82,7 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
                             {t("recentRecipes.caloriesValue", {
                                 count: formatKcal(
                                     roundCalories(recipe.calories_per_portion),
+                                    locale,
                                 ),
                             })}
                         </span>

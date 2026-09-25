@@ -1,6 +1,9 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { Ingredient } from "types/ingredient";
+
+import { useLocale } from "hooks/useLocale";
 
 import { searchIngredients } from "utils/searchIngredients";
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
@@ -31,6 +34,8 @@ export const useCategorizedIngredients = ({
     const [query, setQuery] = useState("");
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const trimmedQuery = query.trim();
+    const { t } = useTranslation();
+    const locale = useLocale();
 
     const categories = useIngredientCategories(ingredients);
 
@@ -48,6 +53,8 @@ export const useCategorizedIngredients = ({
                 ingredients,
                 categories,
                 trimmedQuery.toLowerCase(),
+                t,
+                locale,
             ).slice(0, maxSearchResults);
         }
 
@@ -56,6 +63,8 @@ export const useCategorizedIngredients = ({
                 ingredients.filter(
                     (ingredient) => ingredient.category === activeCategory,
                 ),
+                t,
+                locale,
             );
         }
 
@@ -66,6 +75,8 @@ export const useCategorizedIngredients = ({
         trimmedQuery,
         activeCategory,
         maxSearchResults,
+        t,
+        locale,
     ]);
 
     return {

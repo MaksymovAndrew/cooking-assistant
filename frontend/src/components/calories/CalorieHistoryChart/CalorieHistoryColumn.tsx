@@ -1,6 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatKcal } from "utils/calories";
 import {
     calorieToneFor,
@@ -55,12 +57,13 @@ export const CalorieHistoryColumn: React.FC<CalorieHistoryColumnProps> = ({
     showLabels,
 }) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
 
     return (
         <div className={styles["calorie-history-chart__column"]}>
             {showLabels && (
                 <span className={styles["calorie-history-chart__value"]}>
-                    {hasHistory ? formatKcal(day.consumed) : DASH}
+                    {hasHistory ? formatKcal(day.consumed, locale) : DASH}
                 </span>
             )}
             <div

@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import type { CalorieIntakeItem } from "types/calorie";
 
+import { useLocale } from "hooks/useLocale";
+
 import { TrashMark, UtensilsMarkSimple } from "components/icons";
 
 import { formatKcal } from "utils/calories";
@@ -23,6 +25,7 @@ export const CalorieJournalRow: React.FC<CalorieJournalRowProps> = ({
     onDelete,
 }) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
     const title =
         entry.portions > 1
             ? t("dietaryTab.journalPortions", { count: entry.portions }) +
@@ -39,11 +42,11 @@ export const CalorieJournalRow: React.FC<CalorieJournalRowProps> = ({
                     {title}
                 </span>
                 <span className={styles["calorie-journal__time"]}>
-                    {formatRelativeTime(entry.eaten_at)}
+                    {formatRelativeTime(t, entry.eaten_at)}
                 </span>
             </span>
             <span className={styles["calorie-journal__calories"]}>
-                <span>{formatKcal(entry.calories)}</span>
+                <span>{formatKcal(entry.calories, locale)}</span>
                 <span className={styles["calorie-journal__unit"]}>
                     {t("dietaryTab.kcalUnit")}
                 </span>

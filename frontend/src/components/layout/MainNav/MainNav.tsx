@@ -12,12 +12,13 @@ import { selectIsGuest } from "redux/selectors/viewerSelectors";
 import { Link } from "components/ui/Link";
 
 import { isActivePath } from "utils/isActivePath";
+import { stripLocale } from "utils/localePath";
 
 import styles from "./MainNav.module.scss";
 
 export const MainNav: React.FC = () => {
     const { t } = useTranslation();
-    const pathname = usePathname();
+    const pathname = stripLocale(usePathname());
     const isGuest = useAppSelector(selectIsGuest);
     const items = isGuest ? GUEST_NAV_ITEMS : NAV_ITEMS;
 

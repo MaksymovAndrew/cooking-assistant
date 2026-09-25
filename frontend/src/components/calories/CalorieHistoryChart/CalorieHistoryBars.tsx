@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { HorizontalScrollbar } from "components/ui/HorizontalScrollbar";
 
 import { formatKcal } from "utils/calories";
@@ -29,6 +31,7 @@ export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
     daysOnGoal,
 }) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
     const barsRef = useRef<HTMLDivElement>(null);
     const hasHistory = days.some((day) => day.consumed > 0);
 
@@ -77,14 +80,16 @@ export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
             <div className={styles["calorie-history-chart__footer"]}>
                 <span>
                     {t("dietaryTab.historyGoalLine", {
-                        goal: formatKcal(goal),
+                        goal: formatKcal(goal, locale),
                     })}
                 </span>
                 {range === "30" && (
                     <>
                         <span>
                             {t("dietaryTab.avgLabel", {
-                                count: hasHistory ? formatKcal(average) : DASH,
+                                count: hasHistory
+                                    ? formatKcal(average, locale)
+                                    : DASH,
                             })}
                         </span>
                         <span>

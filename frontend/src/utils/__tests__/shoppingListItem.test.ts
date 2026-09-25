@@ -1,9 +1,13 @@
+import i18next from "i18next";
+
 import type { ShoppingListItem } from "types/shoppingList";
 
 import {
     shoppingListItemName,
     shoppingListItemQuantity,
 } from "utils/shoppingListItem";
+
+const t = i18next.getFixedT("en");
 
 const TYPED: ShoppingListItem = {
     id: 1,
@@ -19,12 +23,12 @@ const TYPED: ShoppingListItem = {
 
 describe("shoppingListItemName", () => {
     it("should keep a typed item's name as it was written", () => {
-        expect(shoppingListItemName(TYPED)).toBe("oat milk");
+        expect(shoppingListItemName(t, TYPED)).toBe("oat milk");
     });
 
     it("should fall back to the stored name for a slug the catalog does not know", () => {
         expect(
-            shoppingListItemName({
+            shoppingListItemName(t, {
                 ...TYPED,
                 name: "Mystery root",
                 ingredient_id: 5,

@@ -58,7 +58,7 @@ export const SelectedIngredientRow: React.FC<SelectedIngredientRowProps> = ({
                 className={styles["selected-ingredients-list__grip"]}
             />
             <span className={styles["selected-ingredients-list__name"]}>
-                {resolveIngredientName(ingredient)}
+                {resolveIngredientName(t, ingredient)}
             </span>
             <NumberInput
                 min={1}

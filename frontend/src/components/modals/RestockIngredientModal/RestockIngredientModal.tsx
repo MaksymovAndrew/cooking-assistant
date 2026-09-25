@@ -41,7 +41,7 @@ export const RestockIngredientModal = ({
         setAddedQuantity,
         MIN_QUANTITY,
     );
-    const displayName = resolvePantryIngredientName(ingredient);
+    const displayName = resolvePantryIngredientName(t, ingredient);
 
     const handleClose = () => dispatch(closeModal(modalId));
 

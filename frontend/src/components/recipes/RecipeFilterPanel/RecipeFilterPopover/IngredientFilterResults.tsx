@@ -39,7 +39,7 @@ export const IngredientFilterResults: React.FC<
                                 ]
                             }
                         >
-                            {resolveIngredientName(ingredient)}
+                            {resolveIngredientName(t, ingredient)}
                         </button>
                     </li>
                 ))

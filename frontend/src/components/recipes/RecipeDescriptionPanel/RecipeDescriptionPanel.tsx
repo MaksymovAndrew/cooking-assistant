@@ -77,7 +77,7 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
                                             aria-hidden="true"
                                         />
                                     )}
-                                    {resolveAllergen(allergen)}
+                                    {resolveAllergen(t, allergen)}
                                     {isAvoided && (
                                         <span
                                             className={

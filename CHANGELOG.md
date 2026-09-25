@@ -27,6 +27,9 @@ changelogs and the tags and now track everything here against one shared version
 ### Frontend
 
 - Added: Drag a photo onto a recipe, menu or profile form to add it, or click the empty frame to pick one. Once a photo is in, two buttons over it replace or remove it - they appear on hover, and stay visible on touch screens - and dropping another photo on top replaces it.
+- Added: Every page has an address in each language - English stays where it was, Polish, Russian and Ukrainian live under `/pl`, `/ru` and `/uk`. A first visit opens in the language the browser asks for, and every link keeps you in the language you are reading.
+- Added: Search engines see each language version of a page, linked to the others, and the sitemap lists them all.
+- Changed: Dates and calorie numbers are written the way the page's language writes them.
 
 ### Project
 

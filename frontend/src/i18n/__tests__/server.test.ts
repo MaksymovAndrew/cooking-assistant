@@ -4,7 +4,7 @@ const APP_NAME = "Cooking Assistant";
 
 describe("getServerTranslation", () => {
     it("should translate keys from the default namespace", async () => {
-        const t = await getServerTranslation();
+        const t = await getServerTranslation("en");
 
         expect(t("appName")).toBe(APP_NAME);
     });
@@ -15,14 +15,14 @@ describe("getServerTranslation", () => {
         expect(t("loginPage.heading")).toBe("Welcome back");
     });
 
-    it("should fall back to the default language for an unknown one", async () => {
-        const t = await getServerTranslation("qq");
+    it("should translate in the language it is given", async () => {
+        const t = await getServerTranslation("uk");
 
         expect(t("appName")).toBe(APP_NAME);
     });
 
     it("should not share state between instances", async () => {
-        const common = await getServerTranslation();
+        const common = await getServerTranslation("en");
         const auth = await getServerTranslation("en", "auth");
 
         expect(common("appName")).toBe(APP_NAME);

@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import type { MenuStatistics } from "types/stats";
 
+import { useLocale } from "hooks/useLocale";
+
 import { StatTile } from "components/stats/StatTile";
 
 import { formatKcal } from "utils/calories";
@@ -22,6 +24,7 @@ export const MenuStatsTiles: React.FC<MenuStatsTilesProps> = ({
     formatTime,
 }) => {
     const { t } = useTranslation("stats");
+    const locale = useLocale();
     const perMenuCaption = t("statsPage.perMenuCaption");
     const { mostUsedCategory } = stats;
 
@@ -69,7 +72,10 @@ export const MenuStatsTiles: React.FC<MenuStatsTilesProps> = ({
                     stats.averageCaloriesOverall === null
                         ? NO_VALUE
                         : t("statsPage.caloriesValue", {
-                              count: formatKcal(stats.averageCaloriesOverall),
+                              count: formatKcal(
+                                  stats.averageCaloriesOverall,
+                                  locale,
+                              ),
                           })
                 }
                 caption={perMenuCaption}

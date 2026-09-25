@@ -3,6 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
+import { useLocale } from "hooks/useLocale";
 
 import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
 import { resolveIngredientName } from "utils/ingredientName";
@@ -28,6 +29,7 @@ export const RecipeIngredientRow: React.FC<RecipeIngredientRowProps> = ({
     hasCustomCalories,
 }) => {
     const { t } = useTranslation("recipes");
+    const locale = useLocale();
     const quantity = ingredient.quantity_recipe_ingredients * portionCount;
     const calories =
         hasCustomCalories || ingredient.calories_per_unit === null
@@ -82,7 +84,7 @@ export const RecipeIngredientRow: React.FC<RecipeIngredientRowProps> = ({
                         </span>
                     </span>
                 )}
-                {resolveIngredientName(ingredient)}
+                {resolveIngredientName(t, ingredient)}
             </span>
             <span className={styles["recipe-ingredients-panel__qty"]}>
                 {roundQuantity(quantity)} {ingredient.unit_name}
@@ -93,7 +95,7 @@ export const RecipeIngredientRow: React.FC<RecipeIngredientRowProps> = ({
                         }
                     >
                         {t("recipeDetailsPage.ingredientCalories", {
-                            count: formatKcal(calories),
+                            count: formatKcal(calories, locale),
                         })}
                     </span>
                 )}

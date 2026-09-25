@@ -13,6 +13,7 @@ import {
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
 
 import { useAppRouter } from "hooks/useAppRouter";
+import { useLocale } from "hooks/useLocale";
 import { useRecipeForm } from "hooks/useRecipeForm";
 
 import { splitCookingTime } from "utils/cookingTimeUtils";
@@ -20,6 +21,7 @@ import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 export const useUpdateRecipePage = () => {
     const { t } = useTranslation("recipes");
+    const locale = useLocale();
     const { id } = useParams<{ id: string }>();
     const form = useRecipeForm();
     const { setInitialValues } = form;
@@ -30,8 +32,8 @@ export const useUpdateRecipePage = () => {
     const [updateRecipe] = useUpdateRecipeMutation();
 
     const allIngredients = useMemo(
-        () => sortIngredientsByName(ingredients ?? []),
-        [ingredients],
+        () => sortIngredientsByName(ingredients ?? [], t, locale),
+        [ingredients, t, locale],
     );
 
     useEffect(() => {

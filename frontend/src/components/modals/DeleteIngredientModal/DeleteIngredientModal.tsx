@@ -36,7 +36,7 @@ export const DeleteIngredientModal = ({
         <ConfirmModal
             title={t("page.deleteTitle")}
             message={t("page.deleteConfirmMessage", {
-                name: resolvePantryIngredientName(ingredient),
+                name: resolvePantryIngredientName(t, ingredient),
             })}
             confirmLabel={t("page.confirmButton")}
             cancelLabel={t("page.cancelButton")}

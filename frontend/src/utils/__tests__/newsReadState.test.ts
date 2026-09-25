@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 import { getLatestReleaseDate, getNewsItems } from "utils/newsItems";
 import {
     isEntryUnseen,
@@ -5,8 +7,10 @@ import {
     writeLastSeenDate,
 } from "utils/newsReadState";
 
-const LATEST_RELEASE_DATE = getLatestReleaseDate();
-const previousRelease = getNewsItems().find(
+const t = i18next.getFixedT("en");
+
+const LATEST_RELEASE_DATE = getLatestReleaseDate(t);
+const previousRelease = getNewsItems(t).find(
     (entry) => entry.date !== LATEST_RELEASE_DATE,
 );
 
@@ -18,13 +22,13 @@ const PREVIOUS_RELEASE_DATE = previousRelease.date;
 
 describe("readLastSeenDate", () => {
     it("should default to just before the latest release when nothing is stored", () => {
-        expect(readLastSeenDate()).toBe(PREVIOUS_RELEASE_DATE);
+        expect(readLastSeenDate(t)).toBe(PREVIOUS_RELEASE_DATE);
     });
 
     it("should return the stored date once written", () => {
         writeLastSeenDate(LATEST_RELEASE_DATE);
 
-        expect(readLastSeenDate()).toBe(LATEST_RELEASE_DATE);
+        expect(readLastSeenDate(t)).toBe(LATEST_RELEASE_DATE);
     });
 });
 

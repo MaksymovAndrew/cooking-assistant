@@ -42,7 +42,7 @@ export const AddIngredientQuantityStep: React.FC<
                 })}
             </span>
             <span className={styles["add-ingredient-modal__quantity-name"]}>
-                {resolveIngredientName(ingredient)}
+                {resolveIngredientName(t, ingredient)}
             </span>
             <div className={styles["add-ingredient-modal__quantity-input"]}>
                 <NumberInput

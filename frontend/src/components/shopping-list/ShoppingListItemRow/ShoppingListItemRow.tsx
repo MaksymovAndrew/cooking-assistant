@@ -38,7 +38,7 @@ export const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
     isLast,
 }) => {
     const { t } = useTranslation("shoppingList");
-    const name = shoppingListItemName(item);
+    const name = shoppingListItemName(t, item);
     const quantity = shoppingListItemQuantity(item);
     const checkboxId = `shopping-list-item-${item.id}`;
 

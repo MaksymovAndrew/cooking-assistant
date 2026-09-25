@@ -1,6 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { CalorieProgressRing } from "components/calories/CalorieProgressRing";
 
 import { formatKcal } from "utils/calories";
@@ -33,6 +35,7 @@ export const CalorieTodayCard: React.FC<CalorieTodayCardProps> = ({
     tone,
 }) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
 
     return (
         <div className={styles["calorie-today-card"]}>
@@ -45,7 +48,7 @@ export const CalorieTodayCard: React.FC<CalorieTodayCardProps> = ({
                     goal={goal}
                     tone={tone}
                     goalLabel={t("dietaryTab.ringGoalLabel", {
-                        goal: formatKcal(goal),
+                        goal: formatKcal(goal, locale),
                     })}
                 />
                 <div className={styles["calorie-today-card__content"]}>
@@ -60,14 +63,14 @@ export const CalorieTodayCard: React.FC<CalorieTodayCardProps> = ({
                     <p className={styles["calorie-today-card__summary"]}>
                         {isOverLimit
                             ? t("dietaryTab.summaryOver", {
-                                  consumed: formatKcal(consumed),
-                                  goal: formatKcal(goal),
-                                  over: formatKcal(over),
+                                  consumed: formatKcal(consumed, locale),
+                                  goal: formatKcal(goal, locale),
+                                  over: formatKcal(over, locale),
                               })
                             : t("dietaryTab.summaryRemaining", {
-                                  consumed: formatKcal(consumed),
-                                  goal: formatKcal(goal),
-                                  remaining: formatKcal(remaining),
+                                  consumed: formatKcal(consumed, locale),
+                                  goal: formatKcal(goal, locale),
+                                  remaining: formatKcal(remaining, locale),
                               })}
                     </p>
                     <CalorieTodayLegend

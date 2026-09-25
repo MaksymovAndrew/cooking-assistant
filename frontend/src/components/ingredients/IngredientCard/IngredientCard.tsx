@@ -35,7 +35,7 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
         ingredient.lots,
     );
     const expiry = getExpiryPresentation(status, t);
-    const displayName = resolvePantryIngredientName(ingredient);
+    const displayName = resolvePantryIngredientName(t, ingredient);
 
     return (
         <div

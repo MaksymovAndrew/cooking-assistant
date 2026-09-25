@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 
 import type { ExpiredPantryIngredient } from "types/expiry";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatShortDate } from "utils/dateUtils";
 import { resolveIngredientName } from "utils/ingredientName";
 
@@ -16,6 +18,7 @@ export const ExpiredIngredientsList = ({
     ingredients,
 }: ExpiredIngredientsListProps) => {
     const { t } = useTranslation("ingredients");
+    const locale = useLocale();
 
     return (
         <ul className={styles["expired-ingredients-modal__list"]}>
@@ -25,7 +28,7 @@ export const ExpiredIngredientsList = ({
                     className={styles["expired-ingredients-modal__group"]}
                 >
                     <span className={styles["expired-ingredients-modal__name"]}>
-                        {resolveIngredientName(ingredient)}
+                        {resolveIngredientName(t, ingredient)}
                     </span>
                     <ul className={styles["expired-ingredients-modal__lots"]}>
                         {ingredient.lots.map((lot) => (
@@ -43,12 +46,18 @@ export const ExpiredIngredientsList = ({
                                 </span>
                                 <span>
                                     {t("expiredNoticeModal.lotPurchased", {
-                                        date: formatShortDate(lot.purchaseDate),
+                                        date: formatShortDate(
+                                            lot.purchaseDate,
+                                            locale,
+                                        ),
                                     })}
                                 </span>
                                 <span>
                                     {t("expiredNoticeModal.lotExpired", {
-                                        date: formatShortDate(lot.expiryDate),
+                                        date: formatShortDate(
+                                            lot.expiryDate,
+                                            locale,
+                                        ),
                                     })}
                                 </span>
                             </li>

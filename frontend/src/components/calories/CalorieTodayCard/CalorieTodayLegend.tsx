@@ -1,6 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatKcal } from "utils/calories";
 import type { CalorieTone } from "utils/computeCalorieSummary";
 
@@ -30,6 +32,7 @@ export const CalorieTodayLegend: React.FC<CalorieTodayLegendProps> = ({
     tone,
 }) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
 
     // over the limit the ring reads as goal + overshoot, below it as eaten + left
     const rows: LegendRow[] = isOverLimit
@@ -77,7 +80,8 @@ export const CalorieTodayLegend: React.FC<CalorieTodayLegendProps> = ({
                     <span
                         className={styles["calorie-today-card__legend-value"]}
                     >
-                        {formatKcal(row.value)} {t("dietaryTab.kcalUnit")}
+                        {formatKcal(row.value, locale)}{" "}
+                        {t("dietaryTab.kcalUnit")}
                     </span>
                 </div>
             ))}

@@ -6,6 +6,8 @@ import { ROUTES } from "constants/routes";
 
 import { useGetMeQuery } from "redux/services/authApi";
 
+import { useLocale } from "hooks/useLocale";
+
 import { LinkButton } from "components/ui/LinkButton";
 
 import { formatDashboardDate } from "utils/formatDashboardDate";
@@ -16,13 +18,14 @@ const ICON_SIZE = 16;
 
 export const GreetingHeader: React.FC = () => {
     const { t } = useTranslation("home");
+    const locale = useLocale();
     const { data: currentUser } = useGetMeQuery(null);
 
     return (
         <div className={styles["greeting-header"]}>
             <div className={styles["greeting-header__text"]}>
                 <div className={styles["greeting-header__date"]}>
-                    {formatDashboardDate(new Date())}
+                    {formatDashboardDate(new Date(), locale)}
                 </div>
                 <h1 className={styles["greeting-header__title"]}>
                     {currentUser?.name

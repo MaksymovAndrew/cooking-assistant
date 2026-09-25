@@ -44,7 +44,7 @@ export const MenuIngredientRow: React.FC<MenuIngredientRowProps> = ({
                 />
             )}
             <span className={styles["menu-missing-ingredients-panel__name"]}>
-                {resolveIngredientName({ slug, name })}
+                {resolveIngredientName(t, { slug, name })}
             </span>
             <span className={styles["menu-missing-ingredients-panel__qty"]}>
                 {roundQuantity(sufficient ? quantity : missingQuantity)} {unit}

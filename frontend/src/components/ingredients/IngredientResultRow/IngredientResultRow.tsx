@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import type { Ingredient } from "types/ingredient";
 
@@ -23,7 +24,8 @@ export const IngredientResultRow: React.FC<IngredientResultRowProps> = ({
     isSelected = false,
     onSelect,
 }) => {
-    const name = resolveIngredientName(ingredient);
+    const { t } = useTranslation();
+    const name = resolveIngredientName(t, ingredient);
 
     return (
         <li>

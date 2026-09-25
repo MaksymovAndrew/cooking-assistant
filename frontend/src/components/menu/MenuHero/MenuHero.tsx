@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { RATING_TARGET } from "constants/ratings";
 import type { MenuDetails } from "types/menu";
 
+import { useLocale } from "hooks/useLocale";
 import { useRatingControl } from "hooks/useRatingControl";
 
 import { MenuHeroStats } from "components/menu/MenuHero/MenuHeroStats";
@@ -39,6 +40,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("menu");
+    const locale = useLocale();
     const { hours, minutes } = splitCookingTime(totalCookingTime);
     const formattedTotalTime =
         hours > 0
@@ -48,7 +50,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
         caloriesPerPortion === null
             ? null
             : t("menuDetailsPage.caloriesValue", {
-                  count: formatKcal(Math.round(caloriesPerPortion)),
+                  count: formatKcal(Math.round(caloriesPerPortion), locale),
               });
 
     const coverSrc = mediaUrl(menu.photo_key, "hero");

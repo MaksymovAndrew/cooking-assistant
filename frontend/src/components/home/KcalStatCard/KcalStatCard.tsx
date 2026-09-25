@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { profileDietaryPath } from "constants/routes";
 
+import { useLocale } from "hooks/useLocale";
+
 import { Link } from "components/ui/Link";
 
 import { calorieRingFraction, formatKcal } from "utils/calories";
@@ -32,6 +34,7 @@ export const KcalStatCard: React.FC<KcalStatCardProps> = ({
     variant = "consumed",
 }) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
 
     if (goal === null) {
         return (
@@ -97,7 +100,7 @@ export const KcalStatCard: React.FC<KcalStatCardProps> = ({
             </span>
             <span>
                 <span className={styles["kcal-stat-card__value"]}>
-                    {formatKcal(value)}
+                    {formatKcal(value, locale)}
                 </span>
                 <span className={styles["kcal-stat-card__label"]}>{label}</span>
             </span>

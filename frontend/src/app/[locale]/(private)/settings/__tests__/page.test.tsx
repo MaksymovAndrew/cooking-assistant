@@ -1,0 +1,83 @@
+import { act, fireEvent, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import { THEME_STORAGE_KEY } from "constants/theme";
+
+import { API_ROUTES } from "api/endpoints";
+
+import { selectActiveModal } from "redux/selectors/uiSelectors";
+import { MODAL_TYPE } from "redux/slices/uiSlice";
+
+import SettingsPage from "app/[locale]/(private)/settings/page";
+import { mockGetByUrl } from "test/apiClientMock";
+import { renderWithProviders } from "test/router";
+
+jest.mock("api/client");
+
+const setup = () => {
+    mockGetByUrl({ [API_ROUTES.auth.me]: null });
+
+    return renderWithProviders(<SettingsPage />);
+};
+
+describe("SettingsPage", () => {
+    it("should render the settings heading", () => {
+        setup();
+
+        expect(
+            screen.getByRole("heading", { name: "Settings" }),
+        ).toBeInTheDocument();
+    });
+
+    it("should open the theme-change confirmation when a different theme is selected", async () => {
+        const { store } = setup();
+
+        await userEvent.click(screen.getByRole("radio", { name: "Light" }));
+
+        expect(selectActiveModal(store.getState())?.type).toBe(
+            MODAL_TYPE.themeChange,
+        );
+    });
+
+    it("should not open a confirmation when the current theme is re-selected", async () => {
+        localStorage.setItem(THEME_STORAGE_KEY, "dark");
+
+        const { store } = setup();
+
+        await userEvent.click(screen.getByRole("radio", { name: "Dark" }));
+
+        expect(selectActiveModal(store.getState())).toBeNull();
+    });
+
+    it("should open and close the change-password modal", async () => {
+        setup();
+
+        await userEvent.click(screen.getByRole("button", { name: "Change…" }));
+
+        expect(
+            screen.getByRole("heading", { name: "Change password" }),
+        ).toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+        expect(
+            screen.queryByRole("heading", { name: "Change password" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should open the delete-account modal after holding the delete button", () => {
+        jest.useFakeTimers();
+        setup();
+
+        const button = screen.getByRole("button", { name: "Delete account" });
+
+        fireEvent.pointerDown(button, { pointerId: 1 });
+        act(() => {
+            jest.advanceTimersByTime(500);
+        });
+        fireEvent.pointerUp(button, { pointerId: 1 });
+
+        expect(screen.getByText("Delete account?")).toBeInTheDocument();
+        jest.useRealTimers();
+    });
+});

@@ -89,7 +89,7 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                 <FilterChipGroup
                     options={ALLERGEN_SLUGS.map((slug) => ({
                         id: slug,
-                        label: resolveAllergen(slug),
+                        label: resolveAllergen(t, slug),
                     }))}
                     value={filters.excludeAllergens}
                     onChange={(next) => {

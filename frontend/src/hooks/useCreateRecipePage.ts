@@ -9,12 +9,14 @@ import { useCreateRecipeMutation } from "redux/services/recipesApi";
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
 
 import { useAppRouter } from "hooks/useAppRouter";
+import { useLocale } from "hooks/useLocale";
 import { useRecipeForm } from "hooks/useRecipeForm";
 
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 export const useCreateRecipePage = () => {
     const { t } = useTranslation("recipes");
+    const locale = useLocale();
     const form = useRecipeForm();
     const router = useAppRouter();
     const { data: ingredients } = useGetIngredientsQuery(null);
@@ -22,8 +24,8 @@ export const useCreateRecipePage = () => {
     const [createRecipe] = useCreateRecipeMutation();
 
     const allIngredients = useMemo(
-        () => sortIngredientsByName(ingredients ?? []),
-        [ingredients],
+        () => sortIngredientsByName(ingredients ?? [], t, locale),
+        [ingredients, t, locale],
     );
 
     const handleSubmit = async () => {

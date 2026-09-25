@@ -12,10 +12,10 @@ import {
     HTTP_STATUS_FORBIDDEN,
     HTTP_STATUS_UNAUTHORIZED,
 } from "constants/http";
+import { DEFAULT_LOCALE } from "constants/locales";
 import { PUBLIC_PATHS } from "constants/routes";
 
-import { DEFAULT_LANGUAGE } from "i18n/resources";
-
+import { stripLocale } from "utils/localePath";
 import { matchRoutePattern } from "utils/matchRoutePattern";
 
 import { API_ROUTES } from "./endpoints";
@@ -37,7 +37,7 @@ export function handleAuthError(error: AxiosError): Promise<never> {
         typeof status === "number" && AUTH_ERROR_STATUSES.includes(status);
     const isSkipped = SKIP_REDIRECT_URLS.some((url) => requestUrl === url);
     const isPublicPath = PUBLIC_PATHS.some((pattern) =>
-        matchRoutePattern(pattern, window.location.pathname),
+        matchRoutePattern(pattern, stripLocale(window.location.pathname)),
     );
     const isProtectedPath = !isPublicPath;
 
@@ -56,7 +56,7 @@ export function withAppLanguage(
 ): InternalAxiosRequestConfig {
     config.headers.set(
         "Accept-Language",
-        i18next.resolvedLanguage ?? DEFAULT_LANGUAGE,
+        i18next.resolvedLanguage ?? DEFAULT_LOCALE,
     );
 
     return config;

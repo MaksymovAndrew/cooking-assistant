@@ -45,7 +45,7 @@ export const AvoidIngredientResults: React.FC<AvoidIngredientResultsProps> = ({
         <ul className={styles["food-preferences__results"]}>
             {results.map((ingredient) => {
                 const isAvoided = ingredientIds.includes(ingredient.id);
-                const name = resolveIngredientName(ingredient);
+                const name = resolveIngredientName(t, ingredient);
 
                 return (
                     <li key={ingredient.id}>

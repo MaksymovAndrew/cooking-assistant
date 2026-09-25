@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { recipeDetailsPath } from "constants/routes";
 
+import { useLocale } from "hooks/useLocale";
+
 import { UtensilsMark } from "components/icons";
 import { Link } from "components/ui/Link";
 import { RatingSummary } from "components/ui/RatingSummary";
@@ -34,6 +36,7 @@ const RATING_ICON_SIZE = 11;
 
 export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
     const { t } = useTranslation("menu");
+    const locale = useLocale();
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const formattedTime =
         hours > 0
@@ -43,7 +46,10 @@ export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
         recipe.calories_per_portion === null
             ? null
             : t("menuDetailsPage.caloriesValue", {
-                  count: formatKcal(roundCalories(recipe.calories_per_portion)),
+                  count: formatKcal(
+                      roundCalories(recipe.calories_per_portion),
+                      locale,
+                  ),
               });
 
     return (

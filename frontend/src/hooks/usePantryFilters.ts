@@ -7,7 +7,7 @@ import { useIngredientCategories } from "hooks/useIngredientCategories";
 
 import {
     isUrgent,
-    PANTRY_FILTER_DEFS,
+    pantryFilterDefs,
     type PantryFilterState,
 } from "utils/filters/pantryFilterDefs";
 
@@ -23,12 +23,13 @@ export const usePantryFilters = ({
 }: UsePantryFiltersOptions) => {
     const { t } = useTranslation("ingredients");
     const categories = useIngredientCategories(personIngredients);
+    const filterDefs = useMemo(() => pantryFilterDefs(t), [t]);
     const {
         values: filters,
         setValue,
         visibleItems: visibleIngredients,
     } = useClientFilters<PantryIngredient, PantryFilterState>(
-        PANTRY_FILTER_DEFS,
+        filterDefs,
         personIngredients,
     );
 

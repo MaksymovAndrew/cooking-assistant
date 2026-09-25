@@ -15,6 +15,7 @@ import { useAddressBarReflowFix } from "hooks/useAddressBarReflowFix";
 import { Link } from "components/ui/Link";
 
 import { isActivePath } from "utils/isActivePath";
+import { stripLocale } from "utils/localePath";
 import { rememberLoginRedirect } from "utils/loginRedirect";
 
 import styles from "./BottomNav.module.scss";
@@ -25,7 +26,7 @@ const ACTIVE_ICON_SIZE = 22;
 export const BottomNav: React.FC = () => {
     const { t } = useTranslation();
     const navRef = useRef<HTMLElement>(null);
-    const pathname = usePathname();
+    const pathname = stripLocale(usePathname());
     const isGuest = useAppSelector(selectIsGuest);
     const items = isGuest ? GUEST_BOTTOM_NAV_ITEMS : BOTTOM_NAV_ITEMS;
 

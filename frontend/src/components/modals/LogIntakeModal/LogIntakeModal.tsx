@@ -6,6 +6,7 @@ import { useLogCalorieIntakeMutation } from "redux/services/caloriesApi";
 import { closeModal } from "redux/slices/uiSlice";
 
 import { useCalorieBudget } from "hooks/useCalorieBudget";
+import { useLocale } from "hooks/useLocale";
 
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
@@ -34,6 +35,7 @@ export const LogIntakeModal = ({
     initialPortions,
 }: LogIntakeModalProps) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
     const dispatch = useAppDispatch();
     const [portions, setPortions] = useState(initialPortions ?? MIN_PORTIONS);
     const [logIntake, { isLoading }] = useLogCalorieIntakeMutation();
@@ -93,7 +95,9 @@ export const LogIntakeModal = ({
             />
 
             <p className={styles["log-intake-modal__total"]}>
-                {t("logIntakeModal.totalLabel", { total: formatKcal(total) })}
+                {t("logIntakeModal.totalLabel", {
+                    total: formatKcal(total, locale),
+                })}
             </p>
         </BaseModal>
     );

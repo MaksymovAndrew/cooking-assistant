@@ -1,0 +1,76 @@
+{
+    "settingsPage": {
+        "heading": "Налаштування",
+        "subheading": "Вигляд, мова й обліковий запис."
+    },
+    "comingSoonBadge": "Незабаром",
+    "appearanceSection": {
+        "heading": "Вигляд",
+        "themeTitle": "Тема",
+        "themeDescription": "Як застосунок виглядає на цьому пристрої.",
+        "themeLabel": "Тема",
+        "dark": "Темна",
+        "light": "Світла",
+        "system": "Як у системі"
+    },
+    "languageSection": {
+        "heading": "Мова й регіон",
+        "languageTitle": "Мова",
+        "languageDescription": "Вибір мови з’явиться зовсім скоро."
+    },
+    "notificationsSection": {
+        "heading": "Сповіщення",
+        "expiryTitle": "Нагадування про терміни",
+        "expiryDescription": "Попередимо, поки продукти не зіпсувалися.",
+        "digestTitle": "Щотижневий підсумок",
+        "digestDescription": "Раз на тиждень — підсумки за вашими рецептами й меню."
+    },
+    "accountSection": {
+        "heading": "Обліковий запис",
+        "profileTitle": "Профіль",
+        "profileDescription": "Ім’я, пошта й фото — на сторінці профілю.",
+        "openProfileButton": "Відкрити профіль",
+        "emailTitle": "Пошта",
+        "sendEmailButton": "Надіслати лист",
+        "verifiedBadge": "Підтверджено",
+        "unverifiedBadge": "Не підтверджено",
+        "changePasswordTitle": "Змінити пароль",
+        "changePasswordDescription": "Задайте новий пароль для облікового запису.",
+        "changePasswordButton": "Змінити…",
+        "deleteAccountTitle": "Видалити обліковий запис",
+        "deleteAccountDescription": "Назавжди видалить рецепти, меню та продукти."
+    },
+    "changePasswordModal": {
+        "title": "Зміна пароля",
+        "currentPasswordLabel": "Поточний пароль",
+        "newPasswordLabel": "Новий пароль",
+        "confirmPasswordLabel": "Повторіть новий пароль",
+        "cancelButton": "Скасувати",
+        "saveButton": "Зберегти пароль",
+        "errors": {
+            "allFieldsRequired": "Заповніть усі поля.",
+            "currentPasswordIncorrect": "Поточний пароль неправильний.",
+            "passwordInvalid": "Пароль — щонайменше 8 символів, серед них літера, цифра й спецсимвол.",
+            "passwordsDoNotMatch": "Нові паролі не збігаються.",
+            "newPasswordSameAsCurrent": "Новий пароль має відрізнятися від поточного.",
+            "genericError": "Щось пішло не так. Спробуйте ще раз."
+        }
+    },
+    "deleteAccountModal": {
+        "title": "Видалити обліковий запис?",
+        "message": "Ваші рецепти, меню та продукти буде видалено назавжди. Введіть пароль, щоб підтвердити.",
+        "passwordLabel": "Пароль",
+        "cancelButton": "Скасувати",
+        "confirmButton": "Видалити обліковий запис",
+        "errors": {
+            "passwordRequired": "Введіть пароль.",
+            "incorrectPassword": "Неправильний пароль.",
+            "tooManyAttempts": "Забагато спроб. Зачекайте {{seconds}} с.",
+            "genericError": "Щось пішло не так. Спробуйте ще раз."
+        }
+    },
+    "deleteAccountButton": {
+        "label": "Видалити обліковий запис",
+        "holdInstruction": "Утримуйте, щоб підтвердити"
+    }
+}

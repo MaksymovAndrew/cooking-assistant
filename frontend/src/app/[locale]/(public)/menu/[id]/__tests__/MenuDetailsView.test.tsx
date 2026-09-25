@@ -121,7 +121,7 @@ describe("MenuDetailsView", () => {
 
         expect(screen.getByText("Soup")).toBeInTheDocument();
         expect(screen.getByText("Carrot")).toBeInTheDocument();
-        expect(screen.getByText("2 piece")).toBeInTheDocument();
+        expect(screen.getByText("2 pieces")).toBeInTheDocument();
     });
 
     it("should show Edit and Delete buttons when current user is the menu owner", () => {

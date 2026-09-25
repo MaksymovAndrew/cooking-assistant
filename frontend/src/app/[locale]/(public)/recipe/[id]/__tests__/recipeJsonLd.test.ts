@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 import { API_BASE_URL } from "config/env";
 import type { RecipeDetails } from "types/recipe";
 
@@ -10,6 +12,7 @@ const SITE = "http://localhost:8080";
 const KEY = "0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b";
 
 const DESCRIPTION = "Boil the beetroot.";
+const t = i18next.getFixedT("en");
 const SAMPLE: RecipeDetails = {
     id: 7,
     title: "Borscht",
@@ -45,7 +48,7 @@ const SAMPLE: RecipeDetails = {
 
 describe("recipeJsonLd", () => {
     it("should describe the recipe the way search engines read one", () => {
-        expect(recipeJsonLd(SAMPLE, DESCRIPTION)).toEqual({
+        expect(recipeJsonLd(SAMPLE, DESCRIPTION, t, "en")).toEqual({
             "@context": "https://schema.org",
             "@type": "Recipe",
             name: "Borscht",
@@ -89,6 +92,8 @@ describe("recipeJsonLd", () => {
                 calories_per_portion: null,
             },
             "",
+            t,
+            "en",
         );
         const serialized = JSON.parse(JSON.stringify(data)) as object;
 
@@ -97,5 +102,11 @@ describe("recipeJsonLd", () => {
         expect(serialized).not.toHaveProperty("totalTime");
         expect(serialized).not.toHaveProperty("nutrition");
         expect(serialized).not.toHaveProperty("aggregateRating");
+    });
+
+    it("should point at the page in its own language", () => {
+        expect(recipeJsonLd(SAMPLE, DESCRIPTION, t, "ru").url).toBe(
+            `${SITE}/ru/recipe/7`,
+        );
     });
 });

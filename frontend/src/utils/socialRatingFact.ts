@@ -11,10 +11,11 @@ export const socialRatingFact = (
         ratingCount,
     }: Pick<RecordRating, "ratingAverage" | "ratingCount">,
     t: TFunction,
+    locale: string,
 ): string | null =>
     ratingAverage === null
         ? null
         : t("social.rating", {
-              average: formatRatingAverage(ratingAverage),
+              average: formatRatingAverage(ratingAverage, locale),
               count: ratingCount,
           });

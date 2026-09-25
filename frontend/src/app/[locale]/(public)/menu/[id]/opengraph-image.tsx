@@ -3,6 +3,7 @@ import { toLocale } from "constants/locales";
 import { SocialCard } from "components/social/SocialCard";
 import { getServerTranslation } from "i18n/server";
 
+import { menuCategoryName } from "utils/referenceLabels";
 import { socialRatingFact } from "utils/socialRatingFact";
 
 import { renderSocialImage, socialImageEntry } from "app/socialImage";
@@ -41,13 +42,17 @@ const MenuSocialImage = async ({ params }: MenuImageProps) => {
     ]);
     const facts = [
         t("menuDetailsPage.recipesCaption", { count: recipes.length }),
-        socialRatingFact(menu, tCommon),
+        socialRatingFact(menu, tCommon, locale),
     ].filter((fact) => fact !== null);
 
     return renderSocialImage(
         <SocialCard
             appName={tCommon("appName")}
-            eyebrow={menu.categoryname}
+            eyebrow={
+                menu.categoryname === null
+                    ? null
+                    : menuCategoryName(tCommon, menu.categoryname)
+            }
             title={menu.title}
             subtitle={tCommon("author.byline", {
                 name: menu.author.name,

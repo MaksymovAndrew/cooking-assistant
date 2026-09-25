@@ -16,6 +16,7 @@ import { StarRatingInput } from "components/ui/StarRatingInput";
 import { formatKcal } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { mediaUrl } from "utils/mediaUrl";
+import { menuCategoryName } from "utils/referenceLabels";
 
 import styles from "./MenuHero.module.scss";
 
@@ -71,7 +72,11 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
             <div className={styles["menu-hero__header"]}>
                 <div className={styles["menu-hero__title-row"]}>
                     <h1 className={styles["menu-hero__title"]}>{menu.title}</h1>
-                    <Chip variant="type">{menu.categoryname}</Chip>
+                    <Chip variant="type">
+                        {menu.categoryname === null
+                            ? null
+                            : menuCategoryName(t, menu.categoryname)}
+                    </Chip>
                     <RatingSummary
                         average={rating.ratingAverage}
                         count={rating.ratingCount}

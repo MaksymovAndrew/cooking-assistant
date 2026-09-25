@@ -7,7 +7,7 @@ import { useLocale } from "hooks/useLocale";
 
 import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
 import { resolveIngredientName } from "utils/ingredientName";
-import { roundQuantity } from "utils/roundQuantity";
+import { quantityWithUnit } from "utils/referenceLabels";
 
 import styles from "./RecipeIngredientsPanel.module.scss";
 
@@ -87,7 +87,7 @@ export const RecipeIngredientRow: React.FC<RecipeIngredientRowProps> = ({
                 {resolveIngredientName(t, ingredient)}
             </span>
             <span className={styles["recipe-ingredients-panel__qty"]}>
-                {roundQuantity(quantity)} {ingredient.unit_name}
+                {quantityWithUnit(t, locale, quantity, ingredient.unit_name)}
                 {calories !== null && (
                     <span
                         className={

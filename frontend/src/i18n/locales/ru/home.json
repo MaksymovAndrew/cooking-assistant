@@ -1,0 +1,56 @@
+{
+    "greeting": {
+        "welcome": "С возвращением 👋",
+        "welcomeWithName": "С возвращением, {{name}} 👋"
+    },
+    "actions": {
+        "news": "Новости",
+        "newMenu": "Новое меню",
+        "newRecipe": "Новый рецепт"
+    },
+    "stats": {
+        "recipes": "Рецепты",
+        "menus": "Меню",
+        "pantryItems": "Продукты дома",
+        "pantryItemsShort": "Продукты",
+        "expiringSoon": "Скоро испортятся",
+        "expiringSoonShort": "Истекают"
+    },
+    "recentRecipes": {
+        "title": "Недавние рецепты",
+        "viewAll": "Все →",
+        "emptyTitle": "Рецептов пока нет",
+        "emptyDescription": "Добавьте первый рецепт — и он появится здесь.",
+        "emptyAction": "Добавить рецепт",
+        "cookingTimeHoursMinutes": "{{hours}} ч {{minutes}} мин",
+        "cookingTimeMinutesOnly": "{{minutes}} мин",
+        "caloriesValue": "{{count}} ккал"
+    },
+    "expiringSoon": {
+        "title": "Скоро испортятся",
+        "pantryLink": "Продукты →",
+        "expired": "Просрочено",
+        "daysLeft_one": "{{count}} день",
+        "daysLeft_few": "{{count}} дня",
+        "daysLeft_many": "{{count}} дней",
+        "daysLeft_other": "{{count}} дня",
+        "addToShoppingList": "+ В список покупок",
+        "empty": "Ничего не портится в ближайшие дни."
+    },
+    "pantryRecipes": {
+        "title": "Готовим из того, что есть",
+        "description": "Посмотрите, какие рецепты можно приготовить прямо сейчас из ваших продуктов.",
+        "cta": "Смотреть рецепты"
+    },
+    "cookbookStats": {
+        "title": "Статистика книги",
+        "description": "Средние значения, рекорды и разбивка по типам по всем рецептам сайта — не только вашим.",
+        "cta": "Открыть статистику"
+    },
+    "emailVerificationBanner": {
+        "unverifiedMessage": "Подтвердите почту, чтобы включить сброс пароля для аккаунта.",
+        "unverifiedMessageShort": "Подтвердите почту, чтобы включить сброс пароля.",
+        "sendEmail": "Отправить письмо",
+        "later": "Позже"
+    }
+}

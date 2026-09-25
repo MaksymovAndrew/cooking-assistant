@@ -19,7 +19,7 @@ const logIn = async (page: Page, secret: string) => {
     await gotoPublicForm(page, "/login");
     await page.getByLabel("Username", { exact: true }).fill(login);
     await page.getByLabel("Password", { exact: true }).fill(secret);
-    await page.getByRole("button", { name: "Log In" }).click();
+    await page.getByRole("button", { name: "Log in" }).click();
 };
 
 const openBrowser = async (browser: Browser) =>
@@ -43,14 +43,14 @@ test.afterAll(async () => {
 
 test("should keep one account signed in on two browsers at once", async () => {
     await gotoPublicForm(pageA, "/registration");
-    await pageA.getByLabel("Name:", { exact: true }).fill(NAME);
-    await pageA.getByLabel("Surname:", { exact: true }).fill("Session");
+    await pageA.getByLabel("Name", { exact: true }).fill(NAME);
+    await pageA.getByLabel("Surname", { exact: true }).fill("Session");
     await pageA.getByLabel("Username", { exact: true }).fill(login);
     await pageA
         .getByLabel("Email", { exact: true })
         .fill(`${login}@example.com`);
     await pageA.getByLabel("Password", { exact: true }).fill(password);
-    await pageA.getByRole("button", { name: "Register" }).click();
+    await pageA.getByRole("button", { name: "Sign up" }).click();
     await expect(pageA).toHaveURL("/");
 
     await logIn(pageB, password);

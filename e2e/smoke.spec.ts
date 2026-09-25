@@ -32,26 +32,26 @@ test.afterAll(async () => {
 
 test("should register a new account and land on the dashboard already logged in", async () => {
     await gotoPublicForm(page, "/registration");
-    await page.getByLabel("Name:", { exact: true }).fill(NAME);
-    await page.getByLabel("Surname:", { exact: true }).fill("Smoke");
+    await page.getByLabel("Name", { exact: true }).fill(NAME);
+    await page.getByLabel("Surname", { exact: true }).fill("Smoke");
     await page.getByLabel("Username", { exact: true }).fill(login);
     await page.getByLabel("Email", { exact: true }).fill(email);
     await page.getByLabel("Password", { exact: true }).fill(password);
-    await page.getByRole("button", { name: "Register" }).click();
+    await page.getByRole("button", { name: "Sign up" }).click();
     await expect(page).toHaveURL("/");
     await expect(page.getByText(`Welcome back, ${NAME}`)).toBeVisible();
 });
 
 test("should log out, then log back in with the email identifier", async () => {
     await page.getByRole("button", { name: "Account menu" }).click();
-    await page.getByRole("menuitem", { name: "Logout" }).click();
+    await page.getByRole("menuitem", { name: "Log out" }).click();
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login$/);
 
     await page.getByRole("radio", { name: "Email" }).click();
     await page.getByLabel("Email", { exact: true }).fill(email);
     await page.getByLabel("Password", { exact: true }).fill(password);
-    await page.getByRole("button", { name: "Log In" }).click();
+    await page.getByRole("button", { name: "Log in" }).click();
     await expect(page).toHaveURL("/");
     await expect(page.getByText(`Welcome back, ${NAME}`)).toBeVisible();
 });
@@ -93,7 +93,7 @@ test("should add a pantry ingredient", async () => {
     await page.getByRole("button", { name: "Add ingredient" }).click();
     await selectFromPicker(
         page,
-        page.getByPlaceholder("Search ingredients..."),
+        page.getByPlaceholder("Search ingredients…"),
         "Tomato",
     );
     await page.getByRole("button", { name: "Continue" }).click();
@@ -110,7 +110,7 @@ test("should render the statistics page", async () => {
 test("should log out and protect private routes again", async () => {
     await page.goto("/");
     await page.getByRole("button", { name: "Account menu" }).click();
-    await page.getByRole("menuitem", { name: "Logout" }).click();
+    await page.getByRole("menuitem", { name: "Log out" }).click();
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login$/);
 

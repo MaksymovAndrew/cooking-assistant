@@ -1,0 +1,76 @@
+{
+    "settingsPage": {
+        "heading": "Ustawienia",
+        "subheading": "Wygląd, język i konto."
+    },
+    "comingSoonBadge": "Wkrótce",
+    "appearanceSection": {
+        "heading": "Wygląd",
+        "themeTitle": "Motyw",
+        "themeDescription": "Jak aplikacja wygląda na tym urządzeniu.",
+        "themeLabel": "Motyw",
+        "dark": "Ciemny",
+        "light": "Jasny",
+        "system": "Systemowy"
+    },
+    "languageSection": {
+        "heading": "Język i region",
+        "languageTitle": "Język",
+        "languageDescription": "Wybór języka pojawi się już wkrótce."
+    },
+    "notificationsSection": {
+        "heading": "Powiadomienia",
+        "expiryTitle": "Przypomnienia o terminach",
+        "expiryDescription": "Damy znać, zanim produkty się zepsują.",
+        "digestTitle": "Tygodniowe podsumowanie",
+        "digestDescription": "Raz w tygodniu — podsumowanie twoich przepisów i jadłospisów."
+    },
+    "accountSection": {
+        "heading": "Konto",
+        "profileTitle": "Profil",
+        "profileDescription": "Imię, e-mail i zdjęcie znajdziesz na stronie profilu.",
+        "openProfileButton": "Otwórz profil",
+        "emailTitle": "E-mail",
+        "sendEmailButton": "Wyślij e-mail",
+        "verifiedBadge": "Potwierdzony",
+        "unverifiedBadge": "Niepotwierdzony",
+        "changePasswordTitle": "Zmień hasło",
+        "changePasswordDescription": "Ustaw nowe hasło do konta.",
+        "changePasswordButton": "Zmień…",
+        "deleteAccountTitle": "Usuń konto",
+        "deleteAccountDescription": "Trwale usuwa przepisy, jadłospisy i zawartość spiżarni."
+    },
+    "changePasswordModal": {
+        "title": "Zmiana hasła",
+        "currentPasswordLabel": "Obecne hasło",
+        "newPasswordLabel": "Nowe hasło",
+        "confirmPasswordLabel": "Powtórz nowe hasło",
+        "cancelButton": "Anuluj",
+        "saveButton": "Zapisz hasło",
+        "errors": {
+            "allFieldsRequired": "Wypełnij wszystkie pola.",
+            "currentPasswordIncorrect": "Obecne hasło jest nieprawidłowe.",
+            "passwordInvalid": "Hasło musi mieć co najmniej 8 znaków, w tym literę, cyfrę i znak specjalny.",
+            "passwordsDoNotMatch": "Nowe hasła się nie zgadzają.",
+            "newPasswordSameAsCurrent": "Nowe hasło musi się różnić od obecnego.",
+            "genericError": "Coś poszło nie tak. Spróbuj ponownie."
+        }
+    },
+    "deleteAccountModal": {
+        "title": "Usunąć konto?",
+        "message": "Twoje przepisy, jadłospisy i zawartość spiżarni zostaną trwale usunięte. Wpisz hasło, żeby potwierdzić.",
+        "passwordLabel": "Hasło",
+        "cancelButton": "Anuluj",
+        "confirmButton": "Usuń konto",
+        "errors": {
+            "passwordRequired": "Wpisz hasło.",
+            "incorrectPassword": "Nieprawidłowe hasło.",
+            "tooManyAttempts": "Zbyt wiele prób. Odczekaj {{seconds}} s.",
+            "genericError": "Coś poszło nie tak. Spróbuj ponownie."
+        }
+    },
+    "deleteAccountButton": {
+        "label": "Usuń konto",
+        "holdInstruction": "Przytrzymaj, żeby potwierdzić"
+    }
+}

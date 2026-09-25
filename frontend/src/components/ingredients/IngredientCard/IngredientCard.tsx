@@ -3,11 +3,15 @@ import { useTranslation } from "react-i18next";
 
 import type { PantryIngredient } from "types/userIngredient";
 
+import { useLocale } from "hooks/useLocale";
+
 import { BasketAddMark, TrashMark } from "components/icons";
 import { Chip } from "components/ui/Chip";
 
 import { getWorstLotExpiryStatus } from "utils/expiry";
 import { resolvePantryIngredientName } from "utils/ingredientName";
+import { unitName } from "utils/referenceLabels";
+import { formatQuantity } from "utils/roundQuantity";
 
 import { getExpiryPresentation } from "./getExpiryPresentation";
 import styles from "./IngredientCard.module.scss";
@@ -30,6 +34,7 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
     onDelete,
 }) => {
     const { t } = useTranslation("ingredients");
+    const locale = useLocale();
     const status = getWorstLotExpiryStatus(
         ingredient.days_to_expire,
         ingredient.lots,
@@ -53,9 +58,13 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
             </div>
 
             <div className={styles["ingredient-card__quantity"]}>
-                {ingredient.quantity_person_ingradient}
+                {formatQuantity(ingredient.quantity_person_ingradient, locale)}
                 <span className={styles["ingredient-card__unit"]}>
-                    {ingredient.unit_name}
+                    {unitName(
+                        t,
+                        ingredient.unit_name,
+                        ingredient.quantity_person_ingradient,
+                    )}
                 </span>
             </div>
 

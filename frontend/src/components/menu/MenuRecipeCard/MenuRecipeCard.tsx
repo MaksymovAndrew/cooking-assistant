@@ -13,6 +13,7 @@ import { RecordPhoto } from "components/ui/RecordPhoto";
 import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { mediaUrl } from "utils/mediaUrl";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import styles from "./MenuRecipeCard.module.scss";
 
@@ -74,7 +75,7 @@ export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
                 </span>
                 <span className={styles["menu-recipe-card__meta-row"]}>
                     <span className={styles["menu-recipe-card__meta"]}>
-                        {recipe.type_name} · {formattedTime}
+                        {recipeTypeName(t, recipe.type_name)} · {formattedTime}
                         {formattedCalories && ` · ${formattedCalories}`}
                     </span>
                     <RatingSummary

@@ -4,6 +4,8 @@ import type { Locale } from "constants/locales";
 import { toLocale } from "constants/locales";
 
 const CATALOG_NAMESPACE = "catalog";
+// categories and allergens arrive with the page's other copy; the ingredient names are what this loads
+const INGREDIENT_KEY = "ingredient";
 
 // literal paths, so each language's catalog is its own chunk and only the one in use is fetched
 const IMPORT_CATALOG: Record<Locale, () => Promise<object>> = {
@@ -42,7 +44,13 @@ const importCatalog = (locale: Locale): Promise<object> => {
 export const ensureCatalogLoaded = async (instance: i18n): Promise<void> => {
     const locale = toLocale(instance.language);
 
-    if (instance.hasResourceBundle(locale, CATALOG_NAMESPACE)) {
+    const ingredients: unknown = instance.getResource(
+        locale,
+        CATALOG_NAMESPACE,
+        INGREDIENT_KEY,
+    );
+
+    if (typeof ingredients === "object") {
         return;
     }
 

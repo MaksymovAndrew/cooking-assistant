@@ -6,6 +6,8 @@ import { useLocale } from "hooks/useLocale";
 
 import { formatShortDate } from "utils/dateUtils";
 import { resolveIngredientName } from "utils/ingredientName";
+import { unitName } from "utils/referenceLabels";
+import { formatQuantity } from "utils/roundQuantity";
 
 import styles from "./ExpiredIngredientsModal.module.scss";
 
@@ -40,8 +42,15 @@ export const ExpiredIngredientsList = ({
                             >
                                 <span>
                                     {t("expiredNoticeModal.lotQuantity", {
-                                        quantity: lot.quantity,
-                                        unit: ingredient.unitName,
+                                        quantity: formatQuantity(
+                                            lot.quantity,
+                                            locale,
+                                        ),
+                                        unit: unitName(
+                                            t,
+                                            ingredient.unitName,
+                                            lot.quantity,
+                                        ),
                                     })}
                                 </span>
                                 <span>

@@ -2,7 +2,6 @@
     "statsPage": {
         "recipeSectionHeading": "Recipe statistics",
         "menuSectionHeading": "Menu statistics",
-
         "totalRecipesTile": "Total recipes",
         "totalMenusTile": "Total menus",
         "acrossAppCaption": "across the app",
@@ -17,7 +16,6 @@
         "mostUsedCategoryCaption": "{{count}} of {{total}} menus",
         "avgCaloriesTile": "Avg calories",
         "perRecipeCaption": "per recipe",
-
         "recipeTypesHeading": "Recipe types summary",
         "recipeTypesSubtitle": "Distribution across {{count}} recipes",
         "avgTimeByTypeHeading": "Average cooking time by recipe types",
@@ -26,7 +24,6 @@
         "menuCategoriesSubtitle": "Distribution across {{count}} menus",
         "avgTimeByCategoryHeading": "Average total time by category",
         "avgTimeByCategorySubtitle": "Cook time per menu",
-
         "cookingTimeExtremesHeading": "Cooking time extremes",
         "totalTimeExtremesHeading": "Total time extremes",
         "ingredientCountsHeading": "Ingredient counts",
@@ -36,15 +33,14 @@
         "slowest": "Slowest",
         "most": "Most",
         "least": "Least",
-
-        "recipesLabel": "recipes",
-        "menusLabel": "menus",
+        "recipesLabel_one": "recipe",
+        "recipesLabel_other": "recipes",
+        "menusLabel_one": "menu",
+        "menusLabel_other": "menus",
         "timeCompactHoursMinutes": "{{hours}}h {{minutes}}m",
         "timeMinutesOnly": "{{minutes}} min",
-
         "caloriesValue": "{{count}} kcal",
-
-        "loading": "Loading statistics...",
+        "loading": "Loading statistics…",
         "error": "Error: {{message}}",
         "errorFetch": "Error fetching statistics"
     }

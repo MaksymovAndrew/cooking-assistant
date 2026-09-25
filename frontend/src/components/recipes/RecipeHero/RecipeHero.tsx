@@ -16,6 +16,7 @@ import { Chip } from "components/ui/Chip";
 import { StarRatingInput } from "components/ui/StarRatingInput";
 
 import { mediaUrl } from "utils/mediaUrl";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import styles from "./RecipeHero.module.scss";
 import { RecipeHeroActions } from "./RecipeHeroActions";
@@ -68,7 +69,9 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
             />
 
             <Chip variant="type" className={styles["recipe-hero__chip"]}>
-                {recipe.type_name}
+                {recipe.type_name === null
+                    ? null
+                    : recipeTypeName(t, recipe.type_name)}
             </Chip>
             <h1 className={styles["recipe-hero__title"]}>{recipe.title}</h1>
             <AuthorByline

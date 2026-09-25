@@ -2,8 +2,8 @@
     "appName": "Cooking Assistant",
     "meta": {
         "titleTemplate": "%s · Cooking Assistant",
-        "description": "Track your pantry, store recipes, plan menus, and auto-generate shopping lists — a full-stack home kitchen management app.",
-        "shortDescription": "Full-stack kitchen management app — recipes, pantry tracking, and menu planning."
+        "description": "Keep your recipes in one place, plan menus, track what's in your pantry and turn whatever is missing into a shopping list. Free, in English, Polish, Russian and Ukrainian.",
+        "shortDescription": "Recipes, menus and your pantry in one place."
     },
     "sessionError": "Could not verify session. Please refresh the page.",
     "modal": {
@@ -63,9 +63,9 @@
         "shoppingList": "Shopping",
         "settings": "Settings",
         "profile": "Profile",
-        "logout": "Logout",
-        "login": "Log In",
-        "register": "Register",
+        "logout": "Log out",
+        "login": "Log in",
+        "register": "Sign up",
         "scrollToTop": "Scroll to top"
     },
     "theme": {
@@ -78,7 +78,7 @@
     "notFound": {
         "heading": "Page not found",
         "description": "Looks like this dish isn't on the menu. The page you're looking for doesn't exist or has been moved.",
-        "backToRecipes": "Back to Recipes",
+        "backToRecipes": "Back to recipes",
         "recipes": "Recipes",
         "pantry": "Pantry",
         "menus": "Menus"
@@ -170,7 +170,7 @@
         "close": "Close"
     },
     "routeError": {
-        "description": "An unexpected error interrupted this page. Your data is safe - try again.",
+        "description": "An unexpected error interrupted this page. Your data is safe — try again.",
         "goHome": "Go to homepage"
     },
     "author": {
@@ -201,5 +201,60 @@
         "rating_other": "Rated {{average}} from {{count}} votes",
         "recipeCardAlt": "Recipe card: title, cooking time, calories and rating",
         "menuCardAlt": "Menu card: title, recipes and rating"
+    },
+    "recipeTypes": {
+        "first_course": {
+            "name": "First course",
+            "description": "Soups, broths and light starters — they warm you up and wake up the appetite."
+        },
+        "main_course": {
+            "name": "Main course",
+            "description": "The heart of the meal: meat, fish or vegetable dishes that leave you full and satisfied."
+        },
+        "dessert": {
+            "name": "Dessert",
+            "description": "The sweet finale: cakes, pies, pastries and every other treat."
+        },
+        "drink": {
+            "name": "Drink",
+            "description": "Hot or cold, refreshing or warming — something to go with any dish."
+        }
+    },
+    "menuCategories": {
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "dinner": "Dinner"
+    },
+    "units": {
+        "g": "g",
+        "kg": "kg",
+        "ml": "ml",
+        "l": "L",
+        "tsp": "tsp",
+        "tbsp": "tbsp",
+        "piece": "piece",
+        "piece_one": "piece",
+        "piece_other": "pieces",
+        "clove": "clove",
+        "clove_one": "clove",
+        "clove_other": "cloves",
+        "bunch": "bunch",
+        "bunch_one": "bunch",
+        "bunch_other": "bunches",
+        "sprig": "sprig",
+        "sprig_one": "sprig",
+        "sprig_other": "sprigs",
+        "slice": "slice",
+        "slice_one": "slice",
+        "slice_other": "slices",
+        "head": "head",
+        "head_one": "head",
+        "head_other": "heads",
+        "can": "can",
+        "can_one": "can",
+        "can_other": "cans",
+        "package": "package",
+        "package_one": "package",
+        "package_other": "packages"
     }
 }

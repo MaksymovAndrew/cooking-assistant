@@ -359,11 +359,15 @@ builds the i18n instance through [src/i18n/createAppI18n.ts](src/i18n/createAppI
 fresh one per request, because requests in different languages render side by side and a shared one
 would hand one visitor another's language; in the browser the global instance, initialized with that
 same language. Init is synchronous (inlined resources, `useSuspense: false`), `defaultNS: "common"`.
-One namespace file per domain lives under `src/i18n/locales/<locale>/`. `catalog` (the 739-item
-ingredient catalog) is loaded lazily per language by
-[src/i18n/loadCatalog.ts](src/i18n/loadCatalog.ts)'s `ensureCatalogLoaded(i18n)`, from an effect in
-`AppShell`, so the auth pages never download it; `bindI18nStore: "added"` re-renders what reads it once
-it lands.
+One namespace file per domain lives under `src/i18n/locales/<locale>/`. `catalog` is split: its short
+category and allergen lists travel with the page, while the 739 ingredient names are loaded lazily per
+language by [src/i18n/loadCatalog.ts](src/i18n/loadCatalog.ts)'s `ensureCatalogLoaded(i18n)`, from an
+effect in `AppShell`, so the auth pages never download them; `bindI18nStore: "added"` re-renders what
+reads them once they land. The server's `getServerTranslation` always holds the whole catalog, and the
+two server-rendered detail pages hand their island a record whose ingredient names are already in the
+page's language (`utils/localizeIngredientNames.ts`), so the HTML a crawler reads is translated and the
+browser shows the same text before and after the catalog arrives. i18next keeps the object it is given
+and writes later bundles into it, which is why `i18nOptions` passes it a copy of the shared resources.
 
 Components and hooks read strings with `useTranslation("<namespace>")` and the language with
 `useLocale()`. Anything that renders never touches the global `i18next`: a helper that translates or
@@ -374,11 +378,49 @@ the `Accept-Language` interceptor - uses the global instance, which in the brows
 Metadata and preview images use `getServerTranslation(locale, namespace)`. Every user-visible string
 must go through i18n - no hardcoded English in components, hooks, or Redux middleware.
 
-Units of measurement are the one exception: they are rendered straight from the record's `unit_name`
-(`g`, `kg`, `ml`, `L`, `tsp`, `piece`, ...), the same short forms the `unit_measurement` table stores.
-The catalog used to carry spelled-out names for them, and "250 milliliter" wrapped out of every tight
-quantity row. Reach for a translation layer again only when a second language actually ships, and give
-it short forms then too.
+Recipe types, menu categories and units are rows the seed writes by their English name, and the seed also
+matches rows on that name, so it is their key: [src/utils/referenceLabels.ts](src/utils/referenceLabels.ts)
+(`recipeTypeName`, `menuCategoryName`, `unitName`) looks each one up under `common:recipeTypes`,
+`menuCategories` and `units`, falling back to the stored name. Never print `type_name`, `category_name` or
+`unit_name` directly. A unit printed next to an amount goes through `quantityWithUnit(t, locale, quantity,
+unit)`, which writes the amount with the language's decimal separator (`formatQuantity`) and makes the
+unit agree with it - "3 cloves", "3 зубчика", "5 ząbków" - while measures such as `g` or `ml` stay as they
+are.
+
+### Adding a string or a language
+
+A new string goes into the English namespace file first, then into `pl`, `ru` and `uk` in the same change.
+[src/i18n/\_\_tests\_\_/localeCompleteness.test.ts](src/i18n/__tests__/localeCompleteness.test.ts) fails if any
+language lacks a key English has, lacks one of its own plural forms (`_one`/`_few`/`_many`/`_other` for
+Polish, Russian and Ukrainian, read from `Intl.PluralRules`), drops a `{{placeholder}}`, leaves a string
+empty or leaves it in English; `RESOURCES` is typed so a missing namespace does not compile. A new
+language is one `LOCALES` entry in `constants/locales.ts` (the backend's copy must match - a backend test
+compares them), a folder under `locales/`, and its entries in `resources.ts` and `loadCatalog.ts`.
+
+### Translations
+
+English is the source; the other languages are written, not transliterated from it. The rules every
+language file follows:
+
+- **Address.** Russian and Ukrainian use the polite «вы», lowercase; Polish uses the informal «ty», also
+  lowercase in the interface (emails, being letters, capitalise «Ty»/«Ciebie»). Past-tense verbs that
+  would reveal the reader's gender are avoided (Polish «zapisałeś») - the app does not know it.
+- **Buttons** are short imperatives or infinitives as each language writes them: «Сохранить»,
+  «Зберегти», «Zapisz». A button or chip should not run much longer than its English label; find a
+  shorter word rather than letting it wrap.
+- **Punctuation.** A dash is «—» with spaces, never a hyphen. Russian and Ukrainian quote with «ёлочки»,
+  Polish with „…”. Russian always writes «ё»; Ukrainian uses the typographic apostrophe (’).
+- **Vocabulary.** One word per concept across every namespace: Recipes - Рецепты / Рецепти / Przepisy;
+  Menus - Меню / Меню / Jadłospisy; the pantry - Продукты / Продукти / Spiżarnia; Shopping list -
+  Список покупок / Список покупок / Lista zakupów; Favourites - Избранное / Обране / Ulubione; Tags -
+  Метки / Мітки / Tagi; what a person avoids - «не ем» / «не їм» / «nie jem». No bureaucratic calques
+  («осуществить», «данный»), no word-for-word English.
+- **Plurals** always come in every form the language has, even where two happen to be spelt the same.
+- **Ingredient names** in the catalog are what a shop label says, capitalised, without stress marks or
+  botanical names: «Спаржа», not «Холодок лікарський»; «Marchew», not «marchew uprawna». A backend test
+  (`scripts/catalog/__tests__/catalogNames.test.ts`) rejects stress marks, lowercase starts, words mixing
+  two alphabets and duplicate names.
+- The brand name, "Cooking Assistant", is never translated.
 
 ## Layering, ESLint boundaries, path aliases
 

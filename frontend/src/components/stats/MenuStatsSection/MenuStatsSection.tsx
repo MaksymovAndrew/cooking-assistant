@@ -8,6 +8,7 @@ import { StatBarList } from "components/stats/StatBarList";
 import { StatCard } from "components/stats/StatCard";
 
 import { formatCompactDuration } from "utils/cookingTimeUtils";
+import { menuCategoryName } from "utils/referenceLabels";
 
 import { MenuExtremesCards } from "./MenuExtremesCards";
 import styles from "./MenuStatsSection.module.scss";
@@ -51,7 +52,7 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
                     <StatBarList
                         items={stats.averageTotalTimeByCategory.map(
                             (entry) => ({
-                                label: entry.categoryname,
+                                label: menuCategoryName(t, entry.categoryname),
                                 value: entry.averageTotalTime,
                                 displayValue: formatCompactTime(
                                     entry.averageTotalTime,

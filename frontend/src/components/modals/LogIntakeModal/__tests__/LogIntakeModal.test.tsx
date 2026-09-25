@@ -107,7 +107,7 @@ describe("LogIntakeModal", () => {
 
         expect(
             await screen.findByText(
-                "You've eaten 300 kcal of your 2,000 kcal goal - 1,700 kcal left.",
+                "You've eaten 300 kcal of your 2,000 kcal goal — 1,700 kcal left.",
             ),
         ).toBeInTheDocument();
     });

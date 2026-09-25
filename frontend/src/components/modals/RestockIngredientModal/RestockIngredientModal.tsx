@@ -8,12 +8,15 @@ import { useSaveUserIngredientMutation } from "redux/services/userIngredientsApi
 import { closeModal } from "redux/slices/uiSlice";
 
 import { useEditableQuantity } from "hooks/useEditableQuantity";
+import { useLocale } from "hooks/useLocale";
 
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
 import { NumberInput } from "components/ui/NumberInput";
 
 import { resolvePantryIngredientName } from "utils/ingredientName";
+import { unitName } from "utils/referenceLabels";
+import { formatQuantity } from "utils/roundQuantity";
 
 import styles from "./RestockIngredientModal.module.scss";
 
@@ -33,6 +36,7 @@ export const RestockIngredientModal = ({
     ingredient,
 }: RestockIngredientModalProps) => {
     const { t } = useTranslation("ingredients");
+    const locale = useLocale();
     const dispatch = useAppDispatch();
     const [saveUserIngredient, { isLoading }] = useSaveUserIngredientMutation();
     const [addedQuantity, setAddedQuantity] = useState(DEFAULT_QUANTITY);
@@ -91,8 +95,15 @@ export const RestockIngredientModal = ({
         >
             <p className={styles["restock-modal__current"]}>
                 {t("restockModal.current", {
-                    quantity: ingredient.quantity_person_ingradient,
-                    unit: ingredient.unit_name,
+                    quantity: formatQuantity(
+                        ingredient.quantity_person_ingradient,
+                        locale,
+                    ),
+                    unit: unitName(
+                        t,
+                        ingredient.unit_name,
+                        ingredient.quantity_person_ingradient,
+                    ),
                 })}
             </p>
             <div className={styles["restock-modal__input"]}>
@@ -102,7 +113,13 @@ export const RestockIngredientModal = ({
                     onChange={editableQuantity.onChange}
                     onBlur={editableQuantity.onBlur}
                 />
-                <span>{ingredient.unit_name}</span>
+                <span>
+                    {unitName(
+                        t,
+                        ingredient.unit_name,
+                        Number(editableQuantity.text),
+                    )}
+                </span>
             </div>
         </BaseModal>
     );

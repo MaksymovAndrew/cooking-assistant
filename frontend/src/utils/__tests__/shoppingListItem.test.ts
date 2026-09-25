@@ -40,12 +40,12 @@ describe("shoppingListItemName", () => {
 
 describe("shoppingListItemQuantity", () => {
     it("should return null for an item without a quantity", () => {
-        expect(shoppingListItemQuantity(TYPED)).toBeNull();
+        expect(shoppingListItemQuantity(t, "en", TYPED)).toBeNull();
     });
 
     it("should round a scaled amount to two decimals and append its unit", () => {
         expect(
-            shoppingListItemQuantity({
+            shoppingListItemQuantity(t, "en", {
                 ...TYPED,
                 quantity: 333.3333,
                 unit_name: "not-a-unit",
@@ -54,8 +54,8 @@ describe("shoppingListItemQuantity", () => {
     });
 
     it("should show a bare amount when the item has no unit", () => {
-        expect(shoppingListItemQuantity({ ...TYPED, quantity: 2.5 })).toBe(
-            "2.5",
-        );
+        expect(
+            shoppingListItemQuantity(t, "en", { ...TYPED, quantity: 2.5 }),
+        ).toBe("2.5");
     });
 });

@@ -1,0 +1,39 @@
+{
+    "profilePage": {
+        "joined": "З нами з {{date}}",
+        "recipesStat": "Рецепти",
+        "menusStat": "Меню",
+        "favouritesStat": "Обране",
+        "kcalTodayStat": "Ккал сьогодні",
+        "editProfileButton": "Змінити профіль",
+        "logoutButton": "Вийти",
+        "recipesTab": "Мої рецепти",
+        "menusTab": "Мої меню",
+        "favouritesTab": "Обране",
+        "dietaryTab": "Харчування",
+        "settingsTab": "Налаштування",
+        "noRecipes": "Ви ще не створили жодного рецепта.",
+        "noMenus": "Ви ще не створили жодного меню.",
+        "favouritesKindLabel": "Що показати в обраному",
+        "favouriteRecipes": "Рецепти",
+        "favouriteMenus": "Меню",
+        "noFavouriteRecipes": "В обраному поки немає рецептів.",
+        "noFavouriteMenus": "В обраному поки немає меню."
+    },
+    "editProfileModal": {
+        "title": "Змінити профіль",
+        "nameLabel": "Ім’я",
+        "surnameLabel": "Прізвище",
+        "photoLabel": "Ваше фото",
+        "photoAlt": "Фото профілю",
+        "avatarLabel": "Аватар",
+        "photoOverridesAvatar": "Замість аватара показується ваше фото.",
+        "noAvatarOption": "Без аватара",
+        "cancelButton": "Скасувати",
+        "saveButton": "Зберегти",
+        "errors": {
+            "allFieldsRequired": "Вкажіть ім’я та прізвище",
+            "genericError": "Щось пішло не так. Спробуйте ще раз."
+        }
+    }
+}

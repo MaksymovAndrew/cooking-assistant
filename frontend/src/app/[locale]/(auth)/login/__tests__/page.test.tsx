@@ -21,7 +21,7 @@ describe("LoginPage", () => {
 
         await userEvent.type(screen.getByLabelText("Username"), USERNAME);
         await userEvent.type(screen.getByLabelText("Password"), PASSWORD);
-        await userEvent.click(screen.getByRole("button", { name: "Log In" }));
+        await userEvent.click(screen.getByRole("button", { name: "Log in" }));
 
         expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.auth.login, {
             login: USERNAME,
@@ -37,7 +37,7 @@ describe("LoginPage", () => {
 
         await userEvent.type(screen.getByLabelText("Username"), USERNAME);
         await userEvent.type(screen.getByLabelText("Password"), PASSWORD);
-        await userEvent.click(screen.getByRole("button", { name: "Log In" }));
+        await userEvent.click(screen.getByRole("button", { name: "Log in" }));
 
         expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
         expect(screen.getByLabelText("Username")).toBeDisabled();

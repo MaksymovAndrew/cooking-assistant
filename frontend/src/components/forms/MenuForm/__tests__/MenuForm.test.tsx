@@ -122,7 +122,7 @@ describe("MenuForm", () => {
             renderForm(form);
 
             await user.type(
-                screen.getByPlaceholderText("Search recipes..."),
+                screen.getByPlaceholderText("Search recipes…"),
                 "borscht",
             );
             act(() => {

@@ -1,0 +1,77 @@
+{
+    "disclaimer": "Kaloryczność jest szacowana na podstawie danych tabelarycznych. Jeśli liczysz kalorie ze względów zdrowotnych, sprawdzaj dokładne wartości.",
+    "dietaryTab": {
+        "goalHeading": "Cel kaloryczny",
+        "goalLabel": "Cel dzienny (kcal)",
+        "goalPlaceholder": "np. 2200",
+        "helperEmpty": "Ustaw cel dzienny, żeby zacząć liczyć.",
+        "emptyTitle": "Zacznij liczyć kalorie",
+        "emptyDescription": "Ustaw cel dzienny, a ta zakładka zamieni się w panel — dzisiejszy postęp, wykres z historią i dziennik wszystkich wpisów.",
+        "helperPopulated": "To twój obecny cel dzienny. Jeśli go zmienisz, wcześniejsze dni też zostaną ocenione według nowej liczby.",
+        "saveButton": "Zapisz cel",
+        "savedIndicator": "Zapisano",
+        "errors": {
+            "invalidGoal": "Podaj prawidłowy cel",
+            "genericError": "Coś poszło nie tak. Spróbuj ponownie."
+        },
+        "todayHeading": "Dzisiaj",
+        "ringGoalLabel": "z {{goal}} kcal",
+        "toneNormal": "Wszystko zgodnie z planem",
+        "toneNear": "Blisko celu",
+        "toneOver": "Powyżej celu",
+        "eatenLabel": "Zjedzone",
+        "remainingLabel": "Zostało",
+        "goalLegendLabel": "Cel",
+        "overLegendLabel": "Ponad cel",
+        "summaryRemaining": "Zjedzono {{consumed}} kcal z {{goal}} — zostało {{remaining}} kcal.",
+        "summaryOver": "Zjedzono {{consumed}} kcal — o {{over}} kcal więcej niż cel {{goal}} kcal.",
+        "journalHeading": "Dzisiejszy dziennik",
+        "journalMeta": "Wpisy: {{count}} · {{calories}} kcal",
+        "journalEmpty": "Dziś nic jeszcze nie zapisano.",
+        "journalPortions": "×{{count}}",
+        "deleteEntry": "Usuń wpis",
+        "kcalUnit": "kcal",
+        "historyHeading": "Historia",
+        "historyRange7": "7 dni",
+        "historyRange30": "30 dni",
+        "historyEmpty": "Nie ma jeszcze historii.",
+        "historyGoalLine": "Cel {{goal}} kcal",
+        "streakLabel_one": "dzień z rzędu",
+        "streakLabel_few": "dni z rzędu",
+        "streakLabel_many": "dni z rzędu",
+        "streakLabel_other": "dnia z rzędu",
+        "streakBest": "Rekord: {{count}}",
+        "avgLabel": "Średnio {{count}} dziennie",
+        "daysOnGoalLabel": "W granicach celu {{onGoal}} z {{total}}",
+        "todayLabel": "Dzisiaj"
+    },
+    "homeTile": {
+        "label": "Kcal dzisiaj",
+        "labelWithPercent": "Kcal dzisiaj · {{percent}}%",
+        "labelOver": "Kcal dzisiaj · ponad cel",
+        "remainingLabel": "Zostało kcal",
+        "emptyLabel": "Brak celu",
+        "emptyCta": "Ustaw cel"
+    },
+    "limitModal": {
+        "title": "Dziś przekroczono cel",
+        "message": "Zapisano {{consumed}} kcal — o {{over}} kcal więcej niż cel {{goal}} kcal.",
+        "note": "To okno pojawia się raz dziennie — nie będziemy przypominać przy każdym wpisie.",
+        "adjustGoal": "Zmień cel",
+        "gotIt": "Rozumiem"
+    },
+    "deleteModal": {
+        "title": "Usuń wpis",
+        "message": "Usunąć „{{title}}”?"
+    },
+    "logIntakeModal": {
+        "title": "Zapisz w dzienniku",
+        "portionsLabel": "Porcje",
+        "fewerPortions": "Mniej porcji",
+        "morePortions": "Więcej porcji",
+        "totalLabel": "Razem {{total}} kcal",
+        "projectedOver": "Z tym przekroczysz dzisiejszy cel o {{over}} kcal.",
+        "cancel": "Anuluj",
+        "confirm": "Zapisz"
+    }
+}

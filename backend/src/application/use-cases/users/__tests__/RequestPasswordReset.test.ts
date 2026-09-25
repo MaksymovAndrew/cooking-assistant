@@ -55,6 +55,34 @@ describe("RequestPasswordReset", () => {
         );
     });
 
+    it("should write the email and its link in the account's language", async () => {
+        const deps = makeDeps();
+
+        deps.userRepository.findPasswordResetCandidateByEmail.mockResolvedValue(
+            {
+                id: 5,
+                password: HASHED_PASSWORD,
+                email_verified_at: "2026-01-01T00:00:00.000Z",
+                locale: "ru",
+            },
+        );
+        deps.tokenService.generatePurposeToken.mockReturnValue(RESET_TOKEN);
+        const useCase = new RequestPasswordReset(
+            deps.userRepository,
+            deps.tokenService,
+            deps.emailSender,
+            FRONTEND_ORIGIN,
+        );
+
+        await useCase.execute({ email: EMAIL });
+
+        expect(deps.emailSender.sendPasswordResetEmail).toHaveBeenCalledWith(
+            EMAIL,
+            `${FRONTEND_ORIGIN}/ru/reset-password?token=${RESET_TOKEN}`,
+            "ru",
+        );
+    });
+
     it("should not send an email when no user matches the email", async () => {
         const deps = makeDeps();
 

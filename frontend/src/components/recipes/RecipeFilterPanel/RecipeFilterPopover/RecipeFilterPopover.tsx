@@ -16,6 +16,7 @@ import type {
     RecipeSort,
 } from "utils/filters/recipeFilterDefs";
 import { resolveAllergen } from "utils/ingredientName";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import { FilterSection } from "./FilterSection";
 import { RecipeFilterToggles } from "./RecipeFilterToggles";
@@ -76,7 +77,7 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                 <FilterChipGroup
                     options={types.map((type) => ({
                         id: type.id,
-                        label: type.type_name,
+                        label: recipeTypeName(t, type.type_name),
                     }))}
                     value={filters.types}
                     onChange={(next) => {

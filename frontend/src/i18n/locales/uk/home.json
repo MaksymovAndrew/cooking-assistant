@@ -1,0 +1,56 @@
+{
+    "greeting": {
+        "welcome": "З поверненням 👋",
+        "welcomeWithName": "З поверненням, {{name}} 👋"
+    },
+    "actions": {
+        "news": "Новини",
+        "newMenu": "Нове меню",
+        "newRecipe": "Новий рецепт"
+    },
+    "stats": {
+        "recipes": "Рецепти",
+        "menus": "Меню",
+        "pantryItems": "Продукти вдома",
+        "pantryItemsShort": "Продукти",
+        "expiringSoon": "Скоро зіпсуються",
+        "expiringSoonShort": "Спливають"
+    },
+    "recentRecipes": {
+        "title": "Нещодавні рецепти",
+        "viewAll": "Усі →",
+        "emptyTitle": "Рецептів поки немає",
+        "emptyDescription": "Додайте перший рецепт — і він з’явиться тут.",
+        "emptyAction": "Додати рецепт",
+        "cookingTimeHoursMinutes": "{{hours}} год {{minutes}} хв",
+        "cookingTimeMinutesOnly": "{{minutes}} хв",
+        "caloriesValue": "{{count}} ккал"
+    },
+    "expiringSoon": {
+        "title": "Скоро зіпсуються",
+        "pantryLink": "Продукти →",
+        "expired": "Прострочено",
+        "daysLeft_one": "{{count}} день",
+        "daysLeft_few": "{{count}} дні",
+        "daysLeft_many": "{{count}} днів",
+        "daysLeft_other": "{{count}} дня",
+        "addToShoppingList": "+ До списку покупок",
+        "empty": "Найближчими днями нічого не зіпсується."
+    },
+    "pantryRecipes": {
+        "title": "Готуємо з того, що є",
+        "description": "Подивіться, які рецепти можна приготувати просто зараз із ваших продуктів.",
+        "cta": "Дивитися рецепти"
+    },
+    "cookbookStats": {
+        "title": "Статистика книги",
+        "description": "Середні значення, рекорди й розподіл за типами для всіх рецептів сайту — не лише ваших.",
+        "cta": "Відкрити статистику"
+    },
+    "emailVerificationBanner": {
+        "unverifiedMessage": "Підтвердьте пошту, щоб увімкнути скидання пароля для облікового запису.",
+        "unverifiedMessageShort": "Підтвердьте пошту, щоб увімкнути скидання пароля.",
+        "sendEmail": "Надіслати лист",
+        "later": "Пізніше"
+    }
+}

@@ -6,6 +6,8 @@ import type { UserRepository } from "domain/repositories/UserRepository";
 import type { EmailSender } from "application/ports/EmailSender";
 import type { TokenService } from "application/ports/TokenService";
 
+import { emailLink } from "./emailLink";
+
 // re-sends the verification link for the email already on file - used by Settings and the Home nudge
 export default class RequestEmailVerification {
     constructor(
@@ -31,7 +33,12 @@ export default class RequestEmailVerification {
             "verify-email",
             EMAIL_VERIFICATION_TOKEN_TTL_SECONDS,
         );
-        const link = `${this.frontendOrigin}/verify-email?token=${token}`;
+        const link = emailLink(
+            this.frontendOrigin,
+            "/verify-email",
+            token,
+            user.locale,
+        );
 
         await this.emailSender.sendVerificationEmail(
             user.email,

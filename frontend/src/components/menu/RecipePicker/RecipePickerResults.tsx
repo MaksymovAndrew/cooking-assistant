@@ -5,6 +5,8 @@ import type { RecipeListItem } from "types/recipe";
 
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
 
+import { recipeTypeName } from "utils/referenceLabels";
+
 import styles from "./RecipePicker.module.scss";
 
 interface RecipePickerResultsProps {
@@ -52,7 +54,7 @@ export const RecipePickerResults: React.FC<RecipePickerResultsProps> = ({
                                         styles["recipe-picker__result-type"]
                                     }
                                 >
-                                    {recipe.type_name}
+                                    {recipeTypeName(t, recipe.type_name)}
                                 </span>
                             </button>
                         </li>

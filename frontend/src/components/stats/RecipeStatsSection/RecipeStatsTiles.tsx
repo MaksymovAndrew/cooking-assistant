@@ -8,6 +8,7 @@ import { useLocale } from "hooks/useLocale";
 import { StatTile } from "components/stats/StatTile";
 
 import { formatKcal } from "utils/calories";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import styles from "./RecipeStatsSection.module.scss";
 
@@ -50,7 +51,11 @@ export const RecipeStatsTiles: React.FC<RecipeStatsTilesProps> = ({
             />
             <StatTile
                 label={t("statsPage.mostUsedTypeTile")}
-                value={stats.mostUsedType?.typeName ?? DASH}
+                value={
+                    stats.mostUsedType
+                        ? recipeTypeName(t, stats.mostUsedType.typeName)
+                        : DASH
+                }
                 valueVariant="text"
                 caption={
                     stats.mostUsedType

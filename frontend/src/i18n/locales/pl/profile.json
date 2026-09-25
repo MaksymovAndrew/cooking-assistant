@@ -1,0 +1,39 @@
+{
+    "profilePage": {
+        "joined": "Z nami od {{date}}",
+        "recipesStat": "Przepisy",
+        "menusStat": "Jadłospisy",
+        "favouritesStat": "Ulubione",
+        "kcalTodayStat": "Kcal dzisiaj",
+        "editProfileButton": "Edytuj profil",
+        "logoutButton": "Wyloguj się",
+        "recipesTab": "Moje przepisy",
+        "menusTab": "Moje jadłospisy",
+        "favouritesTab": "Ulubione",
+        "dietaryTab": "Odżywianie",
+        "settingsTab": "Ustawienia",
+        "noRecipes": "Nie masz jeszcze żadnych przepisów.",
+        "noMenus": "Nie masz jeszcze żadnych jadłospisów.",
+        "favouritesKindLabel": "Co pokazać w ulubionych",
+        "favouriteRecipes": "Przepisy",
+        "favouriteMenus": "Jadłospisy",
+        "noFavouriteRecipes": "Nie masz jeszcze ulubionych przepisów.",
+        "noFavouriteMenus": "Nie masz jeszcze ulubionych jadłospisów."
+    },
+    "editProfileModal": {
+        "title": "Edytuj profil",
+        "nameLabel": "Imię",
+        "surnameLabel": "Nazwisko",
+        "photoLabel": "Twoje zdjęcie",
+        "photoAlt": "Twoje zdjęcie profilowe",
+        "avatarLabel": "Awatar",
+        "photoOverridesAvatar": "Zamiast awatara widać twoje zdjęcie.",
+        "noAvatarOption": "Bez awatara",
+        "cancelButton": "Anuluj",
+        "saveButton": "Zapisz",
+        "errors": {
+            "allFieldsRequired": "Podaj imię i nazwisko",
+            "genericError": "Coś poszło nie tak. Spróbuj ponownie."
+        }
+    }
+}

@@ -18,7 +18,7 @@ describe("GuestLandingMenuFilters", () => {
         renderWithRouter(<GuestLandingMenuFilters />);
 
         expect(
-            screen.getByRole("link", { name: "Search Menus" }),
+            screen.getByRole("link", { name: "Search menus" }),
         ).toHaveAttribute("href", "/all-menus");
     });
 

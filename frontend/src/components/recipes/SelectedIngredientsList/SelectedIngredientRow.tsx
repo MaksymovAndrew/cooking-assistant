@@ -10,6 +10,7 @@ import { GripMark } from "components/icons";
 import { NumberInput } from "components/ui/NumberInput";
 
 import { resolveIngredientName } from "utils/ingredientName";
+import { unitName } from "utils/referenceLabels";
 
 import styles from "./SelectedIngredientsList.module.scss";
 
@@ -68,7 +69,7 @@ export const SelectedIngredientRow: React.FC<SelectedIngredientRowProps> = ({
                 className={styles["selected-ingredients-list__quantity"]}
             />
             <span className={styles["selected-ingredients-list__unit"]}>
-                {ingredient.unit_name}
+                {unitName(t, ingredient.unit_name, Number(quantity.text))}
             </span>
             <button
                 type="button"

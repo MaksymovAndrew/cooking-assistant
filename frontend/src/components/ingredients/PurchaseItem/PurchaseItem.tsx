@@ -11,6 +11,8 @@ import { NumberInput } from "components/ui/NumberInput";
 
 import { formatShortDate } from "utils/dateUtils";
 import { isExpired } from "utils/ingredientExpirationUtils";
+import { unitName } from "utils/referenceLabels";
+import { formatQuantity } from "utils/roundQuantity";
 
 import styles from "./PurchaseItem.module.scss";
 
@@ -76,10 +78,12 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
                     />
                 ) : (
                     <span className={styles["purchase-item__value"]}>
-                        {purchase.quantity}
+                        {formatQuantity(purchase.quantity, locale)}
                     </span>
                 )}
-                <span>{purchase.unit_name}</span>
+                <span>
+                    {unitName(t, purchase.unit_name, purchase.quantity)}
+                </span>
             </span>
             {!isEditing && (
                 <button

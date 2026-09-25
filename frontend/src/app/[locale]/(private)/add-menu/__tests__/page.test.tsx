@@ -43,7 +43,7 @@ describe("CreateMenuPage", () => {
 
         renderWithRouter(<CreateMenuPage />);
 
-        await screen.findByPlaceholderText("Search recipes...");
+        await screen.findByPlaceholderText("Search recipes…");
 
         await userEvent.type(screen.getByLabelText("Menu title *"), MENU_TITLE);
         await userEvent.type(
@@ -66,7 +66,7 @@ describe("CreateMenuPage", () => {
 
         try {
             await user.type(
-                screen.getByPlaceholderText("Search recipes..."),
+                screen.getByPlaceholderText("Search recipes…"),
                 RECIPE_TITLE,
             );
             act(() => {

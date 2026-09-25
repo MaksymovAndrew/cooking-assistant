@@ -1,4 +1,4 @@
-import { act, screen } from "@testing-library/react";
+import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { Ingredient } from "types/ingredient";
@@ -16,7 +16,7 @@ import { renderWithProviders } from "test/router";
 jest.mock("api/client");
 
 const INGREDIENT_NAME = "Potato";
-const SEARCH_INGREDIENTS_PLACEHOLDER = "Search ingredients...";
+const SEARCH_INGREDIENTS_PLACEHOLDER = "Search ingredients…";
 const DEBOUNCE_MS = 300;
 
 const setupUser = () =>
@@ -254,7 +254,11 @@ describe("IngredientsPage", () => {
         await screen.findByText(INGREDIENT_NAME);
 
         await userEvent.click(screen.getByRole("button", { name: "Delete" }));
-        await userEvent.click(screen.getByRole("button", { name: "Confirm" }));
+        await userEvent.click(
+            within(screen.getByRole("dialog")).getByRole("button", {
+                name: "Delete",
+            }),
+        );
 
         // RTK Query refetch after Pantry tag invalidation is async; wait for the empty-state text before asserting the ingredient is gone
         await screen.findByText("You currently have no ingredients.");
@@ -271,7 +275,7 @@ describe("IngredientsPage", () => {
 
         try {
             await user.type(
-                screen.getByPlaceholderText("Search your pantry..."),
+                screen.getByPlaceholderText("Search your pantry…"),
                 "zzz",
             );
             act(() => {

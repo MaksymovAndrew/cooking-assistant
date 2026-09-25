@@ -19,7 +19,7 @@ describe("GuestLandingRecipeFilters", () => {
         renderWithRouter(<GuestLandingRecipeFilters />);
 
         expect(
-            screen.getByRole("link", { name: "Search Recipes" }),
+            screen.getByRole("link", { name: "Search recipes" }),
         ).toHaveAttribute("href", ALL_RECIPES_PATH);
     });
 

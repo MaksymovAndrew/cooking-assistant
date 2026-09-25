@@ -11,6 +11,7 @@ import { getServerTranslation } from "i18n/server";
 
 import { toMetaDescription } from "utils/metaDescription";
 import { pageAlternates } from "utils/pageAlternates";
+import { recipeTypeName } from "utils/referenceLabels";
 import { photoSocialImage, socialMetadata } from "utils/socialMetadata";
 
 import { loadRecipe } from "./loadRecipe";
@@ -37,7 +38,12 @@ const describeRecipe = async (
     return toMetaDescription(
         recipe.content,
         t(fallbackKey, {
-            type: recipe.type_name?.toLowerCase(),
+            type:
+                recipe.type_name === null
+                    ? undefined
+                    : recipeTypeName(t, recipe.type_name).toLocaleLowerCase(
+                          locale,
+                      ),
             count: recipe.ingredients.length,
         }),
     );
@@ -87,6 +93,8 @@ const RecipeDetailsPage = async ({ params }: RecipePageProps) => {
                 data={recipeJsonLd(
                     recipe,
                     await describeRecipe(recipe, locale),
+                    await getServerTranslation(locale),
+                    locale,
                 )}
             />
             <RecipeDetailsView recipe={recipe} />

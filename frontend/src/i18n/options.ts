@@ -13,7 +13,8 @@ export const i18nOptions = (
     resources: Resources,
     namespace: string = DEFAULT_NAMESPACE,
 ): InitOptions => ({
-    resources: { [locale]: resources },
+    // i18next keeps the object it is given and writes later bundles into it; a copy keeps the shared resources clean
+    resources: { [locale]: { ...resources } },
     lng: locale,
     fallbackLng: false,
     defaultNS: namespace,

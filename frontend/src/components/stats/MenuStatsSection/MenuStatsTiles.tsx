@@ -8,6 +8,8 @@ import { useLocale } from "hooks/useLocale";
 import { StatTile } from "components/stats/StatTile";
 
 import { formatKcal } from "utils/calories";
+import { formatNumber } from "utils/intlFormat";
+import { menuCategoryName } from "utils/referenceLabels";
 
 import styles from "./MenuStatsSection.module.scss";
 
@@ -47,15 +49,24 @@ export const MenuStatsTiles: React.FC<MenuStatsTilesProps> = ({
             <StatTile
                 label={t("statsPage.avgRecipesTile")}
                 value={
-                    stats.averageRecipesPerMenu?.toFixed(
-                        AVG_RECIPES_FRACTION_DIGITS,
-                    ) ?? NO_VALUE
+                    stats.averageRecipesPerMenu === null
+                        ? NO_VALUE
+                        : formatNumber(stats.averageRecipesPerMenu, locale, {
+                              minimumFractionDigits:
+                                  AVG_RECIPES_FRACTION_DIGITS,
+                              maximumFractionDigits:
+                                  AVG_RECIPES_FRACTION_DIGITS,
+                          })
                 }
                 caption={perMenuCaption}
             />
             <StatTile
                 label={t("statsPage.mostUsedCategoryTile")}
-                value={mostUsedCategory?.categoryname ?? NO_VALUE}
+                value={
+                    mostUsedCategory
+                        ? menuCategoryName(t, mostUsedCategory.categoryname)
+                        : NO_VALUE
+                }
                 valueVariant="text"
                 caption={
                     mostUsedCategory

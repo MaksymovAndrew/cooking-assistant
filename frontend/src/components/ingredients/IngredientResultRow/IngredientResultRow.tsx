@@ -7,6 +7,7 @@ import { AllergenDot } from "components/ui/AllergenDot";
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
 
 import { resolveIngredientName } from "utils/ingredientName";
+import { unitName } from "utils/referenceLabels";
 
 import styles from "./IngredientResultRow.module.scss";
 
@@ -50,7 +51,7 @@ export const IngredientResultRow: React.FC<IngredientResultRowProps> = ({
                     )}
                 </span>
                 <span className={styles["ingredient-result__unit"]}>
-                    {ingredient.unit_name}
+                    {unitName(t, ingredient.unit_name)}
                 </span>
                 <AllergenDot allergens={ingredient.allergens} />
             </button>

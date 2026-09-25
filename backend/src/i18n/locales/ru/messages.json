@@ -1,0 +1,26 @@
+{
+    "registered": "Регистрация завершена",
+    "loggedIn": "Вы вошли",
+    "loggedOut": "Вы вышли",
+
+    "recipeDeleted": "Рецепт удалён",
+
+    "menuCreated": "Меню создано",
+    "menuUpdated": "Меню обновлено",
+    "menuDeleted": "Меню удалено",
+
+    "ingredientsUpdated": "Продукты обновлены",
+    "ingredientDeleted": "Продукт и история его покупок удалены",
+    "purchaseUpdated": "Количество в покупке обновлено",
+
+    "intakeDeleted": "Запись удалена",
+    "calorieGoalUpdated": "Цель по калориям обновлена",
+
+    "passwordResetEmailSent": "Если аккаунт с такой почтой существует и она подтверждена, мы отправили на неё ссылку для сброса пароля.",
+    "passwordReset": "Пароль сброшен",
+    "passwordChanged": "Пароль изменён",
+    "profileUpdated": "Профиль обновлён",
+    "accountDeleted": "Аккаунт удалён",
+    "verificationEmailSent": "Ссылка для подтверждения отправлена",
+    "emailVerified": "Почта подтверждена"
+}

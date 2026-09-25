@@ -1,0 +1,288 @@
+{
+    "appName": "Cooking Assistant",
+    "meta": {
+        "titleTemplate": "%s · Cooking Assistant",
+        "description": "Trzymaj przepisy w jednym miejscu, układaj jadłospisy, pilnuj zapasów w spiżarni i dopisuj brakujące produkty do listy zakupów. Za darmo, po polsku, ukraińsku, rosyjsku i angielsku.",
+        "shortDescription": "Przepisy, jadłospisy i twoja spiżarnia w jednym miejscu."
+    },
+    "sessionError": "Nie udało się sprawdzić sesji. Odśwież stronę.",
+    "modal": {
+        "cancel": "Anuluj",
+        "confirm": "Usuń",
+        "close": "Zamknij",
+        "closeSheet": "Zamknij"
+    },
+    "mobileSubpageHeader": {
+        "back": "Wstecz",
+        "edit": "Edytuj"
+    },
+    "button": {
+        "loading": "Zapisywanie…"
+    },
+    "chip": {
+        "remove": "Usuń"
+    },
+    "passwordInput": {
+        "show": "Pokaż hasło",
+        "hide": "Ukryj hasło"
+    },
+    "contentCard": {
+        "favourite": "Do ulubionych",
+        "allergens": "Alergeny",
+        "containsAllergens": "Zawiera alergeny",
+        "overBudgetTooltip": "Więcej, niż zostało ci dziś kalorii"
+    },
+    "toast": {
+        "dismiss": "Zamknij"
+    },
+    "pageSpinner": {
+        "loading": "Otwieramy twoją książkę kucharską…"
+    },
+    "accountMenu": {
+        "trigger": "Menu konta",
+        "profile": "Profil",
+        "settings": "Ustawienia"
+    },
+    "logoutModal": {
+        "title": "Wylogowanie",
+        "message": "Wylogować się z konta?",
+        "confirm": "Wyloguj się"
+    },
+    "themeModal": {
+        "titleLight": "Włączyć jasny motyw?",
+        "titleDark": "Włączyć ciemny motyw?",
+        "titleSystem": "Włączyć motyw systemowy?",
+        "message": "Aplikacja przeładuje się, żeby zmienić wygląd. Zostaniesz na tej samej stronie.",
+        "confirm": "Zmień i przeładuj"
+    },
+    "nav": {
+        "recipes": "Przepisy",
+        "menus": "Jadłospisy",
+        "ingredients": "Spiżarnia",
+        "stats": "Statystyki",
+        "shoppingList": "Zakupy",
+        "settings": "Ustawienia",
+        "profile": "Profil",
+        "logout": "Wyloguj się",
+        "login": "Zaloguj się",
+        "register": "Rejestracja",
+        "scrollToTop": "Na górę"
+    },
+    "theme": {
+        "toggleLabel": "Zmień motyw"
+    },
+    "search": {
+        "placeholderPrefix": "Szukaj po",
+        "clear": "Wyczyść"
+    },
+    "notFound": {
+        "heading": "Nie znaleziono strony",
+        "description": "Wygląda na to, że tego dania nie ma w karcie. Strona nie istnieje albo została przeniesiona.",
+        "backToRecipes": "Wróć do przepisów",
+        "recipes": "Przepisy",
+        "pantry": "Spiżarnia",
+        "menus": "Jadłospisy"
+    },
+    "errors": {
+        "unknown": "Nieznany błąd"
+    },
+    "apiErrors": {
+        "bad_request": "Nie udało się przetworzyć żądania. Spróbuj ponownie.",
+        "not_found": "Nie znaleźliśmy tego, czego szukasz.",
+        "server_error": "Coś się u nas zepsuło. Spróbuj trochę później.",
+        "validation_error": "Część danych jest nieprawidłowa.",
+        "rate_limited": "Zbyt wiele żądań. Odczekaj chwilę i spróbuj ponownie.",
+        "auth/session_expired": "Sesja wygasła. Zaloguj się ponownie.",
+        "auth/user_not_found": "Nie znaleźliśmy twojego konta.",
+        "auth/login_already_taken": "Ten login jest już zajęty.",
+        "auth/email_already_taken": "Ten adres e-mail jest już zarejestrowany.",
+        "auth/invalid_login_or_password": "Nieprawidłowy login lub hasło.",
+        "auth/current_password_incorrect": "Obecne hasło jest nieprawidłowe.",
+        "auth/invalid_or_expired_token": "Link jest nieprawidłowy albo wygasł.",
+        "auth/email_already_verified": "Twój adres e-mail jest już potwierdzony.",
+        "auth/new_password_same_as_current": "Nowe hasło musi się różnić od obecnego.",
+        "recipe/not_found": "Tego przepisu nie ma albo został usunięty.",
+        "recipe/ingredients_empty": "Dodaj co najmniej jeden składnik.",
+        "recipe/ingredients_missing_id": "Wybierz każdy składnik z listy.",
+        "recipe/ingredients_not_exist": "Co najmniej jednego składnika już nie ma.",
+        "recipe/title_content_empty": "Dodaj tytuł i opis.",
+        "recipe/in_pantry_requires_login": "Zaloguj się, żeby dobierać przepisy do zawartości spiżarni.",
+        "menu/not_found": "Tego jadłospisu nie ma albo został usunięty.",
+        "menu/insufficient_data_create": "Dodaj tytuł, kategorię i co najmniej jeden przepis.",
+        "menu/insufficient_data_update": "Dodaj tytuł, kategorię i co najmniej jeden przepis.",
+        "menu/recipes_not_exist": "Co najmniej jednego przepisu już nie ma.",
+        "pantry/ingredient_not_found": "Tego produktu nie ma w twojej spiżarni.",
+        "pantry/purchase_not_found": "Tego zakupu już nie ma.",
+        "calories/intake_not_found": "Tego wpisu już nie ma.",
+        "calories/not_available": "Kaloryczność tej pozycji jest nieznana.",
+        "favourites/requires_login": "Zaloguj się, żeby zobaczyć ulubione.",
+        "ratings/own_record": "Nie możesz ocenić własnego przepisu ani jadłospisu.",
+        "ingredient/not_found": "Tego składnika nie ma już w katalogu.",
+        "diet/requires_login": "Zaloguj się, żeby ukrywać przepisy z tym, czego nie jesz.",
+        "tags/not_found": "Tego tagu już nie ma.",
+        "tags/duplicate_name": "Masz już tag o tej nazwie.",
+        "tags/limit_reached": "Masz już maksymalną liczbę tagów. Najpierw usuń jeden.",
+        "tags/requires_login": "Zaloguj się, żeby filtrować po swoich tagach.",
+        "shopping_list/item_not_found": "Tej pozycji nie ma już na liście.",
+        "shopping_list/limit_reached": "Lista zakupów jest pełna. Najpierw usuń kilka pozycji.",
+        "shopping_list/order_out_of_date": "Lista zmieniła się na innym urządzeniu. Odświeżyliśmy ją — spróbuj jeszcze raz.",
+        "media/unsupported_type": "Wybierz zdjęcie w formacie JPEG, PNG, WebP lub AVIF.",
+        "media/unreadable": "Nie udało się otworzyć tego zdjęcia. Spróbuj innego.",
+        "media/too_large": "Zdjęcie jest za duże. Wybierz plik do 10 MB.",
+        "media/not_found": "To zdjęcie nie jest już dostępne."
+    },
+    "errorState": {
+        "title": "Coś poszło nie tak",
+        "retry": "Spróbuj ponownie"
+    },
+    "notifications": {
+        "somethingWentWrong": "Coś poszło nie tak",
+        "loggedOut": "Wylogowano cię",
+        "recipeDeleted": "Przepis usunięty",
+        "menuDeleted": "Jadłospis usunięty",
+        "ingredientDeleted": "Produkt usunięty",
+        "ingredientsSaved": "Produkty zapisane",
+        "purchaseSaved": "Zakup zapisany",
+        "passwordChanged": "Hasło zmienione",
+        "verificationEmailSent": "Link potwierdzający wysłany",
+        "profileUpdated": "Profil zaktualizowany",
+        "accountDeleted": "Konto usunięte",
+        "calorieIntakeDeleted": "Wpis usunięty",
+        "intakeLogged": "Dodano do dzisiejszego dziennika"
+    },
+    "timeAgo": {
+        "justNow": "Przed chwilą",
+        "minutes_one": "{{count}} min temu",
+        "minutes_few": "{{count}} min temu",
+        "minutes_many": "{{count}} min temu",
+        "minutes_other": "{{count}} min temu",
+        "hours_one": "{{count}} godz. temu",
+        "hours_few": "{{count}} godz. temu",
+        "hours_many": "{{count}} godz. temu",
+        "hours_other": "{{count}} godz. temu",
+        "days_one": "{{count}} dzień temu",
+        "days_few": "{{count}} dni temu",
+        "days_many": "{{count}} dni temu",
+        "days_other": "{{count}} dnia temu"
+    },
+    "loadMore": {
+        "showing": "Pokazano {{loaded}} z {{total}}",
+        "button": "Pokaż więcej",
+        "loading": "Ładujemy więcej"
+    },
+    "offlineModal": {
+        "title": "Brak połączenia z internetem",
+        "message": "Sprawdź połączenie. W tle wciąż próbujemy dobić się do serwera.",
+        "close": "Zamknij"
+    },
+    "routeError": {
+        "description": "Nieoczekiwany błąd przerwał ładowanie strony. Twoje dane są bezpieczne — spróbuj ponownie.",
+        "goHome": "Na stronę główną"
+    },
+    "author": {
+        "byline": "Autor: {{name}} {{initial}}."
+    },
+    "photo": {
+        "choose": "Dodaj zdjęcie",
+        "dragHint": "albo przeciągnij je tutaj",
+        "dropToAdd": "Upuść zdjęcie tutaj",
+        "dropToReplace": "Upuść, żeby zastąpić zdjęcie",
+        "replace": "Zmień zdjęcie",
+        "remove": "Usuń zdjęcie",
+        "hint": "JPEG, PNG, WebP lub AVIF, do 10 MB."
+    },
+    "rating": {
+        "summary_one": "Ocena {{average}} na 5, {{count}} głos",
+        "summary_few": "Ocena {{average}} na 5, {{count}} głosy",
+        "summary_many": "Ocena {{average}} na 5, {{count}} głosów",
+        "summary_other": "Ocena {{average}} na 5, {{count}} głosu",
+        "none": "Brak ocen",
+        "count": "({{count}})",
+        "star_one": "{{count}} gwiazdka",
+        "star_few": "{{count}} gwiazdki",
+        "star_many": "{{count}} gwiazdek",
+        "star_other": "{{count}} gwiazdki",
+        "yourRating": "Twoja ocena",
+        "remove": "Usuń moją ocenę"
+    },
+    "social": {
+        "tagline": "Przepisy, jadłospisy i twoja spiżarnia w jednej kuchni",
+        "rating_one": "Ocena {{average}}, {{count}} głos",
+        "rating_few": "Ocena {{average}}, {{count}} głosy",
+        "rating_many": "Ocena {{average}}, {{count}} głosów",
+        "rating_other": "Ocena {{average}}, {{count}} głosu",
+        "recipeCardAlt": "Karta przepisu: tytuł, czas przygotowania, kalorie i ocena",
+        "menuCardAlt": "Karta jadłospisu: tytuł, przepisy i ocena"
+    },
+    "recipeTypes": {
+        "first_course": {
+            "name": "Pierwsze danie",
+            "description": "Zupy, buliony i lekkie przystawki — rozgrzewają i pobudzają apetyt."
+        },
+        "main_course": {
+            "name": "Danie główne",
+            "description": "Serce obiadu: mięso, ryba albo warzywa — sycące na długo."
+        },
+        "dessert": {
+            "name": "Deser",
+            "description": "Słodki finał: torty, ciasta, wypieki i inne przysmaki."
+        },
+        "drink": {
+            "name": "Napój",
+            "description": "Na ciepło i na zimno, orzeźwiające i rozgrzewające — do każdego dania."
+        }
+    },
+    "menuCategories": {
+        "breakfast": "Śniadanie",
+        "lunch": "Obiad",
+        "dinner": "Kolacja"
+    },
+    "units": {
+        "g": "g",
+        "kg": "kg",
+        "ml": "ml",
+        "l": "l",
+        "tsp": "łyżeczka",
+        "tbsp": "łyżka",
+        "piece": "szt.",
+        "piece_one": "szt.",
+        "piece_few": "szt.",
+        "piece_many": "szt.",
+        "piece_other": "szt.",
+        "clove": "ząbek",
+        "clove_one": "ząbek",
+        "clove_few": "ząbki",
+        "clove_many": "ząbków",
+        "clove_other": "ząbka",
+        "bunch": "pęczek",
+        "bunch_one": "pęczek",
+        "bunch_few": "pęczki",
+        "bunch_many": "pęczków",
+        "bunch_other": "pęczka",
+        "sprig": "gałązka",
+        "sprig_one": "gałązka",
+        "sprig_few": "gałązki",
+        "sprig_many": "gałązek",
+        "sprig_other": "gałązki",
+        "slice": "plaster",
+        "slice_one": "plaster",
+        "slice_few": "plastry",
+        "slice_many": "plastrów",
+        "slice_other": "plastra",
+        "head": "główka",
+        "head_one": "główka",
+        "head_few": "główki",
+        "head_many": "główek",
+        "head_other": "główki",
+        "can": "puszka",
+        "can_one": "puszka",
+        "can_few": "puszki",
+        "can_many": "puszek",
+        "can_other": "puszki",
+        "package": "opakowanie",
+        "package_one": "opakowanie",
+        "package_few": "opakowania",
+        "package_many": "opakowań",
+        "package_other": "opakowania"
+    }
+}

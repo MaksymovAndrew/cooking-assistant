@@ -1,0 +1,288 @@
+{
+    "appName": "Cooking Assistant",
+    "meta": {
+        "titleTemplate": "%s · Cooking Assistant",
+        "description": "Храните рецепты в одном месте, составляйте меню, следите за продуктами дома и отправляйте недостающее в список покупок. Бесплатно, на русском, украинском, польском и английском.",
+        "shortDescription": "Рецепты, меню и ваши продукты в одном месте."
+    },
+    "sessionError": "Не удалось проверить сессию. Обновите страницу.",
+    "modal": {
+        "cancel": "Отмена",
+        "confirm": "Удалить",
+        "close": "Закрыть",
+        "closeSheet": "Закрыть"
+    },
+    "mobileSubpageHeader": {
+        "back": "Назад",
+        "edit": "Изменить"
+    },
+    "button": {
+        "loading": "Сохраняем…"
+    },
+    "chip": {
+        "remove": "Убрать"
+    },
+    "passwordInput": {
+        "show": "Показать пароль",
+        "hide": "Скрыть пароль"
+    },
+    "contentCard": {
+        "favourite": "В избранное",
+        "allergens": "Аллергены",
+        "containsAllergens": "Есть аллергены",
+        "overBudgetTooltip": "Больше, чем у вас осталось калорий на сегодня"
+    },
+    "toast": {
+        "dismiss": "Закрыть"
+    },
+    "pageSpinner": {
+        "loading": "Открываем вашу кулинарную книгу…"
+    },
+    "accountMenu": {
+        "trigger": "Меню аккаунта",
+        "profile": "Профиль",
+        "settings": "Настройки"
+    },
+    "logoutModal": {
+        "title": "Выход",
+        "message": "Выйти из аккаунта?",
+        "confirm": "Выйти"
+    },
+    "themeModal": {
+        "titleLight": "Включить светлую тему?",
+        "titleDark": "Включить тёмную тему?",
+        "titleSystem": "Включить системную тему?",
+        "message": "Приложение перезагрузится, чтобы сменить оформление. Вы останетесь на той же странице.",
+        "confirm": "Сменить и перезагрузить"
+    },
+    "nav": {
+        "recipes": "Рецепты",
+        "menus": "Меню",
+        "ingredients": "Продукты",
+        "stats": "Статистика",
+        "shoppingList": "Покупки",
+        "settings": "Настройки",
+        "profile": "Профиль",
+        "logout": "Выйти",
+        "login": "Войти",
+        "register": "Регистрация",
+        "scrollToTop": "Наверх"
+    },
+    "theme": {
+        "toggleLabel": "Сменить тему"
+    },
+    "search": {
+        "placeholderPrefix": "Поиск по",
+        "clear": "Очистить"
+    },
+    "notFound": {
+        "heading": "Страница не найдена",
+        "description": "Кажется, этого блюда нет в меню. Страница не существует или переехала.",
+        "backToRecipes": "К рецептам",
+        "recipes": "Рецепты",
+        "pantry": "Продукты",
+        "menus": "Меню"
+    },
+    "errors": {
+        "unknown": "Неизвестная ошибка"
+    },
+    "apiErrors": {
+        "bad_request": "Не удалось обработать запрос. Попробуйте ещё раз.",
+        "not_found": "Не нашли то, что вы искали.",
+        "server_error": "У нас что-то сломалось. Попробуйте чуть позже.",
+        "validation_error": "Некоторые данные введены неверно.",
+        "rate_limited": "Слишком много запросов. Подождите немного и попробуйте снова.",
+        "auth/session_expired": "Сессия истекла. Войдите снова.",
+        "auth/user_not_found": "Не нашли ваш аккаунт.",
+        "auth/login_already_taken": "Этот логин уже занят.",
+        "auth/email_already_taken": "Эта почта уже зарегистрирована.",
+        "auth/invalid_login_or_password": "Неверный логин или пароль.",
+        "auth/current_password_incorrect": "Текущий пароль указан неверно.",
+        "auth/invalid_or_expired_token": "Ссылка недействительна или устарела.",
+        "auth/email_already_verified": "Ваша почта уже подтверждена.",
+        "auth/new_password_same_as_current": "Новый пароль должен отличаться от текущего.",
+        "recipe/not_found": "Такого рецепта нет или его удалили.",
+        "recipe/ingredients_empty": "Добавьте хотя бы один ингредиент.",
+        "recipe/ingredients_missing_id": "Выберите каждый ингредиент из списка.",
+        "recipe/ingredients_not_exist": "Одного или нескольких ингредиентов больше нет.",
+        "recipe/title_content_empty": "Добавьте название и описание.",
+        "recipe/in_pantry_requires_login": "Войдите, чтобы подбирать рецепты по своим продуктам.",
+        "menu/not_found": "Такого меню нет или его удалили.",
+        "menu/insufficient_data_create": "Добавьте название, категорию и хотя бы один рецепт.",
+        "menu/insufficient_data_update": "Добавьте название, категорию и хотя бы один рецепт.",
+        "menu/recipes_not_exist": "Одного или нескольких рецептов больше нет.",
+        "pantry/ingredient_not_found": "Этого продукта нет в ваших запасах.",
+        "pantry/purchase_not_found": "Этой покупки больше нет.",
+        "calories/intake_not_found": "Этой записи больше нет.",
+        "calories/not_available": "Для этого блюда калорийность неизвестна.",
+        "favourites/requires_login": "Войдите, чтобы увидеть избранное.",
+        "ratings/own_record": "Свой рецепт или меню оценить нельзя.",
+        "ingredient/not_found": "Этого ингредиента больше нет в каталоге.",
+        "diet/requires_login": "Войдите, чтобы скрывать рецепты с тем, чего вы не едите.",
+        "tags/not_found": "Этой метки больше нет.",
+        "tags/duplicate_name": "У вас уже есть метка с таким названием.",
+        "tags/limit_reached": "Меток уже максимум. Сначала удалите одну.",
+        "tags/requires_login": "Войдите, чтобы фильтровать по своим меткам.",
+        "shopping_list/item_not_found": "Этой позиции уже нет в списке.",
+        "shopping_list/limit_reached": "Список покупок заполнен. Сначала уберите что-нибудь.",
+        "shopping_list/order_out_of_date": "Список изменился на другом устройстве. Мы его обновили — попробуйте ещё раз.",
+        "media/unsupported_type": "Выберите фото в формате JPEG, PNG, WebP или AVIF.",
+        "media/unreadable": "Не получилось открыть это фото. Попробуйте другое.",
+        "media/too_large": "Фото слишком большое. Выберите файл до 10 МБ.",
+        "media/not_found": "Это фото больше недоступно."
+    },
+    "errorState": {
+        "title": "Что-то пошло не так",
+        "retry": "Попробовать снова"
+    },
+    "notifications": {
+        "somethingWentWrong": "Что-то пошло не так",
+        "loggedOut": "Вы вышли из аккаунта",
+        "recipeDeleted": "Рецепт удалён",
+        "menuDeleted": "Меню удалено",
+        "ingredientDeleted": "Продукт удалён",
+        "ingredientsSaved": "Продукты сохранены",
+        "purchaseSaved": "Покупка сохранена",
+        "passwordChanged": "Пароль изменён",
+        "verificationEmailSent": "Ссылка для подтверждения отправлена",
+        "profileUpdated": "Профиль обновлён",
+        "accountDeleted": "Аккаунт удалён",
+        "calorieIntakeDeleted": "Запись удалена",
+        "intakeLogged": "Добавлено в сегодняшний дневник"
+    },
+    "timeAgo": {
+        "justNow": "Только что",
+        "minutes_one": "{{count}} мин назад",
+        "minutes_few": "{{count}} мин назад",
+        "minutes_many": "{{count}} мин назад",
+        "minutes_other": "{{count}} мин назад",
+        "hours_one": "{{count}} ч назад",
+        "hours_few": "{{count}} ч назад",
+        "hours_many": "{{count}} ч назад",
+        "hours_other": "{{count}} ч назад",
+        "days_one": "{{count}} день назад",
+        "days_few": "{{count}} дня назад",
+        "days_many": "{{count}} дней назад",
+        "days_other": "{{count}} дня назад"
+    },
+    "loadMore": {
+        "showing": "Показано {{loaded}} из {{total}}",
+        "button": "Показать ещё",
+        "loading": "Загружаем ещё"
+    },
+    "offlineModal": {
+        "title": "Нет подключения к интернету",
+        "message": "Проверьте соединение. Мы продолжим стучаться к серверу в фоне.",
+        "close": "Закрыть"
+    },
+    "routeError": {
+        "description": "Неожиданная ошибка прервала загрузку страницы. Ваши данные в порядке — попробуйте ещё раз.",
+        "goHome": "На главную"
+    },
+    "author": {
+        "byline": "Автор: {{name}} {{initial}}."
+    },
+    "photo": {
+        "choose": "Добавить фото",
+        "dragHint": "или перетащите его сюда",
+        "dropToAdd": "Отпустите фото здесь",
+        "dropToReplace": "Отпустите, чтобы заменить фото",
+        "replace": "Заменить фото",
+        "remove": "Удалить фото",
+        "hint": "JPEG, PNG, WebP или AVIF, до 10 МБ."
+    },
+    "rating": {
+        "summary_one": "Оценка {{average}} из 5, {{count}} голос",
+        "summary_few": "Оценка {{average}} из 5, {{count}} голоса",
+        "summary_many": "Оценка {{average}} из 5, {{count}} голосов",
+        "summary_other": "Оценка {{average}} из 5, {{count}} голоса",
+        "none": "Оценок пока нет",
+        "count": "({{count}})",
+        "star_one": "{{count}} звезда",
+        "star_few": "{{count}} звезды",
+        "star_many": "{{count}} звёзд",
+        "star_other": "{{count}} звезды",
+        "yourRating": "Ваша оценка",
+        "remove": "Убрать мою оценку"
+    },
+    "social": {
+        "tagline": "Рецепты, меню и ваши продукты — на одной кухне",
+        "rating_one": "Оценка {{average}}, {{count}} голос",
+        "rating_few": "Оценка {{average}}, {{count}} голоса",
+        "rating_many": "Оценка {{average}}, {{count}} голосов",
+        "rating_other": "Оценка {{average}}, {{count}} голоса",
+        "recipeCardAlt": "Карточка рецепта: название, время приготовления, калории и оценка",
+        "menuCardAlt": "Карточка меню: название, рецепты и оценка"
+    },
+    "recipeTypes": {
+        "first_course": {
+            "name": "Первое блюдо",
+            "description": "Супы, бульоны и лёгкие закуски — согревают и будят аппетит."
+        },
+        "main_course": {
+            "name": "Основное блюдо",
+            "description": "Сердце обеда: мясо, рыба или овощи — сытно и надолго."
+        },
+        "dessert": {
+            "name": "Десерт",
+            "description": "Сладкий финал: торты, пироги, выпечка и прочие радости."
+        },
+        "drink": {
+            "name": "Напиток",
+            "description": "Горячие и холодные, освежающие и согревающие — к любому блюду."
+        }
+    },
+    "menuCategories": {
+        "breakfast": "Завтрак",
+        "lunch": "Обед",
+        "dinner": "Ужин"
+    },
+    "units": {
+        "g": "г",
+        "kg": "кг",
+        "ml": "мл",
+        "l": "л",
+        "tsp": "ч. л.",
+        "tbsp": "ст. л.",
+        "piece": "шт.",
+        "piece_one": "шт.",
+        "piece_few": "шт.",
+        "piece_many": "шт.",
+        "piece_other": "шт.",
+        "clove": "зубчик",
+        "clove_one": "зубчик",
+        "clove_few": "зубчика",
+        "clove_many": "зубчиков",
+        "clove_other": "зубчика",
+        "bunch": "пучок",
+        "bunch_one": "пучок",
+        "bunch_few": "пучка",
+        "bunch_many": "пучков",
+        "bunch_other": "пучка",
+        "sprig": "веточка",
+        "sprig_one": "веточка",
+        "sprig_few": "веточки",
+        "sprig_many": "веточек",
+        "sprig_other": "веточки",
+        "slice": "ломтик",
+        "slice_one": "ломтик",
+        "slice_few": "ломтика",
+        "slice_many": "ломтиков",
+        "slice_other": "ломтика",
+        "head": "кочан",
+        "head_one": "кочан",
+        "head_few": "кочана",
+        "head_many": "кочанов",
+        "head_other": "кочана",
+        "can": "банка",
+        "can_one": "банка",
+        "can_few": "банки",
+        "can_many": "банок",
+        "can_other": "банки",
+        "package": "упаковка",
+        "package_one": "упаковка",
+        "package_few": "упаковки",
+        "package_many": "упаковок",
+        "package_other": "упаковки"
+    }
+}

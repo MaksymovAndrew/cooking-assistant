@@ -13,6 +13,7 @@ import { FilterPanel } from "components/ui/FilterPanel";
 import { SearchField } from "components/ui/SearchField";
 
 import type { MenuFilterState } from "utils/filters/menuFilterDefs";
+import { menuCategoryName } from "utils/referenceLabels";
 
 import styles from "./MenuFilterPanel.module.scss";
 import { MenuFilterToggles } from "./MenuFilterToggles";
@@ -88,7 +89,7 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
                     <FilterChipGroup
                         options={categories.map((category) => ({
                             id: category.menu_category_id,
-                            label: category.category_name,
+                            label: menuCategoryName(t, category.category_name),
                         }))}
                         value={filters.categories}
                         onChange={(next) => {

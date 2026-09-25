@@ -36,7 +36,7 @@ const SAMPLE: MenuDetails = {
 
 describe("menuJsonLd", () => {
     it("should list the menu's recipe pages in their order", () => {
-        expect(menuJsonLd(SAMPLE, DESCRIPTION)).toEqual({
+        expect(menuJsonLd(SAMPLE, DESCRIPTION, "en")).toEqual({
             "@context": "https://schema.org",
             "@type": "ItemList",
             name: "Weekday menu",
@@ -58,5 +58,14 @@ describe("menuJsonLd", () => {
                 },
             ],
         });
+    });
+
+    it("should point at the pages in the menu's own language", () => {
+        const data = menuJsonLd(SAMPLE, DESCRIPTION, "pl");
+
+        expect(data.url).toBe("http://localhost:8080/pl/menu/4");
+        expect(data.itemListElement[0].url).toBe(
+            "http://localhost:8080/pl/recipe/9",
+        );
     });
 });

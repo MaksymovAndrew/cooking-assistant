@@ -41,7 +41,7 @@ describe("CreateRecipePage", () => {
 
         renderWithRouter(<CreateRecipePage />);
 
-        await screen.findByPlaceholderText("Search ingredients...");
+        await screen.findByPlaceholderText("Search ingredients…");
         await screen.findByRole("option", { name: TYPE_NAME });
 
         await userEvent.type(screen.getByLabelText("Title *"), TITLE);
@@ -67,7 +67,7 @@ describe("CreateRecipePage", () => {
 
         try {
             await user.type(
-                screen.getByPlaceholderText("Search ingredients..."),
+                screen.getByPlaceholderText("Search ingredients…"),
                 INGREDIENT_NAME,
             );
             act(() => {

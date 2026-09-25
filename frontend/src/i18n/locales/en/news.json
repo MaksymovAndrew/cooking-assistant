@@ -5,7 +5,7 @@
         "photosAndRatings": {
             "date": "2026-09-22",
             "title": "Photos and real star ratings",
-            "description": "Recipes and menus can finally have a photo, and your profile can have one too - they show on the cards, on the page and in the preview when you share a link. Ratings are real now: give any recipe or menu one to five stars, change your mind or take your vote back, and sort the lists by what people actually rated best. Changing your password now also signs you out on every other device, so you may be asked to sign in once more."
+            "description": "Recipes and menus can finally have a photo, and your profile can have one too — they show on the cards, on the page and in the preview when you share a link. Ratings are real now: give any recipe or menu one to five stars, change your mind or take your vote back, and sort the lists by what people actually rated best. Changing your password now also signs you out on every other device, so you may be asked to sign in once more."
         },
         "shoppingListAndPreferences": {
             "date": "2026-09-19",
@@ -20,7 +20,7 @@
         "fasterPagesAndLinks": {
             "date": "2026-09-09",
             "title": "Pages open faster, links look right",
-            "description": "Recipes and menus are now put together on the server, so a page shows up with its content already on it instead of loading into an empty screen. Share a recipe in a chat and the preview finally shows that recipe's own name and description - and search engines can read the site properly too."
+            "description": "Recipes and menus are now put together on the server, so a page shows up with its content already on it instead of loading into an empty screen. Share a recipe in a chat and the preview finally shows that recipe's own name and description — and search engines can read the site properly too."
         },
         "instantWakeUp": {
             "date": "2026-08-20",
@@ -30,12 +30,12 @@
         "bugsAndPolish": {
             "date": "2026-08-16",
             "title": "Smarter pantry, calmer popups",
-            "description": "Buying more of an ingredient you already have no longer resets its shelf life, and the expired-ingredients list now shows exactly which purchase went bad. Popups now queue politely instead of overwriting each other, the statistics page got calorie averages and clickable results, and a long list of smaller rough edges - avatars, headings, loading states, and more - got smoothed out."
+            "description": "Buying more of an ingredient you already have no longer resets its shelf life, and the expired-ingredients list now shows exactly which purchase went bad. Popups now queue politely instead of overwriting each other, the statistics page got calorie averages and clickable results, and a long list of smaller rough edges — avatars, headings, loading states, and more — got smoothed out."
         },
         "guestBrowsing": {
             "date": "2026-08-06",
             "title": "Browse without an account",
-            "description": "Look through every recipe and menu, search, and filter by type or category before you sign up - no login required. When you do decide to log in, you'll land back on the exact page you were headed to instead of the dashboard."
+            "description": "Look through every recipe and menu, search, and filter by type or category before you sign up — no login required. When you do decide to log in, you'll land back on the exact page you were headed to instead of the dashboard."
         },
         "calorieTracking": {
             "date": "2026-08-04",
@@ -50,7 +50,7 @@
         "newIngredientCatalog": {
             "date": "2026-07-28",
             "title": "A bigger pantry, smarter recipes",
-            "description": "The ingredient catalog has been rebuilt with over 700 items, including meat and fish, all in metric units and browsable by category. Recipes now have a \"From my pantry\" filter that shows only what you can make right now, plus a heads-up popup if anything in your pantry has expired. This rebuild reset existing ingredients, recipes, menus, and pantry contents - your account itself is unaffected."
+            "description": "The ingredient catalog has been rebuilt with over 700 items, including meat and fish, all in metric units and browsable by category. Recipes now have a \"From my pantry\" filter that shows only what you can make right now, plus a heads-up popup if anything in your pantry has expired. This rebuild reset existing ingredients, recipes, menus, and pantry contents — your account itself is unaffected."
         },
         "profileControls": {
             "date": "2026-07-24",
@@ -60,12 +60,12 @@
         "underTheHood": {
             "date": "2026-07-21",
             "title": "Behind-the-scenes maintenance",
-            "description": "This update focused on keeping the app's technical foundations current - no new features this time, just upkeep to keep things running smoothly."
+            "description": "This update focused on keeping the app's technical foundations current — no new features this time, just upkeep to keep things running smoothly."
         },
         "reliability": {
             "date": "2026-07-21",
             "title": "Built to recover",
-            "description": "A friendly screen now appears if something goes wrong, and we'll let you know if your connection drops - both recover automatically once things are back to normal."
+            "description": "A friendly screen now appears if something goes wrong, and we'll let you know if your connection drops — both recover automatically once things are back to normal."
         },
         "mobilePolish": {
             "date": "2026-07-21",
@@ -105,7 +105,7 @@
         "instantUpdates": {
             "date": "2026-06-26",
             "title": "Instant updates",
-            "description": "Lists refresh automatically after you add, edit or delete - no page reloads."
+            "description": "Lists refresh automatically after you add, edit or delete — no page reloads."
         },
         "launch": {
             "date": "2026-06-21",

@@ -1,0 +1,26 @@
+{
+    "registered": "Реєстрацію завершено",
+    "loggedIn": "Ви увійшли",
+    "loggedOut": "Ви вийшли",
+
+    "recipeDeleted": "Рецепт видалено",
+
+    "menuCreated": "Меню створено",
+    "menuUpdated": "Меню оновлено",
+    "menuDeleted": "Меню видалено",
+
+    "ingredientsUpdated": "Продукти оновлено",
+    "ingredientDeleted": "Продукт та історію його покупок видалено",
+    "purchaseUpdated": "Кількість у покупці оновлено",
+
+    "intakeDeleted": "Запис видалено",
+    "calorieGoalUpdated": "Ціль за калоріями оновлено",
+
+    "passwordResetEmailSent": "Якщо обліковий запис із такою поштою існує і її підтверджено, ми надіслали на неї посилання для скидання пароля.",
+    "passwordReset": "Пароль скинуто",
+    "passwordChanged": "Пароль змінено",
+    "profileUpdated": "Профіль оновлено",
+    "accountDeleted": "Обліковий запис видалено",
+    "verificationEmailSent": "Посилання для підтвердження надіслано",
+    "emailVerified": "Пошту підтверджено"
+}

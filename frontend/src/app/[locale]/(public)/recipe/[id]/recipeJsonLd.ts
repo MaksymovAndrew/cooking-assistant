@@ -1,12 +1,16 @@
+import type { TFunction } from "i18next";
+
 import { absoluteSiteUrl } from "config/site";
+import { DEFAULT_LOCALE, type Locale } from "constants/locales";
 import { MAX_RATING, MIN_RATING } from "constants/ratings";
 import { recipeDetailsPath } from "constants/routes";
 import type { RecipeDetails } from "types/recipe";
 
 import { isoDuration } from "utils/cookingTimeUtils";
 import { formatRatingAverage } from "utils/formatRating";
+import { localizePath } from "utils/localePath";
 import { mediaUrl } from "utils/mediaUrl";
-import { roundQuantity } from "utils/roundQuantity";
+import { quantityWithUnit, recipeTypeName } from "utils/referenceLabels";
 
 // the method is free text; each non-empty line reads as one step
 const instructionSteps = (content: string) =>
@@ -27,26 +31,35 @@ const recipeImages = (photoKey: string | null) => {
 };
 
 // schema.org/Recipe for search engines; a field the recipe does not have is left out, never faked
-export const recipeJsonLd = (recipe: RecipeDetails, description: string) => ({
+// the recipe arrives with its ingredient names already in the page language (loadRecipe)
+export const recipeJsonLd = (
+    recipe: RecipeDetails,
+    description: string,
+    t: TFunction,
+    locale: Locale,
+) => ({
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: recipe.title,
     description,
-    url: absoluteSiteUrl(recipeDetailsPath(recipe.id)),
+    url: absoluteSiteUrl(localizePath(recipeDetailsPath(recipe.id), locale)),
     image: recipeImages(recipe.photo_key),
     datePublished: recipe.creation_date,
     author: {
         "@type": "Person",
         name: `${recipe.author.name} ${recipe.author.surname_initial}.`,
     },
-    recipeCategory: recipe.type_name ?? undefined,
+    recipeCategory:
+        recipe.type_name === null
+            ? undefined
+            : recipeTypeName(t, recipe.type_name),
     totalTime:
         recipe.cooking_time === null
             ? undefined
             : isoDuration(recipe.cooking_time),
     recipeIngredient: recipe.ingredients.map(
         (ingredient) =>
-            `${roundQuantity(ingredient.quantity_recipe_ingredients)} ${ingredient.unit_name} ${ingredient.name}`,
+            `${quantityWithUnit(t, locale, ingredient.quantity_recipe_ingredients, ingredient.unit_name)} ${ingredient.name}`,
     ),
     recipeInstructions: instructionSteps(recipe.content),
     nutrition:
@@ -61,7 +74,11 @@ export const recipeJsonLd = (recipe: RecipeDetails, description: string) => ({
             ? undefined
             : {
                   "@type": "AggregateRating",
-                  ratingValue: formatRatingAverage(recipe.ratingAverage),
+                  // structured data is read by machines, which expect a dot decimal whatever the page's language
+                  ratingValue: formatRatingAverage(
+                      recipe.ratingAverage,
+                      DEFAULT_LOCALE,
+                  ),
                   ratingCount: recipe.ratingCount,
                   bestRating: MAX_RATING,
                   worstRating: MIN_RATING,

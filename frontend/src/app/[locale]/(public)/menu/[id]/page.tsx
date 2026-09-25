@@ -11,6 +11,7 @@ import { getServerTranslation } from "i18n/server";
 
 import { toMetaDescription } from "utils/metaDescription";
 import { pageAlternates } from "utils/pageAlternates";
+import { menuCategoryName } from "utils/referenceLabels";
 import { photoSocialImage, socialMetadata } from "utils/socialMetadata";
 
 import { loadMenu } from "./loadMenu";
@@ -37,7 +38,13 @@ const describeMenu = async (
     return toMetaDescription(
         menu.menu.menucontent,
         t(fallbackKey, {
-            category: menu.menu.categoryname?.toLowerCase(),
+            category:
+                menu.menu.categoryname === null
+                    ? undefined
+                    : menuCategoryName(
+                          t,
+                          menu.menu.categoryname,
+                      ).toLocaleLowerCase(locale),
             count: menu.recipes.length,
         }),
     );
@@ -83,7 +90,13 @@ const MenuDetailsPage = async ({ params }: MenuPageProps) => {
 
     return (
         <>
-            <JsonLd data={menuJsonLd(menu, await describeMenu(menu, locale))} />
+            <JsonLd
+                data={menuJsonLd(
+                    menu,
+                    await describeMenu(menu, locale),
+                    locale,
+                )}
+            />
             <MenuDetailsView menu={menu} />
         </>
     );

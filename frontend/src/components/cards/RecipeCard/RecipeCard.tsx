@@ -20,6 +20,7 @@ import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { mediaUrl } from "utils/mediaUrl";
 import { filterAllergens } from "utils/recipeAllergens";
+import { recipeTypeName } from "utils/referenceLabels";
 
 interface RecipeCardIngredient {
     allergens: string[];
@@ -65,7 +66,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             title={recipe.title}
             imageIcon={UtensilsMark}
             imageSrc={mediaUrl(recipe.photo_key, "card")}
-            chipLabel={recipe.type_name}
+            chipLabel={recipeTypeName(t, recipe.type_name)}
             mine={mine}
             variant={variant}
             badge={hasAllergens}

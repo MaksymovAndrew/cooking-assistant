@@ -26,7 +26,7 @@ describe("NotFoundPage", () => {
         renderWithProviders(<NotFoundPage />);
 
         await userEvent.click(
-            screen.getByRole("button", { name: /Back to Recipes/ }),
+            screen.getByRole("button", { name: /Back to recipes/ }),
         );
 
         expect(mockNavigate).toHaveBeenCalledWith("/all-recipes");

@@ -142,7 +142,7 @@ describe("RecipeForm", () => {
             renderForm(form);
 
             await user.type(
-                screen.getByPlaceholderText("Search ingredients..."),
+                screen.getByPlaceholderText("Search ingredients…"),
                 "egg",
             );
             act(() => {

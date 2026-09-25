@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { MenuListParams } from "types/menu";
 
@@ -15,6 +16,7 @@ import {
 import type { MenuFilterState } from "utils/filters/menuFilterDefs";
 import { MENU_FILTER_DEFS } from "utils/filters/menuFilterDefs";
 import { getQueryErrorMessage } from "utils/queryError";
+import { menuCategoryName } from "utils/referenceLabels";
 
 import { useListFilters } from "./useListFilters";
 import { useViewerFilterGate } from "./useViewerFilterGate";
@@ -31,6 +33,7 @@ export type MenuSource = (typeof MENU_SOURCE)[keyof typeof MENU_SOURCE];
 // view model for the two menu lists: the URL is the single source of truth for
 // filters, pages come from RTK Query's infiniteQuery
 export const useMenuListView = (source: MenuSource) => {
+    const { t } = useTranslation();
     const {
         values: filters,
         setValue,
@@ -71,7 +74,7 @@ export const useMenuListView = (source: MenuSource) => {
         .filter((category) =>
             filters.categories.includes(category.menu_category_id),
         )
-        .map((category) => category.category_name)
+        .map((category) => menuCategoryName(t, category.category_name))
         .join(", ");
 
     return {

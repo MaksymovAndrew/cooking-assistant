@@ -1,0 +1,76 @@
+{
+    "settingsPage": {
+        "heading": "Настройки",
+        "subheading": "Оформление, язык и аккаунт."
+    },
+    "comingSoonBadge": "Скоро",
+    "appearanceSection": {
+        "heading": "Оформление",
+        "themeTitle": "Тема",
+        "themeDescription": "Как приложение выглядит на этом устройстве.",
+        "themeLabel": "Тема",
+        "dark": "Тёмная",
+        "light": "Светлая",
+        "system": "Как в системе"
+    },
+    "languageSection": {
+        "heading": "Язык и регион",
+        "languageTitle": "Язык",
+        "languageDescription": "Выбор языка появится совсем скоро."
+    },
+    "notificationsSection": {
+        "heading": "Уведомления",
+        "expiryTitle": "Напоминания о сроках",
+        "expiryDescription": "Предупредим, пока продукты не испортились.",
+        "digestTitle": "Еженедельная сводка",
+        "digestDescription": "Раз в неделю — итоги по вашим рецептам и меню."
+    },
+    "accountSection": {
+        "heading": "Аккаунт",
+        "profileTitle": "Профиль",
+        "profileDescription": "Имя, почта и фото — на странице профиля.",
+        "openProfileButton": "Открыть профиль",
+        "emailTitle": "Почта",
+        "sendEmailButton": "Отправить письмо",
+        "verifiedBadge": "Подтверждена",
+        "unverifiedBadge": "Не подтверждена",
+        "changePasswordTitle": "Сменить пароль",
+        "changePasswordDescription": "Задайте новый пароль для аккаунта.",
+        "changePasswordButton": "Сменить…",
+        "deleteAccountTitle": "Удалить аккаунт",
+        "deleteAccountDescription": "Навсегда удалит рецепты, меню и продукты."
+    },
+    "changePasswordModal": {
+        "title": "Смена пароля",
+        "currentPasswordLabel": "Текущий пароль",
+        "newPasswordLabel": "Новый пароль",
+        "confirmPasswordLabel": "Повторите новый пароль",
+        "cancelButton": "Отмена",
+        "saveButton": "Сохранить пароль",
+        "errors": {
+            "allFieldsRequired": "Заполните все поля.",
+            "currentPasswordIncorrect": "Текущий пароль указан неверно.",
+            "passwordInvalid": "Пароль — минимум 8 символов, среди них буква, цифра и спецсимвол.",
+            "passwordsDoNotMatch": "Новые пароли не совпадают.",
+            "newPasswordSameAsCurrent": "Новый пароль должен отличаться от текущего.",
+            "genericError": "Что-то пошло не так. Попробуйте ещё раз."
+        }
+    },
+    "deleteAccountModal": {
+        "title": "Удалить аккаунт?",
+        "message": "Ваши рецепты, меню и продукты будут удалены навсегда. Введите пароль, чтобы подтвердить.",
+        "passwordLabel": "Пароль",
+        "cancelButton": "Отмена",
+        "confirmButton": "Удалить аккаунт",
+        "errors": {
+            "passwordRequired": "Введите пароль.",
+            "incorrectPassword": "Неверный пароль.",
+            "tooManyAttempts": "Слишком много попыток. Подождите {{seconds}} с.",
+            "genericError": "Что-то пошло не так. Попробуйте ещё раз."
+        }
+    },
+    "deleteAccountButton": {
+        "label": "Удалить аккаунт",
+        "holdInstruction": "Удерживайте, чтобы подтвердить"
+    }
+}

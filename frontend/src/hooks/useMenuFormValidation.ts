@@ -20,7 +20,7 @@ export const useMenuFormValidation = (messages: MenuFormErrorMessages) => {
     const [recipesError, setRecipesError] = useState<string | null>(null);
 
     const validate = useCallback(
-        (values: Omit<MenuFormValues, "photoKey">): boolean => {
+        (values: Omit<MenuFormValues, "photoKey" | "language">): boolean => {
             let valid = true;
 
             if (!values.menuTitle.trim()) {

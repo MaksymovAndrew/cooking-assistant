@@ -46,6 +46,7 @@ export const useUpdateRecipePage = () => {
         setInitialValues({
             title: recipe.title,
             content: recipe.content,
+            language: recipe.language,
             cookingHours: String(hours),
             cookingMinutes: String(minutes),
             selectedTypeId: recipe.type_id,
@@ -89,6 +90,7 @@ export const useUpdateRecipePage = () => {
             data: {
                 title: form.title,
                 content: form.content,
+                language: form.language,
                 type_id: form.selectedTypeId,
                 cooking_time:
                     Number(form.cookingHours) * MINUTES_PER_HOUR +

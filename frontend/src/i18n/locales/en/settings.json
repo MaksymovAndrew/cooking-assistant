@@ -14,9 +14,9 @@
         "system": "System"
     },
     "languageSection": {
-        "heading": "Language & region",
-        "languageTitle": "Language",
-        "languageDescription": "Choosing a language here is coming soon."
+        "heading": "Language",
+        "languageTitle": "Interface language",
+        "languageDescription": "Pages and emails come in the language you pick."
     },
     "notificationsSection": {
         "heading": "Notifications",

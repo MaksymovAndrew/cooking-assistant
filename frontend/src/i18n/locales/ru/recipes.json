@@ -31,7 +31,8 @@
         "discardMessage": "Есть несохранённые изменения. Точно уйти со страницы?",
         "discardConfirm": "Не сохранять",
         "discardCancel": "Продолжить редактирование",
-        "photoAlt": "Фото рецепта"
+        "photoAlt": "Фото рецепта",
+        "languageLabel": "Язык рецепта"
     },
     "ingredientPicker": {
         "searchPlaceholder": "Найти ингредиент…",

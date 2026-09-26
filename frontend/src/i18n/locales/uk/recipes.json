@@ -31,7 +31,8 @@
         "discardMessage": "Є незбережені зміни. Точно піти зі сторінки?",
         "discardConfirm": "Не зберігати",
         "discardCancel": "Продовжити редагування",
-        "photoAlt": "Фото рецепта"
+        "photoAlt": "Фото рецепта",
+        "languageLabel": "Мова рецепта"
     },
     "ingredientPicker": {
         "searchPlaceholder": "Знайти інгредієнт…",

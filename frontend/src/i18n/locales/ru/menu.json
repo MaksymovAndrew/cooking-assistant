@@ -118,7 +118,8 @@
         "discardConfirm": "Не сохранять",
         "discardCancel": "Продолжить редактирование",
         "photoTitle": "Обложка",
-        "photoAlt": "Обложка меню"
+        "photoAlt": "Обложка меню",
+        "languageLabel": "Язык меню"
     },
     "menuDetailsPage": {
         "breadcrumb": "Навигационная цепочка",

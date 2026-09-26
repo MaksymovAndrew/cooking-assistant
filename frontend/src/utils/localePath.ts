@@ -55,3 +55,9 @@ export const localizePath = (href: string, locale: Locale): string => {
         ? `/${locale}${href.slice(1)}`
         : `/${locale}${href}`;
 };
+
+// the same page, query and all, in another language
+export const switchLocaleHref = (
+    { pathname, search, hash }: Pick<Location, "pathname" | "search" | "hash">,
+    locale: Locale,
+): string => localizePath(`${stripLocale(pathname)}${search}${hash}`, locale);

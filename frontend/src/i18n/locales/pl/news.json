@@ -2,6 +2,11 @@
     "title": "Co nowego",
     "newCount": "Nowe: {{total}}",
     "items": {
+        "fourLanguages": {
+            "date": "2026-09-26",
+            "title": "Cooking Assistant mówi twoim językiem",
+            "description": "Cała aplikacja jest teraz po angielsku, polsku, rosyjsku i ukraińsku — strony, e-maile, a nawet ta lista. Język zmienisz w nagłówku, w menu konta albo w Ustawieniach. Przy każdym przepisie i jadłospisie widać, w jakim języku go napisano, a filtry zostawią tylko te, które przeczytasz. Zdjęcie dodasz też łatwiej: po prostu przeciągnij je na formularz."
+        },
         "photosAndRatings": {
             "date": "2026-09-22",
             "title": "Zdjęcia i prawdziwe oceny",

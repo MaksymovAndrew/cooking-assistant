@@ -22,6 +22,7 @@ const CURRENT_USER: CurrentUser = {
     avatar: "tomato",
     avatar_photo_key: null,
     calorie_goal: null,
+    locale: "en",
 };
 
 const PHOTO_KEY = "0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b";

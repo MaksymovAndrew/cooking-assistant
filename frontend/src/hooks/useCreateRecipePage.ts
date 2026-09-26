@@ -50,6 +50,7 @@ export const useCreateRecipePage = () => {
         const result = await createRecipe({
             title: form.title,
             content: form.content,
+            language: form.language,
             ingredients: form.selectedIngredients.map((i) => ({
                 id: i.id,
                 quantity: i.quantity,

@@ -25,6 +25,7 @@ const CURRENT_USER: CurrentUser = {
     avatar: null,
     avatar_photo_key: null,
     calorie_goal: null,
+    locale: "en",
 };
 
 const renderHomeRoute = () =>

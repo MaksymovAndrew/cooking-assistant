@@ -118,7 +118,8 @@
         "discardConfirm": "Не зберігати",
         "discardCancel": "Продовжити редагування",
         "photoTitle": "Обкладинка",
-        "photoAlt": "Обкладинка меню"
+        "photoAlt": "Обкладинка меню",
+        "languageLabel": "Мова меню"
     },
     "menuDetailsPage": {
         "breadcrumb": "Навігаційний ланцюжок",

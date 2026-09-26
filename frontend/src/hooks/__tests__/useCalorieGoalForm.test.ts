@@ -22,6 +22,7 @@ const CURRENT_USER: CurrentUser = {
     avatar: null,
     avatar_photo_key: null,
     calorie_goal: 2000,
+    locale: "en",
 };
 
 const renderCalorieGoalForm = (

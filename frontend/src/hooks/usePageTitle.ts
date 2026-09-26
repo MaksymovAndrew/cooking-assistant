@@ -6,8 +6,10 @@ import { useTranslation } from "react-i18next";
 export const usePageTitle = (title?: string | null): void => {
     const { t } = useTranslation();
     const appName = t("appName");
+    // the same pattern the server-rendered pages get from their metadata
+    const template = t("meta.titleTemplate");
 
     useEffect(() => {
-        document.title = title ? `${title} - ${appName}` : appName;
-    }, [title, appName]);
+        document.title = title ? template.replace("%s", title) : appName;
+    }, [title, appName, template]);
 };

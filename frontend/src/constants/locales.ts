@@ -20,3 +20,31 @@ export const isLocale = (value: string): value is Locale =>
 
 export const toLocale = (value: string): Locale =>
     isLocale(value) ? value : DEFAULT_LOCALE;
+
+// each language named in itself, so a visitor who can't read the current one still finds their own
+export const LOCALE_NAMES: Record<Locale, string> = {
+    en: "English",
+    pl: "Polski",
+    ru: "Русский",
+    uk: "Українська",
+};
+
+// the short mark on a switcher or a badge; Ukrainian reads as the country code people know
+export const LOCALE_BADGES: Record<Locale, string> = {
+    en: "EN",
+    pl: "PL",
+    ru: "RU",
+    uk: "UA",
+};
+
+const LANGUAGE_WORDS: Record<Locale, string> = {
+    en: "Language",
+    pl: "Język",
+    ru: "Язык",
+    uk: "Мова",
+};
+
+// the registration field is labelled in every language at once, whichever one the page is in
+export const LANGUAGE_FIELD_LABEL = LOCALES.map(
+    (locale) => LANGUAGE_WORDS[locale],
+).join(" · ");

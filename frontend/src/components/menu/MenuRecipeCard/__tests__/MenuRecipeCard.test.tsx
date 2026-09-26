@@ -7,6 +7,7 @@ import { renderWithRouter } from "test/router";
 const RECIPE = {
     id: 7,
     title: "Slow-roasted ragù",
+    language: "pl" as const,
     type_name: "Main course",
     cooking_time: 85,
     calories_per_portion: null,

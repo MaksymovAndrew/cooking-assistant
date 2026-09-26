@@ -22,6 +22,7 @@ const TITLE = "Borscht";
 const SAMPLE: RecipeDetails = {
     id: 1,
     title: TITLE,
+    language: "en",
     content: "boil",
     ingredients: [],
     type_id: 2,

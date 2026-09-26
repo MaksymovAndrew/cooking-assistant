@@ -1,5 +1,6 @@
 import React from "react";
 
+import type { Locale } from "constants/locales";
 import type { Tag } from "types/tag";
 
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
@@ -21,6 +22,7 @@ interface RecipeDetailsSecondaryProps {
     onDecrement: () => void;
     hasCustomCalories: boolean;
     content: string;
+    language: Locale;
     allergens: string[];
     recipeId: number;
     // null for a guest - the tag panel is the viewer's own, so it stays off the page for them
@@ -40,6 +42,7 @@ export const RecipeDetailsSecondary: React.FC<RecipeDetailsSecondaryProps> = ({
     onDecrement,
     hasCustomCalories,
     content,
+    language,
     allergens,
     recipeId,
     tags,
@@ -59,7 +62,11 @@ export const RecipeDetailsSecondary: React.FC<RecipeDetailsSecondaryProps> = ({
             <CalorieDisclaimer />
         </div>
         <div className={descriptionAreaClassName}>
-            <RecipeDescriptionPanel content={content} allergens={allergens} />
+            <RecipeDescriptionPanel
+                content={content}
+                language={language}
+                allergens={allergens}
+            />
             {tags !== null && (
                 <RecipeTagsPanel recipeId={recipeId} tags={tags} />
             )}

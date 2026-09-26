@@ -35,6 +35,7 @@ describe("socialImage", () => {
         );
         expect(options?.fonts?.map(({ name }) => name)).toEqual([
             "Fraunces",
+            "Lora",
             "Inter",
             "Inter",
         ]);

@@ -14,9 +14,9 @@
         "system": "Systemowy"
     },
     "languageSection": {
-        "heading": "Język i region",
-        "languageTitle": "Język",
-        "languageDescription": "Wybór języka pojawi się już wkrótce."
+        "heading": "Język",
+        "languageTitle": "Język interfejsu",
+        "languageDescription": "W tym języku zobaczysz stronę i dostaniesz e-maile."
     },
     "notificationsSection": {
         "heading": "Powiadomienia",

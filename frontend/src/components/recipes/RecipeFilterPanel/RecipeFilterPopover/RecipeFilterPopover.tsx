@@ -1,13 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { ALLERGEN_SLUGS } from "constants/allergens";
 import type { Ingredient } from "types/ingredient";
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { SetFilterValue } from "hooks/useListFilters";
 
-import { FilterChipGroup } from "components/ui/FilterChipGroup";
 import type { SegmentedOption } from "components/ui/SegmentedControl";
 import { SegmentedControl } from "components/ui/SegmentedControl";
 
@@ -15,10 +13,9 @@ import type {
     RecipeFilterState,
     RecipeSort,
 } from "utils/filters/recipeFilterDefs";
-import { resolveAllergen } from "utils/ingredientName";
-import { recipeTypeName } from "utils/referenceLabels";
 
 import { FilterSection } from "./FilterSection";
+import { RecipeChipFilters } from "./RecipeChipFilters";
 import { RecipeFilterToggles } from "./RecipeFilterToggles";
 import { RecipeIngredientsFilter } from "./RecipeIngredientsFilter";
 import { RecipeRangeSections } from "./RecipeRangeSections";
@@ -73,31 +70,11 @@ export const RecipeFilterPopover: React.FC<RecipeFilterPopoverProps> = ({
                 />
             </FilterSection>
 
-            <FilterSection label={t("filterPanel.typeLabel")}>
-                <FilterChipGroup
-                    options={types.map((type) => ({
-                        id: type.id,
-                        label: recipeTypeName(t, type.type_name),
-                    }))}
-                    value={filters.types}
-                    onChange={(next) => {
-                        setValue("types", next);
-                    }}
-                />
-            </FilterSection>
-
-            <FilterSection label={t("filterPanel.excludeAllergensLabel")}>
-                <FilterChipGroup
-                    options={ALLERGEN_SLUGS.map((slug) => ({
-                        id: slug,
-                        label: resolveAllergen(t, slug),
-                    }))}
-                    value={filters.excludeAllergens}
-                    onChange={(next) => {
-                        setValue("excludeAllergens", next);
-                    }}
-                />
-            </FilterSection>
+            <RecipeChipFilters
+                filters={filters}
+                setValue={setValue}
+                types={types}
+            />
 
             <RecipeTagsFilter
                 value={filters.tags}

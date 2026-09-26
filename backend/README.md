@@ -526,6 +526,11 @@ requester's list is ranked by it: favourites first, anything avoided last (favou
 then newest. `hide_avoided=true` drops those recipes and is refused for a guest with `diet/requires_login`;
 `exclude_allergens=gluten,milk` leaves out recipes with any listed allergen and works for everyone.
 
+Every recipe and menu carries the `language` it is written in (`en`, `pl`, `ru` or `uk`); creating or
+updating one requires it. Search and detail responses return it, and `languages=pl,uk` keeps records
+written in any of the listed languages - for everyone, guests included. The column was added with a
+backfill that guessed existing rows' language from their text.
+
 Ratings: search and detail responses carry `ratingAverage` (unrounded, `null` for a record nobody has
 rated), `ratingCount` and the requester's own `myRating` (`null` for a guest and for anyone who hasn't
 voted). A rating for a record that does not exist answers `404`, one on the requester's own recipe or menu

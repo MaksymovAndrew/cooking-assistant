@@ -41,7 +41,8 @@
     "accountMenu": {
         "trigger": "Меню аккаунта",
         "profile": "Профиль",
-        "settings": "Настройки"
+        "settings": "Настройки",
+        "language": "Язык"
     },
     "logoutModal": {
         "title": "Выход",
@@ -206,7 +207,7 @@
         "remove": "Убрать мою оценку"
     },
     "social": {
-        "tagline": "Рецепты, меню и ваши продукты — на одной кухне",
+        "tagline": "Рецепты, меню и продукты в одном месте",
         "rating_one": "Оценка {{average}}, {{count}} голос",
         "rating_few": "Оценка {{average}}, {{count}} голоса",
         "rating_many": "Оценка {{average}}, {{count}} голосов",
@@ -284,5 +285,22 @@
         "package_few": "упаковки",
         "package_many": "упаковок",
         "package_other": "упаковки"
+    },
+    "languageSwitcher": {
+        "trigger": "Язык: {{language}}",
+        "menu": "Выберите язык"
+    },
+    "contentLanguage": {
+        "in": {
+            "en": "На английском",
+            "pl": "На польском",
+            "ru": "На русском",
+            "uk": "На украинском"
+        },
+        "filterLabel": "Язык",
+        "filterChip_one": "{{count}} язык",
+        "filterChip_few": "{{count}} языка",
+        "filterChip_many": "{{count}} языков",
+        "filterChip_other": "{{count}} языка"
     }
 }

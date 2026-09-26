@@ -1,5 +1,6 @@
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
+import { contentLanguageFilterClause } from "infrastructure/persistence/pg/contentLanguageFilterClause";
 import { DIET_FILTER_CLAUSES } from "infrastructure/persistence/pg/dietFilterClauses";
 import { favouritesFilterClause } from "infrastructure/persistence/pg/favouritesFilterClause";
 import { pantryFilterClause } from "infrastructure/persistence/pg/pantryFilterClause";
@@ -101,4 +102,5 @@ export const RECIPE_FILTER_CLAUSES: readonly RecipeFilterClause[] = [
     topRatedFilterClause("r"),
     ...DIET_FILTER_CLAUSES,
     tagsFilterClause,
+    contentLanguageFilterClause("r"),
 ];

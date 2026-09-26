@@ -41,7 +41,8 @@
     "accountMenu": {
         "trigger": "Menu konta",
         "profile": "Profil",
-        "settings": "Ustawienia"
+        "settings": "Ustawienia",
+        "language": "Język"
     },
     "logoutModal": {
         "title": "Wylogowanie",
@@ -284,5 +285,22 @@
         "package_few": "opakowania",
         "package_many": "opakowań",
         "package_other": "opakowania"
+    },
+    "languageSwitcher": {
+        "trigger": "Język: {{language}}",
+        "menu": "Wybierz język"
+    },
+    "contentLanguage": {
+        "in": {
+            "en": "Po angielsku",
+            "pl": "Po polsku",
+            "ru": "Po rosyjsku",
+            "uk": "Po ukraińsku"
+        },
+        "filterLabel": "Język",
+        "filterChip_one": "{{count}} język",
+        "filterChip_few": "{{count}} języki",
+        "filterChip_many": "{{count}} języków",
+        "filterChip_other": "{{count}} języka"
     }
 }

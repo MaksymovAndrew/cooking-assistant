@@ -14,6 +14,7 @@ const CREATE_MENU_PATH = "/api/create-menu";
 const MENU_ROW_EXTRAS = {
     categoryName: "Dinner",
     menuContent: "Simple dinners",
+    language: "en" as const,
     isOwner: false,
     isFavourite: false,
     recipe_count: 2,
@@ -33,6 +34,7 @@ function makeMenuBody() {
     return {
         menuTitle: MENU_TITLE,
         menuContent: "Simple dinners",
+        language: "en" as const,
         categoryId: 2,
         recipeIds: [3, 5],
     };

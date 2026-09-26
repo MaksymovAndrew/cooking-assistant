@@ -70,6 +70,7 @@ describe("useCreateMenuPage", () => {
         expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.menu.create, {
             menuTitle: MENU_TITLE,
             menuContent: MENU_DESCRIPTION,
+            language: "en",
             categoryId: CATEGORY_ID,
             recipeIds: [RECIPE_ID],
         });

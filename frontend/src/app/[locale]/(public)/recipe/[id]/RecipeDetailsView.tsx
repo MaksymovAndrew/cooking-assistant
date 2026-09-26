@@ -89,6 +89,7 @@ export const RecipeDetailsView: React.FC<RecipeDetailsViewProps> = ({
                         onDecrement={portions.decrement}
                         hasCustomCalories={recipe.calories_override !== null}
                         content={recipe.content}
+                        language={recipe.language}
                         allergens={allergens}
                         recipeId={recipe.id}
                         tags={recipe.tags}

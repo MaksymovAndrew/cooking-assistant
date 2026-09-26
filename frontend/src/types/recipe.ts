@@ -1,3 +1,4 @@
+import type { Locale } from "constants/locales";
 import type { CatalogIngredientRef } from "types/catalogIngredientRef";
 import type { RecordAuthor } from "types/media";
 import type { RecordRating } from "types/rating";
@@ -24,6 +25,8 @@ export interface RecipeSearchIngredient {
 
 // shape returned by GET /api/recipes-by-filters and /api/recipes-filters-person/:id (different ingredient shape from RecipeWithIngredientNames)
 export interface RecipeSearchResultItem extends RecipeListItem, RecordRating {
+    // the language the author wrote it in
+    language: Locale;
     ingredients: RecipeSearchIngredient[];
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
@@ -54,6 +57,7 @@ export interface RecipeDetails extends RecordRating {
     id: number;
     title: string;
     content: string;
+    language: Locale;
     ingredients: RecipeDetailIngredient[];
     type_id: number | null;
     // the FK is ON DELETE SET NULL, so deleting a recipe type empties it on every recipe
@@ -96,6 +100,8 @@ export interface RecipeFilterParams {
     hide_avoided?: boolean;
     // comma-separated ids of the viewer's own tags
     tag_ids?: string;
+    // comma-separated language codes
+    languages?: string;
 }
 
 export interface CreateRecipeIngredient {
@@ -106,6 +112,7 @@ export interface CreateRecipeIngredient {
 export interface CreateRecipeRequest {
     title: string;
     content: string;
+    language: Locale;
     ingredients: CreateRecipeIngredient[];
     type_id: number | null;
     cooking_time: number;
@@ -120,6 +127,7 @@ export interface UpdateRecipeIngredient {
 export interface UpdateRecipeRequest {
     title: string;
     content: string;
+    language: Locale;
     type_id: number | null;
     cooking_time: number;
     calories_override: number | null;

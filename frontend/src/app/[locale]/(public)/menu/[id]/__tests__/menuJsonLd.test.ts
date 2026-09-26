@@ -5,6 +5,7 @@ import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 
 const DESCRIPTION = "Quick and light.";
 const RECIPE = {
+    language: "en" as const,
     type_name: "Soup",
     cooking_time: 30,
     creation_date: "2024-01-01",
@@ -18,6 +19,7 @@ const SAMPLE: MenuDetails = {
     menu: {
         id: 4,
         title: "Weekday menu",
+        language: "en",
         categoryname: "Lunch",
         menucontent: DESCRIPTION,
         category_id: 2,

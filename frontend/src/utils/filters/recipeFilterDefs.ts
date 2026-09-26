@@ -1,6 +1,8 @@
 import type { AllergenSlug } from "constants/allergens";
+import type { Locale } from "constants/locales";
 import type { RecipeFilterParams } from "types/recipe";
 
+import { contentLanguageFilter } from "./contentLanguageFilter";
 import type { FilterDef } from "./filterDef";
 import { idListFilter, textFilter } from "./filterDefFactories";
 import { enumFilter } from "./filterDefFactories.enum";
@@ -28,6 +30,7 @@ export interface RecipeFilterState {
     excludeAllergens: AllergenSlug[];
     hideAvoided: boolean;
     tags: number[];
+    languages: Locale[];
 }
 
 // shared with links that pre-set the filter before navigating (see GuestLandingRecipeFilters)
@@ -75,4 +78,5 @@ export const RECIPE_FILTER_DEFS: readonly FilterDef<
         param: "tag_ids",
         chipLabel: (value, t) => t("tags:filter.chip", { count: value.length }),
     }),
+    contentLanguageFilter<RecipeFilterParams>(),
 ];

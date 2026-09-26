@@ -29,6 +29,7 @@ const SAMPLE: MenuDetails = {
     menu: {
         id: 1,
         title: TITLE,
+        language: "en",
         categoryname: "Lunch",
         menucontent: "quick",
         category_id: 2,
@@ -42,6 +43,7 @@ const SAMPLE: MenuDetails = {
         {
             recipe_id: 10,
             title: "Soup",
+            language: "en",
             type_name: "Soup",
             cooking_time: 30,
             creation_date: "2024-01-01",
@@ -71,6 +73,7 @@ const SAMPLE_WITH_CALORIES: MenuDetails = {
         {
             recipe_id: 11,
             title: "Salad",
+            language: "en",
             type_name: "Salad",
             cooking_time: 10,
             creation_date: "2024-01-01",

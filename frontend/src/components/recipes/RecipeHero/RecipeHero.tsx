@@ -13,6 +13,7 @@ import { RecipeHeroImage } from "components/recipes/RecipeHero/RecipeHeroImage";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
 import { AuthorByline } from "components/ui/AuthorByline";
 import { Chip } from "components/ui/Chip";
+import { LanguageBadge } from "components/ui/LanguageBadge";
 import { StarRatingInput } from "components/ui/StarRatingInput";
 
 import { mediaUrl } from "utils/mediaUrl";
@@ -68,12 +69,17 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 favouriteLabel={favouriteLabel}
             />
 
-            <Chip variant="type" className={styles["recipe-hero__chip"]}>
-                {recipe.type_name === null
-                    ? null
-                    : recipeTypeName(t, recipe.type_name)}
-            </Chip>
-            <h1 className={styles["recipe-hero__title"]}>{recipe.title}</h1>
+            <div className={styles["recipe-hero__tags"]}>
+                <Chip variant="type">
+                    {recipe.type_name === null
+                        ? null
+                        : recipeTypeName(t, recipe.type_name)}
+                </Chip>
+                <LanguageBadge language={recipe.language} />
+            </div>
+            <h1 className={styles["recipe-hero__title"]} lang={recipe.language}>
+                {recipe.title}
+            </h1>
             <AuthorByline
                 author={recipe.author}
                 className={styles["recipe-hero__author"]}

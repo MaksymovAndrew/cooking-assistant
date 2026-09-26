@@ -25,6 +25,7 @@ const MENU_RECIPE = {
     id: 99,
     recipe_id: 10,
     title: "Borscht",
+    language: "en" as const,
     type_name: "Soup",
     cooking_time: 60,
     creation_date: "2024-01-01",
@@ -39,6 +40,7 @@ const SAMPLE: MenuDetails = {
     menu: {
         id: 1,
         title: TITLE,
+        language: "en",
         categoryname: "Lunch",
         menucontent: "quick",
         category_id: CATEGORY_ID,

@@ -24,6 +24,7 @@ const SAMPLE: MenuDetails = {
     menu: {
         id: 4,
         title: TITLE,
+        language: "en",
         categoryname: "Lunch",
         menucontent: "Quick and light.",
         category_id: 2,

@@ -56,6 +56,7 @@ describe("PgCalorieRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Soup",
             content: "Simmer.",
+            language: "en",
             person_id: personId,
             ingredients: [
                 { id: ingredientId, quantity_recipe_ingredients: quantity },
@@ -82,6 +83,7 @@ describe("PgCalorieRepository (real Postgres)", () => {
         const updated = Recipe.forUpdate({
             title: "Soup",
             content: "Simmer, seasoned.",
+            language: "en",
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
             calories_override: 500,
         });
@@ -104,6 +106,7 @@ describe("PgCalorieRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Weekend menu",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId,
             recipeIds: [recipeAId, recipeBId],
@@ -124,6 +127,7 @@ describe("PgCalorieRepository (real Postgres)", () => {
         const unknownRecipe = Recipe.forCreation({
             title: "Mystery dish",
             content: "No calorie data on this ingredient.",
+            language: "en",
             person_id: personId,
             ingredients: [
                 {
@@ -138,6 +142,7 @@ describe("PgCalorieRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Mixed menu",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId,
             recipeIds: [knownRecipeId, unknownRecipeId],

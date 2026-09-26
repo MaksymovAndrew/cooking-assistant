@@ -16,6 +16,8 @@ const MENU_TITLE_LABEL = "Menu title *";
 
 const makeForm = (): Form => ({
     menuTitle: "",
+    language: "en",
+    setLanguage: jest.fn(),
     menuDescription: "",
     selectedCategory: null,
     selectedRecipes: [],

@@ -16,6 +16,7 @@ const t = i18next.getFixedT("en");
 const SAMPLE: RecipeDetails = {
     id: 7,
     title: "Borscht",
+    language: "en",
     content: "Boil the beetroot.\n\n  Add the cabbage.  \n",
     ingredients: [
         {
@@ -52,6 +53,7 @@ describe("recipeJsonLd", () => {
             "@context": "https://schema.org",
             "@type": "Recipe",
             name: "Borscht",
+            inLanguage: "en",
             description: DESCRIPTION,
             url: `${SITE}/recipe/7`,
             image: [

@@ -2,6 +2,11 @@
     "title": "What's new",
     "newCount": "{{total}} new",
     "items": {
+        "fourLanguages": {
+            "date": "2026-09-26",
+            "title": "Cooking Assistant speaks your language",
+            "description": "The whole app now comes in English, Polish, Russian and Ukrainian — pages, emails and even this list. Switch the language from the header, the account menu or Settings. Every recipe and menu also shows which language it is written in, and the filters can keep only the ones you read. Adding a photo got easier too: just drag it onto the form."
+        },
         "photosAndRatings": {
             "date": "2026-09-22",
             "title": "Photos and real star ratings",

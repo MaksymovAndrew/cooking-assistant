@@ -3,6 +3,7 @@ import {
     localizePath,
     splitLocale,
     stripLocale,
+    switchLocaleHref,
 } from "utils/localePath";
 
 const RECIPE_PATH = "/recipe/7";
@@ -78,5 +79,31 @@ describe("localeOfPath", () => {
 
     it("should read an unprefixed path as the default language", () => {
         expect(localeOfPath("/login")).toBe("en");
+    });
+});
+
+describe("switchLocaleHref", () => {
+    it("should move the same page into another language", () => {
+        expect(
+            switchLocaleHref(
+                { pathname: "/ru/all-recipes", search: "?q=soup", hash: "" },
+                "uk",
+            ),
+        ).toBe("/uk/all-recipes?q=soup");
+    });
+
+    it("should drop the prefix when switching to the default language", () => {
+        expect(
+            switchLocaleHref(
+                { pathname: "/pl/recipe/7", search: "", hash: "#steps" },
+                "en",
+            ),
+        ).toBe("/recipe/7#steps");
+    });
+
+    it("should prefix a bare English path", () => {
+        expect(
+            switchLocaleHref({ pathname: "/", search: "", hash: "" }, "ru"),
+        ).toBe("/ru");
     });
 });

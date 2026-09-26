@@ -43,7 +43,9 @@ test("should register a new account and land on the dashboard already logged in"
 });
 
 test("should log out, then log back in with the email identifier", async () => {
-    await page.getByRole("button", { name: "Account menu" }).click();
+    await page
+        .getByRole("button", { name: "Account menu", exact: true })
+        .click();
     await page.getByRole("menuitem", { name: "Log out" }).click();
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login$/);
@@ -109,7 +111,9 @@ test("should render the statistics page", async () => {
 
 test("should log out and protect private routes again", async () => {
     await page.goto("/");
-    await page.getByRole("button", { name: "Account menu" }).click();
+    await page
+        .getByRole("button", { name: "Account menu", exact: true })
+        .click();
     await page.getByRole("menuitem", { name: "Log out" }).click();
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login$/);

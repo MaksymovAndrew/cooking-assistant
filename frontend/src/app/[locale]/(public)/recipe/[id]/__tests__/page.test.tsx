@@ -22,6 +22,7 @@ const mockedFetch = fetchAsVisitor as jest.MockedFunction<
 const SAMPLE: RecipeDetails = {
     id: 7,
     title: "Borscht",
+    language: "en",
     content: "Boil the beetroot.",
     ingredients: [],
     type_id: 2,

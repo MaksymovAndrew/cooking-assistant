@@ -118,7 +118,8 @@
         "discardConfirm": "Porzuć zmiany",
         "discardCancel": "Edytuj dalej",
         "photoTitle": "Zdjęcie okładki",
-        "photoAlt": "Okładka jadłospisu"
+        "photoAlt": "Okładka jadłospisu",
+        "languageLabel": "Język jadłospisu"
     },
     "menuDetailsPage": {
         "breadcrumb": "Ścieżka nawigacji",

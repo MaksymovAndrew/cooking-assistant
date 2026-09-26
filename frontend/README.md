@@ -219,6 +219,16 @@ Data flow: page/hook -> RTK Query hook (`redux/services/*`) -> `axiosBaseQuery` 
   redirected. `Link` and `useAppRouter` put every path from `constants/routes.ts` into the page's
   language themselves, so a call site never writes a prefix; anything that compares against a route
   (the active nav item, the public-path check, the login redirect) reads `stripLocale(pathname)`.
+- **Switching language is a full page load.** `LanguageSwitcher` (guest header, account menu, Settings,
+  the sign-in pages) and the registration page's own select call `useSwitchLocale`, which writes the
+  `NEXT_LOCALE` cookie, saves a signed-in account's language with `PUT /me/locale`, and loads the same
+  address under the new prefix - the root layout and the resources change with it, so a client-side
+  navigation would not do. After sign-in, `useFinishLogin` settles the device against the account: a
+  cookie the visitor set wins and is saved to the account; without one, the account's language is used.
+- **Recipes and menus carry their own language**, separate from the page's: the form picks it
+  (`ContentLanguageSelect`, defaulting to the page's language), cards and detail pages show it as a
+  `LanguageBadge`, the author's own text gets a matching `lang` attribute, and both lists filter by it
+  through one shared descriptor (`utils/filters/contentLanguageFilter.ts`, URL key `lang`).
 - Routes are the folder tree under [src/app/[locale]/](src/app/). Three route groups carry the map and never
   appear in a URL: `(auth)` for sign-in, `(public)` for anything a guest may read, and `(private)`,
   whose `layout.tsx` is a single `PrivateRoute` wrapper - **a page is private because of where it

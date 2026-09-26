@@ -14,6 +14,8 @@ type Form = ReturnType<typeof useRecipeForm>;
 
 const makeForm = (): Form => ({
     title: "",
+    language: "en",
+    setLanguage: jest.fn(),
     setTitle: jest.fn(),
     content: "",
     setContent: jest.fn(),

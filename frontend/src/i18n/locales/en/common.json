@@ -41,7 +41,8 @@
     "accountMenu": {
         "trigger": "Account menu",
         "profile": "Profile",
-        "settings": "Settings"
+        "settings": "Settings",
+        "language": "Language"
     },
     "logoutModal": {
         "title": "Log out",
@@ -256,5 +257,20 @@
         "package": "package",
         "package_one": "package",
         "package_other": "packages"
+    },
+    "languageSwitcher": {
+        "trigger": "Language: {{language}}",
+        "menu": "Choose a language"
+    },
+    "contentLanguage": {
+        "in": {
+            "en": "In English",
+            "pl": "In Polish",
+            "ru": "In Russian",
+            "uk": "In Ukrainian"
+        },
+        "filterLabel": "Language",
+        "filterChip_one": "{{count}} language",
+        "filterChip_other": "{{count}} languages"
     }
 }

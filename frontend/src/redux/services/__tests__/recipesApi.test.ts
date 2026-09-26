@@ -27,6 +27,7 @@ const LIST: RecipeSearchResultItem[] = [
     {
         id: 1,
         title: "Soup",
+        language: "en",
         type_name: "Hot",
         creation_date: "2024-01-01",
         cooking_time: 30,
@@ -45,6 +46,7 @@ const PAGE = { items: LIST, total: LIST.length };
 const FILTERS: RecipeFilterParams = { sort_order: "asc" };
 const CREATE: CreateRecipeRequest = {
     title: "Soup",
+    language: "en",
     content: "boil",
     ingredients: [{ id: 1, quantity: 2 }],
     type_id: 1,
@@ -53,6 +55,7 @@ const CREATE: CreateRecipeRequest = {
 };
 const UPDATE: UpdateRecipeRequest = {
     title: "Soup",
+    language: "en",
     content: "boil",
     type_id: 1,
     cooking_time: 30,
@@ -62,6 +65,7 @@ const UPDATE: UpdateRecipeRequest = {
 const DETAIL: RecipeDetails = {
     id: 1,
     title: "Soup",
+    language: "en",
     content: "boil",
     ingredients: [],
     type_id: 1,

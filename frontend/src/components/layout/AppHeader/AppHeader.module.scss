@@ -52,4 +52,14 @@
         align-items: center;
         gap: var(--s-2);
     }
+
+    // a phone has the bottom bar's own "Log in", and the header has no room for both; scoped
+    // under the group so it outranks the button's own display
+    &__guest-actions &__login {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: inline-flex;
+        }
+    }
 }

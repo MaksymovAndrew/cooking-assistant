@@ -52,7 +52,9 @@ describe("UserMenuPage", () => {
         });
 
         await userEvent.click(screen.getByRole("button", { name: "Filter" }));
-        await userEvent.click(screen.getByRole("checkbox"));
+        await userEvent.click(
+            screen.getByRole("checkbox", { name: CATEGORY_NAME }),
+        );
 
         expect(
             await screen.findByText(`Menus by categories: ${CATEGORY_NAME}`),

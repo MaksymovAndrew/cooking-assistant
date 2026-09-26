@@ -23,6 +23,7 @@ const CURRENT_USER: CurrentUser = {
     avatar: "tomato",
     avatar_photo_key: null,
     calorie_goal: null,
+    locale: "en",
 };
 
 describe("EditProfileModal", () => {

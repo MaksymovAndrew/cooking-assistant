@@ -1,13 +1,17 @@
 import { useCallback, useState } from "react";
 
+import type { Locale } from "constants/locales";
 import type { RecipeFormInitialValues } from "types/recipeForm";
 
 import { useDirtyRef } from "hooks/useDirtyRef";
+import { useLocale } from "hooks/useLocale";
 import { useRecipeFormValidators } from "hooks/useRecipeFormValidators";
 import { useRecordPhotoDraft } from "hooks/useRecordPhotoDraft";
 import { useSelectedIngredients } from "hooks/useSelectedIngredients";
 
-const BLANK_SNAPSHOT: RecipeFormInitialValues = {
+import { differsFromSnapshot } from "utils/formSnapshot";
+
+const BLANK_SNAPSHOT: Omit<RecipeFormInitialValues, "language"> = {
     title: "",
     content: "",
     cookingHours: "",
@@ -19,14 +23,20 @@ const BLANK_SNAPSHOT: RecipeFormInitialValues = {
 };
 
 export const useRecipeForm = () => {
+    const locale = useLocale();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    // a new recipe starts in the language the author is using the app in
+    const [language, setLanguage] = useState<Locale>(locale);
     const [cookingHours, setCookingHours] = useState("");
     const [cookingMinutes, setCookingMinutes] = useState("");
     const [selectedTypeId, setSelectedTypeId] = useState<number | null>(null);
     const [caloriesOverride, setCaloriesOverride] = useState("");
     const [initialSnapshot, setInitialSnapshot] =
-        useState<RecipeFormInitialValues>(BLANK_SNAPSHOT);
+        useState<RecipeFormInitialValues>({
+            ...BLANK_SNAPSHOT,
+            language: locale,
+        });
     const photo = useRecordPhotoDraft("recipe");
     const { reset: resetPhoto } = photo;
 
@@ -46,6 +56,7 @@ export const useRecipeForm = () => {
         (values: RecipeFormInitialValues) => {
             setTitle(values.title);
             setContent(values.content);
+            setLanguage(values.language);
             setCookingHours(values.cookingHours);
             setCookingMinutes(values.cookingMinutes);
             setSelectedTypeId(values.selectedTypeId);
@@ -61,6 +72,7 @@ export const useRecipeForm = () => {
     const current: RecipeFormInitialValues = {
         title,
         content,
+        language,
         cookingHours,
         cookingMinutes,
         selectedTypeId,
@@ -69,8 +81,7 @@ export const useRecipeForm = () => {
         photoKey: initialSnapshot.photoKey,
     };
     const isDirty =
-        photo.isDirty ||
-        JSON.stringify(current) !== JSON.stringify(initialSnapshot);
+        photo.isDirty || differsFromSnapshot(current, initialSnapshot);
 
     const { isDirtyRef, markClean } = useDirtyRef(isDirty);
 
@@ -79,6 +90,8 @@ export const useRecipeForm = () => {
         setTitle,
         content,
         setContent,
+        language,
+        setLanguage,
         cookingHours,
         setCookingHours,
         cookingMinutes,

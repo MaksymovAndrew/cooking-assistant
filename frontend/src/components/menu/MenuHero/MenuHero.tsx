@@ -10,6 +10,7 @@ import { useRatingControl } from "hooks/useRatingControl";
 import { MenuHeroStats } from "components/menu/MenuHero/MenuHeroStats";
 import { AuthorByline } from "components/ui/AuthorByline";
 import { Chip } from "components/ui/Chip";
+import { LanguageBadge } from "components/ui/LanguageBadge";
 import { RatingSummary } from "components/ui/RatingSummary";
 import { StarRatingInput } from "components/ui/StarRatingInput";
 
@@ -71,12 +72,18 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
             )}
             <div className={styles["menu-hero__header"]}>
                 <div className={styles["menu-hero__title-row"]}>
-                    <h1 className={styles["menu-hero__title"]}>{menu.title}</h1>
+                    <h1
+                        className={styles["menu-hero__title"]}
+                        lang={menu.language}
+                    >
+                        {menu.title}
+                    </h1>
                     <Chip variant="type">
                         {menu.categoryname === null
                             ? null
                             : menuCategoryName(t, menu.categoryname)}
                     </Chip>
+                    <LanguageBadge language={menu.language} />
                     <RatingSummary
                         average={rating.ratingAverage}
                         count={rating.ratingCount}
@@ -107,7 +114,10 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
             )}
 
             {menu.menucontent && (
-                <p className={styles["menu-hero__description"]}>
+                <p
+                    className={styles["menu-hero__description"]}
+                    lang={menu.language}
+                >
                     {menu.menucontent}
                 </p>
             )}

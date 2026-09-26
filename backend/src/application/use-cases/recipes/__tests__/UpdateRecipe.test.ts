@@ -10,6 +10,7 @@ function makeInput(overrides = {}) {
     return {
         title: "Tomato soup",
         content: "Boil tomatoes with stock",
+        language: "pl",
         ingredients: [{ id: 3, quantity: 2 }],
         type_id: 1,
         cooking_time: 30,

@@ -29,6 +29,7 @@ const LOG_INTAKE_BUTTON = "Log intake";
 const SAMPLE: RecipeDetails = {
     id: 1,
     title: TITLE,
+    language: "en",
     content: "boil",
     ingredients: [],
     type_id: 2,

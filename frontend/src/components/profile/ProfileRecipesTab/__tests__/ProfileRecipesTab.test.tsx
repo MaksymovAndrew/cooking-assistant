@@ -10,6 +10,7 @@ import { renderWithRouter } from "test/router";
 const RECIPE: RecipeSearchResultItem = {
     id: 1,
     title: "Borscht",
+    language: "en",
     type_name: "Soup",
     creation_date: "2024-01-01",
     cooking_time: 60,

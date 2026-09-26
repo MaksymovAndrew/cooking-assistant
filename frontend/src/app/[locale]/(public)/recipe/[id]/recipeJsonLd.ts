@@ -41,6 +41,8 @@ export const recipeJsonLd = (
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: recipe.title,
+    // the language the recipe is written in, which may differ from the page around it
+    inLanguage: recipe.language,
     description,
     url: absoluteSiteUrl(localizePath(recipeDetailsPath(recipe.id), locale)),
     image: recipeImages(recipe.photo_key),

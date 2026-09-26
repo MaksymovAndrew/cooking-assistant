@@ -5,6 +5,7 @@ export const API_ROUTES = {
         logout: "/api/logout",
         me: "/api/me",
         avatar: "/api/me/avatar",
+        locale: "/api/me/locale",
         forgotPassword: "/api/forgot-password",
         resetPassword: "/api/reset-password",
         changePassword: "/api/change-password",

@@ -1,11 +1,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { Locale } from "constants/locales";
 import { recipeDetailsPath } from "constants/routes";
 
 import { useLocale } from "hooks/useLocale";
 
 import { UtensilsMark } from "components/icons";
+import { LanguageBadge } from "components/ui/LanguageBadge";
 import { Link } from "components/ui/Link";
 import { RatingSummary } from "components/ui/RatingSummary";
 import { RecordPhoto } from "components/ui/RecordPhoto";
@@ -20,6 +22,7 @@ import styles from "./MenuRecipeCard.module.scss";
 interface MenuRecipeCardRecipe {
     id: number;
     title: string;
+    language: Locale;
     type_name: string;
     cooking_time: number;
     calories_per_portion: number | null;
@@ -70,8 +73,14 @@ export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
                 />
             </span>
             <span className={styles["menu-recipe-card__body"]}>
-                <span className={styles["menu-recipe-card__title"]}>
-                    {recipe.title}
+                <span className={styles["menu-recipe-card__title-row"]}>
+                    <span
+                        className={styles["menu-recipe-card__title"]}
+                        lang={recipe.language}
+                    >
+                        {recipe.title}
+                    </span>
+                    <LanguageBadge language={recipe.language} />
                 </span>
                 <span className={styles["menu-recipe-card__meta-row"]}>
                     <span className={styles["menu-recipe-card__meta"]}>

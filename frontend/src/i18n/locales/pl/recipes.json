@@ -31,7 +31,8 @@
         "discardMessage": "Masz niezapisane zmiany. Na pewno chcesz opuścić stronę?",
         "discardConfirm": "Porzuć zmiany",
         "discardCancel": "Edytuj dalej",
-        "photoAlt": "Zdjęcie przepisu"
+        "photoAlt": "Zdjęcie przepisu",
+        "languageLabel": "Język przepisu"
     },
     "ingredientPicker": {
         "searchPlaceholder": "Znajdź składnik…",

@@ -26,6 +26,7 @@ const UPDATE_RECIPE = "Save changes";
 const SAMPLE: RecipeDetails = {
     id: 1,
     title: TITLE,
+    language: "en",
     content: "boil",
     ingredients: [],
     type_id: 2,

@@ -17,6 +17,10 @@
         sans-serif;
 }
 
+.auth-page__language {
+    margin: var(--s-4) 0;
+}
+
 .auth-page__hint {
     margin: var(--s-3) 0 0;
     color: var(--text-muted);

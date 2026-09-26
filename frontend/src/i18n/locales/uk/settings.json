@@ -11,12 +11,12 @@
         "themeLabel": "Тема",
         "dark": "Темна",
         "light": "Світла",
-        "system": "Як у системі"
+        "system": "Системна"
     },
     "languageSection": {
-        "heading": "Мова й регіон",
-        "languageTitle": "Мова",
-        "languageDescription": "Вибір мови з’явиться зовсім скоро."
+        "heading": "Мова",
+        "languageTitle": "Мова інтерфейсу",
+        "languageDescription": "Цією мовою будуть сторінки й листи."
     },
     "notificationsSection": {
         "heading": "Сповіщення",

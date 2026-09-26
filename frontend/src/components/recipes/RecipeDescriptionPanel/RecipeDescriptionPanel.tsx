@@ -2,6 +2,8 @@ import { Ban } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { Locale } from "constants/locales";
+
 import { useAvoidedIngredients } from "hooks/useAvoidedIngredients";
 
 import { resolveAllergen } from "utils/ingredientName";
@@ -12,11 +14,14 @@ const ALLERGEN_ICON_SIZE = 11;
 
 interface RecipeDescriptionPanelProps {
     content: string;
+    // the language the author wrote the steps in, for screen readers and hyphenation
+    language: Locale;
     allergens: string[];
 }
 
 export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
     content,
+    language,
     allergens,
 }) => {
     const { t } = useTranslation("recipes");
@@ -27,7 +32,10 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
             <span className={styles["recipe-description-panel__label"]}>
                 {t("recipeDetailsPage.description")}
             </span>
-            <p className={styles["recipe-description-panel__content"]}>
+            <p
+                className={styles["recipe-description-panel__content"]}
+                lang={language}
+            >
                 {content}
             </p>
             {allergens.length > 0 && (

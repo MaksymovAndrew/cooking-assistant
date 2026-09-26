@@ -1,22 +1,30 @@
 # Cooking Assistant
 
-Full-stack app for running a home kitchen: track your pantry, write recipes, plan menus, and get a
-shopping list of what you are missing. React + TypeScript on the front, Express + PostgreSQL on the back.
+A free cookbook for your home kitchen. Keep your recipes in one place, plan menus for the week, know
+what is in your pantry and what is about to go off, and turn whatever is missing into a shopping list.
+In English, Polish, Russian and Ukrainian.
 
-**Live:** https://cooking-assistant.app
+**Try it:** https://cooking-assistant.app - browse without an account, sign up to keep your own.
 
-## What it does
+## What you can do
 
-- Accounts with JWT auth carried in an httpOnly session cookie (24h tokens, bcrypt-hashed passwords)
-- Recipes: create/edit/delete with ingredients, quantities, units, cooking time, servings
-- Pantry: per-user inventory with quantities, purchase dates, expiry, allergens, seasonality
-- Menus: bundle recipes by meal type; the app computes which ingredients you are missing
-- Home dashboard: recipe/menu/pantry counts, ingredients expiring soon, recent recipes
-- Stats: charts of your cooking patterns (Recharts)
-- Search and filters: by name, recipe type, specific ingredients, cooking time, or "what I can cook right now" from the pantry - all held in the URL, so a filtered view is shareable and bookmarkable
-- Dark/light theme, follows your system preference by default
+- **Recipes** - with photos, ingredients that scale with the number of portions, cooking time and
+  calories per portion. Rate other cooks' recipes, keep favourites, sort them with your own tags.
+- **Menus** - put recipes together for breakfast, lunch or dinner. The app shows which ingredients you
+  are missing and adds them to your shopping list in one go.
+- **Pantry** - what you have, how much, when you bought it and when it expires, with a heads-up for
+  what needs using soon.
+- **Shopping list** - tick items off as you shop, reorder them, clear what you bought.
+- **Diet** - mark the allergens and ingredients you avoid; recipes that contain them are flagged and can
+  be hidden.
+- **Calories** - a daily goal and a food log filled straight from recipes and menus.
+- **Search and filters** - by name, type, ingredient, cooking time, calories, rating, language, or "only
+  what I can cook with what I have". Every filtered view is a link you can share.
+- **Four languages** - the whole app, emails included, in English, Polski, Русский and Українська. Every
+  recipe and menu shows the language it is written in, and the lists filter by it.
+- **Light and dark theme**, on phones, tablets and desktops.
 
-## Quick start
+## Run it locally
 
 You need Node 24+, PostgreSQL 14+, and a Postgres client (pgAdmin / DBeaver / psql).
 
@@ -47,13 +55,15 @@ npm start
 
 Open http://localhost:8080, register, and you are in. `npm start` also serves on your local network,
 so the same URL (with your machine's IP instead of `localhost`) works from a phone on the same Wi-Fi.
+The database guide (schema changes, seeding, rollbacks) is in [backend/README.md](backend/README.md).
 
-> **Already have a database from the old `database.sql` setup?** Don't run a plain `npm run migrate` on
-> it (the tables already exist - it would error). Instead adopt the migrations once, without touching your data:
-> `npm run migrate -- up --fake`. Full database guide (schema changes, seeding, rollbacks) is in
-> [backend/README.md](backend/README.md).
+## For developers
 
-## Layout
+The rest of this file is about the code. [AGENTS.md](AGENTS.md) is the map of conventions and
+architecture, and [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md)
+go into each app.
+
+### Layout
 
 ```
 cooking-assistant/
@@ -69,7 +79,7 @@ It is a plain monorepo - no workspaces. The root `package.json` only holds `conc
 scripts. See [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md) for
 per-app detail.
 
-## Root scripts
+### Root scripts
 
 ```bash
 npm install              # installs root + backend + frontend (postinstall hook)
@@ -83,7 +93,7 @@ npm run test:db          # backend repository tests against a real Postgres (nee
 npm run bump             # set the shared release version by hand (normally happens automatically on commit)
 ```
 
-## Versioning and changelog
+### Versioning and changelog
 
 The whole project shares ONE version, kept in the root [package.json](package.json), and there is ONE
 [CHANGELOG.md](CHANGELOG.md).
@@ -105,12 +115,12 @@ manual step needed.
 > project that was more overhead than value, so we consolidated to the single version + single
 > changelog described above. See the note at the top of [CHANGELOG.md](CHANGELOG.md).
 
-## Production deployment
+### Production deployment
 
 Deployment is tag-triggered: push a `v*` tag and [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
 builds both Docker images for `linux/arm64`, pushes them to GHCR, then connects to the server over SSH and
 runs [deploy/deploy.sh](deploy/deploy.sh) - which applies migrations, starts the new containers, and waits
-for the backend health check, restoring the previous image tag automatically if it never reports healthy.
+for both of them to report healthy, restoring the previous image tag automatically if either never does.
 
 ```bash
 git tag v2.0
@@ -126,7 +136,7 @@ next to the app, and GHCR for images. The shape of the deployed stack lives in [
 live only in a `.env` on the server and never in the repo - see [deploy/.env.example](deploy/.env.example)
 for the variables it must define.
 
-## How we work (contributing)
+### How we work (contributing)
 
 - **Branch from `main`** named after the release (`release/X.Y`); never commit straight to `main` (a `pre-push` hook blocks it). Open a PR for review.
 - **One commit = code change + version bump + changelog entry**, bundled together. Commit title: `<version>: <short description>` (e.g. `1.27: fix purchase-edit stock recalculation`).
@@ -134,15 +144,15 @@ for the variables it must define.
 - **Quality gates must pass to merge:** CI runs a Prettier check plus, on both sides, ESLint, a `tsc` typecheck, a SonarJS lint, and Jest with coverage (80% gate); the frontend also runs a production build and Stylelint. Two more jobs run the slower suites on every PR: a Playwright e2e smoke test (real browser, live dev stack) and a backend repository suite against a real Postgres (Testcontainers). A `ci-success` job aggregates them all. The quick suite also runs locally on `pre-commit` (Husky + lint-staged), and `pre-push` blocks pushing to `main` and runs the frontend build. Reproduce the quick gate in one command with `npm run verify` (e2e/db-integration are separate - see `test:e2e`/`test:db` above). For pure ops-only commits (`.github/workflows/`, `.husky/`, docs) use `git skip-checks commit -m "..."` / `git skip-checks push origin <branch>` - a repo-local alias (auto-installed on `npm install`) that runs the command with `SKIP_CHECKS=1`. On commit it skips the local pre-commit hooks and auto-stamps `[skip-checks]` onto the commit subject so all CI jobs skip too (the required `ci-success` gate still passes); on push it also skips the frontend build. It is scoped to that one command, so a plain `git commit` afterwards runs the full checks. The direct-push-to-`main` block is never bypassed. In CI a `gate` job reads the head commit message (on a PR too), so `[skip-checks]` in the commit skips the jobs on both push and PR - no need to put it in the PR title.
 - **Urgent hotfix:** branch as `hotfix/X.Y.Z` (the exact patch version, e.g. `hotfix/3.9.1`) instead of `release/X.Y`. This is automatic - no `skip-checks` typing needed. `pre-commit` still auto-bumps the version (the branch name already is the target, nothing to guess) but runs only `typecheck` on both sides instead of the full lint/test/stylelint suite; `prepare-commit-msg` auto-stamps `[skip-checks]` so CI's heavy jobs skip the same way they would under the manual escape hatch; `pre-push` auto-skips the frontend build. Everything else is unchanged - still a PR into `main`, the direct-push-to-`main` block still applies, still no tags from Claude. It triggers on branch name alone (no file-path check), so reserve it for small, already-understood fixes - typecheck is the one guardrail that always still runs.
 
-## Tech stack
+### Tech stack
 
-- Frontend: React 19, TypeScript, Next.js 16 (App Router), Redux Toolkit + RTK Query, SCSS modules, axios, i18next + react-i18next, Recharts; server-rendered by a Node process in production
+- Frontend: React 19, TypeScript, Next.js 16 (App Router), Redux Toolkit + RTK Query, SCSS modules, axios, i18next + react-i18next (four languages, one URL prefix each), Recharts; server-rendered by a Node process in production
 - Backend: Node.js, TypeScript, Express 5, `pg`, `node-pg-migrate`, `jsonwebtoken`, `bcryptjs`, `cookie-parser`, `zod`, `helmet`, `pino`, `tsx` (dev) / `tsup` + `node` (prod)
 - Database: PostgreSQL 18, running as a container next to the app
 - Infra: Docker multi-stage builds (arm64), GHCR, GitHub Actions, Docker Compose on a self-hosted ARM server, Caddy with automatic HTTPS
 - Tests: Jest on both sides (backend ts-jest + Supertest, frontend @swc/jest + React Testing Library + jsdom, 80% coverage gate each) plus a Playwright e2e suite and a Testcontainers real-Postgres repository suite
 
-Both sides have a Jest test suite with an 80% coverage gate: backend (`npm --prefix backend test`) uses ts-jest + Supertest with fake repositories; frontend (`npm --prefix frontend test`) uses @swc/jest + React Testing Library + jsdom (~220 test files). Run `npm test` from the root to run both. The e2e suite (`npm run test:e2e`) drives real login/CRUD flows through Chromium; the db-integration suite (`npm run test:db`) runs backend repositories against a real Postgres started by Testcontainers - Docker must be running locally for that one (GitHub-hosted CI runners already have Docker running, so nothing to configure there).
+Both sides have a Jest test suite with an 80% coverage gate: backend (`npm --prefix backend test`) uses ts-jest + Supertest with fake repositories; frontend (`npm --prefix frontend test`) uses @swc/jest + React Testing Library + jsdom (~340 test files). Run `npm test` from the root to run both. The e2e suite (`npm run test:e2e`) drives real login/CRUD flows through Chromium; the db-integration suite (`npm run test:db`) runs backend repositories against a real Postgres started by Testcontainers - Docker must be running locally for that one (GitHub-hosted CI runners already have Docker running, so nothing to configure there).
 
 ## License
 

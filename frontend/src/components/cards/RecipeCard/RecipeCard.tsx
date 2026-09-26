@@ -3,6 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { FAVOURITE_TARGET } from "constants/favourites";
+import type { Locale } from "constants/locales";
 import { recipeDetailsPath } from "constants/routes";
 
 import { useLocale } from "hooks/useLocale";
@@ -29,6 +30,8 @@ interface RecipeCardIngredient {
 interface RecipeCardRecipe {
     id: number;
     title: string;
+    // absent from lists that predate the content language
+    language?: Locale;
     type_name: string;
     cooking_time: number;
     calories_per_portion: number | null;
@@ -67,6 +70,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             imageIcon={UtensilsMark}
             imageSrc={mediaUrl(recipe.photo_key, "card")}
             chipLabel={recipeTypeName(t, recipe.type_name)}
+            language={recipe.language ?? null}
             mine={mine}
             variant={variant}
             badge={hasAllergens}

@@ -27,7 +27,8 @@
         "discardMessage": "You have unsaved changes. Are you sure you want to leave this page?",
         "discardConfirm": "Discard changes",
         "discardCancel": "Keep editing",
-        "photoAlt": "Photo of the recipe"
+        "photoAlt": "Photo of the recipe",
+        "languageLabel": "Recipe language"
     },
     "ingredientPicker": {
         "searchPlaceholder": "Search ingredients…",

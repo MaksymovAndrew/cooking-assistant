@@ -41,7 +41,8 @@
     "accountMenu": {
         "trigger": "Меню облікового запису",
         "profile": "Профіль",
-        "settings": "Налаштування"
+        "settings": "Налаштування",
+        "language": "Мова"
     },
     "logoutModal": {
         "title": "Вихід",
@@ -206,7 +207,7 @@
         "remove": "Прибрати мою оцінку"
     },
     "social": {
-        "tagline": "Рецепти, меню та ваші продукти — на одній кухні",
+        "tagline": "Рецепти, меню й продукти в одному місці",
         "rating_one": "Оцінка {{average}}, {{count}} голос",
         "rating_few": "Оцінка {{average}}, {{count}} голоси",
         "rating_many": "Оцінка {{average}}, {{count}} голосів",
@@ -284,5 +285,22 @@
         "package_few": "упаковки",
         "package_many": "упаковок",
         "package_other": "упаковки"
+    },
+    "languageSwitcher": {
+        "trigger": "Мова: {{language}}",
+        "menu": "Оберіть мову"
+    },
+    "contentLanguage": {
+        "in": {
+            "en": "Англійською",
+            "pl": "Польською",
+            "ru": "Російською",
+            "uk": "Українською"
+        },
+        "filterLabel": "Мова",
+        "filterChip_one": "{{count}} мова",
+        "filterChip_few": "{{count}} мови",
+        "filterChip_many": "{{count}} мов",
+        "filterChip_other": "{{count}} мови"
     }
 }

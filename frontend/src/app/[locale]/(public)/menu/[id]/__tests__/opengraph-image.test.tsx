@@ -19,6 +19,7 @@ const SAMPLE: MenuDetails = {
     menu: {
         id: 4,
         title: "Weekday menu",
+        language: "en",
         categoryname: "Lunch",
         menucontent: "Quick and light.",
         category_id: 2,
@@ -32,6 +33,7 @@ const SAMPLE: MenuDetails = {
         {
             recipe_id: 9,
             title: "Borscht",
+            language: "en",
             type_name: "Soup",
             cooking_time: 30,
             creation_date: "2024-01-01",

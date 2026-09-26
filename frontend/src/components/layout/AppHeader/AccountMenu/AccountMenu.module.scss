@@ -111,6 +111,24 @@
         }
     }
 
+    &__language {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-2);
+        padding: var(--s-1) 0 var(--s-1) var(--s-2);
+    }
+
+    &__language-label {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--text);
+        font:
+            500 14px Inter,
+            sans-serif;
+    }
+
     &__item--danger {
         color: var(--danger);
     }

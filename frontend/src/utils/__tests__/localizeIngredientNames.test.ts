@@ -15,6 +15,7 @@ const t = i18next.getFixedT("en");
 const RECIPE: RecipeDetails = {
     id: 7,
     title: "Borscht",
+    language: "en",
     content: "Boil the beetroot.",
     ingredients: [
         {
@@ -47,6 +48,7 @@ const MENU: MenuDetails = {
     menu: {
         id: 4,
         title: "Weekday menu",
+        language: "en",
         categoryname: "Lunch",
         menucontent: "Quick and light.",
         category_id: 2,
@@ -60,6 +62,7 @@ const MENU: MenuDetails = {
         {
             recipe_id: 9,
             title: "Borscht",
+            language: "en",
             type_name: "Main course",
             cooking_time: 30,
             creation_date: "2024-01-01",

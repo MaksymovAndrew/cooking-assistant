@@ -1,3 +1,4 @@
+import type { Locale } from "constants/locales";
 import type {
     CurrentUser,
     DeleteAccountRequest,
@@ -48,6 +49,14 @@ export const authApi = baseApi.injectEndpoints({
             // a static tag array invalidates on error too, which would refetch getMe and (via PrivateRoute's isChecking) unmount this modal mid-error
             invalidatesTags: (_result, error) => (error ? [] : ["Me"]),
         }),
+        // the page is reloaded in the new language right after, so nothing cached needs refreshing
+        setLocale: build.mutation<null, Locale>({
+            query: (locale) => ({
+                url: API_ROUTES.auth.locale,
+                method: "PUT",
+                data: { locale },
+            }),
+        }),
         deleteAccount: build.mutation<null, DeleteAccountRequest>({
             query: (data) => ({
                 url: API_ROUTES.auth.me,
@@ -61,9 +70,11 @@ export const authApi = baseApi.injectEndpoints({
 
 export const {
     useGetMeQuery,
+    useLazyGetMeQuery,
     useLoginMutation,
     useRegisterMutation,
     useLogoutMutation,
     useUpdateProfileMutation,
     useDeleteAccountMutation,
+    useSetLocaleMutation,
 } = authApi;

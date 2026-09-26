@@ -10,6 +10,7 @@ import { Link } from "components/ui/Link";
 import { LinkButton } from "components/ui/LinkButton";
 
 import { RECIPE_TYPE_URL_PARAM } from "utils/filters/recipeFilterDefs";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import styles from "./GuestLandingFilters.module.scss";
 
@@ -48,7 +49,7 @@ export const GuestLandingRecipeFilters: React.FC = () => {
                         href={`${ROUTES.allRecipes}?${RECIPE_TYPE_URL_PARAM}=${type.id}`}
                         className={styles["guest-landing-filters__chip"]}
                     >
-                        {type.type_name}
+                        {recipeTypeName(t, type.type_name)}
                     </Link>
                 ))}
                 <Link

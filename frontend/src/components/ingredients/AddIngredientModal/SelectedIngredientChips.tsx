@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import type { Ingredient } from "types/ingredient";
 
@@ -17,6 +18,8 @@ interface SelectedIngredientChipsProps {
 export const SelectedIngredientChips: React.FC<
     SelectedIngredientChipsProps
 > = ({ ingredients, onRemove }) => {
+    const { t } = useTranslation();
+
     if (ingredients.length === 0) {
         return null;
     }
@@ -31,7 +34,7 @@ export const SelectedIngredientChips: React.FC<
                         onRemove(ingredient.id);
                     }}
                 >
-                    {resolveIngredientName(ingredient)}
+                    {resolveIngredientName(t, ingredient)}
                 </Chip>
             ))}
         </div>

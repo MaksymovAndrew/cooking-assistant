@@ -72,7 +72,7 @@ export const AvoidAllergensCard: React.FC<AvoidAllergensCardProps> = ({
                                     aria-hidden="true"
                                 />
                             )}
-                            {resolveAllergen(slug)}
+                            {resolveAllergen(t, slug)}
                         </button>
                     );
                 })}

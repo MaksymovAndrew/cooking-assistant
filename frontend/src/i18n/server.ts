@@ -1,24 +1,22 @@
 import { createInstance } from "i18next";
 
-import { DEFAULT_LANGUAGE, DEFAULT_NAMESPACE, resources } from "i18n/resources";
+import type { Locale } from "constants/locales";
 
-// metadata is generated outside the React tree, where useTranslation is unavailable.
-// The language is an argument rather than a module constant, so adding locale-aware
-// routing later means passing a different value, not rewriting every caller. A fresh
-// instance per call keeps one request's language out of another's.
+import { ensureCatalogLoaded } from "i18n/loadCatalog";
+import { DEFAULT_NAMESPACE, i18nOptions } from "i18n/options";
+import { RESOURCES } from "i18n/resources";
+
+// metadata, structured data and preview images are generated outside the React tree, where useTranslation is
+// unavailable. A fresh instance per call keeps one request's language out of another's, and it holds the whole
+// ingredient catalog, which the browser only loads on demand
 export const getServerTranslation = async (
-    language: string = DEFAULT_LANGUAGE,
+    locale: Locale,
     namespace: string = DEFAULT_NAMESPACE,
 ) => {
     const instance = createInstance();
 
-    await instance.init({
-        resources,
-        lng: language,
-        fallbackLng: DEFAULT_LANGUAGE,
-        defaultNS: namespace,
-        interpolation: { escapeValue: false },
-    });
+    await instance.init(i18nOptions(locale, RESOURCES[locale], namespace));
+    await ensureCatalogLoaded(instance);
 
-    return instance.getFixedT(language, namespace);
+    return instance.getFixedT(locale, namespace);
 };

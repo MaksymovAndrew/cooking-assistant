@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { MenuFilters } from "domain/repositories/menu.filters";
 
 import {
+    contentLanguageSchema,
     hasUniqueItems,
     idSchema,
     nonEmptyStringSchema,
@@ -13,6 +14,7 @@ import {
 import {
     booleanQuerySchema,
     idListStringSchema,
+    languageListSchema,
     limitSchema,
     offsetSchema,
 } from "./query.schemas";
@@ -22,6 +24,7 @@ const recipeIdSchema = positiveIntegerSchema("Recipe ID");
 export const createMenuSchema = z.object({
     menuTitle: nonEmptyStringSchema("Menu title"),
     menuContent: optionalStringSchema("Menu content"),
+    language: contentLanguageSchema,
     categoryId: positiveIntegerSchema("Category ID"),
     personId: idSchema,
     recipeIds: z
@@ -50,6 +53,7 @@ export const menuFiltersSchema = z.object({
         .enum(["rating"], { error: "Sort order must be rating" })
         .optional(),
     top_rated: booleanQuerySchema("Top rated"),
+    languages: languageListSchema,
     limit: limitSchema,
     offset: offsetSchema,
 }) satisfies z.ZodType<MenuFilters>;

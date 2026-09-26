@@ -1,11 +1,14 @@
 import { act, renderHook } from "@testing-library/react";
+import i18next from "i18next";
 
 import { useNewsBadge } from "hooks/useNewsBadge";
 
 import { getLatestReleaseDate, getNewsItems } from "utils/newsItems";
 
-const LATEST_RELEASE_DATE = getLatestReleaseDate();
-const latestReleaseCount = getNewsItems().filter(
+const t = i18next.getFixedT("en");
+
+const LATEST_RELEASE_DATE = getLatestReleaseDate(t);
+const latestReleaseCount = getNewsItems(t).filter(
     (entry) => entry.date === LATEST_RELEASE_DATE,
 ).length;
 

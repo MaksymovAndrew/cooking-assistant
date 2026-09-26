@@ -73,7 +73,7 @@ export const MenuAllergens: React.FC<MenuAllergensProps> = ({ allergens }) => {
                                     aria-hidden="true"
                                 />
                             )}
-                            {resolveAllergen(allergen)}
+                            {resolveAllergen(t, allergen)}
                             {isAvoided && (
                                 <span
                                     className={

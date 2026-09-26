@@ -1,0 +1,56 @@
+{
+    "greeting": {
+        "welcome": "Witaj ponownie 👋",
+        "welcomeWithName": "Witaj ponownie, {{name}} 👋"
+    },
+    "actions": {
+        "news": "Nowości",
+        "newMenu": "Nowy jadłospis",
+        "newRecipe": "Nowy przepis"
+    },
+    "stats": {
+        "recipes": "Przepisy",
+        "menus": "Jadłospisy",
+        "pantryItems": "Produkty w spiżarni",
+        "pantryItemsShort": "Spiżarnia",
+        "expiringSoon": "Wkrótce się zepsują",
+        "expiringSoonShort": "Kończą się"
+    },
+    "recentRecipes": {
+        "title": "Ostatnie przepisy",
+        "viewAll": "Wszystkie →",
+        "emptyTitle": "Nie ma jeszcze przepisów",
+        "emptyDescription": "Dodaj pierwszy przepis, a pojawi się tutaj.",
+        "emptyAction": "Dodaj przepis",
+        "cookingTimeHoursMinutes": "{{hours}} godz. {{minutes}} min",
+        "cookingTimeMinutesOnly": "{{minutes}} min",
+        "caloriesValue": "{{count}} kcal"
+    },
+    "expiringSoon": {
+        "title": "Wkrótce się zepsują",
+        "pantryLink": "Spiżarnia →",
+        "expired": "Przeterminowane",
+        "daysLeft_one": "{{count}} dzień",
+        "daysLeft_few": "{{count}} dni",
+        "daysLeft_many": "{{count}} dni",
+        "daysLeft_other": "{{count}} dnia",
+        "addToShoppingList": "+ Do listy zakupów",
+        "empty": "W najbliższych dniach nic się nie zepsuje."
+    },
+    "pantryRecipes": {
+        "title": "Gotuj z tego, co masz",
+        "description": "Zobacz, które przepisy możesz przygotować od razu z produktów ze spiżarni.",
+        "cta": "Pokaż przepisy"
+    },
+    "cookbookStats": {
+        "title": "Statystyki książki",
+        "description": "Średnie, rekordy i podział na rodzaje dla wszystkich przepisów w serwisie — nie tylko twoich.",
+        "cta": "Otwórz statystyki"
+    },
+    "emailVerificationBanner": {
+        "unverifiedMessage": "Potwierdź adres e-mail, żeby móc resetować hasło do konta.",
+        "unverifiedMessageShort": "Potwierdź e-mail, żeby móc resetować hasło.",
+        "sendEmail": "Wyślij e-mail",
+        "later": "Później"
+    }
+}

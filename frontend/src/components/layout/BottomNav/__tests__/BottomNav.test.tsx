@@ -33,7 +33,7 @@ describe("BottomNav", () => {
 
         expect(
             screen.getAllByRole("link").map((link) => link.textContent),
-        ).toEqual(["Recipes", "Menus", "Log In"]);
+        ).toEqual(["Recipes", "Menus", "Log in"]);
     });
 
     it("should record the current page as the login redirect on the guest's Log In tab", async () => {
@@ -42,7 +42,7 @@ describe("BottomNav", () => {
             initialEntries: ["/all-recipes"],
         });
 
-        await userEvent.click(screen.getByRole("link", { name: /Log In/ }));
+        await userEvent.click(screen.getByRole("link", { name: /Log in/ }));
 
         expect(sessionStorage.getItem("login-redirect")).toBe("/all-recipes");
     });

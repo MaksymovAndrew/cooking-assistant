@@ -42,10 +42,18 @@
         opacity: 0.45;
     }
 
-    &__chip {
+    // the type chip and the language badge, over the photo on a grid card
+    &__tags {
         position: absolute;
         top: 11px;
         left: 11px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    &__chip {
         padding: 0 11px;
         height: 25px;
         display: flex;
@@ -85,7 +93,6 @@
     }
 
     &__chip--row {
-        position: static;
         height: 23px;
         padding: 0 10px;
         border: none;
@@ -108,6 +115,10 @@
         align-items: center;
         justify-content: space-between;
         gap: var(--s-3);
+    }
+
+    &__row-header &__tags {
+        position: static;
     }
 
     &__body {

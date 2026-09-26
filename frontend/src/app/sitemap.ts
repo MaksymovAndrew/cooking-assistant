@@ -1,11 +1,14 @@
 import type { MetadataRoute } from "next";
 
 import { absoluteSiteUrl } from "config/site";
+import { LOCALES } from "constants/locales";
 import { menuDetailsPath, recipeDetailsPath, ROUTES } from "constants/routes";
 import type { PaginatedResult } from "types/pagination";
 
 import { API_ROUTES } from "api/endpoints";
 import { fetchPublic } from "api/server";
+
+import { localizePath } from "utils/localePath";
 
 // the API caps a page at 100 rows, so the whole public catalogue is a handful of requests -
 // rebuilt hourly rather than on every crawler visit
@@ -48,6 +51,21 @@ const loadPaths = async (
     return paths;
 };
 
+// every language version is listed, and each names the others, so each is indexed in its own right
+const languageVersions = (path: string): MetadataRoute.Sitemap => {
+    const languages = Object.fromEntries(
+        LOCALES.map((locale) => [
+            locale,
+            absoluteSiteUrl(localizePath(path, locale)),
+        ]),
+    );
+
+    return LOCALES.map((locale) => ({
+        url: languages[locale],
+        alternates: { languages },
+    }));
+};
+
 // listed without a session, so nothing here can be personalised: the private area has no
 // public URL to offer and never appears
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
@@ -64,7 +82,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
         ROUTES.allMenus,
         ...recipes,
         ...menus,
-    ].map((path) => ({ url: absoluteSiteUrl(path) }));
+    ].flatMap(languageVersions);
 };
 
 export default sitemap;

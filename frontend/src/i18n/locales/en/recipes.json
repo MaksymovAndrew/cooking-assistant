@@ -27,16 +27,15 @@
         "discardMessage": "You have unsaved changes. Are you sure you want to leave this page?",
         "discardConfirm": "Discard changes",
         "discardCancel": "Keep editing",
-        "photoAlt": "Photo of the recipe"
+        "photoAlt": "Photo of the recipe",
+        "languageLabel": "Recipe language"
     },
     "ingredientPicker": {
-        "searchPlaceholder": "Search ingredients...",
+        "searchPlaceholder": "Search ingredients…",
         "noMatches": "No ingredients found"
     },
     "recipeCard": {
-        "recipeType": "Recipe type: ",
         "cookingTime": "Cooking time: ",
-        "creationDate": "Creation date: ",
         "cookingTimeValue": "{{hours}} hr : {{minutes}} min",
         "caloriesValue": "{{count}} kcal"
     },
@@ -97,7 +96,7 @@
         "emptyTitle": "No recipes yet",
         "emptyDescription": "Your cookbook is empty. Add your first recipe and it'll show up here.",
         "searchPlaceholder": "recipe title",
-        "metaDescription": "Browse every published recipe - filter by type, cooking time and the ingredients you already have."
+        "metaDescription": "Browse every published recipe — filter by type, cooking time and the ingredients you already have."
     },
     "userRecipesPage": {
         "myRecipes": "My recipes",
@@ -119,7 +118,7 @@
         "recipeTypeLabel": "Recipe type *",
         "recipeTypePlaceholder": "Select recipe type",
         "ingredientsLabel": "Ingredients",
-        "selectedIngredients": "Selected Ingredients",
+        "selectedIngredients": "Selected ingredients",
         "createButton": "Create recipe",
         "errorTitle": "Recipe title cannot be empty.",
         "errorDescription": "Recipe description cannot be empty.",
@@ -139,9 +138,9 @@
         "recipeTypeLabel": "Recipe type *",
         "recipeTypePlaceholder": "Select recipe type",
         "ingredientsLabel": "Ingredients",
-        "selectedIngredients": "Selected Ingredients",
+        "selectedIngredients": "Selected ingredients",
         "updateButton": "Save changes",
-        "loading": "Loading data...",
+        "loading": "Loading…",
         "errorCookingTimeFormat": "Enter hours and minutes.",
         "errorCookingTimeInvalid": "Enter a valid cooking time."
     },
@@ -170,8 +169,7 @@
         "missingIngredients": "Missing ingredients",
         "deleteButton": "Delete recipe",
         "editButton": "Edit recipe",
-        "loading": "Loading...",
-        "errorFetch": "Error fetching recipe details",
+        "loading": "Loading…",
         "deleteTitle": "Delete recipe?",
         "deleteMessage": "Are you sure you want to delete \"{{title}}\"? It will be removed from any menus that include it. This action can't be undone.",
         "error": "Error: {{message}}",
@@ -181,7 +179,7 @@
         "allergens": "Allergens",
         "logIntake": "Log intake",
         "guestCta": "Log in for the full experience",
-        "customCaloriesNote": "The creator set a custom calorie total for this recipe, so per-ingredient calories aren't shown - only the total above applies.",
+        "customCaloriesNote": "The creator set a custom calorie total for this recipe, so per-ingredient calories aren't shown — only the total above applies.",
         "metaFallbackDescription_one": "A {{type}} recipe with {{count}} ingredient.",
         "metaFallbackDescription_other": "A {{type}} recipe with {{count}} ingredients.",
         "cookingTimeUnavailable": "—",

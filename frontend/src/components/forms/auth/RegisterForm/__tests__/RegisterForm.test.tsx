@@ -31,8 +31,8 @@ describe("RegisterForm", () => {
             />,
         );
 
-        expect(screen.getByLabelText("Name:")).toHaveValue("Test");
-        expect(screen.getByLabelText("Surname:")).toHaveValue("User");
+        expect(screen.getByLabelText("Name")).toHaveValue("Test");
+        expect(screen.getByLabelText("Surname")).toHaveValue("User");
         expect(screen.getByLabelText("Username")).toHaveValue("tester");
         expect(screen.getByLabelText("Email")).toHaveValue(
             "tester@example.com",
@@ -53,7 +53,7 @@ describe("RegisterForm", () => {
             />,
         );
 
-        await userEvent.type(screen.getByLabelText("Name:"), "A");
+        await userEvent.type(screen.getByLabelText("Name"), "A");
 
         expect(onFieldChange).toHaveBeenCalledWith("name", "A");
     });

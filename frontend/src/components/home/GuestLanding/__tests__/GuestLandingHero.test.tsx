@@ -19,11 +19,11 @@ describe("GuestLandingHero", () => {
     it("should link Register and Log In to their pages", () => {
         renderWithRouter(<GuestLandingHero />);
 
-        expect(screen.getByRole("link", { name: "Register" })).toHaveAttribute(
+        expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute(
             "href",
             "/registration",
         );
-        expect(screen.getByRole("link", { name: "Log In" })).toHaveAttribute(
+        expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute(
             "href",
             "/login",
         );

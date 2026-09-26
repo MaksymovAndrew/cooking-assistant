@@ -47,7 +47,11 @@
         cursor: pointer;
     }
 
-    &__chip {
+    &__tags {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--s-2);
         margin-bottom: var(--s-3);
     }
 

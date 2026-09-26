@@ -96,7 +96,7 @@ describe("useRegisterForm", () => {
 
         expect(mockedPost).not.toHaveBeenCalled();
         expect(result.current.errors.name).toBe(
-            "Name must start with a capital letter and contain only letters, at least 2 characters.",
+            "Name must start with a capital letter and use only letters (a hyphen or an apostrophe is fine), at least 2 characters.",
         );
         expect(mockNavigate).not.toHaveBeenCalled();
     });
@@ -113,7 +113,7 @@ describe("useRegisterForm", () => {
 
         expect(mockedPost).not.toHaveBeenCalled();
         expect(result.current.errors.surname).toBe(
-            "Surname must start with a capital letter and contain only letters, at least 2 characters.",
+            "Surname must start with a capital letter and use only letters (a hyphen or an apostrophe is fine), at least 2 characters.",
         );
         expect(mockNavigate).not.toHaveBeenCalled();
     });

@@ -10,6 +10,7 @@ function makeInput() {
     return {
         menuTitle: "Weekly menu",
         menuContent: "A simple dinner plan",
+        language: "pl",
         categoryId: 2,
         recipeIds: [3, 5],
     };

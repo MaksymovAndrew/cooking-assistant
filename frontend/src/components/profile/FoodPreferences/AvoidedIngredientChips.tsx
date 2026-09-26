@@ -34,7 +34,7 @@ export const AvoidedIngredientChips: React.FC<AvoidedIngredientChipsProps> = ({
     return (
         <ul className={styles["food-preferences__avoided"]}>
             {ingredients.map((ingredient) => {
-                const name = resolveIngredientName(ingredient);
+                const name = resolveIngredientName(t, ingredient);
 
                 return (
                     <li

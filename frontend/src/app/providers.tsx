@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { Provider } from "react-redux";
 
+import type { Locale } from "constants/locales";
+
 import type { SessionStatus } from "redux/slices/sessionSlice";
 import { createStore } from "redux/store";
 
@@ -15,7 +17,8 @@ import { NavigationBlockerProvider } from "components/layout/NavigationBlocker";
 import { ModalRoot } from "components/modals";
 import { ThemeManager } from "components/theme/ThemeManager";
 import { Toaster } from "components/ui/Toasts";
-import i18n from "i18n/index";
+import { createAppI18n } from "i18n/createAppI18n";
+import type { Resources } from "i18n/resources";
 
 interface ProvidersProps {
     children: ReactNode;
@@ -23,6 +26,9 @@ interface ProvidersProps {
 
 interface RootProvidersProps extends ProvidersProps {
     initialSessionStatus: SessionStatus;
+    locale: Locale;
+    // the page's own language only: the others never reach the browser
+    resources: Resources;
 }
 
 // always-mounted, app-wide behaviour: renders nothing of its own beyond the overlay roots,
@@ -43,8 +49,11 @@ const AppRuntime = ({ children }: ProvidersProps) => {
 export const Providers = ({
     children,
     initialSessionStatus,
+    locale,
+    resources,
 }: RootProvidersProps) => {
     const [store] = useState(() => createStore(initialSessionStatus));
+    const [i18n] = useState(() => createAppI18n(locale, resources));
 
     // enables refetchOnFocus / refetchOnReconnect
     useEffect(() => setupListeners(store.dispatch), [store]);

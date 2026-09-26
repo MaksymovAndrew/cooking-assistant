@@ -20,7 +20,7 @@ export const CalorieHistoryStreak: React.FC<CalorieHistoryStreakProps> = ({
                 {streak}
             </span>
             <span className={styles["calorie-history-chart__streak-label"]}>
-                {t("dietaryTab.streakLabel")}
+                {t("dietaryTab.streakLabel", { count: streak })}
             </span>
             {best > 0 && (
                 <span className={styles["calorie-history-chart__streak-best"]}>

@@ -18,7 +18,7 @@ export const CATEGORY_NAMES: Record<
         pl: "Zioła",
     },
     mushrooms: { en: "Mushrooms", ru: "Грибы", uk: "Гриби", pl: "Grzyby" },
-    meat: { en: "Meat", ru: "Мясо", uk: "М'ясо", pl: "Mięso" },
+    meat: { en: "Meat", ru: "Мясо", uk: "М’ясо", pl: "Mięso" },
     offal: { en: "Offal", ru: "Субпродукты", uk: "Субпродукти", pl: "Podroby" },
     poultry: { en: "Poultry", ru: "Птица", uk: "Птиця", pl: "Drób" },
     fish: { en: "Fish", ru: "Рыба", uk: "Риба", pl: "Ryby" },

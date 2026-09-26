@@ -1,0 +1,131 @@
+{
+    "title": "Co nowego",
+    "newCount": "Nowe: {{total}}",
+    "items": {
+        "fourLanguages": {
+            "date": "2026-09-26",
+            "title": "Cooking Assistant mówi twoim językiem",
+            "description": "Cała aplikacja jest teraz po angielsku, polsku, rosyjsku i ukraińsku — strony, e-maile, a nawet ta lista. Język zmienisz w nagłówku, w menu konta albo w Ustawieniach. Przy każdym przepisie i jadłospisie widać, w jakim języku go napisano, a filtry zostawią tylko te, które przeczytasz. Zdjęcie dodasz też łatwiej: po prostu przeciągnij je na formularz."
+        },
+        "photosAndRatings": {
+            "date": "2026-09-22",
+            "title": "Zdjęcia i prawdziwe oceny",
+            "description": "Przepisy i jadłospisy mogą wreszcie mieć zdjęcie, twój profil też — widać je na kartach, na stronie i w podglądzie, gdy udostępniasz link. Oceny są teraz prawdziwe: daj dowolnemu przepisowi albo jadłospisowi od jednej do pięciu gwiazdek, zmień zdanie albo wycofaj głos, a listy posortujesz według tego, co ludzie ocenili najwyżej. Zmiana hasła wylogowuje teraz ze wszystkich innych urządzeń, więc tam może być potrzebne ponowne logowanie."
+        },
+        "shoppingListAndPreferences": {
+            "date": "2026-09-19",
+            "title": "Lista zakupów, preferencje i tagi",
+            "description": "Wszystko, co zostało do kupienia, ma teraz własną stronę „Lista zakupów”, a przepis albo jadłospis wysyła tam brakujące produkty jednym kliknięciem. Zaznacz alergeny i produkty, których nie jesz — oznaczymy takie przepisy i przesuniemy je na dół. Do każdego przepisu możesz też dodać własne, prywatne tagi."
+        },
+        "favourites": {
+            "date": "2026-09-15",
+            "title": "Są już ulubione",
+            "description": "Kliknij serduszko przy dowolnym przepisie albo jadłospisie, żeby mieć go pod ręką. Ulubione mają własną zakładkę w profilu, a filtry przepisów i jadłospisów potrafią pokazać tylko to, co lubisz."
+        },
+        "fasterPagesAndLinks": {
+            "date": "2026-09-09",
+            "title": "Szybsze strony, porządne linki",
+            "description": "Przepisy i jadłospisy są teraz składane na serwerze, więc strona otwiera się od razu z treścią zamiast ładować się na pustym ekranie. Udostępnij przepis na czacie, a podgląd pokaże wreszcie jego nazwę i opis. Wyszukiwarki też lepiej widzą teraz serwis."
+        },
+        "instantWakeUp": {
+            "date": "2026-08-20",
+            "title": "Aplikacja budzi się od razu",
+            "description": "Po chwili ciszy serwis potrzebował nawet dwudziestu sekund, zanim hosting się obudził. Teraz działa na serwerze, który jest włączony zawsze, więc strony otwierają się od razu, o każdej porze."
+        },
+        "bugsAndPolish": {
+            "date": "2026-08-16",
+            "title": "Mądrzejsza spiżarnia, spokojniejsze okna",
+            "description": "Dokupienie produktu, który już masz, nie zeruje jego terminu przydatności, a lista przeterminowanych pokazuje, który dokładnie zakup się zepsuł. Wyskakujące okna grzecznie czekają na swoją kolej, w statystykach pojawiły się średnie kalorie i klikalne wyniki, a mnóstwo drobiazgów — awatary, nagłówki, ładowanie i nie tylko — zostało dopracowanych."
+        },
+        "guestBrowsing": {
+            "date": "2026-08-06",
+            "title": "Przeglądaj bez konta",
+            "description": "Przeglądaj wszystkie przepisy i jadłospisy, szukaj i filtruj według rodzaju albo kategorii jeszcze przed rejestracją — logowanie nie jest potrzebne. A gdy się zalogujesz, wrócisz dokładnie na stronę, na którą się wybierasz, zamiast na stronę główną."
+        },
+        "calorieTracking": {
+            "date": "2026-08-04",
+            "title": "Liczenie kalorii",
+            "description": "Sprawdzaj kaloryczność przepisów i jadłospisów, ustaw dzienny cel w nowej zakładce „Odżywianie” i zapisuj, co jesz, prosto ze strony przepisu albo jadłospisu. Przepisy i jadłospisy, które przekroczyłyby cel, są wyróżnione, a książkę możesz też filtrować według kalorii."
+        },
+        "smarterSearch": {
+            "date": "2026-07-30",
+            "title": "Mądrzejsze wyszukiwanie i filtry do udostępniania",
+            "description": "Filtry przepisów i jadłospisów są teraz w adresie strony, więc przefiltrowany widok możesz wysłać albo dodać do zakładek — otworzy się dokładnie taki sam. Wyszukiwanie działa w trakcie pisania w całej aplikacji, przepisy znajdziesz po nazwie albo po konkretnych składnikach, a każdy aktywny filtr to plakietka, którą usuniesz jednym kliknięciem."
+        },
+        "newIngredientCatalog": {
+            "date": "2026-07-28",
+            "title": "Większa spiżarnia, mądrzejsze przepisy",
+            "description": "Katalog składników powstał od nowa: ponad 700 pozycji, w tym mięso i ryby, wszystko w jednostkach metrycznych i podzielone na kategorie. Przepisy mają filtr „Z mojej spiżarni”, który pokazuje tylko to, co możesz przygotować od razu, i ostrzeżenie, gdy coś w spiżarni się przeterminuje. Przebudowa wyzerowała składniki, przepisy, jadłospisy i zawartość spiżarni — samo konto zostało nietknięte."
+        },
+        "profileControls": {
+            "date": "2026-07-24",
+            "title": "Twój profil po twojemu",
+            "description": "Zmieniaj imię i wybieraj kulinarny awatar prosto w profilu. A jeśli zajdzie potrzeba, konto możesz teraz trwale usunąć w ustawieniach."
+        },
+        "underTheHood": {
+            "date": "2026-07-21",
+            "title": "Prace za kulisami",
+            "description": "Ta aktualizacja dbała o techniczne podstawy aplikacji — bez nowych funkcji, tylko konserwacja, żeby wszystko działało gładko."
+        },
+        "reliability": {
+            "date": "2026-07-21",
+            "title": "Umie się pozbierać",
+            "description": "Gdy coś pójdzie nie tak, zobaczysz przyjazny ekran, a gdy zniknie internet, damy ci znać. Kiedy wszystko wróci do normy, aplikacja sama się pozbiera."
+        },
+        "mobilePolish": {
+            "date": "2026-07-21",
+            "title": "Wygodniej na telefonie",
+            "description": "Pola tekstowe nie powiększają już strony, długie tytuły nie wychodzą poza ekran, a przyciski na telefonie mają więcej miejsca. Historia zakupów i dolna nawigacja też działają stabilniej."
+        },
+        "accountSecurity": {
+            "date": "2026-07-14",
+            "title": "Reset hasła i potwierdzanie e-maila",
+            "description": "Zapomniane hasło zresetujesz przez e-mail, adres możesz potwierdzić, a hasło zmienić w każdej chwili w ustawieniach."
+        },
+        "flexibleSignIn": {
+            "date": "2026-07-14",
+            "title": "Loguj się, jak wolisz",
+            "description": "Loguj się loginem albo adresem e-mail, a po rejestracji od razu trafiasz na stronę główną."
+        },
+        "redesign": {
+            "date": "2026-07-12",
+            "title": "Zupełnie nowy wygląd",
+            "description": "Każda strona została zaprojektowana od nowa, jest ciemny i jasny motyw, a przy okazji dziesiątki poprawek."
+        },
+        "pantryAware": {
+            "date": "2026-07-02",
+            "title": "Przepisy znają twoją spiżarnię",
+            "description": "Strona przepisu pokazuje, które składniki już masz, a ilości przeliczają się według porcji."
+        },
+        "statsCharts": {
+            "date": "2026-07-02",
+            "title": "Bogatsze statystyki",
+            "description": "Nowe wykresy: jadłospisy według kategorii i średni czas przygotowania według rodzaju przepisu."
+        },
+        "lockout": {
+            "date": "2026-06-27",
+            "title": "Bezpieczniejsze logowanie",
+            "description": "Po kilku nieudanych próbach formularz logowania na chwilę się blokuje i odlicza czas, a wylogowanie prosi najpierw o potwierdzenie."
+        },
+        "instantUpdates": {
+            "date": "2026-06-26",
+            "title": "Natychmiastowe odświeżanie",
+            "description": "Listy odświeżają się same po dodaniu, edycji albo usunięciu — bez przeładowywania strony."
+        },
+        "launch": {
+            "date": "2026-06-21",
+            "title": "Cooking Assistant startuje",
+            "description": "Aplikacja jest teraz dostępna dla wszystkich."
+        },
+        "fasterLoads": {
+            "date": "2026-06-20",
+            "title": "Szybsze ładowanie",
+            "description": "Strony, wykresy i raporty ładują się wtedy, gdy są potrzebne, więc aplikacja startuje wyraźnie szybciej."
+        },
+        "privateMenus": {
+            "date": "2026-06-20",
+            "title": "Twoje jadłospisy są teraz prywatne",
+            "description": "Tylko ty możesz otwierać i zmieniać swoje jadłospisy, a sesja jest przechowywana w bezpieczniejszym ciasteczku."
+        }
+    }
+}

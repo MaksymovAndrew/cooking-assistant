@@ -20,6 +20,37 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.8 - 2026-09-26
+
+### Backend
+
+- Added: Error messages, success messages and emails in Polish, Russian and Ukrainian, chosen by the language of the request or, for an email, of the account; a password-reset or verification link opens the page in that language.
+- Fixed: A password written in Cyrillic or Polish letters was refused, because only Latin letters counted as letters and every other one as a special character.
+- Changed: Ingredient names in Polish, Russian and Ukrainian read the way a shop label does - capitalised, without stress marks, household words instead of botanical ones, and a few outright mistranslations corrected.
+- Changed: The local `.env` file is read by Node itself, so the app has one dependency fewer.
+- Added: Recipes and menus remember the language they are written in, and the lists narrow to one or more languages; existing recipes and menus were sorted by the language of their own text.
+
+### Frontend
+
+- Added: Drag a photo onto a recipe, menu or profile form to add it, or click the empty frame to pick one. Once a photo is in, two buttons over it replace or remove it - they appear on hover, and stay visible on touch screens - and dropping another photo on top replaces it.
+- Added: Every page has an address in each language - English stays where it was, Polish, Russian and Ukrainian live under `/pl`, `/ru` and `/uk`. A first visit opens in the language the browser asks for, and every link keeps you in the language you are reading.
+- Added: Search engines see each language version of a page, linked to the others, and the sitemap lists them all.
+- Added: The whole app in Polish, Russian and Ukrainian - every page, form, message and email, the "What's new" history, recipe types, menu categories and units.
+- Fixed: Registration refused first and last names outside the English and Russian alphabets, such as Ірина, Łukasz or Мар’яна, and names with a hyphen or an apostrophe.
+- Changed: Dates, calorie numbers, amounts and ratings are written the way the page's language writes them, and units agree with the amount - "3 cloves", not "3 clove".
+- Added: Pick your language from the header, the account menu, Settings or the sign-in pages - the page switches at once, and a signed-in account remembers it for next time and for its emails.
+- Added: Registration starts with a language field, labelled in all four languages so anyone can find it.
+- Added: Every recipe and menu shows a small badge with the language it is written in. The forms ask which language that is - the one you are using, unless you choose another - and the recipe and menu filters narrow the lists by language.
+- Changed: Headings in Russian and Ukrainian are set in a serif that matches the English ones, on the pages and on link previews, instead of whatever serif the device had.
+- Fixed: Settings no longer squeeze a setting's name to a sliver on a narrow screen.
+- Changed: On phones, the header's "Log in" button makes room for the language switcher - the bottom bar still has it.
+- Changed: Buttons and links read the same way everywhere - "Log in", "Log out", "Sign up" - and the link preview describes the app for people who cook rather than for developers.
+
+### Project
+
+- Changed: Node 24 LTS everywhere - local development, CI and both production images.
+- Changed: A deploy now cleans up after itself: old app images are removed (the current one and the rollback target stay), along with stale backup copies of server files.
+
 ## 4.7 - 2026-09-22
 
 ### Backend

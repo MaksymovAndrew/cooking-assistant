@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import type { Locale } from "constants/locales";
 import type { RecordRating } from "domain/repositories/recordAuthor";
 
 import { ratingSummaryColumns } from "infrastructure/persistence/pg/ratingColumns";
@@ -8,6 +9,7 @@ export interface MenuRecipeRow extends Omit<RecordRating, "myRating"> {
     recipe_id: number;
     title: string;
     content: string;
+    language: Locale;
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
@@ -26,6 +28,7 @@ export async function loadMenuRecipes(
         r.id AS recipe_id,
         r.title,
         r.content,
+        r.language,
         r.type_id,
         r.creation_date,
         r.cooking_time,

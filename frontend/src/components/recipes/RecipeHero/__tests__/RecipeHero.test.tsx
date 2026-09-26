@@ -24,6 +24,7 @@ const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 const BASE_RECIPE: RecipeDetails = {
     id: 1,
     title: RECIPE_TITLE,
+    language: "en",
     content: "A deeply savoury slow-cooked ragù.",
     ingredients: [],
     type_id: 1,

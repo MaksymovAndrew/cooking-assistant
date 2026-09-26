@@ -20,8 +20,8 @@ const font = async (
 });
 
 // each path is a literal so the build traces exactly these files - a path held in a variable
-// makes it trace the whole project into the server bundle. Inter carries the Cyrillic that
-// Fraunces lacks, so a title in any locale still renders
+// makes it trace the whole project into the server bundle. Lora carries the Cyrillic that
+// Fraunces lacks, so a Russian or Ukrainian title stays a serif
 const readFonts = () =>
     Promise.all([
         font(
@@ -30,6 +30,16 @@ const readFonts = () =>
             readFile(
                 new URL(
                     "../assets/fonts/Fraunces/Fraunces-SemiBold.ttf",
+                    import.meta.url,
+                ),
+            ),
+        ),
+        font(
+            "Lora",
+            600,
+            readFile(
+                new URL(
+                    "../assets/fonts/Lora/Lora-SemiBold-Cyrillic.ttf",
                     import.meta.url,
                 ),
             ),

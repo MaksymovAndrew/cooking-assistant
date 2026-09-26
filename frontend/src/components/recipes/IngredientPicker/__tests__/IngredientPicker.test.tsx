@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { IngredientPicker } from "components/recipes/IngredientPicker";
 
-const SEARCH_PLACEHOLDER = "Search ingredients...";
+const SEARCH_PLACEHOLDER = "Search ingredients…";
 const DEBOUNCE_MS = 300;
 
 const setupUser = () =>

@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import type { Locale } from "constants/locales";
 import { Menu } from "domain/entities/Menu";
 import Recipe from "domain/entities/Recipe";
 import type { MenuFilters } from "domain/repositories/menu.filters";
@@ -36,6 +37,7 @@ describe("PgMenuRepository search (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Menu search fixture recipe",
             content: "For menu search tests.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -54,10 +56,12 @@ describe("PgMenuRepository search (real Postgres)", () => {
         title: string,
         categoryId: number,
         personId = ownerId,
+        language: Locale = "en",
     ): Promise<number> {
         const menu = Menu.forCreation({
             menuTitle: title,
             menuContent: "Search fixture.",
+            language,
             categoryId,
             personId,
             recipeIds: [recipeId],
@@ -142,6 +146,35 @@ describe("PgMenuRepository search (real Postgres)", () => {
         expect(result.total).toBe(1);
     });
 
+    it("should filter by languages and return each menu's language", async () => {
+        const categoryId = await createMenuCategory(pool);
+        const polishId = await createOwnedMenu(
+            unique("Polish menu"),
+            categoryId,
+            ownerId,
+            "pl",
+        );
+        const ukrainianId = await createOwnedMenu(
+            unique("Ukrainian menu"),
+            categoryId,
+            ownerId,
+            "uk",
+        );
+
+        await createOwnedMenu(unique("English menu"), categoryId);
+
+        const result = await menuRepository.findAll(
+            { category_ids: String(categoryId), languages: ["pl", "uk"] },
+            null,
+        );
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: ukrainianId, language: "uk" }),
+            expect.objectContaining({ id: polishId, language: "pl" }),
+        ]);
+        expect(result.total).toBe(2);
+    });
+
     it("should paginate with limit/offset and report the true total count", async () => {
         const categoryId = await createMenuCategory(pool);
 
@@ -170,6 +203,7 @@ describe("PgMenuRepository search (real Postgres)", () => {
         const secondRecipe = Recipe.forCreation({
             title: unique("Second menu search fixture recipe"),
             content: "For menu search tests.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -179,6 +213,7 @@ describe("PgMenuRepository search (real Postgres)", () => {
         const twoRecipeMenu = Menu.forCreation({
             menuTitle: unique("Two-recipe menu"),
             menuContent: "Search fixture.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId, secondRecipeId],

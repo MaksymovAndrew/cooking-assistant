@@ -15,6 +15,7 @@ describe("RecipeDescriptionPanel", () => {
         renderWithRouter(
             <RecipeDescriptionPanel
                 content="A deeply savoury slow-cooked ragù."
+                language="en"
                 allergens={[]}
             />,
         );
@@ -26,7 +27,11 @@ describe("RecipeDescriptionPanel", () => {
 
     it("should not show the allergens section when there are none", () => {
         renderWithRouter(
-            <RecipeDescriptionPanel content="Tasty." allergens={[]} />,
+            <RecipeDescriptionPanel
+                content="Tasty."
+                language="en"
+                allergens={[]}
+            />,
         );
 
         expect(screen.queryByText("Allergens")).not.toBeInTheDocument();
@@ -36,6 +41,7 @@ describe("RecipeDescriptionPanel", () => {
         renderWithRouter(
             <RecipeDescriptionPanel
                 content="Tasty."
+                language="en"
                 allergens={["gluten", "milk"]}
             />,
         );
@@ -56,6 +62,7 @@ describe("RecipeDescriptionPanel", () => {
         renderWithProviders(
             <RecipeDescriptionPanel
                 content="Tasty."
+                language="en"
                 allergens={["gluten", "milk"]}
             />,
             { store: makeTestStore({ session: { status: "authed" } }) },

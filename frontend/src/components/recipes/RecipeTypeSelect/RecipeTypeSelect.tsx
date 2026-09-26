@@ -1,9 +1,12 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import { FormField } from "components/ui/FormField";
 import { Select } from "components/ui/Select";
+
+import { recipeTypeName } from "utils/referenceLabels";
 
 interface RecipeTypeSelectProps {
     id: string;
@@ -23,25 +26,31 @@ export const RecipeTypeSelect: React.FC<RecipeTypeSelectProps> = ({
     value,
     error,
     onChange,
-}) => (
-    <FormField htmlFor={id} label={label} error={error}>
-        <Select
-            id={id}
-            value={value ?? ""}
-            hasError={Boolean(error)}
-            onChange={(e) => {
-                onChange(e.target.value === "" ? null : Number(e.target.value));
-            }}
-            required
-        >
-            <option value="" disabled>
-                {placeholder}
-            </option>
-            {types.map((type) => (
-                <option key={type.id} value={type.id}>
-                    {type.type_name}
+}) => {
+    const { t } = useTranslation();
+
+    return (
+        <FormField htmlFor={id} label={label} error={error}>
+            <Select
+                id={id}
+                value={value ?? ""}
+                hasError={Boolean(error)}
+                onChange={(e) => {
+                    onChange(
+                        e.target.value === "" ? null : Number(e.target.value),
+                    );
+                }}
+                required
+            >
+                <option value="" disabled>
+                    {placeholder}
                 </option>
-            ))}
-        </Select>
-    </FormField>
-);
+                {types.map((type) => (
+                    <option key={type.id} value={type.id}>
+                        {recipeTypeName(t, type.type_name)}
+                    </option>
+                ))}
+            </Select>
+        </FormField>
+    );
+};

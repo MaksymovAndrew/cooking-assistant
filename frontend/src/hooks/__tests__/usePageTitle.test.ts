@@ -8,7 +8,7 @@ describe("usePageTitle", () => {
             usePageTitle("Recipes");
         });
 
-        expect(document.title).toBe("Recipes - Cooking Assistant");
+        expect(document.title).toBe("Recipes · Cooking Assistant");
     });
 
     it("should fall back to just the app name when no title is given", () => {
@@ -29,6 +29,6 @@ describe("usePageTitle", () => {
 
         rerender({ title: "Menus" });
 
-        expect(document.title).toBe("Menus - Cooking Assistant");
+        expect(document.title).toBe("Menus · Cooking Assistant");
     });
 });

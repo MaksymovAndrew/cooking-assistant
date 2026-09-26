@@ -21,13 +21,15 @@
         opacity: 0.72;
     }
 
+    // at least as wide as its unwrapped title, so a control that doesn't fit beside it wraps
+    // to its own line instead of covering it
     &__text {
         flex: 1;
-        min-width: 0;
     }
 
     &__title {
         display: flex;
+        white-space: nowrap;
         align-items: center;
         gap: var(--s-2);
         color: var(--text);

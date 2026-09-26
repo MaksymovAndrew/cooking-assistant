@@ -52,6 +52,7 @@ describe("PgFavouriteRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title,
             content: "Favourite fixture.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -67,6 +68,7 @@ describe("PgFavouriteRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: title,
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId],

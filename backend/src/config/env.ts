@@ -1,5 +1,4 @@
-import "dotenv/config";
-
+import { existsSync } from "node:fs";
 import path from "node:path";
 
 import {
@@ -8,6 +7,13 @@ import {
     assertSecureProductionDb,
 } from "./env.guards";
 import { envSchema } from "./env.schema";
+
+const LOCAL_ENV_FILE = ".env";
+
+// production gets its variables from compose and ships no file; a variable already set always wins
+if (existsSync(LOCAL_ENV_FILE)) {
+    process.loadEnvFile(LOCAL_ENV_FILE);
+}
 
 const parsedEnv = envSchema.safeParse(process.env);
 

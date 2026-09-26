@@ -61,6 +61,41 @@ describe("useMenuForm", () => {
         expect(result.current.selectedRecipes).not.toContain(5);
     });
 
+    it("should start a new menu in the page's language, clean", () => {
+        const { result } = renderHookWithStore(() =>
+            useMenuForm({ errorMessages: ERROR_MESSAGES }),
+        );
+
+        expect(result.current.language).toBe("en");
+        expect(result.current.isDirty).toBe(false);
+    });
+
+    it("should keep a loaded menu's language and count changing it as an edit", () => {
+        const { result } = renderHookWithStore(() =>
+            useMenuForm({ errorMessages: ERROR_MESSAGES }),
+        );
+
+        act(() => {
+            result.current.setInitialValues({
+                menuTitle: "Tydzień zup",
+                menuDescription: "Same zupy",
+                language: "pl",
+                selectedCategory: 2,
+                selectedRecipes: [1],
+                photoKey: null,
+            });
+        });
+
+        expect(result.current.language).toBe("pl");
+        expect(result.current.isDirty).toBe(false);
+
+        act(() => {
+            result.current.setLanguage("uk");
+        });
+
+        expect(result.current.isDirty).toBe(true);
+    });
+
     it("should populate form via setInitialValues", () => {
         const { result } = renderHookWithStore(() =>
             useMenuForm({ errorMessages: ERROR_MESSAGES }),
@@ -70,6 +105,7 @@ describe("useMenuForm", () => {
             result.current.setInitialValues({
                 menuTitle: "Soup week",
                 menuDescription: "All soups",
+                language: "en",
                 selectedCategory: 2,
                 selectedRecipes: [1, 3],
                 photoKey: null,
@@ -90,6 +126,7 @@ describe("useMenuForm", () => {
             result.current.setInitialValues({
                 menuTitle: "Weekly",
                 menuDescription: "Good meals",
+                language: "en",
                 selectedCategory: 1,
                 selectedRecipes: [2],
                 photoKey: null,
@@ -136,6 +173,7 @@ describe("useMenuForm", () => {
             result.current.setInitialValues({
                 menuTitle: "Title",
                 menuDescription: "Desc",
+                language: "en",
                 selectedCategory: 1,
                 selectedRecipes: [],
                 photoKey: null,
@@ -184,6 +222,7 @@ describe("useMenuForm", () => {
             result.current.setInitialValues({
                 menuTitle: "Fixed title",
                 menuDescription: "Fixed desc",
+                language: "en",
                 selectedCategory: 1,
                 selectedRecipes: [3],
                 photoKey: null,

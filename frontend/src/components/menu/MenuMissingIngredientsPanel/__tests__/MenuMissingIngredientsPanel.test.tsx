@@ -122,7 +122,7 @@ describe("MenuMissingIngredientsPanel", () => {
 
         expect(screen.queryByText("1")).not.toBeInTheDocument();
         expect(screen.getByText("Onion")).toBeInTheDocument();
-        expect(screen.getByText("3 piece")).toBeInTheDocument();
+        expect(screen.getByText("3 pieces")).toBeInTheDocument();
         expect(screen.getByLabelText("You have enough")).toBeInTheDocument();
     });
 

@@ -1,12 +1,9 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ROUTES } from "constants/routes";
 import type { LoginRequest } from "types/auth";
 
 import { useLoginMutation } from "redux/services/authApi";
-
-import { useAppRouter } from "hooks/useAppRouter";
 
 import { resolveLoginFailure } from "utils/loginFailure";
 import {
@@ -15,8 +12,8 @@ import {
     type LoginMode,
 } from "utils/loginForm";
 import { clearLockout, EMPTY_LOCKOUT, writeLockout } from "utils/loginLockout";
-import { takeLoginRedirect } from "utils/loginRedirect";
 
+import { useFinishLogin } from "./useFinishLogin";
 import { useLoginLockout } from "./useLoginLockout";
 
 const EMPTY_FORM: LoginRequest = { login: "", password: "" };
@@ -24,8 +21,8 @@ const EMPTY_FORM: LoginRequest = { login: "", password: "" };
 // a failed login shows one generic message, never revealing whether the username or the password was wrong
 export const useLoginForm = () => {
     const { t } = useTranslation("auth");
-    const router = useAppRouter();
     const [login, { isLoading: isSubmitting }] = useLoginMutation();
+    const finishLogin = useFinishLogin();
 
     const [values, setValues] = useState<LoginRequest>(EMPTY_FORM);
     const [loginMode, setLoginMode] = useState<LoginMode>("username");
@@ -75,9 +72,7 @@ export const useLoginForm = () => {
             applyIfCurrent(currentLoginRef, submittedLogin, () => {
                 setLockout(EMPTY_LOCKOUT);
             });
-            // return the user to the page they were trying to reach (e.g. a private route, or a
-            // guest-only "Log in" CTA) instead of always dropping them on the home dashboard
-            router.replace(takeLoginRedirect() ?? ROUTES.home);
+            await finishLogin();
 
             return;
         }
@@ -100,11 +95,11 @@ export const useLoginForm = () => {
         });
     }, [
         currentLoginRef,
+        finishLogin,
         isLocked,
         loginMode,
         lockout,
         login,
-        router,
         setLockout,
         t,
         values,

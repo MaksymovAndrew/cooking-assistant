@@ -12,6 +12,7 @@ import {
 import {
     booleanQuerySchema,
     idListStringSchema,
+    languageListSchema,
     limitSchema,
     offsetSchema,
 } from "./query.schemas";
@@ -94,6 +95,7 @@ export const recipeFiltersSchema = z.object({
         .optional(),
     hide_avoided: booleanQuerySchema("Hide avoided"),
     tag_ids: idListStringSchema("Tag IDs").optional(),
+    languages: languageListSchema,
     limit: limitSchema,
     offset: offsetSchema,
 }) satisfies z.ZodType<RecipeFilters>;

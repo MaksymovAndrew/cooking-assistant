@@ -14,6 +14,7 @@
             "middleware/*": ["./src/middleware/*"],
             "config/*": ["./src/config/*"],
             "i18n/*": ["./src/i18n/*"],
+            "scripts/*": ["./src/scripts/*"],
             "test/*": ["./src/test/*"],
             "app": ["./src/app"],
             "composition-root": ["./src/composition-root"]

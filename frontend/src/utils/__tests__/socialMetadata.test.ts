@@ -7,7 +7,8 @@ import { photoSocialImage, socialMetadata } from "utils/socialMetadata";
 const KEY = "0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b";
 const PAGE = {
     type: "article" as const,
-    url: "/recipe/7",
+    path: "/recipe/7",
+    locale: "en" as const,
     title: "Borscht",
     description: "Boil the beetroot.",
 };
@@ -40,6 +41,22 @@ describe("socialMetadata", () => {
 
         expect(metadata.openGraph).not.toHaveProperty("images");
         expect(metadata.twitter).not.toHaveProperty("images");
+    });
+
+    it("should link the page in its own language and name the other ones", () => {
+        const metadata = socialMetadata({
+            ...PAGE,
+            locale: "pl",
+            image: null,
+        });
+
+        expect(metadata.openGraph).toEqual(
+            expect.objectContaining({
+                url: "/pl/recipe/7",
+                locale: "pl_PL",
+                alternateLocale: ["en_US", "ru_RU", "uk_UA"],
+            }),
+        );
     });
 
     it("should always ask for the large card", () => {

@@ -1,0 +1,79 @@
+{
+    "page": {
+        "heading": "Мої продукти",
+        "noIngredients": "Продуктів поки немає.",
+        "noSearchResults": "За вашим запитом продуктів не знайшлося.",
+        "itemCount_one": "{{count}} продукт у запасах",
+        "itemCount_few": "{{count}} продукти в запасах",
+        "itemCount_many": "{{count}} продуктів у запасах",
+        "itemCount_other": "{{count}} продукту в запасах",
+        "searchPlaceholder": "Знайти в продуктах…",
+        "categoryFilterLabel": "Фільтр за категорією",
+        "categoryFilterAll": "Усі категорії",
+        "expiringSoonFilter_one": "Скоро зіпсуються ({{count}})",
+        "expiringSoonFilter_few": "Скоро зіпсуються ({{count}})",
+        "expiringSoonFilter_many": "Скоро зіпсуються ({{count}})",
+        "expiringSoonFilter_other": "Скоро зіпсуються ({{count}})",
+        "allergens": "Алергени:",
+        "shelfLife": "Термін зберігання:",
+        "shelfLifeDays": "{{days}} дн.",
+        "noExpiration": "Без терміну придатності.",
+        "purchaseDate": "Куплено:",
+        "purchaseDateUnknown": "Невідомо",
+        "detailsButton": "Докладніше",
+        "restockButton": "Докупити",
+        "deleteButton": "Видалити",
+        "addIngredientButton": "Додати продукт",
+        "deleteTitle": "Видалити продукт?",
+        "deleteConfirmMessage": "Видалити продукт «{{name}}»?",
+        "confirmButton": "Видалити",
+        "cancelButton": "Скасувати"
+    },
+    "expiryBadge": {
+        "fresh": "Свіжий",
+        "expired": "Прострочений",
+        "noExpiry": "Без терміну",
+        "daysLeft_one": "{{count}} день",
+        "daysLeft_few": "{{count}} дні",
+        "daysLeft_many": "{{count}} днів",
+        "daysLeft_other": "{{count}} дня"
+    },
+    "categoryBrowser": {
+        "backTo": "Назад до категорій: {{category}}"
+    },
+    "addIngredientModal": {
+        "title": "Додати продукт",
+        "searchPlaceholder": "Знайти інгредієнт…",
+        "noMatches": "Нічого не знайшлося",
+        "cancelButton": "Скасувати",
+        "continueButton": "Далі",
+        "backButton": "Назад",
+        "nextButton": "Наступний",
+        "saveButton": "Додати до продуктів",
+        "stepCount": "{{current}} з {{total}}"
+    },
+    "purchaseModal": {
+        "title": "Історія покупок: {{name}}",
+        "loading": "Завантаження…",
+        "noHistory": "Покупок поки немає.",
+        "closeButton": "Закрити",
+        "editButton": "Змінити кількість"
+    },
+    "restockModal": {
+        "title": "Докупити: {{name}}",
+        "current": "Зараз у вас {{quantity}} {{unit}}.",
+        "confirmButton": "Додати до продуктів"
+    },
+    "expiredNoticeModal": {
+        "title": "Прострочені продукти",
+        "message_one": "У ваших запасах зіпсувалася {{count}} покупка:",
+        "message_few": "У ваших запасах зіпсувалися {{count}} покупки:",
+        "message_many": "У ваших запасах зіпсувалися {{count}} покупок:",
+        "message_other": "У ваших запасах зіпсувалися {{count}} покупки:",
+        "lotQuantity": "{{quantity}} {{unit}}",
+        "lotPurchased": "Куплено {{date}}",
+        "lotExpired": "Зіпсувалося {{date}}",
+        "close": "Закрити",
+        "goToPantry": "До моїх продуктів"
+    }
+}

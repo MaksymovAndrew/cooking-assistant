@@ -33,7 +33,7 @@
         "removeFilter": "Remove"
     },
     "recipePicker": {
-        "searchPlaceholder": "Search recipes...",
+        "searchPlaceholder": "Search recipes…",
         "noMatches": "No recipes found"
     },
     "menuPage": {
@@ -44,7 +44,7 @@
         "emptyTitle": "No menus yet",
         "emptyDescription": "Your menu collection is empty. Add your first menu and it'll show up here.",
         "searchPlaceholder": "menu title",
-        "metaDescription": "Browse every published menu - see what each one cooks, how long it takes and which ingredients it needs."
+        "metaDescription": "Browse every published menu — see what each one cooks, how long it takes and which ingredients it needs."
     },
     "userMenuPage": {
         "myMenus": "My menus",
@@ -53,7 +53,6 @@
         "subtitle_other": "{{count}} menus created by you",
         "emptyTitle": "No menus yet",
         "emptyDescription": "You haven't created any menus yet. Add your first one and it'll show up here.",
-        "addMenu": "Add Menu",
         "searchPlaceholder": "menu title"
     },
     "createMenuPage": {
@@ -85,7 +84,7 @@
         "recipesLabel": "Recipes",
         "selectedRecipes": "Selected recipes",
         "updateButton": "Save changes",
-        "loading": "Loading data...",
+        "loading": "Loading…",
         "errorTitle": "Menu title cannot be empty.",
         "errorDescription": "Menu description cannot be empty.",
         "errorCategory": "Please select a menu category.",
@@ -103,7 +102,8 @@
         "discardConfirm": "Discard changes",
         "discardCancel": "Keep editing",
         "photoTitle": "Cover photo",
-        "photoAlt": "Cover photo of the menu"
+        "photoAlt": "Cover photo of the menu",
+        "languageLabel": "Menu language"
     },
     "menuDetailsPage": {
         "breadcrumb": "Breadcrumb",
@@ -130,11 +130,10 @@
         "favourite": "Favourite",
         "editButton": "Edit menu",
         "deleteButton": "Delete menu",
-        "loading": "Loading...",
+        "loading": "Loading…",
         "deleteTitle": "Delete menu?",
         "deleteMessage": "Are you sure you want to delete \"{{title}}\"? Recipes inside won't be deleted. This action can't be undone.",
         "error": "Error: {{message}}",
-        "errorFetch": "Error fetching menu details",
         "logIntake": "Log intake",
         "guestCta": "Log in for the full experience",
         "metaFallbackDescription_one": "A {{category}} menu built from {{count}} recipe.",

@@ -1,0 +1,26 @@
+{
+    "registered": "Rejestracja zakończona",
+    "loggedIn": "Zalogowano",
+    "loggedOut": "Wylogowano",
+
+    "recipeDeleted": "Przepis usunięty",
+
+    "menuCreated": "Jadłospis utworzony",
+    "menuUpdated": "Jadłospis zaktualizowany",
+    "menuDeleted": "Jadłospis usunięty",
+
+    "ingredientsUpdated": "Produkty zaktualizowane",
+    "ingredientDeleted": "Produkt i historia jego zakupów usunięte",
+    "purchaseUpdated": "Ilość w zakupie zaktualizowana",
+
+    "intakeDeleted": "Wpis usunięty",
+    "calorieGoalUpdated": "Cel kaloryczny zaktualizowany",
+
+    "passwordResetEmailSent": "Jeśli konto z tym adresem e-mail istnieje, a adres jest potwierdzony, wysłaliśmy na niego link do zresetowania hasła.",
+    "passwordReset": "Hasło zresetowane",
+    "passwordChanged": "Hasło zmienione",
+    "profileUpdated": "Profil zaktualizowany",
+    "accountDeleted": "Konto usunięte",
+    "verificationEmailSent": "Link potwierdzający wysłany",
+    "emailVerified": "Adres e-mail potwierdzony"
+}

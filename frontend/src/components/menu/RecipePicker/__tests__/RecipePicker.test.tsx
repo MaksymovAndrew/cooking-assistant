@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { RecipePicker } from "components/menu/RecipePicker";
 
-const SEARCH_PLACEHOLDER = "Search recipes...";
+const SEARCH_PLACEHOLDER = "Search recipes…";
 const DEBOUNCE_MS = 300;
 
 const setupUser = () =>

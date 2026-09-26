@@ -5,12 +5,15 @@ import type { MenuCategory } from "types/menu";
 
 import type { useMenuForm } from "hooks/useMenuForm";
 
+import { ContentLanguageSelect } from "components/forms/ContentLanguageSelect";
 import { FormPhotoCard } from "components/forms/FormPhotoCard";
 import { MenuCategorySelect } from "components/menu/MenuCategorySelect";
 import { FormCard } from "components/ui/FormCard";
 import { FormField } from "components/ui/FormField";
 import { Textarea } from "components/ui/Textarea";
 import { TextInput } from "components/ui/TextInput";
+
+import styles from "./MenuForm.module.scss";
 
 type MenuPageKey = "createMenuPage" | "changeMenuPage";
 
@@ -55,15 +58,23 @@ export const MenuFormFields: React.FC<MenuFormFieldsProps> = ({
             </FormCard>
 
             <FormCard>
-                <MenuCategorySelect
-                    id={`${idPrefix}-category`}
-                    label={t(`${keyPrefix}.categoryLabel`)}
-                    placeholder={t(`${keyPrefix}.categoryPlaceholder`)}
-                    categories={categories}
-                    value={form.selectedCategory}
-                    error={form.errors.categoryError}
-                    onChange={form.setSelectedCategory}
-                />
+                <div className={styles["menu-form__pair-row"]}>
+                    <MenuCategorySelect
+                        id={`${idPrefix}-category`}
+                        label={t(`${keyPrefix}.categoryLabel`)}
+                        placeholder={t(`${keyPrefix}.categoryPlaceholder`)}
+                        categories={categories}
+                        value={form.selectedCategory}
+                        error={form.errors.categoryError}
+                        onChange={form.setSelectedCategory}
+                    />
+                    <ContentLanguageSelect
+                        id={`${idPrefix}-language`}
+                        label={t("menuForm.languageLabel")}
+                        value={form.language}
+                        onChange={form.setLanguage}
+                    />
+                </div>
             </FormCard>
 
             <FormCard>

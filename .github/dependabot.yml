@@ -15,9 +15,13 @@ updates:
           - minor
           - patch
     ignore:
-      # typescript-eslint peers on typescript <6.1.0 (stable 8.65.0 and canary
-      # 8.65.1-alpha.* alike), so TS 7 would cost every type-aware lint rule
+      # typescript-eslint peers on typescript <6.1.0 (still true of 8.70.1),
+      # so TS 7 would cost every type-aware lint rule
       - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # the types follow the Node runtime in .nvmrc and the Dockerfiles, not
+      # the newest Node; bump them together with the runtime
+      - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
       # ESLint 10 is blocked by one plugin only: eslint-plugin-jsx-a11y@6.10.2
       # peers on <=9 (upstream issue #1075, open since Feb 2026, no fork).

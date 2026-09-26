@@ -1,0 +1,39 @@
+{
+    "profilePage": {
+        "joined": "С нами с {{date}}",
+        "recipesStat": "Рецепты",
+        "menusStat": "Меню",
+        "favouritesStat": "Избранное",
+        "kcalTodayStat": "Ккал сегодня",
+        "editProfileButton": "Изменить профиль",
+        "logoutButton": "Выйти",
+        "recipesTab": "Мои рецепты",
+        "menusTab": "Мои меню",
+        "favouritesTab": "Избранное",
+        "dietaryTab": "Питание",
+        "settingsTab": "Настройки",
+        "noRecipes": "Вы ещё не создали ни одного рецепта.",
+        "noMenus": "Вы ещё не создали ни одного меню.",
+        "favouritesKindLabel": "Что показать в избранном",
+        "favouriteRecipes": "Рецепты",
+        "favouriteMenus": "Меню",
+        "noFavouriteRecipes": "В избранном пока нет рецептов.",
+        "noFavouriteMenus": "В избранном пока нет меню."
+    },
+    "editProfileModal": {
+        "title": "Изменить профиль",
+        "nameLabel": "Имя",
+        "surnameLabel": "Фамилия",
+        "photoLabel": "Ваше фото",
+        "photoAlt": "Фото профиля",
+        "avatarLabel": "Аватар",
+        "photoOverridesAvatar": "Вместо аватара показывается ваше фото.",
+        "noAvatarOption": "Без аватара",
+        "cancelButton": "Отмена",
+        "saveButton": "Сохранить",
+        "errors": {
+            "allFieldsRequired": "Укажите имя и фамилию",
+            "genericError": "Что-то пошло не так. Попробуйте ещё раз."
+        }
+    }
+}

@@ -4,12 +4,15 @@ import { useTranslation } from "react-i18next";
 import type { Purchase } from "types/userIngredient";
 
 import { useEditableQuantity } from "hooks/useEditableQuantity";
+import { useLocale } from "hooks/useLocale";
 
 import { EditMark } from "components/icons";
 import { NumberInput } from "components/ui/NumberInput";
 
 import { formatShortDate } from "utils/dateUtils";
 import { isExpired } from "utils/ingredientExpirationUtils";
+import { unitName } from "utils/referenceLabels";
+import { formatQuantity } from "utils/roundQuantity";
 
 import styles from "./PurchaseItem.module.scss";
 
@@ -29,6 +32,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
     onSave,
 }) => {
     const { t } = useTranslation("ingredients");
+    const locale = useLocale();
     const expired = isExpired(purchase.purchase_date, purchase.days_to_expire);
     // read-only until the edit button is pressed, so an accidental scroll or stray tap over the row can never change a saved purchase
     const [isEditing, setIsEditing] = useState(false);
@@ -56,7 +60,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
                 .filter(Boolean)
                 .join(" ")}
         >
-            <span>{formatShortDate(purchase.purchase_date)}</span>
+            <span>{formatShortDate(purchase.purchase_date, locale)}</span>
             <span className={styles["purchase-item__quantity-group"]}>
                 {isEditing ? (
                     <NumberInput
@@ -74,10 +78,12 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
                     />
                 ) : (
                     <span className={styles["purchase-item__value"]}>
-                        {purchase.quantity}
+                        {formatQuantity(purchase.quantity, locale)}
                     </span>
                 )}
-                <span>{purchase.unit_name}</span>
+                <span>
+                    {unitName(t, purchase.unit_name, purchase.quantity)}
+                </span>
             </span>
             {!isEditing && (
                 <button

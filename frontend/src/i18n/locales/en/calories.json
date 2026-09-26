@@ -6,8 +6,8 @@
         "goalPlaceholder": "e.g. 2,200",
         "helperEmpty": "Set a daily goal to start tracking.",
         "emptyTitle": "Start tracking your calories",
-        "emptyDescription": "Set a daily calorie goal and this tab turns into a dashboard - today's progress, a history chart, and a running journal of what you've logged.",
-        "helperPopulated": "This is your current daily target - changing it also re-judges your past history against the new number.",
+        "emptyDescription": "Set a daily calorie goal and this tab turns into a dashboard — today's progress, a history chart, and a running journal of what you've logged.",
+        "helperPopulated": "This is your current daily target — changing it also re-judges your past history against the new number.",
         "saveButton": "Save goal",
         "savedIndicator": "Saved just now",
         "errors": {
@@ -23,7 +23,7 @@
         "remainingLabel": "Remaining",
         "goalLegendLabel": "Goal",
         "overLegendLabel": "Over",
-        "summaryRemaining": "You've eaten {{consumed}} kcal of your {{goal}} kcal goal - {{remaining}} kcal left.",
+        "summaryRemaining": "You've eaten {{consumed}} kcal of your {{goal}} kcal goal — {{remaining}} kcal left.",
         "summaryOver": "You've eaten {{consumed}} kcal, {{over}} kcal over your {{goal}} kcal goal.",
         "journalHeading": "Today's journal",
         "journalMeta": "{{count}} entries · {{calories}} kcal",
@@ -36,7 +36,8 @@
         "historyRange30": "30 days",
         "historyEmpty": "No history yet.",
         "historyGoalLine": "Goal {{goal}} kcal",
-        "streakLabel": "day streak",
+        "streakLabel_one": "day streak",
+        "streakLabel_other": "day streak",
         "streakBest": "Best {{count}} days",
         "avgLabel": "Daily average {{count}}",
         "daysOnGoalLabel": "Days on goal {{onGoal}}/{{total}}",
@@ -47,14 +48,13 @@
         "labelWithPercent": "Kcal today · {{percent}}%",
         "labelOver": "Kcal today · over",
         "remainingLabel": "Kcal left",
-        "goalSuffix": "/ {{goal}} kcal today",
         "emptyLabel": "No goal set",
         "emptyCta": "Set a goal"
     },
     "limitModal": {
         "title": "You're over today's goal",
-        "message": "You've logged {{consumed}} kcal - {{over}} kcal over your {{goal}} kcal goal.",
-        "note": "This appears once a day - we won't nag you on every entry.",
+        "message": "You've logged {{consumed}} kcal — {{over}} kcal over your {{goal}} kcal goal.",
+        "note": "This appears once a day — we won't nag you on every entry.",
         "adjustGoal": "Adjust goal",
         "gotIt": "Got it"
     },
@@ -71,6 +71,5 @@
         "projectedOver": "This would put you {{over}} kcal over your goal for today.",
         "cancel": "Cancel",
         "confirm": "Log it"
-    },
-    "triggerButton": "Log intake"
+    }
 }

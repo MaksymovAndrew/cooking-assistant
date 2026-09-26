@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useIsHydrated } from "hooks/useIsHydrated";
 
@@ -12,6 +13,7 @@ import {
 // tracks which news items the user hasn't opened the popup since - unlike a static "is this from the latest release" flag, the badge actually clears
 export const useNewsBadge = () => {
     const isHydrated = useIsHydrated();
+    const { t } = useTranslation();
     const [storedDate, setStoredDate] = useState<string | null>(null);
 
     // what the user has already seen is a browser-only fact, and the server renders this page
@@ -19,17 +21,17 @@ export const useNewsBadge = () => {
     // disagree. Adjusted during render, not in an effect, so the badge appears once instead of
     // flashing on and off
     if (isHydrated && storedDate === null) {
-        setStoredDate(readLastSeenDate());
+        setStoredDate(readLastSeenDate(t));
     }
 
     // nothing counts as unseen until the stored date is known
-    const lastSeenDate = storedDate ?? getLatestReleaseDate();
-    const unseenCount = getNewsItems().filter((entry) =>
+    const lastSeenDate = storedDate ?? getLatestReleaseDate(t);
+    const unseenCount = getNewsItems(t).filter((entry) =>
         isEntryUnseen(entry, lastSeenDate),
     ).length;
 
     const markAllSeen = () => {
-        const latestReleaseDate = getLatestReleaseDate();
+        const latestReleaseDate = getLatestReleaseDate(t);
 
         writeLastSeenDate(latestReleaseDate);
         setStoredDate(latestReleaseDate);

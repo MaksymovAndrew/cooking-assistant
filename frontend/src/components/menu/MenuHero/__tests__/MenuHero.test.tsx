@@ -14,6 +14,7 @@ const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 const BASE_MENU: MenuDetails["menu"] = {
     id: 1,
     title: MENU_TITLE,
+    language: "en",
     categoryname: "Dinner",
     menucontent: "Slow-cooked, soul-warming Sunday evening meals.",
     category_id: 1,

@@ -13,6 +13,7 @@ const RECIPE_12_PATH = "/api/recipe/12";
 
 const RECIPE_ROW_EXTRAS = {
     content: "Boil tomatoes",
+    language: "en" as const,
     isOwner: false,
     isFavourite: false,
     containsAvoided: false,
@@ -39,6 +40,7 @@ function makeRecipeBody() {
     return {
         title: RECIPE_TITLE,
         content: "Boil tomatoes",
+        language: "en" as const,
         ingredients: [{ id: 3, quantity: 2, quantity_recipe_ingredients: 2 }],
         type_id: 1,
         cooking_time: 30,

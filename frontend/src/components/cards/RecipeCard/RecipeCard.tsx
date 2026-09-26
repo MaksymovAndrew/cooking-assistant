@@ -3,7 +3,10 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { FAVOURITE_TARGET } from "constants/favourites";
+import type { Locale } from "constants/locales";
 import { recipeDetailsPath } from "constants/routes";
+
+import { useLocale } from "hooks/useLocale";
 
 import type { ContentCardVariant } from "components/cards/ContentCard";
 import {
@@ -18,6 +21,7 @@ import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { mediaUrl } from "utils/mediaUrl";
 import { filterAllergens } from "utils/recipeAllergens";
+import { recipeTypeName } from "utils/referenceLabels";
 
 interface RecipeCardIngredient {
     allergens: string[];
@@ -26,6 +30,8 @@ interface RecipeCardIngredient {
 interface RecipeCardRecipe {
     id: number;
     title: string;
+    // absent from lists that predate the content language
+    language?: Locale;
     type_name: string;
     cooking_time: number;
     calories_per_portion: number | null;
@@ -51,6 +57,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
+    const locale = useLocale();
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const hasAllergens =
         filterAllergens((recipe.ingredients ?? []).flatMap((i) => i.allergens))
@@ -62,7 +69,8 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             title={recipe.title}
             imageIcon={UtensilsMark}
             imageSrc={mediaUrl(recipe.photo_key, "card")}
-            chipLabel={recipe.type_name}
+            chipLabel={recipeTypeName(t, recipe.type_name)}
+            language={recipe.language ?? null}
             mine={mine}
             variant={variant}
             badge={hasAllergens}
@@ -85,6 +93,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
                                       roundCalories(
                                           recipe.calories_per_portion,
                                       ),
+                                      locale,
                                   ),
                               }),
                               ...(exceedsBudget

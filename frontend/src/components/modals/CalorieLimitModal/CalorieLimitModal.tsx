@@ -5,6 +5,8 @@ import { profileDietaryPath } from "constants/routes";
 import { useAppDispatch } from "redux/hooks";
 import { closeModal } from "redux/slices/uiSlice";
 
+import { useLocale } from "hooks/useLocale";
+
 import { AlertTriangleMark } from "components/icons/AlertTriangleMark";
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
@@ -28,6 +30,7 @@ export const CalorieLimitModal = ({
     goal,
 }: CalorieLimitModalProps) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
     const dispatch = useAppDispatch();
 
     const handleClose = () => dispatch(closeModal(modalId));
@@ -59,9 +62,9 @@ export const CalorieLimitModal = ({
         >
             <p className={styles["calorie-limit-modal__message"]}>
                 {t("limitModal.message", {
-                    consumed: formatKcal(consumed),
-                    over: formatKcal(consumed - goal),
-                    goal: formatKcal(goal),
+                    consumed: formatKcal(consumed, locale),
+                    over: formatKcal(consumed - goal, locale),
+                    goal: formatKcal(goal, locale),
                 })}
             </p>
             <p className={styles["calorie-limit-modal__note"]}>

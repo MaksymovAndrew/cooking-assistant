@@ -7,7 +7,7 @@ describe("LockoutNotice", () => {
         render(<LockoutNotice remainingMs={65_000} totalMs={300_000} />);
 
         expect(
-            screen.getByText("Too many attempts - account locked."),
+            screen.getByText("Too many attempts — account locked."),
         ).toBeInTheDocument();
         expect(screen.getByText("1:05")).toBeInTheDocument();
     });

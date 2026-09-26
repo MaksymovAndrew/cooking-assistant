@@ -35,6 +35,7 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
         m.menu_title AS title,
         mc.category_name AS categoryName,
         m.menu_content AS menuContent,
+        m.language,
         m.photo_key,
         ${authorColumn("m")},
         ${isOwnerColumn("m", ownerPlaceholder)},

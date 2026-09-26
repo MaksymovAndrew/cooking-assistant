@@ -1,7 +1,7 @@
 {
     "section": {
         "title": "Food preferences",
-        "description": "Recipes containing something you avoid move to the bottom of lists and get a soft mark - nothing is hidden or deleted.",
+        "description": "Recipes containing something you avoid move to the bottom of lists and get a soft mark — nothing is hidden or deleted.",
         "summary": "{{allergens}} · {{ingredients}}",
         "allergenCount_one": "{{count}} allergen",
         "allergenCount_other": "{{count}} allergens",
@@ -12,7 +12,7 @@
         "title": "I avoid",
         "count": "{{count}} of {{total}}",
         "none": "nothing yet",
-        "helper": "The 14 EU allergen categories. Tap to toggle - every change saves right away."
+        "helper": "The 14 EU allergen categories. Tap to toggle — every change saves right away."
     },
     "ingredients": {
         "title": "Ingredients",

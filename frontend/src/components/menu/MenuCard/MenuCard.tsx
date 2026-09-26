@@ -14,12 +14,14 @@ import {
 import { NotebookMark } from "components/icons";
 
 import { mediaUrl } from "utils/mediaUrl";
+import { menuCategoryName } from "utils/referenceLabels";
 
 type MenuCardMenu = Pick<
     Menu,
     | "id"
     | "title"
     | "categoryname"
+    | "language"
     | "recipe_count"
     | "isFavourite"
     | "photo_key"
@@ -46,13 +48,14 @@ export const MenuCard: React.FC<MenuCardProps> = ({
             title={menu.title}
             imageIcon={NotebookMark}
             imageSrc={mediaUrl(menu.photo_key, "card")}
-            chipLabel={menu.categoryname}
+            chipLabel={menuCategoryName(t, menu.categoryname)}
+            language={menu.language ?? null}
             mine={mine}
             variant={variant}
             rating={cardRating(menu)}
             favourite={cardFavourite(FAVOURITE_TARGET.menu, menu)}
             metaText={t("menuCard.meta", {
-                category: menu.categoryname,
+                category: menuCategoryName(t, menu.categoryname),
                 count: menu.recipe_count,
             })}
         />

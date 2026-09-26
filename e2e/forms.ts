@@ -75,6 +75,8 @@ interface RecipeFormInput {
     cookingHours: string;
     cookingMinutes: string;
     typeIndex?: number;
+    // a language code; left out, the form keeps the page's own language
+    language?: string;
 }
 
 interface MenuFormInput {
@@ -82,6 +84,7 @@ interface MenuFormInput {
     description: string;
     recipeTitle: string;
     categoryIndex?: number;
+    language?: string;
 }
 
 async function readSelectedOptionText(
@@ -108,6 +111,9 @@ export async function createRecipeViaForm(
         .getByLabel("Recipe type")
         .selectOption({ index: input.typeIndex ?? 1 });
     const typeText = await readSelectedOptionText(page, "Recipe type");
+    if (input.language) {
+        await page.getByLabel("Recipe language").selectOption(input.language);
+    }
     await selectFromPicker(
         page,
         page.getByLabel("Ingredients"),
@@ -138,6 +144,9 @@ export async function createMenuViaForm(
         .getByLabel("Menu category")
         .selectOption({ index: input.categoryIndex ?? 1 });
     const categoryText = await readSelectedOptionText(page, "Menu category");
+    if (input.language) {
+        await page.getByLabel("Menu language").selectOption(input.language);
+    }
     await selectFromPicker(page, page.getByLabel("Recipes"), input.recipeTitle);
 
     const [response] = await Promise.all([

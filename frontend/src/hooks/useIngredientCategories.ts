@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { CATEGORY_KEYS } from "constants/ingredientCategories";
 
@@ -17,8 +18,10 @@ interface CategorizedItem {
 // counts occurrences per category, returning only categories actually present, in the catalog's canonical order
 export const useIngredientCategories = (
     ingredients: CategorizedItem[],
-): IngredientCategoryOption[] =>
-    useMemo(() => {
+): IngredientCategoryOption[] => {
+    const { t } = useTranslation();
+
+    return useMemo(() => {
         const counts = new Map<string, number>();
 
         ingredients.forEach((ingredient) => {
@@ -30,7 +33,8 @@ export const useIngredientCategories = (
 
         return CATEGORY_KEYS.filter((key) => counts.has(key)).map((key) => ({
             key,
-            label: resolveCategory(key),
+            label: resolveCategory(t, key),
             count: counts.get(key) ?? 0,
         }));
-    }, [ingredients]);
+    }, [ingredients, t]);
+};

@@ -6,6 +6,8 @@ import type { TokenService } from "application/ports/TokenService";
 import { forgotPasswordSchema } from "application/validation/user.schemas";
 import { validate } from "application/validation/validate";
 
+import { emailLink } from "./emailLink";
+
 export default class RequestPasswordReset {
     constructor(
         private userRepository: Pick<
@@ -34,7 +36,12 @@ export default class RequestPasswordReset {
             PASSWORD_RESET_TOKEN_TTL_SECONDS,
             candidate.password,
         );
-        const link = `${this.frontendOrigin}/reset-password?token=${token}`;
+        const link = emailLink(
+            this.frontendOrigin,
+            "/reset-password",
+            token,
+            candidate.locale,
+        );
 
         await this.emailSender.sendPasswordResetEmail(
             email,

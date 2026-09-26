@@ -1,14 +1,13 @@
-import { ImagePlus } from "lucide-react";
-import React, { useId, useRef } from "react";
+import React, { useEffect, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ACCEPTED_IMAGE_TYPES } from "constants/media";
 
-import { Button } from "components/ui/Button";
+import { useFileDrop } from "hooks/useFileDrop";
 
 import styles from "./PhotoField.module.scss";
-
-const PLACEHOLDER_ICON_SIZE = 28;
+import { PhotoFieldEmpty } from "./PhotoFieldEmpty";
+import { PhotoFieldFilled } from "./PhotoFieldFilled";
 
 interface PhotoFieldProps {
     src: string | null;
@@ -30,7 +29,31 @@ export const PhotoField: React.FC<PhotoFieldProps> = ({
 }) => {
     const { t } = useTranslation("common");
     const inputRef = useRef<HTMLInputElement>(null);
+    const dropzoneRef = useRef<HTMLButtonElement>(null);
+    const removedRef = useRef(false);
     const hintId = useId();
+    const drop = useFileDrop(onChoose);
+
+    // the remove button unmounts with the photo, so focus moves to the frame that replaces it
+    useEffect(() => {
+        if (!src && removedRef.current) {
+            removedRef.current = false;
+            dropzoneRef.current?.focus();
+        }
+    }, [src]);
+
+    const remove = () => {
+        removedRef.current = true;
+        onRemove();
+    };
+    const frameClassName = [
+        styles["photo-field__frame"],
+        shape === "round" && styles["photo-field__frame--round"],
+    ]
+        .filter(Boolean)
+        .join(" ");
+
+    const browse = () => inputRef.current?.click();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.item(0);
@@ -45,53 +68,33 @@ export const PhotoField: React.FC<PhotoFieldProps> = ({
 
     return (
         <div className={styles["photo-field"]}>
-            <div
-                className={[
-                    styles["photo-field__frame"],
-                    shape === "round" && styles["photo-field__frame--round"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
-            >
-                {src ? (
-                    <img
-                        className={styles["photo-field__image"]}
-                        src={src}
-                        alt={alt}
-                    />
-                ) : (
-                    <ImagePlus
-                        className={styles["photo-field__placeholder"]}
-                        size={PLACEHOLDER_ICON_SIZE}
-                        aria-hidden="true"
-                    />
-                )}
-            </div>
-
-            <div className={styles["photo-field__actions"]}>
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    aria-describedby={hintId}
-                    onClick={() => inputRef.current?.click()}
-                >
-                    {src ? t("photo.replace") : t("photo.choose")}
-                </Button>
-                {src && (
-                    <Button variant="ghost" size="sm" onClick={onRemove}>
-                        {t("photo.remove")}
-                    </Button>
-                )}
-                <input
-                    ref={inputRef}
-                    data-testid="photo-input"
-                    type="file"
-                    accept={ACCEPTED_IMAGE_TYPES.join(",")}
-                    hidden
-                    onChange={handleChange}
+            {src ? (
+                <PhotoFieldFilled
+                    frameClassName={frameClassName}
+                    src={src}
+                    alt={alt}
+                    hintId={hintId}
+                    drop={drop}
+                    onBrowse={browse}
+                    onRemove={remove}
                 />
-            </div>
-
+            ) : (
+                <PhotoFieldEmpty
+                    buttonRef={dropzoneRef}
+                    frameClassName={frameClassName}
+                    hintId={hintId}
+                    drop={drop}
+                    onBrowse={browse}
+                />
+            )}
+            <input
+                ref={inputRef}
+                data-testid="photo-input"
+                type="file"
+                accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                hidden
+                onChange={handleChange}
+            />
             <p id={hintId} className={styles["photo-field__hint"]}>
                 {t("photo.hint")}
             </p>

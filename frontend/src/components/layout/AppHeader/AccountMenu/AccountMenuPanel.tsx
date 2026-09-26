@@ -1,4 +1,4 @@
-import { Lock, LogOut, User } from "lucide-react";
+import { Languages, Lock, LogOut, User } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -6,6 +6,7 @@ import { ROUTES } from "constants/routes";
 
 import type { AvatarProps } from "components/ui/Avatar";
 import { Avatar } from "components/ui/Avatar";
+import { LanguageSwitcher } from "components/ui/LanguageSwitcher";
 import { Link } from "components/ui/Link";
 
 import styles from "./AccountMenu.module.scss";
@@ -64,6 +65,13 @@ export const AccountMenuPanel: React.FC<AccountMenuPanelProps> = ({
                 <Lock size={MENU_ICON_SIZE} aria-hidden="true" />
                 {t("accountMenu.settings")}
             </Link>
+            <div className={styles["account-menu__language"]}>
+                <span className={styles["account-menu__language-label"]}>
+                    <Languages size={MENU_ICON_SIZE} aria-hidden="true" />
+                    {t("accountMenu.language")}
+                </span>
+                <LanguageSwitcher />
+            </div>
             <div className={styles["account-menu__divider"]} />
             <button
                 type="button"

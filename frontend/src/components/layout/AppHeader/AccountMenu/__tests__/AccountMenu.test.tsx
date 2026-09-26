@@ -68,7 +68,7 @@ describe("AccountMenu", () => {
         }).className;
 
         expect(
-            screen.getByRole("menuitem", { name: "Logout" }).className,
+            screen.getByRole("menuitem", { name: "Log out" }).className,
         ).toContain(itemClass);
     });
 
@@ -78,7 +78,9 @@ describe("AccountMenu", () => {
         renderMenu(onLogout);
 
         await openMenu();
-        await userEvent.click(screen.getByRole("menuitem", { name: "Logout" }));
+        await userEvent.click(
+            screen.getByRole("menuitem", { name: "Log out" }),
+        );
 
         expect(onLogout).toHaveBeenCalledTimes(1);
     });

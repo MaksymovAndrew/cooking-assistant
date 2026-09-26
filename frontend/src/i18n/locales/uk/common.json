@@ -1,0 +1,306 @@
+{
+    "appName": "Cooking Assistant",
+    "meta": {
+        "titleTemplate": "%s · Cooking Assistant",
+        "description": "Зберігайте рецепти в одному місці, складайте меню, стежте за продуктами вдома й надсилайте те, чого бракує, до списку покупок. Безкоштовно, українською, польською, російською та англійською.",
+        "shortDescription": "Рецепти, меню та ваші продукти в одному місці."
+    },
+    "sessionError": "Не вдалося перевірити сесію. Оновіть сторінку.",
+    "modal": {
+        "cancel": "Скасувати",
+        "confirm": "Видалити",
+        "close": "Закрити",
+        "closeSheet": "Закрити"
+    },
+    "mobileSubpageHeader": {
+        "back": "Назад",
+        "edit": "Змінити"
+    },
+    "button": {
+        "loading": "Зберігаємо…"
+    },
+    "chip": {
+        "remove": "Прибрати"
+    },
+    "passwordInput": {
+        "show": "Показати пароль",
+        "hide": "Приховати пароль"
+    },
+    "contentCard": {
+        "favourite": "До обраного",
+        "allergens": "Алергени",
+        "containsAllergens": "Містить алергени",
+        "overBudgetTooltip": "Більше, ніж у вас лишилося калорій на сьогодні"
+    },
+    "toast": {
+        "dismiss": "Закрити"
+    },
+    "pageSpinner": {
+        "loading": "Відкриваємо вашу кулінарну книгу…"
+    },
+    "accountMenu": {
+        "trigger": "Меню облікового запису",
+        "profile": "Профіль",
+        "settings": "Налаштування",
+        "language": "Мова"
+    },
+    "logoutModal": {
+        "title": "Вихід",
+        "message": "Вийти з облікового запису?",
+        "confirm": "Вийти"
+    },
+    "themeModal": {
+        "titleLight": "Увімкнути світлу тему?",
+        "titleDark": "Увімкнути темну тему?",
+        "titleSystem": "Увімкнути системну тему?",
+        "message": "Застосунок перезавантажиться, щоб змінити вигляд. Ви залишитеся на тій самій сторінці.",
+        "confirm": "Змінити й перезавантажити"
+    },
+    "nav": {
+        "recipes": "Рецепти",
+        "menus": "Меню",
+        "ingredients": "Продукти",
+        "stats": "Статистика",
+        "shoppingList": "Покупки",
+        "settings": "Налаштування",
+        "profile": "Профіль",
+        "logout": "Вийти",
+        "login": "Увійти",
+        "register": "Реєстрація",
+        "scrollToTop": "Нагору"
+    },
+    "theme": {
+        "toggleLabel": "Змінити тему"
+    },
+    "search": {
+        "placeholderPrefix": "Пошук за",
+        "clear": "Очистити"
+    },
+    "notFound": {
+        "heading": "Сторінку не знайдено",
+        "description": "Здається, цієї страви немає в меню. Сторінки не існує або її перенесли.",
+        "backToRecipes": "До рецептів",
+        "recipes": "Рецепти",
+        "pantry": "Продукти",
+        "menus": "Меню"
+    },
+    "errors": {
+        "unknown": "Невідома помилка"
+    },
+    "apiErrors": {
+        "bad_request": "Не вдалося обробити запит. Спробуйте ще раз.",
+        "not_found": "Не знайшли того, що ви шукали.",
+        "server_error": "У нас щось зламалося. Спробуйте трохи пізніше.",
+        "validation_error": "Деякі дані введено неправильно.",
+        "rate_limited": "Забагато запитів. Зачекайте трохи й спробуйте знову.",
+        "auth/session_expired": "Сесія завершилася. Увійдіть знову.",
+        "auth/user_not_found": "Не знайшли ваш обліковий запис.",
+        "auth/login_already_taken": "Цей логін уже зайнятий.",
+        "auth/email_already_taken": "Ця пошта вже зареєстрована.",
+        "auth/invalid_login_or_password": "Неправильний логін або пароль.",
+        "auth/current_password_incorrect": "Поточний пароль неправильний.",
+        "auth/invalid_or_expired_token": "Посилання недійсне або застаріле.",
+        "auth/email_already_verified": "Вашу пошту вже підтверджено.",
+        "auth/new_password_same_as_current": "Новий пароль має відрізнятися від поточного.",
+        "recipe/not_found": "Такого рецепта немає або його видалили.",
+        "recipe/ingredients_empty": "Додайте хоча б один інгредієнт.",
+        "recipe/ingredients_missing_id": "Виберіть кожен інгредієнт зі списку.",
+        "recipe/ingredients_not_exist": "Одного чи кількох інгредієнтів більше немає.",
+        "recipe/title_content_empty": "Додайте назву й опис.",
+        "recipe/in_pantry_requires_login": "Увійдіть, щоб добирати рецепти за своїми продуктами.",
+        "menu/not_found": "Такого меню немає або його видалили.",
+        "menu/insufficient_data_create": "Додайте назву, категорію й хоча б один рецепт.",
+        "menu/insufficient_data_update": "Додайте назву, категорію й хоча б один рецепт.",
+        "menu/recipes_not_exist": "Одного чи кількох рецептів більше немає.",
+        "pantry/ingredient_not_found": "Цього продукту немає у ваших запасах.",
+        "pantry/purchase_not_found": "Цієї покупки більше немає.",
+        "calories/intake_not_found": "Цього запису більше немає.",
+        "calories/not_available": "Калорійність цієї страви невідома.",
+        "favourites/requires_login": "Увійдіть, щоб побачити обране.",
+        "ratings/own_record": "Власний рецепт чи меню оцінити не можна.",
+        "ingredient/not_found": "Цього інгредієнта більше немає в каталозі.",
+        "diet/requires_login": "Увійдіть, щоб приховувати рецепти з тим, чого ви не їсте.",
+        "tags/not_found": "Цієї мітки більше немає.",
+        "tags/duplicate_name": "У вас уже є мітка з такою назвою.",
+        "tags/limit_reached": "Міток уже максимум. Спершу видаліть одну.",
+        "tags/requires_login": "Увійдіть, щоб фільтрувати за своїми мітками.",
+        "shopping_list/item_not_found": "Цієї позиції вже немає в списку.",
+        "shopping_list/limit_reached": "Список покупок заповнений. Спершу приберіть щось.",
+        "shopping_list/order_out_of_date": "Список змінився на іншому пристрої. Ми його оновили — спробуйте ще раз.",
+        "media/unsupported_type": "Виберіть фото у форматі JPEG, PNG, WebP або AVIF.",
+        "media/unreadable": "Не вдалося відкрити це фото. Спробуйте інше.",
+        "media/too_large": "Фото завелике. Виберіть файл до 10 МБ.",
+        "media/not_found": "Це фото більше недоступне."
+    },
+    "errorState": {
+        "title": "Щось пішло не так",
+        "retry": "Спробувати знову"
+    },
+    "notifications": {
+        "somethingWentWrong": "Щось пішло не так",
+        "loggedOut": "Ви вийшли з облікового запису",
+        "recipeDeleted": "Рецепт видалено",
+        "menuDeleted": "Меню видалено",
+        "ingredientDeleted": "Продукт видалено",
+        "ingredientsSaved": "Продукти збережено",
+        "purchaseSaved": "Покупку збережено",
+        "passwordChanged": "Пароль змінено",
+        "verificationEmailSent": "Посилання для підтвердження надіслано",
+        "profileUpdated": "Профіль оновлено",
+        "accountDeleted": "Обліковий запис видалено",
+        "calorieIntakeDeleted": "Запис видалено",
+        "intakeLogged": "Додано до сьогоднішнього щоденника"
+    },
+    "timeAgo": {
+        "justNow": "Щойно",
+        "minutes_one": "{{count}} хв тому",
+        "minutes_few": "{{count}} хв тому",
+        "minutes_many": "{{count}} хв тому",
+        "minutes_other": "{{count}} хв тому",
+        "hours_one": "{{count}} год тому",
+        "hours_few": "{{count}} год тому",
+        "hours_many": "{{count}} год тому",
+        "hours_other": "{{count}} год тому",
+        "days_one": "{{count}} день тому",
+        "days_few": "{{count}} дні тому",
+        "days_many": "{{count}} днів тому",
+        "days_other": "{{count}} дня тому"
+    },
+    "loadMore": {
+        "showing": "Показано {{loaded}} з {{total}}",
+        "button": "Показати ще",
+        "loading": "Завантажуємо ще"
+    },
+    "offlineModal": {
+        "title": "Немає з’єднання з інтернетом",
+        "message": "Перевірте з’єднання. Ми й далі намагатимемося достукатися до сервера у фоні.",
+        "close": "Закрити"
+    },
+    "routeError": {
+        "description": "Неочікувана помилка перервала завантаження сторінки. Ваші дані в безпеці — спробуйте ще раз.",
+        "goHome": "На головну"
+    },
+    "author": {
+        "byline": "Автор: {{name}} {{initial}}."
+    },
+    "photo": {
+        "choose": "Додати фото",
+        "dragHint": "або перетягніть його сюди",
+        "dropToAdd": "Відпустіть фото тут",
+        "dropToReplace": "Відпустіть, щоб замінити фото",
+        "replace": "Замінити фото",
+        "remove": "Видалити фото",
+        "hint": "JPEG, PNG, WebP або AVIF, до 10 МБ."
+    },
+    "rating": {
+        "summary_one": "Оцінка {{average}} з 5, {{count}} голос",
+        "summary_few": "Оцінка {{average}} з 5, {{count}} голоси",
+        "summary_many": "Оцінка {{average}} з 5, {{count}} голосів",
+        "summary_other": "Оцінка {{average}} з 5, {{count}} голосу",
+        "none": "Оцінок поки немає",
+        "count": "({{count}})",
+        "star_one": "{{count}} зірка",
+        "star_few": "{{count}} зірки",
+        "star_many": "{{count}} зірок",
+        "star_other": "{{count}} зірки",
+        "yourRating": "Ваша оцінка",
+        "remove": "Прибрати мою оцінку"
+    },
+    "social": {
+        "tagline": "Рецепти, меню й продукти в одному місці",
+        "rating_one": "Оцінка {{average}}, {{count}} голос",
+        "rating_few": "Оцінка {{average}}, {{count}} голоси",
+        "rating_many": "Оцінка {{average}}, {{count}} голосів",
+        "rating_other": "Оцінка {{average}}, {{count}} голосу",
+        "recipeCardAlt": "Картка рецепта: назва, час приготування, калорії та оцінка",
+        "menuCardAlt": "Картка меню: назва, рецепти та оцінка"
+    },
+    "recipeTypes": {
+        "first_course": {
+            "name": "Перша страва",
+            "description": "Супи, бульйони й легкі закуски — зігрівають і пробуджують апетит."
+        },
+        "main_course": {
+            "name": "Основна страва",
+            "description": "Серце обіду: м’ясо, риба чи овочі — ситно й надовго."
+        },
+        "dessert": {
+            "name": "Десерт",
+            "description": "Солодкий фінал: торти, пироги, випічка й інші смаколики."
+        },
+        "drink": {
+            "name": "Напій",
+            "description": "Гарячі й холодні, освіжні й зігрівальні — до будь-якої страви."
+        }
+    },
+    "menuCategories": {
+        "breakfast": "Сніданок",
+        "lunch": "Обід",
+        "dinner": "Вечеря"
+    },
+    "units": {
+        "g": "г",
+        "kg": "кг",
+        "ml": "мл",
+        "l": "л",
+        "tsp": "ч. л.",
+        "tbsp": "ст. л.",
+        "piece": "шт.",
+        "piece_one": "шт.",
+        "piece_few": "шт.",
+        "piece_many": "шт.",
+        "piece_other": "шт.",
+        "clove": "зубчик",
+        "clove_one": "зубчик",
+        "clove_few": "зубчики",
+        "clove_many": "зубчиків",
+        "clove_other": "зубчика",
+        "bunch": "пучок",
+        "bunch_one": "пучок",
+        "bunch_few": "пучки",
+        "bunch_many": "пучків",
+        "bunch_other": "пучка",
+        "sprig": "гілочка",
+        "sprig_one": "гілочка",
+        "sprig_few": "гілочки",
+        "sprig_many": "гілочок",
+        "sprig_other": "гілочки",
+        "slice": "скибочка",
+        "slice_one": "скибочка",
+        "slice_few": "скибочки",
+        "slice_many": "скибочок",
+        "slice_other": "скибочки",
+        "head": "головка",
+        "head_one": "головка",
+        "head_few": "головки",
+        "head_many": "головок",
+        "head_other": "головки",
+        "can": "банка",
+        "can_one": "банка",
+        "can_few": "банки",
+        "can_many": "банок",
+        "can_other": "банки",
+        "package": "упаковка",
+        "package_one": "упаковка",
+        "package_few": "упаковки",
+        "package_many": "упаковок",
+        "package_other": "упаковки"
+    },
+    "languageSwitcher": {
+        "trigger": "Мова: {{language}}",
+        "menu": "Оберіть мову"
+    },
+    "contentLanguage": {
+        "in": {
+            "en": "Англійською",
+            "pl": "Польською",
+            "ru": "Російською",
+            "uk": "Українською"
+        },
+        "filterLabel": "Мова",
+        "filterChip_one": "{{count}} мова",
+        "filterChip_few": "{{count}} мови",
+        "filterChip_many": "{{count}} мов",
+        "filterChip_other": "{{count}} мови"
+    }
+}

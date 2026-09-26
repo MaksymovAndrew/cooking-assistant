@@ -1,5 +1,4 @@
 {
-    "pageTitle": "Home",
     "greeting": {
         "welcome": "Welcome back 👋",
         "welcomeWithName": "Welcome back, {{name}} 👋"
@@ -43,7 +42,7 @@
     },
     "cookbookStats": {
         "title": "Cookbook stats",
-        "description": "Averages, extremes and type breakdowns across every recipe here - not just yours.",
+        "description": "Averages, extremes and type breakdowns across every recipe here — not just yours.",
         "cta": "Open stats"
     },
     "emailVerificationBanner": {

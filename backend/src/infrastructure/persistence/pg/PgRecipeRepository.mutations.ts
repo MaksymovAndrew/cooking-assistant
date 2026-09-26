@@ -13,6 +13,7 @@ export async function createRecipeInDb(
     {
         title,
         content,
+        language,
         person_id,
         ingredients,
         type_id,
@@ -26,8 +27,8 @@ export async function createRecipeInDb(
         await client.query("BEGIN");
 
         const newRecipe = await client.query<RecipeRow>(
-            `INSERT INTO recipes (title, content, person_id, type_id, cooking_time, calories_override)
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            `INSERT INTO recipes (title, content, person_id, type_id, cooking_time, calories_override, language)
+         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
             [
                 title,
                 content,
@@ -35,6 +36,7 @@ export async function createRecipeInDb(
                 type_id,
                 cooking_time,
                 calories_override,
+                language,
             ],
         );
 
@@ -62,6 +64,7 @@ export async function updateRecipeInDb(
     {
         title,
         content,
+        language,
         ingredients: newIngredients,
         type_id,
         cooking_time,
@@ -74,14 +77,15 @@ export async function updateRecipeInDb(
         await client.query("BEGIN");
 
         const result = await client.query<RecipeRow>(
-            `UPDATE recipes SET title = $1, content = $2, type_id = $3, cooking_time = $4, calories_override = $5
-         WHERE id = $6 AND person_id = $7 RETURNING *`,
+            `UPDATE recipes SET title = $1, content = $2, type_id = $3, cooking_time = $4, calories_override = $5, language = $6
+         WHERE id = $7 AND person_id = $8 RETURNING *`,
             [
                 title,
                 content,
                 type_id,
                 cooking_time,
                 calories_override,
+                language,
                 recipeId,
                 personId,
             ],

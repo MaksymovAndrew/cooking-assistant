@@ -16,6 +16,8 @@ const MENU_TITLE_LABEL = "Menu title *";
 
 const makeForm = (): Form => ({
     menuTitle: "",
+    language: "en",
+    setLanguage: jest.fn(),
     menuDescription: "",
     selectedCategory: null,
     selectedRecipes: [],
@@ -122,7 +124,7 @@ describe("MenuForm", () => {
             renderForm(form);
 
             await user.type(
-                screen.getByPlaceholderText("Search recipes..."),
+                screen.getByPlaceholderText("Search recipes…"),
                 "borscht",
             );
             act(() => {

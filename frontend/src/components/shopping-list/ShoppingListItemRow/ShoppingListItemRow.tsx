@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { ShoppingListItem } from "types/shoppingList";
 
 import { flipTarget } from "hooks/useFlipAnimation";
+import { useLocale } from "hooks/useLocale";
 import type { MoveDirection } from "hooks/useShoppingList";
 
 import { TrashMark } from "components/icons";
@@ -38,8 +39,9 @@ export const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
     isLast,
 }) => {
     const { t } = useTranslation("shoppingList");
-    const name = shoppingListItemName(item);
-    const quantity = shoppingListItemQuantity(item);
+    const locale = useLocale();
+    const name = shoppingListItemName(t, item);
+    const quantity = shoppingListItemQuantity(t, locale, item);
     const checkboxId = `shopping-list-item-${item.id}`;
 
     return (

@@ -106,7 +106,7 @@ test("should filter My Recipes by ingredient via the filter popover picker", asy
             req.url().includes("ingredient_ids="),
     );
 
-    await page.getByPlaceholder("Search ingredients...").fill("Tomato");
+    await page.getByPlaceholder("Search ingredients…").fill("Tomato");
     await page.getByRole("button", { name: "Tomato", exact: true }).click();
 
     const request = await requestPromise;
@@ -212,7 +212,7 @@ test("should filter My Recipes to only what's in the pantry", async () => {
     await page.getByRole("button", { name: "Add ingredient" }).click();
     await selectFromPicker(
         page,
-        page.getByPlaceholder("Search ingredients..."),
+        page.getByPlaceholder("Search ingredients…"),
         "Tomato",
     );
     await page.getByRole("button", { name: "Continue" }).click();
@@ -234,6 +234,9 @@ test("should filter My Recipes to only what's in the pantry", async () => {
         .locator("../..")
         .getByRole("button", { name: "Delete" })
         .click();
-    await page.getByRole("button", { name: "Confirm" }).click();
+    await page
+        .getByRole("dialog")
+        .getByRole("button", { name: "Delete" })
+        .click();
     await expect(page.getByText("Ingredient deleted")).toBeVisible();
 });

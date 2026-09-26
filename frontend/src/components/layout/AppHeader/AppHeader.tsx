@@ -12,6 +12,7 @@ import { useLogoutModal } from "hooks/useLogoutModal";
 import { AccountMenu } from "components/layout/AppHeader/AccountMenu";
 import { Logo } from "components/layout/Logo";
 import { MainNav } from "components/layout/MainNav";
+import { LanguageSwitcher } from "components/ui/LanguageSwitcher";
 import { LinkButton } from "components/ui/LinkButton";
 import { ThemeToggle } from "components/ui/ThemeToggle";
 
@@ -41,11 +42,13 @@ export const AppHeader: React.FC = () => {
                 </div>
                 {isGuest ? (
                     <div className={styles["app-header__guest-actions"]}>
+                        <LanguageSwitcher />
                         <LinkButton
                             href={ROUTES.login}
                             onClick={rememberLoginRedirect}
                             variant="ghost"
                             size="sm"
+                            className={styles["app-header__login"]}
                         >
                             {t("nav.login")}
                         </LinkButton>

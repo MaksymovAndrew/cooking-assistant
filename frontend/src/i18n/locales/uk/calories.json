@@ -1,0 +1,77 @@
+{
+    "disclaimer": "Калорійність розраховано приблизно за довідковими даними. Якщо ви стежите за харчуванням з медичних причин, звіряйтеся з точними значеннями.",
+    "dietaryTab": {
+        "goalHeading": "Ціль за калоріями",
+        "goalLabel": "Ціль на день (ккал)",
+        "goalPlaceholder": "наприклад, 2 200",
+        "helperEmpty": "Задайте ціль на день, щоб почати підрахунок.",
+        "emptyTitle": "Почніть рахувати калорії",
+        "emptyDescription": "Задайте денну ціль — і тут з’являться прогрес за сьогодні, графік за днями та щоденник усього, що ви записали.",
+        "helperPopulated": "Це ваша поточна ціль на день. Якщо її змінити, минулі дні теж переоцінюються за новим числом.",
+        "saveButton": "Зберегти ціль",
+        "savedIndicator": "Збережено",
+        "errors": {
+            "invalidGoal": "Введіть правильну ціль",
+            "genericError": "Щось пішло не так. Спробуйте ще раз."
+        },
+        "todayHeading": "Сьогодні",
+        "ringGoalLabel": "з {{goal}} ккал",
+        "toneNormal": "Все за планом",
+        "toneNear": "Майже біля цілі",
+        "toneOver": "Понад ціль",
+        "eatenLabel": "З’їдено",
+        "remainingLabel": "Лишилося",
+        "goalLegendLabel": "Ціль",
+        "overLegendLabel": "Понад ціль",
+        "summaryRemaining": "Ви з’їли {{consumed}} ккал із {{goal}} — лишилося {{remaining}} ккал.",
+        "summaryOver": "Ви з’їли {{consumed}} ккал — на {{over}} ккал більше за ціль у {{goal}} ккал.",
+        "journalHeading": "Щоденник за сьогодні",
+        "journalMeta": "Записів: {{count}} · {{calories}} ккал",
+        "journalEmpty": "Сьогодні ви ще нічого не записали.",
+        "journalPortions": "×{{count}}",
+        "deleteEntry": "Видалити запис",
+        "kcalUnit": "ккал",
+        "historyHeading": "Історія",
+        "historyRange7": "7 днів",
+        "historyRange30": "30 днів",
+        "historyEmpty": "Історії поки немає.",
+        "historyGoalLine": "Ціль {{goal}} ккал",
+        "streakLabel_one": "день поспіль",
+        "streakLabel_few": "дні поспіль",
+        "streakLabel_many": "днів поспіль",
+        "streakLabel_other": "дня поспіль",
+        "streakBest": "Рекорд: {{count}}",
+        "avgLabel": "У середньому {{count}} на день",
+        "daysOnGoalLabel": "У межах цілі {{onGoal}} з {{total}}",
+        "todayLabel": "Сьогодні"
+    },
+    "homeTile": {
+        "label": "Ккал сьогодні",
+        "labelWithPercent": "Ккал сьогодні · {{percent}}%",
+        "labelOver": "Ккал сьогодні · понад ціль",
+        "remainingLabel": "Лишилося ккал",
+        "emptyLabel": "Ціль не задано",
+        "emptyCta": "Задати ціль"
+    },
+    "limitModal": {
+        "title": "Сьогодні ви перевищили ціль",
+        "message": "Ви записали {{consumed}} ккал — на {{over}} ккал більше за ціль у {{goal}} ккал.",
+        "note": "Це вікно з’являється раз на день — не нагадуватимемо після кожного запису.",
+        "adjustGoal": "Змінити ціль",
+        "gotIt": "Зрозуміло"
+    },
+    "deleteModal": {
+        "title": "Видалити запис",
+        "message": "Видалити «{{title}}»?"
+    },
+    "logIntakeModal": {
+        "title": "Записати до щоденника",
+        "portionsLabel": "Порції",
+        "fewerPortions": "Менше порцій",
+        "morePortions": "Більше порцій",
+        "totalLabel": "Усього {{total}} ккал",
+        "projectedOver": "З цим ви перевищите сьогоднішню ціль на {{over}} ккал.",
+        "cancel": "Скасувати",
+        "confirm": "Записати"
+    }
+}

@@ -38,6 +38,18 @@ describe("ContentCard", () => {
         expect(screen.getByText("Main course")).toBeInTheDocument();
     });
 
+    it("should mark the language the record is written in", () => {
+        renderCard({ language: "pl" });
+
+        expect(screen.getByTitle("In Polish")).toHaveTextContent("PL");
+    });
+
+    it("should leave the language badge out when the record has none", () => {
+        renderCard();
+
+        expect(screen.queryByTitle(/^In /)).not.toBeInTheDocument();
+    });
+
     it("should render every meta item's label", () => {
         renderCard();
 

@@ -1,0 +1,79 @@
+{
+    "page": {
+        "heading": "Мои продукты",
+        "noIngredients": "Продуктов пока нет.",
+        "noSearchResults": "По вашему запросу продуктов не нашлось.",
+        "itemCount_one": "{{count}} продукт в запасах",
+        "itemCount_few": "{{count}} продукта в запасах",
+        "itemCount_many": "{{count}} продуктов в запасах",
+        "itemCount_other": "{{count}} продукта в запасах",
+        "searchPlaceholder": "Найти в продуктах…",
+        "categoryFilterLabel": "Фильтр по категории",
+        "categoryFilterAll": "Все категории",
+        "expiringSoonFilter_one": "Скоро испортятся ({{count}})",
+        "expiringSoonFilter_few": "Скоро испортятся ({{count}})",
+        "expiringSoonFilter_many": "Скоро испортятся ({{count}})",
+        "expiringSoonFilter_other": "Скоро испортятся ({{count}})",
+        "allergens": "Аллергены:",
+        "shelfLife": "Срок хранения:",
+        "shelfLifeDays": "{{days}} дн.",
+        "noExpiration": "Без срока годности.",
+        "purchaseDate": "Куплено:",
+        "purchaseDateUnknown": "Неизвестно",
+        "detailsButton": "Подробнее",
+        "restockButton": "Докупить",
+        "deleteButton": "Удалить",
+        "addIngredientButton": "Добавить продукт",
+        "deleteTitle": "Удалить продукт?",
+        "deleteConfirmMessage": "Удалить продукт «{{name}}»?",
+        "confirmButton": "Удалить",
+        "cancelButton": "Отмена"
+    },
+    "expiryBadge": {
+        "fresh": "Свежий",
+        "expired": "Просрочен",
+        "noExpiry": "Без срока",
+        "daysLeft_one": "{{count}} день",
+        "daysLeft_few": "{{count}} дня",
+        "daysLeft_many": "{{count}} дней",
+        "daysLeft_other": "{{count}} дня"
+    },
+    "categoryBrowser": {
+        "backTo": "Назад к категориям: {{category}}"
+    },
+    "addIngredientModal": {
+        "title": "Добавить продукт",
+        "searchPlaceholder": "Найти ингредиент…",
+        "noMatches": "Ничего не нашлось",
+        "cancelButton": "Отмена",
+        "continueButton": "Дальше",
+        "backButton": "Назад",
+        "nextButton": "Следующий",
+        "saveButton": "Добавить в продукты",
+        "stepCount": "{{current}} из {{total}}"
+    },
+    "purchaseModal": {
+        "title": "История покупок: {{name}}",
+        "loading": "Загрузка…",
+        "noHistory": "Покупок пока нет.",
+        "closeButton": "Закрыть",
+        "editButton": "Изменить количество"
+    },
+    "restockModal": {
+        "title": "Докупить: {{name}}",
+        "current": "Сейчас у вас {{quantity}} {{unit}}.",
+        "confirmButton": "Добавить в продукты"
+    },
+    "expiredNoticeModal": {
+        "title": "Просроченные продукты",
+        "message_one": "В ваших запасах испортилась {{count}} покупка:",
+        "message_few": "В ваших запасах испортились {{count}} покупки:",
+        "message_many": "В ваших запасах испортились {{count}} покупок:",
+        "message_other": "В ваших запасах испортились {{count}} покупки:",
+        "lotQuantity": "{{quantity}} {{unit}}",
+        "lotPurchased": "Куплено {{date}}",
+        "lotExpired": "Испортилось {{date}}",
+        "close": "Закрыть",
+        "goToPantry": "К моим продуктам"
+    }
+}

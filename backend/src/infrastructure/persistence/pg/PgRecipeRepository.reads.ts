@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import type { Locale } from "constants/locales";
 import type {
     RecordAuthor,
     RecordRating,
@@ -31,6 +32,7 @@ interface RecipeDetailRow extends RecordRating {
     id: number;
     title: string;
     content: string;
+    language: Locale;
     type_id: number | null;
     creation_date: Date;
     cooking_time: number | null;
@@ -69,7 +71,7 @@ export async function findRecipeByIdWithIngredients(
     currentUserId: number | null,
 ): Promise<unknown> {
     const result = await pool.query<RecipeDetailRow>(
-        `SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time,
+        `SELECT r.id, r.title, r.content, r.language, r.type_id, r.creation_date, r.cooking_time,
                   r.calories_override, r.calories_computed, r.photo_key,
                   ${authorColumn("r")},
                   ${isOwnerColumn("r", "$2")},

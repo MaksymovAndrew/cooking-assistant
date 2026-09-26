@@ -1,5 +1,7 @@
 import { AUTH_PATHS } from "constants/routes";
 
+import { stripLocale } from "utils/localePath";
+
 const STORAGE_KEY = "login-redirect";
 
 // Next carries no router state, so the target is stashed instead of pushed. It is validated on
@@ -15,7 +17,7 @@ export const rememberLoginRedirect = (): void => {
     const path = `${pathname}${search}`;
     // recording a sign-in page would land the user back on the form they just came through
     const isWorthReturningTo =
-        isInternalPath(path) && !AUTH_PATHS.includes(pathname);
+        isInternalPath(path) && !AUTH_PATHS.includes(stripLocale(pathname));
 
     if (isWorthReturningTo) {
         window.sessionStorage.setItem(STORAGE_KEY, path);

@@ -58,6 +58,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Menu-linked recipe",
             content: "For menu tests.",
+            language: "en",
             person_id: ownerId,
             ingredients: [
                 { id: ingredientId, quantity_recipe_ingredients: quantity },
@@ -75,6 +76,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Weekly plan",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId],
@@ -98,6 +100,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Shared plan",
             menuContent: "Visible to anyone.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId],
@@ -125,6 +128,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Guest-visible plan",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId],
@@ -148,6 +152,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Pantry-aware plan",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId],
@@ -187,6 +192,7 @@ describe("PgMenuRepository (real Postgres)", () => {
             const recipe = Recipe.forCreation({
                 title: "Allergen recipe",
                 content: "For allergen tests.",
+                language: "en",
                 person_id: ownerId,
                 ingredients: ingredientIds.map((id) => ({
                     id,
@@ -201,6 +207,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Allergen plan",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeA.id, recipeB.id],
@@ -224,6 +231,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Protected plan",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId],
@@ -235,6 +243,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const update = Menu.forUpdate(menuId, {
             menuTitle: "Hijacked plan",
             menuContent: "Hijacked.",
+            language: "en",
             categoryId,
             recipeIds: [recipeId],
         });
@@ -265,6 +274,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Disposable plan",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId],
@@ -295,6 +305,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Calorie-bearing recipe",
             content: "For stats tests.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -316,6 +327,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Stats calorie check - complete",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeAId, recipeBId],
@@ -337,6 +349,7 @@ describe("PgMenuRepository (real Postgres)", () => {
         const menu = Menu.forCreation({
             menuTitle: "Stats calorie check - incomplete",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeWithCaloriesId, recipeWithoutCaloriesId],

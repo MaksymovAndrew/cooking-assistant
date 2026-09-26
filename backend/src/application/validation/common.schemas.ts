@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { LOCALES } from "constants/locales";
+
 export function toNumber(value: unknown): unknown {
     const isEmptyInput = value == null || value === "";
 
@@ -85,3 +87,11 @@ export function hasUniqueItems<T>(
 ): boolean {
     return new Set(items.map(getKey)).size === items.length;
 }
+
+// the language a recipe or menu is written in, picked by its author
+export const contentLanguageSchema = z.enum(LOCALES, {
+    error: requiredOrInvalidType(
+        "Language is required",
+        `Language must be one of ${LOCALES.join(", ")}`,
+    ),
+});

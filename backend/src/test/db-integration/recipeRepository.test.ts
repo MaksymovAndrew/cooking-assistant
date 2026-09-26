@@ -52,6 +52,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Borscht",
             content: "Classic beet soup.",
+            language: "en",
             person_id: ownerId,
             type_id: typeId,
             cooking_time: 90,
@@ -79,6 +80,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Rice bowl",
             content: "Steamed rice.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 4 }],
         });
@@ -95,6 +97,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const update = Recipe.forUpdate({
             title: "Rice bowl",
             content: "Steamed rice.",
+            language: "en",
             calories_override: 999,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 4 }],
         });
@@ -115,6 +118,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Omelette",
             content: "Eggs and butter.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 3 }],
         });
@@ -139,6 +143,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Anonymous view",
             content: "Guest-visible recipe.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -158,6 +163,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Signed dish",
             content: "Shows who made it.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -184,6 +190,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Pancakes",
             content: "Flour, milk, eggs.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -192,6 +199,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const update = Recipe.forUpdate({
             title: "Hijacked title",
             content: "Hijacked content.",
+            language: "en",
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 9 }],
         });
         const result = await repository.update(
@@ -216,6 +224,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Salad",
             content: "Greens.",
+            language: "en",
             person_id: ownerId,
             ingredients: [
                 { id: firstIngredientId, quantity_recipe_ingredients: 1 },
@@ -226,6 +235,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const update = Recipe.forUpdate({
             title: "Salad",
             content: "Greens and dressing.",
+            language: "en",
             ingredients: [
                 { id: secondIngredientId, quantity_recipe_ingredients: 5 },
             ],
@@ -252,6 +262,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Soup",
             content: "Broth.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -281,6 +292,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Leak check",
             content: "Should not expose its owner.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -306,6 +318,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: STATS_CHECK_TITLE,
             content: "Deliberately extreme values for a stable assertion.",
+            language: "en",
             person_id: ownerId,
             cooking_time: 1,
             ingredients: [
@@ -343,6 +356,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Stew",
             content: "Meat and vegetables.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });

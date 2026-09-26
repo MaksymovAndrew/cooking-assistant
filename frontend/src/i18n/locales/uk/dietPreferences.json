@@ -1,0 +1,39 @@
+{
+    "section": {
+        "title": "Харчові вподобання",
+        "description": "Рецепти з тим, чого ви не їсте, опускаються в кінець списків і отримують м’яку позначку — нічого не приховується й не видаляється.",
+        "summary": "{{allergens}} · {{ingredients}}",
+        "allergenCount_one": "{{count}} алерген",
+        "allergenCount_few": "{{count}} алергени",
+        "allergenCount_many": "{{count}} алергенів",
+        "allergenCount_other": "{{count}} алергену",
+        "ingredientCount_one": "{{count}} інгредієнт",
+        "ingredientCount_few": "{{count}} інгредієнти",
+        "ingredientCount_many": "{{count}} інгредієнтів",
+        "ingredientCount_other": "{{count}} інгредієнта"
+    },
+    "allergens": {
+        "title": "Я не їм",
+        "count": "{{count}} з {{total}}",
+        "none": "поки нічого",
+        "helper": "14 груп алергенів, прийнятих у ЄС. Натисніть, щоб позначити, — усе зберігається одразу."
+    },
+    "ingredients": {
+        "title": "Інгредієнти",
+        "helper": "Усе інше, чого ви не хочете бачити, — з каталогу інгредієнтів.",
+        "searchPlaceholder": "Знайти інгредієнт…",
+        "noMatches": "За запитом «{{query}}» нічого не знайшлося.",
+        "noMatchesHint": "Спробуйте коротше слово.",
+        "avoidedTag": "не їм",
+        "empty": "Список поки порожній.",
+        "remove": "Знову їсти {{name}}",
+        "saved": "Збережено"
+    },
+    "behaviour": {
+        "sorted": "Опускаються вниз і позначаються значком",
+        "hideable": "Їх можна зовсім приховати одним фільтром у списку рецептів",
+        "favourites": "Обране лишається обраним"
+    },
+    "avoidPill": "Не їм",
+    "avoidedRow": "Ви цього не їсте"
+}

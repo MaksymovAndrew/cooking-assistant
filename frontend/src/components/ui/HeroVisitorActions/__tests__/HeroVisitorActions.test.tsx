@@ -17,6 +17,7 @@ describe("HeroVisitorActions", () => {
             <HeroVisitorActions
                 favourite={null}
                 favouriteLabel="Favourite"
+                shareTitle="Borscht"
                 guestCtaLabel="Log in for the full experience"
                 logIntakeLabel="Log intake"
             />,
@@ -30,6 +31,7 @@ describe("HeroVisitorActions", () => {
         expect(
             screen.queryByRole("button", { name: "Favourite" }),
         ).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Share" })).toBeEnabled();
     });
 
     it("should show the favourite toggle for a signed-in non-owner", () => {
@@ -37,6 +39,7 @@ describe("HeroVisitorActions", () => {
             <HeroVisitorActions
                 favourite={FAVOURITE}
                 favouriteLabel="Favourite"
+                shareTitle="Borscht"
                 guestCtaLabel="Log in for the full experience"
                 logIntakeLabel="Log intake"
             />,
@@ -57,6 +60,7 @@ describe("HeroVisitorActions", () => {
             <HeroVisitorActions
                 favourite={FAVOURITE}
                 favouriteLabel="Favourite"
+                shareTitle="Borscht"
                 guestCtaLabel="Log in for the full experience"
                 logIntakeLabel="Log intake"
                 onLogIntake={onLogIntake}

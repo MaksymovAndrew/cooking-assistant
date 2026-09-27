@@ -9,10 +9,10 @@ import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
 
 import { useFavouriteToggle } from "hooks/useFavouriteToggle";
 
-import { MenuHeroActions } from "components/menu/MenuHeroActions";
 import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
 import { MenuRecipesPanel } from "components/menu/MenuRecipesPanel";
 import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
+import { OwnerActions } from "components/ui/OwnerActions";
 
 import { aggregateMenuIngredients } from "utils/menuUtils";
 import { filterAllergens } from "utils/recipeAllergens";
@@ -21,6 +21,7 @@ import styles from "./MenuDetailsView.module.scss";
 
 interface MenuDetailsSecondaryProps {
     menuId: number;
+    title: string;
     // null exactly when the server rendered this menu for an anonymous requester
     isFavourite: boolean | null;
     recipes: MenuDetailRecipe[];
@@ -37,6 +38,7 @@ interface MenuDetailsSecondaryProps {
 // repositions items visually without changing this source order (see MenuDetailsView.module.scss)
 export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     menuId,
+    title,
     isFavourite,
     recipes,
     allergens,
@@ -78,13 +80,14 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
             )}
             <div className={styles["menu-details-page__actions-area"]}>
                 {isOwner ? (
-                    <MenuHeroActions
+                    <OwnerActions
                         editTo={editTo}
                         onDelete={onDelete}
                         editLabel={t("menuDetailsPage.editButton")}
                         deleteLabel={t("menuDetailsPage.deleteButton")}
                         favourite={favourite}
                         favouriteLabel={favouriteLabel}
+                        shareTitle={title}
                         onLogIntake={onLogIntake}
                         logIntakeLabel={logIntakeLabel}
                     />
@@ -92,6 +95,7 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
                     <HeroVisitorActions
                         favourite={visitorFavourite}
                         favouriteLabel={favouriteLabel}
+                        shareTitle={title}
                         guestCtaLabel={t("menuDetailsPage.guestCta")}
                         logIntakeLabel={logIntakeLabel}
                         onLogIntake={onLogIntake}

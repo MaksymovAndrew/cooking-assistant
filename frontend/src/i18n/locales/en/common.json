@@ -63,7 +63,6 @@
         "ingredients": "Ingredients",
         "stats": "Stats",
         "shoppingList": "Shopping",
-        "settings": "Settings",
         "profile": "Profile",
         "logout": "Log out",
         "login": "Log in",
@@ -196,6 +195,11 @@
         "star_other": "{{count}} stars",
         "yourRating": "Your rating",
         "remove": "Remove my rating"
+    },
+    "share": {
+        "button": "Share",
+        "copied": "Link copied",
+        "failed": "Couldn't copy the link"
     },
     "social": {
         "tagline": "Recipes, menus and your pantry in one kitchen",

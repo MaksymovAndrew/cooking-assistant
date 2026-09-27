@@ -3,7 +3,6 @@
         "heading": "Настройки",
         "subheading": "Оформление, язык и аккаунт."
     },
-    "comingSoonBadge": "Скоро",
     "appearanceSection": {
         "heading": "Оформление",
         "themeTitle": "Тема",
@@ -17,13 +16,6 @@
         "heading": "Язык",
         "languageTitle": "Язык интерфейса",
         "languageDescription": "На этом языке будут страницы и письма."
-    },
-    "notificationsSection": {
-        "heading": "Уведомления",
-        "expiryTitle": "Напоминания о сроках",
-        "expiryDescription": "Предупредим, пока продукты не испортились.",
-        "digestTitle": "Еженедельная сводка",
-        "digestDescription": "Раз в неделю — итоги по вашим рецептам и меню."
     },
     "accountSection": {
         "heading": "Аккаунт",

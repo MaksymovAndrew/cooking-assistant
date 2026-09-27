@@ -264,4 +264,25 @@ describe("PgMenuRepository search (real Postgres)", () => {
         ]);
         expect(result.total).toBe(1);
     });
+
+    it("should list the most recently created menus first", async () => {
+        const categoryId = await createMenuCategory(pool);
+        const title = unique("Dated menu");
+        const olderId = await createOwnedMenu(title, categoryId);
+        const newerId = await createOwnedMenu(title, categoryId);
+
+        // the older menu has the higher id, so only the date can put it second
+        await pool.query(
+            `UPDATE menu SET creation_date = now() - interval '1 day' WHERE menu_id = $1`,
+            [newerId],
+        );
+
+        const result = await menuRepository.findAll(
+            { menu_name: title },
+            ownerId,
+        );
+
+        expect(result.items.map((menu) => menu.id)).toEqual([olderId, newerId]);
+        expect(result.items[0].creation_date).toBeInstanceOf(Date);
+    });
 });

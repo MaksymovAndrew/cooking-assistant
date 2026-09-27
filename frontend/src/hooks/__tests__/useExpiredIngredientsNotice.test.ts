@@ -40,7 +40,7 @@ const EXPIRED_INGREDIENT: UserIngredient = {
     quantity_person_ingradient: 1,
     days_to_expire: 5,
     allergens: ["milk"],
-    lots: [{ quantity: 1, purchase_date: daysFromNow(-10) }],
+    lots: [{ id: 104, quantity: 1, purchase_date: daysFromNow(-10) }],
 };
 const FRESH_INGREDIENT: UserIngredient = {
     ingredient_id: 2,
@@ -51,7 +51,7 @@ const FRESH_INGREDIENT: UserIngredient = {
     quantity_person_ingradient: 1,
     days_to_expire: 60,
     allergens: ["gluten"],
-    lots: [{ quantity: 1, purchase_date: daysFromNow(0) }],
+    lots: [{ id: 103, quantity: 1, purchase_date: daysFromNow(0) }],
 };
 
 const setup = async (
@@ -105,8 +105,8 @@ describe("useExpiredIngredientsNotice", () => {
             ...EXPIRED_INGREDIENT,
             quantity_person_ingradient: 2,
             lots: [
-                { quantity: 1, purchase_date: daysFromNow(-10) },
-                { quantity: 1, purchase_date: daysFromNow(0) },
+                { id: 102, quantity: 1, purchase_date: daysFromNow(-10) },
+                { id: 101, quantity: 1, purchase_date: daysFromNow(0) },
             ],
         };
 

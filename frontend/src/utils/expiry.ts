@@ -25,7 +25,7 @@ export const computeExpiryDate = (
     );
 };
 
-// null when there's no usable expiry data; deliberately a different rule from isExpired() in ingredientExpirationUtils.ts (that one expires on the expiry day itself)
+// null when there's no usable expiry data; the expiry day itself still counts as usable
 export const getExpiryStatus = (
     daysToExpire: number | null | undefined,
     purchaseDate: string | undefined,
@@ -57,3 +57,9 @@ export const getWorstLotExpiryStatus = (
     daysToExpire: number | null | undefined,
     lots: PantryLot[],
 ): ExpiryStatus | null => getExpiryStatus(daysToExpire, lots[0]?.purchase_date);
+
+// one lot's verdict for the purchase history, by the same rule as the pantry badges
+export const isLotExpired = (
+    daysToExpire: number | null,
+    purchaseDate: string | undefined,
+): boolean => getExpiryStatus(daysToExpire, purchaseDate)?.tone === "expired";

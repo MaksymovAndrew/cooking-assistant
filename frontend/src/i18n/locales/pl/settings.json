@@ -3,7 +3,6 @@
         "heading": "Ustawienia",
         "subheading": "Wygląd, język i konto."
     },
-    "comingSoonBadge": "Wkrótce",
     "appearanceSection": {
         "heading": "Wygląd",
         "themeTitle": "Motyw",
@@ -17,13 +16,6 @@
         "heading": "Język",
         "languageTitle": "Język interfejsu",
         "languageDescription": "W tym języku zobaczysz stronę i dostaniesz e-maile."
-    },
-    "notificationsSection": {
-        "heading": "Powiadomienia",
-        "expiryTitle": "Przypomnienia o terminach",
-        "expiryDescription": "Damy znać, zanim produkty się zepsują.",
-        "digestTitle": "Tygodniowe podsumowanie",
-        "digestDescription": "Raz w tygodniu — podsumowanie twoich przepisów i jadłospisów."
     },
     "accountSection": {
         "heading": "Konto",

@@ -35,6 +35,7 @@ const toExpiredIngredient = (
                 "expired",
         )
         .map((lot) => ({
+            purchaseId: lot.id,
             quantity: lot.quantity,
             purchaseDate: lot.purchase_date,
             expiryDate: computeExpiryDate(

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { Purchase } from "types/userIngredient";
 
 import {
+    useDeletePurchaseMutation,
     useGetPurchaseHistoryQuery,
     useUpdatePurchaseMutation,
 } from "redux/services/userIngredientsApi";
@@ -36,6 +37,7 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
         error,
     } = useGetPurchaseHistoryQuery(ingredientId);
     const [updatePurchase] = useUpdatePurchaseMutation();
+    const [deletePurchase] = useDeletePurchaseMutation();
     const [items, setItems] = useState<Purchase[]>([]);
 
     // seed once - a later refetch must not overwrite unsaved edits in other rows
@@ -64,6 +66,24 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
             purchaseId: id,
             body: { quantity: newQuantity },
         });
+    };
+
+    // the last lot takes the pantry item with it, so there is nothing left to show
+    const handleDelete = (id: number) => {
+        deletePurchase(id)
+            .unwrap()
+            .then(() => {
+                const remaining = items.filter(
+                    (purchase) => purchase.id !== id,
+                );
+
+                setItems(remaining);
+
+                if (remaining.length === 0) {
+                    onClose();
+                }
+            })
+            .catch(() => undefined);
     };
 
     const isEmpty = !isLoading && !isError && items.length === 0;
@@ -95,6 +115,7 @@ export const PurchaseHistoryModal: React.FC<PurchaseHistoryModalProps> = ({
                             purchase={purchase}
                             onQuantityChange={handleQuantityChange}
                             onSave={handleSave}
+                            onDelete={handleDelete}
                         />
                     ))}
                 </ul>

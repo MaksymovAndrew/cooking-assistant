@@ -14,7 +14,6 @@ import { AppearanceSection } from "components/settings/AppearanceSection";
 import { ChangePasswordModal } from "components/settings/ChangePasswordModal";
 import { DeleteAccountModal } from "components/settings/DeleteAccountModal";
 import { LanguageSection } from "components/settings/LanguageSection";
-import { NotificationsSection } from "components/settings/NotificationsSection";
 
 import styles from "./page.module.scss";
 
@@ -40,7 +39,6 @@ const SettingsPage: React.FC = () => {
 
                 <AppearanceSection />
                 <LanguageSection />
-                <NotificationsSection />
                 <AccountSection
                     email={currentUser?.email ?? ""}
                     emailVerified={Boolean(currentUser?.email_verified_at)}

@@ -51,7 +51,8 @@
         "loading": "Loading…",
         "noHistory": "No purchase history available.",
         "closeButton": "Close",
-        "editButton": "Edit quantity"
+        "editButton": "Edit quantity",
+        "deleteButton": "Delete purchase"
     },
     "restockModal": {
         "title": "Buy more {{name}}",
@@ -66,6 +67,9 @@
         "lotPurchased": "Purchased {{date}}",
         "lotExpired": "Expired {{date}}",
         "close": "Close",
-        "goToPantry": "Go to my pantry"
+        "goToPantry": "Go to my pantry",
+        "discardButton": "Throw out expired",
+        "addToListButton": "Add to shopping list",
+        "discarded": "Expired purchases thrown out"
     }
 }

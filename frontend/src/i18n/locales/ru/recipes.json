@@ -39,7 +39,6 @@
         "noMatches": "Ингредиентов не нашлось"
     },
     "recipeCard": {
-        "cookingTime": "Время приготовления: ",
         "cookingTimeValue": "{{hours}} ч {{minutes}} мин",
         "caloriesValue": "{{count}} ккал"
     },
@@ -136,7 +135,6 @@
         "recipeTypeLabel": "Тип рецепта *",
         "recipeTypePlaceholder": "Выберите тип",
         "ingredientsLabel": "Ингредиенты",
-        "selectedIngredients": "Выбранные ингредиенты",
         "createButton": "Создать рецепт",
         "errorTitle": "Укажите название рецепта.",
         "errorDescription": "Добавьте описание рецепта.",
@@ -156,7 +154,6 @@
         "recipeTypeLabel": "Тип рецепта *",
         "recipeTypePlaceholder": "Выберите тип",
         "ingredientsLabel": "Ингредиенты",
-        "selectedIngredients": "Выбранные ингредиенты",
         "updateButton": "Сохранить изменения",
         "loading": "Загрузка…",
         "errorCookingTimeFormat": "Укажите часы и минуты.",
@@ -191,10 +188,8 @@
         "missingIngredients": "Чего не хватает",
         "deleteButton": "Удалить рецепт",
         "editButton": "Изменить рецепт",
-        "loading": "Загрузка…",
         "deleteTitle": "Удалить рецепт?",
         "deleteMessage": "Удалить «{{title}}»? Рецепт пропадёт и из всех меню, где он есть. Отменить это будет нельзя.",
-        "error": "Ошибка: {{message}}",
         "cookingTimeHoursMinutes": "{{hours}} ч {{minutes}} мин",
         "cookingTimeMinutes": "{{minutes}} мин",
         "rating": "Оценка",

@@ -39,7 +39,6 @@
         "noMatches": "Nie znaleziono składników"
     },
     "recipeCard": {
-        "cookingTime": "Czas przygotowania: ",
         "cookingTimeValue": "{{hours}} godz. {{minutes}} min",
         "caloriesValue": "{{count}} kcal"
     },
@@ -136,7 +135,6 @@
         "recipeTypeLabel": "Rodzaj przepisu *",
         "recipeTypePlaceholder": "Wybierz rodzaj",
         "ingredientsLabel": "Składniki",
-        "selectedIngredients": "Wybrane składniki",
         "createButton": "Utwórz przepis",
         "errorTitle": "Podaj nazwę przepisu.",
         "errorDescription": "Dodaj opis przepisu.",
@@ -156,7 +154,6 @@
         "recipeTypeLabel": "Rodzaj przepisu *",
         "recipeTypePlaceholder": "Wybierz rodzaj",
         "ingredientsLabel": "Składniki",
-        "selectedIngredients": "Wybrane składniki",
         "updateButton": "Zapisz zmiany",
         "loading": "Ładowanie…",
         "errorCookingTimeFormat": "Podaj godziny i minuty.",
@@ -191,10 +188,8 @@
         "missingIngredients": "Czego brakuje",
         "deleteButton": "Usuń przepis",
         "editButton": "Edytuj przepis",
-        "loading": "Ładowanie…",
         "deleteTitle": "Usunąć przepis?",
         "deleteMessage": "Usunąć „{{title}}”? Przepis zniknie też ze wszystkich jadłospisów, w których jest. Tego nie da się cofnąć.",
-        "error": "Błąd: {{message}}",
         "cookingTimeHoursMinutes": "{{hours}} godz. {{minutes}} min",
         "cookingTimeMinutes": "{{minutes}} min",
         "rating": "Ocena",

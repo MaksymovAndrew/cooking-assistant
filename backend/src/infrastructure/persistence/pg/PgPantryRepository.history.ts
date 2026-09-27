@@ -85,3 +85,58 @@ export async function updatePurchaseQuantity(
         client.release();
     }
 }
+
+// the lots leave the stock with them; an ingredient's last lot takes its pantry row along, like
+// deleting the item. Answers how many of the given purchases were the user's and are now gone
+export async function deletePurchases(
+    pool: Pool,
+    userId: string | number,
+    purchaseIds: number[],
+): Promise<number> {
+    const client = await pool.connect();
+
+    try {
+        await client.query("BEGIN");
+
+        const deleted = await client.query<PurchaseRow>(
+            `DELETE FROM ingredient_purchases WHERE id = ANY($1::int[]) AND person_id = $2
+       RETURNING quantity, ingredient_id`,
+            [purchaseIds, userId],
+        );
+
+        await client.query(
+            `DELETE FROM person_ingredients pi
+       WHERE pi.person_id = $1 AND pi.ingredient_id = ANY($2::int[])
+         AND NOT EXISTS (
+           SELECT 1 FROM ingredient_purchases ip
+           WHERE ip.person_id = pi.person_id AND ip.ingredient_id = pi.ingredient_id
+         )`,
+            [userId, deleted.rows.map((row) => row.ingredient_id)],
+        );
+
+        await client.query(
+            `UPDATE person_ingredients pi
+       SET quantity_person_ingradient = GREATEST(pi.quantity_person_ingradient - gone.total, 0)
+       FROM (
+         SELECT ingredient_id, SUM(quantity) AS total
+         FROM unnest($2::int[], $3::float8[]) AS lot(ingredient_id, quantity)
+         GROUP BY ingredient_id
+       ) gone
+       WHERE pi.person_id = $1 AND pi.ingredient_id = gone.ingredient_id`,
+            [
+                userId,
+                deleted.rows.map((row) => row.ingredient_id),
+                deleted.rows.map((row) => row.quantity),
+            ],
+        );
+
+        await client.query("COMMIT");
+
+        return deleted.rows.length;
+    } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+    } finally {
+        client.release();
+    }
+}

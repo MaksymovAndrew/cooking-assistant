@@ -46,6 +46,7 @@ export const ROUTES = {
         byIngredient: "/user-ingredients/:ingredientId",
         purchaseHistory: "/user-ingredients/history/:ingredientId",
         purchase: "/user-ingredients/history/:purchaseId",
+        discard: "/user-ingredients/history/discard",
     },
 
     menu: {

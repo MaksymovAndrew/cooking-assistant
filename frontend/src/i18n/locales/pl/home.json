@@ -40,7 +40,15 @@
     "pantryRecipes": {
         "title": "Gotuj z tego, co masz",
         "description": "Zobacz, które przepisy możesz przygotować od razu z produktów ze spiżarni.",
-        "cta": "Pokaż przepisy"
+        "cta": "Pokaż przepisy",
+        "ready_one": "Z tego, co masz, ugotujesz od razu {{count}} przepis.",
+        "ready_few": "Z tego, co masz, ugotujesz od razu {{count}} przepisy.",
+        "ready_many": "Z tego, co masz, ugotujesz od razu {{count}} przepisów.",
+        "ready_other": "Z tego, co masz, ugotujesz od razu {{count}} przepisu.",
+        "none": "Na razie w spiżarni brakuje czegoś do każdego przepisu.",
+        "browseCta": "Przeglądaj przepisy",
+        "emptyPantry": "Dodaj to, co masz w domu, a pokażemy, co z tego ugotujesz.",
+        "emptyPantryCta": "Otwórz spiżarnię"
     },
     "cookbookStats": {
         "title": "Statystyki przepisów",

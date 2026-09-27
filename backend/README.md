@@ -556,13 +556,15 @@ table and aggregating client-side.
 
 ### User pantry ([src/routes/userIngredients.routes.ts](src/routes/userIngredients.routes.ts))
 
-| Method | Path                                      | Purpose                                                               |
-| ------ | ----------------------------------------- | --------------------------------------------------------------------- |
-| GET    | `/user-ingredients`                       | Get the current user's pantry, each ingredient with its purchase lots |
-| PUT    | `/user-ingredients`                       | Add/replace pantry items                                              |
-| GET    | `/user-ingredients/history/:ingredientId` | Purchase history for one ingredient                                   |
-| PUT    | `/user-ingredients/history/:purchaseId`   | Update a purchase entry                                               |
-| DELETE | `/user-ingredients/:ingredientId`         | Remove a pantry item                                                  |
+| Method | Path                                      | Purpose                                                                           |
+| ------ | ----------------------------------------- | --------------------------------------------------------------------------------- |
+| GET    | `/user-ingredients`                       | Get the current user's pantry, each ingredient with its purchase lots             |
+| PUT    | `/user-ingredients`                       | Add/replace pantry items                                                          |
+| GET    | `/user-ingredients/history/:ingredientId` | Purchase history for one ingredient                                               |
+| PUT    | `/user-ingredients/history/:purchaseId`   | Update a purchase entry                                                           |
+| DELETE | `/user-ingredients/history/:purchaseId`   | Delete one purchase; its quantity leaves the stock, the last one removes the item |
+| POST   | `/user-ingredients/history/discard`       | Delete several purchases at once (`{ purchaseIds }`), e.g. every expired one      |
+| DELETE | `/user-ingredients/:ingredientId`         | Remove a pantry item                                                              |
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 

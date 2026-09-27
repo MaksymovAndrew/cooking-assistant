@@ -6,11 +6,11 @@ import type { Purchase } from "types/userIngredient";
 import { useEditableQuantity } from "hooks/useEditableQuantity";
 import { useLocale } from "hooks/useLocale";
 
-import { EditMark } from "components/icons";
+import { EditMark, TrashMark } from "components/icons";
 import { NumberInput } from "components/ui/NumberInput";
 
 import { formatShortDate } from "utils/dateUtils";
-import { isExpired } from "utils/ingredientExpirationUtils";
+import { isLotExpired } from "utils/expiry";
 import { unitName } from "utils/referenceLabels";
 import { formatQuantity } from "utils/roundQuantity";
 
@@ -20,6 +20,7 @@ interface PurchaseItemProps {
     purchase: Purchase;
     onQuantityChange: (id: number, quantity: number) => void;
     onSave: (id: number, quantity: number) => Promise<void>;
+    onDelete: (id: number) => void;
 }
 
 const EDIT_ICON_SIZE = 15;
@@ -30,10 +31,14 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
     purchase,
     onQuantityChange,
     onSave,
+    onDelete,
 }) => {
     const { t } = useTranslation("ingredients");
     const locale = useLocale();
-    const expired = isExpired(purchase.purchase_date, purchase.days_to_expire);
+    const expired = isLotExpired(
+        purchase.days_to_expire,
+        purchase.purchase_date,
+    );
     // read-only until the edit button is pressed, so an accidental scroll or stray tap over the row can never change a saved purchase
     const [isEditing, setIsEditing] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -95,6 +100,18 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = ({
                     className={styles["purchase-item__edit"]}
                 >
                     <EditMark size={EDIT_ICON_SIZE} aria-hidden="true" />
+                </button>
+            )}
+            {!isEditing && (
+                <button
+                    type="button"
+                    aria-label={t("purchaseModal.deleteButton")}
+                    onClick={() => {
+                        onDelete(purchase.id);
+                    }}
+                    className={styles["purchase-item__delete"]}
+                >
+                    <TrashMark size={EDIT_ICON_SIZE} />
                 </button>
             )}
         </li>

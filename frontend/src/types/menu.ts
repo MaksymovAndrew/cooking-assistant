@@ -73,6 +73,7 @@ export interface MenuDetails {
         isOwner: boolean;
         isFavourite: boolean | null;
         photo_key: string | null;
+        creation_date: string;
         author: RecordAuthor;
     };
     recipes: MenuDetailRecipe[];

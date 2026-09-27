@@ -23,8 +23,19 @@
         cursor: pointer;
     }
 
+    // a long translated label wraps inside the button instead of pushing it off a phone screen
     &__log-intake {
         flex: 1;
+        min-width: 0;
+        height: auto;
+        min-height: 46px;
+        padding-block: var(--s-2);
+        white-space: normal;
+        text-align: center;
+
+        svg {
+            flex: none;
+        }
 
         @include respond-to(tablet) {
             flex: none;

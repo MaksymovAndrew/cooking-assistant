@@ -8,16 +8,49 @@ import { LinkButton } from "components/ui/LinkButton";
 
 import { BOOLEAN_URL_TRUE } from "utils/filters/filterDefFactories.scalar";
 import { RECIPE_PANTRY_URL_PARAM } from "utils/filters/recipeFilterDefs.toggles";
+import {
+    getPantryRecipesCardState,
+    type PantryRecipesCardState,
+} from "utils/pantryRecipesCard";
 
 import styles from "./PantryRecipesCard.module.scss";
 
 const ICON_SIZE = 20;
 const PANTRY_LINK = `${ROUTES.allRecipes}?${RECIPE_PANTRY_URL_PARAM}=${BOOLEAN_URL_TRUE}`;
 
-// the CTA links straight to the recipe list with the "in my pantry" filter already
-// set in the URL, so the list opens already filtered
-export const PantryRecipesCard: React.FC = () => {
+// where the button leads in each state; the list opens already filtered when there is something to show
+const CTA_HREF: Record<PantryRecipesCardState, string> = {
+    "empty-pantry": ROUTES.ingredients,
+    counting: PANTRY_LINK,
+    none: ROUTES.allRecipes,
+    ready: PANTRY_LINK,
+};
+
+const CTA_KEY: Record<PantryRecipesCardState, string> = {
+    "empty-pantry": "pantryRecipes.emptyPantryCta",
+    counting: "pantryRecipes.cta",
+    none: "pantryRecipes.browseCta",
+    ready: "pantryRecipes.cta",
+};
+
+interface PantryRecipesCardProps {
+    pantryCount: number;
+    // null while the count is still on its way
+    cookableCount: number | null;
+}
+
+export const PantryRecipesCard: React.FC<PantryRecipesCardProps> = ({
+    pantryCount,
+    cookableCount,
+}) => {
     const { t } = useTranslation("home");
+    const state = getPantryRecipesCardState(pantryCount, cookableCount);
+    const description: Record<PantryRecipesCardState, string> = {
+        "empty-pantry": t("pantryRecipes.emptyPantry"),
+        counting: t("pantryRecipes.description"),
+        none: t("pantryRecipes.none"),
+        ready: t("pantryRecipes.ready", { count: cookableCount ?? 0 }),
+    };
 
     return (
         <section className={styles["pantry-recipes-card"]}>
@@ -29,15 +62,15 @@ export const PantryRecipesCard: React.FC = () => {
                     {t("pantryRecipes.title")}
                 </span>
                 <p className={styles["pantry-recipes-card__description"]}>
-                    {t("pantryRecipes.description")}
+                    {description[state]}
                 </p>
             </div>
             <LinkButton
-                href={PANTRY_LINK}
+                href={CTA_HREF[state]}
                 variant="secondary"
                 className={styles["pantry-recipes-card__cta"]}
             >
-                {t("pantryRecipes.cta")}
+                {t(CTA_KEY[state])}
             </LinkButton>
         </section>
     );

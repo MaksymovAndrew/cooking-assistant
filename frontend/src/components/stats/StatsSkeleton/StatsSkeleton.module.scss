@@ -1,0 +1,56 @@
+@use "styles/abstracts" as *;
+
+@keyframes stats-skeleton-pulse {
+    50% {
+        opacity: 0.55;
+    }
+}
+
+.stats-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+
+    &__heading,
+    &__tile,
+    &__card {
+        display: block;
+        border-radius: var(--r-md);
+        background: var(--surface-2);
+        animation: stats-skeleton-pulse 1.4s var(--ease-in-out) infinite;
+    }
+
+    &__heading {
+        width: 200px;
+        height: 24px;
+        border-radius: 6px;
+    }
+
+    &__tiles {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--s-4);
+
+        @include respond-to(tablet) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    &__tile {
+        height: 96px;
+    }
+
+    &__cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-5);
+
+        @include respond-to(desktop) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    &__card {
+        height: 280px;
+    }
+}

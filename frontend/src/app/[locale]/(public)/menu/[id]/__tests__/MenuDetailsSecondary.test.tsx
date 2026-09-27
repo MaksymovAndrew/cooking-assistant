@@ -39,6 +39,7 @@ const RECIPE: MenuDetailRecipe = {
 
 const baseProps = {
     menuId: 1,
+    title: "Weekend brunch",
     isFavourite: false,
     recipes: [RECIPE],
     allergens: [],

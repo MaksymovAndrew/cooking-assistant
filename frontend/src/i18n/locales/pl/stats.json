@@ -46,6 +46,9 @@
         "caloriesValue": "{{count}} kcal",
         "loading": "Ładujemy statystyki…",
         "error": "Błąd: {{message}}",
-        "errorFetch": "Nie udało się wczytać statystyk"
+        "errorFetch": "Nie udało się wczytać statystyk",
+        "emptyTitle": "Na razie brak statystyk",
+        "emptyDescription": "Liczby pojawią się tutaj, gdy dodasz pierwsze przepisy.",
+        "emptyAction": "Dodaj przepis"
     }
 }

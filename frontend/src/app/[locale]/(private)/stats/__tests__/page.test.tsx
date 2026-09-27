@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 
+import { ROUTES } from "constants/routes";
 import type { MenuWithStats } from "types/menu";
 import type { RecipeStatistics } from "types/stats";
 
@@ -86,5 +87,41 @@ describe("StatsPage", () => {
             (await screen.findAllByText(CATEGORY_NAME)).length,
         ).toBeGreaterThan(0);
         expect(screen.getAllByText("Total menus").length).toBeGreaterThan(0);
+    });
+
+    it("should hold the page's shape while the numbers load", () => {
+        mockGetByUrl({});
+
+        renderWithRouter(<StatsPage />);
+
+        expect(
+            screen.getByRole("status", { name: "Loading statistics…" }),
+        ).toBeInTheDocument();
+    });
+
+    it("should offer to add a recipe when there is nothing to count", async () => {
+        mockGetByUrl({
+            [API_ROUTES.recipes.stats]: { ...RECIPE_STATS, recipesCount: 0 },
+            [API_ROUTES.menu.allUnpaginated]: [],
+        });
+
+        renderWithRouter(<StatsPage />);
+
+        expect(
+            await screen.findByText("No statistics yet"),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", { name: "Add a recipe" }),
+        ).toHaveAttribute("href", ROUTES.addRecipe);
+    });
+
+    it("should show the error state when the menus fail to load", async () => {
+        mockGetByUrl({ [API_ROUTES.recipes.stats]: RECIPE_STATS });
+
+        renderWithRouter(<StatsPage />);
+
+        expect(
+            await screen.findByText("Error: Error fetching statistics"),
+        ).toBeInTheDocument();
     });
 });

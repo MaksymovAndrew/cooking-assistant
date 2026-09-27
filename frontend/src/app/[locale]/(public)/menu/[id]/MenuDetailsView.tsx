@@ -68,6 +68,7 @@ export const MenuDetailsView: React.FC<MenuDetailsViewProps> = ({ menu }) => {
                 />
                 <MenuDetailsSecondary
                     menuId={menu.menu.id}
+                    title={menu.menu.title}
                     isFavourite={menu.menu.isFavourite}
                     recipes={menu.recipes}
                     allergens={menu.allergens}

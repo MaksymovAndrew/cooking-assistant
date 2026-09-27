@@ -6,6 +6,8 @@ import type { ExpiredPantryIngredient } from "types/expiry";
 import { useAppDispatch } from "redux/hooks";
 import { closeModal } from "redux/slices/uiSlice";
 
+import { useExpiredIngredientsActions } from "hooks/useExpiredIngredientsActions";
+
 import { AlertTriangleMark } from "components/icons/AlertTriangleMark";
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
@@ -27,6 +29,7 @@ export const ExpiredIngredientsModal = ({
 }: ExpiredIngredientsModalProps) => {
     const { t } = useTranslation("ingredients");
     const dispatch = useAppDispatch();
+    const actions = useExpiredIngredientsActions(modalId, ingredients);
 
     const handleClose = () => dispatch(closeModal(modalId));
     const lotCount = ingredients.reduce(
@@ -59,6 +62,22 @@ export const ExpiredIngredientsModal = ({
                 {t("expiredNoticeModal.message", { count: lotCount })}
             </p>
             <ExpiredIngredientsList ingredients={ingredients} />
+            <div className={styles["expired-ingredients-modal__actions"]}>
+                <Button
+                    variant="secondary"
+                    onClick={actions.addToShoppingList}
+                    disabled={actions.isAdding}
+                >
+                    {t("expiredNoticeModal.addToListButton")}
+                </Button>
+                <Button
+                    variant="danger"
+                    onClick={actions.discard}
+                    disabled={actions.isDiscarding}
+                >
+                    {t("expiredNoticeModal.discardButton")}
+                </Button>
+            </div>
         </BaseModal>
     );
 };

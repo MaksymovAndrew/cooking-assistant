@@ -12,6 +12,18 @@
         margin: 0 0 var(--s-3);
     }
 
+    // wraps to one button per row once a translated label no longer fits beside the other
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-2);
+        margin-top: var(--s-4);
+
+        > * {
+            flex: 1 1 auto;
+        }
+    }
+
     &__list {
         display: flex;
         flex-direction: column;

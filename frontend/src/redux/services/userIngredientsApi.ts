@@ -51,6 +51,21 @@ export const userIngredientsApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: PANTRY_INVALIDATES,
         }),
+        discardPurchases: build.mutation<{ discarded: number }, number[]>({
+            query: (purchaseIds) => ({
+                url: API_ROUTES.userIngredients.discard,
+                method: "POST",
+                data: { purchaseIds },
+            }),
+            invalidatesTags: PANTRY_INVALIDATES,
+        }),
+        deletePurchase: build.mutation<null, number>({
+            query: (purchaseId) => ({
+                url: API_ROUTES.userIngredients.history(purchaseId),
+                method: "DELETE",
+            }),
+            invalidatesTags: PANTRY_INVALIDATES,
+        }),
     }),
 });
 
@@ -60,4 +75,6 @@ export const {
     useSaveUserIngredientMutation,
     useDeleteUserIngredientMutation,
     useUpdatePurchaseMutation,
+    useDeletePurchaseMutation,
+    useDiscardPurchasesMutation,
 } = userIngredientsApi;

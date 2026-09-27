@@ -2,7 +2,9 @@ import type { IngredientRepository } from "domain/repositories/IngredientReposit
 import type { PantryRepository } from "domain/repositories/PantryRepository";
 
 import AddUserIngredients from "application/use-cases/pantry/AddUserIngredients";
+import DeletePurchase from "application/use-cases/pantry/DeletePurchase";
 import DeleteUserIngredient from "application/use-cases/pantry/DeleteUserIngredient";
+import DiscardPurchases from "application/use-cases/pantry/DiscardPurchases";
 import GetPurchaseHistory from "application/use-cases/pantry/GetPurchaseHistory";
 import GetUserIngredients from "application/use-cases/pantry/GetUserIngredients";
 import UpdatePurchaseQuantity from "application/use-cases/pantry/UpdatePurchaseQuantity";
@@ -28,5 +30,7 @@ export function buildPantryController({
         deleteUserIngredient: new DeleteUserIngredient(pantryRepository),
         updatePurchaseQuantity: new UpdatePurchaseQuantity(pantryRepository),
         getPurchaseHistory: new GetPurchaseHistory(pantryRepository),
+        deletePurchase: new DeletePurchase(pantryRepository),
+        discardPurchases: new DiscardPurchases(pantryRepository),
     });
 }

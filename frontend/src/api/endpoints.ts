@@ -36,6 +36,7 @@ export const API_ROUTES = {
         item: (ingredientId: string | number) =>
             `/api/user-ingredients/${ingredientId}`,
         history: (id: string | number) => `/api/user-ingredients/history/${id}`,
+        discard: "/api/user-ingredients/history/discard",
     },
     menu: {
         list: "/api/menu",

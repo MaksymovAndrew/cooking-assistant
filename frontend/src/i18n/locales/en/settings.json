@@ -3,7 +3,6 @@
         "heading": "Settings",
         "subheading": "Appearance, language and account preferences."
     },
-    "comingSoonBadge": "Coming soon",
     "appearanceSection": {
         "heading": "Appearance",
         "themeTitle": "Theme",
@@ -17,13 +16,6 @@
         "heading": "Language",
         "languageTitle": "Interface language",
         "languageDescription": "Pages and emails come in the language you pick."
-    },
-    "notificationsSection": {
-        "heading": "Notifications",
-        "expiryTitle": "Expiry reminders",
-        "expiryDescription": "Get notified before pantry items expire.",
-        "digestTitle": "Weekly digest",
-        "digestDescription": "A weekly summary of your recipes and menus."
     },
     "accountSection": {
         "heading": "Account",

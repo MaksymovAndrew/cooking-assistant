@@ -63,7 +63,6 @@
         "ingredients": "Spiżarnia",
         "stats": "Statystyki",
         "shoppingList": "Zakupy",
-        "settings": "Ustawienia",
         "profile": "Profil",
         "logout": "Wyloguj się",
         "login": "Zaloguj się",
@@ -206,6 +205,11 @@
         "star_other": "{{count}} gwiazdki",
         "yourRating": "Twoja ocena",
         "remove": "Usuń moją ocenę"
+    },
+    "share": {
+        "button": "Udostępnij",
+        "copied": "Link skopiowany",
+        "failed": "Nie udało się skopiować linku"
     },
     "social": {
         "tagline": "Przepisy, jadłospisy i twoja spiżarnia w jednej kuchni",

@@ -67,6 +67,7 @@
         @include wrap-anywhere;
 
         max-width: 60ch;
+        white-space: pre-line;
         margin: 0 0 var(--s-5);
         color: var(--text-2);
         font:

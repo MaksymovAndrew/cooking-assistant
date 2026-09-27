@@ -27,6 +27,7 @@ jest.mock("api/client");
 const TITLE = "Weekday menu";
 const SAMPLE: MenuDetails = {
     menu: {
+        creation_date: "2026-01-01T00:00:00.000Z",
         id: 1,
         title: TITLE,
         language: "en",

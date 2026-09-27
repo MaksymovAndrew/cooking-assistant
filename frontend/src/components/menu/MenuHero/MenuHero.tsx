@@ -16,6 +16,7 @@ import { StarRatingInput } from "components/ui/StarRatingInput";
 
 import { formatKcal } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatFullDate } from "utils/dateUtils";
 import { mediaUrl } from "utils/mediaUrl";
 import { menuCategoryName } from "utils/referenceLabels";
 
@@ -78,11 +79,11 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                     >
                         {menu.title}
                     </h1>
-                    <Chip variant="type">
-                        {menu.categoryname === null
-                            ? null
-                            : menuCategoryName(t, menu.categoryname)}
-                    </Chip>
+                    {menu.categoryname !== null && (
+                        <Chip variant="type">
+                            {menuCategoryName(t, menu.categoryname)}
+                        </Chip>
+                    )}
                     <LanguageBadge language={menu.language} />
                     <RatingSummary
                         average={rating.ratingAverage}
@@ -101,6 +102,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                 formattedTotalTime={formattedTotalTime}
                 recipeCount={recipeCount}
                 formattedCalories={formattedCalories}
+                formattedDate={formatFullDate(menu.creation_date, locale)}
                 rating={rating}
                 exceedsBudget={exceedsBudget}
             />

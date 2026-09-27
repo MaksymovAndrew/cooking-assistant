@@ -1,6 +1,7 @@
 import type { Pool } from "pg";
 
 interface PantryLotRow {
+    id: number;
     quantity: number;
     purchase_date: Date;
 }
@@ -43,7 +44,7 @@ export async function findPantryByUser(
          MIN(ip.purchase_date) AS purchase_date,
          COALESCE(
            json_agg(
-             json_build_object('quantity', ip.quantity, 'purchase_date', ip.purchase_date)
+             json_build_object('id', ip.id, 'quantity', ip.quantity, 'purchase_date', ip.purchase_date)
              ORDER BY ip.purchase_date ASC
            ) FILTER (WHERE ip.id IS NOT NULL),
            '[]'

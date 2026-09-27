@@ -57,7 +57,8 @@
         "loading": "Ładowanie…",
         "noHistory": "Brak historii zakupów.",
         "closeButton": "Zamknij",
-        "editButton": "Zmień ilość"
+        "editButton": "Zmień ilość",
+        "deleteButton": "Usuń zakup"
     },
     "restockModal": {
         "title": "Dokup: {{name}}",
@@ -74,6 +75,9 @@
         "lotPurchased": "Kupiono {{date}}",
         "lotExpired": "Przeterminowane od {{date}}",
         "close": "Zamknij",
-        "goToPantry": "Przejdź do spiżarni"
+        "goToPantry": "Przejdź do spiżarni",
+        "discardButton": "Wyrzuć przeterminowane",
+        "addToListButton": "Dodaj do listy zakupów",
+        "discarded": "Przeterminowane zakupy wyrzucone"
     }
 }

@@ -1,4 +1,4 @@
-import { Clock, Flame } from "lucide-react";
+import { Calendar, Clock, Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -14,16 +14,19 @@ interface MenuHeroStatsProps {
     formattedTotalTime: string;
     recipeCount: number;
     formattedCalories: string | null;
+    formattedDate: string;
     rating: RecordRating;
     exceedsBudget?: boolean;
 }
 
 const STAT_ICON_SIZE = 16;
+const SECONDARY_STAT_CLASS = `${styles["menu-hero__stat"]} ${styles["menu-hero__stat--secondary"]}`;
 
 export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
     formattedTotalTime,
     recipeCount,
     formattedCalories,
+    formattedDate,
     rating,
     exceedsBudget = false,
 }) => {
@@ -50,12 +53,16 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
                         {formattedTotalTime}
                     </span>
                 </div>
-                <div
-                    className={[
-                        styles["menu-hero__stat"],
-                        styles["menu-hero__stat--secondary"],
-                    ].join(" ")}
-                >
+                <div className={SECONDARY_STAT_CLASS}>
+                    <span className={styles["menu-hero__stat-label"]}>
+                        {t("menuDetailsPage.creationDate")}
+                    </span>
+                    <span className={styles["menu-hero__stat-value"]}>
+                        <Calendar size={STAT_ICON_SIZE} aria-hidden="true" />
+                        {formattedDate}
+                    </span>
+                </div>
+                <div className={SECONDARY_STAT_CLASS}>
                     <span className={styles["menu-hero__stat-label"]}>
                         {t("menuDetailsPage.rating")}
                     </span>

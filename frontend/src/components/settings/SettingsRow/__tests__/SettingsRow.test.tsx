@@ -36,34 +36,4 @@ describe("SettingsRow", () => {
             "settings-row__title--danger",
         );
     });
-
-    it("should show a coming-soon badge when comingSoon is set", () => {
-        render(
-            <SettingsRow
-                icon={Globe}
-                title="Language"
-                description="English only for now."
-                disabled
-                comingSoon
-            >
-                <span>EN</span>
-            </SettingsRow>,
-        );
-
-        expect(screen.getByText("Coming soon")).toBeInTheDocument();
-    });
-
-    it("should not show a coming-soon badge by default", () => {
-        render(
-            <SettingsRow
-                icon={Globe}
-                title="Language"
-                description="English only for now."
-            >
-                <span>EN</span>
-            </SettingsRow>,
-        );
-
-        expect(screen.queryByText("Coming soon")).not.toBeInTheDocument();
-    });
 });

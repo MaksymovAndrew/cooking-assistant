@@ -9,7 +9,7 @@ import { userIngredientsApi } from "redux/services/userIngredientsApi";
 
 import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
 
-import { mockedGet, mockedPut } from "test/apiClientMock";
+import { mockedDelete, mockedGet, mockedPut } from "test/apiClientMock";
 import { renderWithRouter } from "test/router";
 
 jest.mock("api/client");
@@ -159,5 +159,52 @@ describe("PurchaseHistoryModal", () => {
         });
 
         expect(within(rowB).getByDisplayValue("250")).toBeInTheDocument();
+    });
+
+    it("should drop a deleted purchase from the list and keep the others", async () => {
+        mockedGet.mockResolvedValue({ data: [HISTORY_A, HISTORY_B] });
+        mockedDelete.mockResolvedValue({ data: null });
+        const onClose = jest.fn();
+
+        renderWithRouter(
+            <PurchaseHistoryModal
+                ingredientId={5}
+                ingredientName="Potato"
+                onClose={onClose}
+            />,
+        );
+
+        const [rowA] = await screen.findAllByRole("listitem");
+
+        await userEvent.click(
+            within(rowA).getByRole("button", { name: "Delete purchase" }),
+        );
+
+        expect(mockedDelete).toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.history(HISTORY_A.id),
+            { data: undefined, params: undefined },
+        );
+        expect(screen.getAllByRole("listitem")).toHaveLength(1);
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it("should close once the last purchase is deleted", async () => {
+        mockedGet.mockResolvedValue({ data: SAMPLE_HISTORY });
+        mockedDelete.mockResolvedValue({ data: null });
+        const onClose = jest.fn();
+
+        renderWithRouter(
+            <PurchaseHistoryModal
+                ingredientId={5}
+                ingredientName="Potato"
+                onClose={onClose}
+            />,
+        );
+
+        await userEvent.click(
+            await screen.findByRole("button", { name: "Delete purchase" }),
+        );
+
+        expect(onClose).toHaveBeenCalledTimes(1);
     });
 });

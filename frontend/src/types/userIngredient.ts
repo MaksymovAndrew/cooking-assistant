@@ -2,6 +2,7 @@ import type { CatalogIngredientRef } from "types/catalogIngredientRef";
 
 // one purchase-history row, as returned nested under a pantry ingredient
 export interface PantryLot {
+    id: number;
     quantity: number;
     purchase_date: string;
 }

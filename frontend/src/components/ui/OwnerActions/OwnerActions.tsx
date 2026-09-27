@@ -7,6 +7,7 @@ import { useIsHydrated } from "hooks/useIsHydrated";
 import { EditMark, TrashMark } from "components/icons";
 import { FavouriteButton } from "components/ui/FavouriteButton";
 import { LinkButton } from "components/ui/LinkButton";
+import { ShareButton } from "components/ui/ShareButton";
 
 import styles from "./OwnerActions.module.scss";
 
@@ -17,6 +18,7 @@ interface OwnerActionsProps {
     deleteLabel: string;
     favourite: FavouriteToggle;
     favouriteLabel: string;
+    shareTitle: string;
     onLogIntake?: () => void;
     logIntakeLabel?: string;
 }
@@ -30,6 +32,7 @@ export const OwnerActions: React.FC<OwnerActionsProps> = ({
     deleteLabel,
     favourite,
     favouriteLabel,
+    shareTitle,
     onLogIntake,
     logIntakeLabel,
 }) => {
@@ -67,6 +70,7 @@ export const OwnerActions: React.FC<OwnerActionsProps> = ({
                     </span>
                 </button>
             )}
+            <ShareButton title={shareTitle} iconSize={ICON_SIZE} />
             <button
                 type="button"
                 onClick={onDelete}

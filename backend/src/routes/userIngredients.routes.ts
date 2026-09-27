@@ -31,6 +31,18 @@ export default function createUserIngredientsRouter(
         userIngredientsController.updatePurchaseQuantity,
     );
 
+    router.post(
+        ROUTES.userIngredients.discard,
+        authenticateToken,
+        userIngredientsController.discardPurchases,
+    );
+
+    router.delete(
+        ROUTES.userIngredients.purchase,
+        authenticateToken,
+        userIngredientsController.deletePurchase,
+    );
+
     router.get(
         ROUTES.userIngredients.purchaseHistory,
         authenticateToken,

@@ -25,8 +25,8 @@ interface MenuSearchQueryRow extends MenuSearchRow {
 // shared by both paginated list queries: menu_recipe joined for the per-menu recipe count needs this GROUP BY over every non-aggregated selected column
 const MENU_LIST_GROUP_BY = ` GROUP BY m.menu_id, mc.category_name`;
 
-// menu_id is the primary key, so ordering by it is already a deterministic tie-breaker
-export const MENU_ORDER_BY = ` ORDER BY m.menu_id DESC`;
+// newest first; menu_id is the primary key, so it settles ties deterministically
+export const MENU_ORDER_BY = ` ORDER BY m.creation_date DESC, m.menu_id DESC`;
 
 function buildMenuListSelect(ownerPlaceholder: string): string {
     return `
@@ -37,6 +37,7 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
         m.menu_content AS menuContent,
         m.language,
         m.photo_key,
+        m.creation_date,
         ${authorColumn("m")},
         ${isOwnerColumn("m", ownerPlaceholder)},
         ${isFavouriteColumn("menu", "m.menu_id", ownerPlaceholder)},

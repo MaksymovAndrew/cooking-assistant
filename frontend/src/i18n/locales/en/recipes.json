@@ -35,7 +35,6 @@
         "noMatches": "No ingredients found"
     },
     "recipeCard": {
-        "cookingTime": "Cooking time: ",
         "cookingTimeValue": "{{hours}} hr : {{minutes}} min",
         "caloriesValue": "{{count}} kcal"
     },
@@ -118,7 +117,6 @@
         "recipeTypeLabel": "Recipe type *",
         "recipeTypePlaceholder": "Select recipe type",
         "ingredientsLabel": "Ingredients",
-        "selectedIngredients": "Selected ingredients",
         "createButton": "Create recipe",
         "errorTitle": "Recipe title cannot be empty.",
         "errorDescription": "Recipe description cannot be empty.",
@@ -138,7 +136,6 @@
         "recipeTypeLabel": "Recipe type *",
         "recipeTypePlaceholder": "Select recipe type",
         "ingredientsLabel": "Ingredients",
-        "selectedIngredients": "Selected ingredients",
         "updateButton": "Save changes",
         "loading": "Loading…",
         "errorCookingTimeFormat": "Enter hours and minutes.",
@@ -169,10 +166,8 @@
         "missingIngredients": "Missing ingredients",
         "deleteButton": "Delete recipe",
         "editButton": "Edit recipe",
-        "loading": "Loading…",
         "deleteTitle": "Delete recipe?",
         "deleteMessage": "Are you sure you want to delete \"{{title}}\"? It will be removed from any menus that include it. This action can't be undone.",
-        "error": "Error: {{message}}",
         "cookingTimeHoursMinutes": "{{hours}} hr {{minutes}} min",
         "cookingTimeMinutes": "{{minutes}} min",
         "rating": "Rating",

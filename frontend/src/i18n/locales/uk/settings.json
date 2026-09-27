@@ -3,7 +3,6 @@
         "heading": "Налаштування",
         "subheading": "Вигляд, мова й обліковий запис."
     },
-    "comingSoonBadge": "Незабаром",
     "appearanceSection": {
         "heading": "Вигляд",
         "themeTitle": "Тема",
@@ -17,13 +16,6 @@
         "heading": "Мова",
         "languageTitle": "Мова інтерфейсу",
         "languageDescription": "Цією мовою будуть сторінки й листи."
-    },
-    "notificationsSection": {
-        "heading": "Сповіщення",
-        "expiryTitle": "Нагадування про терміни",
-        "expiryDescription": "Попередимо, поки продукти не зіпсувалися.",
-        "digestTitle": "Щотижневий підсумок",
-        "digestDescription": "Раз на тиждень — підсумки за вашими рецептами й меню."
     },
     "accountSection": {
         "heading": "Обліковий запис",

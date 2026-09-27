@@ -19,6 +19,7 @@ const MENU_ROW_EXTRAS = {
     isFavourite: false,
     recipe_count: 2,
     photo_key: null,
+    creation_date: new Date("2026-01-01T00:00:00.000Z"),
     ratingAverage: null,
     ratingCount: 0,
     myRating: null,
@@ -53,7 +54,8 @@ describe("menu routes", () => {
         const res = await request(app).get("/api/menu?menu_name=Weekly");
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(paginated);
+        // creation_date round-trips through res.json() as an ISO string, not a Date instance
+        expect(res.body).toEqual(JSON.parse(JSON.stringify(paginated)));
     });
 
     it.each([
@@ -87,7 +89,8 @@ describe("menu routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(paginated);
+        // creation_date round-trips through res.json() as an ISO string, not a Date instance
+        expect(res.body).toEqual(JSON.parse(JSON.stringify(paginated)));
     });
 
     it("should pass limit and offset through to the repository", async () => {
@@ -311,7 +314,8 @@ describe("menu routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(paginated);
+        // creation_date round-trips through res.json() as an ISO string, not a Date instance
+        expect(res.body).toEqual(JSON.parse(JSON.stringify(paginated)));
         expect(deps.menuRepository.searchByPerson).toHaveBeenCalledWith(7, {
             menu_name: "Weekly",
         });

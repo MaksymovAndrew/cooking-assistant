@@ -57,4 +57,24 @@
             color: var(--text);
         }
     }
+
+    &__delete {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border));
+        border-radius: var(--r-sm);
+        background: var(--surface);
+        color: var(--danger);
+        cursor: pointer;
+
+        @include focus-ring;
+
+        @include on-hover {
+            background: color-mix(in srgb, var(--danger) 9%, var(--surface));
+        }
+    }
 }

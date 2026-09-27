@@ -14,6 +14,7 @@ interface RecipeHeroActionsProps {
     // null for a guest, whose actions are a sign-in prompt instead of a heart
     visitorFavourite: FavouriteToggle | null;
     favouriteLabel: string;
+    shareTitle: string;
     editTo: string;
     onDelete: () => void;
     onLogIntake?: () => void;
@@ -24,6 +25,7 @@ export const RecipeHeroActions: React.FC<RecipeHeroActionsProps> = ({
     favourite,
     visitorFavourite,
     favouriteLabel,
+    shareTitle,
     editTo,
     onDelete,
     onLogIntake,
@@ -40,6 +42,7 @@ export const RecipeHeroActions: React.FC<RecipeHeroActionsProps> = ({
                     deleteLabel={t("recipeDetailsPage.deleteButton")}
                     favourite={favourite}
                     favouriteLabel={favouriteLabel}
+                    shareTitle={shareTitle}
                     onLogIntake={onLogIntake}
                     logIntakeLabel={t("recipeDetailsPage.logIntake")}
                 />
@@ -52,6 +55,7 @@ export const RecipeHeroActions: React.FC<RecipeHeroActionsProps> = ({
             <HeroVisitorActions
                 favourite={visitorFavourite}
                 favouriteLabel={favouriteLabel}
+                shareTitle={shareTitle}
                 guestCtaLabel={t("recipeDetailsPage.guestCta")}
                 logIntakeLabel={t("recipeDetailsPage.logIntake")}
                 onLogIntake={onLogIntake}

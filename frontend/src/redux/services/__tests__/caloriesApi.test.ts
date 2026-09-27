@@ -133,6 +133,7 @@ describe("caloriesApi", () => {
                 id: "5",
                 data: {
                     title: "Soup",
+                    language: "en",
                     content: "boil",
                     type_id: 1,
                     cooking_time: 30,

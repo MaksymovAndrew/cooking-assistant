@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { AllergenSlug } from "constants/allergens";
 import type { Ingredient } from "types/ingredient";
@@ -13,6 +14,7 @@ import {
 import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 
 import { useIsHydrated } from "hooks/useIsHydrated";
+import { useLocale } from "hooks/useLocale";
 
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
@@ -25,6 +27,8 @@ const ignoreRejection = () => undefined;
 // and a short "saved" note confirms the last write that landed
 export const useDietPreferences = () => {
     const isHydrated = useIsHydrated();
+    const { t } = useTranslation();
+    const locale = useLocale();
     const { data } = useGetDietPreferencesQuery(null);
     const { data: catalog = [] } = useGetIngredientsQuery(null);
     const [avoidAllergen] = useAvoidAllergenMutation();
@@ -51,8 +55,10 @@ export const useDietPreferences = () => {
                 catalog.filter((ingredient) =>
                     ingredientIds.includes(ingredient.id),
                 ),
+                t,
+                locale,
             ),
-        [catalog, ingredientIds],
+        [catalog, ingredientIds, t, locale],
     );
 
     const showSaved = () => {

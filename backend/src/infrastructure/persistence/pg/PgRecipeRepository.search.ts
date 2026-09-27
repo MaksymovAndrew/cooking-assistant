@@ -26,7 +26,7 @@ interface RecipeSearchQueryRow extends RecipeSearchRow {
 
 function buildBaseRecipeSelect(ownerPlaceholder: string): string {
     return `
-        SELECT r.id, r.title, r.content, r.type_id, r.creation_date, r.cooking_time, r.photo_key,
+        SELECT r.id, r.title, r.content, r.language, r.type_id, r.creation_date, r.cooking_time, r.photo_key,
                COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
                ${authorColumn("r")},
                ${isOwnerColumn("r", ownerPlaceholder)},

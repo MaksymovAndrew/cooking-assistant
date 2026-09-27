@@ -18,7 +18,7 @@ describe("CalorieTodayCard", () => {
         expect(screen.getByText("On track")).toBeInTheDocument();
         expect(
             screen.getByText(
-                "You've eaten 1,180 kcal of your 2,200 kcal goal - 1,020 kcal left.",
+                "You've eaten 1,180 kcal of your 2,200 kcal goal — 1,020 kcal left.",
             ),
         ).toBeInTheDocument();
         expect(screen.getByText("Eaten")).toBeInTheDocument();

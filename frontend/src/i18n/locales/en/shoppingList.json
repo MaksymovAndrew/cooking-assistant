@@ -4,7 +4,7 @@
         "toBuyCount_one": "{{count}} item to buy",
         "toBuyCount_other": "{{count}} items to buy",
         "summary": "{{bought}} bought · {{total}} total",
-        "loading": "Loading your list...",
+        "loading": "Loading your list…",
         "error": "Couldn't load your shopping list",
         "errorDescription": "Check your connection and give it another go.",
         "retry": "Try again"
@@ -34,7 +34,7 @@
     },
     "empty": {
         "title": "Your shopping list is empty",
-        "description": "Add what you need to buy - it stays here until you tick it off.",
+        "description": "Add what you need to buy — it stays here until you tick it off.",
         "allBought": "Everything is bought.",
         "allBoughtHint": "Nice one. Add something new any time."
     },

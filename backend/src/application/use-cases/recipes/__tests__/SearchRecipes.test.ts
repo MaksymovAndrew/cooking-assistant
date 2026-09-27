@@ -341,4 +341,33 @@ describe("SearchRecipes", () => {
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
+
+    it("should pass languages through as a list of languages", async () => {
+        const { useCase, recipeRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        recipeRepository.search.mockResolvedValue(paginated);
+
+        await useCase.execute(null, { languages: "ru" });
+
+        expect(recipeRepository.search).toHaveBeenCalledWith(null, {
+            languages: ["ru"],
+        });
+    });
+
+    it("should throw a 400 ValidationError when languages repeats a language", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(null, { languages: "pl,pl" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "languages: Languages must be unique",
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
 });

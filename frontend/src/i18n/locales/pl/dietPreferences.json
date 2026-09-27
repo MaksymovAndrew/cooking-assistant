@@ -1,0 +1,39 @@
+{
+    "section": {
+        "title": "Preferencje żywieniowe",
+        "description": "Przepisy z tym, czego nie jesz, spadają na koniec list i dostają dyskretne oznaczenie — nic nie jest ukrywane ani usuwane.",
+        "summary": "{{allergens}} · {{ingredients}}",
+        "allergenCount_one": "{{count}} alergen",
+        "allergenCount_few": "{{count}} alergeny",
+        "allergenCount_many": "{{count}} alergenów",
+        "allergenCount_other": "{{count}} alergenu",
+        "ingredientCount_one": "{{count}} składnik",
+        "ingredientCount_few": "{{count}} składniki",
+        "ingredientCount_many": "{{count}} składników",
+        "ingredientCount_other": "{{count}} składnika"
+    },
+    "allergens": {
+        "title": "Nie jem",
+        "count": "{{count}} z {{total}}",
+        "none": "na razie nic",
+        "helper": "14 grup alergenów przyjętych w UE. Kliknij, żeby zaznaczyć — każda zmiana zapisuje się od razu."
+    },
+    "ingredients": {
+        "title": "Składniki",
+        "helper": "Wszystko inne, czego wolisz nie widzieć, z katalogu składników.",
+        "searchPlaceholder": "Znajdź składnik…",
+        "noMatches": "Brak wyników dla „{{query}}”.",
+        "noMatchesHint": "Spróbuj krótszego słowa.",
+        "avoidedTag": "nie jem",
+        "empty": "Lista jest na razie pusta.",
+        "remove": "Znowu jem: {{name}}",
+        "saved": "Zapisano"
+    },
+    "behaviour": {
+        "sorted": "Spadają na dół i dostają oznaczenie",
+        "hideable": "Możesz je całkiem ukryć jednym filtrem na liście przepisów",
+        "favourites": "Ulubione zostają ulubionymi"
+    },
+    "avoidPill": "Nie jem",
+    "avoidedRow": "Tego nie jesz"
+}

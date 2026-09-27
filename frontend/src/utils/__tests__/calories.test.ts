@@ -8,6 +8,8 @@ import {
     sumIngredientCalories,
 } from "utils/calories";
 
+const LOCALE = "en";
+
 describe("roundCalories", () => {
     it("should round to the nearest whole calorie", () => {
         expect(roundCalories(21.6)).toBe(22);
@@ -94,20 +96,20 @@ describe("exceedsCalorieBudgetForPortions", () => {
 
 describe("formatKcal", () => {
     it("should add a thousands separator", () => {
-        expect(formatKcal(1180)).toBe("1,180");
+        expect(formatKcal(1180, LOCALE)).toBe("1,180");
     });
 
     it("should leave a small number unchanged", () => {
-        expect(formatKcal(320)).toBe("320");
+        expect(formatKcal(320, LOCALE)).toBe("320");
     });
 });
 
 describe("formatKcalCompact", () => {
     it("should abbreviate thousands with a lowercase suffix", () => {
-        expect(formatKcalCompact(13_333)).toBe("13k");
+        expect(formatKcalCompact(13_333, LOCALE)).toBe("13k");
     });
 
     it("should leave a number under a thousand unchanged", () => {
-        expect(formatKcalCompact(320)).toBe("320");
+        expect(formatKcalCompact(320, LOCALE)).toBe("320");
     });
 });

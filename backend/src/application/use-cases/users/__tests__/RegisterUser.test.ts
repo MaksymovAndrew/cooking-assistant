@@ -122,6 +122,63 @@ describe("RegisterUser", () => {
         expect(deps.userRepository.create).not.toHaveBeenCalled();
     });
 
+    it("should accept a password whose letters are not latin", async () => {
+        const deps = makeDeps();
+
+        deps.passwordHasher.hash.mockResolvedValue(HASHED_PASSWORD);
+        deps.userRepository.create.mockResolvedValue({
+            id: 5,
+            session_version: 0,
+        });
+        const useCase = new RegisterUser(
+            deps.userRepository,
+            deps.passwordHasher,
+            deps.tokenService,
+        );
+
+        await useCase.execute(
+            {
+                name: "Олена",
+                surname: "Коваль",
+                login: "olena",
+                email: EMAIL,
+                password: "пароль12!",
+            },
+            DEFAULT_LOCALE,
+        );
+
+        expect(deps.passwordHasher.hash).toHaveBeenCalledWith("пароль12!");
+    });
+
+    it("should not count a non-latin letter as the special character", async () => {
+        const deps = makeDeps();
+        const useCase = new RegisterUser(
+            deps.userRepository,
+            deps.passwordHasher,
+            deps.tokenService,
+        );
+
+        const error = await catchError(
+            useCase.execute(
+                {
+                    name: "Олена",
+                    surname: "Коваль",
+                    login: "olena",
+                    email: EMAIL,
+                    password: "пароль123",
+                },
+                DEFAULT_LOCALE,
+            ),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "password: Password must be at least 8 characters and include a letter, a number, and a special character",
+        );
+    });
+
     it("should throw a 400 ValidationError when the email is not a valid address", async () => {
         const deps = makeDeps();
         const useCase = new RegisterUser(

@@ -19,7 +19,7 @@ test.beforeAll(async ({ browser }) => {
     await page.getByRole("button", { name: "Add ingredient" }).click();
     await selectFromPicker(
         page,
-        page.getByPlaceholder("Search ingredients..."),
+        page.getByPlaceholder("Search ingredients…"),
         "Tomato",
     );
     await page.getByRole("button", { name: "Continue" }).click();
@@ -60,7 +60,10 @@ test("should delete the ingredient from the pantry entirely", async () => {
     await expect(
         page.getByText(/delete the ingredient "Tomato"/),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Confirm" }).click();
+    await page
+        .getByRole("dialog")
+        .getByRole("button", { name: "Delete" })
+        .click();
 
     await expect(page.getByText("Ingredient deleted")).toBeVisible();
     await expect(page.getByText("Tomato")).toBeHidden();

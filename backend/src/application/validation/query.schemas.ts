@@ -1,8 +1,10 @@
 import { z } from "zod";
 
+import { LOCALES } from "constants/locales";
 import { PAGINATION } from "constants/pagination";
 
 import {
+    hasUniqueItems,
     numberSchema,
     positiveIntegerSchema,
     toNumber,
@@ -29,6 +31,22 @@ export function idListStringSchema(field: string) {
             `${field} must be a comma-separated list of IDs`,
         );
 }
+
+export const languageListSchema = z
+    .string({ error: "Languages must be a string" })
+    .transform((value) => value.split(","))
+    .pipe(
+        z
+            .array(
+                z.enum(LOCALES, {
+                    error: `Languages must be a comma-separated list of ${LOCALES.join(", ")}`,
+                }),
+            )
+            .refine((languages) => hasUniqueItems(languages), {
+                message: "Languages must be unique",
+            }),
+    )
+    .optional();
 
 export const limitSchema = z.preprocess(
     toNumber,

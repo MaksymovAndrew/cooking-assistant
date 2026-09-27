@@ -101,6 +101,7 @@
     }
 
     &__panel {
+        position: relative;
         display: flex;
         flex: 1;
         flex-direction: column;
@@ -126,6 +127,17 @@
                     transparent 70%
                 ),
                 var(--bg);
+        }
+    }
+
+    &__language {
+        position: absolute;
+        top: var(--s-4);
+        right: var(--s-4);
+
+        @include respond-to(tablet) {
+            top: var(--s-5);
+            right: var(--s-5);
         }
     }
 

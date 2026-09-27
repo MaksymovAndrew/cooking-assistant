@@ -30,6 +30,7 @@ const fillValid = (form: ReturnType<typeof useRecipeForm>) => {
     form.setInitialValues({
         title: "Soup",
         content: "boil",
+        language: "en",
         cookingHours: "0",
         cookingMinutes: "30",
         selectedTypeId: 5,
@@ -55,6 +56,26 @@ describe("useRecipeForm", () => {
         expect(result.current.title).toBe("");
         expect(result.current.selectedIngredients).toEqual([]);
         expect(result.current.selectedTypeId).toBeNull();
+    });
+
+    it("should start a new recipe in the page's language", () => {
+        const { result } = renderHookWithStore(() => useRecipeForm());
+
+        expect(result.current.language).toBe("en");
+    });
+
+    it("should count a changed language as an edit", () => {
+        const { result } = renderHookWithStore(() => useRecipeForm());
+
+        act(() => {
+            fillValid(result.current);
+        });
+        act(() => {
+            result.current.setLanguage("ru");
+        });
+
+        expect(result.current.language).toBe("ru");
+        expect(result.current.isDirty).toBe(true);
     });
 
     it("should update fields through their setters", () => {

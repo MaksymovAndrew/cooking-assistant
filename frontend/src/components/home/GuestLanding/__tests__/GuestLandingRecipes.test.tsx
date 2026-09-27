@@ -48,7 +48,7 @@ describe("GuestLandingRecipes", () => {
         expect(
             await screen.findByText("No recipes published yet"),
         ).toBeInTheDocument();
-        expect(screen.getByRole("link", { name: "Register" })).toHaveAttribute(
+        expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute(
             "href",
             "/registration",
         );

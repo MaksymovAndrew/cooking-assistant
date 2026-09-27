@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+
 import type { PantryIngredient, PantryLot } from "types/userIngredient";
 
 import { getWorstLotExpiryStatus } from "utils/expiry";
@@ -19,15 +21,18 @@ export interface PantryFilterState {
     expiringSoonOnly: boolean;
 }
 
-const queryFilter: ClientFilterDef<PantryIngredient, string> = {
+// the query matches the name the viewer reads, so it needs the page's translator
+const queryFilter = (
+    t: TFunction,
+): ClientFilterDef<PantryIngredient, string> => ({
     key: "query",
     defaultValue: "",
     isActive: (value) => value !== "",
     predicate: (item, value) =>
-        resolvePantryIngredientName(item)
+        resolvePantryIngredientName(t, item)
             .toLowerCase()
             .includes(value.trim().toLowerCase()),
-};
+});
 
 const categoryFilter: ClientFilterDef<PantryIngredient, string | null> = {
     key: "category",
@@ -43,7 +48,10 @@ const expiringSoonFilter: ClientFilterDef<PantryIngredient, boolean> = {
     predicate: (item) => isUrgent(item.days_to_expire, item.lots),
 };
 
-export const PANTRY_FILTER_DEFS: readonly ClientFilterDef<
-    PantryIngredient,
-    unknown
->[] = [queryFilter, categoryFilter, expiringSoonFilter];
+export const pantryFilterDefs = (
+    t: TFunction,
+): readonly ClientFilterDef<PantryIngredient, unknown>[] => [
+    queryFilter(t),
+    categoryFilter,
+    expiringSoonFilter,
+];

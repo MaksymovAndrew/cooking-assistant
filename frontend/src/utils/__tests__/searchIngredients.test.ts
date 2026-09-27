@@ -1,6 +1,11 @@
+import i18next from "i18next";
+
 import type { Ingredient } from "types/ingredient";
 
 import { searchIngredients } from "utils/searchIngredients";
+
+const t = i18next.getFixedT("en");
+const LOCALE = "en";
 
 const makeIngredient = (
     id: number,
@@ -33,18 +38,22 @@ describe("searchIngredients", () => {
                     [STEAK, MINCEMEAT, MEATBALL, PEAR],
                     [MEAT],
                     "meat",
+                    t,
+                    LOCALE,
                 ),
             ),
         ).toEqual(["Meatball", "Mincemeat", "Steak"]);
     });
 
     it("should list an ingredient once even when it matches twice", () => {
-        expect(names(searchIngredients([MEATBALL], [MEAT], "meat"))).toEqual([
-            "Meatball",
-        ]);
+        expect(
+            names(searchIngredients([MEATBALL], [MEAT], "meat", t, LOCALE)),
+        ).toEqual(["Meatball"]);
     });
 
     it("should return nothing when neither name nor category matches", () => {
-        expect(searchIngredients([PEAR], [MEAT], "salt")).toEqual([]);
+        expect(searchIngredients([PEAR], [MEAT], "salt", t, LOCALE)).toEqual(
+            [],
+        );
     });
 });

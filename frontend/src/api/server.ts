@@ -5,6 +5,7 @@ import { cookies, headers } from "next/headers";
 
 import { AUTH_COOKIE_NAME } from "constants/auth";
 import { HTTP_STATUS_NOT_FOUND } from "constants/http";
+import type { Locale } from "constants/locales";
 
 const DEFAULT_INTERNAL_API_URL = "http://localhost:3000";
 
@@ -39,8 +40,11 @@ const request = async <T>(
 
 // carries the visitor's session into the render, so a server-rendered page shows the same
 // owner controls the browser would. The cookie is forwarded, never parsed - the API stays the
-// only place a token is verified
-export const fetchAsVisitor = async <T>(path: string): Promise<T | null> => {
+// only place a token is verified. The language is the page's, so any copy the API writes matches it
+export const fetchAsVisitor = async <T>(
+    path: string,
+    locale: Locale,
+): Promise<T | null> => {
     const [cookieStore, incoming] = await Promise.all([cookies(), headers()]);
     // only the session cookie travels on: everything else the browser holds for this origin is
     // none of the API's business
@@ -51,6 +55,7 @@ export const fetchAsVisitor = async <T>(path: string): Promise<T | null> => {
 
     return request<T>(path, {
         headers: {
+            "accept-language": locale,
             ...(authCookie
                 ? { cookie: `${AUTH_COOKIE_NAME}=${authCookie.value}` }
                 : {}),

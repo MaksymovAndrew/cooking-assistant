@@ -45,13 +45,13 @@ const renderOpen = () => {
 };
 
 const clickConfirm = () =>
-    userEvent.click(screen.getByRole("button", { name: "Confirm" }));
+    userEvent.click(screen.getByRole("button", { name: "Delete" }));
 
 describe("DeleteIngredientModal", () => {
     it("should render the delete confirmation with the ingredient name", () => {
         renderOpen();
 
-        expect(screen.getByText("Delete confirmation")).toBeInTheDocument();
+        expect(screen.getByText("Delete ingredient?")).toBeInTheDocument();
         expect(
             screen.getByText(
                 'Are you sure you want to delete the ingredient "Salt"?',

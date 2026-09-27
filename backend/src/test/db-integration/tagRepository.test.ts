@@ -52,6 +52,7 @@ describe("PgTagRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title,
             content: "Tag fixture.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });

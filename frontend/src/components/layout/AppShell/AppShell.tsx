@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useCalorieLimitNotice } from "hooks/useCalorieLimitNotice";
 import { useExpiredIngredientsNotice } from "hooks/useExpiredIngredientsNotice";
@@ -10,9 +11,6 @@ import { ScrollToTopButton } from "components/layout/ScrollToTopButton";
 import { ensureCatalogLoaded } from "i18n/loadCatalog";
 
 import styles from "./AppShell.module.scss";
-
-// earliest point common to every authenticated page - starts the catalog loading as soon as possible
-ensureCatalogLoaded().catch(() => undefined);
 
 interface AppShellProps {
     children: React.ReactNode;
@@ -31,6 +29,13 @@ export const AppShell: React.FC<AppShellProps> = ({
     mobileEditTo,
     skipNotices = false,
 }) => {
+    const { i18n } = useTranslation();
+
+    // every page with ingredient names renders inside the shell; a failed load keeps the stored names
+    useEffect(() => {
+        ensureCatalogLoaded(i18n).catch(() => undefined);
+    }, [i18n]);
+
     useExpiredIngredientsNotice({ skip: skipNotices });
     useCalorieLimitNotice({ skip: skipNotices });
 

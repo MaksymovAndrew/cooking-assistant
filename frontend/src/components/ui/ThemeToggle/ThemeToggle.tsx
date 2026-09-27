@@ -12,7 +12,11 @@ import styles from "./ThemeToggle.module.scss";
 
 const ICON_SIZE = 17;
 
-export const ThemeToggle: React.FC = () => {
+interface ThemeToggleProps {
+    className?: string;
+}
+
+export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
     const { t } = useTranslation();
     const { isDark } = useTheme();
     const dispatch = useAppDispatch();
@@ -34,7 +38,9 @@ export const ThemeToggle: React.FC = () => {
             onClick={handleClick}
             disabled={!isHydrated}
             aria-label={t("theme.toggleLabel")}
-            className={styles["theme-toggle"]}
+            className={[styles["theme-toggle"], className]
+                .filter(Boolean)
+                .join(" ")}
         >
             <Moon
                 size={ICON_SIZE}

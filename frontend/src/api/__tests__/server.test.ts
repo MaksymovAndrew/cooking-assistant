@@ -40,9 +40,10 @@ describe("server api", () => {
         setTestRequestHeaders({ "x-forwarded-for": "203.0.113.9" });
         respondWith(200);
 
-        await fetchAsVisitor(PATH);
+        await fetchAsVisitor(PATH, "en");
 
         expect(lastHeaders()).toEqual({
+            "accept-language": "en",
             cookie: SESSION_COOKIE,
             "x-forwarded-for": "203.0.113.9",
         });
@@ -51,15 +52,23 @@ describe("server api", () => {
     it("should send no cookie header when the visitor has no session", async () => {
         respondWith(200);
 
-        await fetchAsVisitor(PATH);
+        await fetchAsVisitor(PATH, "en");
 
-        expect(lastHeaders()).toEqual({});
+        expect(lastHeaders()).toEqual({ "accept-language": "en" });
+    });
+
+    it("should ask the api for any copy in the page's language", async () => {
+        respondWith(200);
+
+        await fetchAsVisitor(PATH, "uk");
+
+        expect(lastHeaders()["accept-language"]).toBe("uk");
     });
 
     it("should never store a response assembled for one visitor", async () => {
         respondWith(200);
 
-        await fetchAsVisitor(PATH);
+        await fetchAsVisitor(PATH, "en");
 
         expect(lastInit().cache).toBe("no-store");
     });
@@ -67,7 +76,7 @@ describe("server api", () => {
     it("should give up on a request the api does not answer in time", async () => {
         respondWith(200);
 
-        await fetchAsVisitor(PATH);
+        await fetchAsVisitor(PATH, "en");
 
         expect(lastInit().signal).toBeInstanceOf(AbortSignal);
     });
@@ -75,19 +84,21 @@ describe("server api", () => {
     it("should return the parsed payload", async () => {
         respondWith(200);
 
-        await expect(fetchAsVisitor(PATH)).resolves.toEqual(PAYLOAD);
+        await expect(fetchAsVisitor(PATH, "en")).resolves.toEqual(PAYLOAD);
     });
 
     it("should return null when the resource does not exist", async () => {
         respondWith(404, null);
 
-        await expect(fetchAsVisitor(PATH)).resolves.toBeNull();
+        await expect(fetchAsVisitor(PATH, "en")).resolves.toBeNull();
     });
 
     it("should throw when the api answers with a failure", async () => {
         respondWith(500, null);
 
-        await expect(fetchAsVisitor(PATH)).rejects.toThrow("answered 500");
+        await expect(fetchAsVisitor(PATH, "en")).rejects.toThrow(
+            "answered 500",
+        );
     });
 
     it("should carry no session on a public request and allow it to be reused", async () => {

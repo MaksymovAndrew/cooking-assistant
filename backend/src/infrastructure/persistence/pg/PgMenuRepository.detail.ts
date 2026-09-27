@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import type { Locale } from "constants/locales";
 import type {
     RecordAuthor,
     RecordRating,
@@ -17,6 +18,7 @@ interface MenuRow extends RecordRating {
     id: number;
     title: string;
     menuContent: string;
+    language: Locale;
     categoryName: string;
     category_id: number;
     isOwner: boolean;
@@ -35,6 +37,7 @@ export async function findMenuByIdWithRecipes(
         m.menu_id AS id,
         m.menu_title AS title,
         m.menu_content AS menuContent,
+        m.language,
         mc.category_name AS categoryName,
         m.category_id,
         m.photo_key,

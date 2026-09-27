@@ -1,7 +1,6 @@
 {
     "panel": {
         "title": "My tags",
-        "helper": "Only you can see your tags.",
         "empty": "No tags on this recipe yet.",
         "edit": "Edit tags",
         "done": "Done"
@@ -13,8 +12,7 @@
         "empty": "You have no tags yet. Create your first one above.",
         "rename": "Rename {{name}}",
         "delete": "Delete {{name}}",
-        "save": "Save name",
-        "cancel": "Cancel"
+        "save": "Save name"
     },
     "deleteModal": {
         "title": "Delete this tag?",

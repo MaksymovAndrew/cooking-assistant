@@ -6,7 +6,7 @@ import type { PantryIngredient } from "types/userIngredient";
 
 import { AddIngredientModal } from "components/ingredients/AddIngredientModal";
 
-const SEARCH_PLACEHOLDER = "Search ingredients...";
+const SEARCH_PLACEHOLDER = "Search ingredients…";
 const DEBOUNCE_MS = 300;
 
 const setupUser = () =>

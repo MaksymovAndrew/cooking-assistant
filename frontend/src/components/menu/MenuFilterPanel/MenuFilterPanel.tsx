@@ -8,12 +8,12 @@ import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
 
 import type { SetFilterValue, SetFilterValues } from "hooks/useListFilters";
 
-import { FilterChipGroup } from "components/ui/FilterChipGroup";
 import { FilterPanel } from "components/ui/FilterPanel";
 import { SearchField } from "components/ui/SearchField";
 
 import type { MenuFilterState } from "utils/filters/menuFilterDefs";
 
+import { MenuChipFilters } from "./MenuChipFilters";
 import styles from "./MenuFilterPanel.module.scss";
 import { MenuFilterToggles } from "./MenuFilterToggles";
 
@@ -53,6 +53,7 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
             favourites: false,
             topRated: false,
             sort: null,
+            languages: [],
         });
     };
 
@@ -81,21 +82,11 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
                     setValue={setValue}
                     canFavourite={canFavourite}
                 />
-                <div className={styles["menu-filter-panel__section"]}>
-                    <span className={styles["menu-filter-panel__label"]}>
-                        {t("categoryFilter.categoryLabel")}
-                    </span>
-                    <FilterChipGroup
-                        options={categories.map((category) => ({
-                            id: category.menu_category_id,
-                            label: category.category_name,
-                        }))}
-                        value={filters.categories}
-                        onChange={(next) => {
-                            setValue("categories", next);
-                        }}
-                    />
-                </div>
+                <MenuChipFilters
+                    filters={filters}
+                    setValue={setValue}
+                    categories={categories}
+                />
             </FilterPanel>
         </div>
     );

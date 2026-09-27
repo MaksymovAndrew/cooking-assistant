@@ -1,3 +1,4 @@
+import type { Locale } from "constants/locales";
 import type { RecordAuthor } from "types/media";
 import type { RecordRating } from "types/rating";
 
@@ -6,6 +7,8 @@ export interface Menu {
     title: string;
     categoryname: string;
     menucontent: string;
+    // the language the author wrote it in; absent from the unpaginated stats-only query
+    language?: Locale;
     recipe_count: number;
     // computed by the backend (m.person_id = current viewer) - present on the browse/person list
     // endpoints, absent from the unpaginated stats-only query, optional so it stays honest about
@@ -48,6 +51,7 @@ export interface MissingIngredient {
 export interface MenuDetailRecipe extends Omit<RecordRating, "myRating"> {
     recipe_id: number;
     title: string;
+    language: Locale;
     type_name: string;
     cooking_time: number;
     creation_date: string;
@@ -64,6 +68,7 @@ export interface MenuDetails {
         // a menu row may carry no category: the column is nullable
         categoryname: string | null;
         menucontent: string;
+        language: Locale;
         category_id: number;
         isOwner: boolean;
         isFavourite: boolean | null;
@@ -81,11 +86,14 @@ export interface MenuListParams {
     favourites?: boolean;
     sort_order?: "rating";
     top_rated?: boolean;
+    // comma-separated language codes
+    languages?: string;
 }
 
 export interface CreateMenuRequest {
     menuTitle: string;
     menuContent: string;
+    language: Locale;
     categoryId: number;
     recipeIds: number[];
 }
@@ -93,6 +101,7 @@ export interface CreateMenuRequest {
 export interface UpdateMenuRequest {
     menuTitle: string;
     menuContent: string;
+    language: Locale;
     categoryId: number | null;
     recipeIds: number[];
 }

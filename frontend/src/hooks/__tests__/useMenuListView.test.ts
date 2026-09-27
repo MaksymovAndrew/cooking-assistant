@@ -42,6 +42,7 @@ const CURRENT_USER: CurrentUser = {
     avatar: null,
     avatar_photo_key: null,
     calorie_goal: null,
+    locale: "en",
 };
 
 // matches what the hook sends with no filters active in the URL, so the pre-seeded cache key lines up with what the hook itself requests
@@ -302,6 +303,7 @@ describe("useMenuListView", () => {
             favourites: false,
             topRated: false,
             sort: null,
+            languages: [],
         });
     });
 
@@ -318,6 +320,7 @@ describe("useMenuListView", () => {
             favourites: false,
             topRated: false,
             sort: null,
+            languages: [],
         });
         expect(result.current.activeCount).toBe(2);
     });

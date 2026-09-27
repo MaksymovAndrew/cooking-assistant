@@ -1,6 +1,8 @@
-import i18next from "i18next";
+import type { TFunction } from "i18next";
 
-// fixed en-US date style (cards/detail), independent of the app language - a DB date-only value parses as UTC midnight, so UTC keeps the calendar day stable regardless of the viewer's timezone
+import { formatDate } from "utils/intlFormat";
+
+// a DB date-only value parses as UTC midnight, so UTC keeps the calendar day stable regardless of the viewer's timezone
 const SHORT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
     month: "short",
     day: "numeric",
@@ -15,12 +17,12 @@ const FULL_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
 };
 
 // e.g. "Mar 12" - card and list dates
-export const formatShortDate = (date: Date | string): string =>
-    new Intl.DateTimeFormat("en-US", SHORT_DATE_OPTIONS).format(new Date(date));
+export const formatShortDate = (date: Date | string, locale: string): string =>
+    formatDate(date, locale, SHORT_DATE_OPTIONS);
 
 // e.g. "Mar 12, 2026" - detail-page dates
-export const formatFullDate = (date: Date | string): string =>
-    new Intl.DateTimeFormat("en-US", FULL_DATE_OPTIONS).format(new Date(date));
+export const formatFullDate = (date: Date | string, locale: string): string =>
+    formatDate(date, locale, FULL_DATE_OPTIONS);
 
 const JOINED_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
     month: "short",
@@ -29,10 +31,8 @@ const JOINED_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
 };
 
 // e.g. "Jun 2025" - profile header "Joined ..." line
-export const formatJoinedDate = (date: Date | string): string =>
-    new Intl.DateTimeFormat("en-US", JOINED_DATE_OPTIONS).format(
-        new Date(date),
-    );
+export const formatJoinedDate = (date: Date | string, locale: string): string =>
+    formatDate(date, locale, JOINED_DATE_OPTIONS);
 
 const MS_PER_SECOND = 1000;
 const SECONDS_PER_MINUTE = 60;
@@ -41,7 +41,10 @@ const HOURS_PER_DAY = 24;
 
 // a single translated string ("7 h ago"), never split across separate elements - a shared gap/flex
 // wrapper around individually-rendered words is what produces uneven spacing between them
-export const formatRelativeTime = (date: Date | string): string => {
+export const formatRelativeTime = (
+    t: TFunction,
+    date: Date | string,
+): string => {
     const elapsedSeconds = Math.max(
         0,
         (Date.now() - new Date(date).getTime()) / MS_PER_SECOND,
@@ -49,20 +52,20 @@ export const formatRelativeTime = (date: Date | string): string => {
     const minutes = Math.floor(elapsedSeconds / SECONDS_PER_MINUTE);
 
     if (minutes < 1) {
-        return i18next.t("timeAgo.justNow");
+        return t("timeAgo.justNow");
     }
 
     const hours = Math.floor(minutes / MINUTES_PER_HOUR);
 
     if (hours < 1) {
-        return i18next.t("timeAgo.minutes", { count: minutes });
+        return t("timeAgo.minutes", { count: minutes });
     }
 
     const days = Math.floor(hours / HOURS_PER_DAY);
 
     if (days < 1) {
-        return i18next.t("timeAgo.hours", { count: hours });
+        return t("timeAgo.hours", { count: hours });
     }
 
-    return i18next.t("timeAgo.days", { count: days });
+    return t("timeAgo.days", { count: days });
 };

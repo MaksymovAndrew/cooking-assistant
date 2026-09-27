@@ -6,6 +6,8 @@ import type { CalorieIntakeItem } from "types/calorie";
 import { useAppDispatch } from "redux/hooks";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatKcal } from "utils/calories";
 
 import styles from "./CalorieJournal.module.scss";
@@ -17,6 +19,7 @@ interface CalorieJournalProps {
 
 export const CalorieJournal: React.FC<CalorieJournalProps> = ({ entries }) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
     const dispatch = useAppDispatch();
     const total = entries.reduce((sum, entry) => sum + entry.calories, 0);
 
@@ -39,7 +42,7 @@ export const CalorieJournal: React.FC<CalorieJournalProps> = ({ entries }) => {
                 <span className={styles["calorie-journal__meta"]}>
                     {t("dietaryTab.journalMeta", {
                         count: entries.length,
-                        calories: formatKcal(total),
+                        calories: formatKcal(total, locale),
                     })}
                 </span>
             </div>

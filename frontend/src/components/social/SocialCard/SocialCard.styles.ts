@@ -12,7 +12,7 @@ export const SOCIAL_COLORS = {
     text2: "#b4adc2",
 };
 
-export const SOCIAL_FONTS = { display: "Fraunces", body: "Inter" };
+export const SOCIAL_FONTS = { display: "Fraunces, Lora", body: "Inter" };
 
 export const MARK_SIZE = 56;
 export const WATERMARK_SIZE = 420;
@@ -70,7 +70,7 @@ export const eyebrowStyle: CSSProperties = {
 export const titleStyle: CSSProperties = {
     display: "block",
     fontFamily: SOCIAL_FONTS.display,
-    // the weight also picks Inter's semibold when a title falls back to it for Cyrillic
+    // Lora, the Cyrillic fallback, is loaded at this weight only
     fontWeight: 600,
     fontSize: 72,
     lineHeight: 1.1,

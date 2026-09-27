@@ -10,6 +10,7 @@ import { Link } from "components/ui/Link";
 import { LinkButton } from "components/ui/LinkButton";
 
 import { MENU_CATEGORY_URL_PARAM } from "utils/filters/menuFilterDefs";
+import { menuCategoryName } from "utils/referenceLabels";
 
 import styles from "./GuestLandingFilters.module.scss";
 
@@ -47,7 +48,7 @@ export const GuestLandingMenuFilters: React.FC = () => {
                         href={`${ROUTES.allMenus}?${MENU_CATEGORY_URL_PARAM}=${category.menu_category_id}`}
                         className={styles["guest-landing-filters__chip"]}
                     >
-                        {category.category_name}
+                        {menuCategoryName(t, category.category_name)}
                     </Link>
                 ))}
             </div>

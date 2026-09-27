@@ -1,18 +1,21 @@
 import { useCallback, useState } from "react";
 
+import type { Locale } from "constants/locales";
 import type { MenuFormErrorMessages, MenuFormValues } from "types/menuForm";
 
 import { useDirtyRef } from "hooks/useDirtyRef";
+import { useLocale } from "hooks/useLocale";
 import { useMenuFormValidation } from "hooks/useMenuFormValidation";
 import { useRecordPhotoDraft } from "hooks/useRecordPhotoDraft";
 
+import { differsFromSnapshot } from "utils/formSnapshot";
 import { moveBefore, toggleValue } from "utils/listOrder";
 
 export interface UseMenuFormOptions {
     errorMessages: MenuFormErrorMessages;
 }
 
-const BLANK_SNAPSHOT: MenuFormValues = {
+const BLANK_SNAPSHOT: Omit<MenuFormValues, "language"> = {
     menuTitle: "",
     menuDescription: "",
     selectedCategory: null,
@@ -21,14 +24,19 @@ const BLANK_SNAPSHOT: MenuFormValues = {
 };
 
 export const useMenuForm = (options: UseMenuFormOptions) => {
+    const locale = useLocale();
     const [menuTitle, setMenuTitle] = useState("");
+    // a new menu starts in the language the author is using the app in
+    const [language, setLanguage] = useState<Locale>(locale);
     const [menuDescription, setMenuDescription] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<number | null>(
         null,
     );
     const [selectedRecipes, setSelectedRecipes] = useState<number[]>([]);
-    const [initialSnapshot, setInitialSnapshot] =
-        useState<MenuFormValues>(BLANK_SNAPSHOT);
+    const [initialSnapshot, setInitialSnapshot] = useState<MenuFormValues>({
+        ...BLANK_SNAPSHOT,
+        language: locale,
+    });
     const photo = useRecordPhotoDraft("menu");
     const { reset: resetPhoto } = photo;
 
@@ -67,6 +75,7 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
     const setInitialValues = useCallback(
         (values: MenuFormValues) => {
             setMenuTitle(values.menuTitle);
+            setLanguage(values.language);
             setMenuDescription(values.menuDescription);
             setSelectedCategory(values.selectedCategory);
             setSelectedRecipes(values.selectedRecipes);
@@ -80,18 +89,20 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
     const current: MenuFormValues = {
         menuTitle,
         menuDescription,
+        language,
         selectedCategory,
         selectedRecipes,
         photoKey: initialSnapshot.photoKey,
     };
     const isDirty =
-        photo.isDirty ||
-        JSON.stringify(current) !== JSON.stringify(initialSnapshot);
+        photo.isDirty || differsFromSnapshot(current, initialSnapshot);
 
     const { isDirtyRef, markClean } = useDirtyRef(isDirty);
 
     return {
         menuTitle,
+        language,
+        setLanguage,
         menuDescription,
         selectedCategory,
         selectedRecipes,

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+    contentLanguageSchema,
     hasUniqueItems,
     idSchema,
     nonEmptyStringSchema,
@@ -29,6 +30,7 @@ const recipeIngredientSchema = z
 export const createRecipeSchema = z.object({
     title: nonEmptyStringSchema("Title"),
     content: nonEmptyStringSchema("Content"),
+    language: contentLanguageSchema,
     person_id: idSchema,
     ingredients: z
         .array(recipeIngredientSchema, {

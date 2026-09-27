@@ -1,0 +1,56 @@
+{
+    "bad_request": "Некорректный запрос",
+    "not_found": "Не найдено",
+    "server_error": "Ошибка сервера",
+    "validation_error": "Некорректные данные запроса",
+    "rate_limited": "Слишком много запросов, попробуйте позже",
+
+    "auth/session_expired": "Сессия истекла, войдите снова",
+    "auth/user_not_found": "Пользователь не найден",
+    "auth/login_already_taken": "Этот логин уже занят",
+    "auth/email_already_taken": "Эта почта уже зарегистрирована",
+    "auth/invalid_login_or_password": "Неверный логин или пароль",
+    "auth/current_password_incorrect": "Текущий пароль указан неверно",
+    "auth/invalid_or_expired_token": "Ссылка недействительна или устарела",
+    "auth/email_already_verified": "Почта уже подтверждена",
+    "auth/new_password_same_as_current": "Новый пароль должен отличаться от текущего",
+
+    "recipe/not_found": "Рецепт не найден",
+    "recipe/ingredients_empty": "Добавьте хотя бы один ингредиент",
+    "recipe/ingredients_missing_id": "Каждый ингредиент нужно выбрать из списка",
+    "recipe/ingredients_not_exist": "Одного или нескольких ингредиентов больше нет",
+    "recipe/title_content_empty": "Нужны название и описание",
+    "recipe/in_pantry_requires_login": "Войдите, чтобы искать рецепты по своим продуктам",
+
+    "menu/not_found": "Меню не найдено",
+    "menu/insufficient_data_create": "Недостаточно данных, чтобы создать меню",
+    "menu/insufficient_data_update": "Недостаточно данных, чтобы изменить меню",
+    "menu/recipes_not_exist": "Одного или нескольких рецептов больше нет",
+
+    "pantry/ingredient_not_found": "Этого продукта нет в ваших запасах",
+    "pantry/purchase_not_found": "Покупка не найдена",
+
+    "calories/intake_not_found": "Запись не найдена",
+    "calories/not_available": "Калорийность этой позиции неизвестна",
+
+    "favourites/requires_login": "Войдите, чтобы увидеть избранное",
+
+    "ratings/own_record": "Свой рецепт или меню оценить нельзя",
+
+    "ingredient/not_found": "Ингредиент не найден",
+    "diet/requires_login": "Войдите, чтобы скрывать рецепты с тем, чего вы избегаете",
+
+    "tags/not_found": "Метка не найдена",
+    "tags/duplicate_name": "У вас уже есть метка с таким названием",
+    "tags/limit_reached": "Достигнут лимит меток",
+    "tags/requires_login": "Войдите, чтобы фильтровать по своим меткам",
+
+    "shopping_list/item_not_found": "Этой позиции нет в списке покупок",
+    "shopping_list/limit_reached": "Список покупок заполнен",
+    "shopping_list/order_out_of_date": "Список покупок изменился, обновите страницу и попробуйте снова",
+
+    "media/unsupported_type": "Можно загрузить только изображения JPEG, PNG, WebP или AVIF",
+    "media/unreadable": "Не удалось прочитать изображение",
+    "media/too_large": "Изображение слишком большое",
+    "media/not_found": "Изображение не найдено"
+}

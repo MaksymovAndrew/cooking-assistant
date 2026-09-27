@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import type { PantryIngredient } from "types/userIngredient";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatShortDate } from "utils/dateUtils";
 import { resolveAllergen } from "utils/ingredientName";
 
@@ -16,6 +18,7 @@ export const IngredientCardMeta: React.FC<IngredientCardMetaProps> = ({
     ingredient,
 }) => {
     const { t } = useTranslation("ingredients");
+    const locale = useLocale();
 
     return (
         <dl className={styles["ingredient-card__meta"]}>
@@ -23,7 +26,9 @@ export const IngredientCardMeta: React.FC<IngredientCardMetaProps> = ({
                 <dt>{t("page.allergens")}</dt>
                 <dd>
                     {ingredient.allergens.length > 0
-                        ? ingredient.allergens.map(resolveAllergen).join(", ")
+                        ? ingredient.allergens
+                              .map((slug) => resolveAllergen(t, slug))
+                              .join(", ")
                         : "—"}
                 </dd>
             </div>
@@ -41,7 +46,7 @@ export const IngredientCardMeta: React.FC<IngredientCardMetaProps> = ({
                 <dt>{t("page.purchaseDate")}</dt>
                 <dd>
                     {ingredient.purchase_date
-                        ? formatShortDate(ingredient.purchase_date)
+                        ? formatShortDate(ingredient.purchase_date, locale)
                         : t("page.purchaseDateUnknown")}
                 </dd>
             </div>

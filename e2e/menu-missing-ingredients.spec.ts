@@ -101,7 +101,7 @@ test("should mark the ingredient as sufficient once enough is stocked in the pan
     await page.getByRole("button", { name: "Add ingredient" }).click();
     await selectFromPicker(
         page,
-        page.getByPlaceholder("Search ingredients..."),
+        page.getByPlaceholder("Search ingredients…"),
         "Garlic",
     );
     await page.getByRole("button", { name: "Continue" }).click();
@@ -122,6 +122,9 @@ test("should mark the ingredient as sufficient once enough is stocked in the pan
         .locator("../..")
         .getByRole("button", { name: "Delete" })
         .click();
-    await page.getByRole("button", { name: "Confirm" }).click();
+    await page
+        .getByRole("dialog")
+        .getByRole("button", { name: "Delete" })
+        .click();
     await expect(page.getByText("Ingredient deleted")).toBeVisible();
 });

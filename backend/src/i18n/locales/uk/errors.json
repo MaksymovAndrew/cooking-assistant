@@ -1,0 +1,56 @@
+{
+    "bad_request": "Некоректний запит",
+    "not_found": "Не знайдено",
+    "server_error": "Помилка сервера",
+    "validation_error": "Некоректні дані запиту",
+    "rate_limited": "Забагато запитів, спробуйте пізніше",
+
+    "auth/session_expired": "Сесія завершилася, увійдіть знову",
+    "auth/user_not_found": "Користувача не знайдено",
+    "auth/login_already_taken": "Цей логін уже зайнятий",
+    "auth/email_already_taken": "Ця пошта вже зареєстрована",
+    "auth/invalid_login_or_password": "Неправильний логін або пароль",
+    "auth/current_password_incorrect": "Поточний пароль неправильний",
+    "auth/invalid_or_expired_token": "Посилання недійсне або застаріле",
+    "auth/email_already_verified": "Пошту вже підтверджено",
+    "auth/new_password_same_as_current": "Новий пароль має відрізнятися від поточного",
+
+    "recipe/not_found": "Рецепт не знайдено",
+    "recipe/ingredients_empty": "Додайте хоча б один інгредієнт",
+    "recipe/ingredients_missing_id": "Кожен інгредієнт потрібно вибрати зі списку",
+    "recipe/ingredients_not_exist": "Одного чи кількох інгредієнтів більше немає",
+    "recipe/title_content_empty": "Потрібні назва й опис",
+    "recipe/in_pantry_requires_login": "Увійдіть, щоб шукати рецепти за своїми продуктами",
+
+    "menu/not_found": "Меню не знайдено",
+    "menu/insufficient_data_create": "Недостатньо даних, щоб створити меню",
+    "menu/insufficient_data_update": "Недостатньо даних, щоб змінити меню",
+    "menu/recipes_not_exist": "Одного чи кількох рецептів більше немає",
+
+    "pantry/ingredient_not_found": "Цього продукту немає у ваших запасах",
+    "pantry/purchase_not_found": "Покупку не знайдено",
+
+    "calories/intake_not_found": "Запис не знайдено",
+    "calories/not_available": "Калорійність цієї позиції невідома",
+
+    "favourites/requires_login": "Увійдіть, щоб побачити обране",
+
+    "ratings/own_record": "Власний рецепт чи меню оцінити не можна",
+
+    "ingredient/not_found": "Інгредієнт не знайдено",
+    "diet/requires_login": "Увійдіть, щоб приховувати рецепти з тим, чого ви уникаєте",
+
+    "tags/not_found": "Мітку не знайдено",
+    "tags/duplicate_name": "У вас уже є мітка з такою назвою",
+    "tags/limit_reached": "Досягнуто ліміту міток",
+    "tags/requires_login": "Увійдіть, щоб фільтрувати за своїми мітками",
+
+    "shopping_list/item_not_found": "Цієї позиції немає в списку покупок",
+    "shopping_list/limit_reached": "Список покупок заповнений",
+    "shopping_list/order_out_of_date": "Список покупок змінився, оновіть сторінку й спробуйте ще раз",
+
+    "media/unsupported_type": "Можна завантажити лише зображення JPEG, PNG, WebP або AVIF",
+    "media/unreadable": "Не вдалося прочитати зображення",
+    "media/too_large": "Зображення завелике",
+    "media/not_found": "Зображення не знайдено"
+}

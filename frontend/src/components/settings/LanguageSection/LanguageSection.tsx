@@ -4,8 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { SettingsRow } from "components/settings/SettingsRow";
 import { SettingsSection } from "components/settings/SettingsSection";
-
-import styles from "./LanguageSection.module.scss";
+import { LanguageSwitcher } from "components/ui/LanguageSwitcher";
 
 export const LanguageSection: React.FC = () => {
     const { t } = useTranslation("settings");
@@ -16,10 +15,8 @@ export const LanguageSection: React.FC = () => {
                 icon={Globe}
                 title={t("languageSection.languageTitle")}
                 description={t("languageSection.languageDescription")}
-                disabled
-                comingSoon
             >
-                <span className={styles["language-section__pill"]}>EN</span>
+                <LanguageSwitcher />
             </SettingsRow>
         </SettingsSection>
     );

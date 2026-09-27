@@ -105,7 +105,7 @@ test("should add a pantry ingredient with a chosen quantity and persist it acros
     await page.getByRole("button", { name: "Add ingredient" }).click();
     await selectFromPicker(
         page,
-        page.getByPlaceholder("Search ingredients..."),
+        page.getByPlaceholder("Search ingredients…"),
         "Onion",
     );
     await page.getByRole("button", { name: "Continue" }).click();
@@ -120,15 +120,18 @@ test("should add a pantry ingredient with a chosen quantity and persist it acros
         .getByRole("heading", { name: "Onion", level: 3 })
         .locator("../..");
 
-    await expect(onionCard.getByText(/^7\s*piece$/)).toBeVisible();
+    await expect(onionCard.getByText(/^7\s*pieces$/)).toBeVisible();
 
     await page.reload();
     await expect(page.getByText("Onion")).toBeVisible();
-    await expect(onionCard.getByText(/^7\s*piece$/)).toBeVisible();
+    await expect(onionCard.getByText(/^7\s*pieces$/)).toBeVisible();
 
     // cleanup: leave the shared account's pantry empty for other specs
     await onionCard.getByRole("button", { name: "Delete" }).click();
-    await page.getByRole("button", { name: "Confirm" }).click();
+    await page
+        .getByRole("dialog")
+        .getByRole("button", { name: "Delete" })
+        .click();
     await expect(page.getByText("Ingredient deleted")).toBeVisible();
 });
 

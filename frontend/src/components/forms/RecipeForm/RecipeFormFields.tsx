@@ -5,6 +5,7 @@ import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { useRecipeForm } from "hooks/useRecipeForm";
 
+import { ContentLanguageSelect } from "components/forms/ContentLanguageSelect";
 import { FormPhotoCard } from "components/forms/FormPhotoCard";
 import { CookingTimeField } from "components/recipes/CookingTimeField";
 import { RecipeTypeSelect } from "components/recipes/RecipeTypeSelect";
@@ -42,20 +43,28 @@ export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
             />
 
             <FormCard>
-                <FormField
-                    htmlFor={`${idPrefix}-title`}
-                    label={t(`${keyPrefix}.titleLabel`)}
-                    error={form.titleError}
-                >
-                    <TextInput
-                        id={`${idPrefix}-title`}
-                        value={form.title}
-                        hasError={Boolean(form.titleError)}
-                        onChange={(e) => {
-                            form.setTitle(e.target.value);
-                        }}
+                <div className={styles["recipe-form__title-row"]}>
+                    <FormField
+                        htmlFor={`${idPrefix}-title`}
+                        label={t(`${keyPrefix}.titleLabel`)}
+                        error={form.titleError}
+                    >
+                        <TextInput
+                            id={`${idPrefix}-title`}
+                            value={form.title}
+                            hasError={Boolean(form.titleError)}
+                            onChange={(e) => {
+                                form.setTitle(e.target.value);
+                            }}
+                        />
+                    </FormField>
+                    <ContentLanguageSelect
+                        id={`${idPrefix}-language`}
+                        label={t("recipeForm.languageLabel")}
+                        value={form.language}
+                        onChange={form.setLanguage}
                     />
-                </FormField>
+                </div>
             </FormCard>
 
             <FormCard>

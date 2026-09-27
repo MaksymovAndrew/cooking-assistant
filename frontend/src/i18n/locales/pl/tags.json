@@ -1,0 +1,28 @@
+{
+    "panel": {
+        "title": "Moje tagi",
+        "empty": "Ten przepis nie ma jeszcze tagów.",
+        "edit": "Edytuj tagi",
+        "done": "Gotowe"
+    },
+    "editor": {
+        "newPlaceholder": "Nazwa nowego tagu",
+        "add": "Dodaj tag",
+        "listLabel": "Twoje tagi",
+        "empty": "Nie masz jeszcze tagów. Utwórz pierwszy powyżej.",
+        "rename": "Zmień nazwę tagu „{{name}}”",
+        "delete": "Usuń tag „{{name}}”",
+        "save": "Zapisz nazwę"
+    },
+    "deleteModal": {
+        "title": "Usunąć ten tag?",
+        "message": "Tag „{{name}}” zniknie ze wszystkich przepisów, do których został dodany."
+    },
+    "filter": {
+        "label": "Moje tagi",
+        "chip_one": "{{count}} tag",
+        "chip_few": "{{count}} tagi",
+        "chip_many": "{{count}} tagów",
+        "chip_other": "{{count}} tagu"
+    }
+}

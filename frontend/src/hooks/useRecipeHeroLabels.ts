@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 
 import type { RecipeDetails } from "types/recipe";
 
+import { useLocale } from "hooks/useLocale";
+
 import {
     formatKcal,
     roundCalories,
@@ -22,6 +24,7 @@ export const useRecipeHeroLabels = (
     portionCount: number,
 ): RecipeHeroLabels => {
     const { t } = useTranslation("recipes");
+    const locale = useLocale();
 
     return {
         // a recipe can carry no cooking time at all - the column is nullable
@@ -35,6 +38,7 @@ export const useRecipeHeroLabels = (
                 : t("recipeDetailsPage.caloriesPerPortion", {
                       count: formatKcal(
                           roundCalories(recipe.calories_per_portion),
+                          locale,
                       ),
                   }),
         totalCalories:
@@ -46,8 +50,9 @@ export const useRecipeHeroLabels = (
                               recipe.calories_per_portion,
                               portionCount,
                           ),
+                          locale,
                       ),
                   }),
-        formattedDate: formatFullDate(recipe.creation_date),
+        formattedDate: formatFullDate(recipe.creation_date, locale),
     };
 };

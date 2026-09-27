@@ -1,3 +1,5 @@
+import { formatNumber } from "utils/intlFormat";
+
 export const roundCalories = (calories: number): number => Math.round(calories);
 
 // the fraction of a goal ring's circumference to draw - clamped at a full ring rather than drawn
@@ -5,19 +7,19 @@ export const roundCalories = (calories: number): number => Math.round(calories);
 export const calorieRingFraction = (consumed: number, goal: number): number =>
     goal > 0 ? Math.min(consumed / goal, 1) : 0;
 
-// thousands-separated for display (e.g. "1,180") - same en-US locale already used for dates in dateUtils.ts
-export const formatKcal = (calories: number): string =>
-    calories.toLocaleString("en-US");
+// thousands-separated the page language's way (e.g. "1,180", "1 180")
+export const formatKcal = (calories: number, locale: string): string =>
+    formatNumber(calories, locale);
 
-const COMPACT_KCAL_FORMATTER = new Intl.NumberFormat("en-US", {
+const COMPACT_KCAL_OPTIONS: Intl.NumberFormatOptions = {
     notation: "compact",
     maximumFractionDigits: 0,
-});
+};
 
 // abbreviated for tight spaces (e.g. "13k" instead of "13,333") - lowercased since Intl's compact
 // suffix is uppercase ("13K") and the app's own kcal figures read lowercase everywhere else
-export const formatKcalCompact = (calories: number): string =>
-    COMPACT_KCAL_FORMATTER.format(calories).toLowerCase();
+export const formatKcalCompact = (calories: number, locale: string): string =>
+    formatNumber(calories, locale, COMPACT_KCAL_OPTIONS).toLowerCase();
 
 // rounds the per-portion value first, then multiplies by the portion count - keeps a
 // multi-portion total a clean multiple of what's shown per portion, instead of drifting from

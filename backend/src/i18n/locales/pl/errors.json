@@ -1,0 +1,56 @@
+{
+    "bad_request": "Nieprawidłowe żądanie",
+    "not_found": "Nie znaleziono",
+    "server_error": "Błąd serwera",
+    "validation_error": "Nieprawidłowe dane w żądaniu",
+    "rate_limited": "Zbyt wiele żądań, spróbuj ponownie później",
+
+    "auth/session_expired": "Sesja wygasła, zaloguj się ponownie",
+    "auth/user_not_found": "Nie znaleziono użytkownika",
+    "auth/login_already_taken": "Ten login jest już zajęty",
+    "auth/email_already_taken": "Ten adres e-mail jest już zarejestrowany",
+    "auth/invalid_login_or_password": "Nieprawidłowy login lub hasło",
+    "auth/current_password_incorrect": "Obecne hasło jest nieprawidłowe",
+    "auth/invalid_or_expired_token": "Link jest nieprawidłowy lub wygasł",
+    "auth/email_already_verified": "Adres e-mail jest już potwierdzony",
+    "auth/new_password_same_as_current": "Nowe hasło musi się różnić od obecnego",
+
+    "recipe/not_found": "Nie znaleziono przepisu",
+    "recipe/ingredients_empty": "Dodaj co najmniej jeden składnik",
+    "recipe/ingredients_missing_id": "Każdy składnik wybierz z listy",
+    "recipe/ingredients_not_exist": "Co najmniej jeden składnik już nie istnieje",
+    "recipe/title_content_empty": "Podaj tytuł i opis",
+    "recipe/in_pantry_requires_login": "Zaloguj się, aby szukać przepisów według zawartości spiżarni",
+
+    "menu/not_found": "Nie znaleziono jadłospisu",
+    "menu/insufficient_data_create": "Za mało danych, aby utworzyć jadłospis",
+    "menu/insufficient_data_update": "Za mało danych, aby zmienić jadłospis",
+    "menu/recipes_not_exist": "Co najmniej jeden przepis już nie istnieje",
+
+    "pantry/ingredient_not_found": "Tego produktu nie ma w twojej spiżarni",
+    "pantry/purchase_not_found": "Nie znaleziono zakupu",
+
+    "calories/intake_not_found": "Nie znaleziono wpisu",
+    "calories/not_available": "Kaloryczność tej pozycji jest nieznana",
+
+    "favourites/requires_login": "Zaloguj się, aby zobaczyć ulubione",
+
+    "ratings/own_record": "Nie możesz ocenić własnego przepisu ani jadłospisu",
+
+    "ingredient/not_found": "Nie znaleziono składnika",
+    "diet/requires_login": "Zaloguj się, aby ukrywać przepisy z tym, czego unikasz",
+
+    "tags/not_found": "Nie znaleziono tagu",
+    "tags/duplicate_name": "Masz już tag o tej nazwie",
+    "tags/limit_reached": "Osiągnięto limit tagów",
+    "tags/requires_login": "Zaloguj się, aby filtrować według swoich tagów",
+
+    "shopping_list/item_not_found": "Tej pozycji nie ma na liście zakupów",
+    "shopping_list/limit_reached": "Lista zakupów jest pełna",
+    "shopping_list/order_out_of_date": "Lista zakupów się zmieniła, odśwież stronę i spróbuj ponownie",
+
+    "media/unsupported_type": "Można przesyłać tylko obrazy JPEG, PNG, WebP lub AVIF",
+    "media/unreadable": "Nie udało się odczytać obrazu",
+    "media/too_large": "Obraz jest za duży",
+    "media/not_found": "Nie znaleziono obrazu"
+}

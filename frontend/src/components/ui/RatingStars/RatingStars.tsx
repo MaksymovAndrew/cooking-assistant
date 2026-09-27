@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { RATING_VALUES } from "constants/ratings";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatRatingAverage } from "utils/formatRating";
 
 import styles from "./RatingStars.module.scss";
@@ -22,11 +24,12 @@ const starFillPercent = (average: number, starValue: number): number =>
 
 export const RatingStars: React.FC<RatingStarsProps> = ({ average, count }) => {
     const { t } = useTranslation("common");
+    const locale = useLocale();
     const label =
         average === null
             ? t("rating.none")
             : t("rating.summary", {
-                  average: formatRatingAverage(average),
+                  average: formatRatingAverage(average, locale),
                   count,
               });
 
@@ -66,7 +69,7 @@ export const RatingStars: React.FC<RatingStarsProps> = ({ average, count }) => {
             ) : (
                 <span aria-hidden="true">
                     <span className={styles["rating-stars__value"]}>
-                        {formatRatingAverage(average)}
+                        {formatRatingAverage(average, locale)}
                     </span>{" "}
                     <span className={styles["rating-stars__count"]}>
                         {t("rating.count", { count })}

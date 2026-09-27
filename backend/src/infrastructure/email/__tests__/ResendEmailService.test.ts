@@ -61,6 +61,24 @@ describe("ResendEmailService", () => {
         expect(body.html).toContain(LINK);
     });
 
+    it("should write the email in the recipient's language and mark it so", async () => {
+        const fetchSpy = jest
+            .spyOn(global, "fetch")
+            .mockResolvedValue(new Response(null, { status: 200 }));
+        const service = new ResendEmailService(API_KEY, FROM);
+
+        await service.sendVerificationEmail(TO, LINK, "pl");
+
+        const [, init] = fetchSpy.mock.calls[0];
+        const body = JSON.parse(init?.body as string) as {
+            subject: string;
+            html: string;
+        };
+
+        expect(body.subject).toBe("Potwierdź adres e-mail");
+        expect(body.html).toContain('lang="pl"');
+    });
+
     it("should throw when the Resend API responds with a non-ok status", async () => {
         jest.spyOn(global, "fetch").mockResolvedValue(
             new Response("bad request", { status: 422 }),

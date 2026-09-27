@@ -115,7 +115,7 @@ describe("ProfileHero", () => {
             />,
         );
 
-        await userEvent.click(screen.getByRole("button", { name: "Logout" }));
+        await userEvent.click(screen.getByRole("button", { name: "Log out" }));
 
         expect(onLogout).toHaveBeenCalledTimes(1);
     });

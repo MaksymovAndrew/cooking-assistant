@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { AlertTriangleMark } from "components/icons";
 
 import { formatKcal, roundCalories } from "utils/calories";
@@ -23,6 +25,7 @@ export const LogIntakeBudget = ({
     projectedOver,
 }: LogIntakeBudgetProps) => {
     const { t } = useTranslation("calories");
+    const locale = useLocale();
 
     if (goal === null || remaining === null) {
         return null;
@@ -33,21 +36,24 @@ export const LogIntakeBudget = ({
             <p className={styles["log-intake-modal__budget-summary"]}>
                 {remaining < 0
                     ? t("dietaryTab.summaryOver", {
-                          consumed: formatKcal(roundCalories(consumed)),
-                          goal: formatKcal(goal),
-                          over: formatKcal(-roundCalories(remaining)),
+                          consumed: formatKcal(roundCalories(consumed), locale),
+                          goal: formatKcal(goal, locale),
+                          over: formatKcal(-roundCalories(remaining), locale),
                       })
                     : t("dietaryTab.summaryRemaining", {
-                          consumed: formatKcal(roundCalories(consumed)),
-                          goal: formatKcal(goal),
-                          remaining: formatKcal(roundCalories(remaining)),
+                          consumed: formatKcal(roundCalories(consumed), locale),
+                          goal: formatKcal(goal, locale),
+                          remaining: formatKcal(
+                              roundCalories(remaining),
+                              locale,
+                          ),
                       })}
             </p>
             {projectedOver !== null && (
                 <p className={styles["log-intake-modal__warning"]}>
                     <AlertTriangleMark size={ICON_SIZE} />
                     {t("logIntakeModal.projectedOver", {
-                        over: formatKcal(roundCalories(projectedOver)),
+                        over: formatKcal(roundCalories(projectedOver), locale),
                     })}
                 </p>
             )}

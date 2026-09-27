@@ -25,6 +25,7 @@ const CURRENT_USER: CurrentUser = {
     avatar: null,
     avatar_photo_key: null,
     calorie_goal: 2000,
+    locale: "en",
 };
 
 const setup = (
@@ -52,7 +53,7 @@ describe("ProfileDietaryTab", () => {
 
         expect(
             await screen.findByText(
-                "You've eaten 500 kcal of your 2,000 kcal goal - 1,500 kcal left.",
+                "You've eaten 500 kcal of your 2,000 kcal goal — 1,500 kcal left.",
             ),
         ).toBeInTheDocument();
         expect(screen.getByText("On track")).toBeInTheDocument();

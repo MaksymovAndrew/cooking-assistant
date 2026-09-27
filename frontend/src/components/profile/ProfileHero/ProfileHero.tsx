@@ -2,6 +2,8 @@ import { LogOut } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { EditMark } from "components/icons";
 import { Avatar } from "components/ui/Avatar";
 import { Button } from "components/ui/Button";
@@ -46,6 +48,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
     onEditProfile,
 }) => {
     const { t } = useTranslation("profile");
+    const locale = useLocale();
     const initials = personInitials({ name, surname });
     const displayName = personDisplayName({ name, surname, login });
 
@@ -62,7 +65,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
                 {createdAt && (
                     <p className={styles["profile-hero__joined"]}>
                         {t("profilePage.joined", {
-                            date: formatJoinedDate(createdAt),
+                            date: formatJoinedDate(createdAt, locale),
                         })}
                     </p>
                 )}

@@ -23,6 +23,16 @@
         gap: var(--s-5);
     }
 
+    &__title-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--s-4);
+
+        @include respond-to(tablet) {
+            grid-template-columns: 1fr minmax(160px, 0.45fr);
+        }
+    }
+
     &__type-time-row {
         display: grid;
         grid-template-columns: 1fr;

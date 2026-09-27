@@ -1,4 +1,5 @@
 import { ERROR_CODES } from "constants/errorCodes";
+import type { Locale } from "constants/locales";
 import { ValidationError } from "domain/errors/AppError";
 
 // raw request shape; validation unifies both quantity field names into quantity_recipe_ingredients
@@ -16,6 +17,7 @@ export interface RecipeIngredient {
 export interface RecipeCreationInput {
     title?: string;
     content?: string;
+    language: Locale;
     person_id?: number;
     ingredients: RecipeIngredientInput[];
     type_id?: number;
@@ -45,6 +47,7 @@ function validateIngredients(ingredients: RecipeIngredient[]): void {
 export class Recipe {
     declare title?: string;
     declare content?: string;
+    declare language: Locale;
     declare person_id?: number;
     declare ingredients: RecipeIngredient[];
     declare type_id?: number;
@@ -54,6 +57,7 @@ export class Recipe {
     static forCreation({
         title,
         content,
+        language,
         person_id,
         ingredients,
         type_id,
@@ -65,6 +69,7 @@ export class Recipe {
         return new Recipe({
             title,
             content,
+            language,
             person_id,
             ingredients,
             type_id,
@@ -76,6 +81,7 @@ export class Recipe {
     static forUpdate({
         title,
         content,
+        language,
         ingredients,
         type_id,
         cooking_time,
@@ -90,6 +96,7 @@ export class Recipe {
         return new Recipe({
             title,
             content,
+            language,
             ingredients,
             type_id,
             cooking_time,

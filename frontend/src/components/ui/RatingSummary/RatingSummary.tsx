@@ -2,6 +2,8 @@ import { Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatRatingAverage } from "utils/formatRating";
 
 import styles from "./RatingSummary.module.scss";
@@ -27,6 +29,7 @@ export const RatingSummary: React.FC<RatingSummaryProps> = ({
     hideWhenEmpty = false,
 }) => {
     const { t } = useTranslation("common");
+    const locale = useLocale();
 
     if (average === null) {
         return hideWhenEmpty ? null : (
@@ -38,7 +41,7 @@ export const RatingSummary: React.FC<RatingSummaryProps> = ({
         );
     }
 
-    const formatted = formatRatingAverage(average);
+    const formatted = formatRatingAverage(average, locale);
 
     return (
         <span className={className}>

@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "redux/hooks";
 import { closeModal } from "redux/slices/uiSlice";
 
+import { useLocale } from "hooks/useLocale";
+
 import { BaseModal } from "components/modals/BaseModal";
 
 import { formatNewsDate } from "utils/formatNewsDate";
@@ -21,11 +23,12 @@ const MAX_VISIBLE_ITEMS = 10;
 
 export const NewsModal: React.FC<NewsModalProps> = ({ modalId }) => {
     const { t } = useTranslation("news");
+    const locale = useLocale();
     const dispatch = useAppDispatch();
 
     const handleClose = () => dispatch(closeModal(modalId));
 
-    const visibleItems = getNewsItems().slice(0, MAX_VISIBLE_ITEMS);
+    const visibleItems = getNewsItems(t).slice(0, MAX_VISIBLE_ITEMS);
 
     const heading = (
         <span className={styles["news-modal__heading"]}>
@@ -58,7 +61,7 @@ export const NewsModal: React.FC<NewsModalProps> = ({ modalId }) => {
                                 {entry.description}
                             </div>
                             <div className={styles["news-modal__date"]}>
-                                {formatNewsDate(entry.date)}
+                                {formatNewsDate(entry.date, locale)}
                             </div>
                         </div>
                     </li>

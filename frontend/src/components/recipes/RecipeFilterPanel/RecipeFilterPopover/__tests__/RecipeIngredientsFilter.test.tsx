@@ -5,7 +5,7 @@ import type { Ingredient } from "types/ingredient";
 
 import { RecipeIngredientsFilter } from "components/recipes/RecipeFilterPanel/RecipeFilterPopover/RecipeIngredientsFilter";
 
-const SEARCH_PLACEHOLDER = "Search ingredients...";
+const SEARCH_PLACEHOLDER = "Search ingredients…";
 const DEBOUNCE_MS = 300;
 
 const setupUser = () =>

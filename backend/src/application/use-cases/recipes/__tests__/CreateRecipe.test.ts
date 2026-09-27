@@ -10,6 +10,7 @@ function makeInput(overrides = {}) {
     return {
         title: "Tomato soup",
         content: "Boil tomatoes with stock",
+        language: "pl",
         person_id: 7,
         ingredients: [{ id: 3, quantity: 2 }],
         type_id: 1,
@@ -111,6 +112,22 @@ describe("CreateRecipe", () => {
             ValidationError,
             ERROR_CODES.RECIPE_INGREDIENTS_NOT_EXIST,
             400,
+        );
+        expect(recipeRepository.create).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when the language is missing", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(makeInput({ language: undefined })),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "language: Language is required",
         );
         expect(recipeRepository.create).not.toHaveBeenCalled();
     });

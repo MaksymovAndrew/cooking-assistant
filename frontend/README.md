@@ -19,7 +19,7 @@ carry the cookie.
   under `src/redux/slices/`
 - **SCSS modules** - styling, one `.module.scss` per component; no Tailwind
 - **axios** - HTTP client, wrapped behind a single shared instance in `src/api/`
-- **i18next + react-i18next** - all user-facing strings (one namespace per domain, `en` locale today)
+- **i18next + react-i18next** - all user-facing strings (one namespace per domain; the page's language comes from the URL)
 - **Recharts** - charts on the stats page (lazy-loaded)
 - **lucide-react** + hand-authored SVG icon components (`src/components/icons/`) - iconography
 - **Jest 30 + @swc/jest + React Testing Library + jsdom** - test suite (~224 co-located test files,
@@ -125,20 +125,25 @@ Auth is a **server-set httpOnly cookie** (`authToken`). The client cannot read i
 
 ```
 src/
+├── proxy.ts        picks the page's language: passes /pl|ru|uk/..., sends /en/... to the bare
+│                   path, serves a bare path in English or redirects it to the visitor's language
 ├── app/            the route tree - a route is one folder: page.tsx, page.module.scss, __tests__/
-│   ├── layout.tsx           <html>/<body>, metadata, providers
-│   ├── loading.tsx          the one Suspense boundary every route gets
-│   ├── error.tsx            render error; not-found.tsx  unknown URL (real HTTP 404)
-│   ├── (auth)/              login, registration, forgot-password, reset-password, verify-email
-│   │                        AuthPage.module.scss is shared by the group
-│   ├── (public)/            "/", all-recipes, all-menus, recipe/[id], menu/[id] - server
-│   │                        components; each renders a client island beside it (*View.tsx)
-│   ├── sitemap.ts           public URLs only, walked from the paginated API per request
-│   ├── robots.ts            allow public, disallow the private prefixes, point at the sitemap
-│   └── (private)/           layout.tsx = PrivateRoute; my-recipes, my-menus, add-recipe,
-│                            change-recipe/[id], add-menu, change-menu/[id], ingredients,
-│                            shopping-list, stats, profile, settings. The two form stylesheets are shared
-│                            by the group, like the auth one
+│   ├── [locale]/            every page, in every language
+│   │   ├── layout.tsx           <html lang>/<body>, metadata, providers
+│   │   ├── error.tsx            render error; not-found.tsx  unknown URL (real HTTP 404)
+│   │   ├── [...missing]/        catches an address no route claims, so the 404 renders in the layout
+│   │   ├── (auth)/              login, registration, forgot-password, reset-password, verify-email
+│   │   │                        AuthPage.module.scss is shared by the group
+│   │   ├── (public)/            "/", all-recipes, all-menus, recipe/[id], menu/[id] - server
+│   │   │                        components; each renders a client island beside it (*View.tsx)
+│   │   └── (private)/           layout.tsx = PrivateRoute; my-recipes, my-menus, add-recipe,
+│   │                            change-recipe/[id], add-menu, change-menu/[id], ingredients,
+│   │                            shopping-list, stats, profile, settings. The two form stylesheets are
+│   │                            shared by the group, like the auth one
+│   ├── providers.tsx        store, the request's own i18n instance, navigation guard
+│   ├── sitemap.ts           public URLs only, each in every language, walked from the API per request
+│   ├── robots.ts            allow public, disallow the private prefixes in every language
+│   └── health/route.ts      the container's liveness probe
 │
 ├── api/            the ONLY place axios is touched
 │   ├── client.ts      shared axios instance (withCredentials) + 401/403 interceptor
@@ -170,7 +175,8 @@ src/
 │
 ├── constants/      routes.ts (ROUTES + path builders + PUBLIC_PATHS), pagination, theme, ...
 ├── config/         env.ts (API_BASE_URL), logger.ts (dev-only console wrapper)
-├── i18n/           index.ts (i18next init) + locales/en/<namespace>.json
+├── i18n/           resources.ts (every language, server-only), createAppI18n.ts, server.ts,
+│                   loadCatalog.ts + locales/<locale>/<namespace>.json
 ├── types/          shared TypeScript types (recipe, menu, ingredient, userIngredient, stats, auth, ...)
 ├── utils/          pure helpers (cookingTimeUtils, dateUtils, filters/ - the URL and
 │                   client-side filter framework, ...)
@@ -204,7 +210,26 @@ Data flow: page/hook -> RTK Query hook (`redux/services/*`) -> `axiosBaseQuery` 
 
 ## Routing
 
-- Routes are the folder tree under [src/app/](src/app/). Three route groups carry the map and never
+- **The URL carries the language.** Every page lives under `app/[locale]/`. English is served
+  without a prefix, so every address that existed before still works; Polish, Russian and Ukrainian
+  live under `/pl`, `/ru` and `/uk`. [src/proxy.ts](src/proxy.ts) decides, through the pure
+  [src/utils/localeRouting.ts](src/utils/localeRouting.ts): `/en/...` is a 308 to the bare path, and a
+  bare path is served in English unless the `NEXT_LOCALE` cookie (a language the visitor chose) or
+  else `Accept-Language` asks for another one - then it is a 307 to that prefix. Crawlers are never
+  redirected. `Link` and `useAppRouter` put every path from `constants/routes.ts` into the page's
+  language themselves, so a call site never writes a prefix; anything that compares against a route
+  (the active nav item, the public-path check, the login redirect) reads `stripLocale(pathname)`.
+- **Switching language is a full page load.** `LanguageSwitcher` (guest header, account menu, Settings,
+  the sign-in pages) and the registration page's own select call `useSwitchLocale`, which writes the
+  `NEXT_LOCALE` cookie, saves a signed-in account's language with `PUT /me/locale`, and loads the same
+  address under the new prefix - the root layout and the resources change with it, so a client-side
+  navigation would not do. After sign-in, `useFinishLogin` settles the device against the account: a
+  cookie the visitor set wins and is saved to the account; without one, the account's language is used.
+- **Recipes and menus carry their own language**, separate from the page's: the form picks it
+  (`ContentLanguageSelect`, defaulting to the page's language), cards and detail pages show it as a
+  `LanguageBadge`, the author's own text gets a matching `lang` attribute, and both lists filter by it
+  through one shared descriptor (`utils/filters/contentLanguageFilter.ts`, URL key `lang`).
+- Routes are the folder tree under [src/app/[locale]/](src/app/). Three route groups carry the map and never
   appear in a URL: `(auth)` for sign-in, `(public)` for anything a guest may read, and `(private)`,
   whose `layout.tsx` is a single `PrivateRoute` wrapper - **a page is private because of where it
   lives**, so it cannot forget its own guard. **`page.tsx` is the page**: the component, its
@@ -217,7 +242,7 @@ Data flow: page/hook -> RTK Query hook (`redux/services/*`) -> `axiosBaseQuery` 
   already in the HTML, and with metadata describing that recipe rather than the app.
 - **The server's own requests go through [src/api/server.ts](src/api/server.ts)**, never a bare
   `fetch`. `fetchAsVisitor` forwards the visitor's session cookie - that one, not everything else the
-  browser holds for this origin - plus `x-forwarded-for`, and is always
+  browser holds for this origin - plus `x-forwarded-for` and the page's language, and is always
   `no-store`, so a page built for one session can never be handed to another; `fetchPublic` carries no
   session and may be reused, which is what the sitemap uses. The cookie is forwarded, never parsed -
   the API stays the only place a token is verified. Both have a request deadline: a hung API would
@@ -227,8 +252,10 @@ Data flow: page/hook -> RTK Query hook (`redux/services/*`) -> `axiosBaseQuery` 
   pages point every filtered permutation back at one canonical URL. A record that does not exist
   answers a real HTTP 404. Two things make that work and neither is optional: `htmlLimitedBots: /.*/`
   in `next.config.ts`, so Next waits for `generateMetadata` rather than streaming it in afterwards,
-  and the absence of a `loading.tsx` above the route. `sitemap.ts` lists public URLs only; `robots.ts` derives its
-  disallow list from `constants/routes.ts`; the `(private)` layout carries one `noindex` for the group.
+  and the absence of a `loading.tsx` above the route. `pageAlternates(path, locale)` makes each language
+  version its own canonical and lists the others as `hreflang` alternates (`x-default` is English).
+  `sitemap.ts` lists public URLs only, each in every language; `robots.ts` derives its disallow list from
+  `constants/routes.ts` for every language; the `(private)` layout carries one `noindex` for the group.
 - `layout.tsx` owns `<html>`/`<body>`, the metadata and the client providers; `error.tsx` and
   `not-found.tsx` cover a thrown render error and an unknown URL - the latter now answers with a real
   HTTP 404 instead of a 200 and an empty shell. `loading.tsx` lives in the client-rendered groups
@@ -284,6 +311,8 @@ URL.
 | `/profile`, `/settings`                                | ProfilePage, SettingsPage           | (private) |
 | anything else                                          | not-found.tsx (real HTTP 404)       | -         |
 
+Every path above also exists under `/pl`, `/ru` and `/uk`; English is the bare path.
+
 ## State
 
 Server data is cached with RTK Query (see above). Everything else - local UI state, one-off derived
@@ -333,22 +362,75 @@ may carry an optional `link` (`{ href, label }`) to where the change landed - th
 
 ## Internationalization
 
-[src/i18n/index.ts](src/i18n/index.ts) initializes i18next with inlined JSON resources (synchronous,
-`useSuspense: false`), `lng: "en"`, `defaultNS: "common"`. One namespace file per domain lives under
-`src/i18n/locales/en/` (`common`, `auth`, `recipes`, `menu`, `ingredients`, `stats`, `profile`,
-`settings`, `home`, `news`). `catalog` (the 739-item ingredient catalog, ~29.5 KB) is deliberately NOT
-in that inlined set - [src/i18n/loadCatalog.ts](src/i18n/loadCatalog.ts)'s `ensureCatalogLoaded()` adds
-it lazily via a dynamic `import()`, called once from `AppShell`'s module scope, so the public auth pages
-(login, register, forgot/reset password, verify email) never download it. Components/hooks read strings
-via `useTranslation("<namespace>")`; non-React code (Redux middleware, utilities) uses `i18next.t()`
-directly. Every user-visible string must go through i18n - no hardcoded English in components, hooks, or
-Redux middleware.
+The page's language is the `[locale]` segment of its URL. [src/i18n/resources.ts](src/i18n/resources.ts)
+holds every language's strings and is `server-only`; the root layout hands the browser only its own
+language (`RESOURCES[locale]`), so adding a language does not grow anyone's bundle. `providers.tsx`
+builds the i18n instance through [src/i18n/createAppI18n.ts](src/i18n/createAppI18n.ts): on the server a
+fresh one per request, because requests in different languages render side by side and a shared one
+would hand one visitor another's language; in the browser the global instance, initialized with that
+same language. Init is synchronous (inlined resources, `useSuspense: false`), `defaultNS: "common"`.
+One namespace file per domain lives under `src/i18n/locales/<locale>/`. `catalog` is split: its short
+category and allergen lists travel with the page, while the 739 ingredient names are loaded lazily per
+language by [src/i18n/loadCatalog.ts](src/i18n/loadCatalog.ts)'s `ensureCatalogLoaded(i18n)`, from an
+effect in `AppShell`, so the auth pages never download them; `bindI18nStore: "added"` re-renders what
+reads them once they land. The server's `getServerTranslation` always holds the whole catalog, and the
+two server-rendered detail pages hand their island a record whose ingredient names are already in the
+page's language (`utils/localizeIngredientNames.ts`), so the HTML a crawler reads is translated and the
+browser shows the same text before and after the catalog arrives. i18next keeps the object it is given
+and writes later bundles into it, which is why `i18nOptions` passes it a copy of the shared resources.
 
-Units of measurement are the one exception: they are rendered straight from the record's `unit_name`
-(`g`, `kg`, `ml`, `L`, `tsp`, `piece`, ...), the same short forms the `unit_measurement` table stores.
-The catalog used to carry spelled-out names for them, and "250 milliliter" wrapped out of every tight
-quantity row. Reach for a translation layer again only when a second language actually ships, and give
-it short forms then too.
+Components and hooks read strings with `useTranslation("<namespace>")` and the language with
+`useLocale()`. Anything that renders never touches the global `i18next`: a helper that translates or
+formats takes `t` or the locale as an argument (`resolveIngredientName(t, ingredient)`,
+`formatKcal(value, locale)`, the date formatters, which go through the cached `Intl` formatters in
+`utils/intlFormat.ts`). Only client code outside React - the Redux middleware toasts, `api/httpError.ts`,
+the `Accept-Language` interceptor - uses the global instance, which in the browser is the page's.
+Metadata and preview images use `getServerTranslation(locale, namespace)`. Every user-visible string
+must go through i18n - no hardcoded English in components, hooks, or Redux middleware.
+
+Recipe types, menu categories and units are rows the seed writes by their English name, and the seed also
+matches rows on that name, so it is their key: [src/utils/referenceLabels.ts](src/utils/referenceLabels.ts)
+(`recipeTypeName`, `menuCategoryName`, `unitName`) looks each one up under `common:recipeTypes`,
+`menuCategories` and `units`, falling back to the stored name. Never print `type_name`, `category_name` or
+`unit_name` directly. A unit printed next to an amount goes through `quantityWithUnit(t, locale, quantity,
+unit)`, which writes the amount with the language's decimal separator (`formatQuantity`) and makes the
+unit agree with it - "3 cloves", "3 зубчика", "5 ząbków" - while measures such as `g` or `ml` stay as they
+are.
+
+### Adding a string or a language
+
+A new string goes into the English namespace file first, then into `pl`, `ru` and `uk` in the same change.
+[src/i18n/\_\_tests\_\_/localeCompleteness.test.ts](src/i18n/__tests__/localeCompleteness.test.ts) fails if any
+language lacks a key English has, lacks one of its own plural forms (`_one`/`_few`/`_many`/`_other` for
+Polish, Russian and Ukrainian, read from `Intl.PluralRules`), drops a `{{placeholder}}`, leaves a string
+empty or leaves it in English; `RESOURCES` is typed so a missing namespace does not compile. A new
+language is one `LOCALES` entry in `constants/locales.ts` (the backend's copy must match - a backend test
+compares them), a folder under `locales/`, and its entries in `resources.ts` and `loadCatalog.ts`.
+
+### Translations
+
+English is the source; the other languages are written, not transliterated from it. The rules every
+language file follows:
+
+- **Address.** Russian and Ukrainian use the polite «вы», lowercase; Polish uses the informal «ty», also
+  lowercase in the interface (emails, being letters, capitalise «Ty»/«Ciebie»). Past-tense verbs that
+  would reveal the reader's gender are avoided (Polish «zapisałeś») - the app does not know it.
+- **Buttons** are short imperatives or infinitives as each language writes them: «Сохранить»,
+  «Зберегти», «Zapisz». A button or chip should not run much longer than its English label; find a
+  shorter word rather than letting it wrap.
+- **Punctuation.** A dash is «—» with spaces, never a hyphen. Russian and Ukrainian quote with «ёлочки»,
+  Polish with „…”. Russian always writes «ё»; Ukrainian uses the typographic apostrophe (’).
+- **Vocabulary.** One word per concept across every namespace: Recipes - Рецепты / Рецепти / Przepisy;
+  Menus - Меню / Меню / Jadłospisy; the pantry - Продукты / Продукти / Spiżarnia; Shopping list -
+  Список покупок / Список покупок / Lista zakupów; Favourites - Избранное / Обране / Ulubione; Tags -
+  Метки / Мітки / Tagi; what a person avoids - «не ем» / «не їм» / «nie jem». No bureaucratic calques
+  («осуществить», «данный»), no word-for-word English.
+- **Plurals** always come in every form the language has, even where two happen to be spelt the same.
+- **Ingredient names** in the catalog are what a shop label says, capitalised, without stress marks or
+  botanical names: «Спаржа», not «Холодок лікарський»; «Marchew», not «marchew uprawna». A backend test
+  (`scripts/catalog/__tests__/catalogNames.test.ts`) rejects stress marks, lowercase starts, words mixing
+  two alphabets and duplicate names.
+- The brand name, "Cooking Assistant", is never translated.
 
 ## Layering, ESLint boundaries, path aliases
 

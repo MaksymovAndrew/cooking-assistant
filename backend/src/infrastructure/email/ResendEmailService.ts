@@ -34,20 +34,23 @@ interface EmailContent {
 
 // inline styles only - email clients strip <style> tags and ignore external CSS/webfonts
 function emailShell(
+    locale: Locale,
     brandName: string,
     heading: string,
     bodyHtml: string,
     footer: string,
 ) {
-    return `<div style="margin:0;padding:40px 16px;background-color:${BG_WASH};font-family:${BODY_FONT_STACK};"><div style="max-width:480px;margin:0 auto;background-color:#ffffff;border-radius:16px;overflow:hidden;"><div style="height:4px;background-color:${BRAND_COLOR};"></div><div style="padding:40px 40px 32px;text-align:center;"><div style="margin:0 0 28px;">${BRAND_MARK_SVG}<span style="display:inline-block;vertical-align:middle;margin-left:8px;color:${BRAND_COLOR};font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${brandName}</span></div><h1 style="margin:0 0 16px;color:${INK_COLOR};font-family:${HEADING_FONT_STACK};font-size:24px;font-weight:600;">${heading}</h1>${bodyHtml}</div><div style="border-top:1px solid ${DIVIDER_COLOR};padding:24px 40px;text-align:center;"><p style="margin:0;color:${MUTED_COLOR};font-size:13px;line-height:1.5;">${footer}</p></div></div></div>`;
+    return `<div lang="${locale}" style="margin:0;padding:40px 16px;background-color:${BG_WASH};font-family:${BODY_FONT_STACK};"><div style="max-width:480px;margin:0 auto;background-color:#ffffff;border-radius:16px;overflow:hidden;"><div style="height:4px;background-color:${BRAND_COLOR};"></div><div style="padding:40px 40px 32px;text-align:center;"><div style="margin:0 0 28px;">${BRAND_MARK_SVG}<span style="display:inline-block;vertical-align:middle;margin-left:8px;color:${BRAND_COLOR};font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${brandName}</span></div><h1 style="margin:0 0 16px;color:${INK_COLOR};font-family:${HEADING_FONT_STACK};font-size:24px;font-weight:600;">${heading}</h1>${bodyHtml}</div><div style="border-top:1px solid ${DIVIDER_COLOR};padding:24px 40px;text-align:center;"><p style="margin:0;color:${MUTED_COLOR};font-size:13px;line-height:1.5;">${footer}</p></div></div></div>`;
 }
 
 function contentHtml(
+    locale: Locale,
     link: string,
     brandName: string,
     copy: EmailContent,
 ): string {
     return emailShell(
+        locale,
         brandName,
         copy.heading,
         `<p style="${TEXT_STYLE}">${copy.body}</p><a href="${link}" style="${BUTTON_STYLE}">${copy.button}</a>`,
@@ -72,7 +75,7 @@ export default class ResendEmailService implements EmailSender {
         await this.send(
             to,
             passwordReset.subject,
-            contentHtml(link, brandName, passwordReset),
+            contentHtml(locale, link, brandName, passwordReset),
         );
     }
 
@@ -86,7 +89,7 @@ export default class ResendEmailService implements EmailSender {
         await this.send(
             to,
             verification.subject,
-            contentHtml(link, brandName, verification),
+            contentHtml(locale, link, brandName, verification),
         );
     }
 

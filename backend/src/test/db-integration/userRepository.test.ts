@@ -396,6 +396,7 @@ describe("PgUserRepository (real Postgres)", () => {
         const ownedRecipe = Recipe.forCreation({
             title: "Owner's recipe",
             content: "Linked into someone else's menu too.",
+            language: "en",
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
@@ -406,6 +407,7 @@ describe("PgUserRepository (real Postgres)", () => {
         const ownMenu = Menu.forCreation({
             menuTitle: "Owner's own menu",
             menuContent: "Notes.",
+            language: "en",
             categoryId,
             personId: ownerId,
             recipeIds: [recipeId],
@@ -417,6 +419,7 @@ describe("PgUserRepository (real Postgres)", () => {
         const othersMenu = Menu.forCreation({
             menuTitle: "Someone else's menu",
             menuContent: "Borrows the owner's recipe.",
+            language: "en",
             categoryId,
             personId: otherPersonId,
             recipeIds: [recipeId],

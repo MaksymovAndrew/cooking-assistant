@@ -1,4 +1,4 @@
-import i18next from "i18next";
+import type { TFunction } from "i18next";
 
 export interface NewsEntry {
     id: string;
@@ -14,8 +14,8 @@ interface RawNewsItem {
 }
 
 // news.json's "items" is authored newest-first; object key order is preserved for string keys, so this stays in that same order without re-sorting
-export const getNewsItems = (): NewsEntry[] => {
-    const items = i18next.t("news:items", {
+export const getNewsItems = (t: TFunction): NewsEntry[] => {
+    const items = t("news:items", {
         returnObjects: true,
     }) as Record<string, RawNewsItem>;
 
@@ -23,4 +23,5 @@ export const getNewsItems = (): NewsEntry[] => {
 };
 
 // getNewsItems() is ordered newest-first, so its first entry is always the latest release
-export const getLatestReleaseDate = (): string => getNewsItems()[0].date;
+export const getLatestReleaseDate = (t: TFunction): string =>
+    getNewsItems(t)[0].date;

@@ -5,7 +5,7 @@
         "noSearchResults": "No ingredients match your search.",
         "itemCount_one": "{{count}} item in your pantry",
         "itemCount_other": "{{count}} items in your pantry",
-        "searchPlaceholder": "Search your pantry...",
+        "searchPlaceholder": "Search your pantry…",
         "categoryFilterLabel": "Filter by category",
         "categoryFilterAll": "All categories",
         "expiringSoonFilter_one": "Expiring soon ({{count}})",
@@ -14,16 +14,15 @@
         "shelfLife": "Shelf life:",
         "shelfLifeDays": "{{days}} days",
         "noExpiration": "No expiration.",
-        "season": "Season:",
         "purchaseDate": "Purchased:",
         "purchaseDateUnknown": "Unknown",
         "detailsButton": "Details",
         "restockButton": "Buy more",
         "deleteButton": "Delete",
         "addIngredientButton": "Add ingredient",
-        "deleteTitle": "Delete confirmation",
+        "deleteTitle": "Delete ingredient?",
         "deleteConfirmMessage": "Are you sure you want to delete the ingredient \"{{name}}\"?",
-        "confirmButton": "Confirm",
+        "confirmButton": "Delete",
         "cancelButton": "Cancel"
     },
     "expiryBadge": {
@@ -38,7 +37,7 @@
     },
     "addIngredientModal": {
         "title": "Add ingredient",
-        "searchPlaceholder": "Search ingredients...",
+        "searchPlaceholder": "Search ingredients…",
         "noMatches": "No ingredients found",
         "cancelButton": "Cancel",
         "continueButton": "Continue",
@@ -49,7 +48,7 @@
     },
     "purchaseModal": {
         "title": "Purchase history: {{name}}",
-        "loading": "Loading...",
+        "loading": "Loading…",
         "noHistory": "No purchase history available.",
         "closeButton": "Close",
         "editButton": "Edit quantity"

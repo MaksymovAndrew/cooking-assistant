@@ -20,7 +20,7 @@ function buildMenuRecipeInsert(
 
 export async function createMenuInDb(
     pool: Pool,
-    { menuTitle, menuContent, categoryId, personId }: Menu,
+    { menuTitle, menuContent, language, categoryId, personId }: Menu,
     recipeIds: number[],
 ): Promise<unknown> {
     const client = await pool.connect();
@@ -29,10 +29,10 @@ export async function createMenuInDb(
         await client.query("BEGIN");
 
         const menuResult = await client.query<MenuIdRow>(
-            `INSERT INTO menu (menu_title, menu_content, category_id, person_id)
-             VALUES ($1, $2, $3, $4)
+            `INSERT INTO menu (menu_title, menu_content, category_id, person_id, language)
+             VALUES ($1, $2, $3, $4, $5)
              RETURNING menu_id`,
-            [menuTitle, menuContent, categoryId, personId],
+            [menuTitle, menuContent, categoryId, personId, language],
         );
         const menuId = menuResult.rows[0].menu_id;
 
@@ -63,7 +63,7 @@ export async function updateMenuInDb(
     pool: Pool,
     id: string | number,
     personId: number,
-    { menuTitle, menuContent, categoryId }: Menu,
+    { menuTitle, menuContent, language, categoryId }: Menu,
     recipeIds: number[],
 ): Promise<boolean> {
     const client = await pool.connect();
@@ -73,9 +73,9 @@ export async function updateMenuInDb(
 
         const result = await client.query(
             `UPDATE menu
-      SET menu_title = $1, menu_content = $2, category_id = $3
-      WHERE menu_id = $4 AND person_id = $5`,
-            [menuTitle, menuContent, categoryId, id, personId],
+      SET menu_title = $1, menu_content = $2, category_id = $3, language = $4
+      WHERE menu_id = $5 AND person_id = $6`,
+            [menuTitle, menuContent, categoryId, language, id, personId],
         );
 
         if (result.rowCount === 0) {

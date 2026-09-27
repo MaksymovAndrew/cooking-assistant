@@ -1,5 +1,5 @@
 # ── Stage 1: builder ────────────────────────────────────────────────────────
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ RUN npm run build
 
 # ── Stage 2: runner ─────────────────────────────────────────────────────────
 # Node, not nginx: the app is server-rendered now, so there is a process to run.
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 
 WORKDIR /app
 

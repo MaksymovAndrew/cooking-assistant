@@ -1,0 +1,48 @@
+{
+    "page": {
+        "heading": "Lista zakupów",
+        "toBuyCount_one": "{{count}} pozycja do kupienia",
+        "toBuyCount_few": "{{count}} pozycje do kupienia",
+        "toBuyCount_many": "{{count}} pozycji do kupienia",
+        "toBuyCount_other": "{{count}} pozycji do kupienia",
+        "summary": "Kupiono {{bought}} · razem {{total}}",
+        "loading": "Ładujemy listę…",
+        "error": "Nie udało się wczytać listy zakupów",
+        "errorDescription": "Sprawdź połączenie i spróbuj jeszcze raz.",
+        "retry": "Spróbuj ponownie"
+    },
+    "progress": {
+        "title": "Ile już w koszyku",
+        "summary": "Odhaczono {{bought}} z {{total}}"
+    },
+    "addForm": {
+        "nameLabel": "Co kupić",
+        "namePlaceholder": "Np. mleko owsiane",
+        "noteLabel": "Notatka",
+        "notePlaceholder": "Np. 2 opakowania",
+        "submit": "Dodaj",
+        "hint": "Enter dodaje pozycję. Przepisy i jadłospisy też mogą tu wysyłać to, czego brakuje."
+    },
+    "sections": {
+        "toBuy": "Do kupienia",
+        "bought": "Kupione",
+        "clearBought": "Usuń kupione",
+        "boughtEmpty": "Tu trafią odhaczone pozycje."
+    },
+    "item": {
+        "moveUp": "Przesuń „{{name}}” wyżej",
+        "moveDown": "Przesuń „{{name}}” niżej",
+        "remove": "Usuń „{{name}}”"
+    },
+    "empty": {
+        "title": "Lista zakupów jest pusta",
+        "description": "Dodaj to, co trzeba kupić — zostanie tutaj, dopóki tego nie odhaczysz.",
+        "allBought": "Wszystko kupione.",
+        "allBoughtHint": "Świetnie. Dodawaj nowe rzeczy, kiedy zechcesz."
+    },
+    "addFromElsewhere": {
+        "addMissing": "Dodaj brakujące do listy zakupów",
+        "added": "Dodano do listy zakupów.",
+        "openList": "Otwórz listę"
+    }
+}

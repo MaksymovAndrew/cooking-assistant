@@ -29,6 +29,7 @@ const FILTERS: MenuFilterState = {
     favourites: false,
     topRated: false,
     sort: null,
+    languages: [],
 };
 
 const baseProps = {

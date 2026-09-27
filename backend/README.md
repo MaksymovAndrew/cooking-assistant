@@ -315,19 +315,21 @@ repository method (see menu/pantry repos).
   `ERROR_CODES` ([src/constants/errorCodes.ts](src/constants/errorCodes.ts)), namespaced by domain
   (`recipe/not_found`, `auth/session_expired`). The frontend switches on the code and renders its own
   copy; the English `error` text is a fallback. A new error = one `ERROR_CODES` entry + one line in
-  `i18n/locales/en/errors.json` + the same entry in the frontend mirror (`frontend/src/constants/errorCodes.ts`) -
+  `errors.json` in every `i18n/locales/<locale>/` + the same entry in the frontend mirror (`frontend/src/constants/errorCodes.ts`) -
   a missing catalog line is a compile error, and a test fails if the frontend mirror drifts either way. The frontend's own copy for each code lives under `apiErrors` in
-  `frontend/src/i18n/locales/en/common.json`, guarded by a frontend sync test.
+  every frontend `common.json`, guarded by the frontend sync and completeness tests.
 - **No display text in `AppError`.** It holds `code`, `status` and an optional `detail` (request-specific
   context, e.g. the zod issue list on `validation_error`). `errorHandler` resolves the text at the HTTP
   edge - `detail ?? translateError(code, locale)`.
 - **Every piece of server copy is written in a locale, and there are exactly two sources for it.** A
   response - error text and `{ message }` bodies alike - follows the request: `requestLocale(req)`
   ([src/i18n/requestLocale.ts](src/i18n/requestLocale.ts)) picks the best match for `Accept-Language`
-  among `LOCALES` ([src/constants/locales.ts](src/constants/locales.ts)), falling back to `en`; the app
-  sends the language it is showing, so a signed-in visitor's choice arrives that way. An email follows
-  the recipient's stored `person.locale` instead, since it is read long after the request - registration
-  stores the request's language, and `PUT /me/locale` changes it. The translate functions take the locale
+  among `LOCALES` ([src/constants/locales.ts](src/constants/locales.ts) - `en`, `pl`, `ru`, `uk`, the
+  frontend's list, which a test compares), falling back to `en`; the app sends the language it is
+  showing, so a signed-in visitor's choice arrives that way. An email follows the recipient's stored
+  `person.locale` instead, since it is read long after the request - registration stores the request's
+  language, and `PUT /me/locale` changes it. Its link opens the page in that language too (`emailLink`
+  adds the `/<locale>` prefix the frontend serves every language but English under). The translate functions take the locale
   as a required argument, so a call site cannot quietly default to English. Adding a locale is one
   `LOCALES` entry, a new `i18n/locales/<locale>/` folder and one entry in `CATALOGS`
   ([src/i18n/translate.ts](src/i18n/translate.ts)); `satisfies Record<Locale, Catalog>` rejects a locale
@@ -524,6 +526,11 @@ requester's list is ranked by it: favourites first, anything avoided last (favou
 then newest. `hide_avoided=true` drops those recipes and is refused for a guest with `diet/requires_login`;
 `exclude_allergens=gluten,milk` leaves out recipes with any listed allergen and works for everyone.
 
+Every recipe and menu carries the `language` it is written in (`en`, `pl`, `ru` or `uk`); creating or
+updating one requires it. Search and detail responses return it, and `languages=pl,uk` keeps records
+written in any of the listed languages - for everyone, guests included. The column was added with a
+backfill that guessed existing rows' language from their text.
+
 Ratings: search and detail responses carry `ratingAverage` (unrounded, `null` for a record nobody has
 rated), `ratingCount` and the requester's own `myRating` (`null` for a guest and for anyone who hasn't
 voted). A rating for a record that does not exist answers `404`, one on the requester's own recipe or menu
@@ -629,15 +636,15 @@ and `tag_ids=3,4` filters the list down to recipes carrying any of them - a gues
 
 ### Photos ([src/routes/photo.routes.ts](src/routes/photo.routes.ts), [src/routes/media.routes.ts](src/routes/media.routes.ts))
 
-| Method | Path                      | Purpose                                                       |
-| ------ | ------------------------- | ------------------------------------------------------------- |
-| PUT    | `/recipe/:id/photo`       | Set or replace a recipe's photo (owner only, `{ photo_key }`) |
-| DELETE | `/recipe/:id/photo`       | Remove it (204)                                               |
-| PUT    | `/menu/:id/photo`         | Set or replace a menu's cover (owner only, `{ photo_key }`)   |
-| DELETE | `/menu/:id/photo`         | Remove it (204)                                               |
-| PUT    | `/me/avatar`              | Set or replace the current user's photo (`{ photo_key }`)     |
-| DELETE | `/me/avatar`              | Remove it (204)                                               |
-| GET    | `/media/:file`            | Serve a stored photo (public; see the renditions below)       |
+| Method | Path                | Purpose                                                       |
+| ------ | ------------------- | ------------------------------------------------------------- |
+| PUT    | `/recipe/:id/photo` | Set or replace a recipe's photo (owner only, `{ photo_key }`) |
+| DELETE | `/recipe/:id/photo` | Remove it (204)                                               |
+| PUT    | `/menu/:id/photo`   | Set or replace a menu's cover (owner only, `{ photo_key }`)   |
+| DELETE | `/menu/:id/photo`   | Remove it (204)                                               |
+| PUT    | `/me/avatar`        | Set or replace the current user's photo (`{ photo_key }`)     |
+| DELETE | `/me/avatar`        | Remove it (204)                                               |
+| GET    | `/media/:file`      | Serve a stored photo (public; see the renditions below)       |
 
 The upload body is the image itself (any `Content-Type`, up to 10 MB), read by `express.raw` on these
 routes only, after auth and a per-user limiter (20 uploads per 10 minutes). The server never trusts

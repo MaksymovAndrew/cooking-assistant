@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
+import type { Locale } from "constants/locales";
+import { LOCALES, OPEN_GRAPH_LOCALES } from "constants/locales";
 import { SOCIAL_IMAGE_SIZE } from "constants/social";
 
+import { localizePath } from "utils/localePath";
 import { mediaUrl } from "utils/mediaUrl";
 
 interface SocialImage {
@@ -14,7 +17,9 @@ interface SocialImage {
 
 interface SocialMetadataInput {
     type: "website" | "article";
-    url: string;
+    // the route's path; it is shown in the page's own language
+    path: string;
+    locale: Locale;
     title: string;
     description: string;
     // null leaves the route's generated card in place
@@ -36,7 +41,8 @@ export const photoSocialImage = (
 // overrides the route's generated card with nothing
 export const socialMetadata = ({
     type,
-    url,
+    path,
+    locale,
     title,
     description,
     image,
@@ -44,7 +50,17 @@ export const socialMetadata = ({
     const images = image ? { images: [image] } : {};
 
     return {
-        openGraph: { type, url, title, description, ...images },
+        openGraph: {
+            type,
+            url: localizePath(path, locale),
+            title,
+            description,
+            locale: OPEN_GRAPH_LOCALES[locale],
+            alternateLocale: LOCALES.filter(
+                (language) => language !== locale,
+            ).map((language) => OPEN_GRAPH_LOCALES[language]),
+            ...images,
+        },
         twitter: {
             card: "summary_large_image",
             title,

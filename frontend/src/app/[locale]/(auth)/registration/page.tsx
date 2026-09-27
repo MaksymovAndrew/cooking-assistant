@@ -1,0 +1,53 @@
+"use client";
+
+import React from "react";
+import { useTranslation } from "react-i18next";
+
+import { ROUTES } from "constants/routes";
+
+import { usePageTitle } from "hooks/usePageTitle";
+import { useRegisterForm } from "hooks/useRegisterForm";
+
+import { AuthLayout } from "components/auth/AuthLayout";
+import { RegisterForm } from "components/forms/auth/RegisterForm";
+import { RegisterLanguageField } from "components/forms/auth/RegisterLanguageField";
+import { Link } from "components/ui/Link";
+
+import styles from "app/[locale]/(auth)/AuthPage.module.scss";
+
+const RegisterPage: React.FC = () => {
+    const { t } = useTranslation("auth");
+    const form = useRegisterForm();
+
+    usePageTitle(t("registerPage.heading"));
+
+    return (
+        <AuthLayout
+            tagline={t("registerPage.tagline")}
+            description={t("registerPage.taglineDescription")}
+            brandIcon
+            languageSwitcher={false}
+        >
+            <h1 className={styles["auth-page__heading"]}>
+                {t("registerPage.heading")}
+            </h1>
+            <div className={styles["auth-page__language"]}>
+                <RegisterLanguageField />
+            </div>
+            <RegisterForm
+                values={form.values}
+                errors={form.errors}
+                onFieldChange={form.setField}
+                onSubmit={form.handleSubmit}
+                submitLabel={t("registerPage.submit")}
+                submitError={form.error}
+            />
+            <p className={styles["auth-page__footer"]}>
+                {t("registerPage.haveAccount")}{" "}
+                <Link href={ROUTES.login}>{t("registerPage.loginLink")}</Link>
+            </p>
+        </AuthLayout>
+    );
+};
+
+export default RegisterPage;

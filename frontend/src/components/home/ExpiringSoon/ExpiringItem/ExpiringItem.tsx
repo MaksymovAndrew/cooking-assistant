@@ -27,7 +27,7 @@ export const ExpiringItem: React.FC<ExpiringItemProps> = ({ item }) => {
     return (
         <div className={rowClass}>
             <span className={styles["expiring-item__name"]}>
-                {resolveIngredientName(item)}
+                {resolveIngredientName(t, item)}
             </span>
             <span className={styles["expiring-item__badge"]}>{label}</span>
         </div>

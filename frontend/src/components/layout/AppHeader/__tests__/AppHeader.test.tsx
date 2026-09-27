@@ -30,7 +30,9 @@ describe("AppHeader", () => {
         await userEvent.click(
             screen.getByRole("button", { name: "Account menu" }),
         );
-        await userEvent.click(screen.getByRole("menuitem", { name: "Logout" }));
+        await userEvent.click(
+            screen.getByRole("menuitem", { name: "Log out" }),
+        );
 
         expect(selectActiveModal(store.getState())).toEqual(
             expect.objectContaining({ type: MODAL_TYPE.logout }),
@@ -57,11 +59,11 @@ describe("AppHeader", () => {
             store: makeTestStore({ session: { status: "guest" } }),
         });
 
-        expect(screen.getByRole("link", { name: "Log In" })).toHaveAttribute(
+        expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute(
             "href",
             "/login",
         );
-        expect(screen.getByRole("link", { name: "Register" })).toHaveAttribute(
+        expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute(
             "href",
             "/registration",
         );

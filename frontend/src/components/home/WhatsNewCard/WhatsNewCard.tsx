@@ -2,6 +2,8 @@ import { Bell } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatNewsDateShort } from "utils/formatNewsDate";
 import { getNewsItems } from "utils/newsItems";
 import { isEntryUnseen } from "utils/newsReadState";
@@ -17,13 +19,14 @@ interface WhatsNewCardProps {
 const ICON_SIZE = 17;
 const VISIBLE_ITEMS = 3;
 
-// a compact preview of getNewsItems() - clicking it opens the same NewsModal used by the mobile/tablet bell button, with the full list and descriptions
+// a compact preview of getNewsItems(t) - clicking it opens the same NewsModal used by the mobile/tablet bell button, with the full list and descriptions
 export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({
     onOpenAll,
     unseenCount,
     lastSeenDate,
 }) => {
     const { t } = useTranslation("news");
+    const locale = useLocale();
 
     return (
         <button
@@ -43,7 +46,7 @@ export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({
                 )}
             </div>
             <div className={styles["whats-new-card__list"]}>
-                {getNewsItems()
+                {getNewsItems(t)
                     .slice(0, VISIBLE_ITEMS)
                     .map((entry) => (
                         <div
@@ -78,7 +81,7 @@ export const WhatsNewCard: React.FC<WhatsNewCardProps> = ({
                                     {entry.description}
                                 </div>
                                 <div className={styles["whats-new-card__date"]}>
-                                    {formatNewsDateShort(entry.date)}
+                                    {formatNewsDateShort(entry.date, locale)}
                                 </div>
                             </div>
                         </div>

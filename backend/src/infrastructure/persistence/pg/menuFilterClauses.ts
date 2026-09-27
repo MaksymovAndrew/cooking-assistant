@@ -1,5 +1,6 @@
 import type { MenuFilters } from "domain/repositories/menu.filters";
 
+import { contentLanguageFilterClause } from "infrastructure/persistence/pg/contentLanguageFilterClause";
 import { favouritesFilterClause } from "infrastructure/persistence/pg/favouritesFilterClause";
 import { topRatedFilterClause } from "infrastructure/persistence/pg/ratingColumns";
 import {
@@ -53,4 +54,5 @@ export const MENU_FILTER_CLAUSES: readonly MenuFilterClause[] = [
     },
     favouritesFilterClause("menu", "m.menu_id"),
     topRatedFilterClause("m"),
+    contentLanguageFilterClause("m"),
 ];

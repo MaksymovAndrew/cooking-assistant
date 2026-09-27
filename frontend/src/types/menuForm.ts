@@ -1,6 +1,9 @@
+import type { Locale } from "constants/locales";
+
 export interface MenuFormValues {
     menuTitle: string;
     menuDescription: string;
+    language: Locale;
     selectedCategory: number | null;
     selectedRecipes: number[];
     photoKey: string | null;

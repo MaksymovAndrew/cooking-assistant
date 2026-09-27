@@ -10,6 +10,24 @@ describe("isValidNamePart", () => {
         expect(isValidNamePart("Test")).toBe(true);
     });
 
+    it.each(["Ірина", "Łukasz", "Алёна", "Żaneta"])(
+        "should accept %s, a name outside the english alphabet",
+        (name) => {
+            expect(isValidNamePart(name)).toBe(true);
+        },
+    );
+
+    it.each(["Мар'яна", "O’Neil", "Анна-Мария"])(
+        "should accept %s, a name joined by an apostrophe or a hyphen",
+        (name) => {
+            expect(isValidNamePart(name)).toBe(true);
+        },
+    );
+
+    it("should reject a name that ends with a hyphen", () => {
+        expect(isValidNamePart("Anna-")).toBe(false);
+    });
+
     it("should reject a lowercase first letter", () => {
         expect(isValidNamePart("test")).toBe(false);
     });
@@ -90,5 +108,13 @@ describe("isValidPassword", () => {
 
     it("should reject a password with no special character", () => {
         expect(isValidPassword("secretpass1")).toBe(false);
+    });
+
+    it("should accept a password whose letters are not latin", () => {
+        expect(isValidPassword("пароль12!")).toBe(true);
+    });
+
+    it("should not count a non-latin letter as the special character", () => {
+        expect(isValidPassword("hasło1234")).toBe(false);
     });
 });

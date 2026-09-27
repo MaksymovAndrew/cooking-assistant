@@ -1,3 +1,5 @@
+import { formatDate } from "utils/intlFormat";
+
 const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
     weekday: "short",
     month: "short",
@@ -6,5 +8,5 @@ const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
 };
 
 // e.g. "Mon, Jun 30, 2026" - the greeting header's date line
-export const formatDashboardDate = (date: Date): string =>
-    new Intl.DateTimeFormat("en-US", DATE_FORMAT_OPTIONS).format(date);
+export const formatDashboardDate = (date: Date, locale: string): string =>
+    formatDate(date, locale, DATE_FORMAT_OPTIONS);

@@ -1,9 +1,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { Locale } from "constants/locales";
 import { recipeDetailsPath } from "constants/routes";
 
+import { useLocale } from "hooks/useLocale";
+
 import { UtensilsMark } from "components/icons";
+import { LanguageBadge } from "components/ui/LanguageBadge";
 import { Link } from "components/ui/Link";
 import { RatingSummary } from "components/ui/RatingSummary";
 import { RecordPhoto } from "components/ui/RecordPhoto";
@@ -11,12 +15,14 @@ import { RecordPhoto } from "components/ui/RecordPhoto";
 import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { mediaUrl } from "utils/mediaUrl";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import styles from "./MenuRecipeCard.module.scss";
 
 interface MenuRecipeCardRecipe {
     id: number;
     title: string;
+    language: Locale;
     type_name: string;
     cooking_time: number;
     calories_per_portion: number | null;
@@ -34,6 +40,7 @@ const RATING_ICON_SIZE = 11;
 
 export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
     const { t } = useTranslation("menu");
+    const locale = useLocale();
     const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const formattedTime =
         hours > 0
@@ -43,7 +50,10 @@ export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
         recipe.calories_per_portion === null
             ? null
             : t("menuDetailsPage.caloriesValue", {
-                  count: formatKcal(roundCalories(recipe.calories_per_portion)),
+                  count: formatKcal(
+                      roundCalories(recipe.calories_per_portion),
+                      locale,
+                  ),
               });
 
     return (
@@ -63,12 +73,18 @@ export const MenuRecipeCard: React.FC<MenuRecipeCardProps> = ({ recipe }) => {
                 />
             </span>
             <span className={styles["menu-recipe-card__body"]}>
-                <span className={styles["menu-recipe-card__title"]}>
-                    {recipe.title}
+                <span className={styles["menu-recipe-card__title-row"]}>
+                    <span
+                        className={styles["menu-recipe-card__title"]}
+                        lang={recipe.language}
+                    >
+                        {recipe.title}
+                    </span>
+                    <LanguageBadge language={recipe.language} />
                 </span>
                 <span className={styles["menu-recipe-card__meta-row"]}>
                     <span className={styles["menu-recipe-card__meta"]}>
-                        {recipe.type_name} · {formattedTime}
+                        {recipeTypeName(t, recipe.type_name)} · {formattedTime}
                         {formattedCalories && ` · ${formattedCalories}`}
                     </span>
                     <RatingSummary

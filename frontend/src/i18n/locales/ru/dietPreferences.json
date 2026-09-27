@@ -1,0 +1,39 @@
+{
+    "section": {
+        "title": "Пищевые предпочтения",
+        "description": "Рецепты с тем, чего вы не едите, опускаются в конец списков и получают мягкую отметку — ничего не скрывается и не удаляется.",
+        "summary": "{{allergens}} · {{ingredients}}",
+        "allergenCount_one": "{{count}} аллерген",
+        "allergenCount_few": "{{count}} аллергена",
+        "allergenCount_many": "{{count}} аллергенов",
+        "allergenCount_other": "{{count}} аллергена",
+        "ingredientCount_one": "{{count}} ингредиент",
+        "ingredientCount_few": "{{count}} ингредиента",
+        "ingredientCount_many": "{{count}} ингредиентов",
+        "ingredientCount_other": "{{count}} ингредиента"
+    },
+    "allergens": {
+        "title": "Я не ем",
+        "count": "{{count}} из {{total}}",
+        "none": "пока ничего",
+        "helper": "14 групп аллергенов, принятых в ЕС. Нажмите, чтобы отметить, — всё сохраняется сразу."
+    },
+    "ingredients": {
+        "title": "Ингредиенты",
+        "helper": "Всё остальное, чего вы не хотите видеть, — из каталога ингредиентов.",
+        "searchPlaceholder": "Найти ингредиент…",
+        "noMatches": "По запросу «{{query}}» ничего не нашлось.",
+        "noMatchesHint": "Попробуйте слово покороче.",
+        "avoidedTag": "не ем",
+        "empty": "Список пока пуст.",
+        "remove": "Снова есть {{name}}",
+        "saved": "Сохранено"
+    },
+    "behaviour": {
+        "sorted": "Опускаются вниз и отмечаются значком",
+        "hideable": "Их можно скрыть совсем одним фильтром в списке рецептов",
+        "favourites": "Избранное остаётся избранным"
+    },
+    "avoidPill": "Не ем",
+    "avoidedRow": "Вы это не едите"
+}

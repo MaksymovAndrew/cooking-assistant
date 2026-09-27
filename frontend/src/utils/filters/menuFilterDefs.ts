@@ -1,5 +1,7 @@
+import type { Locale } from "constants/locales";
 import type { MenuListParams } from "types/menu";
 
+import { contentLanguageFilter } from "./contentLanguageFilter";
 import type { FilterDef } from "./filterDef";
 import { idListFilter, textFilter } from "./filterDefFactories";
 import { enumFilter } from "./filterDefFactories.enum";
@@ -12,6 +14,7 @@ export interface MenuFilterState {
     topRated: boolean;
     // menus have one sort besides the default newest-first
     sort: "rating" | null;
+    languages: Locale[];
 }
 
 // shared with links that pre-set the filter before navigating (see GuestLandingMenuFilters)
@@ -51,4 +54,5 @@ export const MENU_FILTER_DEFS: readonly FilterDef<unknown, MenuListParams>[] = [
         values: ["rating"],
         chipLabel: (_value, t) => t("categoryFilter.sortByRatingChip"),
     }),
+    contentLanguageFilter<MenuListParams>(),
 ];

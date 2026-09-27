@@ -1,3 +1,4 @@
+import type { Locale } from "constants/locales";
 import type { CatalogIngredientRef } from "types/catalogIngredientRef";
 
 export interface RecipeFormIngredient extends CatalogIngredientRef {
@@ -11,6 +12,7 @@ export interface RecipeFormIngredient extends CatalogIngredientRef {
 export interface RecipeFormInitialValues {
     title: string;
     content: string;
+    language: Locale;
     cookingHours: string;
     cookingMinutes: string;
     selectedTypeId: number | null;

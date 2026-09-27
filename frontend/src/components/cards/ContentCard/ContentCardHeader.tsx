@@ -1,5 +1,8 @@
 import React from "react";
 
+import type { Locale } from "constants/locales";
+
+import { LanguageBadge } from "components/ui/LanguageBadge";
 import { RecordPhoto } from "components/ui/RecordPhoto";
 
 import styles from "./ContentCard.module.scss";
@@ -18,6 +21,7 @@ interface ContentCardImageProps {
     imageIcon: ContentCardIcon;
     imageSrc: string | null;
     chipLabel: string;
+    language: Locale | null;
     favourite: ContentCardFavouriteState | null;
 }
 
@@ -27,6 +31,7 @@ export const ContentCardImage: React.FC<ContentCardImageProps> = ({
     imageIcon: ImageIcon,
     imageSrc,
     chipLabel,
+    language,
     favourite,
 }) => (
     <span className={styles["content-card__image"]}>
@@ -40,7 +45,14 @@ export const ContentCardImage: React.FC<ContentCardImageProps> = ({
                 />
             }
         />
-        {!isRow && <ContentCardChip isRow={isRow} label={chipLabel} />}
+        {!isRow && (
+            <span className={styles["content-card__tags"]}>
+                <ContentCardChip isRow={isRow} label={chipLabel} />
+                {language && (
+                    <LanguageBadge language={language} tone="overlay" />
+                )}
+            </span>
+        )}
         {!isRow && favourite && (
             <ContentCardFavourite isRow={isRow} {...favourite} />
         )}
@@ -49,15 +61,20 @@ export const ContentCardImage: React.FC<ContentCardImageProps> = ({
 
 interface ContentCardRowHeaderProps {
     chipLabel: string;
+    language: Locale | null;
     favourite: ContentCardFavouriteState | null;
 }
 
 export const ContentCardRowHeader: React.FC<ContentCardRowHeaderProps> = ({
     chipLabel,
+    language,
     favourite,
 }) => (
     <span className={styles["content-card__row-header"]}>
-        <ContentCardChip isRow label={chipLabel} />
+        <span className={styles["content-card__tags"]}>
+            <ContentCardChip isRow label={chipLabel} />
+            {language && <LanguageBadge language={language} />}
+        </span>
         {favourite && <ContentCardFavourite isRow {...favourite} />}
     </span>
 );

@@ -145,4 +145,34 @@ describe("GetAllMenus", () => {
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });
+
+    it("should pass languages through as a list of languages", async () => {
+        const { useCase, menuRepository } = setup();
+        const paginated = { items: [], total: 0 };
+
+        menuRepository.findAll.mockResolvedValue(paginated);
+
+        await useCase.execute(null, { languages: "uk,pl" });
+
+        expect(menuRepository.findAll).toHaveBeenCalledWith(
+            { languages: ["uk", "pl"] },
+            null,
+        );
+    });
+
+    it("should throw a 400 ValidationError when languages names an unsupported language", async () => {
+        const { useCase, menuRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(null, { languages: "en,de" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "languages.1: Languages must be a comma-separated list of en, pl, ru, uk",
+        );
+        expect(menuRepository.findAll).not.toHaveBeenCalled();
+    });
 });

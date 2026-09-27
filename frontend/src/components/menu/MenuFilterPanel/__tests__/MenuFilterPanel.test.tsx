@@ -18,6 +18,7 @@ const BASE_FILTERS: MenuFilterState = {
     favourites: false,
     topRated: false,
     sort: null,
+    languages: [],
 };
 
 const setup = (overrides: Partial<MenuFilterState> = {}, activeCount = 0) => {
@@ -113,6 +114,15 @@ describe("MenuFilterPanel", () => {
         expect(setValue).toHaveBeenCalledWith("categories", [1]);
     });
 
+    it("should add a language to the ones already picked", async () => {
+        const { setValue } = setup({ languages: ["en"] });
+
+        await openPanel();
+        await userEvent.click(screen.getByRole("checkbox", { name: "Polski" }));
+
+        expect(setValue).toHaveBeenCalledWith("languages", ["en", "pl"]);
+    });
+
     it("should remove an already-selected category when its chip is clicked", async () => {
         const { setValue } = setup({ categories: [1, 2] });
 
@@ -164,6 +174,7 @@ describe("MenuFilterPanel", () => {
             favourites: false,
             topRated: false,
             sort: null,
+            languages: [],
         });
         expect(setValue).not.toHaveBeenCalled();
     });

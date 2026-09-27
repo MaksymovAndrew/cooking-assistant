@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import type { RecipeFormIngredient } from "types/recipeForm";
 
+import { useLocale } from "hooks/useLocale";
+
 import { FormCard } from "components/ui/FormCard";
 import { FormField } from "components/ui/FormField";
 import { NumberInput } from "components/ui/NumberInput";
@@ -29,6 +31,7 @@ export const RecipeFormCaloriesCard: React.FC<RecipeFormCaloriesCardProps> = ({
     onChange,
 }) => {
     const { t } = useTranslation("recipes");
+    const locale = useLocale();
     // so the field's hint matches what an empty override would actually compute to server-side
     const autoCalories = useMemo(
         () => sumIngredientCalories(ingredients),
@@ -52,7 +55,10 @@ export const RecipeFormCaloriesCard: React.FC<RecipeFormCaloriesCardProps> = ({
                 <p className={styles["recipe-form__calories-hint"]}>
                     {ingredients.length > 0
                         ? t("recipeForm.caloriesAutoHint", {
-                              count: formatKcal(roundCalories(autoCalories)),
+                              count: formatKcal(
+                                  roundCalories(autoCalories),
+                                  locale,
+                              ),
                           })
                         : t("recipeForm.caloriesAutoHintEmpty")}
                 </p>

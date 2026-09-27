@@ -1,0 +1,19 @@
+{
+    "badge": "Przeglądasz jako gość",
+    "heading": "Książka kucharska, którą możesz przeglądać bez zakładania konta.",
+    "descriptionFull": "Szukaj dowolnego przepisu i jadłospisu, otwieraj pełny sposób przygotowania i listę składników i gotuj prosto ze strony. Zarejestruj się, kiedy zechcesz zapisywać ulubione i liczyć kalorie.",
+    "descriptionShort": "Szukaj dowolnego przepisu i jadłospisu i gotuj prosto ze strony. Zarejestruj się, żeby zapisywać ulubione i liczyć kalorie.",
+    "searchRecipesButton": "Szukaj przepisów",
+    "searchMenusButton": "Szukaj jadłospisów",
+    "allChip": "Wszystkie",
+    "cookingTimeChip": "Czas przygotowania",
+    "caloriesChip": "Kalorie",
+    "popularTitle": "Popularne w tym tygodniu",
+    "seeAllRecipes": "Wszystkie przepisy",
+    "menusTitle": "Jadłospisy do ugotowania",
+    "seeAllMenus": "Wszystkie jadłospisy",
+    "emptyRecipesTitle": "Nie ma jeszcze przepisów",
+    "emptyRecipesDescription": "Nowe przepisy pojawią się tu, gdy tylko ktoś je doda. Zarejestruj się i zapisuj je od razu.",
+    "emptyMenusTitle": "Nie ma jeszcze jadłospisów",
+    "emptyMenusDescription": "Jadłospis łączy kilka przepisów w jeden posiłek. Pojawią się tutaj po opublikowaniu."
+}

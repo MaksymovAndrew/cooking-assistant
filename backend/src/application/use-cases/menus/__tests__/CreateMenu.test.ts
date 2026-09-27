@@ -10,6 +10,7 @@ function makeInput(overrides = {}) {
     return {
         menuTitle: "Weekly menu",
         menuContent: "A simple dinner plan",
+        language: "pl",
         categoryId: 2,
         personId: 7,
         recipeIds: [3, 5],
@@ -109,6 +110,22 @@ describe("CreateMenu", () => {
             ValidationError,
             ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
             400,
+        );
+        expect(menuRepository.create).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when the language is not supported", async () => {
+        const { useCase, menuRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(makeInput({ language: "de" })),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "language: Language must be one of en, pl, ru, uk",
         );
         expect(menuRepository.create).not.toHaveBeenCalled();
     });

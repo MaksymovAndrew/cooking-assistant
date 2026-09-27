@@ -1,9 +1,11 @@
 import { ERROR_CODES } from "constants/errorCodes";
+import type { Locale } from "constants/locales";
 import { ValidationError } from "domain/errors/AppError";
 
 export interface MenuInput {
     menuTitle?: string;
     menuContent?: string;
+    language: Locale;
     categoryId?: number | null;
     personId?: number;
     recipeIds?: number[];
@@ -14,12 +16,14 @@ export type MenuUpdateInput = Omit<MenuInput, "personId">;
 export class Menu {
     declare menuTitle?: string;
     declare menuContent?: string;
+    declare language: Locale;
     declare categoryId?: number | null;
     declare personId?: number;
 
     static forCreation({
         menuTitle,
         menuContent,
+        language,
         categoryId,
         personId,
         recipeIds,
@@ -33,12 +37,24 @@ export class Menu {
             );
         }
 
-        return new Menu({ menuTitle, menuContent, categoryId, personId });
+        return new Menu({
+            menuTitle,
+            menuContent,
+            language,
+            categoryId,
+            personId,
+        });
     }
 
     static forUpdate(
         id: string | number | null | undefined,
-        { menuTitle, menuContent, categoryId, recipeIds }: MenuUpdateInput,
+        {
+            menuTitle,
+            menuContent,
+            language,
+            categoryId,
+            recipeIds,
+        }: MenuUpdateInput,
     ): Menu {
         const hasInsufficientData =
             !id ||
@@ -53,7 +69,7 @@ export class Menu {
             );
         }
 
-        return new Menu({ menuTitle, menuContent, categoryId });
+        return new Menu({ menuTitle, menuContent, language, categoryId });
     }
 
     private constructor(data: Partial<Menu>) {

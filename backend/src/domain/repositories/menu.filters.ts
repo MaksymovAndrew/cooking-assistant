@@ -1,3 +1,5 @@
+import type { Locale } from "constants/locales";
+
 import type { RecordAuthor, RecordRating } from "./recordAuthor";
 
 export interface MenuFilters {
@@ -6,6 +8,7 @@ export interface MenuFilters {
     favourites?: boolean;
     sort_order?: "rating";
     top_rated?: boolean;
+    languages?: Locale[];
     limit?: number;
     offset?: number;
 }
@@ -15,6 +18,7 @@ export interface MenuSearchRow extends RecordRating {
     title: string;
     categoryName: string;
     menuContent: string;
+    language: Locale;
     isOwner: boolean;
     isFavourite: boolean | null;
     recipe_count: number;

@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import i18next from "i18next";
 
 import { WhatsNewCard } from "components/home/WhatsNewCard";
 
@@ -7,11 +8,13 @@ import { getNewsItems } from "utils/newsItems";
 
 import { renderWithRouter } from "test/router";
 
+const t = i18next.getFixedT("en");
+
 const OLDEST_DATE = "2000-01-01";
 
 describe("WhatsNewCard", () => {
     it("should render the title and the most recent news items", () => {
-        const items = getNewsItems();
+        const items = getNewsItems(t);
 
         renderWithRouter(
             <WhatsNewCard
@@ -44,7 +47,7 @@ describe("WhatsNewCard", () => {
             <WhatsNewCard
                 onOpenAll={jest.fn()}
                 unseenCount={0}
-                lastSeenDate={getNewsItems()[0].date}
+                lastSeenDate={getNewsItems(t)[0].date}
             />,
         );
 
@@ -58,7 +61,7 @@ describe("WhatsNewCard", () => {
             <WhatsNewCard
                 onOpenAll={onOpenAll}
                 unseenCount={0}
-                lastSeenDate={getNewsItems()[0].date}
+                lastSeenDate={getNewsItems(t)[0].date}
             />,
         );
 

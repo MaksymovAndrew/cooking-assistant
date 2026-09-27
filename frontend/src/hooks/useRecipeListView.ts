@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { RecipeFilterParams } from "types/recipe";
 
@@ -18,6 +19,7 @@ import { useCalorieBudget } from "hooks/useCalorieBudget";
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 import { RECIPE_FILTER_DEFS } from "utils/filters/recipeFilterDefs";
 import { getQueryErrorMessage } from "utils/queryError";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import { isRecipeListEmpty } from "./recipeListViewHelpers";
 import { useListFilters } from "./useListFilters";
@@ -35,6 +37,7 @@ export type RecipeSource = (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE];
 // view model for the two recipe lists: the URL is the single source of truth for
 // filters, pages come from RTK Query's infiniteQuery, sorting is server-side
 export const useRecipeListView = (source: RecipeSource) => {
+    const { t } = useTranslation();
     const {
         values: filters,
         setValue,
@@ -85,7 +88,9 @@ export const useRecipeListView = (source: RecipeSource) => {
     const descriptions = descriptionTypes.filter((type) =>
         filters.types.includes(type.id),
     );
-    const typesHeader = descriptions.map((type) => type.type_name).join(", ");
+    const typesHeader = descriptions
+        .map((type) => recipeTypeName(t, type.type_name))
+        .join(", ");
 
     return {
         filters,

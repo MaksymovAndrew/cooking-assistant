@@ -8,6 +8,17 @@
         url("../assets/fonts/Fraunces/Fraunces-SemiBold.ttf") format("truetype");
 }
 
+// Fraunces has no Cyrillic, so Russian and Ukrainian letters in a Fraunces heading come from Lora
+@font-face {
+    font-family: Fraunces;
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../assets/fonts/Lora/Lora-SemiBold-Cyrillic.ttf")
+        format("truetype");
+    unicode-range: U+0400-045F, U+0490-0491, U+2116;
+}
+
 @font-face {
     font-family: Inter;
     font-style: normal;

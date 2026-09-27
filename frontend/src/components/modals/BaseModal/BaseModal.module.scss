@@ -135,18 +135,30 @@
         }
     }
 
-    // canonical Cancel/primary footer: a right-aligned row, primary rightmost - wraps only if
-    // the buttons genuinely don't fit side by side, instead of always stacking on mobile
+    // canonical Cancel/primary footer: a row, primary rightmost - wraps only if the buttons
+    // genuinely don't fit side by side, instead of always stacking on mobile
     &__footer {
         display: flex;
         flex: none;
-        flex-wrap: wrap;
         justify-content: flex-end;
         gap: var(--s-3);
         padding: var(--s-4) 0 calc(var(--s-4) + env(safe-area-inset-bottom));
 
+        // on a phone sheet the buttons share the width; once a translated label forces a wrap,
+        // each takes a full row with the primary on top instead of hanging off the right edge
+        flex-wrap: wrap-reverse;
+
+        > * {
+            flex: 1 1 auto;
+        }
+
         @include respond-to(tablet) {
+            flex-wrap: wrap;
             padding-bottom: var(--s-4);
+
+            > * {
+                flex: 0 1 auto;
+            }
         }
     }
 }

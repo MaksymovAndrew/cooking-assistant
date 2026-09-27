@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { PantryIngredient } from "types/userIngredient";
 
@@ -8,17 +9,21 @@ import {
     useSaveUserIngredientMutation,
 } from "redux/services/userIngredientsApi";
 
+import { useLocale } from "hooks/useLocale";
+
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 // pantry view model: data comes from RTK Query (the Pantry tag refetches the list after every write), the editing/selection state stays local UI state
 export const useIngredientCatalog = () => {
+    const { t } = useTranslation();
+    const locale = useLocale();
     const { data: rawAllIngredients } = useGetIngredientsQuery(null);
     const { data: rawUserIngredients } = useGetUserIngredientsQuery(null);
     const [saveUserIngredient] = useSaveUserIngredientMutation();
 
     const allIngredients = useMemo(
-        () => sortIngredientsByName(rawAllIngredients ?? []),
-        [rawAllIngredients],
+        () => sortIngredientsByName(rawAllIngredients ?? [], t, locale),
+        [rawAllIngredients, t, locale],
     );
     const personIngredients = useMemo<PantryIngredient[]>(
         () =>

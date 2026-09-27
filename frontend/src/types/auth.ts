@@ -1,3 +1,5 @@
+import type { Locale } from "constants/locales";
+
 export interface LoginRequest {
     login: string;
     password: string;
@@ -14,6 +16,7 @@ export interface CurrentUser {
     avatar: string | null;
     avatar_photo_key: string | null;
     calorie_goal: number | null;
+    locale: Locale;
 }
 
 export interface RegisterRequest {

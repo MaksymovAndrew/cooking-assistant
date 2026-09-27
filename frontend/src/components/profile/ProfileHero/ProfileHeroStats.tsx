@@ -1,6 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { formatKcal } from "utils/calories";
 
 import styles from "./ProfileHero.module.scss";
@@ -19,11 +21,15 @@ export const ProfileHeroStats: React.FC<ProfileHeroStatsProps> = ({
     kcalToday,
 }) => {
     const { t } = useTranslation("profile");
+    const locale = useLocale();
     const stats = [
         { label: t("profilePage.recipesStat"), value: recipesCount },
         { label: t("profilePage.menusStat"), value: menusCount },
         { label: t("profilePage.favouritesStat"), value: favouritesCount },
-        { label: t("profilePage.kcalTodayStat"), value: formatKcal(kcalToday) },
+        {
+            label: t("profilePage.kcalTodayStat"),
+            value: formatKcal(kcalToday, locale),
+        },
     ];
 
     return (

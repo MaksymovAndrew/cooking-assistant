@@ -36,6 +36,7 @@ const BASE_FILTERS: RecipeFilterState = {
     cookingTime: { min: "", max: "" },
     calories: { min: "", max: "" },
     sort: null,
+    languages: [],
     inPantry: false,
     favourites: false,
     topRated: false,
@@ -358,6 +359,7 @@ describe("RecipeFilterPanel", () => {
             excludeAllergens: [],
             hideAvoided: false,
             tags: [],
+            languages: [],
         });
         expect(setValue).not.toHaveBeenCalledWith(
             "search",
@@ -483,5 +485,16 @@ describe("RecipeFilterPanel", () => {
             "milk",
             "gluten",
         ]);
+    });
+
+    it("should filter by the language a recipe is written in, for a guest too", async () => {
+        const { setValue } = setup({}, 0, [], GUEST_STORE);
+
+        await openPanel();
+        await userEvent.click(
+            screen.getByRole("checkbox", { name: "Українська" }),
+        );
+
+        expect(setValue).toHaveBeenCalledWith("languages", ["uk"]);
     });
 });

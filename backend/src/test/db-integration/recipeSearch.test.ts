@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import type { Locale } from "constants/locales";
 import Recipe from "domain/entities/Recipe";
 
 import type { RecipeFilters } from "application/use-cases/recipes/recipe.types";
@@ -59,10 +60,12 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         ingredientIds: number[],
         cookingTime: number,
         typeId?: number,
+        language: Locale = "en",
     ): Promise<number> {
         const recipe = Recipe.forCreation({
             title,
             content: "Search fixture.",
+            language,
             person_id: ownerId,
             type_id: typeId,
             cooking_time: cookingTime,
@@ -97,6 +100,33 @@ describe("PgRecipeRepository search (real Postgres)", () => {
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: recipeId }),
+        ]);
+        expect(result.total).toBe(1);
+    });
+
+    it("should filter by languages and return each recipe's language", async () => {
+        const ingredient = await createNamedIngredient();
+        const russianId = await createRecipeWithIngredients(
+            unique("Russian recipe"),
+            [ingredient.id],
+            10,
+            undefined,
+            "ru",
+        );
+
+        await createRecipeWithIngredients(
+            unique("English recipe"),
+            [ingredient.id],
+            10,
+        );
+
+        const result = await repository.search(null, {
+            ingredient_ids: String(ingredient.id),
+            languages: ["ru"],
+        });
+
+        expect(result.items).toEqual([
+            expect.objectContaining({ id: russianId, language: "ru" }),
         ]);
         expect(result.total).toBe(1);
     });
@@ -406,6 +436,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         const otherRecipe = Recipe.forCreation({
             title: "Someone else's recipe",
             content: "Not visible in searchByPerson.",
+            language: "en",
             person_id: otherPersonId,
             cooking_time: 10,
             ingredients: [
@@ -460,6 +491,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title: "Needs half a kilo recipe",
             content: "Quantity fixture.",
+            language: "en",
             person_id: ownerId,
             cooking_time: 10,
             ingredients: [

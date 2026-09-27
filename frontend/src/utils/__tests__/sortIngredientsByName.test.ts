@@ -1,6 +1,11 @@
+import i18next from "i18next";
+
 import type { Ingredient } from "types/ingredient";
 
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
+
+const t = i18next.getFixedT("en");
+const LOCALE = "en";
 
 const make = (id: number, name: string): Ingredient => ({
     id,
@@ -18,7 +23,7 @@ describe("sortIngredientsByName", () => {
         const a = make(1, "Banana");
         const b = make(2, "Apple");
 
-        expect(sortIngredientsByName([a, b])).toEqual([b, a]);
+        expect(sortIngredientsByName([a, b], t, LOCALE)).toEqual([b, a]);
     });
 
     it("should not mutate the input array", () => {
@@ -26,7 +31,7 @@ describe("sortIngredientsByName", () => {
         const b = make(2, "Apple");
         const input = [a, b];
 
-        sortIngredientsByName(input);
+        sortIngredientsByName(input, t, LOCALE);
 
         expect(input).toEqual([a, b]);
     });

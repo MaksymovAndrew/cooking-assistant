@@ -38,8 +38,9 @@
         margin-left: auto;
     }
 
-    // theme lives in Settings on mobile; the header toggle returns from tablet up
-    &__theme-toggle {
+    // theme and language live in the account menu on phones; both return to the header from tablet up
+    &__theme-toggle,
+    &__language {
         display: none;
 
         @include respond-to(tablet) {
@@ -51,5 +52,15 @@
         display: flex;
         align-items: center;
         gap: var(--s-2);
+    }
+
+    // a phone has the bottom bar's own "Log in", and the header has no room for both; scoped
+    // under the group so it outranks the button's own display
+    &__guest-actions &__login {
+        display: none;
+
+        @include respond-to(tablet) {
+            display: inline-flex;
+        }
     }
 }

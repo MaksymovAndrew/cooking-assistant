@@ -1,20 +1,22 @@
+import type { TFunction } from "i18next";
+
 import type { NewsEntry } from "utils/newsItems";
 import { getLatestReleaseDate, getNewsItems } from "utils/newsItems";
 
 const STORAGE_KEY = "cooking.newsLastSeen";
 
 // showing every historical entry as "unseen" would be noisy, so a fresh account defaults to just before the latest release, marking only that one new
-const getDefaultLastSeenDate = (): string => {
-    const latestReleaseDate = getLatestReleaseDate();
+const getDefaultLastSeenDate = (t: TFunction): string => {
+    const latestReleaseDate = getLatestReleaseDate(t);
 
     return (
-        getNewsItems().find((entry) => entry.date !== latestReleaseDate)
+        getNewsItems(t).find((entry) => entry.date !== latestReleaseDate)
             ?.date ?? latestReleaseDate
     );
 };
 
-export const readLastSeenDate = (): string =>
-    localStorage.getItem(STORAGE_KEY) ?? getDefaultLastSeenDate();
+export const readLastSeenDate = (t: TFunction): string =>
+    localStorage.getItem(STORAGE_KEY) ?? getDefaultLastSeenDate(t);
 
 export const writeLastSeenDate = (date: string): void => {
     localStorage.setItem(STORAGE_KEY, date);

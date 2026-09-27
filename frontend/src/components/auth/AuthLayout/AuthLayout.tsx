@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ROUTES } from "constants/routes";
 
 import { DonburiMarkDetailed } from "components/icons";
+import { LanguageSwitcher } from "components/ui/LanguageSwitcher";
 import { Link } from "components/ui/Link";
 
 import styles from "./AuthLayout.module.scss";
@@ -12,6 +13,8 @@ interface AuthLayoutProps {
     tagline: string;
     description: string;
     brandIcon?: boolean;
+    // off where the form asks for the language itself
+    languageSwitcher?: boolean;
     children: React.ReactNode;
 }
 
@@ -23,6 +26,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
     tagline,
     description,
     brandIcon = false,
+    languageSwitcher = true,
     children,
 }) => {
     const { t } = useTranslation();
@@ -55,6 +59,11 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
                 </div>
             </div>
             <div className={styles["auth-layout__panel"]}>
+                {languageSwitcher && (
+                    <div className={styles["auth-layout__language"]}>
+                        <LanguageSwitcher />
+                    </div>
+                )}
                 <Link
                     href={ROUTES.home}
                     className={styles["auth-layout__mobile-header"]}

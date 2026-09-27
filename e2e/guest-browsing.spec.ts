@@ -54,7 +54,7 @@ test("should show the guest landing page at / instead of redirecting to login", 
     await guestPage.goto("/");
     await expect(guestPage.getByText("Browsing as guest")).toBeVisible();
     await expect(
-        guestPage.getByRole("link", { name: "Log In" }).first(),
+        guestPage.getByRole("link", { name: "Log in" }).first(),
     ).toBeVisible();
 });
 

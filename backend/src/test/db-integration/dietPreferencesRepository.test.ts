@@ -51,6 +51,7 @@ describe("PgDietPreferencesRepository (real Postgres)", () => {
         const recipe = Recipe.forCreation({
             title,
             content: "Diet fixture.",
+            language: "en",
             person_id: ownerId,
             ingredients: ingredientIds.map((id) => ({
                 id,

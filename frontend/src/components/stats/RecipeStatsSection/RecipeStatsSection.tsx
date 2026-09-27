@@ -9,6 +9,7 @@ import { StatBarList } from "components/stats/StatBarList";
 import { StatCard } from "components/stats/StatCard";
 
 import { formatCompactDuration } from "utils/cookingTimeUtils";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import { RecipeExtremesCards } from "./RecipeExtremesCards";
 import styles from "./RecipeStatsSection.module.scss";
@@ -77,7 +78,7 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
                     </p>
                     <StatBarList
                         items={stats.averageCookingTimesByType.map((entry) => ({
-                            label: entry.typeName,
+                            label: recipeTypeName(t, entry.typeName),
                             value: entry.averageCookingTime,
                             displayValue: formatCompactTime(
                                 entry.averageCookingTime,

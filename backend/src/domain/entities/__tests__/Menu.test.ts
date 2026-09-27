@@ -8,6 +8,7 @@ function makeInput(overrides: Record<string, unknown> = {}) {
     return {
         menuTitle: "Weekly menu",
         menuContent: "A simple dinner plan",
+        language: "uk" as const,
         categoryId: 2,
         personId: 7,
         recipeIds: [3, 5],
@@ -80,12 +81,14 @@ describe("Menu", () => {
         expect(Object.keys(menu)).toEqual([
             "menuTitle",
             "menuContent",
+            "language",
             "categoryId",
             "personId",
         ]);
         expect(menu).toMatchObject({
             menuTitle: input.menuTitle,
             menuContent: input.menuContent,
+            language: "uk",
             categoryId: input.categoryId,
             personId: input.personId,
         });
@@ -150,11 +153,13 @@ describe("Menu", () => {
         expect(Object.keys(menu)).toEqual([
             "menuTitle",
             "menuContent",
+            "language",
             "categoryId",
         ]);
         expect(menu).toMatchObject({
             menuTitle: input.menuTitle,
             menuContent: input.menuContent,
+            language: "uk",
             categoryId: input.categoryId,
         });
         expect(menu).not.toHaveProperty("personId");

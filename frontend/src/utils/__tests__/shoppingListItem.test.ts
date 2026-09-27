@@ -1,9 +1,13 @@
+import i18next from "i18next";
+
 import type { ShoppingListItem } from "types/shoppingList";
 
 import {
     shoppingListItemName,
     shoppingListItemQuantity,
 } from "utils/shoppingListItem";
+
+const t = i18next.getFixedT("en");
 
 const TYPED: ShoppingListItem = {
     id: 1,
@@ -19,12 +23,12 @@ const TYPED: ShoppingListItem = {
 
 describe("shoppingListItemName", () => {
     it("should keep a typed item's name as it was written", () => {
-        expect(shoppingListItemName(TYPED)).toBe("oat milk");
+        expect(shoppingListItemName(t, TYPED)).toBe("oat milk");
     });
 
     it("should fall back to the stored name for a slug the catalog does not know", () => {
         expect(
-            shoppingListItemName({
+            shoppingListItemName(t, {
                 ...TYPED,
                 name: "Mystery root",
                 ingredient_id: 5,
@@ -36,12 +40,12 @@ describe("shoppingListItemName", () => {
 
 describe("shoppingListItemQuantity", () => {
     it("should return null for an item without a quantity", () => {
-        expect(shoppingListItemQuantity(TYPED)).toBeNull();
+        expect(shoppingListItemQuantity(t, "en", TYPED)).toBeNull();
     });
 
     it("should round a scaled amount to two decimals and append its unit", () => {
         expect(
-            shoppingListItemQuantity({
+            shoppingListItemQuantity(t, "en", {
                 ...TYPED,
                 quantity: 333.3333,
                 unit_name: "not-a-unit",
@@ -50,8 +54,8 @@ describe("shoppingListItemQuantity", () => {
     });
 
     it("should show a bare amount when the item has no unit", () => {
-        expect(shoppingListItemQuantity({ ...TYPED, quantity: 2.5 })).toBe(
-            "2.5",
-        );
+        expect(
+            shoppingListItemQuantity(t, "en", { ...TYPED, quantity: 2.5 }),
+        ).toBe("2.5");
     });
 });

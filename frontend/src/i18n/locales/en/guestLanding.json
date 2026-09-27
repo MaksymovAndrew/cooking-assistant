@@ -1,10 +1,10 @@
 {
     "badge": "Browsing as guest",
     "heading": "A cookbook you can read before you join.",
-    "descriptionFull": "Search every recipe and menu, open the full method and ingredient list, and cook straight from the page. Register when you want to save favourites and track what you eat.",
-    "descriptionShort": "Search every recipe and menu and cook straight from the page. Register to save favourites and track what you eat.",
-    "searchRecipesButton": "Search Recipes",
-    "searchMenusButton": "Search Menus",
+    "descriptionFull": "Search every recipe and menu, open the full method and ingredient list, and cook straight from the page. Sign up when you want to save favourites and track what you eat.",
+    "descriptionShort": "Search every recipe and menu and cook straight from the page. Sign up to save favourites and track what you eat.",
+    "searchRecipesButton": "Search recipes",
+    "searchMenusButton": "Search menus",
     "allChip": "All",
     "cookingTimeChip": "Cooking time",
     "caloriesChip": "Calories",
@@ -13,7 +13,7 @@
     "menusTitle": "Menus to cook through",
     "seeAllMenus": "See all menus",
     "emptyRecipesTitle": "No recipes published yet",
-    "emptyRecipesDescription": "New recipes appear here as they are added. Register to be the first to save them.",
+    "emptyRecipesDescription": "New recipes appear here as they are added. Sign up to be the first to save them.",
     "emptyMenusTitle": "No menus yet",
     "emptyMenusDescription": "Menus group several recipes into one meal. They will show up here once published."
 }

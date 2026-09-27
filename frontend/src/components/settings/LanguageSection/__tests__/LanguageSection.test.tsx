@@ -1,13 +1,16 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
 import { LanguageSection } from "components/settings/LanguageSection";
 
-describe("LanguageSection", () => {
-    it("should render the language row, disabled", () => {
-        render(<LanguageSection />);
+import { renderWithRouter } from "test/router";
 
-        expect(screen.getByText("Language")).toBeInTheDocument();
-        expect(screen.getByText("EN")).toBeInTheDocument();
-        expect(screen.getByText("Coming soon")).toBeInTheDocument();
+describe("LanguageSection", () => {
+    it("should offer the language switcher", () => {
+        renderWithRouter(<LanguageSection />);
+
+        expect(screen.getByText("Interface language")).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: "Language: English" }),
+        ).toBeInTheDocument();
     });
 });

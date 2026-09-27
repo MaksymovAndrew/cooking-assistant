@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import type { Ingredient } from "types/ingredient";
 
@@ -6,6 +7,7 @@ import { AllergenDot } from "components/ui/AllergenDot";
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
 
 import { resolveIngredientName } from "utils/ingredientName";
+import { unitName } from "utils/referenceLabels";
 
 import styles from "./IngredientResultRow.module.scss";
 
@@ -23,7 +25,8 @@ export const IngredientResultRow: React.FC<IngredientResultRowProps> = ({
     isSelected = false,
     onSelect,
 }) => {
-    const name = resolveIngredientName(ingredient);
+    const { t } = useTranslation();
+    const name = resolveIngredientName(t, ingredient);
 
     return (
         <li>
@@ -48,7 +51,7 @@ export const IngredientResultRow: React.FC<IngredientResultRowProps> = ({
                     )}
                 </span>
                 <span className={styles["ingredient-result__unit"]}>
-                    {ingredient.unit_name}
+                    {unitName(t, ingredient.unit_name)}
                 </span>
                 <AllergenDot allergens={ingredient.allergens} />
             </button>

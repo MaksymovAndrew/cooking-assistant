@@ -56,7 +56,7 @@ describe("RecipeIngredientsPanel", () => {
         renderWithRouter(<RecipeIngredientsPanel {...baseProps} />);
 
         expect(screen.getByText("Tomato")).toBeInTheDocument();
-        expect(screen.getByText("2 piece")).toBeInTheDocument();
+        expect(screen.getByText("2 pieces")).toBeInTheDocument();
         expect(screen.getByText("Onion")).toBeInTheDocument();
         expect(screen.getByText("1 piece")).toBeInTheDocument();
     });
@@ -159,7 +159,7 @@ describe("RecipeIngredientsPanel", () => {
             />,
         );
 
-        expect(screen.getByText("6 piece")).toBeInTheDocument();
+        expect(screen.getByText("6 pieces")).toBeInTheDocument();
 
         await userEvent.click(
             screen.getByRole("button", { name: "More portions" }),

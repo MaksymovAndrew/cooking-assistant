@@ -3,22 +3,26 @@
 .account-menu {
     position: relative;
 
+    // the same rounded square as the theme and language buttons beside it; the avatar stays round
     &__trigger {
         display: flex;
         align-items: center;
         gap: 6px;
         height: 40px;
-        padding: 3px 9px 3px 3px;
+        padding: 0 10px 0 5px;
         border: 1px solid var(--border);
-        border-radius: var(--r-pill);
+        border-radius: var(--r-sm);
         background: var(--surface);
         color: var(--text-2);
         cursor: pointer;
-        transition: border-color var(--dur-fast) var(--ease-out);
+        transition:
+            background var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out);
 
         @include focus-ring;
 
         @include on-hover {
+            background: var(--surface-2);
             border-color: var(--brand);
         }
 
@@ -109,6 +113,33 @@
         @include on-hover {
             background: var(--brand-subtle);
         }
+    }
+
+    &__setting {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-2);
+        padding: var(--s-1) 0 var(--s-1) var(--s-2);
+
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
+    // the language and theme controls line up as one column; nested to outweigh their own widths
+    &__setting &__control {
+        width: 72px;
+    }
+
+    &__setting-label {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--text);
+        font:
+            500 14px Inter,
+            sans-serif;
     }
 
     &__item--danger {

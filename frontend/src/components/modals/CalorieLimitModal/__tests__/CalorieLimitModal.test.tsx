@@ -21,7 +21,7 @@ describe("CalorieLimitModal", () => {
         ).toBeInTheDocument();
         expect(
             screen.getByText(
-                "You've logged 2,520 kcal - 320 kcal over your 2,200 kcal goal.",
+                "You've logged 2,520 kcal — 320 kcal over your 2,200 kcal goal.",
             ),
         ).toBeInTheDocument();
     });

@@ -1,0 +1,79 @@
+{
+    "page": {
+        "heading": "Moja spiżarnia",
+        "noIngredients": "Nie masz jeszcze żadnych produktów.",
+        "noSearchResults": "Żaden produkt nie pasuje do wyszukiwania.",
+        "itemCount_one": "{{count}} produkt w spiżarni",
+        "itemCount_few": "{{count}} produkty w spiżarni",
+        "itemCount_many": "{{count}} produktów w spiżarni",
+        "itemCount_other": "{{count}} produktu w spiżarni",
+        "searchPlaceholder": "Szukaj w spiżarni…",
+        "categoryFilterLabel": "Filtruj według kategorii",
+        "categoryFilterAll": "Wszystkie kategorie",
+        "expiringSoonFilter_one": "Wkrótce się zepsują ({{count}})",
+        "expiringSoonFilter_few": "Wkrótce się zepsują ({{count}})",
+        "expiringSoonFilter_many": "Wkrótce się zepsują ({{count}})",
+        "expiringSoonFilter_other": "Wkrótce się zepsują ({{count}})",
+        "allergens": "Alergeny:",
+        "shelfLife": "Termin przydatności:",
+        "shelfLifeDays": "{{days}} dni",
+        "noExpiration": "Bez terminu przydatności.",
+        "purchaseDate": "Kupiono:",
+        "purchaseDateUnknown": "Nieznana",
+        "detailsButton": "Szczegóły",
+        "restockButton": "Dokup",
+        "deleteButton": "Usuń",
+        "addIngredientButton": "Dodaj produkt",
+        "deleteTitle": "Usunąć produkt?",
+        "deleteConfirmMessage": "Usunąć produkt „{{name}}”?",
+        "confirmButton": "Usuń",
+        "cancelButton": "Anuluj"
+    },
+    "expiryBadge": {
+        "fresh": "Świeży",
+        "expired": "Przeterminowany",
+        "noExpiry": "Bez terminu",
+        "daysLeft_one": "{{count}} dzień",
+        "daysLeft_few": "{{count}} dni",
+        "daysLeft_many": "{{count}} dni",
+        "daysLeft_other": "{{count}} dnia"
+    },
+    "categoryBrowser": {
+        "backTo": "Wróć do kategorii: {{category}}"
+    },
+    "addIngredientModal": {
+        "title": "Dodaj produkt",
+        "searchPlaceholder": "Znajdź składnik…",
+        "noMatches": "Nic nie znaleziono",
+        "cancelButton": "Anuluj",
+        "continueButton": "Dalej",
+        "backButton": "Wstecz",
+        "nextButton": "Następny",
+        "saveButton": "Dodaj do spiżarni",
+        "stepCount": "{{current}} z {{total}}"
+    },
+    "purchaseModal": {
+        "title": "Historia zakupów: {{name}}",
+        "loading": "Ładowanie…",
+        "noHistory": "Brak historii zakupów.",
+        "closeButton": "Zamknij",
+        "editButton": "Zmień ilość"
+    },
+    "restockModal": {
+        "title": "Dokup: {{name}}",
+        "current": "Masz teraz {{quantity}} {{unit}}.",
+        "confirmButton": "Dodaj do spiżarni"
+    },
+    "expiredNoticeModal": {
+        "title": "Przeterminowane produkty",
+        "message_one": "W twojej spiżarni przeterminował się {{count}} zakup:",
+        "message_few": "W twojej spiżarni przeterminowały się {{count}} zakupy:",
+        "message_many": "W twojej spiżarni przeterminowało się {{count}} zakupów:",
+        "message_other": "W twojej spiżarni przeterminowało się {{count}} zakupu:",
+        "lotQuantity": "{{quantity}} {{unit}}",
+        "lotPurchased": "Kupiono {{date}}",
+        "lotExpired": "Przeterminowane od {{date}}",
+        "close": "Zamknij",
+        "goToPantry": "Przejdź do spiżarni"
+    }
+}

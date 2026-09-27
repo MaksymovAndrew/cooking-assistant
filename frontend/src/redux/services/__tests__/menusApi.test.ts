@@ -38,6 +38,7 @@ const DETAIL: MenuDetails = {
     menu: {
         id: 1,
         title: "Week",
+        language: "en",
         categoryname: "Weekly",
         menucontent: "x",
         category_id: 2,
@@ -52,12 +53,14 @@ const DETAIL: MenuDetails = {
 };
 const CREATE: CreateMenuRequest = {
     menuTitle: "Week",
+    language: "en",
     menuContent: "x",
     categoryId: 2,
     recipeIds: [1, 2],
 };
 const UPDATE: UpdateMenuRequest = {
     menuTitle: "Week",
+    language: "en",
     menuContent: "x",
     categoryId: 2,
     recipeIds: [1, 2],

@@ -6,6 +6,7 @@ import { selectViewerCapabilities } from "redux/selectors/viewerSelectors";
 
 import { useAvoidedIngredients } from "hooks/useAvoidedIngredients";
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
+import { useLocale } from "hooks/useLocale";
 
 import { resolveIngredientName } from "utils/ingredientName";
 
@@ -36,10 +37,14 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     hasCustomCalories,
 }) => {
     const { t } = useTranslation("recipes");
+    const locale = useLocale();
     const { canUsePantry } = useAppSelector(selectViewerCapabilities);
     const { isIngredientAvoided } = useAvoidedIngredients();
     const sorted = [...availability].sort((a, b) =>
-        resolveIngredientName(a).localeCompare(resolveIngredientName(b)),
+        resolveIngredientName(t, a).localeCompare(
+            resolveIngredientName(t, b),
+            locale,
+        ),
     );
 
     return (

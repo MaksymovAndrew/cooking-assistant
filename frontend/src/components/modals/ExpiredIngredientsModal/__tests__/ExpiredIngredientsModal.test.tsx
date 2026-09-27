@@ -78,8 +78,8 @@ describe("ExpiredIngredientsModal", () => {
         renderOpen();
 
         expect(screen.getByText("1 L")).toBeInTheDocument();
-        expect(screen.getByText("6 piece")).toBeInTheDocument();
-        expect(screen.getByText("12 piece")).toBeInTheDocument();
+        expect(screen.getByText("6 pieces")).toBeInTheDocument();
+        expect(screen.getByText("12 pieces")).toBeInTheDocument();
     });
 
     it("should count purchases, not ingredients, in the summary message", () => {

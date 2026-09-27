@@ -10,9 +10,10 @@ import {
 } from "./common.schemas";
 
 const PASSWORD_MIN_LENGTH = 8;
-const PASSWORD_HAS_LETTER = /[A-Za-z]/;
+// a letter in any alphabet counts as a letter, never as a special character
+const PASSWORD_HAS_LETTER = /\p{L}/u;
 const PASSWORD_HAS_DIGIT = /\d/;
-const PASSWORD_HAS_SPECIAL_CHAR = /[^A-Za-z0-9]/;
+const PASSWORD_HAS_SPECIAL_CHAR = /[^\p{L}\p{N}]/u;
 
 function meetsPasswordRequirements(value: string): boolean {
     return (

@@ -1,0 +1,17 @@
+{
+    "brandName": "Cooking Assistant",
+    "passwordReset": {
+        "subject": "Zresetuj hasło",
+        "heading": "Zresetuj hasło",
+        "body": "Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w Cooking Assistant.",
+        "button": "Zresetuj hasło",
+        "footer": "Link wygaśnie za 30 minut. Jeśli ta prośba nie pochodzi od Ciebie, po prostu zignoruj tę wiadomość."
+    },
+    "verification": {
+        "subject": "Potwierdź adres e-mail",
+        "heading": "Potwierdź adres e-mail",
+        "body": "Potwierdź swój adres e-mail, a będziesz mieć możliwość zresetowania hasła do konta w Cooking Assistant.",
+        "button": "Potwierdź e-mail",
+        "footer": "Link wygaśnie za 24 godziny. Jeśli to nie Ty zakładasz konto, po prostu zignoruj tę wiadomość — dopóki link nie zostanie otwarty, nic się nie stanie."
+    }
+}

@@ -33,6 +33,7 @@ export const useCreateMenuPage = () => {
         const result = await createMenu({
             menuTitle: form.menuTitle,
             menuContent: form.menuDescription,
+            language: form.language,
             categoryId: form.selectedCategory,
             recipeIds: form.selectedRecipes,
         });

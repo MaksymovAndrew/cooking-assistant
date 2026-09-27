@@ -116,7 +116,7 @@ describe("LoginForm", () => {
         );
 
         expect(
-            screen.getByText("Too many attempts - account locked."),
+            screen.getByText("Too many attempts — account locked."),
         ).toBeInTheDocument();
         expect(screen.getByText("1:05")).toBeInTheDocument();
         expect(

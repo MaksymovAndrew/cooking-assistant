@@ -1,5 +1,7 @@
 import React from "react";
 
+import type { Locale } from "constants/locales";
+
 import { Link } from "components/ui/Link";
 
 import styles from "./ContentCard.module.scss";
@@ -29,6 +31,8 @@ interface ContentCardProps {
     // an uploaded photo takes the icon's place; without one the card keeps its glyph
     imageSrc?: string | null;
     chipLabel: string;
+    // the language the record is written in; null leaves the badge out
+    language?: Locale | null;
     // icon+label meta row (recipe cards); mutually exclusive with metaText
     metaItems?: ContentCardMetaItem[];
     // plain-text meta line, no icons (menu cards' "Category: X · N recipes")
@@ -54,6 +58,7 @@ export const ContentCard: React.FC<ContentCardProps> = ({
     imageIcon: ImageIcon,
     imageSrc = null,
     chipLabel,
+    language = null,
     metaItems = [],
     metaText,
     variant = "grid",
@@ -87,12 +92,14 @@ export const ContentCard: React.FC<ContentCardProps> = ({
                 imageIcon={ImageIcon}
                 imageSrc={imageSrc}
                 chipLabel={chipLabel}
+                language={language}
                 favourite={favourite}
             />
             <span className={styles["content-card__body"]}>
                 {isRow && (
                     <ContentCardRowHeader
                         chipLabel={chipLabel}
+                        language={language}
                         favourite={favourite}
                     />
                 )}

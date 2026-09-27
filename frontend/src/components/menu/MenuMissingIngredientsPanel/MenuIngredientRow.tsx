@@ -2,9 +2,11 @@ import { Check } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useLocale } from "hooks/useLocale";
+
 import { resolveIngredientName } from "utils/ingredientName";
 import type { AggregatedIngredient } from "utils/menuUtils";
-import { roundQuantity } from "utils/roundQuantity";
+import { quantityWithUnit } from "utils/referenceLabels";
 
 import styles from "./MenuMissingIngredientsPanel.module.scss";
 
@@ -18,6 +20,7 @@ export const MenuIngredientRow: React.FC<MenuIngredientRowProps> = ({
     ingredient: { slug, name, quantity, missingQuantity, unit, sufficient },
 }) => {
     const { t } = useTranslation("menu");
+    const locale = useLocale();
 
     return (
         <li
@@ -44,10 +47,15 @@ export const MenuIngredientRow: React.FC<MenuIngredientRowProps> = ({
                 />
             )}
             <span className={styles["menu-missing-ingredients-panel__name"]}>
-                {resolveIngredientName({ slug, name })}
+                {resolveIngredientName(t, { slug, name })}
             </span>
             <span className={styles["menu-missing-ingredients-panel__qty"]}>
-                {roundQuantity(sufficient ? quantity : missingQuantity)} {unit}
+                {quantityWithUnit(
+                    t,
+                    locale,
+                    sufficient ? quantity : missingQuantity,
+                    unit,
+                )}
             </span>
         </li>
     );

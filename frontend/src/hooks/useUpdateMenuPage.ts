@@ -40,6 +40,7 @@ export const useUpdateMenuPage = () => {
         setInitialValues({
             menuTitle: menu.menu.title || "",
             menuDescription: menu.menu.menucontent || "",
+            language: menu.menu.language,
             selectedCategory: menu.menu.category_id,
             selectedRecipes: menu.recipes.map((recipe) => recipe.recipe_id),
             photoKey: menu.menu.photo_key,
@@ -57,6 +58,7 @@ export const useUpdateMenuPage = () => {
             data: {
                 menuTitle: form.menuTitle,
                 menuContent: form.menuDescription,
+                language: form.language,
                 categoryId: form.selectedCategory,
                 recipeIds: form.selectedRecipes,
             },

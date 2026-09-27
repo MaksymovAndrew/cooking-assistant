@@ -1,15 +1,16 @@
 {
     "cherry_tomato": {
-        "ru": "Томат черри",
-        "uk": "Томат чері"
+        "ru": "Помидоры черри",
+        "uk": "Помідори чері",
+        "pl": "Pomidorki koktajlowe"
     },
     "sun_dried_tomato": {
-        "ru": "Вяленые томаты",
-        "uk": "В'ялені томати",
+        "ru": "Вяленые помидоры",
+        "uk": "В’ялені помідори",
         "pl": "Suszone pomidory"
     },
     "bell_pepper_yellow": {
-        "ru": "Жёлтый болгарский перец",
+        "ru": "Жёлтый сладкий перец",
         "uk": "Жовтий солодкий перець",
         "pl": "Żółta papryka"
     },
@@ -19,11 +20,13 @@
         "pl": "Żółta cukinia"
     },
     "cabbage_red": {
-        "ru": "Краснокочанная капуста"
+        "ru": "Краснокочанная капуста",
+        "uk": "Червонокачанна капуста",
+        "pl": "Czerwona kapusta"
     },
     "celery": {
-        "ru": "Сельдерей стеблевой",
-        "uk": "Селера черешкова",
+        "ru": "Стеблевой сельдерей",
+        "uk": "Черешкова селера",
         "pl": "Seler naciowy"
     },
     "celery_root": {
@@ -48,26 +51,33 @@
     },
     "corn": {
         "ru": "Сладкая кукуруза",
-        "uk": "Солодка кукурудза"
+        "uk": "Солодка кукурудза",
+        "pl": "Kukurydza słodka"
     },
     "okra": {
-        "ru": "Окра",
+        "ru": "Бамия",
         "uk": "Бамія",
         "pl": "Okra"
     },
     "lettuce_iceberg": {
         "ru": "Салат айсберг",
-        "uk": "Салат айсберг"
+        "uk": "Салат айсберг",
+        "pl": "Sałata lodowa"
     },
     "lettuce_romaine": {
-        "uk": "Салат ромен"
+        "ru": "Салат ромэн",
+        "uk": "Салат ромен",
+        "pl": "Sałata rzymska"
     },
     "watercress": {
+        "ru": "Кресс-салат",
         "uk": "Крес-салат",
         "pl": "Rukiew wodna"
     },
     "olives_green": {
-        "uk": "Зелені оливки"
+        "ru": "Зелёные оливки",
+        "uk": "Зелені оливки",
+        "pl": "Zielone oliwki"
     },
     "olives_black": {
         "ru": "Чёрные оливки",
@@ -95,31 +105,49 @@
         "pl": "Ogórek konserwowy"
     },
     "red_onion": {
-        "uk": "Червона цибуля"
+        "ru": "Красный лук",
+        "uk": "Червона цибуля",
+        "pl": "Czerwona cebula"
     },
     "tomato": {
-        "uk": "Помідор"
+        "ru": "Помидор",
+        "uk": "Помідор",
+        "pl": "Pomidor"
     },
     "cucumber": {
-        "uk": "Огірок"
+        "ru": "Огурец",
+        "uk": "Огірок",
+        "pl": "Ogórek"
     },
     "bell_pepper_red": {
-        "uk": "Червоний солодкий перець"
+        "ru": "Красный сладкий перец",
+        "uk": "Червоний солодкий перець",
+        "pl": "Czerwona papryka"
     },
     "bell_pepper_green": {
-        "uk": "Зелений солодкий перець"
+        "ru": "Зелёный сладкий перец",
+        "uk": "Зелений солодкий перець",
+        "pl": "Zielona papryka"
     },
     "cauliflower": {
-        "uk": "Цвітна капуста"
+        "ru": "Цветная капуста",
+        "uk": "Цвітна капуста",
+        "pl": "Kalafior"
     },
     "kohlrabi": {
-        "uk": "Кольрабі"
+        "ru": "Кольраби",
+        "uk": "Кольрабі",
+        "pl": "Kalarepa"
     },
     "beet": {
-        "uk": "Буряк"
+        "ru": "Свёкла",
+        "uk": "Буряк",
+        "pl": "Burak"
     },
     "green_peas": {
-        "uk": "Зелений горошок"
+        "ru": "Зелёный горошек",
+        "uk": "Зелений горошок",
+        "pl": "Groszek zielony"
     },
     "mandarin": {
         "ru": "Мандарин",
@@ -132,13 +160,19 @@
         "pl": "Winogrona"
     },
     "peach": {
-        "uk": "Персик"
+        "ru": "Персик",
+        "uk": "Персик",
+        "pl": "Brzoskwinia"
     },
     "fig": {
-        "uk": "Інжир"
+        "ru": "Инжир",
+        "uk": "Інжир",
+        "pl": "Figa"
     },
     "cherry": {
-        "pl": "Czereśnia"
+        "ru": "Черешня",
+        "uk": "Черешня",
+        "pl": "Czereśnie"
     },
     "dragon_fruit": {
         "ru": "Драконий фрукт",
@@ -152,7 +186,7 @@
     },
     "coconut": {
         "ru": "Кокосовая мякоть",
-        "uk": "Кокосова м'якоть",
+        "uk": "Кокосова м’якоть",
         "pl": "Miąższ kokosowy"
     },
     "dried_apricot": {
@@ -167,23 +201,33 @@
     },
     "dried_fig": {
         "ru": "Сушёный инжир",
-        "uk": "Сушений інжир"
+        "uk": "Сушений інжир",
+        "pl": "Suszone figi"
     },
     "passion_fruit": {
-        "uk": "Маракуйя"
+        "ru": "Маракуйя",
+        "uk": "Маракуйя",
+        "pl": "Marakuja"
     },
     "guava": {
-        "uk": "Гуава"
+        "ru": "Гуава",
+        "uk": "Гуава",
+        "pl": "Gujawa"
     },
     "raspberry": {
-        "uk": "Малина"
+        "ru": "Малина",
+        "uk": "Малина",
+        "pl": "Malina"
     },
     "currant_red": {
-        "uk": "Червона смородина"
+        "ru": "Красная смородина",
+        "uk": "Червона смородина",
+        "pl": "Czerwona porzeczka"
     },
     "cherry_sour": {
         "ru": "Вишня",
-        "uk": "Вишня"
+        "uk": "Вишня",
+        "pl": "Wiśnie"
     },
     "mulberry": {
         "ru": "Шелковица",
@@ -196,16 +240,19 @@
         "pl": "Suszona żurawina"
     },
     "frozen_mixed_berries": {
-        "ru": "Замороженные ягоды ассорти",
-        "uk": "Заморожені ягоди асорті",
-        "pl": "Mrożone owoce leśne mix"
+        "ru": "Замороженная ягодная смесь",
+        "uk": "Заморожена ягідна суміш",
+        "pl": "Mrożone owoce leśne"
     },
     "cilantro": {
         "ru": "Кинза",
-        "uk": "Коріандр (кінза)"
+        "uk": "Кінза",
+        "pl": "Kolendra"
     },
     "thyme": {
-        "uk": "Чебрець"
+        "ru": "Тимьян",
+        "uk": "Чебрець",
+        "pl": "Tymianek"
     },
     "oregano_fresh": {
         "ru": "Свежий орегано",
@@ -265,7 +312,7 @@
     "beef_ribeye": {
         "ru": "Стейк рибай",
         "uk": "Стейк рібай",
-        "pl": "Antrykot wołowy"
+        "pl": "Stek ribeye"
     },
     "beef_brisket": {
         "ru": "Говяжья грудинка",
@@ -273,8 +320,8 @@
         "pl": "Mostek wołowy"
     },
     "beef_short_ribs": {
-        "ru": "Говяжьи короткие рёбра",
-        "uk": "Яловичі короткі ребра",
+        "ru": "Говяжьи рёбрышки",
+        "uk": "Яловичі реберця",
         "pl": "Żeberka wołowe"
     },
     "beef_stew_meat": {
@@ -288,15 +335,19 @@
         "pl": "Cielęcina"
     },
     "pork_loin": {
-        "uk": "Свиняча корейка"
+        "ru": "Свиная корейка",
+        "uk": "Свиняча корейка",
+        "pl": "Schab"
     },
     "pork_belly": {
+        "ru": "Свиная грудинка",
         "uk": "Свиняча грудинка",
-        "pl": "Boczek wieprzowy"
+        "pl": "Boczek"
     },
     "pork_shoulder": {
         "ru": "Свиная лопатка",
-        "uk": "Свиняча лопатка"
+        "uk": "Свиняча лопатка",
+        "pl": "Łopatka wieprzowa"
     },
     "pork_ribs": {
         "ru": "Свиные рёбра",
@@ -310,7 +361,8 @@
     },
     "pork_tenderloin": {
         "ru": "Свиная вырезка",
-        "uk": "Свиняча вирізка"
+        "uk": "Свиняча вирізка",
+        "pl": "Polędwiczka wieprzowa"
     },
     "lamb_leg": {
         "ru": "Баранья нога",
@@ -328,19 +380,24 @@
         "pl": "Mielona jagnięcina"
     },
     "ham": {
-        "uk": "Шинка"
+        "ru": "Ветчина",
+        "uk": "Шинка",
+        "pl": "Szynka"
     },
     "prosciutto": {
         "ru": "Прошутто",
-        "uk": "Прошутто",
+        "uk": "Прошуто",
         "pl": "Prosciutto"
     },
     "salami": {
-        "uk": "Салямі"
+        "ru": "Салями",
+        "uk": "Салямі",
+        "pl": "Salami"
     },
     "sausage_pork": {
         "ru": "Свиные колбаски",
-        "uk": "Свинячі ковбаски"
+        "uk": "Свинячі ковбаски",
+        "pl": "Kiełbaski wieprzowe"
     },
     "hot_dog": {
         "ru": "Сосиска",
@@ -348,6 +405,8 @@
         "pl": "Parówka"
     },
     "pepperoni": {
+        "ru": "Пепперони",
+        "uk": "Пепероні",
         "pl": "Pepperoni"
     },
     "goat_meat": {
@@ -356,18 +415,23 @@
     },
     "beef_liver": {
         "ru": "Говяжья печень",
-        "uk": "Яловича печінка"
+        "uk": "Яловича печінка",
+        "pl": "Wątroba wołowa"
     },
     "chicken_liver": {
         "ru": "Куриная печень",
-        "uk": "Куряча печінка"
+        "uk": "Куряча печінка",
+        "pl": "Wątróbka drobiowa"
     },
     "pork_liver": {
-        "uk": "Свиняча печінка"
+        "ru": "Свиная печень",
+        "uk": "Свиняча печінка",
+        "pl": "Wątroba wieprzowa"
     },
     "beef_heart": {
         "ru": "Говяжье сердце",
-        "uk": "Яловиче серце"
+        "uk": "Яловиче серце",
+        "pl": "Serce wołowe"
     },
     "beef_tongue": {
         "ru": "Говяжий язык",
@@ -381,7 +445,8 @@
     },
     "tripe": {
         "ru": "Говяжий рубец",
-        "uk": "Яловичий рубець"
+        "uk": "Яловичий рубець",
+        "pl": "Flaki wołowe"
     },
     "bone_marrow": {
         "ru": "Костный мозг",
@@ -390,19 +455,23 @@
     },
     "chicken_breast": {
         "ru": "Куриная грудка",
-        "uk": "Куряча грудка"
+        "uk": "Куряча грудка",
+        "pl": "Pierś z kurczaka"
     },
     "chicken_thigh": {
         "ru": "Куриное бедро",
-        "uk": "Куряче стегно"
+        "uk": "Куряче стегно",
+        "pl": "Udko z kurczaka"
     },
     "chicken_drumstick": {
         "ru": "Куриная голень",
-        "uk": "Куряча гомілка"
+        "uk": "Куряча гомілка",
+        "pl": "Podudzie z kurczaka"
     },
     "chicken_wing": {
         "ru": "Куриное крыло",
-        "uk": "Куряче крило"
+        "uk": "Куряче крило",
+        "pl": "Skrzydełko z kurczaka"
     },
     "chicken_whole": {
         "ru": "Целая курица",
@@ -415,8 +484,9 @@
         "pl": "Mielony kurczak"
     },
     "turkey_breast": {
-        "ru": "Индюшиная грудка",
-        "uk": "Індича грудка"
+        "ru": "Грудка индейки",
+        "uk": "Грудка індички",
+        "pl": "Pierś z indyka"
     },
     "turkey_whole": {
         "ru": "Целая индейка",
@@ -424,13 +494,14 @@
         "pl": "Cały indyk"
     },
     "turkey_ground": {
-        "ru": "Индюшиный фарш",
-        "uk": "Індичий фарш",
+        "ru": "Фарш из индейки",
+        "uk": "Фарш з індички",
         "pl": "Mielony indyk"
     },
     "duck_breast": {
         "ru": "Утиная грудка",
-        "uk": "Качина грудка"
+        "uk": "Качина грудка",
+        "pl": "Pierś z kaczki"
     },
     "duck_whole": {
         "ru": "Целая утка",
@@ -439,11 +510,13 @@
     },
     "goose": {
         "ru": "Гусь",
-        "uk": "Гуска"
+        "uk": "Гуска",
+        "pl": "Gęś"
     },
     "quail": {
         "ru": "Перепёлка",
-        "uk": "Перепілка"
+        "uk": "Перепілка",
+        "pl": "Przepiórka"
     },
     "salmon": {
         "ru": "Лосось",
@@ -476,11 +549,13 @@
         "pl": "Halibut"
     },
     "mackerel": {
-        "uk": "Скумбрія"
+        "ru": "Скумбрия",
+        "uk": "Скумбрія",
+        "pl": "Makrela"
     },
     "sea_bass": {
-        "ru": "Морской окунь",
-        "uk": "Морський окунь",
+        "ru": "Сибас",
+        "uk": "Сібас",
         "pl": "Labraks"
     },
     "sea_bream": {
@@ -535,40 +610,46 @@
     },
     "fish_roe": {
         "ru": "Рыбья икра",
-        "uk": "Риб'яча ікра",
-        "pl": "Ikra rybia"
+        "uk": "Риб’яча ікра",
+        "pl": "Ikra"
     },
     "caviar": {
-        "ru": "Икра",
-        "uk": "Ікра",
+        "ru": "Чёрная икра",
+        "uk": "Чорна ікра",
         "pl": "Kawior"
     },
     "shrimp": {
-        "uk": "Креветки"
+        "ru": "Креветки",
+        "uk": "Креветки",
+        "pl": "Krewetki"
     },
     "prawn": {
-        "ru": "Королевская креветка",
-        "uk": "Королівська креветка",
-        "pl": "Krewetka królewska"
+        "ru": "Королевские креветки",
+        "uk": "Королівські креветки",
+        "pl": "Krewetki królewskie"
     },
     "crab": {
         "ru": "Крабовое мясо",
-        "uk": "Крабове м'ясо",
+        "uk": "Крабове м’ясо",
         "pl": "Mięso krabowe"
     },
     "mussel": {
+        "ru": "Мидии",
         "uk": "Мідії",
-        "pl": "Małże"
+        "pl": "Omułki"
     },
     "clam": {
-        "ru": "Моллюски",
-        "uk": "Молюски",
-        "pl": "Małże jadalne"
+        "ru": "Вонголе",
+        "uk": "Вонголе",
+        "pl": "Vongole"
     },
     "oyster": {
+        "ru": "Устрицы",
+        "uk": "Устриці",
         "pl": "Ostrygi"
     },
     "octopus": {
+        "ru": "Осьминог",
         "uk": "Восьминіг",
         "pl": "Ośmiornica"
     },
@@ -583,46 +664,53 @@
         "pl": "Wodorosty kombu"
     },
     "cream": {
-        "ru": "Сливки жирные",
-        "uk": "Вершки жирні",
-        "pl": "Śmietana kremówka"
+        "ru": "Жирные сливки",
+        "uk": "Жирні вершки",
+        "pl": "Śmietanka kremówka"
     },
     "cream_light": {
-        "ru": "Сливки лёгкие",
-        "uk": "Вершки легкі",
-        "pl": "Śmietanka lekka"
+        "ru": "Нежирные сливки",
+        "uk": "Нежирні вершки",
+        "pl": "Śmietanka"
     },
     "sour_cream": {
         "ru": "Сметана",
         "uk": "Сметана"
     },
     "yogurt": {
-        "uk": "Йогурт"
+        "ru": "Йогурт",
+        "uk": "Йогурт",
+        "pl": "Jogurt"
     },
     "yogurt_greek": {
         "ru": "Греческий йогурт",
-        "uk": "Грецький йогурт"
+        "uk": "Грецький йогурт",
+        "pl": "Jogurt grecki"
     },
     "condensed_milk": {
         "ru": "Сгущённое молоко",
         "uk": "Згущене молоко",
-        "pl": "Mleko skondensowane"
+        "pl": "Mleko skondensowane słodzone"
     },
     "evaporated_milk": {
-        "ru": "Концентрированное молоко",
-        "uk": "Концентроване молоко",
-        "pl": "Mleko zagęszczone"
+        "ru": "Сгущённое молоко без сахара",
+        "uk": "Згущене молоко без цукру",
+        "pl": "Mleko zagęszczone niesłodzone"
     },
     "whipped_cream": {
         "ru": "Взбитые сливки",
-        "uk": "Збиті вершки"
+        "uk": "Збиті вершки",
+        "pl": "Bita śmietana"
     },
     "coconut_milk": {
-        "uk": "Кокосове молоко"
+        "ru": "Кокосовое молоко",
+        "uk": "Кокосове молоко",
+        "pl": "Mleko kokosowe"
     },
     "coconut_cream": {
         "ru": "Кокосовые сливки",
-        "uk": "Кокосові вершки"
+        "uk": "Кокосові вершки",
+        "pl": "Śmietanka kokosowa"
     },
     "almond_milk": {
         "ru": "Миндальное молоко",
@@ -630,7 +718,9 @@
         "pl": "Mleko migdałowe"
     },
     "oat_milk": {
-        "ru": "Овсяное молоко"
+        "ru": "Овсяное молоко",
+        "uk": "Вівсяне молоко",
+        "pl": "Mleko owsiane"
     },
     "egg_quail": {
         "ru": "Перепелиное яйцо",
@@ -643,12 +733,14 @@
         "pl": "Jajko kacze"
     },
     "cheese_cottage": {
-        "ru": "Творог",
-        "uk": "Домашній сир"
+        "ru": "Зернёный творог",
+        "uk": "Зернистий сир",
+        "pl": "Serek wiejski"
     },
     "cheese_cream": {
         "ru": "Сливочный сыр",
-        "uk": "Вершковий сир"
+        "uk": "Вершковий сир",
+        "pl": "Serek śmietankowy"
     },
     "cheese_swiss": {
         "ru": "Швейцарский сыр",
@@ -665,17 +757,24 @@
         "pl": "Burrata"
     },
     "cheese_goat": {
-        "uk": "Козячий сир"
+        "ru": "Козий сыр",
+        "uk": "Козячий сир",
+        "pl": "Ser kozi"
     },
     "cheese_brie": {
+        "ru": "Бри",
+        "uk": "Брі",
         "pl": "Brie"
     },
     "rice_white": {
         "ru": "Белый рис",
-        "uk": "Білий рис"
+        "uk": "Білий рис",
+        "pl": "Ryż biały"
     },
     "rice_brown": {
-        "uk": "Бурий рис"
+        "ru": "Бурый рис",
+        "uk": "Бурий рис",
+        "pl": "Ryż brązowy"
     },
     "rice_jasmine": {
         "ru": "Рис жасмин",
@@ -693,10 +792,14 @@
         "pl": "Owies"
     },
     "semolina": {
-        "uk": "Манна крупа"
+        "ru": "Манная крупа",
+        "uk": "Манна крупа",
+        "pl": "Kasza manna"
     },
     "cornmeal": {
-        "uk": "Кукурудзяне борошно грубого помелу"
+        "ru": "Кукурузная крупа",
+        "uk": "Кукурудзяна крупа",
+        "pl": "Kasza kukurydziana"
     },
     "polenta": {
         "ru": "Полента",
@@ -705,11 +808,13 @@
     },
     "lentils_red": {
         "ru": "Красная чечевица",
-        "uk": "Червона сочевиця"
+        "uk": "Червона сочевиця",
+        "pl": "Soczewica czerwona"
     },
     "lentils_green": {
         "ru": "Зелёная чечевица",
-        "uk": "Зелена сочевиця"
+        "uk": "Зелена сочевиця",
+        "pl": "Soczewica zielona"
     },
     "beans_kidney": {
         "ru": "Красная фасоль",
@@ -718,10 +823,13 @@
     },
     "beans_black": {
         "ru": "Чёрная фасоль",
-        "uk": "Чорна квасоля"
+        "uk": "Чорна квасоля",
+        "pl": "Fasola czarna"
     },
     "beans_white": {
-        "uk": "Біла квасоля"
+        "ru": "Белая фасоль",
+        "uk": "Біла квасоля",
+        "pl": "Biała fasola"
     },
     "beans_pinto": {
         "ru": "Фасоль пинто",
@@ -729,10 +837,14 @@
         "pl": "Fasola pinto"
     },
     "split_peas": {
-        "uk": "Лущений горох"
+        "ru": "Колотый горох",
+        "uk": "Колотий горох",
+        "pl": "Groch łuskany"
     },
     "soybeans": {
-        "uk": "Соєві боби"
+        "ru": "Соевые бобы",
+        "uk": "Соєві боби",
+        "pl": "Soja"
     },
     "edamame": {
         "ru": "Эдамаме",
@@ -746,7 +858,7 @@
     },
     "pasta_fusilli": {
         "ru": "Фузилли",
-        "uk": "Фузілі",
+        "uk": "Фузіллі",
         "pl": "Fusilli"
     },
     "pasta_farfalle": {
@@ -771,7 +883,8 @@
     },
     "pasta_rice_noodles": {
         "ru": "Рисовая лапша",
-        "uk": "Рисова локшина"
+        "uk": "Рисова локшина",
+        "pl": "Makaron ryżowy"
     },
     "pasta_soba": {
         "ru": "Соба",
@@ -784,14 +897,14 @@
         "pl": "Makaron udon"
     },
     "pasta_ravioli": {
-        "ru": "Равиоли",
-        "uk": "Равіолі",
-        "pl": "Ravioli"
+        "ru": "Равиоли с сыром",
+        "uk": "Равіолі з сиром",
+        "pl": "Ravioli z serem"
     },
     "pasta_gnocchi": {
-        "ru": "Ньокки",
-        "uk": "Ньокі",
-        "pl": "Gnocchi"
+        "ru": "Картофельные ньокки",
+        "uk": "Картопляні ньокі",
+        "pl": "Gnocchi ziemniaczane"
     },
     "flour_whole_wheat": {
         "ru": "Цельнозерновая мука",
@@ -803,16 +916,19 @@
         "pl": "Mąka chlebowa"
     },
     "flour_cake": {
-        "ru": "Мука для выпечки тортов",
+        "ru": "Мука для тортов",
         "uk": "Борошно для тортів",
         "pl": "Mąka tortowa"
     },
     "flour_rye": {
-        "uk": "Житнє борошно"
+        "ru": "Ржаная мука",
+        "uk": "Житнє борошно",
+        "pl": "Mąka żytnia"
     },
     "flour_corn": {
         "ru": "Кукурузная мука",
-        "uk": "Кукурудзяне борошно"
+        "uk": "Кукурудзяне борошно",
+        "pl": "Mąka kukurydziana"
     },
     "flour_rice": {
         "uk": "Рисове борошно"
@@ -833,9 +949,9 @@
         "pl": "Soda oczyszczona"
     },
     "yeast": {
-        "ru": "Дрожжи",
-        "uk": "Дріжджі",
-        "pl": "Drożdże"
+        "ru": "Сухие дрожжи",
+        "uk": "Сухі дріжджі",
+        "pl": "Drożdże suszone"
     },
     "panko": {
         "ru": "Панко",
@@ -878,22 +994,34 @@
         "pl": "Ciasto na pizzę"
     },
     "almond": {
-        "uk": "Мигдаль"
+        "ru": "Миндаль",
+        "uk": "Мигдаль",
+        "pl": "Migdały"
     },
     "walnut": {
-        "uk": "Волоський горіх"
+        "ru": "Грецкие орехи",
+        "uk": "Волоські горіхи",
+        "pl": "Orzechy włoskie"
     },
     "pecan": {
-        "uk": "Горіх пекан"
+        "ru": "Орехи пекан",
+        "uk": "Горіхи пекан",
+        "pl": "Orzechy pekan"
     },
     "cashew": {
-        "uk": "Кеш'ю"
+        "ru": "Кешью",
+        "uk": "Кеш’ю",
+        "pl": "Orzechy nerkowca"
     },
     "peanut": {
-        "uk": "Арахіс"
+        "ru": "Арахис",
+        "uk": "Арахіс",
+        "pl": "Orzeszki ziemne"
     },
     "brazil_nut": {
-        "uk": "Горіх бразильський"
+        "ru": "Бразильские орехи",
+        "uk": "Бразильські горіхи",
+        "pl": "Orzechy brazylijskie"
     },
     "pistachio": {
         "ru": "Фисташки",
@@ -902,11 +1030,12 @@
     },
     "peanut_butter": {
         "ru": "Арахисовая паста",
-        "uk": "Арахісова паста"
+        "uk": "Арахісова паста",
+        "pl": "Masło orzechowe"
     },
     "macadamia": {
-        "ru": "Орех макадамия",
-        "uk": "Горіх макадамія",
+        "ru": "Орехи макадамия",
+        "uk": "Горіхи макадамія",
         "pl": "Orzechy makadamia"
     },
     "pumpkin_seeds": {
@@ -915,19 +1044,23 @@
         "pl": "Pestki dyni"
     },
     "sesame_seeds": {
-        "ru": "Кунжутные семена",
-        "uk": "Кунжутне насіння"
+        "ru": "Кунжут",
+        "uk": "Кунжут",
+        "pl": "Sezam"
     },
     "chia_seeds": {
         "ru": "Семена чиа",
-        "uk": "Насіння чіа"
+        "uk": "Насіння чіа",
+        "pl": "Nasiona chia"
     },
     "flax_seeds": {
-        "uk": "Насіння льону"
+        "ru": "Семена льна",
+        "uk": "Насіння льону",
+        "pl": "Siemię lniane"
     },
     "poppy_seeds": {
-        "ru": "Маковые семена",
-        "uk": "Макове насіння",
+        "ru": "Мак",
+        "uk": "Мак",
         "pl": "Mak"
     },
     "canola_oil": {
@@ -940,23 +1073,28 @@
     },
     "avocado_oil": {
         "ru": "Масло авокадо",
-        "uk": "Олія авокадо"
+        "uk": "Олія авокадо",
+        "pl": "Olej z awokado"
     },
     "shortening": {
         "ru": "Кулинарный жир",
         "uk": "Кулінарний жир",
-        "pl": "Tłuszcz piekarski"
+        "pl": "Tłuszcz do pieczenia"
     },
     "cooking_spray": {
-        "ru": "Кулинарный спрей",
-        "uk": "Кулінарний спрей",
-        "pl": "Spray do smażenia"
+        "ru": "Масло-спрей",
+        "uk": "Олія-спрей",
+        "pl": "Olej w sprayu"
     },
     "paprika": {
-        "pl": "Papryka słodka"
+        "ru": "Паприка",
+        "uk": "Паприка",
+        "pl": "Papryka słodka mielona"
     },
     "white_pepper": {
-        "uk": "Білий перець"
+        "ru": "Белый перец",
+        "uk": "Білий перець",
+        "pl": "Biały pieprz"
     },
     "smoked_paprika": {
         "ru": "Копчёная паприка",
@@ -969,14 +1107,19 @@
         "pl": "Chili w proszku"
     },
     "coriander_seed": {
-        "uk": "Насіння коріандру"
+        "ru": "Семена кориандра",
+        "uk": "Насіння коріандру",
+        "pl": "Kolendra ziarnista"
     },
     "ginger_ground": {
         "ru": "Молотый имбирь",
-        "uk": "Мелений імбир"
+        "uk": "Мелений імбир",
+        "pl": "Imbir mielony"
     },
     "nutmeg": {
-        "ru": "Мускатный орех"
+        "ru": "Мускатный орех",
+        "uk": "Мускатний горіх",
+        "pl": "Gałka muszkatołowa"
     },
     "cloves": {
         "ru": "Гвоздика",
@@ -985,11 +1128,13 @@
     },
     "oregano_dried": {
         "ru": "Сушёный орегано",
-        "uk": "Сушений орегано"
+        "uk": "Сушений орегано",
+        "pl": "Suszone oregano"
     },
     "basil_dried": {
         "ru": "Сушёный базилик",
-        "uk": "Сушений базилік"
+        "uk": "Сушений базилік",
+        "pl": "Suszona bazylia"
     },
     "thyme_dried": {
         "ru": "Сушёный тимьян",
@@ -1004,7 +1149,7 @@
     "dill_dried": {
         "ru": "Сушёный укроп",
         "uk": "Сушений кріп",
-        "pl": "Suszony koper"
+        "pl": "Suszony koperek"
     },
     "parsley_dried": {
         "ru": "Сушёная петрушка",
@@ -1017,12 +1162,14 @@
         "pl": "Kostka bulionowa"
     },
     "curry_powder": {
-        "ru": "Порошок карри",
+        "ru": "Карри",
+        "uk": "Каррі",
         "pl": "Curry w proszku"
     },
     "garam_masala": {
         "ru": "Гарам масала",
-        "uk": "Гарам масала"
+        "uk": "Гарам масала",
+        "pl": "Garam masala"
     },
     "saffron": {
         "ru": "Шафран",
@@ -1035,13 +1182,19 @@
         "pl": "Nasiona kopru włoskiego"
     },
     "mustard_seed": {
-        "uk": "Насіння гірчиці"
+        "ru": "Горчичные зёрна",
+        "uk": "Гірчичне насіння",
+        "pl": "Gorczyca"
     },
     "caraway_seed": {
-        "uk": "Насіння кмину"
+        "ru": "Тмин",
+        "uk": "Кмин",
+        "pl": "Kminek"
     },
     "allspice": {
-        "uk": "Запашний перець"
+        "ru": "Душистый перец",
+        "uk": "Запашний перець",
+        "pl": "Ziele angielskie"
     },
     "vanilla_pod": {
         "ru": "Стручок ванили",
@@ -1049,10 +1202,14 @@
         "pl": "Laska wanilii"
     },
     "garlic_powder": {
-        "uk": "Часниковий порошок"
+        "ru": "Сушёный чеснок",
+        "uk": "Сушений часник",
+        "pl": "Czosnek granulowany"
     },
     "onion_powder": {
-        "uk": "Цибулевий порошок"
+        "ru": "Сушёный лук",
+        "uk": "Сушена цибуля",
+        "pl": "Cebula granulowana"
     },
     "chili_flakes": {
         "ru": "Хлопья чили",
@@ -1070,9 +1227,9 @@
         "pl": "Sos ostrygowy"
     },
     "tabasco": {
-        "ru": "Соус табаско",
-        "uk": "Соус табаско",
-        "pl": "Sos tabasco"
+        "ru": "Острый перечный соус",
+        "uk": "Гострий перцевий соус",
+        "pl": "Ostry sos paprykowy"
     },
     "bbq_sauce": {
         "ru": "Соус барбекю",
@@ -1085,11 +1242,13 @@
         "pl": "Sos hoisin"
     },
     "tomato_paste": {
-        "uk": "Томатна паста"
+        "ru": "Томатная паста",
+        "uk": "Томатна паста",
+        "pl": "Koncentrat pomidorowy"
     },
     "tomato_passata": {
-        "ru": "Томатное пюре пассата",
-        "uk": "Томатне пюре пассата",
+        "ru": "Пассата",
+        "uk": "Пасата",
         "pl": "Passata pomidorowa"
     },
     "tahini_sauce": {
@@ -1098,22 +1257,29 @@
         "pl": "Sos tahini"
     },
     "vinegar_white": {
-        "ru": "Белый уксус",
-        "uk": "Білий оцет"
+        "ru": "Столовый уксус",
+        "uk": "Столовий оцет",
+        "pl": "Ocet spirytusowy"
     },
     "vinegar_red_wine": {
         "ru": "Красный винный уксус",
-        "uk": "Червоний винний оцет"
+        "uk": "Червоний винний оцет",
+        "pl": "Ocet z czerwonego wina"
     },
     "sugar_powdered": {
-        "uk": "Цукрова пудра"
+        "ru": "Сахарная пудра",
+        "uk": "Цукрова пудра",
+        "pl": "Cukier puder"
     },
     "maple_syrup": {
-        "uk": "Кленовий сироп"
+        "ru": "Кленовый сироп",
+        "uk": "Кленовий сироп",
+        "pl": "Syrop klonowy"
     },
     "agave_syrup": {
         "ru": "Сироп агавы",
-        "uk": "Сироп агави"
+        "uk": "Сироп агави",
+        "pl": "Syrop z agawy"
     },
     "chocolate_chips": {
         "ru": "Шоколадные капли",
@@ -1122,7 +1288,8 @@
     },
     "vanilla_sugar": {
         "ru": "Ванильный сахар",
-        "uk": "Ванільний цукор"
+        "uk": "Ванільний цукор",
+        "pl": "Cukier waniliowy"
     },
     "stevia": {
         "ru": "Стевия",
@@ -1130,72 +1297,73 @@
         "pl": "Stewia"
     },
     "canned_tomatoes": {
-        "ru": "Томаты консервированные",
-        "uk": "Томати консервовані",
-        "pl": "Pomidory konserwowe"
+        "ru": "Консервированные помидоры",
+        "uk": "Консервовані помідори",
+        "pl": "Pomidory z puszki"
     },
     "canned_corn": {
-        "ru": "Кукуруза консервированная",
-        "uk": "Кукурудза консервована",
-        "pl": "Kukurydza konserwowa"
+        "ru": "Консервированная кукуруза",
+        "uk": "Консервована кукурудза",
+        "pl": "Kukurydza z puszki"
     },
     "canned_tuna": {
-        "uk": "Тунець консервований",
+        "ru": "Консервированный тунец",
+        "uk": "Консервований тунець",
         "pl": "Tuńczyk w puszce"
     },
     "canned_chickpeas": {
-        "ru": "Нут консервированный",
-        "uk": "Нут консервований",
+        "ru": "Консервированный нут",
+        "uk": "Консервований нут",
         "pl": "Ciecierzyca z puszki"
     },
     "canned_black_beans": {
-        "ru": "Чёрная фасоль консервированная",
-        "uk": "Чорна квасоля консервована",
+        "ru": "Консервированная чёрная фасоль",
+        "uk": "Консервована чорна квасоля",
         "pl": "Czarna fasola z puszki"
     },
     "canned_kidney_beans": {
-        "ru": "Красная фасоль консервированная",
-        "uk": "Червона квасоля консервована",
+        "ru": "Консервированная красная фасоль",
+        "uk": "Консервована червона квасоля",
         "pl": "Czerwona fasola z puszki"
     },
     "canned_coconut_milk": {
-        "ru": "Кокосовое молоко консервированное",
-        "uk": "Кокосове молоко консервоване",
+        "ru": "Кокосовое молоко в банке",
+        "uk": "Кокосове молоко в банці",
         "pl": "Mleko kokosowe w puszce"
     },
     "canned_peas": {
-        "ru": "Зелёный горошек консервированный",
-        "uk": "Зелений горошок консервований",
-        "pl": "Groszek konserwowy"
+        "ru": "Консервированный зелёный горошек",
+        "uk": "Консервований зелений горошок",
+        "pl": "Groszek z puszki"
     },
     "canned_mushrooms": {
-        "ru": "Грибы консервированные",
-        "uk": "Гриби консервовані",
+        "ru": "Консервированные грибы",
+        "uk": "Консервовані гриби",
         "pl": "Grzyby z puszki"
     },
     "canned_pumpkin": {
-        "ru": "Тыквенное пюре консервированное",
-        "uk": "Гарбузове пюре консервоване",
+        "ru": "Тыквенное пюре в банке",
+        "uk": "Гарбузове пюре в банці",
         "pl": "Puree z dyni w puszce"
     },
     "canned_pineapple": {
-        "ru": "Ананас консервированный",
-        "uk": "Ананас консервований",
+        "ru": "Консервированный ананас",
+        "uk": "Консервований ананас",
         "pl": "Ananas z puszki"
     },
     "canned_peaches": {
-        "ru": "Персики консервированные",
-        "uk": "Персики консервовані",
+        "ru": "Консервированные персики",
+        "uk": "Консервовані персики",
         "pl": "Brzoskwinie z puszki"
     },
     "canned_sardines": {
-        "ru": "Сардины консервированные",
-        "uk": "Сардини консервовані",
+        "ru": "Консервированные сардины",
+        "uk": "Консервовані сардини",
         "pl": "Sardynki w puszce"
     },
     "canned_anchovies": {
-        "ru": "Анчоусы консервированные",
-        "uk": "Анчоуси консервовані",
+        "ru": "Консервированные анчоусы",
+        "uk": "Консервовані анчоуси",
         "pl": "Anchois w puszce"
     },
     "coffee_ground": {
@@ -1207,12 +1375,14 @@
         "uk": "Томатний сік"
     },
     "beer": {
-        "uk": "Пиво"
+        "ru": "Пиво",
+        "uk": "Пиво",
+        "pl": "Piwo"
     },
     "cooking_sherry": {
-        "ru": "Кулинарный херес",
-        "uk": "Кулінарний херес",
-        "pl": "Wytrawne wino sherry do gotowania"
+        "ru": "Херес для готовки",
+        "uk": "Херес для готування",
+        "pl": "Sherry do gotowania"
     },
     "vegetable_stock": {
         "ru": "Овощной бульон",
@@ -1221,11 +1391,13 @@
     },
     "chicken_stock": {
         "ru": "Куриный бульон",
-        "uk": "Курячий бульйон"
+        "uk": "Курячий бульйон",
+        "pl": "Bulion drobiowy"
     },
     "beef_stock": {
         "ru": "Говяжий бульон",
-        "uk": "Яловичий бульйон"
+        "uk": "Яловичий бульйон",
+        "pl": "Bulion wołowy"
     },
     "rutabaga": {
         "ru": "Брюква",
@@ -1248,7 +1420,9 @@
         "pl": "Pędy bambusa"
     },
     "water_chestnut": {
-        "uk": "Водяний каштан"
+        "ru": "Водяной каштан",
+        "uk": "Водяний каштан",
+        "pl": "Kasztan wodny"
     },
     "bean_sprouts": {
         "ru": "Ростки фасоли",
@@ -1261,14 +1435,14 @@
         "pl": "Tomatillo"
     },
     "broccoli_rabe": {
-        "ru": "Брокколи рабе",
-        "uk": "Броколі рабе",
-        "pl": "Brokuł rabe"
+        "ru": "Рапини",
+        "uk": "Рапіні",
+        "pl": "Rapini"
     },
     "collard_greens": {
-        "ru": "Листовая капуста коллард",
-        "uk": "Листова капуста колард",
-        "pl": "Jarmuż collard"
+        "ru": "Листовая капуста",
+        "uk": "Листова капуста",
+        "pl": "Kapusta liściasta"
     },
     "mustard_greens": {
         "ru": "Листовая горчица",
@@ -1277,7 +1451,7 @@
     },
     "turnip_greens": {
         "ru": "Ботва репы",
-        "uk": "Гичка ріпи",
+        "uk": "Бадилля ріпи",
         "pl": "Liście rzepy"
     },
     "dandelion_greens": {
@@ -1286,20 +1460,24 @@
         "pl": "Liście mniszka"
     },
     "radicchio": {
-        "uk": "Радіккіо"
+        "ru": "Радиккьо",
+        "uk": "Радикіо",
+        "pl": "Radicchio"
     },
     "bell_pepper_orange": {
-        "ru": "Оранжевый болгарский перец",
-        "uk": "Оранжевий солодкий перець",
+        "ru": "Оранжевый сладкий перец",
+        "uk": "Помаранчевий солодкий перець",
         "pl": "Pomarańczowa papryka"
     },
     "salsify": {
-        "uk": "Козлобородник"
+        "ru": "Козлобородник",
+        "uk": "Козлобородник",
+        "pl": "Salsefia"
     },
     "yam": {
         "ru": "Ямс",
         "uk": "Ямс",
-        "pl": "Pochrzyn (yam)"
+        "pl": "Pochrzyn"
     },
     "chayote": {
         "ru": "Чайот",
@@ -1318,7 +1496,8 @@
     },
     "scallion_bulb": {
         "ru": "Жемчужный лук",
-        "uk": "Перлинна цибуля"
+        "uk": "Перлинна цибуля",
+        "pl": "Cebulka perłowa"
     },
     "purslane": {
         "ru": "Портулак",
@@ -1327,11 +1506,13 @@
     },
     "plantain": {
         "ru": "Плантан",
-        "uk": "Плантан"
+        "uk": "Плантан",
+        "pl": "Banan warzywny"
     },
     "jackfruit": {
         "ru": "Джекфрут",
-        "uk": "Джекфрут"
+        "uk": "Джекфрут",
+        "pl": "Dżakfrut"
     },
     "longan": {
         "ru": "Лонган",
@@ -1349,9 +1530,9 @@
         "pl": "Gruszka azjatycka"
     },
     "blood_orange": {
-        "ru": "Кровавый апельсин",
-        "uk": "Кров'яний апельсин",
-        "pl": "Pomarańcza krwista"
+        "ru": "Красный апельсин",
+        "uk": "Червоний апельсин",
+        "pl": "Czerwona pomarańcza"
     },
     "clementine": {
         "pl": "Klementynka"
@@ -1362,28 +1543,33 @@
         "pl": "Żółta śliwka"
     },
     "breadfruit": {
-        "uk": "Хлібне дерево",
+        "ru": "Хлебный плод",
+        "uk": "Хлібний плід",
         "pl": "Owoc chlebowca"
     },
     "soursop": {
-        "ru": "Саусеп",
-        "uk": "Сауссеп",
+        "ru": "Гуанабана",
+        "uk": "Гуанабана",
         "pl": "Guanabana"
     },
     "boysenberry": {
-        "uk": "Бойзенова ягода"
+        "ru": "Бойзенова ягода",
+        "uk": "Бойзенова ягода",
+        "pl": "Boysenberry"
     },
     "elderberry": {
-        "ru": "Бузина",
-        "uk": "Бузина"
+        "ru": "Ягоды бузины",
+        "uk": "Ягоди бузини",
+        "pl": "Owoce czarnego bzu"
     },
     "goji_berry": {
         "ru": "Ягоды годжи",
-        "uk": "Ягоди годжі"
+        "uk": "Ягоди годжі",
+        "pl": "Jagody goji"
     },
     "acai_berry": {
-        "ru": "Асаи",
-        "uk": "Асаї",
+        "ru": "Ягоды асаи",
+        "uk": "Ягоди асаї",
         "pl": "Jagody acai"
     },
     "white_currant": {
@@ -1402,20 +1588,24 @@
         "pl": "Shiso"
     },
     "curry_leaf": {
-        "ru": "Лист карри",
-        "uk": "Листя карі",
-        "pl": "Liść curry"
+        "ru": "Листья карри",
+        "uk": "Листя каррі",
+        "pl": "Liście curry"
     },
     "chervil": {
         "ru": "Кервель",
-        "uk": "Кервель"
+        "uk": "Кервель",
+        "pl": "Trybula"
     },
     "wasabi": {
+        "ru": "Васаби",
+        "uk": "Васабі",
         "pl": "Wasabi"
     },
     "kaffir_lime_leaf": {
-        "ru": "Лист кафрского лайма",
-        "uk": "Лист кафрського лайма"
+        "ru": "Листья каффир-лайма",
+        "uk": "Листя каффір-лайма",
+        "pl": "Liście limonki kaffir"
     },
     "mushroom_maitake": {
         "ru": "Майтаке",
@@ -1423,14 +1613,14 @@
         "pl": "Maitake"
     },
     "mushroom_king_oyster": {
-        "ru": "Королевские вешенки",
+        "ru": "Королевские вёшенки",
         "uk": "Королівські гливи",
         "pl": "Boczniak królewski"
     },
     "mushroom_wood_ear": {
-        "ru": "Древесные грибы муэр",
-        "uk": "Деревні гриби муер",
-        "pl": "Grzyby mun (uszaki)"
+        "ru": "Грибы муэр",
+        "uk": "Гриби муер",
+        "pl": "Grzyby mun"
     },
     "mushroom_morel_dried": {
         "ru": "Сушёные сморчки",
@@ -1443,28 +1633,28 @@
         "pl": "Kapelusze portobello"
     },
     "mushroom_cremini": {
-        "ru": "Кремини",
-        "uk": "Кремінні гриби",
-        "pl": "Grzyby cremini"
+        "ru": "Коричневые шампиньоны",
+        "uk": "Коричневі печериці",
+        "pl": "Pieczarki brązowe"
     },
     "mushroom_lions_mane": {
         "ru": "Ежовик гребенчатый",
-        "uk": "Гериций гребінчастий",
+        "uk": "Їжовик гребінчастий",
         "pl": "Soplówka jeżowata"
     },
     "beef_sirloin": {
-        "ru": "Говяжий стейк сирлойн",
-        "uk": "Яловичий стейк сирлойн",
-        "pl": "Stek z rostbefu"
+        "ru": "Стейк сирлойн",
+        "uk": "Стейк сирлойн",
+        "pl": "Rostbef"
     },
     "beef_flank_steak": {
-        "ru": "Говяжий фланк-стейк",
-        "uk": "Яловичий фланк-стейк",
-        "pl": "Stek z łaty wołowej"
+        "ru": "Фланк-стейк",
+        "uk": "Фланк-стейк",
+        "pl": "Stek flank"
     },
     "beef_skirt_steak": {
-        "ru": "Говяжий скёрт-стейк",
-        "uk": "Яловичий скьорт-стейк",
+        "ru": "Скерт-стейк",
+        "uk": "Скерт-стейк",
         "pl": "Stek z przepony wołowej"
     },
     "beef_tbone": {
@@ -1478,8 +1668,8 @@
         "pl": "Stek porterhouse"
     },
     "beef_chuck_roast": {
-        "ru": "Говяжий чак-ростбиф",
-        "uk": "Яловича лопаткова частина",
+        "ru": "Говяжья лопатка",
+        "uk": "Яловича лопатка",
         "pl": "Łopatka wołowa"
     },
     "beef_flat_iron": {
@@ -1514,12 +1704,12 @@
     },
     "lamb_shoulder": {
         "ru": "Баранья лопатка",
-        "uk": "Баряча лопатка",
+        "uk": "Бараняча лопатка",
         "pl": "Łopatka jagnięca"
     },
     "lamb_shank": {
         "ru": "Баранья голяшка",
-        "uk": "Баряча гомілка",
+        "uk": "Бараняча гомілка",
         "pl": "Golonka jagnięca"
     },
     "lamb_rack": {
@@ -1529,7 +1719,8 @@
     },
     "wild_boar": {
         "ru": "Мясо дикого кабана",
-        "uk": "М'ясо дикого кабана"
+        "uk": "М’ясо дикого кабана",
+        "pl": "Mięso z dzika"
     },
     "bison": {
         "ru": "Бизон",
@@ -1538,7 +1729,7 @@
     },
     "elk": {
         "ru": "Лось (мясо)",
-        "uk": "Лось (м'ясо)",
+        "uk": "Лось (м’ясо)",
         "pl": "Łoś (mięso)"
     },
     "beef_brain": {
@@ -1553,16 +1744,17 @@
     },
     "lamb_liver": {
         "ru": "Баранья печень",
-        "uk": "Баряча печінка",
+        "uk": "Бараняча печінка",
         "pl": "Wątróbka jagnięca"
     },
     "chicken_heart": {
         "ru": "Куриные сердечки",
-        "uk": "Курячі серця"
+        "uk": "Курячі сердечка",
+        "pl": "Serca drobiowe"
     },
     "sweetbread": {
-        "ru": "Зобная железа (сладкое мясо)",
-        "uk": "Загрудинна залоза",
+        "ru": "Телячья зобная железа",
+        "uk": "Теляча загрудинна залоза",
         "pl": "Grasica cielęca"
     },
     "chicken_tenders": {
@@ -1571,13 +1763,13 @@
         "pl": "Paski z kurczaka"
     },
     "turkey_thigh": {
-        "ru": "Индюшиное бедро",
-        "uk": "Індиче стегно",
+        "ru": "Бедро индейки",
+        "uk": "Стегно індички",
         "pl": "Udko z indyka"
     },
     "turkey_wing": {
-        "ru": "Индюшиное крыло",
-        "uk": "Індиче крило",
+        "ru": "Крыло индейки",
+        "uk": "Крило індички",
         "pl": "Skrzydełko z indyka"
     },
     "duck_leg": {
@@ -1596,13 +1788,13 @@
         "pl": "Bażant"
     },
     "squab": {
-        "ru": "Голубь (мясо)",
-        "uk": "Голуб (м'ясо)",
-        "pl": "Gołąb (mięso)"
+        "ru": "Голубь",
+        "uk": "Голуб",
+        "pl": "Gołąb"
     },
     "tilapia": {
-        "ru": "Тиляпия",
-        "uk": "Тиляпія",
+        "ru": "Тилапия",
+        "uk": "Тилапія",
         "pl": "Tilapia"
     },
     "mahi_mahi": {
@@ -1622,13 +1814,13 @@
     },
     "red_snapper": {
         "ru": "Красный луциан",
-        "uk": "Червоний люціан",
-        "pl": "Lucjan"
+        "uk": "Червоний луціан",
+        "pl": "Lucjan czerwony"
     },
     "grouper": {
         "ru": "Групер",
         "uk": "Групер",
-        "pl": "Grouper"
+        "pl": "Granik"
     },
     "tilefish": {
         "ru": "Тайлфиш",
@@ -1638,7 +1830,7 @@
     "mullet": {
         "ru": "Кефаль",
         "uk": "Кефаль",
-        "pl": "Barwena"
+        "pl": "Cefal"
     },
     "whitefish": {
         "ru": "Сиг",
@@ -1646,14 +1838,14 @@
         "pl": "Sieja"
     },
     "sablefish": {
-        "ru": "Соболь-рыба (сейбл)",
-        "uk": "Чорна тріска (сейбл)",
-        "pl": "Sablefish"
+        "ru": "Угольная рыба",
+        "uk": "Вугільна риба",
+        "pl": "Czarny dorsz"
     },
     "bluefish": {
-        "ru": "Голубая рыба (блюфиш)",
-        "uk": "Блакитна риба (блюфіш)",
-        "pl": "Bluefish"
+        "ru": "Луфарь",
+        "uk": "Луфар",
+        "pl": "Tasergal"
     },
     "shark": {
         "ru": "Акула",
@@ -1671,12 +1863,13 @@
         "pl": "Stynka"
     },
     "tuna_yellowfin": {
+        "ru": "Желтопёрый тунец",
         "uk": "Жовтопірий тунець",
         "pl": "Tuńczyk żółtopłetwy"
     },
     "dover_sole": {
-        "ru": "Морской язык дувр",
-        "uk": "Морський язик дувр",
+        "ru": "Морской язык",
+        "uk": "Морський язик",
         "pl": "Sola"
     },
     "arctic_char": {
@@ -1691,13 +1884,13 @@
     },
     "croaker": {
         "ru": "Горбыль",
-        "uk": "Горбань",
-        "pl": "Croaker"
+        "uk": "Горбиль",
+        "pl": "Kulbin"
     },
     "seaweed_wakame": {
         "ru": "Водоросли вакаме",
         "uk": "Водорості вакаме",
-        "pl": "Wakame"
+        "pl": "Wodorosty wakame"
     },
     "crawfish": {
         "ru": "Раки",
@@ -1720,28 +1913,29 @@
         "pl": "Krab śnieżny"
     },
     "periwinkle": {
-        "ru": "Литорина (морская улитка)",
+        "ru": "Литорина",
         "uk": "Літорина",
-        "pl": "Ślimak morski (littorina)"
+        "pl": "Pobrzeżka"
     },
     "abalone": {
-        "ru": "Морское ушко (галиотис)",
-        "uk": "Морське вушко"
+        "ru": "Морское ушко",
+        "uk": "Морське вушко",
+        "pl": "Uchowiec"
     },
     "sea_urchin": {
         "ru": "Икра морского ежа",
         "uk": "Ікра морського їжака",
-        "pl": "Jeżowiec"
+        "pl": "Ikra jeżowca"
     },
     "razor_clam": {
         "ru": "Морской черенок",
-        "uk": "Морський живець",
-        "pl": "Skorupiak nożowiec"
+        "uk": "Морський черенок",
+        "pl": "Brzytwy"
     },
     "seaweed_dulse": {
         "ru": "Водоросли дульсе",
         "uk": "Водорості дульсе",
-        "pl": "Dulse"
+        "pl": "Wodorosty dulse"
     },
     "seaweed_agar": {
         "ru": "Агар-агар",
@@ -1755,8 +1949,8 @@
     },
     "clotted_cream": {
         "ru": "Топлёные сливки",
-        "uk": "Загущені вершки",
-        "pl": "Gęsta śmietana (clotted cream)"
+        "uk": "Топлені вершки",
+        "pl": "Gęsta śmietana"
     },
     "skyr": {
         "ru": "Скир",
@@ -1779,14 +1973,14 @@
         "pl": "Mleko ryżowe"
     },
     "cashew_milk": {
-        "ru": "Кешью молоко",
-        "uk": "Молоко з кешью",
-        "pl": "Mleko z nerkowca"
+        "ru": "Молоко из кешью",
+        "uk": "Молоко з кеш’ю",
+        "pl": "Mleko z nerkowców"
     },
     "half_and_half": {
-        "ru": "Сливки половина на половину",
-        "uk": "Вершки навпіл з молоком",
-        "pl": "Śmietanka half-and-half"
+        "ru": "Сливки 10%",
+        "uk": "Вершки 10%",
+        "pl": "Śmietanka 10%"
     },
     "ayran": {
         "ru": "Айран",
@@ -1809,8 +2003,9 @@
         "pl": "Ser colby"
     },
     "cheese_monterey_jack": {
-        "ru": "Сыр монтерей джек",
-        "uk": "Сир монтерей джек"
+        "ru": "Сыр монтерей-джек",
+        "uk": "Сир монтерей-джек",
+        "pl": "Ser monterey jack"
     },
     "cheese_muenster": {
         "ru": "Сыр мюнстер",
@@ -1830,7 +2025,7 @@
     },
     "cheese_gruyere": {
         "ru": "Сыр грюйер",
-        "uk": "Сир грюйєр",
+        "uk": "Сир грюєр",
         "pl": "Ser gruyère"
     },
     "cheese_neufchatel": {
@@ -1877,8 +2072,8 @@
         "pl": "Ser havarti"
     },
     "cheese_pepper_jack": {
-        "ru": "Сыр пеппер джек",
-        "uk": "Сир пеппер джек",
+        "ru": "Сыр пеппер-джек",
+        "uk": "Сир пеппер-джек",
         "pl": "Ser pepper jack"
     },
     "cheese_smoked_gouda": {
@@ -1902,9 +2097,9 @@
         "pl": "Ser taleggio"
     },
     "cheese_string": {
-        "ru": "Косичка (сыр)",
-        "uk": "Сирна косичка",
-        "pl": "Ser w warkoczykach"
+        "ru": "Сыр-косичка",
+        "uk": "Сир-косичка",
+        "pl": "Ser w warkoczu"
     },
     "cheese_cheshire": {
         "ru": "Сыр чешир",
@@ -1923,7 +2118,8 @@
     },
     "teff": {
         "ru": "Тефф",
-        "uk": "Теф"
+        "uk": "Теф",
+        "pl": "Teff"
     },
     "sorghum_grain": {
         "ru": "Сорго (зерно)",
@@ -1932,7 +2128,8 @@
     },
     "wild_rice": {
         "ru": "Дикий рис",
-        "uk": "Дикий рис"
+        "uk": "Дикий рис",
+        "pl": "Dziki ryż"
     },
     "rice_sushi": {
         "ru": "Рис для суши",
@@ -1945,10 +2142,14 @@
         "pl": "Ryż kleisty"
     },
     "lima_beans": {
-        "uk": "Боби лима"
+        "ru": "Фасоль лима",
+        "uk": "Квасоля лима",
+        "pl": "Fasola limeńska"
     },
     "navy_beans": {
-        "uk": "Квасоля навy"
+        "ru": "Мелкая белая фасоль",
+        "uk": "Дрібна біла квасоля",
+        "pl": "Drobna biała fasola"
     },
     "cannellini_beans": {
         "ru": "Фасоль каннеллини",
@@ -1961,9 +2162,9 @@
         "pl": "Bób"
     },
     "black_eyed_peas": {
-        "ru": "Вигна китайская (чёрный глаз)",
-        "uk": "В'їгна китайська",
-        "pl": "Fasolka o czarnym oczku"
+        "ru": "Коровий горох",
+        "uk": "Коров’ячий горох",
+        "pl": "Fasola czarne oczko"
     },
     "adzuki_beans": {
         "ru": "Фасоль адзуки",
@@ -1971,8 +2172,8 @@
         "pl": "Fasola adzuki"
     },
     "mung_beans_dry": {
-        "ru": "Маш (бобы мунг)",
-        "uk": "Маш (боби мунг)",
+        "ru": "Маш",
+        "uk": "Маш",
         "pl": "Fasola mung"
     },
     "pasta_orzo": {
@@ -1986,9 +2187,9 @@
         "pl": "Rigatoni"
     },
     "pasta_tortellini": {
-        "ru": "Тортеллини",
-        "uk": "Тортеліні",
-        "pl": "Tortellini"
+        "ru": "Тортеллини с сыром",
+        "uk": "Тортеліні з сиром",
+        "pl": "Tortellini z serem"
     },
     "pasta_orecchiette": {
         "ru": "Орекьетте",
@@ -1996,9 +2197,9 @@
         "pl": "Orecchiette"
     },
     "pasta_angel_hair": {
-        "ru": "Ангельские волосы (паста)",
-        "uk": "Ангельське волосся (паста)",
-        "pl": "Makaron włosy anielskie"
+        "ru": "Капеллини",
+        "uk": "Капелліні",
+        "pl": "Capellini"
     },
     "pasta_pappardelle": {
         "ru": "Папарделле",
@@ -2016,17 +2217,24 @@
         "pl": "Bucatini"
     },
     "pasta_linguine": {
+        "ru": "Лингвини",
+        "uk": "Лінгвіні",
         "pl": "Linguine"
     },
     "pasta_tagliatelle": {
+        "ru": "Тальятелле",
+        "uk": "Тальятеле",
         "pl": "Tagliatelle"
     },
     "flour_spelt": {
         "ru": "Полбяная мука",
-        "uk": "Борошно полби"
+        "uk": "Спельтове борошно",
+        "pl": "Mąka orkiszowa"
     },
     "flour_chickpea": {
-        "uk": "Борошно з нуту"
+        "ru": "Нутовая мука",
+        "uk": "Нутове борошно",
+        "pl": "Mąka z ciecierzycy"
     },
     "flour_coconut": {
         "ru": "Кокосовая мука",
@@ -2035,7 +2243,8 @@
     },
     "bread_rye": {
         "ru": "Ржаной хлеб",
-        "uk": "Житній хліб"
+        "uk": "Житній хліб",
+        "pl": "Chleb żytni"
     },
     "bread_sourdough": {
         "ru": "Хлеб на закваске",
@@ -2050,7 +2259,7 @@
     "english_muffin": {
         "ru": "Английский маффин",
         "uk": "Англійський маффін",
-        "pl": "Angielska bułeczka muffin"
+        "pl": "Muffin angielski"
     },
     "bagel": {
         "ru": "Бейгл",
@@ -2058,8 +2267,8 @@
         "pl": "Bajgiel"
     },
     "pretzel": {
-        "ru": "Крендель (претцель)",
-        "uk": "Крендель (претцель)",
+        "ru": "Брецель",
+        "uk": "Брецель",
         "pl": "Precel"
     },
     "croissant": {
@@ -2079,8 +2288,8 @@
     },
     "cashew_butter": {
         "ru": "Паста из кешью",
-        "uk": "Паста з кеш'ю",
-        "pl": "Masło z nerkowca"
+        "uk": "Паста з кеш’ю",
+        "pl": "Masło z nerkowców"
     },
     "hemp_seeds": {
         "ru": "Семена конопли",
@@ -2088,9 +2297,9 @@
         "pl": "Nasiona konopi"
     },
     "candied_pecans": {
-        "ru": "Засахаренные пеканы",
-        "uk": "Засмажені в цукрі горіхи пекан",
-        "pl": "Kandyzowane orzechy pekan"
+        "ru": "Пекан в карамели",
+        "uk": "Пекан у карамелі",
+        "pl": "Orzechy pekan w karmelu"
     },
     "watermelon_seeds": {
         "ru": "Семена арбуза",
@@ -2103,21 +2312,24 @@
         "pl": "Olej z pestek winogron"
     },
     "walnut_oil": {
-        "uk": "Волоська горіхова олія"
+        "ru": "Масло грецкого ореха",
+        "uk": "Олія волоського горіха",
+        "pl": "Olej z orzechów włoskich"
     },
     "duck_fat": {
+        "ru": "Утиный жир",
         "uk": "Качиний жир",
-        "pl": "Tłuszcz kaczy"
+        "pl": "Smalec kaczy"
     },
     "tallow": {
-        "ru": "Говяжий жир (тэллоу)",
-        "uk": "Яловичий жир (толлоу)",
+        "ru": "Говяжий жир",
+        "uk": "Яловичий жир",
         "pl": "Łój wołowy"
     },
     "schmaltz": {
-        "ru": "Куриный жир (шмальц)",
-        "uk": "Курячий жир (шмальц)",
-        "pl": "Smalec drobiowy (schmaltz)"
+        "ru": "Куриный жир",
+        "uk": "Курячий жир",
+        "pl": "Smalec drobiowy"
     },
     "truffle_oil": {
         "ru": "Трюфельное масло",
@@ -2125,8 +2337,9 @@
         "pl": "Olej truflowy"
     },
     "fenugreek_seed": {
-        "ru": "Семена пажитника",
-        "uk": "Насіння пажитника"
+        "ru": "Пажитник",
+        "uk": "Пажитник",
+        "pl": "Kozieradka"
     },
     "asafoetida": {
         "ru": "Асафетида",
@@ -2144,8 +2357,8 @@
         "pl": "Czarny kardamon"
     },
     "zaatar": {
-        "ru": "Затар",
-        "uk": "Затар",
+        "ru": "Заатар",
+        "uk": "Заатар",
         "pl": "Za'atar"
     },
     "ras_el_hanout": {
@@ -2154,13 +2367,14 @@
         "pl": "Ras el hanout"
     },
     "five_spice_powder": {
-        "ru": "Китайские пять специй",
-        "uk": "Китайські п'ять спецій",
-        "pl": "Chińskie pięć przypraw"
+        "ru": "Смесь пяти специй",
+        "uk": "Суміш п’яти спецій",
+        "pl": "Przyprawa pięciu smaków"
     },
     "herbes_de_provence": {
         "ru": "Прованские травы",
-        "uk": "Прованські трави"
+        "uk": "Прованські трави",
+        "pl": "Zioła prowansalskie"
     },
     "cajun_seasoning": {
         "ru": "Каджунская приправа",
@@ -2169,7 +2383,8 @@
     },
     "celery_seed": {
         "ru": "Семена сельдерея",
-        "uk": "Насіння селери"
+        "uk": "Насіння селери",
+        "pl": "Nasiona selera"
     },
     "smoked_salt": {
         "ru": "Копчёная соль",
@@ -2192,18 +2407,19 @@
         "pl": "Berbere (etiopska mieszanka przypraw)"
     },
     "old_bay_seasoning": {
-        "ru": "Приправа олд бэй",
-        "uk": "Приправа олд бей",
+        "ru": "Приправа Old Bay",
+        "uk": "Приправа Old Bay",
         "pl": "Przyprawa Old Bay"
     },
     "sriracha": {
         "ru": "Соус шрирача",
         "uk": "Соус шрірача",
-        "pl": "Sriracha"
+        "pl": "Sos sriracha"
     },
     "teriyaki_sauce": {
         "ru": "Соус терияки",
-        "uk": "Соус теріякі"
+        "uk": "Соус теріякі",
+        "pl": "Sos teriyaki"
     },
     "ranch_dressing": {
         "ru": "Соус ранч",
@@ -2213,16 +2429,16 @@
     "italian_dressing": {
         "ru": "Итальянская заправка",
         "uk": "Італійська заправка",
-        "pl": "Sos włoski"
+        "pl": "Dressing włoski"
     },
     "thousand_island_dressing": {
-        "ru": "Соус тысяча островов",
-        "uk": "Соус тисяча островів",
+        "ru": "Соус «Тысяча островов»",
+        "uk": "Соус «Тисяча островів»",
         "pl": "Sos tysiąca wysp"
     },
     "caesar_dressing": {
-        "ru": "Соус цезарь",
-        "uk": "Соус цезар",
+        "ru": "Соус «Цезарь»",
+        "uk": "Соус «Цезар»",
         "pl": "Sos cezar"
     },
     "steak_sauce": {
@@ -2241,13 +2457,13 @@
         "pl": "Aioli"
     },
     "gravy_brown": {
-        "ru": "Тёмный соус (грейви)",
-        "uk": "Темна підлива (грейві)",
-        "pl": "Ciemny sos pieczeniowy"
+        "ru": "Мясная подлива",
+        "uk": "М’ясна підлива",
+        "pl": "Sos pieczeniowy"
     },
     "gravy_turkey": {
-        "ru": "Индюшачья подлива",
-        "uk": "Індича підлива",
+        "ru": "Подлива из индейки",
+        "uk": "Підлива з індички",
         "pl": "Sos z indyka"
     },
     "balsamic_glaze": {
@@ -2262,7 +2478,8 @@
     },
     "salsa": {
         "ru": "Сальса",
-        "uk": "Сальса"
+        "uk": "Сальса",
+        "pl": "Salsa"
     },
     "harissa": {
         "ru": "Харисса",
@@ -2285,9 +2502,9 @@
         "pl": "Musztarda miodowa"
     },
     "duck_sauce": {
-        "ru": "Утиный соус",
-        "uk": "Качиний соус",
-        "pl": "Sos kaczkowy"
+        "ru": "Кисло-сладкий соус",
+        "uk": "Кисло-солодкий соус",
+        "pl": "Sos słodko-kwaśny"
     },
     "date_syrup": {
         "ru": "Финиковый сироп",
@@ -2305,13 +2522,14 @@
         "pl": "Erytrytol"
     },
     "monk_fruit_sweetener": {
-        "ru": "Подсластитель монах-фрукт",
-        "uk": "Підсолоджувач архат",
+        "ru": "Подсластитель из архата",
+        "uk": "Підсолоджувач з архата",
         "pl": "Słodzik z owocu mnicha"
     },
     "sugar_muscovado": {
         "ru": "Сахар мусковадо",
-        "uk": "Цукор мусковадо"
+        "uk": "Цукор мусковадо",
+        "pl": "Cukier muscovado"
     },
     "golden_syrup": {
         "ru": "Золотой сироп",
@@ -2334,9 +2552,9 @@
         "pl": "Buraki z puszki"
     },
     "canned_artichoke_hearts": {
-        "ru": "Консервированные сердцевины артишока",
-        "uk": "Консервовані серцевини артишоку",
-        "pl": "Serca karczochów z puszki"
+        "ru": "Консервированные артишоки",
+        "uk": "Консервовані артишоки",
+        "pl": "Karczochy z puszki"
     },
     "canned_water_chestnuts": {
         "ru": "Консервированные водяные каштаны",
@@ -2344,14 +2562,14 @@
         "pl": "Kasztany wodne z puszki"
     },
     "canned_refried_beans": {
-        "ru": "Консервированная пюрированная фасоль",
-        "uk": "Консервоване пюре з квасолі",
-        "pl": "Puszkowana pasta z fasoli (refried beans)"
+        "ru": "Фасолевое пюре",
+        "uk": "Квасолеве пюре",
+        "pl": "Pasta z fasoli"
     },
     "canned_diced_tomatoes_chilies": {
-        "ru": "Консервированные томаты с перцем чили",
-        "uk": "Консервовані томати з перцем чилі",
-        "pl": "Pomidory z puszki z papryczkami chili"
+        "ru": "Консервированные помидоры с чили",
+        "uk": "Консервовані помідори з чилі",
+        "pl": "Pomidory z puszki z chili"
     },
     "canned_cherries": {
         "ru": "Консервированная вишня",
@@ -2370,7 +2588,7 @@
     },
     "canned_crab": {
         "ru": "Консервированное крабовое мясо",
-        "uk": "Консервоване крабове м'ясо",
+        "uk": "Консервоване крабове м’ясо",
         "pl": "Krab z puszki"
     },
     "canned_bamboo_shoots": {
@@ -2384,21 +2602,26 @@
         "pl": "Sok żurawinowy"
     },
     "pineapple_juice": {
-        "uk": "Ананасовий сік"
+        "ru": "Ананасовый сок",
+        "uk": "Ананасовий сік",
+        "pl": "Sok ananasowy"
     },
     "lemon_juice": {
         "uk": "Лимонний сік"
     },
     "lime_juice": {
-        "uk": "Сік лайма"
+        "ru": "Сок лайма",
+        "uk": "Сік лайма",
+        "pl": "Sok z limonki"
     },
     "rum": {
+        "ru": "Ром",
         "uk": "Ром",
         "pl": "Rum"
     },
     "herbal_tea": {
         "ru": "Травяной чай",
-        "uk": "Трав'яний чай",
+        "uk": "Трав’яний чай",
         "pl": "Herbata ziołowa"
     },
     "chamomile_tea": {
@@ -2422,21 +2645,938 @@
         "pl": "Tonik"
     },
     "napa_cabbage": {
-        "ru": "Пекинская капуста"
+        "ru": "Пекинская капуста",
+        "uk": "Пекінська капуста",
+        "pl": "Kapusta pekińska"
     },
     "savory": {
         "ru": "Чабер",
-        "uk": "Чабер"
+        "uk": "Чабер",
+        "pl": "Cząber"
     },
     "mushroom_straw": {
         "ru": "Соломенные грибы",
-        "uk": "Солом'яні гриби"
+        "uk": "Солом’яні гриби",
+        "pl": "Grzyby słomiane"
     },
     "galangal": {
-        "uk": "Галангал"
+        "ru": "Галангал",
+        "uk": "Галангал",
+        "pl": "Galangal"
     },
     "freekeh": {
-        "uk": "Фрике",
+        "ru": "Фрике",
+        "uk": "Фріке",
         "pl": "Freekeh"
+    },
+    "potato": {
+        "ru": "Картофель",
+        "uk": "Картопля",
+        "pl": "Ziemniaki"
+    },
+    "sweet_potato": {
+        "ru": "Батат",
+        "uk": "Батат",
+        "pl": "Batat"
+    },
+    "carrot": {
+        "ru": "Морковь",
+        "uk": "Морква",
+        "pl": "Marchew"
+    },
+    "onion": {
+        "ru": "Лук",
+        "uk": "Цибуля",
+        "pl": "Cebula"
+    },
+    "green_onion": {
+        "ru": "Зелёный лук",
+        "uk": "Зелена цибуля",
+        "pl": "Cebulka dymka"
+    },
+    "shallot": {
+        "ru": "Лук-шалот",
+        "uk": "Цибуля-шалот",
+        "pl": "Szalotka"
+    },
+    "garlic": {
+        "ru": "Чеснок",
+        "uk": "Часник",
+        "pl": "Czosnek"
+    },
+    "chili_pepper": {
+        "ru": "Перец чили",
+        "uk": "Перець чилі",
+        "pl": "Papryczka chili"
+    },
+    "jalapeno": {
+        "ru": "Халапеньо",
+        "uk": "Халапеньйо",
+        "pl": "Papryczka jalapeño"
+    },
+    "eggplant": {
+        "ru": "Баклажан",
+        "uk": "Баклажан",
+        "pl": "Bakłażan"
+    },
+    "zucchini": {
+        "ru": "Кабачок",
+        "uk": "Кабачок",
+        "pl": "Cukinia"
+    },
+    "pumpkin": {
+        "ru": "Тыква",
+        "uk": "Гарбуз",
+        "pl": "Dynia"
+    },
+    "butternut_squash": {
+        "ru": "Мускатная тыква",
+        "uk": "Мускатний гарбуз",
+        "pl": "Dynia piżmowa"
+    },
+    "cabbage_white": {
+        "ru": "Белокочанная капуста",
+        "uk": "Білокачанна капуста",
+        "pl": "Biała kapusta"
+    },
+    "savoy_cabbage": {
+        "ru": "Савойская капуста",
+        "uk": "Савойська капуста",
+        "pl": "Kapusta włoska"
+    },
+    "brussels_sprouts": {
+        "ru": "Брюссельская капуста",
+        "uk": "Брюссельська капуста",
+        "pl": "Kapusta brukselska"
+    },
+    "broccoli": {
+        "ru": "Брокколи",
+        "uk": "Броколі",
+        "pl": "Brokuł"
+    },
+    "leek": {
+        "ru": "Лук-порей",
+        "uk": "Цибуля-порей",
+        "pl": "Por"
+    },
+    "asparagus": {
+        "ru": "Спаржа",
+        "uk": "Спаржа",
+        "pl": "Szparagi"
+    },
+    "artichoke": {
+        "ru": "Артишок",
+        "uk": "Артишок",
+        "pl": "Karczoch"
+    },
+    "turnip": {
+        "ru": "Репа",
+        "uk": "Ріпа",
+        "pl": "Rzepa"
+    },
+    "radish": {
+        "ru": "Редис",
+        "uk": "Редиска",
+        "pl": "Rzodkiewka"
+    },
+    "parsnip": {
+        "ru": "Пастернак",
+        "uk": "Пастернак",
+        "pl": "Pasternak"
+    },
+    "green_beans": {
+        "ru": "Стручковая фасоль",
+        "uk": "Стручкова квасоля",
+        "pl": "Fasolka szparagowa"
+    },
+    "spinach": {
+        "ru": "Шпинат",
+        "uk": "Шпинат",
+        "pl": "Szpinak"
+    },
+    "arugula": {
+        "ru": "Руккола",
+        "uk": "Рукола",
+        "pl": "Rukola"
+    },
+    "kale": {
+        "ru": "Капуста кале",
+        "uk": "Капуста кейл",
+        "pl": "Jarmuż"
+    },
+    "chard": {
+        "ru": "Мангольд",
+        "uk": "Мангольд",
+        "pl": "Boćwina"
+    },
+    "bok_choy": {
+        "ru": "Бок-чой",
+        "uk": "Бок-чой",
+        "pl": "Pak choi"
+    },
+    "avocado": {
+        "ru": "Авокадо",
+        "uk": "Авокадо",
+        "pl": "Awokado"
+    },
+    "ginger": {
+        "ru": "Имбирь",
+        "uk": "Імбир",
+        "pl": "Imbir"
+    },
+    "sauerkraut": {
+        "ru": "Квашеная капуста",
+        "uk": "Квашена капуста",
+        "pl": "Kapusta kiszona"
+    },
+    "cassava": {
+        "ru": "Маниок",
+        "uk": "Маніок",
+        "pl": "Maniok"
+    },
+    "endive": {
+        "ru": "Эндивий",
+        "uk": "Ендивій",
+        "pl": "Endywia"
+    },
+    "jerusalem_artichoke": {
+        "ru": "Топинамбур",
+        "uk": "Топінамбур",
+        "pl": "Topinambur"
+    },
+    "apple": {
+        "ru": "Яблоко",
+        "uk": "Яблуко",
+        "pl": "Jabłko"
+    },
+    "pear": {
+        "ru": "Груша",
+        "uk": "Груша",
+        "pl": "Gruszka"
+    },
+    "banana": {
+        "ru": "Банан",
+        "uk": "Банан",
+        "pl": "Banan"
+    },
+    "orange": {
+        "ru": "Апельсин",
+        "uk": "Апельсин",
+        "pl": "Pomarańcza"
+    },
+    "grapefruit": {
+        "ru": "Грейпфрут",
+        "uk": "Грейпфрут",
+        "pl": "Grejpfrut"
+    },
+    "lemon": {
+        "ru": "Лимон",
+        "uk": "Лимон",
+        "pl": "Cytryna"
+    },
+    "lime": {
+        "ru": "Лайм",
+        "uk": "Лайм",
+        "pl": "Limonka"
+    },
+    "kiwi": {
+        "ru": "Киви",
+        "uk": "Ківі",
+        "pl": "Kiwi"
+    },
+    "pineapple": {
+        "ru": "Ананас",
+        "uk": "Ананас",
+        "pl": "Ananas"
+    },
+    "papaya": {
+        "ru": "Папайя",
+        "uk": "Папая",
+        "pl": "Papaja"
+    },
+    "nectarine": {
+        "ru": "Нектарин",
+        "uk": "Нектарин",
+        "pl": "Nektarynka"
+    },
+    "apricot": {
+        "ru": "Абрикос",
+        "uk": "Абрикос",
+        "pl": "Morela"
+    },
+    "plum": {
+        "ru": "Слива",
+        "uk": "Слива",
+        "pl": "Śliwka"
+    },
+    "watermelon": {
+        "ru": "Арбуз",
+        "uk": "Кавун",
+        "pl": "Arbuz"
+    },
+    "melon": {
+        "ru": "Дыня",
+        "uk": "Диня",
+        "pl": "Melon"
+    },
+    "dates": {
+        "ru": "Финики",
+        "uk": "Фініки",
+        "pl": "Daktyle"
+    },
+    "pomegranate": {
+        "ru": "Гранат",
+        "uk": "Гранат",
+        "pl": "Granat"
+    },
+    "persimmon": {
+        "ru": "Хурма",
+        "uk": "Хурма",
+        "pl": "Kaki"
+    },
+    "raisins": {
+        "ru": "Изюм",
+        "uk": "Родзинки",
+        "pl": "Rodzynki"
+    },
+    "star_fruit": {
+        "ru": "Карамбола",
+        "uk": "Карамбола",
+        "pl": "Karambola"
+    },
+    "lychee": {
+        "ru": "Личи",
+        "uk": "Лічі",
+        "pl": "Liczi"
+    },
+    "tamarind": {
+        "ru": "Тамаринд",
+        "uk": "Тамаринд",
+        "pl": "Tamarynd"
+    },
+    "kumquat": {
+        "ru": "Кумкват",
+        "uk": "Кумкват",
+        "pl": "Kumkwat"
+    },
+    "strawberry": {
+        "ru": "Клубника",
+        "uk": "Полуниця",
+        "pl": "Truskawki"
+    },
+    "blueberry": {
+        "ru": "Голубика",
+        "uk": "Лохина",
+        "pl": "Borówka amerykańska"
+    },
+    "blackberry": {
+        "ru": "Ежевика",
+        "uk": "Ожина",
+        "pl": "Jeżyny"
+    },
+    "currant_black": {
+        "ru": "Чёрная смородина",
+        "uk": "Чорна смородина",
+        "pl": "Czarna porzeczka"
+    },
+    "gooseberry": {
+        "ru": "Крыжовник",
+        "uk": "Аґрус",
+        "pl": "Agrest"
+    },
+    "cranberry": {
+        "ru": "Клюква",
+        "uk": "Журавлина",
+        "pl": "Żurawina"
+    },
+    "juniper_berry": {
+        "ru": "Ягоды можжевельника",
+        "uk": "Ягоди ялівцю",
+        "pl": "Jagody jałowca"
+    },
+    "parsley": {
+        "ru": "Петрушка",
+        "uk": "Петрушка",
+        "pl": "Natka pietruszki"
+    },
+    "dill": {
+        "ru": "Укроп",
+        "uk": "Кріп",
+        "pl": "Koperek"
+    },
+    "basil": {
+        "ru": "Базилик",
+        "uk": "Базилік",
+        "pl": "Bazylia"
+    },
+    "mint": {
+        "ru": "Мята",
+        "uk": "М’ята",
+        "pl": "Mięta"
+    },
+    "rosemary": {
+        "ru": "Розмарин",
+        "uk": "Розмарин",
+        "pl": "Rozmaryn"
+    },
+    "sage": {
+        "ru": "Шалфей",
+        "uk": "Шавлія",
+        "pl": "Szałwia"
+    },
+    "tarragon": {
+        "ru": "Эстрагон",
+        "uk": "Естрагон",
+        "pl": "Estragon"
+    },
+    "chives": {
+        "ru": "Шнитт-лук",
+        "uk": "Шніт-цибуля",
+        "pl": "Szczypiorek"
+    },
+    "marjoram": {
+        "ru": "Майоран",
+        "uk": "Майоран",
+        "pl": "Majeranek"
+    },
+    "lovage": {
+        "ru": "Любисток",
+        "uk": "Любисток",
+        "pl": "Lubczyk"
+    },
+    "sorrel": {
+        "ru": "Щавель",
+        "uk": "Щавель",
+        "pl": "Szczaw"
+    },
+    "borage": {
+        "ru": "Огуречник",
+        "uk": "Огірочник",
+        "pl": "Ogórecznik"
+    },
+    "mushroom_oyster": {
+        "ru": "Вёшенки",
+        "uk": "Гливи",
+        "pl": "Boczniaki"
+    },
+    "mushroom_truffle": {
+        "ru": "Трюфель",
+        "uk": "Трюфель",
+        "pl": "Trufla"
+    },
+    "bacon": {
+        "ru": "Бекон",
+        "uk": "Бекон",
+        "pl": "Bekon"
+    },
+    "chorizo": {
+        "ru": "Чоризо",
+        "uk": "Чорізо",
+        "pl": "Chorizo"
+    },
+    "venison": {
+        "ru": "Оленина",
+        "uk": "Оленина",
+        "pl": "Jelenina"
+    },
+    "rabbit": {
+        "ru": "Крольчатина",
+        "uk": "Крольчатина",
+        "pl": "Królik"
+    },
+    "herring": {
+        "ru": "Сельдь",
+        "uk": "Оселедець",
+        "pl": "Śledź"
+    },
+    "sardine": {
+        "ru": "Сардина",
+        "uk": "Сардина",
+        "pl": "Sardynka"
+    },
+    "anchovy": {
+        "ru": "Анчоусы",
+        "uk": "Анчоуси",
+        "pl": "Anchois"
+    },
+    "lobster": {
+        "ru": "Омар",
+        "uk": "Омар",
+        "pl": "Homar"
+    },
+    "crayfish": {
+        "ru": "Речные раки",
+        "uk": "Річкові раки",
+        "pl": "Raki rzeczne"
+    },
+    "scallop": {
+        "ru": "Морские гребешки",
+        "uk": "Морські гребінці",
+        "pl": "Przegrzebki"
+    },
+    "squid": {
+        "ru": "Кальмар",
+        "uk": "Кальмар",
+        "pl": "Kałamarnica"
+    },
+    "seaweed_nori": {
+        "ru": "Нори",
+        "uk": "Норі",
+        "pl": "Nori"
+    },
+    "cockles": {
+        "ru": "Сердцевидки",
+        "uk": "Серцевидки",
+        "pl": "Sercówki"
+    },
+    "milk": {
+        "ru": "Молоко",
+        "uk": "Молоко",
+        "pl": "Mleko"
+    },
+    "milk_skim": {
+        "ru": "Обезжиренное молоко",
+        "uk": "Знежирене молоко",
+        "pl": "Mleko odtłuszczone"
+    },
+    "buttermilk": {
+        "ru": "Пахта",
+        "uk": "Маслянка",
+        "pl": "Maślanka"
+    },
+    "butter": {
+        "ru": "Сливочное масло",
+        "uk": "Вершкове масло",
+        "pl": "Masło"
+    },
+    "ghee": {
+        "ru": "Топлёное масло гхи",
+        "uk": "Топлене масло гі",
+        "pl": "Masło klarowane"
+    },
+    "milk_powder": {
+        "ru": "Сухое молоко",
+        "uk": "Сухе молоко",
+        "pl": "Mleko w proszku"
+    },
+    "quark": {
+        "ru": "Творог",
+        "uk": "Кисломолочний сир",
+        "pl": "Twaróg"
+    },
+    "egg_chicken": {
+        "ru": "Яйцо",
+        "uk": "Яйце",
+        "pl": "Jajko"
+    },
+    "egg_white": {
+        "ru": "Яичный белок",
+        "uk": "Яєчний білок",
+        "pl": "Białko jaja"
+    },
+    "egg_yolk": {
+        "ru": "Яичный желток",
+        "uk": "Яєчний жовток",
+        "pl": "Żółtko"
+    },
+    "cheese_cheddar": {
+        "ru": "Чеддер",
+        "uk": "Чеддер",
+        "pl": "Ser cheddar"
+    },
+    "cheese_mozzarella": {
+        "ru": "Моцарелла",
+        "uk": "Моцарела",
+        "pl": "Mozzarella"
+    },
+    "cheese_feta": {
+        "ru": "Фета",
+        "uk": "Фета",
+        "pl": "Feta"
+    },
+    "cheese_gouda": {
+        "ru": "Гауда",
+        "uk": "Гауда",
+        "pl": "Ser gouda"
+    },
+    "cheese_camembert": {
+        "ru": "Камамбер",
+        "uk": "Камамбер",
+        "pl": "Camembert"
+    },
+    "cheese_blue": {
+        "ru": "Сыр с голубой плесенью",
+        "uk": "Сир із блакитною пліснявою",
+        "pl": "Ser pleśniowy"
+    },
+    "cheese_gorgonzola": {
+        "ru": "Горгонзола",
+        "uk": "Горгонзола",
+        "pl": "Gorgonzola"
+    },
+    "cheese_ricotta": {
+        "ru": "Рикотта",
+        "uk": "Рікота",
+        "pl": "Ricotta"
+    },
+    "cheese_mascarpone": {
+        "ru": "Маскарпоне",
+        "uk": "Маскарпоне",
+        "pl": "Mascarpone"
+    },
+    "cheese_halloumi": {
+        "ru": "Халлуми",
+        "uk": "Халумі",
+        "pl": "Halloumi"
+    },
+    "cheese_edam": {
+        "ru": "Эдам",
+        "uk": "Едам",
+        "pl": "Ser edamski"
+    },
+    "cheese_emmental": {
+        "ru": "Эмменталь",
+        "uk": "Емменталь",
+        "pl": "Ementaler"
+    },
+    "rice_basmati": {
+        "ru": "Рис басмати",
+        "uk": "Рис басматі",
+        "pl": "Ryż basmati"
+    },
+    "buckwheat": {
+        "ru": "Гречка",
+        "uk": "Гречка",
+        "pl": "Kasza gryczana"
+    },
+    "barley": {
+        "ru": "Перловая крупа",
+        "uk": "Перлова крупа",
+        "pl": "Kasza pęczak"
+    },
+    "bulgur": {
+        "ru": "Булгур",
+        "uk": "Булгур",
+        "pl": "Kasza bulgur"
+    },
+    "couscous": {
+        "ru": "Кускус",
+        "uk": "Кускус",
+        "pl": "Kuskus"
+    },
+    "quinoa": {
+        "ru": "Киноа",
+        "uk": "Кіноа",
+        "pl": "Komosa ryżowa"
+    },
+    "millet": {
+        "ru": "Пшено",
+        "uk": "Пшоно",
+        "pl": "Kasza jaglana"
+    },
+    "chickpeas": {
+        "ru": "Нут",
+        "uk": "Нут",
+        "pl": "Ciecierzyca"
+    },
+    "tofu": {
+        "ru": "Тофу",
+        "uk": "Тофу",
+        "pl": "Tofu"
+    },
+    "spelt": {
+        "ru": "Полба",
+        "uk": "Спельта",
+        "pl": "Orkisz"
+    },
+    "pasta_spaghetti": {
+        "ru": "Спагетти",
+        "uk": "Спагеті",
+        "pl": "Spaghetti"
+    },
+    "pasta_penne": {
+        "ru": "Пенне",
+        "uk": "Пенне",
+        "pl": "Penne"
+    },
+    "pasta_lasagne": {
+        "ru": "Листы для лазаньи",
+        "uk": "Листи для лазаньї",
+        "pl": "Płaty lasagne"
+    },
+    "flour_wheat": {
+        "ru": "Пшеничная мука",
+        "uk": "Пшеничне борошно",
+        "pl": "Mąka pszenna"
+    },
+    "cornstarch": {
+        "ru": "Кукурузный крахмал",
+        "uk": "Кукурудзяний крохмаль",
+        "pl": "Skrobia kukurydziana"
+    },
+    "breadcrumbs": {
+        "ru": "Панировочные сухари",
+        "uk": "Панірувальні сухарі",
+        "pl": "Bułka tarta"
+    },
+    "baguette": {
+        "ru": "Багет",
+        "uk": "Багет",
+        "pl": "Bagietka"
+    },
+    "pita_bread": {
+        "ru": "Пита",
+        "uk": "Піта",
+        "pl": "Pita"
+    },
+    "tapioca_starch": {
+        "ru": "Крахмал тапиоки",
+        "uk": "Крохмаль тапіоки",
+        "pl": "Skrobia z tapioki"
+    },
+    "hazelnut": {
+        "ru": "Фундук",
+        "uk": "Фундук",
+        "pl": "Orzechy laskowe"
+    },
+    "pine_nut": {
+        "ru": "Кедровые орешки",
+        "uk": "Кедрові горішки",
+        "pl": "Orzeszki piniowe"
+    },
+    "chestnut": {
+        "ru": "Каштаны",
+        "uk": "Каштани",
+        "pl": "Kasztany jadalne"
+    },
+    "sunflower_seeds": {
+        "ru": "Семечки подсолнечника",
+        "uk": "Насіння соняшнику",
+        "pl": "Pestki słonecznika"
+    },
+    "tahini": {
+        "ru": "Тахини",
+        "uk": "Тахіні",
+        "pl": "Tahini"
+    },
+    "nut_mix": {
+        "ru": "Ореховая смесь",
+        "uk": "Горіхова суміш",
+        "pl": "Mieszanka orzechów"
+    },
+    "sunflower_oil": {
+        "ru": "Подсолнечное масло",
+        "uk": "Соняшникова олія",
+        "pl": "Olej słonecznikowy"
+    },
+    "vegetable_oil": {
+        "ru": "Растительное масло",
+        "uk": "Рослинна олія",
+        "pl": "Olej roślinny"
+    },
+    "coconut_oil": {
+        "ru": "Кокосовое масло",
+        "uk": "Кокосова олія",
+        "pl": "Olej kokosowy"
+    },
+    "lard": {
+        "ru": "Смалец",
+        "uk": "Смалець",
+        "pl": "Smalec"
+    },
+    "margarine": {
+        "ru": "Маргарин",
+        "uk": "Маргарин",
+        "pl": "Margaryna"
+    },
+    "flaxseed_oil": {
+        "ru": "Льняное масло",
+        "uk": "Лляна олія",
+        "pl": "Olej lniany"
+    },
+    "black_pepper": {
+        "ru": "Чёрный перец",
+        "uk": "Чорний перець",
+        "pl": "Czarny pieprz"
+    },
+    "cayenne_pepper": {
+        "ru": "Кайенский перец",
+        "uk": "Каєнський перець",
+        "pl": "Pieprz cayenne"
+    },
+    "cumin": {
+        "ru": "Зира",
+        "uk": "Зіра",
+        "pl": "Kmin rzymski"
+    },
+    "turmeric": {
+        "ru": "Куркума",
+        "uk": "Куркума",
+        "pl": "Kurkuma"
+    },
+    "cinnamon": {
+        "ru": "Корица",
+        "uk": "Кориця",
+        "pl": "Cynamon"
+    },
+    "cardamom": {
+        "ru": "Кардамон",
+        "uk": "Кардамон",
+        "pl": "Kardamon"
+    },
+    "bay_leaf": {
+        "ru": "Лавровый лист",
+        "uk": "Лавровий лист",
+        "pl": "Liść laurowy"
+    },
+    "star_anise": {
+        "ru": "Бадьян",
+        "uk": "Бадьян",
+        "pl": "Anyż gwiazdkowaty"
+    },
+    "vanilla_extract": {
+        "ru": "Ванильный экстракт",
+        "uk": "Ванільний екстракт",
+        "pl": "Ekstrakt waniliowy"
+    },
+    "salt": {
+        "ru": "Соль",
+        "uk": "Сіль",
+        "pl": "Sól"
+    },
+    "mace": {
+        "ru": "Мацис",
+        "uk": "Мацис",
+        "pl": "Kwiat muszkatołowy"
+    },
+    "nutritional_yeast": {
+        "ru": "Пищевые дрожжи",
+        "uk": "Харчові дріжджі",
+        "pl": "Płatki drożdżowe"
+    },
+    "soy_sauce": {
+        "ru": "Соевый соус",
+        "uk": "Соєвий соус",
+        "pl": "Sos sojowy"
+    },
+    "worcestershire_sauce": {
+        "ru": "Вустерский соус",
+        "uk": "Вустерський соус",
+        "pl": "Sos Worcestershire"
+    },
+    "ketchup": {
+        "ru": "Кетчуп",
+        "uk": "Кетчуп",
+        "pl": "Keczup"
+    },
+    "mustard": {
+        "ru": "Горчица",
+        "uk": "Гірчиця",
+        "pl": "Musztarda"
+    },
+    "mayonnaise": {
+        "ru": "Майонез",
+        "uk": "Майонез",
+        "pl": "Majonez"
+    },
+    "pesto": {
+        "ru": "Песто",
+        "uk": "Песто",
+        "pl": "Pesto"
+    },
+    "vinegar_apple_cider": {
+        "ru": "Яблочный уксус",
+        "uk": "Яблучний оцет",
+        "pl": "Ocet jabłkowy"
+    },
+    "vinegar_balsamic": {
+        "ru": "Бальзамический уксус",
+        "uk": "Бальзамічний оцет",
+        "pl": "Ocet balsamiczny"
+    },
+    "sugar_white": {
+        "ru": "Сахар",
+        "uk": "Цукор",
+        "pl": "Cukier"
+    },
+    "honey": {
+        "ru": "Мёд",
+        "uk": "Мед",
+        "pl": "Miód"
+    },
+    "molasses": {
+        "ru": "Меласса",
+        "uk": "Меляса",
+        "pl": "Melasa"
+    },
+    "chocolate_dark": {
+        "ru": "Горький шоколад",
+        "uk": "Чорний шоколад",
+        "pl": "Gorzka czekolada"
+    },
+    "chocolate_milk_bar": {
+        "ru": "Молочный шоколад",
+        "uk": "Молочний шоколад",
+        "pl": "Czekolada mleczna"
+    },
+    "cocoa_powder": {
+        "ru": "Какао-порошок",
+        "uk": "Какао-порошок",
+        "pl": "Kakao"
+    },
+    "water": {
+        "ru": "Вода",
+        "uk": "Вода",
+        "pl": "Woda"
+    },
+    "tea_black": {
+        "ru": "Чёрный чай",
+        "uk": "Чорний чай",
+        "pl": "Czarna herbata"
+    },
+    "tea_green": {
+        "ru": "Зелёный чай",
+        "uk": "Зелений чай",
+        "pl": "Zielona herbata"
+    },
+    "coffee_instant": {
+        "ru": "Растворимый кофе",
+        "uk": "Розчинна кава",
+        "pl": "Kawa rozpuszczalna"
+    },
+    "orange_juice": {
+        "ru": "Апельсиновый сок",
+        "uk": "Апельсиновий сік",
+        "pl": "Sok pomarańczowy"
+    },
+    "apple_juice": {
+        "ru": "Яблочный сок",
+        "uk": "Яблучний сік",
+        "pl": "Sok jabłkowy"
+    },
+    "wine_red": {
+        "ru": "Красное вино",
+        "uk": "Червоне вино",
+        "pl": "Czerwone wino"
+    },
+    "grape_juice": {
+        "ru": "Виноградный сок",
+        "uk": "Виноградний сік",
+        "pl": "Sok winogronowy"
+    },
+    "coconut_water": {
+        "ru": "Кокосовая вода",
+        "uk": "Кокосова вода",
+        "pl": "Woda kokosowa"
+    },
+    "wine_rose": {
+        "ru": "Розовое вино",
+        "uk": "Рожеве вино",
+        "pl": "Różowe wino"
+    },
+    "brandy": {
+        "ru": "Бренди",
+        "uk": "Бренді",
+        "pl": "Brandy"
     }
 }

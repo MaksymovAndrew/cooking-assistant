@@ -10,6 +10,7 @@ function makeCreationInput(overrides: Record<string, unknown> = {}) {
     return {
         title: "Tomato soup",
         content: "Boil tomatoes with stock",
+        language: "uk" as const,
         person_id: 7,
         ingredients: [{ id: 3, quantity_recipe_ingredients: 2 }],
         type_id: 1,
@@ -73,6 +74,7 @@ describe("Recipe", () => {
         expect(Object.keys(recipe)).toEqual([
             "title",
             "content",
+            "language",
             "person_id",
             "ingredients",
             "type_id",
@@ -141,6 +143,7 @@ describe("Recipe", () => {
         expect(Object.keys(recipe)).toEqual([
             "title",
             "content",
+            "language",
             "ingredients",
             "type_id",
             "cooking_time",
@@ -149,6 +152,7 @@ describe("Recipe", () => {
         expect(recipe).toMatchObject({
             title: input.title,
             content: input.content,
+            language: "uk",
             ingredients: input.ingredients,
             type_id: input.type_id,
             cooking_time: input.cooking_time,

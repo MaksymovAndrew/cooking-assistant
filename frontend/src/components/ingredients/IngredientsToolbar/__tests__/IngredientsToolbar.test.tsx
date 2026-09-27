@@ -31,7 +31,7 @@ describe("IngredientsToolbar", () => {
             );
 
             await user.type(
-                screen.getByPlaceholderText("Search your pantry..."),
+                screen.getByPlaceholderText("Search your pantry…"),
                 "p",
             );
             act(() => {

@@ -2,7 +2,7 @@ import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
 import { DEFAULT_LOCALE } from "constants/locales";
-import { translateMessage } from "i18n/translate";
+import { translateError, translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
@@ -71,6 +71,44 @@ describe("locale routes", () => {
         expect(res.body).toEqual({
             message: translateMessage("loggedOut", DEFAULT_LOCALE),
         });
+    });
+
+    it("should answer an error in the language the request asked for", async () => {
+        const { app } = buildTestApp();
+
+        const res = await request(app)
+            .get("/api/no-such-route")
+            .set(ACCEPT_LANGUAGE, "ru-RU,ru;q=0.9,en;q=0.8");
+
+        expect(res.status).toBe(404);
+        expect(res.body).toEqual({
+            error: translateError(ERROR_CODES.NOT_FOUND, "ru"),
+            code: ERROR_CODES.NOT_FOUND,
+        });
+    });
+
+    it("should answer a message in the language the request asked for", async () => {
+        const { app } = buildTestApp();
+
+        const res = await request(app)
+            .post("/api/logout")
+            .set(ACCEPT_LANGUAGE, "pl");
+
+        expect(res.body).toEqual({
+            message: translateMessage("loggedOut", "pl"),
+        });
+    });
+
+    it("should store a language other than English on the account", async () => {
+        const { app, deps } = buildTestApp();
+
+        const res = await request(app)
+            .put(LOCALE_PATH)
+            .set("Cookie", authCookie())
+            .send({ locale: "uk" });
+
+        expect(res.status).toBe(204);
+        expect(deps.userRepository.updateLocale).toHaveBeenCalledWith(1, "uk");
     });
 
     it("should register the account in the language the request asked for", async () => {

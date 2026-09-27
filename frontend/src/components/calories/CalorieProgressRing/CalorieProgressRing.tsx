@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useLocale } from "hooks/useLocale";
+
 import { ProgressRing } from "components/ui/ProgressRing";
 
 import { calorieRingFraction, formatKcal } from "utils/calories";
@@ -29,26 +31,30 @@ export const CalorieProgressRing: React.FC<CalorieProgressRingProps> = ({
     goal,
     tone,
     goalLabel,
-}) => (
-    <div
-        data-testid="calorie-progress-ring"
-        className={[styles["calorie-progress-ring"], TONE_CLASS[tone]].join(
-            " ",
-        )}
-    >
-        <ProgressRing
-            fraction={calorieRingFraction(consumed, goal)}
-            size={RING_SIZE}
-            thickness={RING_THICKNESS}
-            inset={RING_INSET}
-            className={styles["calorie-progress-ring__ring"]}
+}) => {
+    const locale = useLocale();
+
+    return (
+        <div
+            data-testid="calorie-progress-ring"
+            className={[styles["calorie-progress-ring"], TONE_CLASS[tone]].join(
+                " ",
+            )}
         >
-            <span className={styles["calorie-progress-ring__value"]}>
-                {formatKcal(consumed)}
-            </span>
-            <span className={styles["calorie-progress-ring__label"]}>
-                {goalLabel}
-            </span>
-        </ProgressRing>
-    </div>
-);
+            <ProgressRing
+                fraction={calorieRingFraction(consumed, goal)}
+                size={RING_SIZE}
+                thickness={RING_THICKNESS}
+                inset={RING_INSET}
+                className={styles["calorie-progress-ring__ring"]}
+            >
+                <span className={styles["calorie-progress-ring__value"]}>
+                    {formatKcal(consumed, locale)}
+                </span>
+                <span className={styles["calorie-progress-ring__label"]}>
+                    {goalLabel}
+                </span>
+            </ProgressRing>
+        </div>
+    );
+};

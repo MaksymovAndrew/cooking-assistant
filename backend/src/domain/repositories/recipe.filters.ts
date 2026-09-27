@@ -1,4 +1,5 @@
 import type { AllergenSlug } from "constants/allergens";
+import type { Locale } from "constants/locales";
 
 import type { RecordAuthor, RecordRating } from "./recordAuthor";
 
@@ -20,6 +21,7 @@ export interface RecipeFilters {
     exclude_allergens?: AllergenSlug[];
     hide_avoided?: boolean;
     tag_ids?: string;
+    languages?: Locale[];
     limit?: number;
     offset?: number;
 }
@@ -28,6 +30,7 @@ export interface RecipeSearchRow extends RecordRating {
     id: number;
     title: string;
     content: string;
+    language: Locale;
     isOwner: boolean;
     isFavourite: boolean | null;
     containsAvoided: boolean | null;

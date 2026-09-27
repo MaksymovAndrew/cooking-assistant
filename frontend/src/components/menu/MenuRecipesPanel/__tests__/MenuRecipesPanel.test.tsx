@@ -20,6 +20,7 @@ const RECIPES: MenuDetailRecipe[] = [
     {
         recipe_id: 1,
         title: "Borscht",
+        language: "en",
         type_name: "Soup",
         cooking_time: 60,
         creation_date: "2024-01-01",
@@ -31,6 +32,7 @@ const RECIPES: MenuDetailRecipe[] = [
     {
         recipe_id: 2,
         title: "Pancakes",
+        language: "en",
         type_name: "Breakfast",
         cooking_time: 20,
         creation_date: "2024-01-02",

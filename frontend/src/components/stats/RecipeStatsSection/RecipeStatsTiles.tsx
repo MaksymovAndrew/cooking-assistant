@@ -3,9 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import type { RecipeStatistics } from "types/stats";
 
+import { useLocale } from "hooks/useLocale";
+
 import { StatTile } from "components/stats/StatTile";
 
 import { formatKcal } from "utils/calories";
+import { recipeTypeName } from "utils/referenceLabels";
 
 import styles from "./RecipeStatsSection.module.scss";
 
@@ -23,6 +26,7 @@ export const RecipeStatsTiles: React.FC<RecipeStatsTilesProps> = ({
     formatTime,
 }) => {
     const { t } = useTranslation("stats");
+    const locale = useLocale();
 
     return (
         <div className={styles["recipe-stats-section__tiles"]}>
@@ -47,7 +51,11 @@ export const RecipeStatsTiles: React.FC<RecipeStatsTilesProps> = ({
             />
             <StatTile
                 label={t("statsPage.mostUsedTypeTile")}
-                value={stats.mostUsedType?.typeName ?? DASH}
+                value={
+                    stats.mostUsedType
+                        ? recipeTypeName(t, stats.mostUsedType.typeName)
+                        : DASH
+                }
                 valueVariant="text"
                 caption={
                     stats.mostUsedType
@@ -63,7 +71,10 @@ export const RecipeStatsTiles: React.FC<RecipeStatsTilesProps> = ({
                 value={
                     stats.averageCaloriesOverall !== null
                         ? t("statsPage.caloriesValue", {
-                              count: formatKcal(stats.averageCaloriesOverall),
+                              count: formatKcal(
+                                  stats.averageCaloriesOverall,
+                                  locale,
+                              ),
                           })
                         : DASH
                 }

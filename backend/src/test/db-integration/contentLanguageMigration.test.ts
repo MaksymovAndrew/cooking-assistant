@@ -15,15 +15,13 @@ function readBackfillStatements(): string[] {
         "-- Down Migration",
     )[0];
 
+    // comments go before the split, since a comment may itself contain a semicolon
     return upSection
+        .split("\n")
+        .filter((line) => !line.trim().startsWith("--"))
+        .join("\n")
         .split(";")
-        .map((statement) =>
-            statement
-                .split("\n")
-                .filter((line) => !line.trim().startsWith("--"))
-                .join("\n")
-                .trim(),
-        )
+        .map((statement) => statement.trim())
         .filter((statement) => statement.startsWith("UPDATE"));
 }
 

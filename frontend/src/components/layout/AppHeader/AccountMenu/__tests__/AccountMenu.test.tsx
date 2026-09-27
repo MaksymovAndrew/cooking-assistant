@@ -58,6 +58,18 @@ describe("AccountMenu", () => {
         ).toHaveAttribute("href", "/settings");
     });
 
+    it("should offer the language and the theme inside the menu for phones", async () => {
+        renderMenu();
+
+        await openMenu();
+
+        expect(screen.getByText("Language")).toBeInTheDocument();
+        expect(screen.getByText("Theme")).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: "Toggle theme" }),
+        ).toBeInTheDocument();
+    });
+
     it("should give the Logout item the same full-width item class as Profile and Settings", async () => {
         renderMenu();
 

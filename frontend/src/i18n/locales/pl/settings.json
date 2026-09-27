@@ -71,6 +71,7 @@
     },
     "deleteAccountButton": {
         "label": "Usuń konto",
-        "holdInstruction": "Przytrzymaj, żeby potwierdzić"
+        "holdInstruction": "Przytrzymaj, żeby potwierdzić",
+        "action": "Usuń"
     }
 }

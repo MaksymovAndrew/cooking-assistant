@@ -41,7 +41,7 @@
         "cta": "See recipes"
     },
     "cookbookStats": {
-        "title": "Cookbook stats",
+        "title": "Recipe stats",
         "description": "Averages, extremes and type breakdowns across every recipe here — not just yours.",
         "cta": "Open stats"
     },

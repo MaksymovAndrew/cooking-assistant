@@ -22,7 +22,7 @@ interface AccountMenuProps {
 }
 
 const CHEVRON_SIZE = 15;
-const TRIGGER_AVATAR_SIZE = 32;
+const TRIGGER_AVATAR_SIZE = 28;
 
 export const AccountMenu: React.FC<AccountMenuProps> = ({
     name,

@@ -38,8 +38,9 @@
         margin-left: auto;
     }
 
-    // theme lives in Settings on mobile; the header toggle returns from tablet up
-    &__theme-toggle {
+    // theme and language live in the account menu on phones; both return to the header from tablet up
+    &__theme-toggle,
+    &__language {
         display: none;
 
         @include respond-to(tablet) {

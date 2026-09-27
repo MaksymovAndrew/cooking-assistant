@@ -50,7 +50,6 @@
 
         @include respond-to(desktop) {
             grid-template-columns: 1.65fr minmax(0, 1fr);
-            align-items: start;
         }
 
         @include respond-to-short-landscape {
@@ -78,6 +77,14 @@
 
     &__main > :first-child {
         order: 1;
+    }
+
+    // both columns end on one line: the recent recipes take the slack on the left, "what's new" on the right
+    &__main > :first-child,
+    &__rail > :last-child {
+        @include respond-to(desktop) {
+            flex: 1;
+        }
     }
 
     &__rail > * {

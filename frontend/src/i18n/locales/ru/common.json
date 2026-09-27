@@ -42,7 +42,8 @@
         "trigger": "Меню аккаунта",
         "profile": "Профиль",
         "settings": "Настройки",
-        "language": "Язык"
+        "language": "Язык",
+        "theme": "Тема"
     },
     "logoutModal": {
         "title": "Выход",

@@ -61,14 +61,19 @@ export const AppHeader: React.FC = () => {
                         </LinkButton>
                     </div>
                 ) : (
-                    <AccountMenu
-                        name={currentUser?.name}
-                        surname={currentUser?.surname}
-                        login={currentUser?.login}
-                        avatar={currentUser?.avatar}
-                        avatarPhotoKey={currentUser?.avatar_photo_key}
-                        onLogout={openLogoutModal}
-                    />
+                    <>
+                        <div className={styles["app-header__language"]}>
+                            <LanguageSwitcher />
+                        </div>
+                        <AccountMenu
+                            name={currentUser?.name}
+                            surname={currentUser?.surname}
+                            login={currentUser?.login}
+                            avatar={currentUser?.avatar}
+                            avatarPhotoKey={currentUser?.avatar_photo_key}
+                            onLogout={openLogoutModal}
+                        />
+                    </>
                 )}
             </div>
         </header>

@@ -15,6 +15,9 @@ import { LanguageSwitcherMenu } from "./LanguageSwitcherMenu";
 interface LanguageSwitcherProps {
     // which edge of the trigger the menu lines up with
     align?: "start" | "end";
+    // the globe in front of the code; left out where a label beside it already says "Language"
+    withIcon?: boolean;
+    className?: string;
 }
 
 const ICON_SIZE = 16;
@@ -22,6 +25,8 @@ const CHEVRON_SIZE = 14;
 
 export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     align = "end",
+    withIcon = true,
+    className,
 }) => {
     const { t } = useTranslation();
     const locale = useLocale();
@@ -37,7 +42,12 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     usePopoverDismiss(containerRef, isOpen, closeMenu);
 
     return (
-        <div ref={containerRef} className={styles["language-switcher"]}>
+        <div
+            ref={containerRef}
+            className={[styles["language-switcher"], className]
+                .filter(Boolean)
+                .join(" ")}
+        >
             <button
                 type="button"
                 onClick={() => {
@@ -52,7 +62,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
                 disabled={!isHydrated}
                 className={styles["language-switcher__trigger"]}
             >
-                <Languages size={ICON_SIZE} aria-hidden="true" />
+                {withIcon && <Languages size={ICON_SIZE} aria-hidden="true" />}
                 <span className={styles["language-switcher__code"]}>
                     {LOCALE_BADGES[locale]}
                 </span>

@@ -42,7 +42,8 @@
         "trigger": "Меню облікового запису",
         "profile": "Профіль",
         "settings": "Налаштування",
-        "language": "Мова"
+        "language": "Мова",
+        "theme": "Тема"
     },
     "logoutModal": {
         "title": "Вихід",

@@ -20,7 +20,7 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
-## 4.8 - 2026-09-26
+## 4.8 - 2026-09-27
 
 ### Backend
 
@@ -44,6 +44,9 @@ changelogs and the tags and now track everything here against one shared version
 - Changed: Headings in Russian and Ukrainian are set in a serif that matches the English ones, on the pages and on link previews, instead of whatever serif the device had.
 - Fixed: Settings no longer squeeze a setting's name to a sliver on a narrow screen.
 - Changed: On phones, the header's "Log in" button makes room for the language switcher - the bottom bar still has it.
+- Changed: On a computer the language switcher sits beside the theme button in the header; on a phone both live in the account menu.
+- Changed: The home page's two columns end on the same line, and "Cookbook stats" is now "Recipe stats".
+- Changed: The delete-account button no longer squeezes its row on a narrow screen.
 - Changed: Buttons and links read the same way everywhere - "Log in", "Log out", "Sign up" - and the link preview describes the app for people who cook rather than for developers.
 
 ### Project

@@ -71,6 +71,7 @@
     },
     "deleteAccountButton": {
         "label": "Delete account",
-        "holdInstruction": "Hold to confirm"
+        "holdInstruction": "Hold to confirm",
+        "action": "Delete"
     }
 }

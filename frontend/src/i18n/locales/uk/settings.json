@@ -71,6 +71,7 @@
     },
     "deleteAccountButton": {
         "label": "Видалити обліковий запис",
-        "holdInstruction": "Утримуйте, щоб підтвердити"
+        "holdInstruction": "Утримуйте, щоб підтвердити",
+        "action": "Видалити"
     }
 }

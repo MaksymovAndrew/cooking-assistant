@@ -42,7 +42,8 @@
         "trigger": "Account menu",
         "profile": "Profile",
         "settings": "Settings",
-        "language": "Language"
+        "language": "Language",
+        "theme": "Theme"
     },
     "logoutModal": {
         "title": "Log out",

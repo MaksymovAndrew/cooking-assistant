@@ -18,7 +18,7 @@ describe("CookbookStatsBanner", () => {
     it("should say the numbers cover every recipe, not the viewer's own", () => {
         renderWithRouter(<CookbookStatsBanner />);
 
-        expect(screen.getByText("Cookbook stats")).toBeInTheDocument();
+        expect(screen.getByText("Recipe stats")).toBeInTheDocument();
         expect(
             screen.getByText(/across every recipe here/),
         ).toBeInTheDocument();

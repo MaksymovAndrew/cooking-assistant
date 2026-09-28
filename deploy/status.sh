@@ -17,21 +17,24 @@ API_DOMAIN=$(edge_env API_DOMAIN)
 G=$'\e[32m'; R=$'\e[31m'; Y=$'\e[33m'; B=$'\e[1m'; D=$'\e[2m'; O=$'\e[0m'
 
 section() { printf '\n%s%s%s\n' "$B" "$1" "$O"; }
-row()     { printf '  %-11s %-52s %s\n' "$1" "$2" "$3"; }
+row()     { printf '  %-11s %-58s %s\n' "$1" "$2" "$3"; }
 ok()      { printf '%sOK%s' "$G" "$O"; }
 fail()    { printf '%sFAIL%s' "$R" "$O"; }
 warn()    { printf '%sWARN%s' "$Y" "$O"; }
 
 # --- data collected once, several commands are slow ---------------------------
 STATS=$(docker stats --no-stream --format '{{.Name}}|{{.MemUsage}}|{{.CPUPerc}}' 2>/dev/null)
-mem_of() { echo "$STATS" | awk -F'|' -v n="$1" '$1==n {print $2}' | sed 's/ \/ /  of  /'; }
+mem_of() { echo "$STATS" | awk -F'|' -v n="$1" '$1==n {print $2}' | sed 's/ \/ / of /'; }
 
-container() {  # name -> "<state marker>" via stdout, sets CONTAINER_OK
+# Echoes "<human readable state>|<1 healthy, 0 not>". Both values come back together because a
+# command substitution runs in a subshell and cannot set variables in the caller.
+container() {
     local name=$1 state health
-    state=$(docker inspect -f '{{.State.Status}}' "$name" 2>/dev/null) || { CONTAINER_OK=0; echo "not found"; return; }
+    state=$(docker inspect -f '{{.State.Status}}' "$name" 2>/dev/null) || { echo "not found|0"; return; }
     health=$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}-{{end}}' "$name" 2>/dev/null)
-    if [ "$state" = running ] && { [ "$health" = healthy ] || [ "$health" = "-" ]; }; then CONTAINER_OK=1; else CONTAINER_OK=0; fi
-    if [ "$health" = "-" ]; then echo "$state"; else echo "$state, $health"; fi
+    local flag=0
+    [ "$state" = running ] && { [ "$health" = healthy ] || [ "$health" = "-" ]; } && flag=1
+    if [ "$health" = "-" ]; then echo "$state|$flag"; else echo "$state, $health|$flag"; fi
 }
 
 http_code() { curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$1" 2>/dev/null; }
@@ -60,7 +63,8 @@ row "CPU" "$CORES cores $(uname -m)  ·  load $l1 $l5 $l15  ·  ${LOAD_PCT}% of 
 
 read -r MEM_TOTAL MEM_USED <<< "$(free -m | awk 'NR==2 {print $2, $3}')"
 MEM_PCT=$(( MEM_USED * 100 / MEM_TOTAL ))
-row "Memory" "$(( MEM_USED / 1024 )).$(( MEM_USED % 1024 * 10 / 1024 )) of $(( MEM_TOTAL / 1024 )) GB (${MEM_PCT}%)  ·  ~3 GB held by idle guard" \
+MEM_HUMAN=$(awk -v u="$MEM_USED" -v t="$MEM_TOTAL" 'BEGIN{printf "%.1f of %.1f GB", u/1024, t/1024}')
+row "Memory" "$MEM_HUMAN (${MEM_PCT}%)  ·  ~3 GB held by idle guard" \
     "$( [ "$MEM_PCT" -lt 85 ] && ok || warn )"
 
 read -r D_USED D_SIZE D_PCT <<< "$(df -h / | awk 'NR==2 {print $3, $2, $5}')"
@@ -79,12 +83,12 @@ PORTS=$(iptables -S INPUT 2>/dev/null | grep -oP '(?<=--dport )\d+' | sort -n | 
 row "Firewall" "open: ${PORTS}·  everything else rejected" \
     "$( [ "$(echo "$PORTS" | grep -c 443)" -gt 0 ] && ok || fail )"
 
-CADDY_STATE=$(container caddy); CADDY_OK=$CONTAINER_OK
+IFS="|" read -r CADDY_STATE CADDY_OK <<< "$(container caddy)"
 row "Proxy" "caddy $CADDY_STATE  ·  $(mem_of caddy)" "$( [ "$CADDY_OK" = 1 ] && ok || fail )"
 
 for host in $APP_DOMAIN $API_DOMAIN; do
     if days=$(cert_days "$host"); then
-        row "TLS" "$host  ·  renews automatically  ·  $days days left" \
+        row "TLS" "$host  ·  auto-renew  ·  $days days left" \
             "$( [ "$days" -gt 20 ] && ok || warn )"
     else
         row "TLS" "$host  ·  no certificate" "$(fail)"
@@ -114,21 +118,20 @@ API_BODY=$(curl -s --max-time 10 "https://$API_DOMAIN/api/health" 2>/dev/null)
 row "API" "https://$API_DOMAIN  ·  ${API_BODY:-no response}" \
     "$( [ "$API_BODY" = '{"status":"ok"}' ] && ok || fail )"
 
-FE_STATE=$(container cooking-assistant-frontend-1); FE_OK=$CONTAINER_OK
+IFS="|" read -r FE_STATE FE_OK <<< "$(container cooking-assistant-frontend-1)"
 row "Frontend" "Next.js on node $(docker exec cooking-assistant-frontend-1 node --version 2>/dev/null)  ·  $FE_STATE  ·  $(mem_of cooking-assistant-frontend-1)" \
     "$( [ "$FE_OK" = 1 ] && ok || fail )"
 
-BE_STATE=$(container cooking-assistant-backend-1); BE_OK=$CONTAINER_OK
+IFS="|" read -r BE_STATE BE_OK <<< "$(container cooking-assistant-backend-1)"
 row "Backend" "node $(docker exec cooking-assistant-backend-1 node --version 2>/dev/null)  ·  $BE_STATE  ·  $(mem_of cooking-assistant-backend-1)" \
     "$( [ "$BE_OK" = 1 ] && ok || fail )"
 
-DB_STATE=$(container cooking-assistant-postgres-1); DB_OK=$CONTAINER_OK
+IFS="|" read -r DB_STATE DB_OK <<< "$(container cooking-assistant-postgres-1)"
 row "Database" "postgres 18  ·  $DB_STATE  ·  $(mem_of cooking-assistant-postgres-1)  ·  not exposed" \
     "$( [ "$DB_OK" = 1 ] && ok || fail )"
 
 COUNTS=$(docker run --rm --network "$NET_COOKING" --env-file "$STACK_COOKING/.env" postgres:18-alpine \
-    sh -c 'PGPASSWORD=$DB_PASSWORD psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -At -F" " -c
-           "select (select count(*) from person), (select count(*) from recipes), (select count(*) from menu), (select count(*) from ingredients)"' 2>/dev/null)
+    sh -c 'PGPASSWORD=$DB_PASSWORD psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -At -F" " -c "select (select count(*) from person), (select count(*) from recipes), (select count(*) from menu), (select count(*) from ingredients)"' 2>/dev/null)
 if [ -n "$COUNTS" ]; then
     set -- $COUNTS
     row "Content" "$1 users  ·  $2 recipes  ·  $3 menus  ·  $4 ingredients" "$(ok)"

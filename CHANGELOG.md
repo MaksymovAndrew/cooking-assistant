@@ -20,6 +20,12 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.9.1 - 2026-09-28
+
+### Project
+
+- Fixed: The server health report stopped halfway with "CONTAINER_OK: unbound variable"; the repository now holds the working version that runs on the server.
+
 ## 4.9 - 2026-09-28
 
 ### Backend

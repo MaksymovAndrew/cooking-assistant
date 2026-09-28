@@ -738,7 +738,19 @@
         "chamomile_tea": "Herbata rumiankowa",
         "hot_chocolate_mix": "Mieszanka do gorącej czekolady",
         "club_soda": "Woda sodowa",
-        "tonic_water": "Tonik"
+        "tonic_water": "Tonik",
+        "kielbasa_smoked": "Kiełbasa wędzona",
+        "sausage_boiled": "Mortadela",
+        "white_sausage": "Biała kiełbasa",
+        "salo": "Słonina",
+        "zurek_starter": "Zakwas na żurek",
+        "potato_starch": "Skrobia ziemniaczana",
+        "gelatin": "Żelatyna",
+        "bryndza": "Bryndza",
+        "kvass": "Kwas chlebowy",
+        "lingonberry": "Borówka brusznica",
+        "dried_apples": "Suszone jabłka",
+        "fruit_jam": "Konfitura"
     },
     "category": {
         "vegetables": "Warzywa",

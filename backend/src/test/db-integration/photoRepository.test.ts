@@ -119,6 +119,37 @@ describe("PgPhotoRepository (real Postgres)", () => {
         expect(await storedKey("avatar", personId)).toBe(avatar);
     });
 
+    it("should count the account's photos and tell whether the record already has one", async () => {
+        const ownerId = await createPerson(pool);
+        const strangerId = await createPerson(pool);
+        const withPhoto = await createRecipe(ownerId);
+        const withoutPhoto = await createRecipe(ownerId);
+        const menuId = await createMenu(ownerId);
+        const strangersRecipeId = await createRecipe(strangerId);
+
+        await repository.replace(ownerId, "recipe", withPhoto, randomUUID());
+        await repository.replace(ownerId, "menu", menuId, randomUUID());
+        await repository.replace(ownerId, "avatar", ownerId, randomUUID());
+        await repository.replace(
+            strangerId,
+            "recipe",
+            strangersRecipeId,
+            randomUUID(),
+        );
+
+        expect(await repository.usage(ownerId, "recipe", withPhoto)).toEqual({
+            count: 3,
+            targetHasPhoto: true,
+        });
+        expect(await repository.usage(ownerId, "recipe", withoutPhoto)).toEqual(
+            { count: 3, targetHasPhoto: false },
+        );
+        // someone else's photographed recipe is not this account's replacement
+        expect(
+            await repository.usage(ownerId, "recipe", strangersRecipeId),
+        ).toEqual({ count: 3, targetHasPhoto: false });
+    });
+
     it("should hand back the photo a deleted recipe and menu held", async () => {
         const ownerId = await createPerson(pool);
         const recipeId = await createRecipe(ownerId);

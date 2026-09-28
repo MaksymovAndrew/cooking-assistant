@@ -8819,5 +8819,131 @@
         "storageCondition": "Room temperature",
         "allergens": [],
         "nutritionMatch": "Beverages, carbonated, tonic water"
+    },
+    {
+        "slug": "kielbasa_smoked",
+        "category": "meat",
+        "searchName": "Smoked sausage",
+        "unit": "g",
+        "daysToExpire": 30,
+        "seasonality": "All seasons",
+        "storageCondition": "+4 - +8°C",
+        "allergens": []
+    },
+    {
+        "slug": "sausage_boiled",
+        "category": "meat",
+        "searchName": "Bologna",
+        "unit": "g",
+        "daysToExpire": 10,
+        "seasonality": "All seasons",
+        "storageCondition": "+4 - +8°C",
+        "allergens": []
+    },
+    {
+        "slug": "white_sausage",
+        "category": "meat",
+        "searchName": "White sausage",
+        "unit": "g",
+        "daysToExpire": 5,
+        "seasonality": "All seasons",
+        "storageCondition": "+4 - +8°C",
+        "allergens": []
+    },
+    {
+        "slug": "salo",
+        "category": "oils_fats",
+        "searchName": "Cured pork fatback",
+        "unit": "g",
+        "daysToExpire": 60,
+        "seasonality": "All seasons",
+        "storageCondition": "+4 - +8°C",
+        "allergens": []
+    },
+    {
+        "slug": "zurek_starter",
+        "category": "canned",
+        "searchName": "Sour rye soup starter",
+        "unit": "ml",
+        "daysToExpire": 14,
+        "seasonality": "All seasons",
+        "storageCondition": "+4 - +8°C",
+        "allergens": [
+            "gluten"
+        ]
+    },
+    {
+        "slug": "potato_starch",
+        "category": "flour_baking",
+        "searchName": "Potato starch",
+        "unit": "g",
+        "daysToExpire": 730,
+        "seasonality": "All seasons",
+        "storageCondition": "Dry place, room temperature",
+        "allergens": []
+    },
+    {
+        "slug": "gelatin",
+        "category": "flour_baking",
+        "searchName": "Gelatin",
+        "unit": "g",
+        "daysToExpire": 730,
+        "seasonality": "All seasons",
+        "storageCondition": "Dry place, room temperature",
+        "allergens": []
+    },
+    {
+        "slug": "bryndza",
+        "category": "cheese",
+        "searchName": "Bryndza",
+        "unit": "g",
+        "daysToExpire": 30,
+        "seasonality": "All seasons",
+        "storageCondition": "+4 - +8°C",
+        "allergens": [
+            "milk"
+        ]
+    },
+    {
+        "slug": "kvass",
+        "category": "beverages",
+        "searchName": "Kvass",
+        "unit": "ml",
+        "daysToExpire": 14,
+        "seasonality": "All seasons",
+        "storageCondition": "+4 - +8°C",
+        "allergens": [
+            "gluten"
+        ]
+    },
+    {
+        "slug": "lingonberry",
+        "category": "berries",
+        "searchName": "Lingonberry",
+        "unit": "g",
+        "daysToExpire": 14,
+        "seasonality": "Autumn",
+        "storageCondition": "+4 - +8°C",
+        "allergens": []
+    },
+    {
+        "slug": "dried_apples",
+        "category": "fruits",
+        "searchName": "Dried apples",
+        "unit": "g",
+        "daysToExpire": 365,
+        "seasonality": "All seasons",
+        "storageCondition": "Dry place, room temperature",
+        "allergens": []
+    },
+    {
+        "slug": "fruit_jam",
+        "category": "sweeteners",
+        "searchName": "Jam",
+        "unit": "g",
+        "daysToExpire": 365,
+        "seasonality": "All seasons",
+        "storageCondition": "Dark place, room temperature",
+        "allergens": []
     }
 ]

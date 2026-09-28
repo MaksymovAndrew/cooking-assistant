@@ -2,6 +2,11 @@
     "title": "What's new",
     "newCount": "{{total}} new",
     "items": {
+        "shareAndPantry": {
+            "date": "2026-09-28",
+            "title": "Share a recipe, tidy the pantry",
+            "description": "Every recipe and menu now has a Share button, and the home page tells you how many recipes you can cook from what you already have. Expired food goes in the bin or on the shopping list in one tap, and Settings can sign you out on all your other devices."
+        },
         "fourLanguages": {
             "date": "2026-09-27",
             "title": "Cooking Assistant speaks your language",

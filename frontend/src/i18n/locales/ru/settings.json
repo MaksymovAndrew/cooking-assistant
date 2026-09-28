@@ -29,6 +29,9 @@
         "changePasswordTitle": "Сменить пароль",
         "changePasswordDescription": "Задайте новый пароль для аккаунта.",
         "changePasswordButton": "Сменить…",
+        "signOutEverywhereTitle": "Выйти на других устройствах",
+        "signOutEverywhereDescription": "Завершает все сеансы, кроме текущего. Пригодится, если вы входили с чужого компьютера.",
+        "signOutEverywhereButton": "Выйти…",
         "deleteAccountTitle": "Удалить аккаунт",
         "deleteAccountDescription": "Навсегда удалит рецепты, меню и продукты."
     },
@@ -47,6 +50,11 @@
             "newPasswordSameAsCurrent": "Новый пароль должен отличаться от текущего.",
             "genericError": "Что-то пошло не так. Попробуйте ещё раз."
         }
+    },
+    "signOutEverywhereModal": {
+        "title": "Выйти на других устройствах",
+        "message": "Во всех других браузерах и на телефонах придётся войти заново. Здесь вы останетесь в аккаунте.",
+        "confirm": "Выйти"
     },
     "deleteAccountModal": {
         "title": "Удалить аккаунт?",

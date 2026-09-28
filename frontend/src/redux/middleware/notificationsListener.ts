@@ -36,6 +36,7 @@ export const isSelfHandledRejection = isAnyOf(
     accountSecurityApi.endpoints.forgotPassword.matchRejected,
     accountSecurityApi.endpoints.resetPassword.matchRejected,
     accountSecurityApi.endpoints.changePassword.matchRejected,
+    accountSecurityApi.endpoints.signOutEverywhere.matchRejected,
     authApi.endpoints.updateProfile.matchRejected,
     // confirmEmail's page renders its own rich success/failure state - a toast would be redundant
     accountSecurityApi.endpoints.confirmEmail.matchRejected,

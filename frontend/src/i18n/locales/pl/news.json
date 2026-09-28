@@ -2,6 +2,11 @@
     "title": "Co nowego",
     "newCount": "Nowe: {{total}}",
     "items": {
+        "shareAndPantry": {
+            "date": "2026-09-28",
+            "title": "Udostępniaj przepisy, porządkuj spiżarnię",
+            "description": "Każdy przepis i jadłospis ma teraz przycisk Udostępnij, a strona główna podpowie, ile przepisów ugotujesz z tego, co masz. Przeterminowane produkty wyrzucisz albo dopiszesz do listy zakupów jednym dotknięciem, a w Ustawieniach wylogujesz się na wszystkich innych urządzeniach."
+        },
         "fourLanguages": {
             "date": "2026-09-27",
             "title": "Cooking Assistant mówi twoim językiem",

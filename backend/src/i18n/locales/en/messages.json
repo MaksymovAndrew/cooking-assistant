@@ -20,6 +20,7 @@
     "passwordResetEmailSent": "If an account with that email exists and is verified, a password reset link has been sent.",
     "passwordReset": "Password reset successfully",
     "passwordChanged": "Password changed successfully",
+    "signedOutEverywhere": "Signed out on other devices",
     "profileUpdated": "Profile updated successfully",
     "accountDeleted": "Account deleted successfully",
     "verificationEmailSent": "Verification link sent",

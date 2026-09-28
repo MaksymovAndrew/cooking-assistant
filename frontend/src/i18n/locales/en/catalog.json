@@ -738,7 +738,19 @@
         "chamomile_tea": "Chamomile tea",
         "hot_chocolate_mix": "Hot chocolate mix",
         "club_soda": "Club soda",
-        "tonic_water": "Tonic water"
+        "tonic_water": "Tonic water",
+        "kielbasa_smoked": "Smoked sausage",
+        "sausage_boiled": "Bologna",
+        "white_sausage": "White sausage",
+        "salo": "Cured pork fatback",
+        "zurek_starter": "Sour rye soup starter",
+        "potato_starch": "Potato starch",
+        "gelatin": "Gelatin",
+        "bryndza": "Bryndza",
+        "kvass": "Kvass",
+        "lingonberry": "Lingonberry",
+        "dried_apples": "Dried apples",
+        "fruit_jam": "Jam"
     },
     "category": {
         "vegetables": "Vegetables",

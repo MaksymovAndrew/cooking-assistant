@@ -1,14 +1,21 @@
 import { randomUUID } from "node:crypto";
 
 import { ERROR_CODES } from "constants/errorCodes";
-import { NotFoundError, ValidationError } from "domain/errors/AppError";
+import {
+    ConflictError,
+    NotFoundError,
+    ValidationError,
+} from "domain/errors/AppError";
 import type {
     PhotoRepository,
     PhotoTarget,
 } from "domain/repositories/PhotoRepository";
 
 import { detectImageFormat } from "application/media/detectImageFormat";
-import { IMAGE_VARIANTS } from "application/media/mediaFiles";
+import {
+    IMAGE_VARIANTS,
+    MAX_PHOTOS_PER_ACCOUNT,
+} from "application/media/mediaFiles";
 import type { ImageProcessor } from "application/ports/ImageProcessor";
 import type { MediaStorage } from "application/ports/MediaStorage";
 import { idSchema } from "application/validation/common.schemas";
@@ -18,7 +25,7 @@ import { NOT_FOUND_BY_TARGET } from "./photoTargets";
 
 export default class UploadPhoto {
     constructor(
-        private photoRepository: Pick<PhotoRepository, "replace">,
+        private photoRepository: Pick<PhotoRepository, "replace" | "usage">,
         private imageProcessor: ImageProcessor,
         private mediaStorage: Pick<MediaStorage, "save" | "remove">,
         private target: PhotoTarget,
@@ -37,6 +44,8 @@ export default class UploadPhoto {
         if (!isImage) {
             throw new ValidationError(ERROR_CODES.MEDIA_UNSUPPORTED_TYPE);
         }
+
+        await this.assertWithinQuota(validPersonId, validTargetId);
 
         const variants = await this.imageProcessor.toVariants(
             input,
@@ -70,5 +79,21 @@ export default class UploadPhoto {
         }
 
         return key;
+    }
+
+    // checked before decoding, so a full account costs no image processing
+    private async assertWithinQuota(
+        personId: number,
+        targetId: number,
+    ): Promise<void> {
+        const { count, targetHasPhoto } = await this.photoRepository.usage(
+            personId,
+            this.target,
+            targetId,
+        );
+
+        if (!targetHasPhoto && count >= MAX_PHOTOS_PER_ACCOUNT) {
+            throw new ConflictError(ERROR_CODES.MEDIA_QUOTA_EXCEEDED);
+        }
     }
 }

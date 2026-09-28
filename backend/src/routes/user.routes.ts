@@ -16,6 +16,7 @@ import {
     registerLimiter,
     resendVerificationLimiter,
     resetPasswordLimiter,
+    signOutEverywhereLimiter,
 } from "middleware/rateLimit";
 
 export default function createUserRouter(
@@ -54,6 +55,12 @@ export default function createUserRouter(
         authenticateToken,
         changePasswordLimiter,
         userSecurityController.changePassword,
+    );
+    router.post(
+        ROUTES.auth.signOutEverywhere,
+        authenticateToken,
+        signOutEverywhereLimiter,
+        userSecurityController.signOutEverywhere,
     );
     router.patch(
         ROUTES.auth.me,

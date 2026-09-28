@@ -1,7 +1,7 @@
 import "styles/global.scss";
 
 import type { Metadata, Viewport } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
@@ -11,6 +11,8 @@ import { isLocale, OPEN_GRAPH_LOCALES, toLocale } from "constants/locales";
 
 import { RESOURCES } from "i18n/resources";
 import { getServerTranslation } from "i18n/server";
+
+import { NONCE_HEADER } from "utils/contentSecurityPolicy";
 
 import { Providers } from "app/providers";
 import { themeInitScript } from "app/themeInit";
@@ -73,11 +75,15 @@ const RootLayout = async ({ children, params }: RootLayoutProps) => {
     }
 
     const hasSessionCookie = (await cookies()).has(AUTH_COOKIE_NAME);
+    const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
 
     return (
         <html lang={locale} suppressHydrationWarning>
             <head>
-                <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+                <script
+                    nonce={nonce}
+                    dangerouslySetInnerHTML={{ __html: themeInitScript }}
+                />
             </head>
             <body>
                 <Providers

@@ -9,7 +9,7 @@ import { getServerTranslation } from "i18n/server";
 
 import { formatKcal, roundCalories } from "utils/calories";
 import { formatRecipeDuration } from "utils/cookingTimeUtils";
-import { recipeTypeName } from "utils/referenceLabels";
+import { recipeTypeLabel } from "utils/referenceLabels";
 import { socialRatingFact } from "utils/socialRatingFact";
 
 import { renderSocialImage, socialImageEntry } from "app/socialImage";
@@ -70,11 +70,7 @@ const RecipeSocialImage = async ({ params }: RecipeImageProps) => {
     return renderSocialImage(
         <SocialCard
             appName={tCommon("appName")}
-            eyebrow={
-                recipe.type_name === null
-                    ? null
-                    : recipeTypeName(tCommon, recipe.type_name)
-            }
+            eyebrow={recipeTypeLabel(tCommon, recipe.type_name)}
             title={recipe.title}
             subtitle={tCommon("author.byline", {
                 name: recipe.author.name,

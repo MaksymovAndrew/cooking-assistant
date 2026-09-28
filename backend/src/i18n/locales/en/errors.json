@@ -52,5 +52,6 @@
     "media/unsupported_type": "Only JPEG, PNG, WebP or AVIF images can be uploaded",
     "media/unreadable": "The image could not be read",
     "media/too_large": "The image is too large",
-    "media/not_found": "Image not found"
+    "media/not_found": "Image not found",
+    "media/quota_exceeded": "This account has reached its photo limit. Remove a photo to add a new one"
 }

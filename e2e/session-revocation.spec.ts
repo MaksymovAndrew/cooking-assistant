@@ -87,3 +87,16 @@ test("should refuse the old password and accept the new one", async () => {
     await logIn(pageB, newPassword);
     await expect(pageB).toHaveURL("/profile");
 });
+
+test("should sign every other browser out on request and keep this one", async () => {
+    await pageB.goto("/settings");
+    await pageB.getByRole("button", { name: "Sign out…" }).click();
+    await pageB.getByRole("button", { name: "Sign out", exact: true }).click();
+    await expect(pageB.getByText("Signed out on other devices")).toBeVisible();
+
+    await pageB.goto("/profile");
+    await expect(pageB).toHaveURL("/profile");
+
+    await pageA.goto("/profile");
+    await expect(pageA).toHaveURL(/\/login/);
+});

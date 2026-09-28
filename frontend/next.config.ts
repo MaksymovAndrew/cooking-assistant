@@ -29,24 +29,8 @@ const isProduction = process.env.NODE_ENV === "production";
 // dev-proxy target is overridable via env; defaults to the local backend port
 const apiProxyTarget = process.env.API_INTERNAL_URL ?? "http://localhost:3000";
 
-// uploaded images are served by the API domain; in dev they come through the same-origin proxy
-const apiOrigin = process.env.NEXT_PUBLIC_API_URL
-    ? new URL(process.env.NEXT_PUBLIC_API_URL).origin
-    : "";
-
-// deliberately no script-src: a nonce-based policy needs middleware to mint a nonce per request,
-// which this app does not have. These directives hold without one
-const CONTENT_SECURITY_POLICY = [
-    "frame-ancestors 'none'",
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    // blob: is the local preview of a photo before it is uploaded
-    `img-src 'self' data: blob: ${apiOrigin}`.trim(),
-].join("; ");
-
+// the Content-Security-Policy is not here: it carries a per-request nonce, so src/proxy.ts sends it
 const SECURITY_HEADERS = [
-    { key: "Content-Security-Policy", value: CONTENT_SECURITY_POLICY },
     { key: "X-Frame-Options", value: "DENY" },
     { key: "X-Content-Type-Options", value: "nosniff" },
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

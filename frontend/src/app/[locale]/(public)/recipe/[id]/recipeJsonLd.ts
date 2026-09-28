@@ -10,7 +10,7 @@ import { isoDuration } from "utils/cookingTimeUtils";
 import { formatRatingAverage } from "utils/formatRating";
 import { localizePath } from "utils/localePath";
 import { mediaUrl } from "utils/mediaUrl";
-import { quantityWithUnit, recipeTypeName } from "utils/referenceLabels";
+import { quantityWithUnit, recipeTypeLabel } from "utils/referenceLabels";
 
 // the method is free text; each non-empty line reads as one step
 const instructionSteps = (content: string) =>
@@ -51,10 +51,7 @@ export const recipeJsonLd = (
         "@type": "Person",
         name: `${recipe.author.name} ${recipe.author.surname_initial}.`,
     },
-    recipeCategory:
-        recipe.type_name === null
-            ? undefined
-            : recipeTypeName(t, recipe.type_name),
+    recipeCategory: recipeTypeLabel(t, recipe.type_name) ?? undefined,
     totalTime:
         recipe.cooking_time === null
             ? undefined

@@ -33,6 +33,12 @@ export const accountSecurityApi = baseApi.injectEndpoints({
                 data,
             }),
         }),
+        signOutEverywhere: build.mutation<null, null>({
+            query: () => ({
+                url: API_ROUTES.auth.signOutEverywhere,
+                method: "POST",
+            }),
+        }),
         requestEmailVerification: build.mutation<null, null>({
             query: () => ({
                 url: API_ROUTES.auth.resendVerificationEmail,
@@ -54,6 +60,7 @@ export const {
     useForgotPasswordMutation,
     useResetPasswordMutation,
     useChangePasswordMutation,
+    useSignOutEverywhereMutation,
     useRequestEmailVerificationMutation,
     useConfirmEmailMutation,
 } = accountSecurityApi;

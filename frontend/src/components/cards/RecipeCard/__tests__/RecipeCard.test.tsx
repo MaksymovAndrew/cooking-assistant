@@ -4,10 +4,12 @@ import { RecipeCard } from "components/cards/RecipeCard";
 
 import { renderWithRouter } from "test/router";
 
+const TYPE_NAME = "Main course";
+
 const RECIPE = {
     id: 7,
     title: "Slow-roasted ragù",
-    type_name: "Main course",
+    type_name: TYPE_NAME,
     cooking_time: 85,
     calories_per_portion: null,
 };
@@ -31,7 +33,16 @@ describe("RecipeCard", () => {
     it("should render the recipe type as the chip label", () => {
         renderWithRouter(<RecipeCard recipe={RECIPE} />);
 
-        expect(screen.getByText("Main course")).toBeInTheDocument();
+        expect(screen.getByText(TYPE_NAME)).toBeInTheDocument();
+    });
+
+    it("should render a recipe without a type and no chip for it", () => {
+        renderWithRouter(
+            <RecipeCard recipe={{ ...RECIPE, type_name: null }} />,
+        );
+
+        expect(screen.getByText(RECIPE.title)).toBeInTheDocument();
+        expect(screen.queryByText(TYPE_NAME)).not.toBeInTheDocument();
     });
 
     it("should format the cooking time as hours and minutes", () => {

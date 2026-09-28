@@ -738,7 +738,19 @@
         "chamomile_tea": "Ромашковий чай",
         "hot_chocolate_mix": "Суміш для гарячого шоколаду",
         "club_soda": "Содова вода",
-        "tonic_water": "Тонік"
+        "tonic_water": "Тонік",
+        "kielbasa_smoked": "Копчена ковбаса",
+        "sausage_boiled": "Варена ковбаса",
+        "white_sausage": "Біла ковбаса",
+        "salo": "Сало",
+        "zurek_starter": "Закваска для журеку",
+        "potato_starch": "Картопляний крохмаль",
+        "gelatin": "Желатин",
+        "bryndza": "Бринза",
+        "kvass": "Квас",
+        "lingonberry": "Брусниця",
+        "dried_apples": "Сушені яблука",
+        "fruit_jam": "Варення"
     },
     "category": {
         "vegetables": "Овочі",

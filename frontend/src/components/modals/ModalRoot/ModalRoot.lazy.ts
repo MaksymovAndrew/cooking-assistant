@@ -80,6 +80,12 @@ export const RestockIngredientModal = lazy(() =>
     })),
 );
 
+export const SignOutEverywhereModal = lazy(() =>
+    import("components/modals/SignOutEverywhereModal").then((m) => ({
+        default: m.SignOutEverywhereModal,
+    })),
+);
+
 export const ThemeChangeConfirmModal = lazy(() =>
     import("components/modals/ThemeChangeConfirmModal").then((m) => ({
         default: m.ThemeChangeConfirmModal,

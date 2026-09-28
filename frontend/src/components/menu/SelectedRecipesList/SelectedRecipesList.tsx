@@ -6,7 +6,7 @@ import type { RecipeListItem } from "types/recipe";
 
 import { GripMark } from "components/icons";
 
-import { recipeTypeName } from "utils/referenceLabels";
+import { recipeTypeLabel } from "utils/referenceLabels";
 
 import styles from "./SelectedRecipesList.module.scss";
 
@@ -61,7 +61,7 @@ export const SelectedRecipesList: React.FC<SelectedRecipesListProps> = ({
                         {recipe.title}
                     </span>
                     <span className={styles["selected-recipes-list__type"]}>
-                        {recipeTypeName(t, recipe.type_name)}
+                        {recipeTypeLabel(t, recipe.type_name)}
                     </span>
                     <button
                         type="button"

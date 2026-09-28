@@ -7,7 +7,7 @@ import type { Tag } from "types/tag";
 export interface RecipeListItem {
     id: number;
     title: string;
-    type_name: string;
+    type_name: string | null;
     creation_date: string;
     cooking_time: number;
 }

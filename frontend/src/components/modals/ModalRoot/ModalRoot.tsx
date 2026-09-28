@@ -10,6 +10,7 @@ import {
     DeleteRecipeModal,
     DeleteTagModal,
     LogoutConfirmModal,
+    SignOutEverywhereModal,
     ThemeChangeConfirmModal,
 } from "./ModalRoot.lazy";
 import { renderIngredientModal } from "./ModalRoot.renderers";
@@ -50,6 +51,10 @@ const renderRecordModal = (
 
     if (modal?.type === MODAL_TYPE.logout) {
         return <LogoutConfirmModal modalId={modal.id} />;
+    }
+
+    if (modal?.type === MODAL_TYPE.signOutEverywhere) {
+        return <SignOutEverywhereModal modalId={modal.id} />;
     }
 
     if (modal?.type === MODAL_TYPE.themeChange) {

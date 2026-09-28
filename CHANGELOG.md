@@ -20,8 +20,13 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.9 - 2026-09-28
+
 ### Backend
 
+- Added: Sign out on every other device at once, staying signed in on the one you asked from.
+- Added: An account holds up to 500 photos across its recipes, menus and profile; replacing a photo never counts against it.
+- Added: Twelve more ingredients for Ukrainian, Polish and Russian cooking - smoked and boiled sausage, white sausage, cured pork fatback, sour rye starter for żurek, potato starch, gelatin, bryndza, kvass, lingonberries, dried apples and jam.
 - Added: Delete a single purchase from an ingredient's history; its amount leaves the stock, and the last one takes the ingredient out of the pantry.
 - Added: Throw out several purchases in one go - the expired-ingredients notice uses it to discard everything that went off.
 - Added: Menus remember when they were created, and the menu lists put the newest first by that date.
@@ -29,6 +34,8 @@ changelogs and the tags and now track everything here against one shared version
 
 ### Frontend
 
+- Added: "Sign out on other devices" in Settings, after a confirmation.
+- Added: A clear message when an account has reached its photo limit.
 - Added: A Share button on every recipe and menu - the phone's share sheet where there is one, a copied link otherwise.
 - Added: The expired-ingredients notice can throw out everything that went off, or put it all on the shopping list.
 - Added: A delete button on each purchase in an ingredient's history.
@@ -41,7 +48,13 @@ changelogs and the tags and now track everything here against one shared version
 - Fixed: On a narrow phone a long translated "Log in for the full experience" button ran off the screen; it now wraps.
 - Fixed: A recipe without a type or a menu without a category showed an empty label.
 - Changed: On a phone the owner's buttons under a recipe or menu sit in two rows - editing on top, the rest below - so every language fits.
+- Fixed: A recipe whose type had been removed broke the recipe lists and the profile page.
+- Security: Pages now allow only the scripts the server itself put there (a nonce-based script policy), so an injected script cannot run.
 - Removed: The "Notifications - coming soon" section in Settings.
+
+### Project
+
+- Added: The server health report (`status.sh`) now lives in the repository, describes the Next.js frontend, counts stored photos and no longer carries hardcoded addresses.
 
 ## 4.8 - 2026-09-27
 

@@ -68,6 +68,8 @@ export interface UserRepository {
     // raises the session version too, ending every session issued under the old password; null
     // when the account is gone
     updatePassword(id: number, hashedPassword: string): Promise<number | null>;
+    // raises the session version alone, ending every session issued so far; null when the account is gone
+    revokeSessions(id: number): Promise<number | null>;
     // what a session token must carry to still be valid; null once the account is gone
     findSessionVersion(id: number): Promise<number | null>;
     updateProfile(id: number, data: ProfileUpdate): Promise<void>;

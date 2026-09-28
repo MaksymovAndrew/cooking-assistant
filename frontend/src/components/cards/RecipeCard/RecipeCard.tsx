@@ -21,7 +21,7 @@ import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { mediaUrl } from "utils/mediaUrl";
 import { filterAllergens } from "utils/recipeAllergens";
-import { recipeTypeName } from "utils/referenceLabels";
+import { recipeTypeLabel } from "utils/referenceLabels";
 
 interface RecipeCardIngredient {
     allergens: string[];
@@ -32,7 +32,7 @@ interface RecipeCardRecipe {
     title: string;
     // absent from lists that predate the content language
     language?: Locale;
-    type_name: string;
+    type_name: string | null;
     cooking_time: number;
     calories_per_portion: number | null;
     ingredients?: RecipeCardIngredient[];
@@ -69,7 +69,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             title={recipe.title}
             imageIcon={UtensilsMark}
             imageSrc={mediaUrl(recipe.photo_key, "card")}
-            chipLabel={recipeTypeName(t, recipe.type_name)}
+            chipLabel={recipeTypeLabel(t, recipe.type_name)}
             language={recipe.language ?? null}
             mine={mine}
             variant={variant}

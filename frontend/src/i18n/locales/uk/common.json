@@ -130,7 +130,8 @@
         "media/unsupported_type": "Виберіть фото у форматі JPEG, PNG, WebP або AVIF.",
         "media/unreadable": "Не вдалося відкрити це фото. Спробуйте інше.",
         "media/too_large": "Фото завелике. Виберіть файл до 10 МБ.",
-        "media/not_found": "Це фото більше недоступне."
+        "media/not_found": "Це фото більше недоступне.",
+        "media/quota_exceeded": "Досягнуто ліміту в 500 фото. Видаліть одне, щоб додати нове."
     },
     "errorState": {
         "title": "Щось пішло не так",
@@ -145,6 +146,7 @@
         "ingredientsSaved": "Продукти збережено",
         "purchaseSaved": "Покупку збережено",
         "passwordChanged": "Пароль змінено",
+        "signedOutEverywhere": "Виконано вихід на інших пристроях",
         "verificationEmailSent": "Посилання для підтвердження надіслано",
         "profileUpdated": "Профіль оновлено",
         "accountDeleted": "Обліковий запис видалено",

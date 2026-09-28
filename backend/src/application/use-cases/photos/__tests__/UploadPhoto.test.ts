@@ -1,8 +1,15 @@
 import { ERROR_CODES } from "constants/errorCodes";
-import { NotFoundError, ValidationError } from "domain/errors/AppError";
+import {
+    ConflictError,
+    NotFoundError,
+    ValidationError,
+} from "domain/errors/AppError";
 import type { PhotoTarget } from "domain/repositories/PhotoRepository";
 
-import { IMAGE_VARIANTS } from "application/media/mediaFiles";
+import {
+    IMAGE_VARIANTS,
+    MAX_PHOTOS_PER_ACCOUNT,
+} from "application/media/mediaFiles";
 import UploadPhoto from "application/use-cases/photos/UploadPhoto";
 
 import { catchError } from "test/helpers/assertions";
@@ -15,7 +22,7 @@ const VARIANTS = IMAGE_VARIANTS.map((spec) => ({
 const UUID = /^[0-9a-f-]{36}$/;
 
 function setup(target: PhotoTarget = "recipe") {
-    const photoRepository = { replace: jest.fn() };
+    const photoRepository = { replace: jest.fn(), usage: jest.fn() };
     const imageProcessor = { toVariants: jest.fn() };
     const mediaStorage = { save: jest.fn(), remove: jest.fn() };
     const useCase = new UploadPhoto(
@@ -26,6 +33,10 @@ function setup(target: PhotoTarget = "recipe") {
     );
 
     imageProcessor.toVariants.mockResolvedValue(VARIANTS);
+    photoRepository.usage.mockResolvedValue({
+        count: 0,
+        targetHasPhoto: false,
+    });
 
     return { useCase, photoRepository, imageProcessor, mediaStorage };
 }
@@ -57,6 +68,39 @@ describe("UploadPhoto", () => {
     it("should remove the photo it replaced", async () => {
         const { useCase, photoRepository, mediaStorage } = setup();
 
+        photoRepository.replace.mockResolvedValue({ previousKey: "old-key" });
+
+        await useCase.execute(7, 5, JPEG);
+
+        expect(mediaStorage.remove).toHaveBeenCalledWith("old-key");
+    });
+
+    it("should refuse a new photo once the account holds the most it may, before decoding it", async () => {
+        const { useCase, photoRepository, imageProcessor } = setup("menu");
+
+        photoRepository.usage.mockResolvedValue({
+            count: MAX_PHOTOS_PER_ACCOUNT,
+            targetHasPhoto: false,
+        });
+
+        const error = await catchError(useCase.execute(7, 5, JPEG));
+
+        expect(error).toBeAppError(
+            ConflictError,
+            ERROR_CODES.MEDIA_QUOTA_EXCEEDED,
+            409,
+        );
+        expect(photoRepository.usage).toHaveBeenCalledWith(7, "menu", 5);
+        expect(imageProcessor.toVariants).not.toHaveBeenCalled();
+    });
+
+    it("should let a full account replace a photo it already has", async () => {
+        const { useCase, photoRepository, mediaStorage } = setup();
+
+        photoRepository.usage.mockResolvedValue({
+            count: MAX_PHOTOS_PER_ACCOUNT,
+            targetHasPhoto: true,
+        });
         photoRepository.replace.mockResolvedValue({ previousKey: "old-key" });
 
         await useCase.execute(7, 5, JPEG);

@@ -9,6 +9,7 @@ export const API_ROUTES = {
         forgotPassword: "/api/forgot-password",
         resetPassword: "/api/reset-password",
         changePassword: "/api/change-password",
+        signOutEverywhere: "/api/sign-out-everywhere",
         resendVerificationEmail: "/api/resend-verification-email",
         confirmEmail: "/api/confirm-email",
     },

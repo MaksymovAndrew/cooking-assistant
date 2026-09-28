@@ -29,6 +29,9 @@
         "changePasswordTitle": "Zmień hasło",
         "changePasswordDescription": "Ustaw nowe hasło do konta.",
         "changePasswordButton": "Zmień…",
+        "signOutEverywhereTitle": "Wyloguj na innych urządzeniach",
+        "signOutEverywhereDescription": "Kończy wszystkie sesje oprócz tej. Przydaje się po korzystaniu z cudzego komputera.",
+        "signOutEverywhereButton": "Wyloguj…",
         "deleteAccountTitle": "Usuń konto",
         "deleteAccountDescription": "Trwale usuwa przepisy, jadłospisy i zawartość spiżarni."
     },
@@ -47,6 +50,11 @@
             "newPasswordSameAsCurrent": "Nowe hasło musi się różnić od obecnego.",
             "genericError": "Coś poszło nie tak. Spróbuj ponownie."
         }
+    },
+    "signOutEverywhereModal": {
+        "title": "Wyloguj na innych urządzeniach",
+        "message": "Na każdej innej przeglądarce i telefonie trzeba będzie zalogować się ponownie. Ta sesja pozostanie aktywna.",
+        "confirm": "Wyloguj"
     },
     "deleteAccountModal": {
         "title": "Usunąć konto?",

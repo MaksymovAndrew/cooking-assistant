@@ -29,6 +29,9 @@
         "changePasswordTitle": "Change password",
         "changePasswordDescription": "Update the password for your account.",
         "changePasswordButton": "Change…",
+        "signOutEverywhereTitle": "Sign out on other devices",
+        "signOutEverywhereDescription": "Ends every session except this one. Handy after using a shared computer.",
+        "signOutEverywhereButton": "Sign out…",
         "deleteAccountTitle": "Delete account",
         "deleteAccountDescription": "Permanently removes recipes, menus and pantry data."
     },
@@ -47,6 +50,11 @@
             "newPasswordSameAsCurrent": "New password must be different from your current password.",
             "genericError": "Something went wrong. Please try again."
         }
+    },
+    "signOutEverywhereModal": {
+        "title": "Sign out on other devices",
+        "message": "Every other browser and phone signed in to your account will have to log in again. You stay signed in here.",
+        "confirm": "Sign out"
     },
     "deleteAccountModal": {
         "title": "Delete account?",

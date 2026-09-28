@@ -52,5 +52,6 @@
     "media/unsupported_type": "Можна завантажити лише зображення JPEG, PNG, WebP або AVIF",
     "media/unreadable": "Не вдалося прочитати зображення",
     "media/too_large": "Зображення завелике",
-    "media/not_found": "Зображення не знайдено"
+    "media/not_found": "Зображення не знайдено",
+    "media/quota_exceeded": "На акаунті вже максимум фото. Видаліть одне, щоб додати нове"
 }

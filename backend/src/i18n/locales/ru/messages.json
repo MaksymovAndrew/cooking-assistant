@@ -20,6 +20,7 @@
     "passwordResetEmailSent": "Если аккаунт с такой почтой существует и она подтверждена, мы отправили на неё ссылку для сброса пароля.",
     "passwordReset": "Пароль сброшен",
     "passwordChanged": "Пароль изменён",
+    "signedOutEverywhere": "Выполнен выход на других устройствах",
     "profileUpdated": "Профиль обновлён",
     "accountDeleted": "Аккаунт удалён",
     "verificationEmailSent": "Ссылка для подтверждения отправлена",

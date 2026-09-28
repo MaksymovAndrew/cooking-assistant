@@ -29,6 +29,9 @@
         "changePasswordTitle": "Змінити пароль",
         "changePasswordDescription": "Задайте новий пароль для облікового запису.",
         "changePasswordButton": "Змінити…",
+        "signOutEverywhereTitle": "Вийти на інших пристроях",
+        "signOutEverywhereDescription": "Завершує всі сеанси, крім поточного. Стане в пригоді, якщо ви входили з чужого комп’ютера.",
+        "signOutEverywhereButton": "Вийти…",
         "deleteAccountTitle": "Видалити обліковий запис",
         "deleteAccountDescription": "Назавжди видалить рецепти, меню та продукти."
     },
@@ -47,6 +50,11 @@
             "newPasswordSameAsCurrent": "Новий пароль має відрізнятися від поточного.",
             "genericError": "Щось пішло не так. Спробуйте ще раз."
         }
+    },
+    "signOutEverywhereModal": {
+        "title": "Вийти на інших пристроях",
+        "message": "У всіх інших браузерах і на телефонах доведеться увійти знову. Тут ви залишитеся в акаунті.",
+        "confirm": "Вийти"
     },
     "deleteAccountModal": {
         "title": "Видалити обліковий запис?",

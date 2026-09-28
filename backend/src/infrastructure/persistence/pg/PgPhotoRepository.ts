@@ -4,12 +4,40 @@ import type {
     PhotoRepository,
     PhotoSwap,
     PhotoTarget,
+    PhotoUsage,
 } from "domain/repositories/PhotoRepository";
 
 import { PHOTO_TABLES } from "infrastructure/persistence/pg/photoTables";
 
 export default class PgPhotoRepository implements PhotoRepository {
     constructor(private pool: Pool) {}
+
+    async usage(
+        personId: number,
+        target: PhotoTarget,
+        targetId: number,
+    ): Promise<PhotoUsage> {
+        const { table, idColumn, ownerColumn, keyColumn } =
+            PHOTO_TABLES[target];
+        const result = await this.pool.query<{
+            count: number;
+            target_has_photo: boolean;
+        }>(
+            `SELECT
+                 ((SELECT count(*) FROM recipes WHERE person_id = $1 AND photo_key IS NOT NULL)
+                 + (SELECT count(*) FROM menu WHERE person_id = $1 AND photo_key IS NOT NULL)
+                 + (SELECT count(*) FROM person WHERE id = $1 AND avatar_photo_key IS NOT NULL)
+                 )::int AS count,
+                 EXISTS (
+                     SELECT 1 FROM ${table}
+                     WHERE ${idColumn} = $2 AND ${ownerColumn} = $1 AND ${keyColumn} IS NOT NULL
+                 ) AS target_has_photo`,
+            [personId, targetId],
+        );
+        const [row] = result.rows;
+
+        return { count: row.count, targetHasPhoto: row.target_has_photo };
+    }
 
     // the locked subquery hands back the key being replaced, so two uploads racing for one record
     // each learn exactly which file they displaced

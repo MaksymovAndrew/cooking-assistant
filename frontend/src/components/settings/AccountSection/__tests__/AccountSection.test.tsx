@@ -15,6 +15,7 @@ const baseProps = {
     onResendVerification: jest.fn(),
     isResendDisabled: false,
     onChangePassword: jest.fn(),
+    onSignOutEverywhere: jest.fn(),
     onDeleteAccount: jest.fn(),
 };
 
@@ -40,6 +41,23 @@ describe("AccountSection", () => {
         await userEvent.click(screen.getByRole("button", { name: "Change…" }));
 
         expect(onChangePassword).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call onSignOutEverywhere when Sign out… is clicked", async () => {
+        const onSignOutEverywhere = jest.fn();
+
+        renderWithRouter(
+            <AccountSection
+                {...baseProps}
+                onSignOutEverywhere={onSignOutEverywhere}
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Sign out…" }),
+        );
+
+        expect(onSignOutEverywhere).toHaveBeenCalledTimes(1);
     });
 
     it("should call onDeleteAccount after holding the delete button for the full duration", () => {

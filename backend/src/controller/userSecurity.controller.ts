@@ -9,6 +9,7 @@ import type ConfirmEmailVerification from "application/use-cases/users/ConfirmEm
 import type ConfirmPasswordReset from "application/use-cases/users/ConfirmPasswordReset";
 import type RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
 import type RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
+import type SignOutEverywhere from "application/use-cases/users/SignOutEverywhere";
 
 import { getUserId } from "controller/requestUser";
 
@@ -16,6 +17,7 @@ interface UserSecurityControllerDependencies {
     requestPasswordReset: RequestPasswordReset;
     confirmPasswordReset: ConfirmPasswordReset;
     changePassword: ChangePassword;
+    signOutEverywhere: SignOutEverywhere;
     requestEmailVerification: RequestEmailVerification;
     confirmEmailVerification: ConfirmEmailVerification;
 }
@@ -24,6 +26,7 @@ export default class UserSecurityController {
     private requestPasswordResetUseCase: RequestPasswordReset;
     private confirmPasswordResetUseCase: ConfirmPasswordReset;
     private changePasswordUseCase: ChangePassword;
+    private signOutEverywhereUseCase: SignOutEverywhere;
     private requestEmailVerificationUseCase: RequestEmailVerification;
     private confirmEmailVerificationUseCase: ConfirmEmailVerification;
 
@@ -31,12 +34,14 @@ export default class UserSecurityController {
         requestPasswordReset,
         confirmPasswordReset,
         changePassword,
+        signOutEverywhere,
         requestEmailVerification,
         confirmEmailVerification,
     }: UserSecurityControllerDependencies) {
         this.requestPasswordResetUseCase = requestPasswordReset;
         this.confirmPasswordResetUseCase = confirmPasswordReset;
         this.changePasswordUseCase = changePassword;
+        this.signOutEverywhereUseCase = signOutEverywhere;
         this.requestEmailVerificationUseCase = requestEmailVerification;
         this.confirmEmailVerificationUseCase = confirmEmailVerification;
     }
@@ -73,6 +78,20 @@ export default class UserSecurityController {
         res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
         res.json({
             message: translateMessage("passwordChanged", requestLocale(req)),
+        });
+    };
+
+    signOutEverywhere: RequestHandler = async (req, res) => {
+        const { token } = await this.signOutEverywhereUseCase.execute(
+            getUserId(req),
+        );
+
+        res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
+        res.json({
+            message: translateMessage(
+                "signedOutEverywhere",
+                requestLocale(req),
+            ),
         });
     };
 

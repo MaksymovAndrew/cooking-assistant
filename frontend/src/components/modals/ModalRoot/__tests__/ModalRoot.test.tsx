@@ -270,6 +270,7 @@ describe("ModalRoot", () => {
                 unitName: "l",
                 lots: [
                     {
+                        purchaseId: 101,
                         quantity: 1,
                         purchaseDate: "2026-01-01T00:00:00.000Z",
                         expiryDate: "2026-01-05T00:00:00.000Z",

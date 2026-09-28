@@ -202,4 +202,112 @@ describe("PgPantryRepository (real Postgres)", () => {
 
         expect(history).toHaveLength(0);
     });
+
+    it("should take a deleted lot out of the stock and keep the other lots", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+
+        await repository.addIngredients(userId, [
+            { id: ingredientId, quantity_person_ingradient: 5 },
+        ]);
+        await repository.addIngredients(userId, [
+            { id: ingredientId, quantity_person_ingradient: 2 },
+        ]);
+        const history = (await repository.findPurchaseHistory(
+            userId,
+            ingredientId,
+        )) as PurchaseRow[];
+
+        const deleted = await repository.deletePurchases(userId, [
+            history[0].id,
+        ]);
+        const pantryRow = await findPantryRow(ingredientId);
+
+        expect(deleted).toBe(1);
+        expect(pantryRow?.quantity_person_ingradient).toBe(2);
+        expect(pantryRow?.lots).toHaveLength(1);
+    });
+
+    it("should remove the pantry item with its last lot", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+
+        await repository.addIngredients(userId, [
+            { id: ingredientId, quantity_person_ingradient: 3 },
+        ]);
+        const history = (await repository.findPurchaseHistory(
+            userId,
+            ingredientId,
+        )) as PurchaseRow[];
+
+        await repository.deletePurchases(userId, [history[0].id]);
+
+        expect(await findPantryRow(ingredientId)).toBeUndefined();
+    });
+
+    it("should not delete another person's purchase", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+        const otherUserId = await createPerson(pool);
+
+        await repository.addIngredients(otherUserId, [
+            { id: ingredientId, quantity_person_ingradient: 3 },
+        ]);
+        const history = (await repository.findPurchaseHistory(
+            otherUserId,
+            ingredientId,
+        )) as PurchaseRow[];
+
+        const deleted = await repository.deletePurchases(userId, [
+            history[0].id,
+        ]);
+
+        expect(deleted).toBe(0);
+        expect(
+            await repository.findPurchaseHistory(otherUserId, ingredientId),
+        ).toHaveLength(1);
+    });
+
+    it("should discard lots of several ingredients in one go", async () => {
+        const kept = await createIngredient(pool, unitId);
+        const emptied = await createIngredient(pool, unitId);
+
+        await repository.addIngredients(userId, [
+            { id: kept, quantity_person_ingradient: 4 },
+            { id: emptied, quantity_person_ingradient: 1 },
+        ]);
+        await repository.addIngredients(userId, [
+            { id: kept, quantity_person_ingradient: 3 },
+        ]);
+        const keptHistory = (await repository.findPurchaseHistory(
+            userId,
+            kept,
+        )) as PurchaseRow[];
+        const emptiedHistory = (await repository.findPurchaseHistory(
+            userId,
+            emptied,
+        )) as PurchaseRow[];
+
+        const discarded = await repository.deletePurchases(userId, [
+            keptHistory[0].id,
+            emptiedHistory[0].id,
+        ]);
+
+        expect(discarded).toBe(2);
+        expect((await findPantryRow(kept))?.quantity_person_ingradient).toBe(3);
+        expect(await findPantryRow(emptied)).toBeUndefined();
+    });
+
+    it("should hand each lot its purchase id", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+
+        await repository.addIngredients(userId, [
+            { id: ingredientId, quantity_person_ingradient: 2 },
+        ]);
+        const history = (await repository.findPurchaseHistory(
+            userId,
+            ingredientId,
+        )) as PurchaseRow[];
+
+        expect((await findPantryRow(ingredientId))?.lots).toEqual([
+            expect.objectContaining({ id: history[0].id, quantity: 2 }),
+        ]);
+    });
 });

@@ -65,6 +65,18 @@ describe("SettingsPage", () => {
         ).not.toBeInTheDocument();
     });
 
+    it("should queue the sign-out-everywhere confirmation", async () => {
+        const { store } = setup();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Sign out…" }),
+        );
+
+        expect(selectActiveModal(store.getState())?.type).toBe(
+            MODAL_TYPE.signOutEverywhere,
+        );
+    });
+
     it("should open the delete-account modal after holding the delete button", () => {
         jest.useFakeTimers();
         setup();

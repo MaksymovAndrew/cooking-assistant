@@ -15,6 +15,7 @@ export interface ExpiringIngredient extends CatalogIngredientRef {
 
 // one expired purchase lot, as shown in the expired-ingredients notice
 export interface ExpiredLot {
+    purchaseId: number;
     quantity: number;
     purchaseDate: string;
     expiryDate: string;

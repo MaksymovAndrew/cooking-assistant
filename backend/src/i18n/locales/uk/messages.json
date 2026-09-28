@@ -12,6 +12,7 @@
     "ingredientsUpdated": "Продукти оновлено",
     "ingredientDeleted": "Продукт та історію його покупок видалено",
     "purchaseUpdated": "Кількість у покупці оновлено",
+    "purchaseDeleted": "Покупку видалено",
 
     "intakeDeleted": "Запис видалено",
     "calorieGoalUpdated": "Ціль за калоріями оновлено",
@@ -19,6 +20,7 @@
     "passwordResetEmailSent": "Якщо обліковий запис із такою поштою існує і її підтверджено, ми надіслали на неї посилання для скидання пароля.",
     "passwordReset": "Пароль скинуто",
     "passwordChanged": "Пароль змінено",
+    "signedOutEverywhere": "Виконано вихід на інших пристроях",
     "profileUpdated": "Профіль оновлено",
     "accountDeleted": "Обліковий запис видалено",
     "verificationEmailSent": "Посилання для підтвердження надіслано",

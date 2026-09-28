@@ -70,11 +70,11 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
             />
 
             <div className={styles["recipe-hero__tags"]}>
-                <Chip variant="type">
-                    {recipe.type_name === null
-                        ? null
-                        : recipeTypeName(t, recipe.type_name)}
-                </Chip>
+                {recipe.type_name !== null && (
+                    <Chip variant="type">
+                        {recipeTypeName(t, recipe.type_name)}
+                    </Chip>
+                )}
                 <LanguageBadge language={recipe.language} />
             </div>
             <h1 className={styles["recipe-hero__title"]} lang={recipe.language}>
@@ -107,6 +107,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 favourite={favourite}
                 visitorFavourite={visitorFavourite}
                 favouriteLabel={favouriteLabel}
+                shareTitle={recipe.title}
                 editTo={editTo}
                 onDelete={onDelete}
                 onLogIntake={onLogIntake}

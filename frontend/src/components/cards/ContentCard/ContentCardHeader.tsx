@@ -20,7 +20,7 @@ interface ContentCardImageProps {
     isRow: boolean;
     imageIcon: ContentCardIcon;
     imageSrc: string | null;
-    chipLabel: string;
+    chipLabel: string | null;
     language: Locale | null;
     favourite: ContentCardFavouriteState | null;
 }
@@ -47,7 +47,9 @@ export const ContentCardImage: React.FC<ContentCardImageProps> = ({
         />
         {!isRow && (
             <span className={styles["content-card__tags"]}>
-                <ContentCardChip isRow={isRow} label={chipLabel} />
+                {chipLabel && (
+                    <ContentCardChip isRow={isRow} label={chipLabel} />
+                )}
                 {language && (
                     <LanguageBadge language={language} tone="overlay" />
                 )}
@@ -60,7 +62,7 @@ export const ContentCardImage: React.FC<ContentCardImageProps> = ({
 );
 
 interface ContentCardRowHeaderProps {
-    chipLabel: string;
+    chipLabel: string | null;
     language: Locale | null;
     favourite: ContentCardFavouriteState | null;
 }
@@ -72,7 +74,7 @@ export const ContentCardRowHeader: React.FC<ContentCardRowHeaderProps> = ({
 }) => (
     <span className={styles["content-card__row-header"]}>
         <span className={styles["content-card__tags"]}>
-            <ContentCardChip isRow label={chipLabel} />
+            {chipLabel && <ContentCardChip isRow label={chipLabel} />}
             {language && <LanguageBadge language={language} />}
         </span>
         {favourite && <ContentCardFavourite isRow {...favourite} />}

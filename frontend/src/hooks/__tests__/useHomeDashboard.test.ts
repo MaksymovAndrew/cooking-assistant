@@ -1,7 +1,7 @@
 import { act } from "@testing-library/react";
 
 import type { Menu } from "types/menu";
-import type { RecipeListItem, RecipeWithIngredientNames } from "types/recipe";
+import type { RecipeListItem } from "types/recipe";
 import type { UserIngredient } from "types/userIngredient";
 
 import { API_ROUTES } from "api/endpoints";
@@ -12,7 +12,7 @@ import { userIngredientsApi } from "redux/services/userIngredientsApi";
 
 import { useHomeDashboard } from "hooks/useHomeDashboard";
 
-import { mockGetByUrl } from "test/apiClientMock";
+import { mockedGet, mockGetByUrl } from "test/apiClientMock";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
@@ -32,13 +32,12 @@ const daysFromNow = (days: number): string => {
     return `${year}-${month}-${day}`;
 };
 
-const RECIPE_1: RecipeWithIngredientNames = {
+const RECIPE_1: RecipeListItem = {
     id: 1,
     title: "Borscht",
     type_name: "Soup",
     creation_date: "2024-01-01",
     cooking_time: 60,
-    ingredients: ["beet"],
 };
 
 const MENU_1: Menu = {
@@ -101,41 +100,62 @@ const setup = async (
     pantry: UserIngredient[] = [],
 ) => {
     mockGetByUrl({
-        [API_ROUTES.recipes.list]: [RECIPE_1],
         [API_ROUTES.recipes.byPerson]: {
             items: recentRecipes,
             total: recentRecipes.length,
         },
-        [API_ROUTES.menu.allUnpaginated]: [MENU_1],
+        [API_ROUTES.recipes.byFilters]: { items: [RECIPE_1], total: 4 },
+        [API_ROUTES.menu.byPerson]: { items: [MENU_1], total: 1 },
         [API_ROUTES.userIngredients.list]: pantry,
     });
 
     const store = makeTestStore();
 
     await Promise.all([
-        store.dispatch(recipesApi.endpoints.getAllRecipes.initiate(null)),
         store.dispatch(
             recipesApi.endpoints.getRecipesByPerson.initiate(
                 RECENT_RECIPES_PARAMS,
             ),
         ),
-        store.dispatch(menusApi.endpoints.getAllMenus.initiate(null)),
+        store.dispatch(menusApi.endpoints.getMenusByPerson.initiate({})),
         store.dispatch(
             userIngredientsApi.endpoints.getUserIngredients.initiate(null),
         ),
     ]);
 
-    return renderHookWithStore(() => useHomeDashboard(), store);
+    const view = renderHookWithStore(() => useHomeDashboard(), store);
+
+    await act(async () => {
+        await Promise.resolve();
+    });
+
+    return view;
 };
 
 describe("useHomeDashboard", () => {
-    it("should aggregate recipe, menu and pantry counts from the shared caches", async () => {
+    it("should count the viewer's own recipes and menus from the first page totals", async () => {
         const { result } = await setup([RECIPE_1], [FRESH_INGREDIENT]);
 
         expect(result.current.recipesCount).toBe(1);
         expect(result.current.menusCount).toBe(1);
         expect(result.current.pantryCount).toBe(1);
         expect(result.current.isLoading).toBe(false);
+    });
+
+    it("should count the recipes the pantry fully covers", async () => {
+        const { result } = await setup([RECIPE_1], [FRESH_INGREDIENT]);
+
+        expect(result.current.cookableRecipesCount).toBe(4);
+    });
+
+    it("should not ask which recipes an empty pantry covers", async () => {
+        const { result } = await setup([RECIPE_1], []);
+
+        expect(result.current.cookableRecipesCount).toBeNull();
+        expect(mockedGet).not.toHaveBeenCalledWith(
+            API_ROUTES.recipes.byFilters,
+            expect.anything(),
+        );
     });
 
     it("should flatten the recent recipes from the infinite query pages", async () => {
@@ -181,9 +201,8 @@ describe("useHomeDashboard", () => {
 
     it("should report loading before every cache has resolved", () => {
         mockGetByUrl({
-            [API_ROUTES.recipes.list]: [RECIPE_1],
             [API_ROUTES.recipes.byPerson]: { items: [], total: 0 },
-            [API_ROUTES.menu.allUnpaginated]: [],
+            [API_ROUTES.menu.byPerson]: { items: [], total: 0 },
             [API_ROUTES.userIngredients.list]: [],
         });
 
@@ -194,21 +213,19 @@ describe("useHomeDashboard", () => {
 
     it("should report an error when a query fails", async () => {
         mockGetByUrl({
-            [API_ROUTES.recipes.list]: [RECIPE_1],
             [API_ROUTES.recipes.byPerson]: { items: [], total: 0 },
-            [API_ROUTES.menu.allUnpaginated]: [],
+            [API_ROUTES.menu.byPerson]: { items: [], total: 0 },
         });
 
         const store = makeTestStore();
 
         await Promise.all([
-            store.dispatch(recipesApi.endpoints.getAllRecipes.initiate(null)),
             store.dispatch(
                 recipesApi.endpoints.getRecipesByPerson.initiate(
                     RECENT_RECIPES_PARAMS,
                 ),
             ),
-            store.dispatch(menusApi.endpoints.getAllMenus.initiate(null)),
+            store.dispatch(menusApi.endpoints.getMenusByPerson.initiate({})),
             store.dispatch(
                 userIngredientsApi.endpoints.getUserIngredients.initiate(null),
             ),

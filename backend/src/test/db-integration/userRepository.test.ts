@@ -291,6 +291,26 @@ describe("PgUserRepository (real Postgres)", () => {
         expect(await repository.findSessionVersion(created.id)).toBe(1);
     });
 
+    it("should raise the session version without touching the password", async () => {
+        const created = await repository.create({
+            name: "Grace",
+            surname: "Hopper",
+            login: unique("revoke"),
+            password: PASSWORD,
+            locale: DEFAULT_LOCALE,
+            email: uniqueEmail("grace"),
+        });
+
+        const raised = await repository.revokeSessions(created.id);
+
+        expect(raised).toBe(1);
+        expect(await repository.findSessionVersion(created.id)).toBe(1);
+        expect(
+            (await repository.findCredentialsById(created.id))?.password,
+        ).toBe(PASSWORD);
+        expect(await repository.revokeSessions(2_000_000_000)).toBeNull();
+    });
+
     it("should report no session version for an account that does not exist", async () => {
         expect(await repository.findSessionVersion(2_000_000_000)).toBeNull();
         expect(

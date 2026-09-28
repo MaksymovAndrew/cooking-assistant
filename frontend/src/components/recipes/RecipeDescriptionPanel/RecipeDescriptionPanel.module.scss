@@ -16,6 +16,7 @@
         @include wrap-anywhere;
 
         margin: 0 0 var(--s-6);
+        white-space: pre-line;
         color: var(--text-2);
         font:
             400 15px/1.65 Inter,

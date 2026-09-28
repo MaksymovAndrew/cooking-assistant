@@ -77,7 +77,6 @@
         "categoryLabel": "Категория меню *",
         "categoryPlaceholder": "Выберите категорию",
         "recipesLabel": "Рецепты",
-        "selectedRecipes": "Выбранные рецепты",
         "createButton": "Создать меню",
         "errorTitle": "Укажите название меню.",
         "errorDescription": "Добавьте описание меню.",
@@ -94,7 +93,6 @@
         "categoryLabel": "Категория меню *",
         "categoryPlaceholder": "Выберите категорию",
         "recipesLabel": "Рецепты",
-        "selectedRecipes": "Выбранные рецепты",
         "updateButton": "Сохранить изменения",
         "loading": "Загрузка…",
         "errorTitle": "Укажите название меню.",
@@ -148,10 +146,8 @@
         "favourite": "В избранное",
         "editButton": "Изменить меню",
         "deleteButton": "Удалить меню",
-        "loading": "Загрузка…",
         "deleteTitle": "Удалить меню?",
         "deleteMessage": "Удалить «{{title}}»? Сами рецепты останутся. Отменить это будет нельзя.",
-        "error": "Ошибка: {{message}}",
         "logIntake": "Записать в дневник",
         "guestCta": "Войдите, чтобы открыть все возможности",
         "metaFallbackDescription_one": "Меню ({{category}}) из {{count}} рецепта.",
@@ -161,6 +157,7 @@
         "metaFallbackDescriptionUncategorised_one": "Меню из {{count}} рецепта.",
         "metaFallbackDescriptionUncategorised_few": "Меню из {{count}} рецептов.",
         "metaFallbackDescriptionUncategorised_many": "Меню из {{count}} рецептов.",
-        "metaFallbackDescriptionUncategorised_other": "Меню из {{count}} рецепта."
+        "metaFallbackDescriptionUncategorised_other": "Меню из {{count}} рецепта.",
+        "creationDate": "Дата создания"
     }
 }

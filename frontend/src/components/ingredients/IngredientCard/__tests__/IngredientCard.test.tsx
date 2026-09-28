@@ -81,7 +81,9 @@ describe("IngredientCard", () => {
                 ingredient={{
                     ...BASE_INGREDIENT,
                     days_to_expire: 1,
-                    lots: [{ quantity: 3, purchase_date: "2000-01-01" }],
+                    lots: [
+                        { id: 105, quantity: 3, purchase_date: "2000-01-01" },
+                    ],
                 }}
                 onOpenHistory={jest.fn()}
                 onRestock={jest.fn()}
@@ -150,8 +152,9 @@ describe("IngredientCard", () => {
                     ...BASE_INGREDIENT,
                     days_to_expire: 10,
                     lots: [
-                        { quantity: 1, purchase_date: "2000-01-01" },
+                        { id: 104, quantity: 1, purchase_date: "2000-01-01" },
                         {
+                            id: 103,
                             quantity: 2,
                             purchase_date: new Date().toISOString(),
                         },
@@ -174,6 +177,7 @@ describe("IngredientCard", () => {
                     days_to_expire: 3,
                     lots: [
                         {
+                            id: 102,
                             quantity: 3,
                             purchase_date: new Date().toISOString(),
                         },
@@ -196,6 +200,7 @@ describe("IngredientCard", () => {
                     days_to_expire: 30,
                     lots: [
                         {
+                            id: 101,
                             quantity: 3,
                             purchase_date: new Date().toISOString(),
                         },

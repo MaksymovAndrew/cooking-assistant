@@ -42,6 +42,9 @@
         "caloriesValue": "{{count}} kcal",
         "loading": "Loading statistics…",
         "error": "Error: {{message}}",
-        "errorFetch": "Error fetching statistics"
+        "errorFetch": "Error fetching statistics",
+        "emptyTitle": "No statistics yet",
+        "emptyDescription": "Numbers show up here once the first recipes are in.",
+        "emptyAction": "Add a recipe"
     }
 }

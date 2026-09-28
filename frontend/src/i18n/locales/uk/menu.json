@@ -77,7 +77,6 @@
         "categoryLabel": "Категорія меню *",
         "categoryPlaceholder": "Виберіть категорію",
         "recipesLabel": "Рецепти",
-        "selectedRecipes": "Вибрані рецепти",
         "createButton": "Створити меню",
         "errorTitle": "Вкажіть назву меню.",
         "errorDescription": "Додайте опис меню.",
@@ -94,7 +93,6 @@
         "categoryLabel": "Категорія меню *",
         "categoryPlaceholder": "Виберіть категорію",
         "recipesLabel": "Рецепти",
-        "selectedRecipes": "Вибрані рецепти",
         "updateButton": "Зберегти зміни",
         "loading": "Завантаження…",
         "errorTitle": "Вкажіть назву меню.",
@@ -148,10 +146,8 @@
         "favourite": "До обраного",
         "editButton": "Змінити меню",
         "deleteButton": "Видалити меню",
-        "loading": "Завантаження…",
         "deleteTitle": "Видалити меню?",
         "deleteMessage": "Видалити «{{title}}»? Самі рецепти залишаться. Скасувати це буде неможливо.",
-        "error": "Помилка: {{message}}",
         "logIntake": "Записати до щоденника",
         "guestCta": "Увійдіть, щоб відкрити всі можливості",
         "metaFallbackDescription_one": "Меню ({{category}}) з {{count}} рецепта.",
@@ -161,6 +157,7 @@
         "metaFallbackDescriptionUncategorised_one": "Меню з {{count}} рецепта.",
         "metaFallbackDescriptionUncategorised_few": "Меню з {{count}} рецептів.",
         "metaFallbackDescriptionUncategorised_many": "Меню з {{count}} рецептів.",
-        "metaFallbackDescriptionUncategorised_other": "Меню з {{count}} рецепта."
+        "metaFallbackDescriptionUncategorised_other": "Меню з {{count}} рецепта.",
+        "creationDate": "Дата створення"
     }
 }

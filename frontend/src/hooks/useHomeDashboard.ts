@@ -3,10 +3,13 @@ import { useMemo } from "react";
 import type { ExpiringIngredient } from "types/expiry";
 import type { RecipeSearchResultItem } from "types/recipe";
 
-import { flattenPages } from "redux/services/infiniteQueryHelpers";
-import { useGetAllMenusQuery } from "redux/services/menusApi";
 import {
-    useGetAllRecipesQuery,
+    flattenPages,
+    getPaginatedTotal,
+} from "redux/services/infiniteQueryHelpers";
+import { useGetMenusByPersonInfiniteQuery } from "redux/services/menusApi";
+import {
+    useGetRecipesByFiltersInfiniteQuery,
     useGetRecipesByPersonInfiniteQuery,
 } from "redux/services/recipesApi";
 import { useGetUserIngredientsQuery } from "redux/services/userIngredientsApi";
@@ -21,6 +24,9 @@ const RECENT_RECIPES_LIMIT = 9;
 const EXPIRING_SOON_LIMIT = 5;
 // omitting sort_order falls back to the backend's creation_date DESC
 const RECENT_RECIPES_PARAMS = {};
+// the counters read the first page's total, so the whole list is never downloaded to count it
+const MY_MENUS_PARAMS = {};
+const COOKABLE_RECIPES_PARAMS = { in_pantry: true };
 
 const byNearestExpiry = (a: ExpiringIngredient, b: ExpiringIngredient) =>
     a.status.days - b.status.days;
@@ -30,10 +36,15 @@ const isExpiringIngredient = (
 ): item is ExpiringIngredient => item !== null;
 
 export const useHomeDashboard = () => {
-    const allRecipes = useGetAllRecipesQuery(null);
-    const allMenus = useGetAllMenusQuery(null);
     const pantry = useGetUserIngredientsQuery(null);
     const recent = useGetRecipesByPersonInfiniteQuery(RECENT_RECIPES_PARAMS);
+    const myMenus = useGetMenusByPersonInfiniteQuery(MY_MENUS_PARAMS);
+    const pantryCount = pantry.data?.length ?? 0;
+    // an empty pantry covers no recipe, so there is nothing to ask the server
+    const cookable = useGetRecipesByFiltersInfiniteQuery(
+        COOKABLE_RECIPES_PARAMS,
+        { skip: pantryCount === 0 },
+    );
     const calorieBudget = useCalorieBudget();
 
     const recentRecipes = useMemo<RecipeSearchResultItem[]>(
@@ -64,22 +75,18 @@ export const useHomeDashboard = () => {
             .sort(byNearestExpiry);
     }, [pantry.data]);
 
-    const isLoading =
-        allRecipes.isLoading ||
-        allMenus.isLoading ||
-        pantry.isLoading ||
-        recent.isLoading;
+    const isLoading = myMenus.isLoading || pantry.isLoading || recent.isLoading;
 
-    const isError =
-        allRecipes.isError ||
-        allMenus.isError ||
-        pantry.isError ||
-        recent.isError;
+    const isError = myMenus.isError || pantry.isError || recent.isError;
 
     return {
-        recipesCount: allRecipes.data?.length ?? 0,
-        menusCount: allMenus.data?.length ?? 0,
-        pantryCount: pantry.data?.length ?? 0,
+        recipesCount: getPaginatedTotal(recent.data),
+        menusCount: getPaginatedTotal(myMenus.data),
+        pantryCount,
+        // null until known, so the card never claims "none" while the count is on its way
+        cookableRecipesCount: cookable.data
+            ? getPaginatedTotal(cookable.data)
+            : null,
         expiringSoonCount: urgentIngredients.length,
         expiringSoon: urgentIngredients.slice(0, EXPIRING_SOON_LIMIT),
         // the card lists five, but restocking covers every urgent ingredient the counter reports

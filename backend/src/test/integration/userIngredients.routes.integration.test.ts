@@ -122,4 +122,54 @@ describe("user ingredient routes", () => {
         expect(res.status).toBe(404);
         expect(res.body).toEqual(errorBody(ERROR_CODES.PURCHASE_NOT_FOUND));
     });
+
+    it("should delete a single purchase", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.pantryRepository.deletePurchases.mockResolvedValue(1);
+
+        const res = await request(app)
+            .delete("/api/user-ingredients/history/11")
+            .set("Cookie", authCookie(7));
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            message: translateMessage("purchaseDeleted", DEFAULT_LOCALE),
+        });
+        expect(deps.pantryRepository.deletePurchases).toHaveBeenCalledWith(
+            7,
+            [11],
+        );
+    });
+
+    it("should answer 404 when the purchase to delete does not exist", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.pantryRepository.deletePurchases.mockResolvedValue(0);
+
+        const res = await request(app)
+            .delete("/api/user-ingredients/history/99")
+            .set("Cookie", authCookie(7));
+
+        expect(res.status).toBe(404);
+        expect(res.body).toEqual(errorBody(ERROR_CODES.PURCHASE_NOT_FOUND));
+    });
+
+    it("should discard several purchases at once", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.pantryRepository.deletePurchases.mockResolvedValue(2);
+
+        const res = await request(app)
+            .post("/api/user-ingredients/history/discard")
+            .set("Cookie", authCookie(7))
+            .send({ purchaseIds: [11, 12] });
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({ discarded: 2 });
+        expect(deps.pantryRepository.deletePurchases).toHaveBeenCalledWith(
+            7,
+            [11, 12],
+        );
+    });
 });

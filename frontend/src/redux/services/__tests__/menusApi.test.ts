@@ -36,6 +36,7 @@ const PAGE = { items: LIST, total: LIST.length };
 const PARAMS: MenuListParams = { menu_name: "Week" };
 const DETAIL: MenuDetails = {
     menu: {
+        creation_date: "2026-01-01T00:00:00.000Z",
         id: 1,
         title: "Week",
         language: "en",

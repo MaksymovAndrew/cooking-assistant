@@ -12,6 +12,7 @@
     "ingredientsUpdated": "Produkty zaktualizowane",
     "ingredientDeleted": "Produkt i historia jego zakupów usunięte",
     "purchaseUpdated": "Ilość w zakupie zaktualizowana",
+    "purchaseDeleted": "Zakup usunięty",
 
     "intakeDeleted": "Wpis usunięty",
     "calorieGoalUpdated": "Cel kaloryczny zaktualizowany",
@@ -19,6 +20,7 @@
     "passwordResetEmailSent": "Jeśli konto z tym adresem e-mail istnieje, a adres jest potwierdzony, wysłaliśmy na niego link do zresetowania hasła.",
     "passwordReset": "Hasło zresetowane",
     "passwordChanged": "Hasło zmienione",
+    "signedOutEverywhere": "Wylogowano na innych urządzeniach",
     "profileUpdated": "Profil zaktualizowany",
     "accountDeleted": "Konto usunięte",
     "verificationEmailSent": "Link potwierdzający wysłany",

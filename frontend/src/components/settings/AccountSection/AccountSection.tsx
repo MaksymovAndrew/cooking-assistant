@@ -1,4 +1,4 @@
-import { KeyRound, Mail, User } from "lucide-react";
+import { KeyRound, Mail, MonitorSmartphone, User } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +20,7 @@ interface AccountSectionProps {
     onResendVerification: () => void;
     isResendDisabled: boolean;
     onChangePassword: () => void;
+    onSignOutEverywhere: () => void;
     onDeleteAccount: () => void;
 }
 
@@ -29,6 +30,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
     onResendVerification,
     isResendDisabled,
     onChangePassword,
+    onSignOutEverywhere,
     onDeleteAccount,
 }) => {
     const { t } = useTranslation("settings");
@@ -84,6 +86,20 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                     onClick={onChangePassword}
                 >
                     {t("accountSection.changePasswordButton")}
+                </Button>
+            </SettingsRow>
+            <SettingsRow
+                icon={MonitorSmartphone}
+                title={t("accountSection.signOutEverywhereTitle")}
+                description={t("accountSection.signOutEverywhereDescription")}
+            >
+                <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={onSignOutEverywhere}
+                >
+                    {t("accountSection.signOutEverywhereButton")}
                 </Button>
             </SettingsRow>
             <SettingsRow

@@ -74,6 +74,11 @@ export const registerSuccessToasts = (listener: ListenerMiddlewareInstance) => {
     );
     registerSuccessToast(
         listener,
+        accountSecurityApi.endpoints.signOutEverywhere.matchFulfilled,
+        "notifications.signedOutEverywhere",
+    );
+    registerSuccessToast(
+        listener,
         authApi.endpoints.updateProfile.matchFulfilled,
         "notifications.profileUpdated",
     );

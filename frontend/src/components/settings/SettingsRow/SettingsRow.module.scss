@@ -17,10 +17,6 @@
         color: var(--danger);
     }
 
-    &--disabled {
-        opacity: 0.72;
-    }
-
     // at least as wide as its unwrapped title, so a control that doesn't fit beside it wraps
     // to its own line instead of covering it
     &__text {
@@ -40,18 +36,6 @@
         &--danger {
             color: var(--danger);
         }
-    }
-
-    &__badge {
-        padding: 2px 8px;
-        border-radius: var(--r-pill);
-        background: var(--surface-2);
-        color: var(--text-muted);
-        letter-spacing: 0.02em;
-        font:
-            500 10.5px Inter,
-            sans-serif;
-        text-transform: uppercase;
     }
 
     &__description {

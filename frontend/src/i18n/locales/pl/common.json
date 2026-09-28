@@ -63,7 +63,6 @@
         "ingredients": "Spiżarnia",
         "stats": "Statystyki",
         "shoppingList": "Zakupy",
-        "settings": "Ustawienia",
         "profile": "Profil",
         "logout": "Wyloguj się",
         "login": "Zaloguj się",
@@ -131,7 +130,8 @@
         "media/unsupported_type": "Wybierz zdjęcie w formacie JPEG, PNG, WebP lub AVIF.",
         "media/unreadable": "Nie udało się otworzyć tego zdjęcia. Spróbuj innego.",
         "media/too_large": "Zdjęcie jest za duże. Wybierz plik do 10 MB.",
-        "media/not_found": "To zdjęcie nie jest już dostępne."
+        "media/not_found": "To zdjęcie nie jest już dostępne.",
+        "media/quota_exceeded": "Osiągnięto limit 500 zdjęć. Usuń jedno, aby dodać kolejne."
     },
     "errorState": {
         "title": "Coś poszło nie tak",
@@ -146,6 +146,7 @@
         "ingredientsSaved": "Produkty zapisane",
         "purchaseSaved": "Zakup zapisany",
         "passwordChanged": "Hasło zmienione",
+        "signedOutEverywhere": "Wylogowano na innych urządzeniach",
         "verificationEmailSent": "Link potwierdzający wysłany",
         "profileUpdated": "Profil zaktualizowany",
         "accountDeleted": "Konto usunięte",
@@ -206,6 +207,11 @@
         "star_other": "{{count}} gwiazdki",
         "yourRating": "Twoja ocena",
         "remove": "Usuń moją ocenę"
+    },
+    "share": {
+        "button": "Udostępnij",
+        "copied": "Link skopiowany",
+        "failed": "Nie udało się skopiować linku"
     },
     "social": {
         "tagline": "Przepisy, jadłospisy i twoja spiżarnia w jednej kuchni",

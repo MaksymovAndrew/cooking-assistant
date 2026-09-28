@@ -8,6 +8,7 @@ import type { FavouriteToggle } from "hooks/useFavouriteToggle";
 import { Button } from "components/ui/Button";
 import { FavouriteButton } from "components/ui/FavouriteButton";
 import { LinkButton } from "components/ui/LinkButton";
+import { ShareButton } from "components/ui/ShareButton";
 
 import { rememberLoginRedirect } from "utils/loginRedirect";
 
@@ -18,6 +19,7 @@ interface HeroVisitorActionsProps {
     // session, so the page never flashes the guest CTA at someone who is signed in
     favourite: FavouriteToggle | null;
     favouriteLabel: string;
+    shareTitle: string;
     guestCtaLabel: string;
     logIntakeLabel: string;
     onLogIntake?: () => void;
@@ -29,6 +31,7 @@ const ICON_SIZE = 20;
 export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
     favourite,
     favouriteLabel,
+    shareTitle,
     guestCtaLabel,
     logIntakeLabel,
     onLogIntake,
@@ -45,6 +48,7 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
                     <Sparkles size={ICON_SIZE} aria-hidden="true" />
                     {guestCtaLabel}
                 </LinkButton>
+                <ShareButton title={shareTitle} iconSize={ICON_SIZE} />
             </div>
         );
     }
@@ -69,6 +73,7 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
                     {logIntakeLabel}
                 </Button>
             )}
+            <ShareButton title={shareTitle} iconSize={ICON_SIZE} />
         </div>
     );
 };

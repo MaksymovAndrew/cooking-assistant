@@ -27,16 +27,18 @@ const setup = (
     onSave = jest
         .fn<Promise<void>, [number, number]>()
         .mockResolvedValue(undefined),
+    onDelete = jest.fn(),
 ) => {
     render(
         <PurchaseItem
             purchase={purchase}
             onQuantityChange={onQuantityChange}
             onSave={onSave}
+            onDelete={onDelete}
         />,
     );
 
-    return { onQuantityChange, onSave };
+    return { onQuantityChange, onSave, onDelete };
 };
 
 const startEditing = async () => {
@@ -147,5 +149,17 @@ describe("PurchaseItem", () => {
         await userEvent.clear(input);
 
         expect(onQuantityChange).not.toHaveBeenCalled();
+    });
+
+    it("should ask to delete this purchase when the delete button is pressed", async () => {
+        const onDelete = jest.fn();
+
+        setup(FRESH, jest.fn(), undefined, onDelete);
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Delete purchase" }),
+        );
+
+        expect(onDelete).toHaveBeenCalledWith(FRESH.id);
     });
 });

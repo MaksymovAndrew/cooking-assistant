@@ -39,7 +39,6 @@
         "noMatches": "Інгредієнтів не знайшлося"
     },
     "recipeCard": {
-        "cookingTime": "Час приготування: ",
         "cookingTimeValue": "{{hours}} год {{minutes}} хв",
         "caloriesValue": "{{count}} ккал"
     },
@@ -136,7 +135,6 @@
         "recipeTypeLabel": "Тип рецепта *",
         "recipeTypePlaceholder": "Виберіть тип",
         "ingredientsLabel": "Інгредієнти",
-        "selectedIngredients": "Вибрані інгредієнти",
         "createButton": "Створити рецепт",
         "errorTitle": "Вкажіть назву рецепта.",
         "errorDescription": "Додайте опис рецепта.",
@@ -156,7 +154,6 @@
         "recipeTypeLabel": "Тип рецепта *",
         "recipeTypePlaceholder": "Виберіть тип",
         "ingredientsLabel": "Інгредієнти",
-        "selectedIngredients": "Вибрані інгредієнти",
         "updateButton": "Зберегти зміни",
         "loading": "Завантаження…",
         "errorCookingTimeFormat": "Вкажіть години й хвилини.",
@@ -191,10 +188,8 @@
         "missingIngredients": "Чого бракує",
         "deleteButton": "Видалити рецепт",
         "editButton": "Змінити рецепт",
-        "loading": "Завантаження…",
         "deleteTitle": "Видалити рецепт?",
         "deleteMessage": "Видалити «{{title}}»? Рецепт зникне й з усіх меню, де він є. Скасувати це буде неможливо.",
-        "error": "Помилка: {{message}}",
         "cookingTimeHoursMinutes": "{{hours}} год {{minutes}} хв",
         "cookingTimeMinutes": "{{minutes}} хв",
         "rating": "Оцінка",

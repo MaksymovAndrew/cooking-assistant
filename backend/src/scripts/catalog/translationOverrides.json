@@ -3578,5 +3578,65 @@
         "ru": "Бренди",
         "uk": "Бренді",
         "pl": "Brandy"
+    },
+    "kielbasa_smoked": {
+        "ru": "Копчёная колбаса",
+        "uk": "Копчена ковбаса",
+        "pl": "Kiełbasa wędzona"
+    },
+    "sausage_boiled": {
+        "ru": "Варёная колбаса",
+        "uk": "Варена ковбаса",
+        "pl": "Mortadela"
+    },
+    "white_sausage": {
+        "ru": "Белая колбаса",
+        "uk": "Біла ковбаса",
+        "pl": "Biała kiełbasa"
+    },
+    "salo": {
+        "ru": "Сало",
+        "uk": "Сало",
+        "pl": "Słonina"
+    },
+    "zurek_starter": {
+        "ru": "Закваска для журека",
+        "uk": "Закваска для журеку",
+        "pl": "Zakwas na żurek"
+    },
+    "potato_starch": {
+        "ru": "Картофельный крахмал",
+        "uk": "Картопляний крохмаль",
+        "pl": "Skrobia ziemniaczana"
+    },
+    "gelatin": {
+        "ru": "Желатин",
+        "uk": "Желатин",
+        "pl": "Żelatyna"
+    },
+    "bryndza": {
+        "ru": "Брынза",
+        "uk": "Бринза",
+        "pl": "Bryndza"
+    },
+    "kvass": {
+        "ru": "Квас",
+        "uk": "Квас",
+        "pl": "Kwas chlebowy"
+    },
+    "lingonberry": {
+        "ru": "Брусника",
+        "uk": "Брусниця",
+        "pl": "Borówka brusznica"
+    },
+    "dried_apples": {
+        "ru": "Сушёные яблоки",
+        "uk": "Сушені яблука",
+        "pl": "Suszone jabłka"
+    },
+    "fruit_jam": {
+        "ru": "Варенье",
+        "uk": "Варення",
+        "pl": "Konfitura"
     }
 }

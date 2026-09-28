@@ -373,7 +373,9 @@ reads it. Cookie name and options live in [src/config/cookie.ts](src/config/cook
    the account's current `session_version` - `401` if the cookie is missing, `403` if it is invalid, expired
    or issued before the password last changed - then attaches `req.user = { id }` and calls `next()`.
    Changing or resetting the password raises `session_version`, so every other session ends at once;
-   `/change-password` re-issues the cookie for the session that made the change.
+   `/change-password` re-issues the cookie for the session that made the change. `POST /sign-out-everywhere`
+   raises `session_version` alone - every other session ends, the password stays - and re-issues the cookie
+   the same way.
 4. `GET /api/me` (protected) returns `{ id, ..., email, email_verified_at }` so the client can check its
    session and email-verification state. `POST /api/logout` (public) clears the cookie and returns
    `{ message: "Logged out" }`.
@@ -488,6 +490,7 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | POST   | `/forgot-password`           | Request a password reset link by `email`; always a generic response; rate-limited by email, every request counts (public) |
 | POST   | `/reset-password`            | Set a new password from a `{ token, newPassword }` reset link (public)                                                    |
 | POST   | `/change-password`           | Change the signed-in user's password (`{ currentPassword, newPassword }`); rate-limited by user id                        |
+| POST   | `/sign-out-everywhere`       | End every other session of the signed-in user; this one gets a fresh cookie; rate-limited by user id                      |
 | POST   | `/resend-verification-email` | Re-send the verification link for the email on file; rate-limited by user id, every request counts                        |
 | POST   | `/confirm-email`             | Verify an email from a `{ token }` verification link (public)                                                             |
 
@@ -556,13 +559,15 @@ table and aggregating client-side.
 
 ### User pantry ([src/routes/userIngredients.routes.ts](src/routes/userIngredients.routes.ts))
 
-| Method | Path                                      | Purpose                                                               |
-| ------ | ----------------------------------------- | --------------------------------------------------------------------- |
-| GET    | `/user-ingredients`                       | Get the current user's pantry, each ingredient with its purchase lots |
-| PUT    | `/user-ingredients`                       | Add/replace pantry items                                              |
-| GET    | `/user-ingredients/history/:ingredientId` | Purchase history for one ingredient                                   |
-| PUT    | `/user-ingredients/history/:purchaseId`   | Update a purchase entry                                               |
-| DELETE | `/user-ingredients/:ingredientId`         | Remove a pantry item                                                  |
+| Method | Path                                      | Purpose                                                                           |
+| ------ | ----------------------------------------- | --------------------------------------------------------------------------------- |
+| GET    | `/user-ingredients`                       | Get the current user's pantry, each ingredient with its purchase lots             |
+| PUT    | `/user-ingredients`                       | Add/replace pantry items                                                          |
+| GET    | `/user-ingredients/history/:ingredientId` | Purchase history for one ingredient                                               |
+| PUT    | `/user-ingredients/history/:purchaseId`   | Update a purchase entry                                                           |
+| DELETE | `/user-ingredients/history/:purchaseId`   | Delete one purchase; its quantity leaves the stock, the last one removes the item |
+| POST   | `/user-ingredients/history/discard`       | Delete several purchases at once (`{ purchaseIds }`), e.g. every expired one      |
+| DELETE | `/user-ingredients/:ingredientId`         | Remove a pantry item                                                              |
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 
@@ -647,7 +652,10 @@ and `tag_ids=3,4` filters the list down to recipes carrying any of them - a gues
 | GET    | `/media/:file`      | Serve a stored photo (public; see the renditions below)       |
 
 The upload body is the image itself (any `Content-Type`, up to 10 MB), read by `express.raw` on these
-routes only, after auth and a per-user limiter (20 uploads per 10 minutes). The server never trusts
+routes only, after auth and a per-user limiter (20 uploads per 10 minutes). An account holds at most
+`MAX_PHOTOS_PER_ACCOUNT` (500) photos across its recipes, menus and avatar: a photo for a record that has
+none yet is refused with `409 media/quota_exceeded` once the account is full, checked in one query before
+the image is decoded, while replacing an existing photo is always allowed. The server never trusts
 the name or type it is told: it sniffs the bytes for JPEG, PNG, WebP or AVIF (anything else, SVG
 included, is `media/unsupported_type`), then `sharp` decodes and re-encodes the picture into three
 renditions - WebP at 400 and 1200 px (`<key>-400.webp`, `<key>-1200.webp`, scaled down, never up) and

@@ -10,6 +10,7 @@ export const MODAL_TYPE = {
     deleteMenu: "deleteMenu",
     deleteIngredient: "deleteIngredient",
     logout: "logout",
+    signOutEverywhere: "signOutEverywhere",
     themeChange: "themeChange",
     expiredIngredients: "expiredIngredients",
     deleteCalorieIntake: "deleteCalorieIntake",
@@ -46,6 +47,10 @@ export interface DeleteIngredientModalInput {
 
 export interface LogoutModalInput {
     type: typeof MODAL_TYPE.logout;
+}
+
+export interface SignOutEverywhereModalInput {
+    type: typeof MODAL_TYPE.signOutEverywhere;
 }
 
 export interface ThemeChangeModalInput {
@@ -105,6 +110,7 @@ export type ModalInput =
     | DeleteMenuModalInput
     | DeleteIngredientModalInput
     | LogoutModalInput
+    | SignOutEverywhereModalInput
     | ThemeChangeModalInput
     | ExpiredIngredientsModalInput
     | DeleteCalorieIntakeModalInput

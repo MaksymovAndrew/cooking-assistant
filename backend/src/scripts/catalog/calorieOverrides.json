@@ -286,5 +286,53 @@
     "cashew_milk": {
         "kcalPer100": 10,
         "confidence": "sourced"
+    },
+    "kielbasa_smoked": {
+        "kcalPer100": 320,
+        "confidence": "sourced"
+    },
+    "sausage_boiled": {
+        "kcalPer100": 257,
+        "confidence": "sourced"
+    },
+    "white_sausage": {
+        "kcalPer100": 290,
+        "confidence": "estimated"
+    },
+    "salo": {
+        "kcalPer100": 770,
+        "confidence": "sourced"
+    },
+    "zurek_starter": {
+        "kcalPer100": 25,
+        "confidence": "estimated"
+    },
+    "potato_starch": {
+        "kcalPer100": 333,
+        "confidence": "sourced"
+    },
+    "gelatin": {
+        "kcalPer100": 335,
+        "confidence": "sourced"
+    },
+    "bryndza": {
+        "kcalPer100": 260,
+        "confidence": "sourced"
+    },
+    "kvass": {
+        "kcalPer100": 27,
+        "confidence": "sourced"
+    },
+    "lingonberry": {
+        "kcalPer100": 46,
+        "confidence": "sourced"
+    },
+    "dried_apples": {
+        "kcalPer100": 243,
+        "confidence": "sourced"
+    },
+    "fruit_jam": {
+        "kcalPer100": 250,
+        "confidence": "estimated"
     }
 }

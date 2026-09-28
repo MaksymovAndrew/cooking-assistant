@@ -3,14 +3,19 @@ import userEvent from "@testing-library/user-event";
 
 import type { ExpiredPantryIngredient } from "types/expiry";
 
+import { API_ROUTES } from "api/endpoints";
+
 import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
 
+import { mockedPost } from "test/apiClientMock";
 import { renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
+
+jest.mock("api/client");
 
 const MODAL_ID = "m1";
 const INGREDIENTS: ExpiredPantryIngredient[] = [
@@ -21,6 +26,7 @@ const INGREDIENTS: ExpiredPantryIngredient[] = [
         unitName: "L",
         lots: [
             {
+                purchaseId: 103,
                 quantity: 1,
                 purchaseDate: "2026-01-01T00:00:00.000Z",
                 expiryDate: "2026-01-05T00:00:00.000Z",
@@ -34,11 +40,13 @@ const INGREDIENTS: ExpiredPantryIngredient[] = [
         unitName: "piece",
         lots: [
             {
+                purchaseId: 102,
                 quantity: 6,
                 purchaseDate: "2026-01-02T00:00:00.000Z",
                 expiryDate: "2026-01-09T00:00:00.000Z",
             },
             {
+                purchaseId: 101,
                 quantity: 12,
                 purchaseDate: "2026-01-03T00:00:00.000Z",
                 expiryDate: "2026-01-10T00:00:00.000Z",
@@ -109,5 +117,46 @@ describe("ExpiredIngredientsModal", () => {
         await userEvent.click(link);
 
         expect(selectActiveModal(store.getState())).toBeNull();
+    });
+
+    it("should throw out every expired purchase and close", async () => {
+        mockedPost.mockResolvedValue({ data: { discarded: 3 } });
+        const { store } = renderOpen();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Throw out expired" }),
+        );
+
+        expect(mockedPost).toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.discard,
+            { purchaseIds: [103, 102, 101] },
+        );
+        expect(selectActiveModal(store.getState())).toBeNull();
+        expect(store.getState().notifications.items).toEqual([
+            expect.objectContaining({
+                type: "success",
+                message: "Expired purchases thrown out",
+            }),
+        ]);
+    });
+
+    it("should put every expired ingredient on the shopping list by name", async () => {
+        mockedPost.mockResolvedValue({ data: null });
+        const { store } = renderOpen();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Add to shopping list" }),
+        );
+
+        expect(mockedPost).toHaveBeenCalledWith(
+            API_ROUTES.shoppingList.ingredients,
+            {
+                items: [
+                    { ingredient_id: 1, quantity: null },
+                    { ingredient_id: 2, quantity: null },
+                ],
+            },
+        );
+        expect(selectActiveModal(store.getState())).not.toBeNull();
     });
 });

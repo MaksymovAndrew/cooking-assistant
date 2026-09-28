@@ -738,7 +738,19 @@
         "chamomile_tea": "Ромашковый чай",
         "hot_chocolate_mix": "Смесь для горячего шоколада",
         "club_soda": "Содовая вода",
-        "tonic_water": "Тоник"
+        "tonic_water": "Тоник",
+        "kielbasa_smoked": "Копчёная колбаса",
+        "sausage_boiled": "Варёная колбаса",
+        "white_sausage": "Белая колбаса",
+        "salo": "Сало",
+        "zurek_starter": "Закваска для журека",
+        "potato_starch": "Картофельный крахмал",
+        "gelatin": "Желатин",
+        "bryndza": "Брынза",
+        "kvass": "Квас",
+        "lingonberry": "Брусника",
+        "dried_apples": "Сушёные яблоки",
+        "fruit_jam": "Варенье"
     },
     "category": {
         "vegetables": "Овощи",

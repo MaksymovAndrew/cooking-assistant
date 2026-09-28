@@ -4,6 +4,7 @@ import {
     menuCategoryName,
     quantityWithUnit,
     recipeTypeDescription,
+    recipeTypeLabel,
     recipeTypeName,
     unitName,
 } from "utils/referenceLabels";
@@ -19,6 +20,13 @@ describe("recipeTypeName", () => {
 
     it("should fall back to the stored name for a type it does not know", () => {
         expect(recipeTypeName(t, UNKNOWN_TYPE)).toBe(UNKNOWN_TYPE);
+    });
+});
+
+describe("recipeTypeLabel", () => {
+    it("should name a type and give nothing for a recipe without one", () => {
+        expect(recipeTypeLabel(t, "Dessert")).toBe("Dessert");
+        expect(recipeTypeLabel(t, null)).toBeNull();
     });
 });
 

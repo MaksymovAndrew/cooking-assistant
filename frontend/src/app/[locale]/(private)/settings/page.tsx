@@ -3,7 +3,9 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppDispatch } from "redux/hooks";
 import { useGetMeQuery } from "redux/services/authApi";
+import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { usePageTitle } from "hooks/usePageTitle";
 import { useResendVerificationCooldown } from "hooks/useResendVerificationCooldown";
@@ -14,12 +16,12 @@ import { AppearanceSection } from "components/settings/AppearanceSection";
 import { ChangePasswordModal } from "components/settings/ChangePasswordModal";
 import { DeleteAccountModal } from "components/settings/DeleteAccountModal";
 import { LanguageSection } from "components/settings/LanguageSection";
-import { NotificationsSection } from "components/settings/NotificationsSection";
 
 import styles from "./page.module.scss";
 
 const SettingsPage: React.FC = () => {
     const { t } = useTranslation("settings");
+    const dispatch = useAppDispatch();
     const { data: currentUser } = useGetMeQuery(null);
     const { send: sendVerificationEmail, isOnCooldown } =
         useResendVerificationCooldown();
@@ -40,7 +42,6 @@ const SettingsPage: React.FC = () => {
 
                 <AppearanceSection />
                 <LanguageSection />
-                <NotificationsSection />
                 <AccountSection
                     email={currentUser?.email ?? ""}
                     emailVerified={Boolean(currentUser?.email_verified_at)}
@@ -48,6 +49,11 @@ const SettingsPage: React.FC = () => {
                     isResendDisabled={isOnCooldown}
                     onChangePassword={() => {
                         setIsChangePasswordOpen(true);
+                    }}
+                    onSignOutEverywhere={() => {
+                        dispatch(
+                            openModal({ type: MODAL_TYPE.signOutEverywhere }),
+                        );
                     }}
                     onDeleteAccount={() => {
                         setIsDeleteAccountOpen(true);

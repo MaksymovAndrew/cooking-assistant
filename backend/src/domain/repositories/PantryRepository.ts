@@ -18,6 +18,10 @@ export interface PantryRepository {
         purchaseId: string | number,
         quantity: number,
     ): Promise<unknown>;
+    deletePurchases(
+        userId: string | number,
+        purchaseIds: number[],
+    ): Promise<number>;
     findPurchaseHistory(
         userId: string | number,
         ingredientId: string | number,

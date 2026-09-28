@@ -30,7 +30,8 @@ interface ContentCardProps {
     imageIcon: ContentCardIcon;
     // an uploaded photo takes the icon's place; without one the card keeps its glyph
     imageSrc?: string | null;
-    chipLabel: string;
+    // the recipe type or menu category; a recipe without a type shows no chip
+    chipLabel: string | null;
     // the language the record is written in; null leaves the badge out
     language?: Locale | null;
     // icon+label meta row (recipe cards); mutually exclusive with metaText

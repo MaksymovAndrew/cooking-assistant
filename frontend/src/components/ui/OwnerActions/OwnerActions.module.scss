@@ -2,10 +2,27 @@
 
 .owner-actions {
     display: flex;
-    gap: var(--s-3);
+    flex-wrap: wrap;
+    gap: var(--s-2);
 
+    @include respond-to(tablet) {
+        flex-wrap: nowrap;
+        gap: var(--s-3);
+    }
+
+    // on a phone the edit button takes the first row and the icon buttons share the second equally,
+    // whatever the language makes of the label; from tablet up everything sits in one row
     &__edit {
-        flex: 1;
+        flex: 1 1 100%;
+
+        @include respond-to(tablet) {
+            flex: none;
+        }
+    }
+
+    > :not(:first-child) {
+        flex: 1 1 0;
+        width: auto;
 
         @include respond-to(tablet) {
             flex: none;

@@ -23,6 +23,23 @@ export const pantryIngredientsSchema = z
         message: "Ingredient IDs must be unique",
     });
 
+export const MAX_DISCARDED_PURCHASES = 500;
+
+export const discardPurchasesSchema = z
+    .array(positiveIntegerSchema("Purchase ID"), {
+        error: requiredOrInvalidType(
+            "Purchase IDs are required",
+            "Purchase IDs must be an array",
+        ),
+    })
+    .min(1, { message: "Purchase IDs are required" })
+    .max(MAX_DISCARDED_PURCHASES, {
+        message: `Cannot discard more than ${MAX_DISCARDED_PURCHASES} purchases at once`,
+    })
+    .refine((ids) => hasUniqueItems(ids), {
+        message: "Purchase IDs must be unique",
+    });
+
 export const purchaseQuantitySchema = z
     .number({
         error: requiredOrInvalidType(

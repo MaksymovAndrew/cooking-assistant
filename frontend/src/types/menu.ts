@@ -52,7 +52,7 @@ export interface MenuDetailRecipe extends Omit<RecordRating, "myRating"> {
     recipe_id: number;
     title: string;
     language: Locale;
-    type_name: string;
+    type_name: string | null;
     cooking_time: number;
     creation_date: string;
     // COALESCE(calories_override, calories_computed)
@@ -73,6 +73,7 @@ export interface MenuDetails {
         isOwner: boolean;
         isFavourite: boolean | null;
         photo_key: string | null;
+        creation_date: string;
         author: RecordAuthor;
     };
     recipes: MenuDetailRecipe[];

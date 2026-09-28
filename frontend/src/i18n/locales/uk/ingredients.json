@@ -57,7 +57,8 @@
         "loading": "Завантаження…",
         "noHistory": "Покупок поки немає.",
         "closeButton": "Закрити",
-        "editButton": "Змінити кількість"
+        "editButton": "Змінити кількість",
+        "deleteButton": "Видалити покупку"
     },
     "restockModal": {
         "title": "Докупити: {{name}}",
@@ -74,6 +75,9 @@
         "lotPurchased": "Куплено {{date}}",
         "lotExpired": "Зіпсувалося {{date}}",
         "close": "Закрити",
-        "goToPantry": "До моїх продуктів"
+        "goToPantry": "До моїх продуктів",
+        "discardButton": "Викинути прострочене",
+        "addToListButton": "До списку покупок",
+        "discarded": "Прострочене викинуто"
     }
 }

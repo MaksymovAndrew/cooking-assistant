@@ -21,6 +21,7 @@ describe("OwnerActions", () => {
                 deleteLabel="Delete"
                 favourite={FAVOURITE}
                 favouriteLabel="Favourite"
+                shareTitle="Borscht"
             />,
         );
 
@@ -31,6 +32,7 @@ describe("OwnerActions", () => {
         expect(
             screen.getByRole("button", { name: "Delete" }),
         ).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Share" })).toBeEnabled();
     });
 
     it("should call onDelete when the delete button is clicked", async () => {
@@ -44,6 +46,7 @@ describe("OwnerActions", () => {
                 deleteLabel="Delete"
                 favourite={FAVOURITE}
                 favouriteLabel="Favourite"
+                shareTitle="Borscht"
             />,
         );
 
@@ -61,6 +64,7 @@ describe("OwnerActions", () => {
                 deleteLabel="Delete"
                 favourite={FAVOURITE}
                 favouriteLabel="Favourite"
+                shareTitle="Borscht"
             />,
         );
 
@@ -80,6 +84,7 @@ describe("OwnerActions", () => {
                 deleteLabel="Delete"
                 favourite={FAVOURITE}
                 favouriteLabel="Favourite"
+                shareTitle="Borscht"
                 onLogIntake={onLogIntake}
                 logIntakeLabel="Log intake"
             />,

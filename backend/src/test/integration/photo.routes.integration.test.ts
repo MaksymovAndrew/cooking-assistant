@@ -2,7 +2,10 @@ import request from "supertest";
 
 import { ERROR_CODES } from "constants/errorCodes";
 
-import { IMAGE_VARIANTS } from "application/media/mediaFiles";
+import {
+    IMAGE_VARIANTS,
+    MAX_PHOTOS_PER_ACCOUNT,
+} from "application/media/mediaFiles";
 
 import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
@@ -23,6 +26,10 @@ function buildUploadApp() {
     const { app, deps } = buildTestApp();
 
     deps.imageProcessor.toVariants.mockResolvedValue(VARIANTS);
+    deps.photoRepository.usage.mockResolvedValue({
+        count: 0,
+        targetHasPhoto: false,
+    });
     deps.photoRepository.replace.mockResolvedValue({ previousKey: null });
 
     return { app, deps };
@@ -65,6 +72,26 @@ describe("photo routes", () => {
             5,
             body.photo_key,
         );
+    });
+
+    it("should answer 409 once the account holds the most photos it may", async () => {
+        const { app, deps } = buildUploadApp();
+
+        deps.photoRepository.usage.mockResolvedValue({
+            count: MAX_PHOTOS_PER_ACCOUNT,
+            targetHasPhoto: false,
+        });
+
+        const res = await request(app)
+            .put(RECIPE_PHOTO_PATH)
+            .set("Cookie", authCookie(7))
+            .set(CONTENT_TYPE, IMAGE_JPEG)
+            .send(JPEG);
+
+        expect(res.status).toBe(409);
+        expect(res.body).toEqual(errorBody(ERROR_CODES.MEDIA_QUOTA_EXCEEDED));
+        expect(deps.photoRepository.usage).toHaveBeenCalledWith(7, "recipe", 5);
+        expect(deps.imageProcessor.toVariants).not.toHaveBeenCalled();
     });
 
     it("should judge the image by its bytes, not by the Content-Type it claims", async () => {

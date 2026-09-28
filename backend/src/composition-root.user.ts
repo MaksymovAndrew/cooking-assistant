@@ -13,6 +13,7 @@ import LoginUser from "application/use-cases/users/LoginUser";
 import RegisterUser from "application/use-cases/users/RegisterUser";
 import RequestEmailVerification from "application/use-cases/users/RequestEmailVerification";
 import RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
+import SignOutEverywhere from "application/use-cases/users/SignOutEverywhere";
 import UpdateLocale from "application/use-cases/users/UpdateLocale";
 import UpdateProfile from "application/use-cases/users/UpdateProfile";
 
@@ -76,6 +77,7 @@ export function buildUserControllers({
             passwordHasher,
             tokenService,
         ),
+        signOutEverywhere: new SignOutEverywhere(userRepository, tokenService),
         requestEmailVerification: new RequestEmailVerification(
             userRepository,
             tokenService,

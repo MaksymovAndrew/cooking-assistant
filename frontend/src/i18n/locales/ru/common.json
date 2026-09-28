@@ -63,7 +63,6 @@
         "ingredients": "Продукты",
         "stats": "Статистика",
         "shoppingList": "Покупки",
-        "settings": "Настройки",
         "profile": "Профиль",
         "logout": "Выйти",
         "login": "Войти",
@@ -131,7 +130,8 @@
         "media/unsupported_type": "Выберите фото в формате JPEG, PNG, WebP или AVIF.",
         "media/unreadable": "Не получилось открыть это фото. Попробуйте другое.",
         "media/too_large": "Фото слишком большое. Выберите файл до 10 МБ.",
-        "media/not_found": "Это фото больше недоступно."
+        "media/not_found": "Это фото больше недоступно.",
+        "media/quota_exceeded": "Достигнут предел в 500 фото. Удалите одно, чтобы добавить новое."
     },
     "errorState": {
         "title": "Что-то пошло не так",
@@ -146,6 +146,7 @@
         "ingredientsSaved": "Продукты сохранены",
         "purchaseSaved": "Покупка сохранена",
         "passwordChanged": "Пароль изменён",
+        "signedOutEverywhere": "Выполнен выход на других устройствах",
         "verificationEmailSent": "Ссылка для подтверждения отправлена",
         "profileUpdated": "Профиль обновлён",
         "accountDeleted": "Аккаунт удалён",
@@ -206,6 +207,11 @@
         "star_other": "{{count}} звезды",
         "yourRating": "Ваша оценка",
         "remove": "Убрать мою оценку"
+    },
+    "share": {
+        "button": "Поделиться",
+        "copied": "Ссылка скопирована",
+        "failed": "Не удалось скопировать ссылку"
     },
     "social": {
         "tagline": "Рецепты, меню и продукты в одном месте",

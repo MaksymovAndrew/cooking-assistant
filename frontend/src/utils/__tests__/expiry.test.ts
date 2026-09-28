@@ -2,6 +2,7 @@ import {
     computeExpiryDate,
     getExpiryStatus,
     getWorstLotExpiryStatus,
+    isLotExpired,
 } from "utils/expiry";
 
 const DAYS_TO_EXPIRE = 10;
@@ -64,10 +65,29 @@ describe("getWorstLotExpiryStatus", () => {
 
     it("should use the oldest lot (lots[0]) as the worst case, ignoring a fresher lot bought since", () => {
         const status = getWorstLotExpiryStatus(DAYS_TO_EXPIRE, [
-            { quantity: 1, purchase_date: purchasedDaysAgo(30) },
-            { quantity: 1, purchase_date: purchasedDaysAgo(0) },
+            { id: 102, quantity: 1, purchase_date: purchasedDaysAgo(30) },
+            { id: 101, quantity: 1, purchase_date: purchasedDaysAgo(0) },
         ]);
 
         expect(status).toEqual(expect.objectContaining({ tone: "expired" }));
+    });
+});
+
+describe("isLotExpired", () => {
+    it("should expire a lot once its expiry day has passed", () => {
+        expect(isLotExpired(DAYS_TO_EXPIRE, purchasedDaysAgo(30))).toBe(true);
+    });
+
+    it("should keep a lot on its expiry day itself", () => {
+        expect(isLotExpired(0, purchasedDaysAgo(0))).toBe(false);
+    });
+
+    it("should keep a lot that has not expired yet", () => {
+        expect(isLotExpired(DAYS_TO_EXPIRE, purchasedDaysAgo(1))).toBe(false);
+    });
+
+    it("should not expire a lot without expiry data", () => {
+        expect(isLotExpired(null, purchasedDaysAgo(30))).toBe(false);
+        expect(isLotExpired(DAYS_TO_EXPIRE, undefined)).toBe(false);
     });
 });

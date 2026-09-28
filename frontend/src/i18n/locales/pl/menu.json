@@ -77,7 +77,6 @@
         "categoryLabel": "Kategoria jadłospisu *",
         "categoryPlaceholder": "Wybierz kategorię",
         "recipesLabel": "Przepisy",
-        "selectedRecipes": "Wybrane przepisy",
         "createButton": "Utwórz jadłospis",
         "errorTitle": "Podaj nazwę jadłospisu.",
         "errorDescription": "Dodaj opis jadłospisu.",
@@ -94,7 +93,6 @@
         "categoryLabel": "Kategoria jadłospisu *",
         "categoryPlaceholder": "Wybierz kategorię",
         "recipesLabel": "Przepisy",
-        "selectedRecipes": "Wybrane przepisy",
         "updateButton": "Zapisz zmiany",
         "loading": "Ładowanie…",
         "errorTitle": "Podaj nazwę jadłospisu.",
@@ -148,10 +146,8 @@
         "favourite": "Do ulubionych",
         "editButton": "Edytuj jadłospis",
         "deleteButton": "Usuń jadłospis",
-        "loading": "Ładowanie…",
         "deleteTitle": "Usunąć jadłospis?",
         "deleteMessage": "Usunąć „{{title}}”? Same przepisy zostaną. Tego nie da się cofnąć.",
-        "error": "Błąd: {{message}}",
         "logIntake": "Zapisz w dzienniku",
         "guestCta": "Zaloguj się, żeby korzystać ze wszystkiego",
         "metaFallbackDescription_one": "Jadłospis ({{category}}) z {{count}} przepisu.",
@@ -161,6 +157,7 @@
         "metaFallbackDescriptionUncategorised_one": "Jadłospis z {{count}} przepisu.",
         "metaFallbackDescriptionUncategorised_few": "Jadłospis z {{count}} przepisów.",
         "metaFallbackDescriptionUncategorised_many": "Jadłospis z {{count}} przepisów.",
-        "metaFallbackDescriptionUncategorised_other": "Jadłospis z {{count}} przepisu."
+        "metaFallbackDescriptionUncategorised_other": "Jadłospis z {{count}} przepisu.",
+        "creationDate": "Data dodania"
     }
 }

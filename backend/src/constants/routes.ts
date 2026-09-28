@@ -15,6 +15,7 @@ export const ROUTES = {
         forgotPassword: "/forgot-password",
         resetPassword: "/reset-password",
         changePassword: "/change-password",
+        signOutEverywhere: "/sign-out-everywhere",
         resendVerificationEmail: "/resend-verification-email",
         confirmEmail: "/confirm-email",
     },
@@ -46,6 +47,7 @@ export const ROUTES = {
         byIngredient: "/user-ingredients/:ingredientId",
         purchaseHistory: "/user-ingredients/history/:ingredientId",
         purchase: "/user-ingredients/history/:purchaseId",
+        discard: "/user-ingredients/history/discard",
     },
 
     menu: {

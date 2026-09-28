@@ -56,6 +56,7 @@ export const ERROR_CODES = {
     MEDIA_UNREADABLE: "media/unreadable",
     MEDIA_TOO_LARGE: "media/too_large",
     MEDIA_NOT_FOUND: "media/not_found",
+    MEDIA_QUOTA_EXCEEDED: "media/quota_exceeded",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

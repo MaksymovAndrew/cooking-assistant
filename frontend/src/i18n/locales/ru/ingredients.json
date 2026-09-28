@@ -57,7 +57,8 @@
         "loading": "Загрузка…",
         "noHistory": "Покупок пока нет.",
         "closeButton": "Закрыть",
-        "editButton": "Изменить количество"
+        "editButton": "Изменить количество",
+        "deleteButton": "Удалить покупку"
     },
     "restockModal": {
         "title": "Докупить: {{name}}",
@@ -74,6 +75,9 @@
         "lotPurchased": "Куплено {{date}}",
         "lotExpired": "Испортилось {{date}}",
         "close": "Закрыть",
-        "goToPantry": "К моим продуктам"
+        "goToPantry": "К моим продуктам",
+        "discardButton": "Выбросить просроченное",
+        "addToListButton": "В список покупок",
+        "discarded": "Просроченное выброшено"
     }
 }

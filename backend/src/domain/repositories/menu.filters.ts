@@ -23,5 +23,6 @@ export interface MenuSearchRow extends RecordRating {
     isFavourite: boolean | null;
     recipe_count: number;
     photo_key: string | null;
+    creation_date: Date;
     author: RecordAuthor;
 }

@@ -10,6 +10,7 @@ import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const LOGIN_PATH = "/api/login";
 const CHANGE_PASSWORD_PATH = "/api/change-password";
+const SIGN_OUT_EVERYWHERE_PATH = "/api/sign-out-everywhere";
 const EMAIL = "bob@example.com";
 const NEW_PASSWORD = "new-secret1!";
 const HASHED_NEW_PASSWORD = "hashed-new-secret";
@@ -361,6 +362,38 @@ describe("user routes", () => {
         expect(res.status).toBe(403);
         expect(res.body).toEqual(errorBody(ERROR_CODES.SESSION_EXPIRED));
         expect(deps.userRepository.findCredentialsById).not.toHaveBeenCalled();
+    });
+
+    it("should return 401 on POST /api/sign-out-everywhere without a token", async () => {
+        const { app, deps } = buildTestApp();
+
+        const res = await request(app).post(SIGN_OUT_EVERYWHERE_PATH);
+
+        expect(res.status).toBe(401);
+        expect(deps.userRepository.revokeSessions).not.toHaveBeenCalled();
+    });
+
+    it("should end every other session and keep the current one signed in", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.userRepository.revokeSessions.mockResolvedValue(1);
+        deps.tokenService.generate.mockReturnValue(TOKEN_VALUE);
+
+        const res = await request(app)
+            .post(SIGN_OUT_EVERYWHERE_PATH)
+            .set("Cookie", authCookie());
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            message: translateMessage("signedOutEverywhere", DEFAULT_LOCALE),
+        });
+        expect(deps.userRepository.revokeSessions).toHaveBeenCalledWith(1);
+        expect(deps.tokenService.generate).toHaveBeenCalledWith(1, 1);
+        const headers = res.headers as IncomingHttpHeaders;
+
+        expect(headers["set-cookie"]?.join(";") ?? "").toContain(
+            `authToken=${TOKEN_VALUE}`,
+        );
     });
 
     it("should reject change-password with the wrong current password", async () => {

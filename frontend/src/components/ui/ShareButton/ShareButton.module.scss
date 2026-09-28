@@ -1,0 +1,49 @@
+@use "styles/abstracts" as *;
+
+// an icon square on phones, a labelled button from tablet up - the same rhythm as the owner row
+.share-button {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-2);
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition:
+        background var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out);
+
+    svg {
+        flex: none;
+        color: var(--brand);
+    }
+
+    @include focus-ring;
+
+    @include respond-to(tablet) {
+        width: auto;
+        padding: 0 var(--s-4);
+    }
+
+    @include on-hover {
+        border-color: var(--brand);
+        background: var(--surface-2);
+    }
+
+    &__label {
+        display: none;
+        font:
+            600 14px Inter,
+            sans-serif;
+
+        @include respond-to(tablet) {
+            display: inline;
+        }
+    }
+}

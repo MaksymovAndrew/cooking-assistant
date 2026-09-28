@@ -52,5 +52,6 @@
     "media/unsupported_type": "Można przesyłać tylko obrazy JPEG, PNG, WebP lub AVIF",
     "media/unreadable": "Nie udało się odczytać obrazu",
     "media/too_large": "Obraz jest za duży",
-    "media/not_found": "Nie znaleziono obrazu"
+    "media/not_found": "Nie znaleziono obrazu",
+    "media/quota_exceeded": "Na tym koncie jest już maksymalna liczba zdjęć. Usuń jedno, aby dodać nowe"
 }

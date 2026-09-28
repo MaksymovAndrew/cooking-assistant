@@ -38,7 +38,13 @@
     "pantryRecipes": {
         "title": "Cook from your pantry",
         "description": "See which recipes you can make right now with what you already have.",
-        "cta": "See recipes"
+        "cta": "See recipes",
+        "ready_one": "You can cook {{count}} recipe right now with what you have.",
+        "ready_other": "You can cook {{count}} recipes right now with what you have.",
+        "none": "Your pantry doesn't cover a whole recipe yet.",
+        "browseCta": "Browse recipes",
+        "emptyPantry": "Add what you have at home and we'll show what you can cook.",
+        "emptyPantryCta": "Open my pantry"
     },
     "cookbookStats": {
         "title": "Recipe stats",

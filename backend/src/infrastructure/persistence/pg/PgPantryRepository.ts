@@ -6,6 +6,7 @@ import type {
 } from "domain/repositories/PantryRepository";
 
 import {
+    deletePurchases,
     findIngredientPurchaseHistory,
     updatePurchaseQuantity,
 } from "./PgPantryRepository.history";
@@ -103,6 +104,13 @@ export default class PgPantryRepository implements PantryRepository {
         quantity: number,
     ): Promise<boolean | null> {
         return updatePurchaseQuantity(this.pool, userId, purchaseId, quantity);
+    }
+
+    async deletePurchases(
+        userId: string | number,
+        purchaseIds: number[],
+    ): Promise<number> {
+        return deletePurchases(this.pool, userId, purchaseIds);
     }
 
     async findPurchaseHistory(

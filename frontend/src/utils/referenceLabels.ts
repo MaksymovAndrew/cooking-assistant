@@ -10,6 +10,12 @@ const referenceKey = (name: string): string =>
 export const recipeTypeName = (t: TFunction, name: string): string =>
     t(`common:recipeTypes.${referenceKey(name)}.name`, { defaultValue: name });
 
+// a recipe's type is optional (deleting a type empties it), so the label is too
+export const recipeTypeLabel = (
+    t: TFunction,
+    name: string | null,
+): string | null => (name === null ? null : recipeTypeName(t, name));
+
 export const recipeTypeDescription = (
     t: TFunction,
     name: string,

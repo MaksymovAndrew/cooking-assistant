@@ -63,7 +63,6 @@
         "ingredients": "Ingredients",
         "stats": "Stats",
         "shoppingList": "Shopping",
-        "settings": "Settings",
         "profile": "Profile",
         "logout": "Log out",
         "login": "Log in",
@@ -131,7 +130,8 @@
         "media/unsupported_type": "Choose a JPEG, PNG, WebP or AVIF photo.",
         "media/unreadable": "This photo could not be opened. Try another one.",
         "media/too_large": "This photo is too large. Choose one under 10 MB.",
-        "media/not_found": "This photo is no longer available."
+        "media/not_found": "This photo is no longer available.",
+        "media/quota_exceeded": "You’ve reached the limit of 500 photos. Remove one to add another."
     },
     "errorState": {
         "title": "Something went wrong",
@@ -146,6 +146,7 @@
         "ingredientsSaved": "Ingredients saved",
         "purchaseSaved": "Purchase saved",
         "passwordChanged": "Password changed",
+        "signedOutEverywhere": "Signed out on other devices",
         "verificationEmailSent": "Verification link sent",
         "profileUpdated": "Profile updated",
         "accountDeleted": "Account deleted",
@@ -196,6 +197,11 @@
         "star_other": "{{count}} stars",
         "yourRating": "Your rating",
         "remove": "Remove my rating"
+    },
+    "share": {
+        "button": "Share",
+        "copied": "Link copied",
+        "failed": "Couldn't copy the link"
     },
     "social": {
         "tagline": "Recipes, menus and your pantry in one kitchen",

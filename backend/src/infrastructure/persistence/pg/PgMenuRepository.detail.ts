@@ -41,6 +41,7 @@ export async function findMenuByIdWithRecipes(
         mc.category_name AS categoryName,
         m.category_id,
         m.photo_key,
+        m.creation_date,
         ${authorColumn("m")},
         ${isOwnerColumn("m", "$2")},
         ${isFavouriteColumn("menu", "m.menu_id", "$2")},

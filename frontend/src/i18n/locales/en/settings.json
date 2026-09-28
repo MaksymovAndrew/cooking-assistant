@@ -3,7 +3,6 @@
         "heading": "Settings",
         "subheading": "Appearance, language and account preferences."
     },
-    "comingSoonBadge": "Coming soon",
     "appearanceSection": {
         "heading": "Appearance",
         "themeTitle": "Theme",
@@ -18,13 +17,6 @@
         "languageTitle": "Interface language",
         "languageDescription": "Pages and emails come in the language you pick."
     },
-    "notificationsSection": {
-        "heading": "Notifications",
-        "expiryTitle": "Expiry reminders",
-        "expiryDescription": "Get notified before pantry items expire.",
-        "digestTitle": "Weekly digest",
-        "digestDescription": "A weekly summary of your recipes and menus."
-    },
     "accountSection": {
         "heading": "Account",
         "profileTitle": "Profile",
@@ -37,6 +29,9 @@
         "changePasswordTitle": "Change password",
         "changePasswordDescription": "Update the password for your account.",
         "changePasswordButton": "Change…",
+        "signOutEverywhereTitle": "Sign out on other devices",
+        "signOutEverywhereDescription": "Ends every session except this one. Handy after using a shared computer.",
+        "signOutEverywhereButton": "Sign out…",
         "deleteAccountTitle": "Delete account",
         "deleteAccountDescription": "Permanently removes recipes, menus and pantry data."
     },
@@ -55,6 +50,11 @@
             "newPasswordSameAsCurrent": "New password must be different from your current password.",
             "genericError": "Something went wrong. Please try again."
         }
+    },
+    "signOutEverywhereModal": {
+        "title": "Sign out on other devices",
+        "message": "Every other browser and phone signed in to your account will have to log in again. You stay signed in here.",
+        "confirm": "Sign out"
     },
     "deleteAccountModal": {
         "title": "Delete account?",

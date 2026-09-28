@@ -15,6 +15,9 @@ export interface ImageVariantSpec {
     format: OutputFormat;
 }
 
+// recipes, menus and the avatar together; replacing a photo never counts against it
+export const MAX_PHOTOS_PER_ACCOUNT = 500;
+
 // every stored image exists in each of these: cards use the small one, heroes the large, and link
 // previews the fixed 1.91:1 JPEG - the one frame and format every messenger renders
 export const IMAGE_VARIANTS: readonly ImageVariantSpec[] = [

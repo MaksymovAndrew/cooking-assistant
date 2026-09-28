@@ -93,6 +93,16 @@ export default class PgUserRepository implements UserRepository {
         return row?.session_version ?? null;
     }
 
+    async revokeSessions(id: number): Promise<number | null> {
+        const row = await this.firstRow<{ session_version: number }>(
+            `UPDATE person SET session_version = session_version + 1
+             WHERE id = $1 RETURNING session_version`,
+            [id],
+        );
+
+        return row?.session_version ?? null;
+    }
+
     async findSessionVersion(id: number): Promise<number | null> {
         const row = await this.firstRow<{ session_version: number }>(
             `SELECT session_version FROM person WHERE id = $1`,

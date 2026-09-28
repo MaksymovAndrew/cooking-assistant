@@ -12,6 +12,7 @@ const CALORIES_LABEL = "620 kcal";
 const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 
 const BASE_MENU: MenuDetails["menu"] = {
+    creation_date: "2026-01-01T00:00:00.000Z",
     id: 1,
     title: MENU_TITLE,
     language: "en",

@@ -84,6 +84,7 @@ function createPantryRepository(): jest.Mocked<PantryRepository> {
         addIngredients: jest.fn(),
         deleteIngredient: jest.fn(),
         updatePurchaseQuantity: jest.fn(),
+        deletePurchases: jest.fn(),
         findPurchaseHistory: jest.fn(),
     };
 }
@@ -98,6 +99,7 @@ function createUserRepository(): jest.Mocked<UserRepository> {
         findPasswordResetCandidateByEmail: jest.fn(),
         create: jest.fn(),
         updatePassword: jest.fn(),
+        revokeSessions: jest.fn(),
         updateProfile: jest.fn(),
         updateLocale: jest.fn(),
         markEmailVerified: jest.fn(),
@@ -190,6 +192,7 @@ function createEmailSender(): jest.Mocked<EmailSender> {
 
 function createPhotoRepository(): jest.Mocked<PhotoRepository> {
     return {
+        usage: jest.fn(),
         replace: jest.fn(),
     };
 }

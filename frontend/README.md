@@ -370,7 +370,7 @@ fresh one per request, because requests in different languages render side by si
 would hand one visitor another's language; in the browser the global instance, initialized with that
 same language. Init is synchronous (inlined resources, `useSuspense: false`), `defaultNS: "common"`.
 One namespace file per domain lives under `src/i18n/locales/<locale>/`. `catalog` is split: its short
-category and allergen lists travel with the page, while the 751 ingredient names are loaded lazily per
+category and allergen lists travel with the page, while the 753 ingredient names are loaded lazily per
 language by [src/i18n/loadCatalog.ts](src/i18n/loadCatalog.ts)'s `ensureCatalogLoaded(i18n)`, from an
 effect in `AppShell`, so the auth pages never download them; `bindI18nStore: "added"` re-renders what
 reads them once they land. The server's `getServerTranslation` always holds the whole catalog, and the

@@ -10512,5 +10512,33 @@
         "seasonality": "All seasons",
         "storageCondition": "Dark place, room temperature",
         "caloriesPerUnit": 2.5
+    },
+    {
+        "slug": "burger_bun",
+        "category": "flour_baking",
+        "nameEn": "Burger bun",
+        "nameRu": "Булочка для бургера",
+        "nameUk": "Булочка для бургера",
+        "namePl": "Bułka do burgera",
+        "unit": "piece",
+        "allergens": ["gluten"],
+        "daysToExpire": 5,
+        "seasonality": "All seasons",
+        "storageCondition": "Room temperature",
+        "caloriesPerUnit": 167.4
+    },
+    {
+        "slug": "ladyfingers",
+        "category": "flour_baking",
+        "nameEn": "Ladyfingers",
+        "nameRu": "Печенье савоярди",
+        "nameUk": "Печиво савоярді",
+        "namePl": "Biszkopty savoiardi",
+        "unit": "piece",
+        "allergens": ["gluten", "eggs"],
+        "daysToExpire": 180,
+        "seasonality": "All seasons",
+        "storageCondition": "Dry place, room temperature",
+        "caloriesPerUnit": 29.2
     }
 ]

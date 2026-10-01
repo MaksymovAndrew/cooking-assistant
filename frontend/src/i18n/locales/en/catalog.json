@@ -750,7 +750,9 @@
         "kvass": "Kvass",
         "lingonberry": "Lingonberry",
         "dried_apples": "Dried apples",
-        "fruit_jam": "Jam"
+        "fruit_jam": "Jam",
+        "burger_bun": "Burger bun",
+        "ladyfingers": "Ladyfingers"
     },
     "category": {
         "vegetables": "Vegetables",

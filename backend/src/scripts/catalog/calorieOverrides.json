@@ -334,5 +334,13 @@
     "fruit_jam": {
         "kcalPer100": 250,
         "confidence": "estimated"
+    },
+    "burger_bun": {
+        "kcalPer100": 279,
+        "confidence": "estimated"
+    },
+    "ladyfingers": {
+        "kcalPer100": 365,
+        "confidence": "estimated"
     }
 }

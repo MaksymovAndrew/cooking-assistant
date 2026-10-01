@@ -750,7 +750,9 @@
         "kvass": "Квас",
         "lingonberry": "Брусниця",
         "dried_apples": "Сушені яблука",
-        "fruit_jam": "Варення"
+        "fruit_jam": "Варення",
+        "burger_bun": "Булочка для бургера",
+        "ladyfingers": "Печиво савоярді"
     },
     "category": {
         "vegetables": "Овочі",

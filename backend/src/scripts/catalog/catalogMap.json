@@ -8945,5 +8945,32 @@
         "seasonality": "All seasons",
         "storageCondition": "Dark place, room temperature",
         "allergens": []
+    },
+    {
+        "slug": "burger_bun",
+        "category": "flour_baking",
+        "searchName": "Burger bun",
+        "unit": "piece",
+        "daysToExpire": 5,
+        "seasonality": "All seasons",
+        "storageCondition": "Room temperature",
+        "allergens": [
+            "gluten"
+        ],
+        "unitGrams": 60
+    },
+    {
+        "slug": "ladyfingers",
+        "category": "flour_baking",
+        "searchName": "Ladyfingers",
+        "unit": "piece",
+        "daysToExpire": 180,
+        "seasonality": "All seasons",
+        "storageCondition": "Dry place, room temperature",
+        "allergens": [
+            "gluten",
+            "eggs"
+        ],
+        "unitGrams": 8
     }
 ]

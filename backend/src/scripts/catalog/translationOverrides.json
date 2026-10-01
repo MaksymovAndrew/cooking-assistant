@@ -3638,5 +3638,15 @@
         "ru": "Варенье",
         "uk": "Варення",
         "pl": "Konfitura"
+    },
+    "burger_bun": {
+        "ru": "Булочка для бургера",
+        "uk": "Булочка для бургера",
+        "pl": "Bułka do burgera"
+    },
+    "ladyfingers": {
+        "ru": "Печенье савоярди",
+        "uk": "Печиво савоярді",
+        "pl": "Biszkopty savoiardi"
     }
 }

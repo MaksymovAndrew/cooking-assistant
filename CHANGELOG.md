@@ -20,6 +20,16 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 4.9.2 - 2026-10-01
+
+### Backend
+
+- Added: Burger buns and ladyfingers in the ingredient list, so a cheeseburger and a tiramisu can list everything they need.
+
+### Frontend
+
+- Added: Names for the two new ingredients in every language.
+
 ## 4.9.1 - 2026-09-28
 
 ### Project

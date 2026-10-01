@@ -750,7 +750,9 @@
         "kvass": "Kwas chlebowy",
         "lingonberry": "Borówka brusznica",
         "dried_apples": "Suszone jabłka",
-        "fruit_jam": "Konfitura"
+        "fruit_jam": "Konfitura",
+        "burger_bun": "Bułka do burgera",
+        "ladyfingers": "Biszkopty savoiardi"
     },
     "category": {
         "vegetables": "Warzywa",

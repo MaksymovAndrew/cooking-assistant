@@ -33,9 +33,10 @@ In production the backend is compiled by `tsup` into `dist/` and run with plain 
 TypeScript toolchain). The [Dockerfile](Dockerfile) handles this in two stages:
 
 1. **builder** - installs all deps (including devDeps for tsup), runs `npm run build`, produces `dist/index.js`,
-   `dist/scripts/migrate.js`, `dist/scripts/seed.js`, `dist/scripts/deploy-db.js`.
-2. **runner** - installs prod-only deps (`npm ci --omit=dev`), copies `dist/` and `migrations/`, runs
-   `node dist/index.js`.
+   `dist/scripts/migrate.js`, `dist/scripts/seed.js`, `dist/scripts/deploy-db.js`, each with a source map.
+2. **runner** - installs prod-only deps (`npm ci --omit=dev`, then clears the npm cache), copies `dist/` and
+   `migrations/`, runs `node --enable-source-maps dist/index.js`, so a production stack trace points at
+   `src/` rather than into the bundle.
 
 Migrations and seed run before the new containers go live, as a one-shot container started by the
 deploy script:

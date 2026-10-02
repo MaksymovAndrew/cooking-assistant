@@ -3,6 +3,7 @@ node_modules
 dist
 dist-ssr
 coverage
+uploads
 
 # environment secrets
 .env
@@ -14,6 +15,7 @@ coverage
 **/*.test.ts
 src/test
 jest.config.js
+jest.db.config.js
 
 # typescript
 *.tsbuildinfo

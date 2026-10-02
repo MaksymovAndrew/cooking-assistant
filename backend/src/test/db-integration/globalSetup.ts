@@ -9,7 +9,7 @@ const migrationsDir = path.resolve(__dirname, "../../../migrations");
 
 export default async function globalSetup(): Promise<void> {
     const container = await new PostgreSqlContainer(
-        "postgres:16-alpine",
+        "postgres:18-alpine",
     ).start();
 
     (globalThis as { __PG_TESTCONTAINER__?: unknown }).__PG_TESTCONTAINER__ =

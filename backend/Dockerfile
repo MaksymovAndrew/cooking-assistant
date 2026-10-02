@@ -29,13 +29,13 @@ WORKDIR /app
 
 # Install production deps only; devDeps (tsup, typescript, jest…) are excluded.
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Pull compiled output from the builder stage.
 COPY --from=builder /app/dist ./dist
 
 # SQL migration files are read from disk at runtime by node-pg-migrate.
-# The Container Apps Job runs: node dist/scripts/deploy-db.js (migrate + seed)
+# The compose `migrate` service runs: node dist/scripts/deploy-db.js (migrate + seed)
 COPY migrations/ ./migrations/
 
 # Uploaded images live on a named volume mounted here. The directory must exist in the image,
@@ -50,5 +50,5 @@ EXPOSE 3000
 # above is the only place it writes; everything else it reads, and it logs to stdout.
 USER node
 
-# Exec form (JSON array) so SIGTERM reaches node directly — enables graceful shutdown.
-CMD ["node", "dist/index.js"]
+# Exec form so SIGTERM reaches node directly; source maps point stack traces at src/.
+CMD ["node", "--enable-source-maps", "dist/index.js"]

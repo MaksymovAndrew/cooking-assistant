@@ -1,7 +1,7 @@
 {
-    "name": "cooking-assistant",
-    "version": "4.9.2",
-    "main": "src/index.ts",
+    "name": "cooking-assistant-backend",
+    "private": true,
+    "version": "5.0.0",
     "engines": {
         "node": ">=24"
     },
@@ -17,7 +17,6 @@
         "lint:fix": "eslint . --fix",
         "lint:sonarjs": "eslint . --config eslint.sonarjs.config.js",
         "migrate": "tsx src/scripts/migrate.ts",
-        "migrate:up": "tsx src/scripts/migrate.ts up",
         "migrate:down": "tsx src/scripts/migrate.ts down",
         "migrate:create": "node-pg-migrate create -j sql -m migrations",
         "seed": "tsx src/scripts/seed.ts",
@@ -47,22 +46,22 @@
         "helmet": "^8.3.0",
         "jsonwebtoken": "^9.0.2",
         "node-pg-migrate": "^9.0.0",
-        "pg": "^8.13.0",
+        "pg": "^8.23.1",
         "pino": "^10.3.1",
         "pino-http": "^11.0.0",
-        "sharp": "^0.35.4",
+        "sharp": "^0.35.5",
         "zod": "^4.6.5"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.5",
-        "@testcontainers/postgresql": "^12.1.0",
+        "@testcontainers/postgresql": "^12.2.0",
         "@types/compression": "^1.8.1",
         "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.0",
         "@types/jest": "^30.0.0",
         "@types/jsonwebtoken": "^9.0.10",
-        "@types/node": "^24.13.6",
+        "@types/node": "^24.19.1",
         "@types/pg": "^8.23.1",
         "@types/supertest": "^7.2.1",
         "eslint": "^9.39.5",
@@ -74,14 +73,14 @@
         "eslint-plugin-jest": "^29.16.6",
         "eslint-plugin-promise": "^7.3.0",
         "eslint-plugin-simple-import-sort": "^14.0.0",
-        "eslint-plugin-sonarjs": "^4.2.0",
+        "eslint-plugin-sonarjs": "^4.2.2",
         "jest": "^30.5.0",
         "supertest": "^7.2.2",
-        "testcontainers": "^12.1.0",
-        "ts-jest": "^29.4.13",
+        "testcontainers": "^12.2.0",
+        "ts-jest": "^29.4.14",
         "tsup": "^8.5.1",
         "tsx": "^4.23.13",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.70.0"
+        "typescript-eslint": "^8.71.0"
     }
 }

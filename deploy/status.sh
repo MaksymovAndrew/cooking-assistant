@@ -108,6 +108,15 @@ else
     row "Backups" "no dumps on disk" "$(fail)"
 fi
 
+LAST_MEDIA=$(ls -t /srv/backups/media/uploads-*.tar 2>/dev/null | head -1)
+if [ -n "$LAST_MEDIA" ]; then
+    MEDIA_AGE_H=$(( ( $(date +%s) - $(stat -c %Y "$LAST_MEDIA") ) / 3600 ))
+    row "Photo copy" "last ${MEDIA_AGE_H}h ago ($(du -h "$LAST_MEDIA" | cut -f1))  ·  archive checked against the volume" \
+        "$( [ "$MEDIA_AGE_H" -lt 30 ] && ok || warn )"
+else
+    row "Photo copy" "no uploads archive on disk" "$(fail)"
+fi
+
 # --- project: cooking assistant ----------------------------------------------
 section "COOKING ASSISTANT"
 
@@ -130,7 +139,11 @@ IFS="|" read -r DB_STATE DB_OK <<< "$(container cooking-assistant-postgres-1)"
 row "Database" "postgres 18  ·  $DB_STATE  ·  $(mem_of cooking-assistant-postgres-1)  ·  not exposed" \
     "$( [ "$DB_OK" = 1 ] && ok || fail )"
 
-COUNTS=$(docker run --rm --network "$NET_COOKING" --env-file "$STACK_COOKING/.env" postgres:18-alpine \
+# the throwaway psql container gets the DB_* keys only, never the app's secrets
+DB_ENV=$(mktemp)
+trap 'rm -f "$DB_ENV"' EXIT
+grep '^DB_' "$STACK_COOKING/.env" > "$DB_ENV" 2>/dev/null
+COUNTS=$(docker run --rm --network "$NET_COOKING" --env-file "$DB_ENV" postgres:18-alpine \
     sh -c 'PGPASSWORD=$DB_PASSWORD psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -At -F" " -c "select (select count(*) from person), (select count(*) from recipes), (select count(*) from menu), (select count(*) from ingredients)"' 2>/dev/null)
 if [ -n "$COUNTS" ]; then
     set -- $COUNTS

@@ -22,7 +22,7 @@ carry the cookie.
 - **i18next + react-i18next** - all user-facing strings (one namespace per domain; the page's language comes from the URL)
 - **Recharts** - charts on the stats page (lazy-loaded)
 - **lucide-react** + hand-authored SVG icon components (`src/components/icons/`) - iconography
-- **Jest 30 + @swc/jest + React Testing Library + jsdom** - test suite (~224 co-located test files,
+- **Jest 30 + @swc/jest + React Testing Library + jsdom** - test suite (~350 co-located test files,
   80% coverage gate)
 
 ## Running locally
@@ -34,7 +34,7 @@ below only to work on the frontend alone.
 npm install
 npm run dev          # next dev -> http://localhost:8080
 npm run build        # next build (type-checks as part of the build)
-npm run preview      # next start - serve the production build
+npm start            # next start - serve the production build
 npm run lint         # eslint .
 npm run lint:fix     # eslint . --fix
 npm run lint:sonarjs # SonarJS static-analysis ruleset

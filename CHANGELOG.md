@@ -20,6 +20,18 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Project
+
+- Changed: all dependencies brought up to their latest minor and patch releases (Next.js 16.3.8, Redux Toolkit 2.13, sharp 0.35.5, pg 8.23.1 and the tooling around them); TypeScript 7 and ESLint 10 stay on hold until the lint plugins support them.
+- Changed: CI runs each side's checks as one matrix job, lints and type-checks the end-to-end suite too, tests against PostgreSQL 18 like production, caches the browser and the Next.js build, and pins every action to a commit.
+- Fixed: a commit marked to skip checks no longer skips CI when it changes application code.
+- Fixed: re-deploying or rolling back an older release from the Actions tab now rebuilds that release's own code instead of the current branch, and no longer moves the `latest` image back.
+- Added: after a deploy the server checks the site and the API through the proxy, as a visitor reaches them, and rolls back if either fails; a rollback now waits until the restored release is healthy and says so.
+- Added: production stack traces point at the source files, Postgres gets enough shared memory for parallel queries, and every container's logs are capped so they cannot fill the disk.
+- Added: the nightly backup script is now kept in the repository, and the server report shows the age of the latest photo archive.
+- Fixed: the backup and status scripts no longer hand the app's secrets to the throwaway database containers they start.
+- Fixed: the pre-commit hook handles route folders such as `[locale]` and `(public)` on macOS and Linux, and checks frontend coverage like CI does.
+
 ## 4.9.2 - 2026-10-01
 
 ### Backend

@@ -1,263 +1,210 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
+    pull_request:
+        branches: [main]
+    push:
+        branches: [main]
 
 permissions:
-  contents: read
+    contents: read
 
+# a newer push to a PR supersedes the old run; a run on main always finishes
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+    group: ci-${{ github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-# the gate job reads the head commit message (with the PR title as a fallback)
-# and decides whether to skip the heavy jobs - working the same on push and PR.
-# pull_request events carry no head_commit, so the gate checks out the PR head
-# sha and reads its message directly, making [skip-checks] in the commit message
-# authoritative everywhere (no need to put it in the PR title). ci-success still
-# runs and passes (skipped != failed), so a PR can merge. locally, SKIP_CHECKS=1
-# stamps the marker onto the commit subject (see .husky/prepare-commit-msg).
+# The gate reads [skip-checks] from the head commit message (PR title as a fallback) - pull_request
+# events carry no head_commit, so it checks out the PR head sha. The marker is honoured only when
+# the change leaves backend/src and frontend/src alone: application code always gets the full run.
+# ci-success still passes on a skip (skipped != failed), so an ops-only PR can merge.
 jobs:
-  gate:
-    runs-on: ubuntu-latest
-    outputs:
-      skip: ${{ steps.decide.outputs.skip }}
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 1
-      - id: decide
+    gate:
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        outputs:
+            skip: ${{ steps.decide.outputs.skip }}
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  ref: ${{ github.event.pull_request.head.sha || github.sha }}
+                  fetch-depth: 0
+            - id: decide
+              env:
+                  PR_TITLE: ${{ github.event.pull_request.title }}
+                  BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+              run: |
+                  MESSAGE="$(git log -1 --pretty=%B)"
+                  if ! printf '%s %s' "$MESSAGE" "$PR_TITLE" | grep -qF '[skip-checks]'; then
+                    echo "skip=false" >> "$GITHUB_OUTPUT"
+                    exit 0
+                  fi
+                  CHANGED="$(git diff --name-only "$BASE_SHA" HEAD)"
+                  if printf '%s\n' "$CHANGED" | grep -qE '^(backend|frontend)/src/'; then
+                    echo "::warning::[skip-checks] ignored - the change touches backend/src or frontend/src"
+                    echo "skip=false" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "skip=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+    format:
+        needs: gate
+        if: ${{ needs.gate.outputs.skip != 'true' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - uses: ./.github/actions/setup
+              with:
+                  cache-dependency-path: package-lock.json
+                  install: npm ci --ignore-scripts
+            - name: Check formatting
+              run: npm run format:check
+
+    lint-e2e:
+        needs: gate
+        if: ${{ needs.gate.outputs.skip != 'true' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - uses: ./.github/actions/setup
+              with:
+                  cache-dependency-path: package-lock.json
+                  install: npm ci --ignore-scripts
+            - name: Lint the e2e suite
+              run: npx eslint .
+            - name: Typecheck the e2e suite
+              run: npm run typecheck:e2e
+
+    backend:
+        name: backend (${{ matrix.task }})
+        needs: gate
+        if: ${{ needs.gate.outputs.skip != 'true' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        strategy:
+            fail-fast: false
+            matrix:
+                # test:db runs the repositories against a real Postgres that Testcontainers starts itself
+                task: [lint, typecheck, lint:sonarjs, test:coverage, test:db]
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - uses: ./.github/actions/setup
+              with:
+                  cache-dependency-path: backend/package-lock.json
+                  install: npm --prefix backend ci
+            - name: npm run ${{ matrix.task }}
+              run: npm --prefix backend run ${{ matrix.task }}
+
+    frontend:
+        name: frontend (${{ matrix.task }})
+        needs: gate
+        if: ${{ needs.gate.outputs.skip != 'true' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        strategy:
+            fail-fast: false
+            matrix:
+                task:
+                    [
+                        lint,
+                        typecheck,
+                        lint:sonarjs,
+                        stylelint,
+                        test:coverage,
+                        build,
+                    ]
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - uses: ./.github/actions/setup
+              with:
+                  cache-dependency-path: frontend/package-lock.json
+                  install: npm --prefix frontend ci
+            - name: Restore the Next.js build cache
+              if: ${{ matrix.task == 'build' }}
+              uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: frontend/.next/cache
+                  key: next-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('frontend/src/**') }}
+                  restore-keys: next-${{ hashFiles('frontend/package-lock.json') }}-
+            - name: npm run ${{ matrix.task }}
+              # a production build refuses to guess the public origin; CI builds are never deployed,
+              # so a placeholder is enough to exercise the build itself
+              env:
+                  NEXT_PUBLIC_SITE_URL: https://example.com
+              run: npm --prefix frontend run ${{ matrix.task }}
+
+    e2e:
+        needs: gate
+        if: ${{ needs.gate.outputs.skip != 'true' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        services:
+            postgres:
+                image: postgres:18-alpine
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: "12345678"
+                    POSTGRES_DB: cooking_helper
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd "pg_isready -U postgres"
+                    --health-interval 5s
+                    --health-timeout 5s
+                    --health-retries 10
         env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          MESSAGE="$(git log -1 --pretty=%B)"
-          if printf '%s %s' "$MESSAGE" "$PR_TITLE" | grep -qF '[skip-checks]'; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
+            DB_USER: postgres
+            DB_PASSWORD: "12345678"
+            DB_HOST: localhost
+            DB_PORT: "5432"
+            DB_NAME: cooking_helper
+            JWT_SECRET_KEY: e2e-ci-only-secret-key-0123456789abcdef
+            # the whole suite is one client hammering the API, and every rendered page adds its own
+            # server-side calls - the production default of 300/min rejects the last specs with a 429
+            RATE_LIMIT_MAX: "5000"
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - uses: ./.github/actions/setup
+              with:
+                  cache-dependency-path: |
+                      package-lock.json
+                      backend/package-lock.json
+                      frontend/package-lock.json
+                  install: npm ci --ignore-scripts && npm --prefix backend ci && npm --prefix frontend ci
+            - name: Restore the Playwright browser
+              id: browsers
+              uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+            - name: Install Playwright browser
+              if: ${{ steps.browsers.outputs.cache-hit != 'true' }}
+              run: npx playwright install --with-deps chromium
+            # the cache holds the browser only; its system libraries still come from apt
+            - name: Install Playwright system dependencies
+              if: ${{ steps.browsers.outputs.cache-hit == 'true' }}
+              run: npx playwright install-deps chromium
+            - name: Prepare database
+              run: npm --prefix backend run migrate && npm --prefix backend run seed
+            - name: Run e2e smoke suite
+              run: npx playwright test
+            - name: Upload traces on failure
+              if: failure()
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: playwright-traces
+                  path: test-results/
+                  retention-days: 7
 
-  format:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: package-lock.json
-          install: npm ci --ignore-scripts
-      - name: Check formatting
-        run: npm run format:check
-
-  lint-backend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: backend/package-lock.json
-          install: npm --prefix backend ci
-      - name: Lint backend
-        run: npm --prefix backend run lint
-
-  typecheck-backend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: backend/package-lock.json
-          install: npm --prefix backend ci
-      - name: Typecheck backend
-        run: npm --prefix backend run typecheck
-
-  sonarjs-backend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: backend/package-lock.json
-          install: npm --prefix backend ci
-      - name: Run backend SonarJS lint
-        run: npm --prefix backend run lint:sonarjs
-
-  test-backend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: backend/package-lock.json
-          install: npm --prefix backend ci
-      - name: Test backend with coverage
-        run: npm --prefix backend run test:coverage
-
-  test-backend-db:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: backend/package-lock.json
-          install: npm --prefix backend ci
-      - name: Test repositories against a real Postgres (Testcontainers)
-        run: npm --prefix backend run test:db
-
-  lint-frontend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: frontend/package-lock.json
-          install: npm --prefix frontend ci
-      - name: Lint frontend
-        run: npm --prefix frontend run lint
-
-  typecheck-frontend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: frontend/package-lock.json
-          install: npm --prefix frontend ci
-      - name: Typecheck frontend
-        run: npm --prefix frontend run typecheck
-
-  sonarjs-frontend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: frontend/package-lock.json
-          install: npm --prefix frontend ci
-      - name: Run frontend SonarJS lint
-        run: npm --prefix frontend run lint:sonarjs
-
-  build-frontend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: frontend/package-lock.json
-          install: npm --prefix frontend ci
-      - name: Build frontend
-        # a production build refuses to guess the public origin; CI builds are never deployed,
-        # so a placeholder is enough to exercise the build itself
-        env:
-          NEXT_PUBLIC_SITE_URL: https://example.com
-        run: npm --prefix frontend run build
-
-  stylelint-frontend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: frontend/package-lock.json
-          install: npm --prefix frontend ci
-      - name: Run frontend Stylelint
-        run: npm --prefix frontend run stylelint
-
-  test-frontend:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: frontend/package-lock.json
-          install: npm --prefix frontend ci
-      - name: Test frontend with coverage
-        run: npm --prefix frontend run test:coverage
-
-  e2e:
-    needs: gate
-    if: ${{ needs.gate.outputs.skip != 'true' }}
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: "12345678"
-          POSTGRES_DB: cooking_helper
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      DB_USER: postgres
-      DB_PASSWORD: "12345678"
-      DB_HOST: localhost
-      DB_PORT: "5432"
-      DB_NAME: cooking_helper
-      JWT_SECRET_KEY: e2e-ci-only-secret-key-0123456789abcdef
-      # the whole suite is one client hammering the API, and every rendered page adds its own
-      # server-side calls - the production default of 300/min rejects the last specs with a 429
-      RATE_LIMIT_MAX: "5000"
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
-        with:
-          cache-dependency-path: |
-            package-lock.json
-            backend/package-lock.json
-            frontend/package-lock.json
-          install: npm ci --ignore-scripts && npm --prefix backend ci && npm --prefix frontend ci
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
-      - name: Prepare database
-        run: npm --prefix backend run migrate && npm --prefix backend run seed
-      - name: Run e2e smoke suite
-        run: npx playwright test
-      - name: Upload traces on failure
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-traces
-          path: test-results/
-          retention-days: 7
-
-  ci-success:
-    name: ci-success
-    if: always()
-    needs: [gate, format, lint-backend, lint-frontend, typecheck-backend, typecheck-frontend, sonarjs-backend, sonarjs-frontend, test-backend, test-backend-db, build-frontend, stylelint-frontend, test-frontend, e2e]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fail if any needed job failed
-        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
-        run: exit 1
+    ci-success:
+        name: ci-success
+        if: always()
+        needs: [gate, format, lint-e2e, backend, frontend, e2e]
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            - name: Fail if any needed job failed
+              if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+              run: exit 1

@@ -11,10 +11,10 @@ export default defineConfig({
         "scripts/deploy-db": "src/scripts/deploy-db.ts",
     },
     format: ["cjs"],
-    target: "node22",
+    target: "node24",
     platform: "node",
     bundle: true,
-    sourcemap: false,
+    sourcemap: true,
     clean: true,
     tsconfig: "tsconfig.json",
 });

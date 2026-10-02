@@ -1,53 +1,53 @@
-// ESLint v9 flat-config is resolved by cwd, so backend/frontend files need
-// eslint run from their own directory; `node -e` + execSync({cwd}) is used
-// instead of `cd dir && cmd` because `&&` chaining is unreliable on Windows.
+// backend/frontend files are linted from their own directory (ESLint flat config is resolved by
+// cwd) through scripts/run-tool.mjs, which spawns the tool without a shell - so bracketed and
+// parenthesised route folders survive on every OS. lint-staged itself splits the quoted paths.
 const path = require("path");
 
-const backendDir = path.join(__dirname, "backend");
-const frontendDir = path.join(__dirname, "frontend");
-const backendFwd = backendDir.replace(/\\/g, "/");
-const frontendFwd = frontendDir.replace(/\\/g, "/");
 // Windows caps a command line at ~8k characters, so a large commit runs in batches
 const BATCH_SIZE = 30;
 
-const inBatches = (items) => {
+const toPosix = (file) => file.replace(/\\/g, "/");
+
+const inBatches = (files) => {
     const batches = [];
 
-    for (let i = 0; i < items.length; i += BATCH_SIZE) {
-        batches.push(items.slice(i, i + BATCH_SIZE).join(" "));
+    for (let i = 0; i < files.length; i += BATCH_SIZE) {
+        batches.push(
+            files
+                .slice(i, i + BATCH_SIZE)
+                .map((file) => `"${toPosix(file)}"`)
+                .join(" "),
+        );
     }
 
     return batches;
 };
 
-const relativeTo = (dir, files) =>
-    files.map((f) => path.relative(dir, f).replace(/\\/g, "/").trim());
-
 const prettierCommands = (files) =>
-    inBatches(relativeTo(__dirname, files).map((f) => `"${f}"`)).map(
+    inBatches(files.map((file) => path.relative(__dirname, file))).map(
         (batch) => `prettier --write ${batch}`,
     );
 
-const eslintCommands = (dir, dirFwd, files) =>
-    inBatches(relativeTo(dir, files)).map(
-        (batch) =>
-            `node -e "require('child_process').execSync('npx eslint --fix ${batch}',{stdio:'inherit',cwd:'${dirFwd}',shell:true})"`,
+// absolute paths, since the tool runs inside its package directory
+const toolCommands = (dir, tool, files) =>
+    inBatches(files.map((file) => path.resolve(file))).map(
+        (batch) => `node scripts/run-tool.mjs ${dir} ${tool} --fix ${batch}`,
     );
 
 module.exports = {
     "backend/**/*.ts": (files) => [
-        ...eslintCommands(backendDir, backendFwd, files),
+        ...toolCommands("backend", "eslint", files),
         ...prettierCommands(files),
     ],
 
     "frontend/**/*.{ts,tsx}": (files) => [
-        ...eslintCommands(frontendDir, frontendFwd, files),
+        ...toolCommands("frontend", "eslint", files),
         ...prettierCommands(files),
     ],
 
-    "frontend/**/*.{css,scss}": [
-        "./frontend/node_modules/.bin/stylelint --fix",
-        "prettier --write",
+    "frontend/**/*.{css,scss}": (files) => [
+        ...toolCommands("frontend", "stylelint", files),
+        ...prettierCommands(files),
     ],
 
     "{e2e/**/*.ts,playwright.config.ts}": ["eslint --fix", "prettier --write"],

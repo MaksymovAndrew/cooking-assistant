@@ -10,5 +10,5 @@ import { spawnSync } from "node:child_process";
 const SKIP_ALIAS = '!f() { SKIP_CHECKS=1 git "$@"; }; f';
 
 spawnSync("git", ["config", "--local", "alias.skip-checks", SKIP_ALIAS], {
-  stdio: "ignore",
+    stdio: "ignore",
 });

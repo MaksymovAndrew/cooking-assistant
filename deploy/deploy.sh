@@ -11,12 +11,14 @@ set -euo pipefail
 
 STACK_DIR=/srv/cooking-assistant
 ENV_FILE="$STACK_DIR/.env"
+EDGE_ENV=/srv/edge/.env
 REGISTRY=ghcr.io
 BACKEND_CONTAINER=cooking-assistant-backend-1
 FRONTEND_CONTAINER=cooking-assistant-frontend-1
 HEALTH_TIMEOUT_SECONDS=150
 POLL_INTERVAL_SECONDS=5
 BACKUP_COPY_RETENTION_DAYS=14
+PUBLIC_PROBE_ATTEMPTS=6
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 die() { echo "[$(date '+%H:%M:%S')] ERROR: $*" >&2; exit 1; }
@@ -54,11 +56,44 @@ stack_healthy() {
     container_healthy "$BACKEND_CONTAINER" && container_healthy "$FRONTEND_CONTAINER"
 }
 
+wait_for_healthy() {
+    local deadline=$(( SECONDS + HEALTH_TIMEOUT_SECONDS ))
+    until stack_healthy; do
+        [ "$SECONDS" -lt "$deadline" ] || return 1
+        sleep "$POLL_INTERVAL_SECONDS"
+    done
+}
+
 roll_back() {
     log "rolling back to $PREVIOUS_BACKEND:$PREVIOUS_TAG"
     write_release "$PREVIOUS_BACKEND" "$PREVIOUS_FRONTEND" "$PREVIOUS_TAG"
     docker compose up -d >/dev/null 2>&1 || true
-    die "deploy failed, previous version restored"
+    wait_for_healthy || die "deploy failed, and the restored $PREVIOUS_TAG is NOT healthy either"
+    die "deploy failed, previous version $PREVIOUS_TAG restored and healthy"
+}
+
+# through Caddy, as a visitor gets there: container health checks run inside the project network,
+# so a proxy pointing at the wrong port would otherwise pass as a green deploy
+public_ok() {
+    local url=$1 host=${1#https://}
+    host=${host%%/*}
+    curl -fsS -o /dev/null --max-time 10 --resolve "$host:443:127.0.0.1" "$url"
+}
+
+probe_public() {
+    local app api attempt
+    app=$(grep -oP '(?<=^APP_DOMAIN=).*' "$EDGE_ENV" 2>/dev/null || true)
+    api=$(grep -oP '(?<=^API_DOMAIN=).*' "$EDGE_ENV" 2>/dev/null || true)
+    if [ -z "$app" ] || [ -z "$api" ]; then
+        log "no domains in $EDGE_ENV - public probe skipped"
+        return 0
+    fi
+    for attempt in $(seq "$PUBLIC_PROBE_ATTEMPTS"); do
+        public_ok "https://$api/api/health" && public_ok "https://$app/" && return 0
+        log "public probe $attempt/$PUBLIC_PROBE_ATTEMPTS failed, retrying"
+        sleep "$POLL_INTERVAL_SECONDS"
+    done
+    return 1
 }
 
 # this project's images only, minus the running tag and the rollback target; other projects on the
@@ -90,14 +125,13 @@ log "starting containers"
 docker compose up -d || roll_back
 
 log "waiting for both containers to report healthy"
-deadline=$(( SECONDS + HEALTH_TIMEOUT_SECONDS ))
-until stack_healthy; do
-    if [ "$SECONDS" -ge "$deadline" ]; then
-        docker compose logs --tail 40 backend frontend || true
-        roll_back
-    fi
-    sleep "$POLL_INTERVAL_SECONDS"
-done
+if ! wait_for_healthy; then
+    docker compose logs --tail 40 backend frontend || true
+    roll_back
+fi
+
+log "probing the site and the API through the proxy"
+probe_public || roll_back
 
 log "deployed $TAG successfully"
 clean_up

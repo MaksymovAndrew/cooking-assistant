@@ -58,7 +58,7 @@ function contentHtml(
     );
 }
 
-// Resend's REST API via native fetch (Node 22) - no SDK dependency needed for a single POST
+// Resend's REST API via native fetch - no SDK dependency needed for a single POST
 export default class ResendEmailService implements EmailSender {
     constructor(
         private apiKey: string,

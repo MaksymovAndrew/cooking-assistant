@@ -1,61 +1,27 @@
-import type { Pool } from "pg";
+import type { Pool, PoolClient } from "pg";
 
-interface PurchaseHistoryRow {
-    id: number;
-    quantity: number;
-    purchase_date: Date;
-    unit_name: string;
-    days_to_expire: number | null;
-}
-
-export async function findIngredientPurchaseHistory(
-    pool: Pool,
-    userId: string | number,
-    ingredientId: string | number,
-): Promise<unknown[]> {
-    const result = await pool.query<PurchaseHistoryRow>(
-        `SELECT
-                     ip.id,
-                     ip.quantity,
-                     ip.purchase_date,
-                     um.unit_name,
-                     i.days_to_expire
-                 FROM ingredient_purchases ip
-                          JOIN ingredients i ON ip.ingredient_id = i.id
-                          JOIN unit_measurement um ON i.id_unit_measurement = um.id
-                 WHERE ip.person_id = $1 AND ip.ingredient_id = $2
-                 ORDER BY ip.purchase_date ASC`,
-        [userId, ingredientId],
-    );
-
-    return result.rows;
-}
+import { inPersonWriteTransaction } from "./personWriteTransaction";
+import { committed, rolledBack } from "./transaction";
 
 interface PurchaseRow {
     quantity: number;
     ingredient_id: number;
 }
 
-export async function updatePurchaseQuantity(
+export function updatePurchaseQuantity(
     pool: Pool,
-    userId: string | number,
-    purchaseId: string | number,
+    userId: number,
+    purchaseId: number,
     quantity: number,
-): Promise<boolean | null> {
-    const client = await pool.connect();
-
-    try {
-        await client.query("BEGIN");
-
+): Promise<boolean> {
+    return inPersonWriteTransaction(pool, userId, false, async (client) => {
         const purchase = await client.query<PurchaseRow>(
             `SELECT quantity, ingredient_id FROM ingredient_purchases WHERE id = $1 AND person_id = $2 FOR UPDATE`,
             [purchaseId, userId],
         );
 
         if (purchase.rows.length === 0) {
-            await client.query("ROLLBACK");
-
-            return null;
+            return rolledBack(false);
         }
 
         // apply the purchase edit as a delta on the pantry stock so prior consumption is preserved (recomputing as SUM of purchases would lose it)
@@ -75,45 +41,42 @@ export async function updatePurchaseQuantity(
             [delta, userId, ingredientId],
         );
 
-        await client.query("COMMIT");
-
-        return true;
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+        return committed(true);
+    });
 }
 
-// the lots leave the stock with them; an ingredient's last lot takes its pantry row along, like
-// deleting the item. Answers how many of the given purchases were the user's and are now gone
-export async function deletePurchases(
-    pool: Pool,
-    userId: string | number,
-    purchaseIds: number[],
-): Promise<number> {
-    const client = await pool.connect();
-
-    try {
-        await client.query("BEGIN");
-
-        const deleted = await client.query<PurchaseRow>(
-            `DELETE FROM ingredient_purchases WHERE id = ANY($1::int[]) AND person_id = $2
-       RETURNING quantity, ingredient_id`,
-            [purchaseIds, userId],
-        );
-
-        await client.query(
-            `DELETE FROM person_ingredients pi
+async function removeEmptiedRows(
+    client: PoolClient,
+    userId: number,
+    ingredientIds: number[],
+): Promise<void> {
+    await client.query(
+        `DELETE FROM person_ingredients pi
        WHERE pi.person_id = $1 AND pi.ingredient_id = ANY($2::int[])
          AND NOT EXISTS (
            SELECT 1 FROM ingredient_purchases ip
            WHERE ip.person_id = pi.person_id AND ip.ingredient_id = pi.ingredient_id
          )`,
-            [userId, deleted.rows.map((row) => row.ingredient_id)],
-        );
+        [userId, ingredientIds],
+    );
+}
 
+// the lots leave the stock with them; an ingredient's last lot takes its pantry row along, like
+// deleting the item. Answers how many of the given purchases were the user's and are now gone
+export function deletePurchases(
+    pool: Pool,
+    userId: number,
+    purchaseIds: number[],
+): Promise<number> {
+    return inPersonWriteTransaction(pool, userId, 0, async (client) => {
+        const deleted = await client.query<PurchaseRow>(
+            `DELETE FROM ingredient_purchases WHERE id = ANY($1::int[]) AND person_id = $2
+       RETURNING quantity, ingredient_id`,
+            [purchaseIds, userId],
+        );
+        const ingredientIds = deleted.rows.map((row) => row.ingredient_id);
+
+        await removeEmptiedRows(client, userId, ingredientIds);
         await client.query(
             `UPDATE person_ingredients pi
        SET quantity_person_ingradient = GREATEST(pi.quantity_person_ingradient - gone.total, 0)
@@ -123,20 +86,9 @@ export async function deletePurchases(
          GROUP BY ingredient_id
        ) gone
        WHERE pi.person_id = $1 AND pi.ingredient_id = gone.ingredient_id`,
-            [
-                userId,
-                deleted.rows.map((row) => row.ingredient_id),
-                deleted.rows.map((row) => row.quantity),
-            ],
+            [userId, ingredientIds, deleted.rows.map((row) => row.quantity)],
         );
 
-        await client.query("COMMIT");
-
-        return deleted.rows.length;
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+        return committed(deleted.rows.length);
+    });
 }

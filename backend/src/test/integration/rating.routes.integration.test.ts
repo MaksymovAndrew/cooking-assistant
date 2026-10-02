@@ -77,7 +77,7 @@ describe("rating routes", () => {
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
-            error: "value: Rating must be at most 5",
+            error: "value: Must be at most 5",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(deps.ratingRepository.rate).not.toHaveBeenCalled();

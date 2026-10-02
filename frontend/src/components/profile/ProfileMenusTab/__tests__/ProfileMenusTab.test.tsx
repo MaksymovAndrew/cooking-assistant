@@ -9,8 +9,8 @@ import { renderWithRouter } from "test/router";
 const MENU: Menu = {
     id: 1,
     title: "Weekday menu",
-    categoryname: "Lunch",
-    menucontent: "",
+    categoryName: "Lunch",
+    menuContent: "",
     recipe_count: 3,
 };
 

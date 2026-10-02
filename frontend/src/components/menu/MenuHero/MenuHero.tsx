@@ -79,9 +79,9 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                     >
                         {menu.title}
                     </h1>
-                    {menu.categoryname !== null && (
+                    {menu.categoryName !== null && (
                         <Chip variant="type">
-                            {menuCategoryName(t, menu.categoryname)}
+                            {menuCategoryName(t, menu.categoryName)}
                         </Chip>
                     )}
                     <LanguageBadge language={menu.language} />
@@ -115,12 +115,12 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                 />
             )}
 
-            {menu.menucontent && (
+            {menu.menuContent && (
                 <p
                     className={styles["menu-hero__description"]}
                     lang={menu.language}
                 >
-                    {menu.menucontent}
+                    {menu.menuContent}
                 </p>
             )}
         </div>

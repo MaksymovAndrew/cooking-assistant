@@ -6,7 +6,7 @@ import { renderWithRouter } from "test/router";
 
 const TITLE = "Weekday menu";
 const CATEGORY = "Lunch";
-const MENU = { id: 1, title: TITLE, categoryname: CATEGORY, recipe_count: 6 };
+const MENU = { id: 1, title: TITLE, categoryName: CATEGORY, recipe_count: 6 };
 
 describe("MenuCard", () => {
     it("should render the menu title as a link to its details page", () => {

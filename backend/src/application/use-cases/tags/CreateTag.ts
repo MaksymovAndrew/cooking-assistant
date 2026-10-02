@@ -4,7 +4,7 @@ import { ConflictError, NotFoundError } from "domain/errors/AppError";
 import type { Tag, TagRepository } from "domain/repositories/TagRepository";
 
 import { idSchema } from "application/validation/common.schemas";
-import { createTagSchema } from "application/validation/tags.schemas";
+import { tagSchema } from "application/validation/tags.schemas";
 import { validate } from "application/validation/validate";
 
 export default class CreateTag {
@@ -12,7 +12,7 @@ export default class CreateTag {
 
     async execute(personId: string | number, input: unknown): Promise<Tag> {
         const validPersonId = validate(idSchema, personId);
-        const { name } = validate(createTagSchema, input);
+        const { name } = validate(tagSchema, input);
 
         const result = await this.tagRepository.create(
             validPersonId,

@@ -4,6 +4,7 @@ import rateLimit, {
     type Options as RateLimitOptions,
 } from "express-rate-limit";
 
+import { config } from "config/env";
 import {
     AUTH_RATE_LIMIT,
     EMAIL_SEND_RATE_LIMIT,
@@ -63,7 +64,7 @@ export function createLimiter(
     return rateLimit({ ...options, keyGenerator, handler: rejectRateLimited });
 }
 
-const isTestMode = process.env.NODE_ENV === "test";
+const isTestMode = config.nodeEnv === "test";
 
 // separate instances (own counter each) so testing one endpoint never burns another's quota
 export const loginLimiter = createLimiter(isTestMode, authLimiterKey);

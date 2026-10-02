@@ -40,8 +40,8 @@ const SAMPLE_MENUS: MenuWithStats[] = [
     {
         id: 1,
         title: "Weekday menu",
-        categoryname: CATEGORY_NAME,
-        menucontent: "",
+        categoryName: CATEGORY_NAME,
+        menuContent: "",
         recipe_count: 3,
         total_cooking_time: 120,
         total_calories: null,

@@ -9,9 +9,30 @@ type MigrationDirection = "up" | "down";
 // both the standalone migrate entry and the combined deploy-db entry live in dist/scripts/, so ../../migrations resolves to /app/migrations in either bundle
 const migrationsDir = path.resolve(__dirname, "../../migrations");
 
+const KNOWN_ARGS = new Set(["up", "down", "--fake"]);
+
+// a typo such as "dwon" must stop the run, not quietly migrate up
+function parseArgs(args: string[]): {
+    direction: MigrationDirection;
+    fake: boolean;
+} {
+    const unknown = args.filter((arg) => !KNOWN_ARGS.has(arg));
+    const bothDirections = args.includes("up") && args.includes("down");
+
+    if (unknown.length > 0 || bothDirections) {
+        throw new Error(
+            `Usage: migrate [up|down] [--fake], got: ${args.join(" ")}`,
+        );
+    }
+
+    return {
+        direction: args.includes("down") ? "down" : "up",
+        fake: args.includes("--fake"),
+    };
+}
+
 export async function runMigrations(args: string[]): Promise<void> {
-    const direction: MigrationDirection = args.includes("down") ? "down" : "up";
-    const fake = args.includes("--fake");
+    const { direction, fake } = parseArgs(args);
 
     const migrations = await runner({
         databaseUrl: config.db,

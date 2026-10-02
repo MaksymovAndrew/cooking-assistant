@@ -3,7 +3,7 @@ import { ConflictError, NotFoundError } from "domain/errors/AppError";
 import type { TagRepository } from "domain/repositories/TagRepository";
 
 import { idSchema } from "application/validation/common.schemas";
-import { renameTagSchema } from "application/validation/tags.schemas";
+import { tagSchema } from "application/validation/tags.schemas";
 import { validate } from "application/validation/validate";
 
 export default class RenameTag {
@@ -16,7 +16,7 @@ export default class RenameTag {
     ): Promise<void> {
         const validPersonId = validate(idSchema, personId);
         const validTagId = validate(idSchema, tagId);
-        const { name } = validate(renameTagSchema, input);
+        const { name } = validate(tagSchema, input);
 
         const outcome = await this.tagRepository.rename(
             validPersonId,

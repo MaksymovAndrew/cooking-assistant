@@ -104,7 +104,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "in_pantry: In pantry must be true or false",
+            "in_pantry: Must be true or false",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -118,7 +118,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "type_ids: Type IDs must be a comma-separated list of IDs",
+            "type_ids: Must be a comma-separated list of IDs",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -134,7 +134,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "ingredient_ids: Ingredient IDs must be a comma-separated list of IDs",
+            "ingredient_ids: Must be a comma-separated list of IDs",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -151,7 +151,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "ingredient_ids: Ingredient IDs must be at most 20 items",
+            "ingredient_ids: Must have at most 20 items",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -167,7 +167,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "sort_order: Invalid enum value. Expected 'asc' | 'desc' | 'rating', received 'junk'",
+            "sort_order: Must be one of: asc, desc, rating",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -181,7 +181,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "limit: Limit must be at most 100",
+            "limit: Must be at most 100",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -195,7 +195,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "limit: Limit must be positive",
+            "limit: Must be greater than 0",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -209,7 +209,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "offset: Offset must be at least 0",
+            "offset: Must be at least 0",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -280,7 +280,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "offset: Offset must be an integer",
+            "offset: Must be a whole number",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -309,7 +309,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "exclude_allergens.1: Exclude allergens must be a comma-separated list of allergens",
+            "exclude_allergens.1: Must be one of: gluten, crustaceans, eggs, fish, peanuts, soybeans, milk, nuts, celery, mustard, sesame, sulphites, lupin, molluscs",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -366,7 +366,7 @@ describe("SearchRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "languages: Languages must be unique",
+            "languages: Must not repeat",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });

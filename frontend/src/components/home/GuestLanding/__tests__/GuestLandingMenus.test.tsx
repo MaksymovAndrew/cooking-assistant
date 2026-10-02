@@ -15,8 +15,8 @@ const SAMPLE_MENUS = [
     {
         id: 1,
         title: MENU_TITLE,
-        categoryname: "Dinner",
-        menucontent: "Slow braise, two sides and a cold dessert.",
+        categoryName: "Dinner",
+        menuContent: "Slow braise, two sides and a cold dessert.",
         recipe_count: 4,
     },
 ];

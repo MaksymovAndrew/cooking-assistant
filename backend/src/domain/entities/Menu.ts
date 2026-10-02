@@ -1,23 +1,30 @@
-import { ERROR_CODES } from "constants/errorCodes";
+import { ERROR_CODES, type ErrorCode } from "constants/errorCodes";
 import type { Locale } from "constants/locales";
 import { ValidationError } from "domain/errors/AppError";
 
 export interface MenuInput {
-    menuTitle?: string;
+    menuTitle: string;
     menuContent?: string;
     language: Locale;
-    categoryId?: number | null;
-    personId?: number;
-    recipeIds?: number[];
+    categoryId: number;
+    personId: number;
+    recipeIds: number[];
 }
 
 export type MenuUpdateInput = Omit<MenuInput, "personId">;
 
+// the request schema already checks every field; the one rule it leaves to the domain is that a menu has recipes
+function assertHasRecipes(recipeIds: number[], code: ErrorCode): void {
+    if (recipeIds.length === 0) {
+        throw new ValidationError(code);
+    }
+}
+
 export class Menu {
-    declare menuTitle?: string;
+    declare menuTitle: string;
     declare menuContent?: string;
     declare language: Locale;
-    declare categoryId?: number | null;
+    declare categoryId: number;
     declare personId?: number;
 
     static forCreation({
@@ -28,14 +35,7 @@ export class Menu {
         personId,
         recipeIds,
     }: MenuInput): Menu {
-        const hasInsufficientData =
-            !menuTitle || !categoryId || !recipeIds || recipeIds.length === 0;
-
-        if (hasInsufficientData) {
-            throw new ValidationError(
-                ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
-            );
-        }
+        assertHasRecipes(recipeIds, ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE);
 
         return new Menu({
             menuTitle,
@@ -46,33 +46,19 @@ export class Menu {
         });
     }
 
-    static forUpdate(
-        id: string | number | null | undefined,
-        {
-            menuTitle,
-            menuContent,
-            language,
-            categoryId,
-            recipeIds,
-        }: MenuUpdateInput,
-    ): Menu {
-        const hasInsufficientData =
-            !id ||
-            !menuTitle ||
-            !categoryId ||
-            !recipeIds ||
-            recipeIds.length === 0;
-
-        if (hasInsufficientData) {
-            throw new ValidationError(
-                ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
-            );
-        }
+    static forUpdate({
+        menuTitle,
+        menuContent,
+        language,
+        categoryId,
+        recipeIds,
+    }: MenuUpdateInput): Menu {
+        assertHasRecipes(recipeIds, ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE);
 
         return new Menu({ menuTitle, menuContent, language, categoryId });
     }
 
-    private constructor(data: Partial<Menu>) {
+    private constructor(data: Menu) {
         Object.assign(this, data);
     }
 }

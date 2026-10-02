@@ -4,10 +4,10 @@ import type {
     CookInput,
     CookRequirement,
     CookResult,
-    CookSource,
     PantryConsumptionRepository,
     UndoCookingResult,
 } from "domain/repositories/PantryConsumptionRepository";
+import type { RecordSource } from "domain/repositories/recordSource";
 
 import { cook } from "./PgPantryConsumptionRepository.cook";
 import { findCookRequirements } from "./PgPantryConsumptionRepository.requirements";
@@ -16,7 +16,7 @@ import { undoCooking } from "./PgPantryConsumptionRepository.undo";
 export default class PgPantryConsumptionRepository implements PantryConsumptionRepository {
     constructor(private pool: Pool) {}
 
-    async findRequirements(source: CookSource): Promise<CookRequirement[]> {
+    async findRequirements(source: RecordSource): Promise<CookRequirement[]> {
         return findCookRequirements(this.pool, source);
     }
 

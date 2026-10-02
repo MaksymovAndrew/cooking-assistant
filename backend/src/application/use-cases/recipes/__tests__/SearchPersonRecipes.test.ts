@@ -55,7 +55,7 @@ describe("SearchPersonRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "limit: Limit must be at most 100",
+            "limit: Must be at most 100",
         );
         expect(recipeRepository.searchByPerson).not.toHaveBeenCalled();
     });
@@ -71,7 +71,7 @@ describe("SearchPersonRecipes", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "start_date: Start date must be a YYYY-MM-DD date",
+            "start_date: Must be a YYYY-MM-DD date",
         );
         expect(recipeRepository.searchByPerson).not.toHaveBeenCalled();
     });

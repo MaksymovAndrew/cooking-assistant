@@ -12,8 +12,8 @@ const MENUS: MenuWithStats[] = [
     {
         id: 1,
         title: "M1",
-        categoryname: "Lunch",
-        menucontent: "",
+        categoryName: "Lunch",
+        menuContent: "",
         recipe_count: 2,
         total_cooking_time: 40,
         total_calories: 500,
@@ -21,8 +21,8 @@ const MENUS: MenuWithStats[] = [
     {
         id: 2,
         title: "M2",
-        categoryname: "Lunch",
-        menucontent: "",
+        categoryName: "Lunch",
+        menuContent: "",
         recipe_count: 4,
         total_cooking_time: 80,
         total_calories: 1500,
@@ -30,8 +30,8 @@ const MENUS: MenuWithStats[] = [
     {
         id: 3,
         title: "M3",
-        categoryname: "Dinner",
-        menucontent: "",
+        categoryName: "Dinner",
+        menuContent: "",
         recipe_count: 1,
         total_cooking_time: 20,
         // one recipe on this menu has no calorie data - the whole menu reads as unknown, not undercounted
@@ -54,18 +54,18 @@ describe("statisticsSelectors", () => {
 
         expect(result.menusCount).toBe(3);
         expect(result.menuCountByCategory).toEqual([
-            { categoryname: "Lunch", menuCount: 2 },
-            { categoryname: "Dinner", menuCount: 1 },
+            { categoryName: "Lunch", menuCount: 2 },
+            { categoryName: "Dinner", menuCount: 1 },
         ]);
         expect(result.mostUsedCategory).toEqual({
-            categoryname: "Lunch",
+            categoryName: "Lunch",
             menuCount: 2,
         });
         expect(result.averageTotalTime).toBe(47);
         expect(result.averageRecipesPerMenu).toBeCloseTo(2.33, 2);
         expect(result.averageTotalTimeByCategory).toEqual([
-            { categoryname: "Lunch", averageTotalTime: 60 },
-            { categoryname: "Dinner", averageTotalTime: 20 },
+            { categoryName: "Lunch", averageTotalTime: 60 },
+            { categoryName: "Dinner", averageTotalTime: 20 },
         ]);
         expect(result.fastestMenus).toEqual([MENUS[2], MENUS[0], MENUS[1]]);
         expect(result.slowestMenus).toEqual([MENUS[1], MENUS[0], MENUS[2]]);

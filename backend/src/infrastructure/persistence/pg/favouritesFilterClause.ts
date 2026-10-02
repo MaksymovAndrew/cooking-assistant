@@ -1,7 +1,8 @@
 import type { FavouriteTarget } from "domain/repositories/FavouriteRepository";
 
-import { FAVOURITE_TABLES } from "infrastructure/persistence/pg/favouriteTables";
-import type { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import { FAVOURITE_TABLES } from "./favouriteTables";
+import type { ClauseContext } from "./filterClause";
+import type { SqlFilterBuilder } from "./sqlFilterBuilder";
 
 interface FavouritesFilter {
     favourites?: boolean;
@@ -19,7 +20,7 @@ export function favouritesFilterClause(
         apply: (
             builder: SqlFilterBuilder,
             _filters: FavouritesFilter,
-            context: { userId: number | null },
+            context: ClauseContext,
         ) => {
             // guests are rejected before the query is built - this only narrows userId for bind()
             const { userId } = context;

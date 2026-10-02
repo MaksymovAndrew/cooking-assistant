@@ -5,7 +5,7 @@ import type {
     FavouriteTarget,
 } from "domain/repositories/FavouriteRepository";
 
-import { FAVOURITE_TABLES } from "infrastructure/persistence/pg/favouriteTables";
+import { FAVOURITE_TABLES } from "./favouriteTables";
 
 export default class PgFavouriteRepository implements FavouriteRepository {
     constructor(private pool: Pool) {}

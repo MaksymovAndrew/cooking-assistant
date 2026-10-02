@@ -1,8 +1,7 @@
 // hand-written translations for the closed vocabularies (categories, allergens) - unlike ingredient names these never come from the translation source, cross-checked against catalog.types.ts's key lists at generation time
-import type { CATEGORY_KEYS } from "./catalog.types";
+import type { Locale } from "constants/locales";
 
-export type Locale = "en" | "ru" | "uk" | "pl";
-export const LOCALES: Locale[] = ["en", "ru", "uk", "pl"];
+import type { CATEGORY_KEYS } from "./catalog.types";
 
 export const CATEGORY_NAMES: Record<
     (typeof CATEGORY_KEYS)[number],

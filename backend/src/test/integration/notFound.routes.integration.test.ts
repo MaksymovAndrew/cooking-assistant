@@ -22,7 +22,7 @@ describe("not found routes", () => {
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
-            error: "name: Name is required; surname: Surname is required; login: Login is required; email: Email is required; password: Password is required",
+            error: "name: Required; surname: Required; login: Required; email: Required; password: Required",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
     });

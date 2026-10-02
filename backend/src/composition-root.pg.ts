@@ -4,6 +4,7 @@ import { createEmailSender } from "infrastructure/email/createEmailSender";
 import LocalDiskMediaStorage from "infrastructure/media/LocalDiskMediaStorage";
 import SharpImageProcessor from "infrastructure/media/SharpImageProcessor";
 import PgCalorieRepository from "infrastructure/persistence/pg/PgCalorieRepository";
+import PgDatabaseProbe from "infrastructure/persistence/pg/PgDatabaseProbe";
 import PgDietPreferencesRepository from "infrastructure/persistence/pg/PgDietPreferencesRepository";
 import PgFavouriteRepository from "infrastructure/persistence/pg/PgFavouriteRepository";
 import PgIngredientRepository from "infrastructure/persistence/pg/PgIngredientRepository";
@@ -27,6 +28,7 @@ import pool from "./db";
 // the real adapters behind every port; buildControllers itself stays free of them so tests can pass fakes
 export function createPgDeps(): RepositoryDeps {
     return {
+        databaseProbe: new PgDatabaseProbe(pool),
         ingredientRepository: new PgIngredientRepository(pool),
         recipeRepository: new PgRecipeRepository(pool),
         recipeTypeRepository: new PgRecipeTypeRepository(pool),

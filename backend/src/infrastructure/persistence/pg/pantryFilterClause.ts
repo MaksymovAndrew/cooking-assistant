@@ -1,13 +1,14 @@
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
-import type { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import type { ClauseContext } from "./filterClause";
+import type { SqlFilterBuilder } from "./sqlFilterBuilder";
 
 export const pantryFilterClause = {
     applies: (filters: RecipeFilters) => filters.in_pantry === true,
     apply: (
         builder: SqlFilterBuilder,
         _filters: RecipeFilters,
-        context: { userId: number | null },
+        context: ClauseContext,
     ) => {
         // SearchRecipes already rejects in_pantry for a null (guest) requester before the query
         // is built - this re-check only narrows userId to number for the bind() call below

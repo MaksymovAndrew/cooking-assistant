@@ -74,7 +74,7 @@ describe("PgFavouriteRepository (real Postgres)", () => {
             recipeIds: [recipeId],
         });
 
-        return (await menuRepository.create(menu, [recipeId])) as number;
+        return await menuRepository.create(menu, [recipeId]);
     }
 
     async function countFavourites(

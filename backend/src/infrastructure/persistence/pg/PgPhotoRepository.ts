@@ -7,7 +7,7 @@ import type {
     PhotoUsage,
 } from "domain/repositories/PhotoRepository";
 
-import { PHOTO_TABLES } from "infrastructure/persistence/pg/photoTables";
+import { PHOTO_TABLES } from "./photoTables";
 
 export default class PgPhotoRepository implements PhotoRepository {
     constructor(private pool: Pool) {}

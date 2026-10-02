@@ -8,6 +8,7 @@ import type {
     CalorieSourceInfo,
 } from "domain/repositories/CalorieRepository";
 
+import { caloriesPerPortion, menuCaloriesTotal } from "./calorieColumns";
 import { insertIntake } from "./PgCalorieRepository.insertIntake";
 
 export default class PgCalorieRepository implements CalorieRepository {
@@ -48,8 +49,8 @@ export default class PgCalorieRepository implements CalorieRepository {
         recipeId: number,
     ): Promise<CalorieSourceInfo | null> {
         const result = await this.pool.query<CalorieSourceInfo>(
-            `SELECT title, COALESCE(calories_override, calories_computed) AS calories
-             FROM recipes WHERE id = $1`,
+            `SELECT r.title, ${caloriesPerPortion("r")} AS calories
+             FROM recipes r WHERE r.id = $1`,
             [recipeId],
         );
 
@@ -57,18 +58,11 @@ export default class PgCalorieRepository implements CalorieRepository {
     }
 
     // LEFT JOINs so a menu with zero recipes still returns one row (calories: null), not zero rows -
-    // that's what tells LogIntake "menu exists but has no calorie info" apart from "menu doesn't exist".
-    // plain SUM() would silently ignore a NULL term from any one recipe with unknown calories,
-    // undercounting the menu instead of reporting it as unavailable like the per-recipe path does -
-    // the CASE forces the whole total to NULL the moment any linked recipe's calories are unknown
+    // that's what tells LogIntake "menu exists but has no calorie info" apart from "menu doesn't exist"
     async findMenuCalories(menuId: number): Promise<CalorieSourceInfo | null> {
         const result = await this.pool.query<CalorieSourceInfo>(
             `SELECT m.menu_title AS title,
-                    CASE
-                        WHEN bool_or(r.id IS NOT NULL AND COALESCE(r.calories_override, r.calories_computed) IS NULL)
-                            THEN NULL
-                        ELSE SUM(COALESCE(r.calories_override, r.calories_computed))
-                    END AS calories
+                    ${menuCaloriesTotal("r")} AS calories
              FROM menu m
              LEFT JOIN menu_recipe mr ON mr.menu_id = m.menu_id
              LEFT JOIN recipes r ON r.id = mr.recipe_id

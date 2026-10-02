@@ -1,5 +1,6 @@
 {
     "bad_request": "Bad request",
+    "payload_too_large": "The request is too large",
     "not_found": "Not found",
     "server_error": "Server error",
     "validation_error": "Invalid request data",
@@ -21,11 +22,13 @@
     "recipe/ingredients_not_exist": "One or more ingredients do not exist",
     "recipe/title_content_empty": "Title and content cannot be empty",
     "recipe/in_pantry_requires_login": "Log in to filter recipes by pantry contents",
+    "recipe/type_not_exist": "That recipe type does not exist",
 
     "menu/not_found": "Menu not found",
     "menu/insufficient_data_create": "Insufficient data to create menu",
     "menu/insufficient_data_update": "Insufficient data to update menu",
     "menu/recipes_not_exist": "One or more recipes do not exist",
+    "menu/category_not_exist": "That menu category does not exist",
 
     "pantry/ingredient_not_found": "Ingredient not found for this user",
     "pantry/purchase_not_found": "Purchase not found",

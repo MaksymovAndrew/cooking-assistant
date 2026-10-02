@@ -1,5 +1,7 @@
 import type { Pool, PoolClient } from "pg";
 
+import { committed, withTransaction } from "./transaction";
+
 async function deletedKeys(
     client: PoolClient,
     sql: string,
@@ -10,19 +12,10 @@ async function deletedKeys(
     return result.rows.flatMap((row) => (row.key ? [row.key] : []));
 }
 
-// transactional cascade-by-hand: menu.person_id and menu_recipe.recipe_id have no ON DELETE
-// CASCADE, so clear them before deleting the person (recipes/pantry/purchases cascade cleanly);
-// each delete returns the photo keys its rows held, so the files can go once the transaction commits
-export async function deleteUser(pool: Pool, id: number): Promise<string[]> {
-    const client = await pool.connect();
-
-    try {
-        await client.query("BEGIN");
-
-        await client.query(
-            `DELETE FROM menu_recipe WHERE recipe_id IN (SELECT id FROM recipes WHERE person_id = $1)`,
-            [id],
-        );
+// everything the person owns cascades from the person row; menus and recipes are deleted first only
+// to collect their photo keys, so the files can go once the transaction commits
+export function deleteUser(pool: Pool, id: number): Promise<string[]> {
+    return withTransaction(pool, async (client) => {
         const menuKeys = await deletedKeys(
             client,
             `DELETE FROM menu WHERE person_id = $1 RETURNING photo_key AS key`,
@@ -39,13 +32,6 @@ export async function deleteUser(pool: Pool, id: number): Promise<string[]> {
             id,
         );
 
-        await client.query("COMMIT");
-
-        return [...menuKeys, ...recipeKeys, ...avatarKeys];
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+        return committed([...menuKeys, ...recipeKeys, ...avatarKeys]);
+    });
 }

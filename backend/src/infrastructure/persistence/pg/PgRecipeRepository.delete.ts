@@ -2,50 +2,19 @@ import type { Pool } from "pg";
 
 import type { DeletedRecord } from "domain/repositories/PhotoRepository";
 
-// the photo key comes back from the delete itself, under the row lock: read in a separate query,
-// an upload landing in between would leave its files on disk with no row naming them
+// one statement: its ingredients, menu links, favourites, ratings and tags cascade, and the photo key comes back
+// from the delete itself - read in a separate query, an upload landing in between would orphan its files
 export async function deleteRecipeById(
     pool: Pool,
-    recipeId: string | number,
+    recipeId: number,
     personId: number,
 ): Promise<DeletedRecord | null> {
-    const client = await pool.connect();
+    const result = await pool.query<{ photo_key: string | null }>(
+        `DELETE FROM recipes WHERE id = $1 AND person_id = $2 RETURNING photo_key`,
+        [recipeId, personId],
+    );
 
-    try {
-        await client.query("BEGIN");
-
-        const owned = await client.query(
-            `SELECT id FROM recipes WHERE id = $1 AND person_id = $2 FOR UPDATE`,
-            [recipeId, personId],
-        );
-
-        if (owned.rowCount === 0) {
-            await client.query("ROLLBACK");
-
-            return null;
-        }
-
-        await client.query(`DELETE FROM menu_recipe WHERE recipe_id = $1`, [
-            recipeId,
-        ]);
-
-        await client.query(
-            `DELETE FROM recipe_ingredients WHERE recipe_id = $1`,
-            [recipeId],
-        );
-
-        const result = await client.query<{ photo_key: string | null }>(
-            `DELETE FROM recipes WHERE id = $1 RETURNING photo_key`,
-            [recipeId],
-        );
-
-        await client.query("COMMIT");
-
-        return { photoKey: result.rows[0].photo_key };
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+    return result.rows.length === 0
+        ? null
+        : { photoKey: result.rows[0].photo_key };
 }

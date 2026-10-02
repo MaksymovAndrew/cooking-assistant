@@ -20,15 +20,15 @@ jest.mock("api/client");
 const MENU_1: Menu = {
     id: 1,
     title: "Weekday menu",
-    categoryname: "Lunch",
-    menucontent: "quick",
+    categoryName: "Lunch",
+    menuContent: "quick",
     recipe_count: 2,
 };
 const MENU_2: Menu = {
     id: 2,
     title: "Weekend menu",
-    categoryname: "Dinner",
-    menucontent: "slow",
+    categoryName: "Dinner",
+    menuContent: "slow",
     recipe_count: 5,
 };
 const CURRENT_USER: CurrentUser = {

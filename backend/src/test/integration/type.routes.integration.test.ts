@@ -10,7 +10,7 @@ const RECIPE_TYPES_PATH = "/api/recipe-types";
 describe("recipe type routes", () => {
     it("should return recipe types for an anonymous request", async () => {
         const { app, deps } = buildTestApp();
-        const types = [{ id: 1, type_name: "Soup" }];
+        const types = [{ id: 1, type_name: "Soup", description: null }];
 
         deps.recipeTypeRepository.findAll.mockResolvedValue(types);
 
@@ -22,7 +22,7 @@ describe("recipe type routes", () => {
 
     it("should return recipe types", async () => {
         const { app, deps } = buildTestApp();
-        const types = [{ id: 1, type_name: "Soup" }];
+        const types = [{ id: 1, type_name: "Soup", description: null }];
 
         deps.recipeTypeRepository.findAll.mockResolvedValue(types);
 

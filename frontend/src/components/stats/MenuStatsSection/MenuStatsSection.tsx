@@ -52,7 +52,7 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
                     <StatBarList
                         items={stats.averageTotalTimeByCategory.map(
                             (entry) => ({
-                                label: menuCategoryName(t, entry.categoryname),
+                                label: menuCategoryName(t, entry.categoryName),
                                 value: entry.averageTotalTime,
                                 displayValue: formatCompactTime(
                                     entry.averageTotalTime,

@@ -43,8 +43,8 @@ const RECIPE_1: RecipeListItem = {
 const MENU_1: Menu = {
     id: 1,
     title: "Weekday menu",
-    categoryname: "Lunch",
-    menucontent: "quick",
+    categoryName: "Lunch",
+    menuContent: "quick",
     recipe_count: 3,
 };
 

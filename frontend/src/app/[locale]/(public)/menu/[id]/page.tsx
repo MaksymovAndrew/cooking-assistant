@@ -31,19 +31,19 @@ const describeMenu = async (
     const t = await getServerTranslation(locale, NAMESPACE);
     // the category column is nullable, so a menu can have none to name
     const fallbackKey =
-        menu.menu.categoryname === null
+        menu.menu.categoryName === null
             ? "menuDetailsPage.metaFallbackDescriptionUncategorised"
             : "menuDetailsPage.metaFallbackDescription";
 
     return toMetaDescription(
-        menu.menu.menucontent,
+        menu.menu.menuContent,
         t(fallbackKey, {
             category:
-                menu.menu.categoryname === null
+                menu.menu.categoryName === null
                     ? undefined
                     : menuCategoryName(
                           t,
-                          menu.menu.categoryname,
+                          menu.menu.categoryName,
                       ).toLocaleLowerCase(locale),
             count: menu.recipes.length,
         }),

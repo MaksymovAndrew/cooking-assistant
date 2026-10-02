@@ -6,6 +6,11 @@ import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types"
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
+import {
+    recipeDetailRow,
+    recipeListRow,
+    recipeRow,
+} from "test/helpers/repositoryRows";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const RECIPE_TITLE = "Tomato soup";
@@ -75,14 +80,18 @@ describe("recipe routes", () => {
 
     it("should return one recipe with ingredients for an anonymous request", async () => {
         const { app, deps } = buildTestApp();
-        const recipe = { id: 12, title: RECIPE_TITLE, ingredients: [] };
+        const recipe = recipeDetailRow({ title: RECIPE_TITLE });
 
         deps.recipeRepository.findByIdWithIngredients.mockResolvedValue(recipe);
 
         const res = await request(app).get(RECIPE_12_PATH);
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(recipe);
+        expect(res.body).toMatchObject({
+            id: 12,
+            title: RECIPE_TITLE,
+            ingredients: [],
+        });
         expect(
             deps.recipeRepository.findByIdWithIngredients,
         ).toHaveBeenCalledWith(12, null);
@@ -119,7 +128,7 @@ describe("recipe routes", () => {
 
     it("should create a recipe for an authenticated request", async () => {
         const { app, deps } = buildTestApp();
-        const createdRecipe = { id: 12, title: RECIPE_TITLE };
+        const createdRecipe = recipeRow({ title: RECIPE_TITLE });
 
         deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.recipeRepository.create.mockResolvedValue(createdRecipe);
@@ -130,7 +139,7 @@ describe("recipe routes", () => {
             .send(makeRecipeBody());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(createdRecipe);
+        expect(res.body).toMatchObject({ id: 12, title: RECIPE_TITLE });
         expect(deps.recipeRepository.create.mock.calls[0][0]).toMatchObject({
             title: RECIPE_TITLE,
             person_id: 7,
@@ -139,7 +148,7 @@ describe("recipe routes", () => {
 
     it("should return recipes for an authenticated request", async () => {
         const { app, deps } = buildTestApp();
-        const recipes = [{ id: 12, title: RECIPE_TITLE }];
+        const recipes = [recipeListRow({ title: RECIPE_TITLE })];
 
         deps.recipeRepository.findAllWithIngredients.mockResolvedValue(recipes);
 
@@ -148,12 +157,12 @@ describe("recipe routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(recipes);
+        expect(res.body).toMatchObject([{ id: 12, title: RECIPE_TITLE }]);
     });
 
     it("should return one recipe with ingredients", async () => {
         const { app, deps } = buildTestApp();
-        const recipe = { id: 12, title: RECIPE_TITLE, ingredients: [] };
+        const recipe = recipeDetailRow({ title: RECIPE_TITLE });
 
         deps.recipeRepository.findByIdWithIngredients.mockResolvedValue(recipe);
 
@@ -162,12 +171,16 @@ describe("recipe routes", () => {
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(recipe);
+        expect(res.body).toMatchObject({
+            id: 12,
+            title: RECIPE_TITLE,
+            ingredients: [],
+        });
     });
 
     it("should update a recipe owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
-        const updatedRecipe = { id: 12, title: RECIPE_TITLE };
+        const updatedRecipe = recipeRow({ title: RECIPE_TITLE });
 
         deps.ingredientRepository.findExistingIds.mockResolvedValue([3]);
         deps.recipeRepository.update.mockResolvedValue(updatedRecipe);
@@ -178,7 +191,7 @@ describe("recipe routes", () => {
             .send(makeRecipeBody());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(updatedRecipe);
+        expect(res.body).toMatchObject({ id: 12, title: RECIPE_TITLE });
         expect(deps.recipeRepository.update.mock.calls[0][0]).toBe(12);
         expect(deps.recipeRepository.update.mock.calls[0][1]).toBe(7);
     });
@@ -272,7 +285,7 @@ describe("recipe routes", () => {
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
-            error: "type_ids: Type IDs must be a comma-separated list of IDs",
+            error: "type_ids: Must be a comma-separated list of IDs",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(deps.recipeRepository.search).not.toHaveBeenCalled();
@@ -288,7 +301,7 @@ describe("recipe routes", () => {
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
-            error: "ingredient_ids: Ingredient IDs must be at most 20 items",
+            error: "ingredient_ids: Must have at most 20 items",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(deps.recipeRepository.search).not.toHaveBeenCalled();
@@ -303,7 +316,7 @@ describe("recipe routes", () => {
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
-            error: "limit: Limit must be at most 100",
+            error: "limit: Must be at most 100",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(deps.recipeRepository.search).not.toHaveBeenCalled();

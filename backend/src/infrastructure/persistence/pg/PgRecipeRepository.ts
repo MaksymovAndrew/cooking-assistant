@@ -7,6 +7,11 @@ import type {
     RecipeFilters,
     RecipeSearchRow,
 } from "domain/repositories/recipe.filters";
+import type {
+    RecipeDetailRow,
+    RecipeListRow,
+    RecipeRow,
+} from "domain/repositories/recipe.types";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
 import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
 
@@ -32,18 +37,18 @@ interface RecipeIdRow {
 export default class PgRecipeRepository implements RecipeRepository {
     constructor(private pool: Pool) {}
 
-    async create(recipe: Recipe): Promise<unknown> {
+    async create(recipe: Recipe): Promise<RecipeRow> {
         return createRecipeInDb(this.pool, recipe);
     }
 
-    async findAllWithIngredients(): Promise<unknown[]> {
+    async findAllWithIngredients(): Promise<RecipeListRow[]> {
         return findAllRecipes(this.pool);
     }
 
     async findByIdWithIngredients(
-        recipeId: string | number,
+        recipeId: number,
         currentUserId: number | null,
-    ): Promise<unknown> {
+    ): Promise<RecipeDetailRow | null> {
         return findRecipeByIdWithIngredients(
             this.pool,
             recipeId,
@@ -52,10 +57,10 @@ export default class PgRecipeRepository implements RecipeRepository {
     }
 
     async update(
-        recipeId: string | number,
+        recipeId: number,
         personId: number,
         data: Recipe,
-    ): Promise<unknown> {
+    ): Promise<RecipeRow | null> {
         return updateRecipeInDb(this.pool, recipeId, personId, data);
     }
 
@@ -83,7 +88,7 @@ export default class PgRecipeRepository implements RecipeRepository {
     }
 
     async deleteById(
-        recipeId: string | number,
+        recipeId: number,
         personId: number,
     ): Promise<DeletedRecord | null> {
         return deleteRecipeById(this.pool, recipeId, personId);

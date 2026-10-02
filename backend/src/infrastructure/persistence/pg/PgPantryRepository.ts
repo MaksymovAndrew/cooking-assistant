@@ -1,122 +1,109 @@
 import type { Pool } from "pg";
 
 import type {
+    PantryIngredient,
     PantryIngredientInput,
     PantryRepository,
+    PurchaseHistoryEntry,
 } from "domain/repositories/PantryRepository";
 
+import { inPersonWriteTransaction } from "./personWriteTransaction";
 import {
     deletePurchases,
-    findIngredientPurchaseHistory,
     updatePurchaseQuantity,
 } from "./PgPantryRepository.history";
-import { findPantryByUser } from "./PgPantryRepository.queries";
+import {
+    findIngredientPurchaseHistory,
+    findPantryByUser,
+} from "./PgPantryRepository.queries";
+import { committed, rolledBack } from "./transaction";
 
+// every pantry write takes the person lock, so it never interleaves with a cooking or an undo
 export default class PgPantryRepository implements PantryRepository {
     constructor(private pool: Pool) {}
 
-    async findByUser(userId: string | number): Promise<unknown[]> {
+    async findByUser(userId: number): Promise<PantryIngredient[]> {
         return findPantryByUser(this.pool, userId);
     }
 
     async addIngredients(
-        userId: string | number,
+        userId: number,
         items: PantryIngredientInput[],
     ): Promise<void> {
-        const client = await this.pool.connect();
+        const ingredientIds = items.map((item) => item.id);
+        const quantities = items.map((item) => item.quantity_person_ingradient);
 
-        try {
-            await client.query("BEGIN");
-
-            for (const ingredient of items) {
+        await inPersonWriteTransaction(
+            this.pool,
+            userId,
+            null,
+            async (client) => {
                 await client.query(
                     `INSERT INTO person_ingredients (person_id, ingredient_id, quantity_person_ingradient, purchase_date)
-           VALUES ($1, $2, $3, NOW())
+           SELECT $1, item.ingredient_id, item.quantity, NOW()
+           FROM unnest($2::int[], $3::float8[]) AS item(ingredient_id, quantity)
            ON CONFLICT (person_id, ingredient_id)
-           DO UPDATE SET quantity_person_ingradient = person_ingredients.quantity_person_ingradient + $3,
+           DO UPDATE SET quantity_person_ingradient = person_ingredients.quantity_person_ingradient + EXCLUDED.quantity_person_ingradient,
                          purchase_date = NOW()`,
-                    [
-                        userId,
-                        ingredient.id,
-                        ingredient.quantity_person_ingradient,
-                    ],
+                    [userId, ingredientIds, quantities],
                 );
-
                 await client.query(
                     `INSERT INTO ingredient_purchases (person_id, ingredient_id, quantity, purchase_date)
-           VALUES ($1, $2, $3, NOW())`,
-                    [
-                        userId,
-                        ingredient.id,
-                        ingredient.quantity_person_ingradient,
-                    ],
+           SELECT $1, item.ingredient_id, item.quantity, NOW()
+           FROM unnest($2::int[], $3::float8[]) AS item(ingredient_id, quantity)`,
+                    [userId, ingredientIds, quantities],
                 );
-            }
 
-            await client.query("COMMIT");
-        } catch (error) {
-            await client.query("ROLLBACK");
-            throw error;
-        } finally {
-            client.release();
-        }
+                return committed(null);
+            },
+        );
     }
 
     async deleteIngredient(
-        userId: string | number,
-        ingredientId: string | number,
+        userId: number,
+        ingredientId: number,
     ): Promise<boolean> {
-        const client = await this.pool.connect();
+        return inPersonWriteTransaction(
+            this.pool,
+            userId,
+            false,
+            async (client) => {
+                await client.query(
+                    `DELETE FROM ingredient_purchases WHERE person_id = $1 AND ingredient_id = $2`,
+                    [userId, ingredientId],
+                );
 
-        try {
-            await client.query("BEGIN");
+                const result = await client.query(
+                    `DELETE FROM person_ingredients WHERE person_id = $1 AND ingredient_id = $2`,
+                    [userId, ingredientId],
+                );
 
-            await client.query(
-                `DELETE FROM ingredient_purchases WHERE person_id = $1 AND ingredient_id = $2`,
-                [userId, ingredientId],
-            );
-
-            const result = await client.query(
-                `DELETE FROM person_ingredients WHERE person_id = $1 AND ingredient_id = $2`,
-                [userId, ingredientId],
-            );
-
-            if (result.rowCount === 0) {
-                await client.query("ROLLBACK");
-
-                return false;
-            }
-
-            await client.query("COMMIT");
-
-            return true;
-        } catch (error) {
-            await client.query("ROLLBACK");
-            throw error;
-        } finally {
-            client.release();
-        }
+                return result.rowCount === 0
+                    ? rolledBack(false)
+                    : committed(true);
+            },
+        );
     }
 
     async updatePurchaseQuantity(
-        userId: string | number,
-        purchaseId: string | number,
+        userId: number,
+        purchaseId: number,
         quantity: number,
-    ): Promise<boolean | null> {
+    ): Promise<boolean> {
         return updatePurchaseQuantity(this.pool, userId, purchaseId, quantity);
     }
 
     async deletePurchases(
-        userId: string | number,
+        userId: number,
         purchaseIds: number[],
     ): Promise<number> {
         return deletePurchases(this.pool, userId, purchaseIds);
     }
 
     async findPurchaseHistory(
-        userId: string | number,
-        ingredientId: string | number,
-    ): Promise<unknown[]> {
+        userId: number,
+        ingredientId: number,
+    ): Promise<PurchaseHistoryEntry[]> {
         return findIngredientPurchaseHistory(this.pool, userId, ingredientId);
     }
 }

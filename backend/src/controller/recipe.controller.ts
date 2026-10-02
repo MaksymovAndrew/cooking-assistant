@@ -8,6 +8,7 @@ import type DeleteRecipe from "application/use-cases/recipes/DeleteRecipe";
 import type GetRecipeById from "application/use-cases/recipes/GetRecipeById";
 import type UpdateRecipe from "application/use-cases/recipes/UpdateRecipe";
 
+import { requestBody } from "./requestBody";
 import { getOptionalUserId, getUserId } from "./requestUser";
 
 interface RecipeControllerDependencies {
@@ -36,11 +37,9 @@ export default class RecipeController {
     }
 
     createRecipe: RequestHandler = async (req, res) => {
-        const body = req.body as Record<string, unknown>;
-        const person_id = getUserId(req);
         const created = await this.createRecipeUseCase.execute({
-            ...body,
-            person_id,
+            ...requestBody(req),
+            person_id: getUserId(req),
         });
 
         res.json(created);
@@ -59,12 +58,10 @@ export default class RecipeController {
     };
 
     updateRecipe: RequestHandler<{ id: string }> = async (req, res) => {
-        const person_id = getUserId(req);
-        const body = req.body as Record<string, unknown>;
         const updated = await this.updateRecipeUseCase.execute(
             req.params.id,
-            person_id,
-            body,
+            getUserId(req),
+            req.body,
         );
 
         res.json(updated);

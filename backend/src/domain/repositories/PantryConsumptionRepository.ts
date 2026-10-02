@@ -1,6 +1,5 @@
 import type { CalorieIntakeEntry, CalorieIntakeRow } from "./CalorieRepository";
-
-export type CookSource = { recipeId: number } | { menuId: number };
+import type { RecordSource } from "./recordSource";
 
 // one portion's worth of an ingredient; a menu sums each of its recipes once
 export interface CookRequirement {
@@ -17,7 +16,7 @@ export interface CookIngredientNeed {
 }
 
 export interface CookInput {
-    source: CookSource;
+    source: RecordSource;
     title: string;
     portions: number;
     needs: CookIngredientNeed[];
@@ -43,7 +42,7 @@ export type UndoCookingResult =
     "undone" | "not_found" | "unavailable" | "person_not_found";
 
 export interface PantryConsumptionRepository {
-    findRequirements(source: CookSource): Promise<CookRequirement[]>;
+    findRequirements(source: RecordSource): Promise<CookRequirement[]>;
     cook(personId: number, input: CookInput): Promise<CookResult>;
     undo(
         personId: number,

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { FIELD_LIMITS } from "constants/fieldLimits";
 import type { MenuFilters } from "domain/repositories/menu.filters";
 
 import {
@@ -7,9 +8,8 @@ import {
     hasUniqueItems,
     idSchema,
     nonEmptyStringSchema,
-    optionalStringSchema,
     positiveIntegerSchema,
-    requiredOrInvalidType,
+    UNIQUE_ITEMS,
 } from "./common.schemas";
 import {
     booleanQuerySchema,
@@ -19,25 +19,16 @@ import {
     offsetSchema,
 } from "./query.schemas";
 
-const recipeIdSchema = positiveIntegerSchema("Recipe ID");
-
 export const createMenuSchema = z.object({
-    menuTitle: nonEmptyStringSchema("Menu title"),
-    menuContent: optionalStringSchema("Menu content"),
+    menuTitle: nonEmptyStringSchema().max(FIELD_LIMITS.MENU_TITLE_LENGTH),
+    menuContent: z.string().optional(),
     language: contentLanguageSchema,
-    categoryId: positiveIntegerSchema("Category ID"),
+    categoryId: positiveIntegerSchema(),
     personId: idSchema,
     recipeIds: z
-        .array(recipeIdSchema, {
-            error: requiredOrInvalidType(
-                "Recipe IDs are required",
-                "Recipe IDs must be an array",
-            ),
-        })
-        .max(500, { message: "Menu cannot contain more than 500 recipes" })
-        .refine((ids) => hasUniqueItems(ids), {
-            message: "Recipe IDs must be unique",
-        }),
+        .array(positiveIntegerSchema())
+        .max(FIELD_LIMITS.MAX_MENU_RECIPES)
+        .refine((ids) => hasUniqueItems(ids), UNIQUE_ITEMS),
 });
 
 export const updateMenuSchema = createMenuSchema.omit({
@@ -46,13 +37,11 @@ export const updateMenuSchema = createMenuSchema.omit({
 
 // output shape is checked against the domain's MenuFilters below - the repository interface is typed against that, not against this schema
 export const menuFiltersSchema = z.object({
-    menu_name: optionalStringSchema("Menu name"),
-    category_ids: idListStringSchema("Category IDs").optional(),
-    favourites: booleanQuerySchema("Favourites"),
-    sort_order: z
-        .enum(["rating"], { error: "Sort order must be rating" })
-        .optional(),
-    top_rated: booleanQuerySchema("Top rated"),
+    menu_name: z.string().optional(),
+    category_ids: idListStringSchema.optional(),
+    favourites: booleanQuerySchema,
+    sort_order: z.enum(["rating"]).optional(),
+    top_rated: booleanQuerySchema,
     languages: languageListSchema,
     limit: limitSchema,
     offset: offsetSchema,

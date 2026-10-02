@@ -20,7 +20,7 @@ type MenuCardMenu = Pick<
     Menu,
     | "id"
     | "title"
-    | "categoryname"
+    | "categoryName"
     | "language"
     | "recipe_count"
     | "isFavourite"
@@ -48,14 +48,14 @@ export const MenuCard: React.FC<MenuCardProps> = ({
             title={menu.title}
             imageIcon={NotebookMark}
             imageSrc={mediaUrl(menu.photo_key, "card")}
-            chipLabel={menuCategoryName(t, menu.categoryname)}
+            chipLabel={menuCategoryName(t, menu.categoryName)}
             language={menu.language ?? null}
             mine={mine}
             variant={variant}
             rating={cardRating(menu)}
             favourite={cardFavourite(FAVOURITE_TARGET.menu, menu)}
             metaText={t("menuCard.meta", {
-                category: menuCategoryName(t, menu.categoryname),
+                category: menuCategoryName(t, menu.categoryName),
                 count: menu.recipe_count,
             })}
         />

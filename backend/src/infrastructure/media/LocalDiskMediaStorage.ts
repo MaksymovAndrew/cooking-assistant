@@ -2,19 +2,14 @@ import { mkdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { logger } from "config/logger";
+import { errorField } from "domain/errors/errorField";
 
 import { IMAGE_VARIANTS, mediaFileName } from "application/media/mediaFiles";
 import type { ImageVariant } from "application/ports/ImageProcessor";
 import type { MediaStorage } from "application/ports/MediaStorage";
 
-// checked by shape, not instanceof: a filesystem error need not come from this realm's Error
 function isMissingFile(error: unknown): boolean {
-    return (
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        error.code === "ENOENT"
-    );
+    return errorField(error, "code") === "ENOENT";
 }
 
 export default class LocalDiskMediaStorage implements MediaStorage {

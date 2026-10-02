@@ -6,7 +6,7 @@ import type {
     RatingTarget,
 } from "domain/repositories/RatingRepository";
 
-import { RATING_TABLES } from "infrastructure/persistence/pg/ratingTables";
+import { RATING_TABLES } from "./ratingTables";
 
 // the record's running totals are kept by a trigger on the vote tables (see the ratings migration),
 // so a vote here is a plain upsert or delete

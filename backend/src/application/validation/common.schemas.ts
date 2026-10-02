@@ -1,6 +1,8 @@
 import { z } from "zod";
 
+import { FIELD_LIMITS } from "constants/fieldLimits";
 import { LOCALES } from "constants/locales";
+import { VALIDATION_MESSAGES } from "constants/validationMessages";
 
 export function toNumber(value: unknown): unknown {
     const isEmptyInput = value == null || value === "";
@@ -16,69 +18,26 @@ export function toNumber(value: unknown): unknown {
     return value;
 }
 
-// zod 4 unifies required/invalid-type into one error callback; issue.input is undefined exactly for a missing field
-export function requiredOrInvalidType(
-    requiredMessage: string,
-    invalidTypeMessage: string,
-) {
-    return (issue: { input?: unknown }): string =>
-        typeof issue.input === "undefined"
-            ? requiredMessage
-            : invalidTypeMessage;
+export function integerSchema() {
+    return z.number().int();
 }
 
-export const idSchema = z.preprocess(
-    toNumber,
-    z
-        .number({
-            error: requiredOrInvalidType(
-                "ID is required",
-                "ID must be a number",
-            ),
-        })
-        .int("ID must be an integer")
-        .positive("ID must be positive"),
-);
-
-export function nonEmptyStringSchema(field: string) {
-    return z
-        .string({
-            error: requiredOrInvalidType(
-                `${field} is required`,
-                `${field} must be a string`,
-            ),
-        })
-        .refine((value) => value.trim().length > 0, {
-            message: `${field} cannot be empty`,
-        });
-}
-export function trimmedStringSchema(field: string) {
-    return nonEmptyStringSchema(field).transform((value) => value.trim());
+export function positiveIntegerSchema() {
+    return integerSchema().positive().max(FIELD_LIMITS.INT4_MAX);
 }
 
-export function optionalStringSchema(field: string) {
-    return z
-        .string({
-            error: `${field} must be a string`,
-        })
-        .optional();
-}
+export const idSchema = z.preprocess(toNumber, positiveIntegerSchema());
 
-export function numberSchema(field: string) {
-    return z.number({
-        error: requiredOrInvalidType(
-            `${field} is required`,
-            `${field} must be a number`,
-        ),
+export function nonEmptyStringSchema() {
+    return z.string().refine((value) => value.trim().length > 0, {
+        message: VALIDATION_MESSAGES.NOT_EMPTY,
     });
 }
 
-export function integerSchema(field: string) {
-    return numberSchema(field).int(`${field} must be an integer`);
-}
-
-export function positiveIntegerSchema(field: string) {
-    return integerSchema(field).positive(`${field} must be positive`);
+export function trimmedStringSchema(maxLength: number) {
+    return nonEmptyStringSchema()
+        .transform((value) => value.trim())
+        .pipe(z.string().max(maxLength));
 }
 
 export function hasUniqueItems<T>(
@@ -88,10 +47,7 @@ export function hasUniqueItems<T>(
     return new Set(items.map(getKey)).size === items.length;
 }
 
+export const UNIQUE_ITEMS = { message: VALIDATION_MESSAGES.UNIQUE };
+
 // the language a recipe or menu is written in, picked by its author
-export const contentLanguageSchema = z.enum(LOCALES, {
-    error: requiredOrInvalidType(
-        "Language is required",
-        `Language must be one of ${LOCALES.join(", ")}`,
-    ),
-});
+export const contentLanguageSchema = z.enum(LOCALES);

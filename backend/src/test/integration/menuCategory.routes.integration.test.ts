@@ -11,7 +11,13 @@ const MENU_CATEGORIES_PATH = "/api/menu-categories";
 describe("menu category routes", () => {
     it("should return menu categories for an anonymous request", async () => {
         const { app, deps } = buildTestApp();
-        const categories = [{ menu_category_id: 2, category_name: "Dinner" }];
+        const categories = [
+            {
+                menu_category_id: 2,
+                category_name: "Dinner",
+                category_description: null,
+            },
+        ];
 
         deps.menuCategoryRepository.findAll.mockResolvedValue(categories);
 
@@ -23,7 +29,13 @@ describe("menu category routes", () => {
 
     it("should return menu categories", async () => {
         const { app, deps } = buildTestApp();
-        const categories = [{ menu_category_id: 2, category_name: "Dinner" }];
+        const categories = [
+            {
+                menu_category_id: 2,
+                category_name: "Dinner",
+                category_description: null,
+            },
+        ];
 
         deps.menuCategoryRepository.findAll.mockResolvedValue(categories);
 

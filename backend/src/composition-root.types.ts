@@ -14,6 +14,7 @@ import type { ShoppingListRepository } from "domain/repositories/ShoppingListRep
 import type { TagRepository } from "domain/repositories/TagRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
+import type { DatabaseProbe } from "application/ports/DatabaseProbe";
 import type { EmailSender } from "application/ports/EmailSender";
 import type { ImageProcessor } from "application/ports/ImageProcessor";
 import type { MediaStorage } from "application/ports/MediaStorage";
@@ -22,14 +23,14 @@ import type { TokenService } from "application/ports/TokenService";
 
 import type CalorieController from "controller/calorie.controller";
 import type FavouriteController from "controller/favourite.controller";
+import type HealthController from "controller/health.controller";
 import type MenuController from "controller/menu.controller";
-import type PantryConsumptionController from "controller/pantryConsumption.controller";
 import type RatingController from "controller/rating.controller";
 import type ShoppingListController from "controller/shoppingList.controller";
-import type UserIngredientsController from "controller/userIngredients.controller";
 import type { SessionAuth } from "middleware/jwtMiddleware";
 
 import type { DietPreferencesControllers } from "./composition-root.dietPreferences";
+import type { PantryControllers } from "./composition-root.pantry";
 import type { PhotoControllers } from "./composition-root.photos";
 import type { RecipeControllers } from "./composition-root.recipe";
 import type { ReferenceControllers } from "./composition-root.reference";
@@ -37,6 +38,7 @@ import type { TagControllers } from "./composition-root.tags";
 import type { UserControllers } from "./composition-root.user";
 
 export interface RepositoryDeps {
+    databaseProbe: DatabaseProbe;
     ingredientRepository: IngredientRepository;
     recipeRepository: RecipeRepository;
     recipeTypeRepository: RecipeTypeRepository;
@@ -67,10 +69,10 @@ export interface Controllers
         TagControllers,
         UserControllers,
         PhotoControllers,
-        RecipeControllers {
+        RecipeControllers,
+        PantryControllers {
     auth: SessionAuth;
-    userIngredientsController: UserIngredientsController;
-    pantryConsumptionController: PantryConsumptionController;
+    healthController: HealthController;
     menuController: MenuController;
     calorieController: CalorieController;
     favouriteController: FavouriteController;

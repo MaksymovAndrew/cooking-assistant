@@ -67,7 +67,7 @@ describe("AddAvoidedIngredient", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "ID must be a number",
+            "Must be a number",
         );
         expect(dietPreferencesRepository.addIngredient).not.toHaveBeenCalled();
     });

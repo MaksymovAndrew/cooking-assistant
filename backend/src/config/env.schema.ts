@@ -66,6 +66,10 @@ export const envSchema = z.object({
     TRUST_PROXY_HOPS: envOptionalHopsSchema,
     RATE_LIMIT_MAX: envNumberSchema(300),
     RATE_LIMIT_WINDOW_MS: envNumberSchema(60000),
+    DB_POOL_MAX: envNumberSchema(10),
+    DB_CONNECTION_TIMEOUT_MS: envNumberSchema(5000),
+    DB_IDLE_TIMEOUT_MS: envNumberSchema(30000),
+    DB_STATEMENT_TIMEOUT_MS: envNumberSchema(15000),
     CORS_ORIGIN: envStringSchema("http://localhost:8080"),
     COOKIE_DOMAIN: z.preprocess(emptyToUndefined, z.string().optional()),
     JWT_SECRET_KEY: z.preprocess(

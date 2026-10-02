@@ -1,22 +1,17 @@
 import { ERROR_CODES } from "constants/errorCodes";
 import { type AppError, ConflictError } from "domain/errors/AppError";
+import { errorField } from "domain/errors/errorField";
 
 const UNIQUE_LOGIN_CONSTRAINT = "unique_login";
 const UNIQUE_EMAIL_CONSTRAINT = "unique_email";
 
 // null when the error isn't a unique-violation at all; otherwise the constraint name Postgres reported
 function getUniqueViolationConstraint(error: unknown): string | null {
-    const isUniqueViolation =
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        (error as { code?: unknown }).code === "23505";
-
-    if (!isUniqueViolation) {
+    if (errorField(error, "code") !== "23505") {
         return null;
     }
 
-    const { constraint } = error as { constraint?: unknown };
+    const constraint = errorField(error, "constraint");
 
     return typeof constraint === "string" ? constraint : null;
 }

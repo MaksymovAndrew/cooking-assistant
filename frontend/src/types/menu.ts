@@ -5,8 +5,8 @@ import type { RecordRating } from "types/rating";
 export interface Menu {
     id: number;
     title: string;
-    categoryname: string;
-    menucontent: string;
+    categoryName: string;
+    menuContent: string;
     // the language the author wrote it in; absent from the unpaginated stats-only query
     language?: Locale;
     recipe_count: number;
@@ -66,8 +66,8 @@ export interface MenuDetails {
         id: number;
         title: string;
         // a menu row may carry no category: the column is nullable
-        categoryname: string | null;
-        menucontent: string;
+        categoryName: string | null;
+        menuContent: string;
         language: Locale;
         category_id: number;
         isOwner: boolean;

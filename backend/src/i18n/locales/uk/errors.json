@@ -1,5 +1,6 @@
 {
     "bad_request": "Некоректний запит",
+    "payload_too_large": "Запит завеликий",
     "not_found": "Не знайдено",
     "server_error": "Помилка сервера",
     "validation_error": "Некоректні дані запиту",
@@ -21,11 +22,13 @@
     "recipe/ingredients_not_exist": "Одного чи кількох інгредієнтів більше немає",
     "recipe/title_content_empty": "Потрібні назва й опис",
     "recipe/in_pantry_requires_login": "Увійдіть, щоб шукати рецепти за своїми продуктами",
+    "recipe/type_not_exist": "Такого типу рецепта немає",
 
     "menu/not_found": "Меню не знайдено",
     "menu/insufficient_data_create": "Недостатньо даних, щоб створити меню",
     "menu/insufficient_data_update": "Недостатньо даних, щоб змінити меню",
     "menu/recipes_not_exist": "Одного чи кількох рецептів більше немає",
+    "menu/category_not_exist": "Такої категорії меню немає",
 
     "pantry/ingredient_not_found": "Цього продукту немає у ваших запасах",
     "pantry/purchase_not_found": "Покупку не знайдено",

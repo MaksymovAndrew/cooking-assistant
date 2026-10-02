@@ -110,7 +110,7 @@ describe("favourite routes", () => {
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
-            error: "ID must be a number",
+            error: "Must be a number",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(deps.favouriteRepository.add).not.toHaveBeenCalled();

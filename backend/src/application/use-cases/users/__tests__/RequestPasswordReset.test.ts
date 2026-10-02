@@ -1,3 +1,4 @@
+import { logger } from "config/logger";
 import { DEFAULT_LOCALE } from "constants/locales";
 
 import RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
@@ -8,6 +9,7 @@ const EMAIL = "user@example.com";
 const FRONTEND_ORIGIN = TEST_FRONTEND_ORIGIN;
 const RESET_TOKEN = "reset-token";
 const HASHED_PASSWORD = "hashed-secret";
+const VERIFIED_AT = "2026-01-01T00:00:00.000Z";
 
 describe("RequestPasswordReset", () => {
     const makeDeps = () => ({
@@ -15,7 +17,9 @@ describe("RequestPasswordReset", () => {
             findPasswordResetCandidateByEmail: jest.fn(),
         },
         tokenService: { generatePurposeToken: jest.fn() },
-        emailSender: { sendPasswordResetEmail: jest.fn() },
+        emailSender: {
+            sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
+        },
     });
 
     it("should send a reset link bound to the current password hash when the user exists and is verified", async () => {
@@ -25,7 +29,7 @@ describe("RequestPasswordReset", () => {
             {
                 id: 5,
                 password: HASHED_PASSWORD,
-                email_verified_at: "2026-01-01T00:00:00.000Z",
+                email_verified_at: VERIFIED_AT,
                 locale: DEFAULT_LOCALE,
             },
         );
@@ -62,7 +66,7 @@ describe("RequestPasswordReset", () => {
             {
                 id: 5,
                 password: HASHED_PASSWORD,
-                email_verified_at: "2026-01-01T00:00:00.000Z",
+                email_verified_at: VERIFIED_AT,
                 locale: "ru",
             },
         );
@@ -138,5 +142,37 @@ describe("RequestPasswordReset", () => {
         expect(
             deps.userRepository.findPasswordResetCandidateByEmail,
         ).not.toHaveBeenCalled();
+    });
+
+    it("should answer without waiting on the email and log a failed send", async () => {
+        const deps = makeDeps();
+        const errorSpy = jest.spyOn(logger, "error");
+        const failure = new Error("provider down");
+
+        deps.userRepository.findPasswordResetCandidateByEmail.mockResolvedValue(
+            {
+                id: 5,
+                password: HASHED_PASSWORD,
+                email_verified_at: VERIFIED_AT,
+                locale: DEFAULT_LOCALE,
+            },
+        );
+        deps.tokenService.generatePurposeToken.mockReturnValue(RESET_TOKEN);
+        deps.emailSender.sendPasswordResetEmail.mockRejectedValue(failure);
+        const useCase = new RequestPasswordReset(
+            deps.userRepository,
+            deps.tokenService,
+            deps.emailSender,
+            FRONTEND_ORIGIN,
+        );
+
+        await expect(
+            useCase.execute({ email: EMAIL }),
+        ).resolves.toBeUndefined();
+
+        expect(errorSpy).toHaveBeenCalledWith(
+            { err: failure },
+            "password reset email failed",
+        );
     });
 });

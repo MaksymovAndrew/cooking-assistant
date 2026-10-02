@@ -1,4 +1,4 @@
-import type { Pool, QueryResultRow } from "pg";
+import type { Pool } from "pg";
 
 import type { Locale } from "constants/locales";
 import type {
@@ -11,8 +11,19 @@ import type {
     UserRepository,
 } from "domain/repositories/UserRepository";
 
+import { firstRow } from "./firstRow";
 import { createUser } from "./PgUserRepository.create";
 import { deleteUser } from "./PgUserRepository.delete";
+import {
+    markEmailVerified,
+    updateLocale,
+    updateProfile,
+} from "./PgUserRepository.profile";
+import {
+    findSessionVersion,
+    revokeSessions,
+    updatePassword,
+} from "./PgUserRepository.sessions";
 
 const PUBLIC_USER_COLUMNS =
     "id, name, surname, login, created_at, email, email_verified_at, avatar, " +
@@ -21,38 +32,33 @@ const PUBLIC_USER_COLUMNS =
 export default class PgUserRepository implements UserRepository {
     constructor(private pool: Pool) {}
 
-    private async firstRow<T extends QueryResultRow>(
-        sql: string,
-        params: unknown[],
-    ): Promise<T | null> {
-        const result = await this.pool.query<T>(sql, params);
-
-        return result.rows[0] ?? null;
-    }
-
     async findByLogin(login: string): Promise<UserRecord | null> {
-        return this.firstRow<UserRecord>(
+        return firstRow<UserRecord>(
+            this.pool,
             `SELECT * FROM person WHERE login = $1`,
             [login],
         );
     }
 
     async findById(id: number): Promise<PublicUser | null> {
-        return this.firstRow<PublicUser>(
+        return firstRow<PublicUser>(
+            this.pool,
             `SELECT ${PUBLIC_USER_COLUMNS} FROM person WHERE id = $1`,
             [id],
         );
     }
 
     async findByEmail(email: string): Promise<PublicUser | null> {
-        return this.firstRow<PublicUser>(
+        return firstRow<PublicUser>(
+            this.pool,
             `SELECT ${PUBLIC_USER_COLUMNS} FROM person WHERE email = $1`,
             [email],
         );
     }
 
     async findCredentialsById(id: number): Promise<UserCredentials | null> {
-        return this.firstRow<UserCredentials>(
+        return firstRow<UserCredentials>(
+            this.pool,
             `SELECT id, password, session_version FROM person WHERE id = $1`,
             [id],
         );
@@ -61,7 +67,8 @@ export default class PgUserRepository implements UserRepository {
     async findCredentialsByEmail(
         email: string,
     ): Promise<UserCredentials | null> {
-        return this.firstRow<UserCredentials>(
+        return firstRow<UserCredentials>(
+            this.pool,
             `SELECT id, password, session_version FROM person WHERE email = $1`,
             [email],
         );
@@ -70,7 +77,8 @@ export default class PgUserRepository implements UserRepository {
     async findPasswordResetCandidateByEmail(
         email: string,
     ): Promise<PasswordResetCandidate | null> {
-        return this.firstRow<PasswordResetCandidate>(
+        return firstRow<PasswordResetCandidate>(
+            this.pool,
             `SELECT id, password, email_verified_at, locale FROM person WHERE email = $1`,
             [email],
         );
@@ -80,60 +88,28 @@ export default class PgUserRepository implements UserRepository {
         return createUser(this.pool, newUser);
     }
 
-    async updatePassword(
-        id: number,
-        hashedPassword: string,
-    ): Promise<number | null> {
-        const row = await this.firstRow<{ session_version: number }>(
-            `UPDATE person SET password = $1, session_version = session_version + 1
-             WHERE id = $2 RETURNING session_version`,
-            [hashedPassword, id],
-        );
-
-        return row?.session_version ?? null;
+    updatePassword(id: number, hashedPassword: string): Promise<number | null> {
+        return updatePassword(this.pool, id, hashedPassword);
     }
 
-    async revokeSessions(id: number): Promise<number | null> {
-        const row = await this.firstRow<{ session_version: number }>(
-            `UPDATE person SET session_version = session_version + 1
-             WHERE id = $1 RETURNING session_version`,
-            [id],
-        );
-
-        return row?.session_version ?? null;
+    revokeSessions(id: number): Promise<number | null> {
+        return revokeSessions(this.pool, id);
     }
 
-    async findSessionVersion(id: number): Promise<number | null> {
-        const row = await this.firstRow<{ session_version: number }>(
-            `SELECT session_version FROM person WHERE id = $1`,
-            [id],
-        );
-
-        return row?.session_version ?? null;
+    findSessionVersion(id: number): Promise<number | null> {
+        return findSessionVersion(this.pool, id);
     }
 
-    async updateProfile(
-        id: number,
-        { name, surname, avatar }: ProfileUpdate,
-    ): Promise<void> {
-        await this.pool.query(
-            `UPDATE person SET name = $1, surname = $2, avatar = $3 WHERE id = $4`,
-            [name, surname, avatar, id],
-        );
+    updateProfile(id: number, profile: ProfileUpdate): Promise<void> {
+        return updateProfile(this.pool, id, profile);
     }
 
-    async updateLocale(id: number, locale: Locale): Promise<void> {
-        await this.pool.query(`UPDATE person SET locale = $1 WHERE id = $2`, [
-            locale,
-            id,
-        ]);
+    updateLocale(id: number, locale: Locale): Promise<void> {
+        return updateLocale(this.pool, id, locale);
     }
 
-    async markEmailVerified(id: number): Promise<void> {
-        await this.pool.query(
-            `UPDATE person SET email_verified_at = now() WHERE id = $1`,
-            [id],
-        );
+    markEmailVerified(id: number): Promise<void> {
+        return markEmailVerified(this.pool, id);
     }
 
     async delete(id: number): Promise<string[]> {

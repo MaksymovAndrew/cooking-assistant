@@ -1,67 +1,61 @@
 import { z } from "zod";
 
+import { FIELD_LIMITS } from "constants/fieldLimits";
 import { LOCALES } from "constants/locales";
 import { PAGINATION } from "constants/pagination";
+import { VALIDATION_MESSAGES } from "constants/validationMessages";
 
 import {
     hasUniqueItems,
-    numberSchema,
+    integerSchema,
     positiveIntegerSchema,
     toNumber,
+    UNIQUE_ITEMS,
 } from "./common.schemas";
 
+const ID_LIST_PATTERN = /^\d+(,\d+)*$/;
+
 // query strings carry booleans as text, so only the two literal spellings are accepted
-export function booleanQuerySchema(field: string) {
+export const booleanQuerySchema = z
+    .string()
+    .refine((value) => value === "true" || value === "false", {
+        message: VALIDATION_MESSAGES.BOOLEAN_TEXT,
+    })
+    .transform((value) => value === "true")
+    .optional();
+
+// an id past int4 would make the ANY($n::int[]) cast fail in Postgres instead of matching nothing
+export const idListStringSchema = z
+    .string()
+    .refine(
+        (value) =>
+            ID_LIST_PATTERN.test(value) &&
+            value.split(",").every((id) => Number(id) <= FIELD_LIMITS.INT4_MAX),
+        { message: VALIDATION_MESSAGES.ID_LIST },
+    );
+
+export function commaListSchema<const T extends readonly [string, ...string[]]>(
+    values: T,
+) {
     return z
-        .string({ error: `${field} must be true or false` })
-        .refine((value) => value === "true" || value === "false", {
-            message: `${field} must be true or false`,
-        })
-        .transform((value) => value === "true")
+        .string()
+        .transform((value) => value.split(","))
+        .pipe(
+            z
+                .array(z.enum(values))
+                .refine((items) => hasUniqueItems(items), UNIQUE_ITEMS),
+        )
         .optional();
 }
 
-export function idListStringSchema(field: string) {
-    return z
-        .string({
-            error: `${field} must be a string`,
-        })
-        .regex(
-            /^\d+(,\d+)*$/,
-            `${field} must be a comma-separated list of IDs`,
-        );
-}
-
-export const languageListSchema = z
-    .string({ error: "Languages must be a string" })
-    .transform((value) => value.split(","))
-    .pipe(
-        z
-            .array(
-                z.enum(LOCALES, {
-                    error: `Languages must be a comma-separated list of ${LOCALES.join(", ")}`,
-                }),
-            )
-            .refine((languages) => hasUniqueItems(languages), {
-                message: "Languages must be unique",
-            }),
-    )
-    .optional();
+export const languageListSchema = commaListSchema(LOCALES);
 
 export const limitSchema = z.preprocess(
     toNumber,
-    positiveIntegerSchema("Limit")
-        .max(
-            PAGINATION.MAX_LIMIT,
-            `Limit must be at most ${PAGINATION.MAX_LIMIT}`,
-        )
-        .optional(),
+    positiveIntegerSchema().max(PAGINATION.MAX_LIMIT).optional(),
 );
 
 export const offsetSchema = z.preprocess(
     toNumber,
-    numberSchema("Offset")
-        .int("Offset must be an integer")
-        .min(0, "Offset must be at least 0")
-        .optional(),
+    integerSchema().min(0).max(FIELD_LIMITS.INT4_MAX).optional(),
 );

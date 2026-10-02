@@ -1,8 +1,8 @@
 import { RATING_LIMITS, RATING_SORT_PRIOR } from "constants/ratings";
 import type { RatingTarget } from "domain/repositories/RatingRepository";
 
-import { RATING_TABLES } from "infrastructure/persistence/pg/ratingTables";
-import type { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import { RATING_TABLES } from "./ratingTables";
+import type { SqlFilterBuilder } from "./sqlFilterBuilder";
 
 // the average is derived from the running totals, never stored: null for an unrated record, not a fake 0.
 // Unrounded, so a page can shift it exactly the moment the viewer votes; the client rounds for display

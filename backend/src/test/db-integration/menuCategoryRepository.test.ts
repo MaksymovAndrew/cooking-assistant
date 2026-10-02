@@ -6,11 +6,6 @@ import PgMenuCategoryRepository from "infrastructure/persistence/pg/PgMenuCatego
 import { createMenuCategory } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-interface MenuCategoryRow {
-    menu_category_id: number;
-    category_name: string;
-}
-
 describe("PgMenuCategoryRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgMenuCategoryRepository;
@@ -27,7 +22,7 @@ describe("PgMenuCategoryRepository (real Postgres)", () => {
     it("should return categories with their id and name", async () => {
         const categoryId = await createMenuCategory(pool);
 
-        const all = (await repository.findAll()) as MenuCategoryRow[];
+        const all = await repository.findAll();
 
         expect(all).toEqual(
             expect.arrayContaining([
@@ -45,7 +40,7 @@ describe("PgMenuCategoryRepository (real Postgres)", () => {
             [lastName, firstName],
         );
 
-        const all = (await repository.findAll()) as MenuCategoryRow[];
+        const all = await repository.findAll();
         const firstIndex = all.findIndex(
             (row) => row.category_name === firstName,
         );
@@ -56,5 +51,12 @@ describe("PgMenuCategoryRepository (real Postgres)", () => {
         expect(firstIndex).toBeGreaterThanOrEqual(0);
         expect(lastIndex).toBeGreaterThanOrEqual(0);
         expect(firstIndex).toBeLessThan(lastIndex);
+    });
+
+    it("should tell an existing category from a missing one", async () => {
+        const categoryId = await createMenuCategory(pool);
+
+        expect(await repository.exists(categoryId)).toBe(true);
+        expect(await repository.exists(categoryId + 1_000_000)).toBe(false);
     });
 });

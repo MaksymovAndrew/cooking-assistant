@@ -19,7 +19,7 @@ describe("MenuCategoryChart", () => {
         render(
             <Suspense fallback={null}>
                 <MenuCategoryChart
-                    categories={[{ categoryname: "Breakfast", menuCount: 3 }]}
+                    categories={[{ categoryName: "Breakfast", menuCount: 3 }]}
                 />
             </Suspense>,
         );

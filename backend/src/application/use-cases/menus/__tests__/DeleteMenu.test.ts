@@ -27,7 +27,7 @@ describe("DeleteMenu", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "ID is required",
+            "Required",
         );
         expect(menuRepository.deleteById).not.toHaveBeenCalled();
     });

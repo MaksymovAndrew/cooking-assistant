@@ -1,6 +1,6 @@
 import type { CookieOptions } from "express";
 
-import { config } from "config/env";
+import { config } from "./env";
 
 export const AUTH_COOKIE_NAME = "authToken";
 

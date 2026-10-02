@@ -75,7 +75,7 @@ describe("PgRatingRepository (real Postgres)", () => {
             recipeIds: [recipeId],
         });
 
-        return (await menuRepository.create(menu, [recipeId])) as number;
+        return await menuRepository.create(menu, [recipeId]);
     }
 
     async function recipeTotals(recipeId: number): Promise<Totals> {

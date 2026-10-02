@@ -218,7 +218,7 @@ describe("recipesApi", () => {
                 title: "Sunday dinner",
                 recipes: [],
                 category_id: 1,
-                categoryname: "Dinner",
+                categoryName: "Dinner",
                 isOwner: true,
                 isFavourite: false,
                 containsAvoided: false,

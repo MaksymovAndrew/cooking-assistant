@@ -2,11 +2,13 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
 
+import { type Locale, LOCALES } from "constants/locales";
+
 import { ALLERGEN_NAMES } from "./allergenNames";
 import { ALLERGEN_SLUGS, CATEGORY_KEYS } from "./catalog.types";
 import rawCatalogData from "./catalogData.json";
 import { parseCatalogData } from "./catalogDataSchema";
-import { CATEGORY_NAMES, type Locale, LOCALES } from "./catalogVocabulary";
+import { CATEGORY_NAMES } from "./catalogVocabulary";
 
 const catalogData = parseCatalogData(rawCatalogData);
 

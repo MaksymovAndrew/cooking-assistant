@@ -96,6 +96,8 @@ without it at all. In development, without it, login and every protected route r
 error.
 The rest of the env is validated with zod on startup; invalid ports or logger levels fail fast with a
 clear configuration error. `LOG_LEVEL` controls the pino logger level and defaults to `info` when unset.
+`DB_POOL_MAX`, `DB_CONNECTION_TIMEOUT_MS`, `DB_IDLE_TIMEOUT_MS` and `DB_STATEMENT_TIMEOUT_MS` bound the
+app's connection pool (defaults 10, 5000, 30000 and 15000); the migrate and seed scripts do not use them.
 
 `RESEND_API_KEY` and `EMAIL_FROM` configure transactional email (password reset and email verification
 links). Leave both empty for local dev/CI: the composition root picks `LoggingEmailService`, which logs
@@ -134,21 +136,8 @@ Pick the path that matches your situation:
     - **createdb** (only works if the Postgres `bin/` folder is on your PATH, otherwise use the full path to it):
       `createdb -U <DB_USER> <DB_NAME>`
 2. `npm run migrate` - builds every table from the files in [migrations/](migrations/).
-3. `npm run seed` - loads reference + sample data (units, recipe types, menu categories, sample ingredients).
-
-#### B. A database that already has the schema (the original `database.sql` setup, from before migrations)
-
-Do **not** run a plain `npm run migrate` - it would fail because the tables already exist. Adopt the migrations
-once, without touching any data:
-
-```bash
-npm run migrate -- up --fake
-```
-
-This records the initial migration as "already applied" (it writes one row to the `pgmigrations` tracking
-table) but runs no SQL, so existing rows are untouched. After this one-time step the database is in sync with
-the migrations and you treat it like any other. (The `--` is needed only because `--fake` is a flag; bare words
-such as `down` are forwarded without it.)
+3. `npm run seed` - loads the reference data (units, recipe types, menu categories) and the ingredient catalog,
+   in one transaction.
 
 #### Day to day: which change goes where
 
@@ -157,14 +146,14 @@ Structure and data are different things - this is the part people trip on:
 | What you are doing                                                         | Where it goes                                                           |
 | -------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | A user creates a recipe / adds a pantry ingredient through the running app | Nowhere - it is runtime data via the normal API. No migration, no seed. |
-| A new **starter ingredient** that every fresh DB should ship with          | A row in `seed.ts`, then `npm run seed`                                 |
+| A new **catalog ingredient** that every DB should have                     | An entry in `catalogData.json`, then `npm run seed`                     |
 | A new table / column / constraint / index (the **shape** of the DB)        | A new migration                                                         |
 
-**Add a starter ingredient (e.g. a 23rd):** add one row to the ingredients `VALUES` list in
-[src/scripts/seed.ts](src/scripts/seed.ts) - the columns are `(name, unit, allergens, days_to_expire,
-seasonality, storage_condition)` - then `npm run seed`. Seed is idempotent (`ON CONFLICT (name) DO NOTHING`), so
-on an existing DB it inserts only the new row and leaves the rest alone. Commit `seed.ts`. Do **not** write a
-migration - ingredients are rows, not schema.
+**Add or change a catalog ingredient:** the catalog is data in
+[src/scripts/catalog/catalogData.json](src/scripts/catalog/catalogData.json), keyed by `slug` - add or edit
+the entry, run `npm run catalog:locales` for the frontend names, then `npm run seed`. The seed upserts on
+`slug` (`ON CONFLICT (slug) DO UPDATE`) and skips rows whose values already match, so an existing DB takes
+exactly what the catalog changed. Do **not** write a migration - ingredients are rows, not schema.
 
 **Make a schema change (the only time you write a migration):**
 
@@ -273,15 +262,19 @@ backend/
 ## Architecture - clean (layered)
 
 Dependencies point inward (Dependency Rule). The real graph is built in
-[src/composition-root.ts](src/composition-root.ts) (split into `.recipe.ts` and `.user.ts` companions for
-the two largest controllers) and consumed by [src/index.ts](src/index.ts). Tests can reuse
+[src/composition-root.ts](src/composition-root.ts) (split into one `composition-root.<area>.ts` companion per
+domain, with the shared types in `composition-root.types.ts`) and consumed by [src/index.ts](src/index.ts). Tests can reuse
 `buildControllers(deps)` with fakes and pass the result to [src/app.ts](src/app.ts). The app factory mounts
 `helmet`, pino request logging, CORS (with credentials), `cookie-parser`, the 100kb JSON body parser, the
-public health check, a global rate limiter, then the seven domain routers, and finally the error handler.
+public health check, the media route, a global rate limiter, then the domain routers in the order
+[src/routes/domainRouters.ts](src/routes/domainRouters.ts) lists them, and finally the error handler.
+Every request gets an id (the caller's `X-Request-Id` when it is a plain token, else a fresh UUID),
+answered in the same header and attached to its log lines.
 
 - **routes/** - factory functions `(controller) => router`; map `METHOD /path` directly to a
   controller handler, guard with `authenticateToken` (the public routes are `/health`, `/register`,
-  `/login`, `/logout`, `/forgot-password`, `/reset-password`, and `/confirm-email`). Paths are never
+  `/login`, `/logout`, `/forgot-password`, `/reset-password`, `/confirm-email` and `/media/:file`;
+  the read endpoints use `optionalAuth`, so a guest gets them without per-viewer fields). Paths are never
   literals here: they live in [src/constants/routes.ts](src/constants/routes.ts) as `ROUTES`, grouped
   by domain and router-relative, alongside `API_PREFIX` (the `/api` mount) and `HEALTH_PATH` (derived
   from both, because request logging has to filter the probe out by its full path).
@@ -302,13 +295,16 @@ rather than by hand. Each filter is one entry in a clause registry (`recipeFilte
 `$n` placeholders through a `bind()` callback, so parameter indices can never drift out of sync with the
 values array (the old hand-rolled `paramIndex` counter had exactly that bug). `escapeLikePattern()`
 escapes `\`, `%`, and `_` before any `ILIKE` interpolation so literal wildcards in user input stay
-literal. Adding a filter means one clause entry plus one zod field - no changes to the query assembly.
+literal. Adding a filter means one clause entry plus one zod field - no changes to the query assembly;
+a clause on one optional field is `whenDefined("field", (builder, value) => ...)`, which hands it the
+value already narrowed.
 
 Errors: a use case throws a domain error -> Express 5 forwards the rejected promise -> `errorHandler`
 replies `{ error, code }` with `err.status || 500`. Every error body has that shape, and every one goes
 through `errorHandler` - auth middleware failures, rate-limit rejections and the JSON 404 for unknown
-routes call `next(error)` instead of writing a response themselves. Transactions live inside a single
-repository method (see menu/pantry repos).
+routes call `next(error)` instead of writing a response themselves. A transaction lives inside a single
+repository method and goes through `withTransaction` (`transaction.ts`); a person's pantry, shopping list
+and cooking writes go through `inPersonWriteTransaction`, which locks the person row first.
 
 ### Error codes and the message catalog
 
@@ -319,9 +315,11 @@ repository method (see menu/pantry repos).
   `errors.json` in every `i18n/locales/<locale>/` + the same entry in the frontend mirror (`frontend/src/constants/errorCodes.ts`) -
   a missing catalog line is a compile error, and a test fails if the frontend mirror drifts either way. The frontend's own copy for each code lives under `apiErrors` in
   every frontend `common.json`, guarded by the frontend sync and completeness tests.
-- **No display text in `AppError`.** It holds `code`, `status` and an optional `detail` (request-specific
-  context, e.g. the zod issue list on `validation_error`). `errorHandler` resolves the text at the HTTP
-  edge - `detail ?? translateError(code, locale)`.
+- **No display text in `AppError`.** It holds `code` and `status`; a `ValidationError` also holds its
+  issues as data (`{ path, message, params }`, `message` a key from `constants/validationMessages.ts`).
+  `errorHandler` resolves the text at the HTTP edge - `translateError(code, locale)`, or for a validation
+  error each field's reason from `i18n/locales/<locale>/validation.json`, joined as `field: text; field: text`.
+  A framework 4xx answers `bad_request` or `payload_too_large` from the catalog, never the parser's message.
 - **Every piece of server copy is written in a locale, and there are exactly two sources for it.** A
   response - error text and `{ message }` bodies alike - follows the request: `requestLocale(req)`
   ([src/i18n/requestLocale.ts](src/i18n/requestLocale.ts)) picks the best match for `Accept-Language`
@@ -467,15 +465,16 @@ Every account always has an email (required and unique at registration - see poi
 
 ## API reference
 
-All endpoints under `/api`. Public routes: `/health`, `/register`, `/login`, `/logout`. Every other route
+All endpoints under `/api`. Public routes: `/health`, `/register`, `/login`, `/logout`, `/forgot-password`,
+`/reset-password`, `/confirm-email`, `/media/:file`, and the read endpoints behind `optionalAuth`. Every other route
 requires the `authToken` session cookie (sent automatically by the browser); there is no `Authorization`
 header. Routes that act on "the current user" take the id from the cookie, not from a path segment.
 
 ### Health ([src/routes/health.routes.ts](src/routes/health.routes.ts))
 
-| Method | Path      | Purpose                                    |
-| ------ | --------- | ------------------------------------------ |
-| GET    | `/health` | Liveness check, returns `{ status: "ok" }` |
+| Method | Path      | Purpose                                                                                                |
+| ------ | --------- | ------------------------------------------------------------------------------------------------------ |
+| GET    | `/health` | Asks the database (`SELECT 1`, 2 s deadline): `{ status: "ok" }`, or a 503 `{ status: "unavailable" }` |
 
 ### Auth ([src/routes/user.routes.ts](src/routes/user.routes.ts))
 

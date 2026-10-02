@@ -122,7 +122,7 @@ describe("PgPantryConsumptionRepository (real Postgres)", () => {
         };
     }
 
-    it("should read a recipe's ingredients and count a recipe listed twice in a menu once", async () => {
+    it("should read a recipe's ingredients and sum a menu's recipes per ingredient", async () => {
         const personId = await createPerson(pool);
         const flour = await createIngredient(pool, unitId);
         const eggs = await createIngredient(pool, unitId);
@@ -134,7 +134,6 @@ describe("PgPantryConsumptionRepository (real Postgres)", () => {
             { ingredientId: flour, quantity: 500 },
         ]);
         const menuId = await createMenu(pool, personId, categoryId, [
-            pancakes,
             pancakes,
             bread,
         ]);

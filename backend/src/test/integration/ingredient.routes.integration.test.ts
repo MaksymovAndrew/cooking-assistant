@@ -1,5 +1,6 @@
 import request from "supertest";
 
+import { catalogIngredient } from "test/helpers/repositoryRows";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const INGREDIENTS_PATH = "/api/ingredients";
@@ -7,7 +8,7 @@ const INGREDIENTS_PATH = "/api/ingredients";
 describe("ingredient routes", () => {
     it("should return ingredients for an anonymous request", async () => {
         const { app, deps } = buildTestApp();
-        const ingredients = [{ id: 3, slug: "tomato", name: "Tomato" }];
+        const ingredients = [catalogIngredient()];
 
         deps.ingredientRepository.findAll.mockResolvedValue(ingredients);
 
@@ -19,7 +20,7 @@ describe("ingredient routes", () => {
 
     it("should return all known ingredients", async () => {
         const { app, deps } = buildTestApp();
-        const ingredients = [{ id: 3, slug: "tomato", name: "Tomato" }];
+        const ingredients = [catalogIngredient()];
 
         deps.ingredientRepository.findAll.mockResolvedValue(ingredients);
 

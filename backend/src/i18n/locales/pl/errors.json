@@ -1,5 +1,6 @@
 {
     "bad_request": "Nieprawidłowe żądanie",
+    "payload_too_large": "Żądanie jest za duże",
     "not_found": "Nie znaleziono",
     "server_error": "Błąd serwera",
     "validation_error": "Nieprawidłowe dane w żądaniu",
@@ -21,11 +22,13 @@
     "recipe/ingredients_not_exist": "Co najmniej jeden składnik już nie istnieje",
     "recipe/title_content_empty": "Podaj tytuł i opis",
     "recipe/in_pantry_requires_login": "Zaloguj się, aby szukać przepisów według zawartości spiżarni",
+    "recipe/type_not_exist": "Taki typ przepisu nie istnieje",
 
     "menu/not_found": "Nie znaleziono jadłospisu",
     "menu/insufficient_data_create": "Za mało danych, aby utworzyć jadłospis",
     "menu/insufficient_data_update": "Za mało danych, aby zmienić jadłospis",
     "menu/recipes_not_exist": "Co najmniej jeden przepis już nie istnieje",
+    "menu/category_not_exist": "Taka kategoria jadłospisu nie istnieje",
 
     "pantry/ingredient_not_found": "Tego produktu nie ma w twojej spiżarni",
     "pantry/purchase_not_found": "Nie znaleziono zakupu",

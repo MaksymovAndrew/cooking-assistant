@@ -9,23 +9,6 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-interface PantryLot {
-    quantity: number;
-    purchase_date: string;
-}
-
-interface PantryRow {
-    ingredient_id: number;
-    quantity_person_ingradient: number;
-    purchase_date: string | null;
-    lots: PantryLot[];
-}
-
-interface PurchaseRow {
-    id: number;
-    quantity: number;
-}
-
 // targets the misspelled `quantity_person_ingradient` column and the purchase-lot aggregation in
 // PgPantryRepository.queries.ts - invisible to mocked-repository unit tests
 describe("PgPantryRepository (real Postgres)", () => {
@@ -46,7 +29,7 @@ describe("PgPantryRepository (real Postgres)", () => {
     });
 
     const findPantryRow = async (ingredientId: number) => {
-        const pantry = (await repository.findByUser(userId)) as PantryRow[];
+        const pantry = await repository.findByUser(userId);
 
         return pantry.find((row) => row.ingredient_id === ingredientId);
     };
@@ -59,10 +42,10 @@ describe("PgPantryRepository (real Postgres)", () => {
         ]);
 
         const pantryRow = await findPantryRow(ingredientId);
-        const history = (await repository.findPurchaseHistory(
+        const history = await repository.findPurchaseHistory(
             userId,
             ingredientId,
-        )) as PurchaseRow[];
+        );
 
         expect(pantryRow?.quantity_person_ingradient).toBe(3);
         expect(history).toHaveLength(1);
@@ -80,10 +63,10 @@ describe("PgPantryRepository (real Postgres)", () => {
         ]);
 
         const pantryRow = await findPantryRow(ingredientId);
-        const history = (await repository.findPurchaseHistory(
+        const history = await repository.findPurchaseHistory(
             userId,
             ingredientId,
-        )) as PurchaseRow[];
+        );
 
         expect(pantryRow?.quantity_person_ingradient).toBe(7);
         expect(history).toHaveLength(2);
@@ -153,10 +136,10 @@ describe("PgPantryRepository (real Postgres)", () => {
         await repository.addIngredients(userId, [
             { id: ingredientId, quantity_person_ingradient: 5 },
         ]);
-        const history = (await repository.findPurchaseHistory(
+        const history = await repository.findPurchaseHistory(
             userId,
             ingredientId,
-        )) as PurchaseRow[];
+        );
         const purchaseId = history[0].id;
 
         // consumption elsewhere (no in-app flow for this yet): stock drops to 1 out of band,
@@ -167,11 +150,11 @@ describe("PgPantryRepository (real Postgres)", () => {
             [userId, ingredientId],
         );
 
-        // correcting the purchase to 0 is a -5 delta, but only 1 unit is left - must floor at 0
+        // correcting the purchase to 1 is a -4 delta, but only 1 unit is left - must floor at 0
         const updated = await repository.updatePurchaseQuantity(
             userId,
             purchaseId,
-            0,
+            1,
         );
         const pantryRow = await findPantryRow(ingredientId);
 
@@ -212,10 +195,10 @@ describe("PgPantryRepository (real Postgres)", () => {
         await repository.addIngredients(userId, [
             { id: ingredientId, quantity_person_ingradient: 2 },
         ]);
-        const history = (await repository.findPurchaseHistory(
+        const history = await repository.findPurchaseHistory(
             userId,
             ingredientId,
-        )) as PurchaseRow[];
+        );
 
         const deleted = await repository.deletePurchases(userId, [
             history[0].id,
@@ -233,10 +216,10 @@ describe("PgPantryRepository (real Postgres)", () => {
         await repository.addIngredients(userId, [
             { id: ingredientId, quantity_person_ingradient: 3 },
         ]);
-        const history = (await repository.findPurchaseHistory(
+        const history = await repository.findPurchaseHistory(
             userId,
             ingredientId,
-        )) as PurchaseRow[];
+        );
 
         await repository.deletePurchases(userId, [history[0].id]);
 
@@ -250,10 +233,10 @@ describe("PgPantryRepository (real Postgres)", () => {
         await repository.addIngredients(otherUserId, [
             { id: ingredientId, quantity_person_ingradient: 3 },
         ]);
-        const history = (await repository.findPurchaseHistory(
+        const history = await repository.findPurchaseHistory(
             otherUserId,
             ingredientId,
-        )) as PurchaseRow[];
+        );
 
         const deleted = await repository.deletePurchases(userId, [
             history[0].id,
@@ -276,14 +259,11 @@ describe("PgPantryRepository (real Postgres)", () => {
         await repository.addIngredients(userId, [
             { id: kept, quantity_person_ingradient: 3 },
         ]);
-        const keptHistory = (await repository.findPurchaseHistory(
-            userId,
-            kept,
-        )) as PurchaseRow[];
-        const emptiedHistory = (await repository.findPurchaseHistory(
+        const keptHistory = await repository.findPurchaseHistory(userId, kept);
+        const emptiedHistory = await repository.findPurchaseHistory(
             userId,
             emptied,
-        )) as PurchaseRow[];
+        );
 
         const discarded = await repository.deletePurchases(userId, [
             keptHistory[0].id,
@@ -301,10 +281,10 @@ describe("PgPantryRepository (real Postgres)", () => {
         await repository.addIngredients(userId, [
             { id: ingredientId, quantity_person_ingradient: 2 },
         ]);
-        const history = (await repository.findPurchaseHistory(
+        const history = await repository.findPurchaseHistory(
             userId,
             ingredientId,
-        )) as PurchaseRow[];
+        );
 
         expect((await findPantryRow(ingredientId))?.lots).toEqual([
             expect.objectContaining({ id: history[0].id, quantity: 2 }),

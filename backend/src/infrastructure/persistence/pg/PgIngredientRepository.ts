@@ -1,17 +1,9 @@
 import type { Pool } from "pg";
 
-import type { IngredientRepository } from "domain/repositories/IngredientRepository";
-
-interface IngredientRow {
-    id: number;
-    slug: string;
-    name: string;
-    category: string;
-    unit_name: string | null;
-    allergens: string[];
-    days_to_expire: number | null;
-    calories_per_unit: number | null;
-}
+import type {
+    CatalogIngredient,
+    IngredientRepository,
+} from "domain/repositories/IngredientRepository";
 
 interface IngredientIdRow {
     id: number;
@@ -20,8 +12,8 @@ interface IngredientIdRow {
 export default class PgIngredientRepository implements IngredientRepository {
     constructor(private pool: Pool) {}
 
-    async findAll(): Promise<unknown[]> {
-        const result = await this.pool.query<IngredientRow>(
+    async findAll(): Promise<CatalogIngredient[]> {
+        const result = await this.pool.query<CatalogIngredient>(
             `SELECT i.id, i.slug, i.name, i.category, um.unit_name, i.allergens,
                     i.days_to_expire, i.calories_per_unit
                FROM ingredients i

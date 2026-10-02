@@ -6,14 +6,14 @@ import type {
     RecipeTimeEntry,
 } from "domain/repositories/recipeStats.types";
 
+import { caloriesPerPortion } from "./calorieColumns";
+
 // interpolated, never bound: a fixed literal type, so no request value can reach the SQL
 type SortDirection = "ASC" | "DESC";
 
 const EXTREMES_LIMIT = 3;
 
-// effective per-portion calories: the author's manual value wins, otherwise the ingredient total
-export const CALORIES_PER_PORTION_SQL =
-    "COALESCE(r.calories_override, r.calories_computed)";
+const CALORIES_PER_PORTION_SQL = caloriesPerPortion("r");
 
 export async function cookingTimeExtremes(
     pool: Pool,

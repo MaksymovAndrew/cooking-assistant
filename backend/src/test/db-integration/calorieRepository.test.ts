@@ -111,10 +111,10 @@ describe("PgCalorieRepository (real Postgres)", () => {
             personId,
             recipeIds: [recipeAId, recipeBId],
         });
-        const menuId = (await menuRepository.create(menu, [
+        const menuId = await menuRepository.create(menu, [
             recipeAId,
             recipeBId,
-        ])) as number;
+        ]);
 
         const found = await repository.findMenuCalories(menuId);
 
@@ -147,10 +147,10 @@ describe("PgCalorieRepository (real Postgres)", () => {
             personId,
             recipeIds: [knownRecipeId, unknownRecipeId],
         });
-        const menuId = (await menuRepository.create(menu, [
+        const menuId = await menuRepository.create(menu, [
             knownRecipeId,
             unknownRecipeId,
-        ])) as number;
+        ]);
 
         const found = await repository.findMenuCalories(menuId);
 

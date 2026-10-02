@@ -6,7 +6,7 @@ export interface AverageCookingTime {
 }
 
 export interface MenuCategoryStat {
-    categoryname: string;
+    categoryName: string;
     menuCount: number;
 }
 
@@ -16,7 +16,7 @@ export interface RecipeTypeStat {
 }
 
 export interface AverageTimeByCategory {
-    categoryname: string;
+    categoryName: string;
     averageTotalTime: number;
 }
 

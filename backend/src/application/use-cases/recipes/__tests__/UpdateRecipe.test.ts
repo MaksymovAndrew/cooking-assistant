@@ -21,9 +21,19 @@ function makeInput(overrides = {}) {
 function setup() {
     const recipeRepository = { update: jest.fn() };
     const ingredientRepository = { findExistingIds: jest.fn() };
-    const useCase = new UpdateRecipe(recipeRepository, ingredientRepository);
+    const recipeTypeRepository = { exists: jest.fn().mockResolvedValue(true) };
+    const useCase = new UpdateRecipe(
+        recipeRepository,
+        ingredientRepository,
+        recipeTypeRepository,
+    );
 
-    return { useCase, recipeRepository, ingredientRepository };
+    return {
+        useCase,
+        recipeRepository,
+        ingredientRepository,
+        recipeTypeRepository,
+    };
 }
 
 describe("UpdateRecipe", () => {
@@ -94,7 +104,7 @@ describe("UpdateRecipe", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "title: Title cannot be empty",
+            "title: Cannot be empty",
         );
         expect(recipeRepository.update).not.toHaveBeenCalled();
     });
@@ -109,6 +119,27 @@ describe("UpdateRecipe", () => {
         expect(error).toBeAppError(
             ValidationError,
             ERROR_CODES.RECIPE_INGREDIENTS_NOT_EXIST,
+            400,
+        );
+        expect(recipeRepository.update).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError for a recipe type that does not exist without updating the recipe", async () => {
+        const {
+            useCase,
+            recipeRepository,
+            ingredientRepository,
+            recipeTypeRepository,
+        } = setup();
+
+        ingredientRepository.findExistingIds.mockResolvedValue([3]);
+        recipeTypeRepository.exists.mockResolvedValue(false);
+
+        const error = await catchError(useCase.execute(12, 7, makeInput()));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.RECIPE_TYPE_NOT_EXIST,
             400,
         );
         expect(recipeRepository.update).not.toHaveBeenCalled();

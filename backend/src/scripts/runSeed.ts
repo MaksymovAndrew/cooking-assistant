@@ -3,6 +3,12 @@ import { Pool } from "pg";
 import { config } from "config/env";
 import { logger } from "config/logger";
 
+import { computedRecipeCalories } from "infrastructure/persistence/pg/calorieColumns";
+import {
+    committed,
+    withTransaction,
+} from "infrastructure/persistence/pg/transaction";
+
 import { seedIngredientsFromCatalog } from "./seedIngredientsFromCatalog";
 
 // idempotent reference + sample data; safe to re-run (guards against existing rows)
@@ -46,15 +52,11 @@ const seedRecipeTypes = `
     );
 `;
 
-// re-syncs every recipe's stored calorie total with the catalog values the step above just
-// upserted, so a changed ingredient calorie value doesn't leave recipes' totals stale
+// re-syncs a recipe's stored calorie total with the catalog values the step above just upserted,
+// touching only the recipes whose total actually moved
 const recomputeRecipeCalories = `
-    UPDATE recipes r SET calories_computed = (
-        SELECT SUM(ri.quantity_recipe_ingredients * i.calories_per_unit)
-        FROM recipe_ingredients ri
-                 JOIN ingredients i ON i.id = ri.ingredient_id
-        WHERE ri.recipe_id = r.id
-    );
+    UPDATE recipes r SET calories_computed = ${computedRecipeCalories("r.id")}
+    WHERE r.calories_computed IS DISTINCT FROM ${computedRecipeCalories("r.id")};
 `;
 
 const seedMenuCategories = `
@@ -71,35 +73,44 @@ const seedMenuCategories = `
     );
 `;
 
+const REFERENCE_STEPS = [
+    { label: "unit_measurement", sql: seedUnitMeasurements },
+    { label: "recipe_types", sql: seedRecipeTypes },
+    { label: "menu_category", sql: seedMenuCategories },
+];
+
+// one transaction: a seed that fails halfway leaves the reference data as it was
 export async function runSeed(): Promise<void> {
     const pool = new Pool(config.db);
 
     try {
-        const steps: { label: string; sql: string }[] = [
-            { label: "unit_measurement", sql: seedUnitMeasurements },
-            { label: "recipe_types", sql: seedRecipeTypes },
-            { label: "menu_category", sql: seedMenuCategories },
-        ];
+        await withTransaction(pool, async (client) => {
+            for (const step of REFERENCE_STEPS) {
+                const result = await client.query(step.sql);
 
-        for (const step of steps) {
-            const result = await pool.query(step.sql);
+                logger.info(
+                    { inserted: result.rowCount },
+                    `Seeded ${step.label}`,
+                );
+            }
 
-            logger.info({ inserted: result.rowCount }, `Seeded ${step.label}`);
-        }
+            const ingredientsAffected =
+                await seedIngredientsFromCatalog(client);
 
-        const ingredientsAffected = await seedIngredientsFromCatalog(pool);
+            logger.info(
+                { affected: ingredientsAffected },
+                "Seeded ingredients from catalog",
+            );
 
-        logger.info(
-            { affected: ingredientsAffected },
-            "Seeded ingredients from catalog",
-        );
+            const recomputeResult = await client.query(recomputeRecipeCalories);
 
-        const recomputeResult = await pool.query(recomputeRecipeCalories);
+            logger.info(
+                { affected: recomputeResult.rowCount },
+                "Recomputed recipe calorie totals",
+            );
 
-        logger.info(
-            { affected: recomputeResult.rowCount },
-            "Recomputed recipe calorie totals",
-        );
+            return committed(null);
+        });
     } finally {
         await pool.end();
     }

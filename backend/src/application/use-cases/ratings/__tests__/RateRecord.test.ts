@@ -66,10 +66,10 @@ describe("RateRecord", () => {
     });
 
     it.each([
-        [0, "value: Rating must be at least 1"],
-        [6, "value: Rating must be at most 5"],
-        [3.5, "value: Rating must be an integer"],
-        ["4", "value: Rating must be a number"],
+        [0, "value: Must be at least 1"],
+        [6, "value: Must be at most 5"],
+        [3.5, "value: Must be a whole number"],
+        ["4", "value: Must be a number"],
     ])(
         "should throw a 400 ValidationError for a rating of %p without touching the repository",
         async (value, detail) => {

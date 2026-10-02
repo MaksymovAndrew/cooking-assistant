@@ -1,13 +1,14 @@
 import type { RecipeFilters } from "domain/repositories/recipe.filters";
 
-import type { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import type { ClauseContext } from "./filterClause";
+import type { SqlFilterBuilder } from "./sqlFilterBuilder";
 
 export const tagsFilterClause = {
     applies: (filters: RecipeFilters) => typeof filters.tag_ids !== "undefined",
     apply: (
         builder: SqlFilterBuilder,
         filters: RecipeFilters,
-        context: { userId: number | null },
+        context: ClauseContext,
     ) => {
         const { tag_ids } = filters;
         const { userId } = context;

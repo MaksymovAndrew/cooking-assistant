@@ -97,7 +97,7 @@ export async function createRecipe(
     return recipeId;
 }
 
-// recipe ids may repeat, which is how a menu lists the same recipe twice
+// each recipe once: the database refuses the same recipe twice in one menu
 export async function createMenu(
     pool: Pool,
     personId: number,

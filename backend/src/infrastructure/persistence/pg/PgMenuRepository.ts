@@ -5,6 +5,7 @@ import type {
     MenuFilters,
     MenuSearchRow,
 } from "domain/repositories/menu.filters";
+import type { MenuDetail, MenuStatsRow } from "domain/repositories/menu.types";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 import type { DeletedRecord } from "domain/repositories/PhotoRepository";
@@ -24,16 +25,16 @@ export default class PgMenuRepository implements MenuRepository {
         return findAllMenus(this.pool, filters, userId);
     }
 
-    async findAllUnpaginated(): Promise<unknown[]> {
+    async findAllUnpaginated(): Promise<MenuStatsRow[]> {
         return findAllMenusUnpaginated(this.pool);
     }
 
-    async create(menu: Menu, recipeIds: number[]): Promise<unknown> {
+    async create(menu: Menu, recipeIds: number[]): Promise<number> {
         return createMenuInDb(this.pool, menu, recipeIds);
     }
 
     async update(
-        id: string | number,
+        id: number,
         personId: number,
         menu: Menu,
         recipeIds: number[],
@@ -42,50 +43,25 @@ export default class PgMenuRepository implements MenuRepository {
     }
 
     async findByIdWithRecipes(
-        id: string | number,
+        id: number,
         personId: number | null,
-    ): Promise<unknown> {
+    ): Promise<MenuDetail | null> {
         return findMenuByIdWithRecipes(this.pool, id, personId);
     }
 
+    // one statement: its recipe links, favourites and ratings cascade, and the photo key comes back from the delete itself
     async deleteById(
-        id: string | number,
+        id: number,
         personId: number,
     ): Promise<DeletedRecord | null> {
-        // explicit delete: legacy database.sql adopters carry a second menu_id FK without CASCADE
-        const client = await this.pool.connect();
+        const result = await this.pool.query<{ photo_key: string | null }>(
+            "DELETE FROM menu WHERE menu_id = $1 AND person_id = $2 RETURNING photo_key",
+            [id, personId],
+        );
 
-        try {
-            await client.query("BEGIN");
-
-            const owned = await client.query(
-                "SELECT menu_id FROM menu WHERE menu_id = $1 AND person_id = $2 FOR UPDATE",
-                [id, personId],
-            );
-
-            if (owned.rowCount === 0) {
-                await client.query("ROLLBACK");
-
-                return null;
-            }
-
-            await client.query("DELETE FROM menu_recipe WHERE menu_id = $1", [
-                id,
-            ]);
-            const result = await client.query<{ photo_key: string | null }>(
-                "DELETE FROM menu WHERE menu_id = $1 RETURNING photo_key",
-                [id],
-            );
-
-            await client.query("COMMIT");
-
-            return { photoKey: result.rows[0].photo_key };
-        } catch (error) {
-            await client.query("ROLLBACK");
-            throw error;
-        } finally {
-            client.release();
-        }
+        return result.rows.length === 0
+            ? null
+            : { photoKey: result.rows[0].photo_key };
     }
 
     async searchByPerson(

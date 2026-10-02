@@ -13,7 +13,7 @@ interface MenuCategoryChartProps {
 export const MenuCategoryChart = ({ categories }: MenuCategoryChartProps) => {
     const { t } = useTranslation("stats");
     const data = categories.map((c) => ({
-        name: menuCategoryName(t, c.categoryname),
+        name: menuCategoryName(t, c.categoryName),
         value: c.menuCount,
     }));
     const total = data.reduce((sum, entry) => sum + entry.value, 0);

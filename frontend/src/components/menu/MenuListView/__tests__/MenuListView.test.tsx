@@ -17,8 +17,8 @@ const MENUS: Menu[] = [
     {
         id: 1,
         title: MENU_TITLE,
-        categoryname: "Lunch",
-        menucontent: "quick",
+        categoryName: "Lunch",
+        menuContent: "quick",
         recipe_count: 4,
     },
 ];

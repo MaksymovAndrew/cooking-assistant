@@ -6,9 +6,9 @@ import type {
     RecipeTypeStat,
 } from "domain/repositories/recipeStats.types";
 
+import { caloriesPerPortion } from "./calorieColumns";
 import {
     calorieExtremes,
-    CALORIES_PER_PORTION_SQL,
     cookingTimeExtremes,
     ingredientCountExtremes,
 } from "./PgRecipeRepository.extremes";
@@ -42,7 +42,7 @@ export async function getRecipeStats(pool: Pool): Promise<RecipeStatisticsDto> {
         pool.query<OverallRow>(
             `SELECT COUNT(*)::int AS "recipesCount",
                     ROUND(AVG(r.cooking_time))::int AS "averageCookingTimeOverall",
-                    ROUND(AVG(${CALORIES_PER_PORTION_SQL}))::int AS "averageCaloriesOverall"
+                    ROUND(AVG(${caloriesPerPortion("r")}))::int AS "averageCaloriesOverall"
              FROM recipes r`,
         ),
         pool.query<RecipeTypeStat>(

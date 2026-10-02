@@ -24,6 +24,8 @@ module.exports = {
     },
     collectCoverageFrom: [
         "src/application/use-cases/**/*.ts",
+        "src/application/validation/**/*.ts",
+        "src/application/media/**/*.ts",
         "src/domain/entities/**/*.ts",
         "src/domain/pantry/**/*.ts",
         "src/domain/errors/**/*.ts",

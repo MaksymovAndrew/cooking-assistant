@@ -11,6 +11,7 @@ import type GetMenuById from "application/use-cases/menus/GetMenuById";
 import type SearchPersonMenus from "application/use-cases/menus/SearchPersonMenus";
 import type UpdateMenu from "application/use-cases/menus/UpdateMenu";
 
+import { requestBody } from "./requestBody";
 import { getOptionalUserId, getUserId } from "./requestUser";
 
 interface MenuControllerDependencies {
@@ -66,11 +67,9 @@ export default class MenuController {
     };
 
     create: RequestHandler = async (req, res) => {
-        const body = req.body as Record<string, unknown>;
-        const personId = getUserId(req);
         const menuId = await this.createMenuUseCase.execute({
-            ...body,
-            personId,
+            ...requestBody(req),
+            personId: getUserId(req),
         });
 
         res.status(201).json({
@@ -89,10 +88,11 @@ export default class MenuController {
     };
 
     update: RequestHandler<{ id: string }> = async (req, res) => {
-        const personId = getUserId(req);
-        const body = req.body as Record<string, unknown>;
-
-        await this.updateMenuUseCase.execute(req.params.id, personId, body);
+        await this.updateMenuUseCase.execute(
+            req.params.id,
+            getUserId(req),
+            req.body,
+        );
 
         res.status(200).json({
             message: translateMessage("menuUpdated", requestLocale(req)),

@@ -1,82 +1,63 @@
 import { z } from "zod";
 
 import { SHOPPING_LIST_LIMITS } from "constants/shoppingList";
+import { VALIDATION_MESSAGES } from "constants/validationMessages";
 
 import {
     hasUniqueItems,
-    numberSchema,
     positiveIntegerSchema,
     trimmedStringSchema,
+    UNIQUE_ITEMS,
 } from "./common.schemas";
 
 const { MAX_ITEMS, MAX_NAME_LENGTH, MAX_NOTE_LENGTH } = SHOPPING_LIST_LIMITS;
 
-const INCORRECT_FORMAT_MESSAGE = "Incorrect data format";
-
-const nameSchema = trimmedStringSchema("Name").pipe(
-    z
-        .string()
-        .max(
-            MAX_NAME_LENGTH,
-            `Name must be at most ${MAX_NAME_LENGTH} characters`,
-        ),
-);
-
 // a blank note means "no note", so it is stored as null rather than an empty string
 const noteSchema = z
-    .string({ error: "Note must be a string" })
+    .string()
     .trim()
-    .max(MAX_NOTE_LENGTH, `Note must be at most ${MAX_NOTE_LENGTH} characters`)
+    .max(MAX_NOTE_LENGTH)
     .transform((value) => (value === "" ? null : value))
     .nullable();
 
 export const createShoppingListItemSchema = z.object({
-    name: nameSchema,
+    name: trimmedStringSchema(MAX_NAME_LENGTH),
     note: noteSchema.optional(),
 });
 
 export const updateShoppingListItemSchema = z
     .object({
         note: noteSchema.optional(),
-        checked: z
-            .boolean({ error: "Checked must be true or false" })
-            .optional(),
+        checked: z.boolean().optional(),
     })
     .refine(
         (changes) =>
             Object.values(changes).some(
                 (value) => typeof value !== "undefined",
             ),
-        { message: "Provide at least one field to update" },
+        { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD },
     );
 
 export const reorderShoppingListSchema = z.object({
     ids: z
-        .array(positiveIntegerSchema("Item ID"), {
-            error: INCORRECT_FORMAT_MESSAGE,
-        })
-        .max(MAX_ITEMS, `IDs must contain at most ${MAX_ITEMS} items`)
-        .refine((ids) => hasUniqueItems(ids), {
-            message: "Item IDs must be unique",
-        }),
+        .array(positiveIntegerSchema())
+        .max(MAX_ITEMS)
+        .refine((ids) => hasUniqueItems(ids), UNIQUE_ITEMS),
 });
 
 export const addIngredientsToShoppingListSchema = z.object({
     items: z
         .array(
             z.object({
-                ingredient_id: positiveIntegerSchema("Ingredient ID"),
+                ingredient_id: positiveIntegerSchema(),
                 // null adds the ingredient by name alone, leaving the amount to the shopper
-                quantity: numberSchema("Quantity")
-                    .positive("Quantity must be greater than 0")
-                    .nullable(),
+                quantity: z.number().positive().nullable(),
             }),
-            { error: INCORRECT_FORMAT_MESSAGE },
         )
-        .min(1, "Items cannot be empty")
-        .max(MAX_ITEMS, `Items must contain at most ${MAX_ITEMS} entries`)
+        .min(1)
+        .max(MAX_ITEMS)
         .refine(
             (items) => hasUniqueItems(items, (item) => item.ingredient_id),
-            { message: "Ingredient IDs must be unique" },
+            UNIQUE_ITEMS,
         ),
 });

@@ -25,9 +25,20 @@ changelogs and the tags and now track everything here against one shared version
 - Added: a "Cooked it" button on recipe and menu pages. It shows what will come out of your pantry for the portions you pick - what is used up and what you don't have - and can log the calories at the same time.
 - Added: the confirmation after cooking has an "Undo" button that puts everything back.
 - Fixed: the "Log intake" button no longer shows on a menu whose recipes don't all have calories - logging it was always refused.
+- Fixed: a clear message when the recipe type or menu category you picked has been removed in the meantime, or when what you send is too large.
 
 ### Backend
 
+- Changed: when something you send is not valid, the message says which field and why in your language (English, Polish, Russian or Ukrainian), instead of always in English.
+- Fixed: a request with a missing body, an id too large for the database, a title longer than its column or a recipe type or menu category that does not exist is refused with a clear 400 instead of a server error.
+- Fixed: the "to" date of the recipe date filter now includes that whole day.
+- Fixed: a login containing "@" can no longer be registered - signing in would have treated it as an email and never found the account.
+- Fixed: passwords longer than 72 bytes are refused, since only the first 72 ever counted.
+- Fixed: lists sort names alphabetically in every language - capitalised names, Polish letters and Cyrillic no longer land out of order.
+- Fixed: a recipe deleted by its author leaves the menus that held it cleanly, and a menu can no longer list the same recipe twice.
+- Changed: the health check also asks the database, so a backend that cannot reach it reports itself unhealthy.
+- Changed: the session cookie set at sign-in is no longer written to the logs, every request carries an id for following it through the logs, and the connection pool has limits and timeouts.
+- Changed: requesting a password reset answers in the same time whether or not the address has an account.
 - Added: "Cooked it" - cooking a recipe or a menu takes its ingredients, times the portions, out of the pantry in one go, oldest purchases first. What the pantry does not have is skipped and reported, and the calories can be logged at the same time.
 - Added: a cooking can be undone within ten minutes - every product comes back with its original purchase date, and the logged calories go away with it.
 

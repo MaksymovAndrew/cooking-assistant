@@ -12,10 +12,10 @@ const computeAverageTotalTimeByCategory = (
 ): AverageTimeByCategory[] =>
     averageByGroup(
         menus,
-        (menu) => menu.categoryname,
+        (menu) => menu.categoryName,
         (menu) => menu.total_cooking_time,
     ).map(({ group, average }) => ({
-        categoryname: group,
+        categoryName: group,
         averageTotalTime: average,
     }));
 
@@ -30,13 +30,13 @@ export const computeMenuStatistics = (
     const categoryCounts: Record<string, number> = {};
 
     menus.forEach((menu) => {
-        categoryCounts[menu.categoryname] =
-            (categoryCounts[menu.categoryname] || 0) + 1;
+        categoryCounts[menu.categoryName] =
+            (categoryCounts[menu.categoryName] || 0) + 1;
     });
 
     const menuCountByCategory: MenuCategoryStat[] = Object.entries(
         categoryCounts,
-    ).map(([categoryname, menuCount]) => ({ categoryname, menuCount }));
+    ).map(([categoryName, menuCount]) => ({ categoryName, menuCount }));
 
     if (menus.length === 0) {
         return {

@@ -22,9 +22,19 @@ function makeInput(overrides = {}) {
 function setup() {
     const recipeRepository = { create: jest.fn() };
     const ingredientRepository = { findExistingIds: jest.fn() };
-    const useCase = new CreateRecipe(recipeRepository, ingredientRepository);
+    const recipeTypeRepository = { exists: jest.fn().mockResolvedValue(true) };
+    const useCase = new CreateRecipe(
+        recipeRepository,
+        ingredientRepository,
+        recipeTypeRepository,
+    );
 
-    return { useCase, recipeRepository, ingredientRepository };
+    return {
+        useCase,
+        recipeRepository,
+        ingredientRepository,
+        recipeTypeRepository,
+    };
 }
 
 describe("CreateRecipe", () => {
@@ -81,7 +91,7 @@ describe("CreateRecipe", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "ingredients: Ingredient IDs must be unique",
+            "ingredients: Must not repeat",
         );
         expect(recipeRepository.create).not.toHaveBeenCalled();
     });
@@ -127,8 +137,40 @@ describe("CreateRecipe", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "language: Language is required",
+            "language: Required",
         );
         expect(recipeRepository.create).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError for a recipe type that does not exist without creating the recipe", async () => {
+        const {
+            useCase,
+            recipeRepository,
+            ingredientRepository,
+            recipeTypeRepository,
+        } = setup();
+
+        ingredientRepository.findExistingIds.mockResolvedValue([3]);
+        recipeTypeRepository.exists.mockResolvedValue(false);
+
+        const error = await catchError(useCase.execute(makeInput()));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.RECIPE_TYPE_NOT_EXIST,
+            400,
+        );
+        expect(recipeTypeRepository.exists).toHaveBeenCalledWith(1);
+        expect(recipeRepository.create).not.toHaveBeenCalled();
+    });
+
+    it("should not look the recipe type up when none is given", async () => {
+        const { useCase, ingredientRepository, recipeTypeRepository } = setup();
+
+        ingredientRepository.findExistingIds.mockResolvedValue([3]);
+
+        await useCase.execute(makeInput({ type_id: undefined }));
+
+        expect(recipeTypeRepository.exists).not.toHaveBeenCalled();
     });
 });

@@ -1,33 +1,36 @@
-import type { Pool } from "pg";
+import type { Pool, PoolClient } from "pg";
 
 import type { Menu } from "domain/entities/Menu";
+
+import { committed, rolledBack, withTransaction } from "./transaction";
 
 interface MenuIdRow {
     menu_id: number;
 }
 
-function buildMenuRecipeInsert(
-    menuId: number | string,
+// unnest keeps the statement one fixed shape whatever the recipe count
+async function insertMenuRecipes(
+    client: PoolClient,
+    menuId: number,
     recipeIds: number[],
-): { placeholders: string; params: (number | string)[] } {
-    const placeholders = recipeIds
-        .map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`)
-        .join(", ");
-    const params = recipeIds.flatMap((recipeId) => [menuId, recipeId]);
+): Promise<void> {
+    if (recipeIds.length === 0) {
+        return;
+    }
 
-    return { placeholders, params };
+    await client.query(
+        `INSERT INTO menu_recipe (menu_id, recipe_id)
+         SELECT $1, recipe_id FROM unnest($2::int[]) AS recipe_id`,
+        [menuId, recipeIds],
+    );
 }
 
-export async function createMenuInDb(
+export function createMenuInDb(
     pool: Pool,
     { menuTitle, menuContent, language, categoryId, personId }: Menu,
     recipeIds: number[],
-): Promise<unknown> {
-    const client = await pool.connect();
-
-    try {
-        await client.query("BEGIN");
-
+): Promise<number> {
+    return withTransaction(pool, async (client) => {
         const menuResult = await client.query<MenuIdRow>(
             `INSERT INTO menu (menu_title, menu_content, category_id, person_id, language)
              VALUES ($1, $2, $3, $4, $5)
@@ -36,41 +39,20 @@ export async function createMenuInDb(
         );
         const menuId = menuResult.rows[0].menu_id;
 
-        if (recipeIds.length > 0) {
-            const { placeholders, params } = buildMenuRecipeInsert(
-                menuId,
-                recipeIds,
-            );
+        await insertMenuRecipes(client, menuId, recipeIds);
 
-            await client.query(
-                `INSERT INTO menu_recipe (menu_id, recipe_id) VALUES ${placeholders}`,
-                params,
-            );
-        }
-
-        await client.query("COMMIT");
-
-        return menuId;
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+        return committed(menuId);
+    });
 }
 
-export async function updateMenuInDb(
+export function updateMenuInDb(
     pool: Pool,
-    id: string | number,
+    id: number,
     personId: number,
     { menuTitle, menuContent, language, categoryId }: Menu,
     recipeIds: number[],
 ): Promise<boolean> {
-    const client = await pool.connect();
-
-    try {
-        await client.query("BEGIN");
-
+    return withTransaction(pool, async (client) => {
         const result = await client.query(
             `UPDATE menu
       SET menu_title = $1, menu_content = $2, category_id = $3, language = $4
@@ -79,32 +61,12 @@ export async function updateMenuInDb(
         );
 
         if (result.rowCount === 0) {
-            await client.query("ROLLBACK");
-
-            return false;
+            return rolledBack(false);
         }
 
         await client.query("DELETE FROM menu_recipe WHERE menu_id = $1", [id]);
+        await insertMenuRecipes(client, id, recipeIds);
 
-        if (recipeIds.length > 0) {
-            const { placeholders, params } = buildMenuRecipeInsert(
-                id,
-                recipeIds,
-            );
-
-            await client.query(
-                `INSERT INTO menu_recipe (menu_id, recipe_id) VALUES ${placeholders}`,
-                params,
-            );
-        }
-
-        await client.query("COMMIT");
-
-        return true;
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-    } finally {
-        client.release();
-    }
+        return committed(true);
+    });
 }

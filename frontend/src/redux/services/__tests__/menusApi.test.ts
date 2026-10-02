@@ -27,8 +27,8 @@ const LIST: Menu[] = [
     {
         id: 1,
         title: "Week",
-        categoryname: "Weekly",
-        menucontent: "x",
+        categoryName: "Weekly",
+        menuContent: "x",
         recipe_count: 3,
     },
 ];
@@ -40,8 +40,8 @@ const DETAIL: MenuDetails = {
         id: 1,
         title: "Week",
         language: "en",
-        categoryname: "Weekly",
-        menucontent: "x",
+        categoryName: "Weekly",
+        menuContent: "x",
         category_id: 2,
         isOwner: true,
         photo_key: null,

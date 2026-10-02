@@ -3,7 +3,7 @@ import { logger } from "config/logger";
 import { runMigrations } from "./runMigrations";
 import { runSeed } from "./runSeed";
 
-// single entry the Container Apps Job runs on every deploy: apply pending migrations, then load idempotent reference data - no shell, no arg quoting
+// the one entry the compose migrate service runs on every deploy: pending migrations, then the idempotent seed
 async function main(): Promise<void> {
     await runMigrations(["up"]);
     await runSeed();

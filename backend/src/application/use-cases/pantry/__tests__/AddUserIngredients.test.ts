@@ -28,7 +28,7 @@ describe("AddUserIngredients", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Incorrect data format",
+            "Must be a list",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
@@ -44,7 +44,7 @@ describe("AddUserIngredients", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "0.quantity_person_ingradient: Quantity must be greater than 0",
+            "0.quantity_person_ingradient: Must be greater than 0",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
@@ -77,7 +77,7 @@ describe("AddUserIngredients", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Ingredient IDs must be unique",
+            "Must not repeat",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });

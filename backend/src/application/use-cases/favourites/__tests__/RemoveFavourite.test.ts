@@ -32,7 +32,7 @@ describe("RemoveFavourite", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "ID must be positive",
+            "Must be greater than 0",
         );
         expect(favouriteRepository.remove).not.toHaveBeenCalled();
     });

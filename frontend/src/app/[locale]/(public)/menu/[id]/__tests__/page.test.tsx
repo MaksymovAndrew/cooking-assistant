@@ -26,8 +26,8 @@ const SAMPLE: MenuDetails = {
         id: 4,
         title: TITLE,
         language: "en",
-        categoryname: "Lunch",
-        menucontent: "Quick and light.",
+        categoryName: "Lunch",
+        menuContent: "Quick and light.",
         category_id: 2,
         isOwner: false,
         photo_key: null,
@@ -90,7 +90,7 @@ describe("menu details page", () => {
     it("should describe a menu with no description from what it does know", async () => {
         mockedFetch.mockResolvedValue({
             ...SAMPLE,
-            menu: { ...SAMPLE.menu, menucontent: "" },
+            menu: { ...SAMPLE.menu, menuContent: "" },
         });
 
         const metadata = await generateMetadata({ params });
@@ -101,7 +101,7 @@ describe("menu details page", () => {
     it("should describe a menu with no category without naming one", async () => {
         mockedFetch.mockResolvedValue({
             ...SAMPLE,
-            menu: { ...SAMPLE.menu, menucontent: "", categoryname: null },
+            menu: { ...SAMPLE.menu, menuContent: "", categoryName: null },
         });
 
         const metadata = await generateMetadata({ params });

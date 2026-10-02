@@ -49,9 +49,9 @@ const MenuSocialImage = async ({ params }: MenuImageProps) => {
         <SocialCard
             appName={tCommon("appName")}
             eyebrow={
-                menu.categoryname === null
+                menu.categoryName === null
                     ? null
-                    : menuCategoryName(tCommon, menu.categoryname)
+                    : menuCategoryName(tCommon, menu.categoryName)
             }
             title={menu.title}
             subtitle={tCommon("author.byline", {

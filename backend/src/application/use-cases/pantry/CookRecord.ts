@@ -1,35 +1,19 @@
 import { ERROR_CODES } from "constants/errorCodes";
 import { NotFoundError, ValidationError } from "domain/errors/AppError";
 import { roundQuantity } from "domain/pantry/allocateFifo";
-import type {
-    CalorieIntakeEntry,
-    CalorieRepository,
-    CalorieSourceInfo,
-} from "domain/repositories/CalorieRepository";
-import type {
-    CookSource,
-    PantryConsumptionRepository,
-} from "domain/repositories/PantryConsumptionRepository";
+import type { PantryConsumptionRepository } from "domain/repositories/PantryConsumptionRepository";
 
 import { intakeCalories } from "application/use-cases/calories/intakeCalories";
+import {
+    findSourceCalories,
+    sourceIds,
+    type SourceLookup,
+} from "application/use-cases/calories/sourceCalories";
 import { idSchema } from "application/validation/common.schemas";
 import { cookSchema } from "application/validation/pantry.schemas";
 import { validate } from "application/validation/validate";
 
 import { type CookSummary, summariseCook } from "./cookSummary";
-
-type SourceLookup = Pick<
-    CalorieRepository,
-    "findRecipeCalories" | "findMenuCalories"
->;
-
-function sourceIds(
-    source: CookSource,
-): Pick<CalorieIntakeEntry, "recipe_id" | "menu_id"> {
-    return "recipeId" in source
-        ? { recipe_id: source.recipeId }
-        : { menu_id: source.menuId };
-}
 
 export default class CookRecord {
     constructor(
@@ -37,32 +21,13 @@ export default class CookRecord {
         private calorieRepository: SourceLookup,
     ) {}
 
-    private async findSource(source: CookSource): Promise<CalorieSourceInfo> {
-        const info =
-            "recipeId" in source
-                ? await this.calorieRepository.findRecipeCalories(
-                      source.recipeId,
-                  )
-                : await this.calorieRepository.findMenuCalories(source.menuId);
-
-        if (!info) {
-            throw new NotFoundError(
-                "recipeId" in source
-                    ? ERROR_CODES.RECIPE_NOT_FOUND
-                    : ERROR_CODES.MENU_NOT_FOUND,
-            );
-        }
-
-        return info;
-    }
-
     async execute(
         personId: string | number,
         input: unknown,
     ): Promise<CookSummary> {
         const validPersonId = validate(idSchema, personId);
         const { source, portions, log_calories } = validate(cookSchema, input);
-        const info = await this.findSource(source);
+        const info = await findSourceCalories(this.calorieRepository, source);
 
         // checked before anything is written, so a refused request leaves the pantry as it was
         if (log_calories && info.calories === null) {

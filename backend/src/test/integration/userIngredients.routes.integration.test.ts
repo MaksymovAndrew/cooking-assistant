@@ -5,6 +5,10 @@ import { DEFAULT_LOCALE } from "constants/locales";
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
+import {
+    pantryIngredient,
+    purchaseHistoryEntry,
+} from "test/helpers/repositoryRows";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const USER_INGREDIENTS_PATH = "/api/user-ingredients";
@@ -20,7 +24,7 @@ describe("user ingredient routes", () => {
 
     it("should return user ingredients for the authenticated user", async () => {
         const { app, deps } = buildTestApp();
-        const ingredients = [{ ingredient_id: 3, ingredient_name: "tomato" }];
+        const ingredients = [pantryIngredient()];
 
         deps.pantryRepository.findByUser.mockResolvedValue(ingredients);
 
@@ -29,7 +33,9 @@ describe("user ingredient routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(ingredients);
+        expect(res.body).toMatchObject([
+            { ingredient_id: 3, ingredient_name: "Tomato" },
+        ]);
         expect(deps.pantryRepository.findByUser).toHaveBeenCalledWith(7);
     });
 
@@ -93,7 +99,7 @@ describe("user ingredient routes", () => {
 
     it("should return purchase history", async () => {
         const { app, deps } = buildTestApp();
-        const history = [{ id: 11, quantity: 2 }];
+        const history = [purchaseHistoryEntry()];
 
         deps.pantryRepository.findPurchaseHistory.mockResolvedValue(history);
 
@@ -102,7 +108,7 @@ describe("user ingredient routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(history);
+        expect(res.body).toMatchObject([{ id: 11, quantity: 2 }]);
         expect(deps.pantryRepository.findPurchaseHistory).toHaveBeenCalledWith(
             7,
             3,
@@ -112,7 +118,7 @@ describe("user ingredient routes", () => {
     it("should map a missing purchase to an error response", async () => {
         const { app, deps } = buildTestApp();
 
-        deps.pantryRepository.updatePurchaseQuantity.mockResolvedValue(null);
+        deps.pantryRepository.updatePurchaseQuantity.mockResolvedValue(false);
 
         const res = await request(app)
             .put("/api/user-ingredients/history/99")

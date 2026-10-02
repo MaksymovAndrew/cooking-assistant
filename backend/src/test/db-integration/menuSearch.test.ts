@@ -67,7 +67,7 @@ describe("PgMenuRepository search (real Postgres)", () => {
             recipeIds: [recipeId],
         });
 
-        return (await menuRepository.create(menu, [recipeId])) as number;
+        return await menuRepository.create(menu, [recipeId]);
     }
 
     it("should filter by menu title", async () => {
@@ -218,10 +218,10 @@ describe("PgMenuRepository search (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId, secondRecipeId],
         });
-        const twoRecipeMenuId = (await menuRepository.create(twoRecipeMenu, [
+        const twoRecipeMenuId = await menuRepository.create(twoRecipeMenu, [
             recipeId,
             secondRecipeId,
-        ])) as number;
+        ]);
         const emptyMenuId = await createOwnedMenu(
             unique("Empty menu"),
             categoryId,

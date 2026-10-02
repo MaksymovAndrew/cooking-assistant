@@ -52,7 +52,7 @@ describe("SearchPersonMenus", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "limit: Limit must be at most 100",
+            "limit: Must be at most 100",
         );
         expect(menuRepository.searchByPerson).not.toHaveBeenCalled();
     });
@@ -68,7 +68,7 @@ describe("SearchPersonMenus", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "category_ids: Category IDs must be a comma-separated list of IDs",
+            "category_ids: Must be a comma-separated list of IDs",
         );
         expect(menuRepository.searchByPerson).not.toHaveBeenCalled();
     });

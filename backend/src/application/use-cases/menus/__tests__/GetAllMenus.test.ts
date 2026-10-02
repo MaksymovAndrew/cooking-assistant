@@ -71,7 +71,7 @@ describe("GetAllMenus", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "sort_order: Sort order must be rating",
+            "sort_order: Must be one of: rating",
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });
@@ -125,7 +125,7 @@ describe("GetAllMenus", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "offset: Offset must be at least 0",
+            "offset: Must be at least 0",
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });
@@ -141,7 +141,7 @@ describe("GetAllMenus", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "category_ids: Category IDs must be a comma-separated list of IDs",
+            "category_ids: Must be a comma-separated list of IDs",
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });
@@ -171,7 +171,7 @@ describe("GetAllMenus", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "languages.1: Languages must be a comma-separated list of en, pl, ru, uk",
+            "languages.1: Must be one of: en, pl, ru, uk",
         );
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });

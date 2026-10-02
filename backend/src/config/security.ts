@@ -1,6 +1,6 @@
 import type { Options as RateLimitOptions } from "express-rate-limit";
 
-import { config } from "config/env";
+import { config } from "./env";
 
 // production hardening knobs kept in one auditable place so the app wiring in app.ts carries no magic numbers
 

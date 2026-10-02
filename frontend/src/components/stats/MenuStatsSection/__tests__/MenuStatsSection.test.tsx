@@ -12,8 +12,8 @@ const MENU_ID = 1;
 const MENU: MenuWithStats = {
     id: MENU_ID,
     title: "Sunday dinners",
-    categoryname: "Lunch",
-    menucontent: "",
+    categoryName: "Lunch",
+    menuContent: "",
     recipe_count: 4,
     total_cooking_time: 90,
     total_calories: 1200,
@@ -22,12 +22,12 @@ const CALORIE_MENU: MenuWithCalories = { ...MENU, total_calories: 1200 };
 
 const STATS: MenuStatistics = {
     menusCount: 3,
-    menuCountByCategory: [{ categoryname: "Lunch", menuCount: 2 }],
-    mostUsedCategory: { categoryname: "Lunch", menuCount: 2 },
+    menuCountByCategory: [{ categoryName: "Lunch", menuCount: 2 }],
+    mostUsedCategory: { categoryName: "Lunch", menuCount: 2 },
     averageTotalTime: 90,
     averageRecipesPerMenu: 4,
     averageTotalTimeByCategory: [
-        { categoryname: "Lunch", averageTotalTime: 90 },
+        { categoryName: "Lunch", averageTotalTime: 90 },
     ],
     fastestMenus: [MENU],
     slowestMenus: [MENU],

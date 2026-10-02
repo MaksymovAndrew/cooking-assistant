@@ -5,6 +5,7 @@ import { DEFAULT_LOCALE } from "constants/locales";
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
+import { menuDetail, menuStatsRow } from "test/helpers/repositoryRows";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const MENU_TITLE = "Weekly menu";
@@ -118,7 +119,7 @@ describe("menu routes", () => {
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
-            error: "limit: Limit must be at most 100",
+            error: "limit: Must be at most 100",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(deps.menuRepository.findAll).not.toHaveBeenCalled();
@@ -127,8 +128,8 @@ describe("menu routes", () => {
     it("should return every menu unpaginated", async () => {
         const { app, deps } = buildTestApp();
         const menus = [
-            { id: 9, title: MENU_TITLE },
-            { id: 10, title: "Holiday menu" },
+            menuStatsRow({ title: MENU_TITLE }),
+            menuStatsRow({ id: 10, title: "Holiday menu" }),
         ];
 
         deps.menuRepository.findAllUnpaginated.mockResolvedValue(menus);
@@ -183,11 +184,7 @@ describe("menu routes", () => {
 
     it("should return menu details scoped to the authenticated user", async () => {
         const { app, deps } = buildTestApp();
-        const menu = {
-            menu: { id: 9, isOwner: true },
-            recipes: [],
-            allergens: [],
-        };
+        const menu = menuDetail({ isOwner: true });
 
         deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
 
@@ -196,7 +193,11 @@ describe("menu routes", () => {
             .set("Cookie", authCookie(7));
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(menu);
+        expect(res.body).toMatchObject({
+            menu: { id: 9, isOwner: true },
+            recipes: [],
+            allergens: [],
+        });
         expect((res.body as { menu: { isOwner: boolean } }).menu.isOwner).toBe(
             true,
         );
@@ -208,11 +209,7 @@ describe("menu routes", () => {
 
     it("should return menu details with isOwner:false when reading a menu of another user", async () => {
         const { app, deps } = buildTestApp();
-        const menu = {
-            menu: { id: 9, isOwner: false },
-            recipes: [],
-            allergens: [],
-        };
+        const menu = menuDetail();
 
         deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
 
@@ -232,18 +229,18 @@ describe("menu routes", () => {
 
     it("should return menu details with isOwner:false and no missing-ingredients query for an anonymous request", async () => {
         const { app, deps } = buildTestApp();
-        const menu = {
-            menu: { id: 9, isOwner: false },
-            recipes: [],
-            allergens: [],
-        };
+        const menu = menuDetail();
 
         deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
 
         const res = await request(app).get(MENU_9_PATH);
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(menu);
+        expect(res.body).toMatchObject({
+            menu: { id: 9, isOwner: false },
+            recipes: [],
+            allergens: [],
+        });
         expect(deps.menuRepository.findByIdWithRecipes).toHaveBeenCalledWith(
             9,
             null,

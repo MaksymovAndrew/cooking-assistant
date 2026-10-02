@@ -39,7 +39,7 @@ export const useUpdateMenuPage = () => {
 
         setInitialValues({
             menuTitle: menu.menu.title || "",
-            menuDescription: menu.menu.menucontent || "",
+            menuDescription: menu.menu.menuContent || "",
             language: menu.menu.language,
             selectedCategory: menu.menu.category_id,
             selectedRecipes: menu.recipes.map((recipe) => recipe.recipe_id),

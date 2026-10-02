@@ -432,9 +432,7 @@ describe("PgUserRepository (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId],
         });
-        const ownMenuId = (await menuRepository.create(ownMenu, [
-            recipeId,
-        ])) as number;
+        const ownMenuId = await menuRepository.create(ownMenu, [recipeId]);
 
         const othersMenu = Menu.forCreation({
             menuTitle: "Someone else's menu",
@@ -444,9 +442,9 @@ describe("PgUserRepository (real Postgres)", () => {
             personId: otherPersonId,
             recipeIds: [recipeId],
         });
-        const othersMenuId = (await menuRepository.create(othersMenu, [
+        const othersMenuId = await menuRepository.create(othersMenu, [
             recipeId,
-        ])) as number;
+        ]);
 
         await pantryRepository.addIngredients(ownerId, [
             { id: ingredientId, quantity_person_ingradient: 2 },

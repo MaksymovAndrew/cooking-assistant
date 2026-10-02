@@ -44,6 +44,13 @@ export const config = {
             ? { rejectUnauthorized: env.DB_SSL_REJECT_UNAUTHORIZED }
             : false,
     },
+    // the app pool only: migrations and the seed connect through config.db without a statement deadline
+    dbPool: {
+        max: env.DB_POOL_MAX,
+        connectionTimeoutMillis: env.DB_CONNECTION_TIMEOUT_MS,
+        idleTimeoutMillis: env.DB_IDLE_TIMEOUT_MS,
+        statement_timeout: env.DB_STATEMENT_TIMEOUT_MS,
+    },
     corsOrigin: env.CORS_ORIGIN,
     cookieDomain: env.COOKIE_DOMAIN,
     resendApiKey: env.RESEND_API_KEY,

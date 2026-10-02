@@ -75,7 +75,7 @@ describe("CreateTag", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "name: Name cannot be empty",
+            "name: Cannot be empty",
         );
         expect(tagRepository.create).not.toHaveBeenCalled();
     });
@@ -93,7 +93,7 @@ describe("CreateTag", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            `name: Name must be at most ${TAG_LIMITS.MAX_NAME_LENGTH} characters`,
+            `name: Must be at most ${TAG_LIMITS.MAX_NAME_LENGTH} characters`,
         );
         expect(tagRepository.create).not.toHaveBeenCalled();
     });

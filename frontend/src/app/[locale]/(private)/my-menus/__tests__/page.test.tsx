@@ -17,8 +17,8 @@ const SAMPLE: Menu[] = [
     {
         id: 1,
         title: TITLE,
-        categoryname: CATEGORY_NAME,
-        menucontent: "quick",
+        categoryName: CATEGORY_NAME,
+        menuContent: "quick",
         recipe_count: 4,
     },
 ];

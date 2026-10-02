@@ -16,15 +16,17 @@ import type { ShoppingListRepository } from "domain/repositories/ShoppingListRep
 import type { TagRepository } from "domain/repositories/TagRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
+import type { DatabaseProbe } from "application/ports/DatabaseProbe";
 import type { EmailSender } from "application/ports/EmailSender";
 import type { ImageProcessor } from "application/ports/ImageProcessor";
 import type { MediaStorage } from "application/ports/MediaStorage";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
 
-import { TEST_FRONTEND_ORIGIN } from "test/helpers/testConstants";
+import { TEST_FRONTEND_ORIGIN } from "./testConstants";
 
 export interface FakeRepositoryDeps extends RepositoryDeps {
+    databaseProbe: jest.Mocked<DatabaseProbe>;
     ingredientRepository: jest.Mocked<IngredientRepository>;
     recipeRepository: jest.Mocked<RecipeRepository>;
     recipeTypeRepository: jest.Mocked<RecipeTypeRepository>;
@@ -195,7 +197,7 @@ function createTokenService(): jest.Mocked<TokenService> {
 
 function createEmailSender(): jest.Mocked<EmailSender> {
     return {
-        sendPasswordResetEmail: jest.fn(),
+        sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
         sendVerificationEmail: jest.fn(),
     };
 }
@@ -217,11 +219,18 @@ function createMediaStorage(): jest.Mocked<MediaStorage> {
 
 export function buildFakeDeps(): FakeRepositoryDeps {
     return {
+        databaseProbe: { isReachable: jest.fn().mockResolvedValue(true) },
         ingredientRepository: createIngredientRepository(),
         recipeRepository: createRecipeRepository(),
-        recipeTypeRepository: { findAll: jest.fn() },
+        recipeTypeRepository: {
+            findAll: jest.fn(),
+            exists: jest.fn().mockResolvedValue(true),
+        },
         menuRepository: createMenuRepository(),
-        menuCategoryRepository: { findAll: jest.fn() },
+        menuCategoryRepository: {
+            findAll: jest.fn(),
+            exists: jest.fn().mockResolvedValue(true),
+        },
         pantryRepository: createPantryRepository(),
         pantryConsumptionRepository: createPantryConsumptionRepository(),
         userRepository: createUserRepository(),

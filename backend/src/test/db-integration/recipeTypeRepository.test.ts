@@ -21,13 +21,17 @@ describe("PgRecipeTypeRepository (real Postgres)", () => {
     it("should return inserted recipe types", async () => {
         const typeId = await createRecipeType(pool);
 
-        const all = (await repository.findAll()) as {
-            id: number;
-            type_name: string;
-        }[];
+        const all = await repository.findAll();
 
         expect(all).toEqual(
             expect.arrayContaining([expect.objectContaining({ id: typeId })]),
         );
+    });
+
+    it("should tell an existing recipe type from a missing one", async () => {
+        const typeId = await createRecipeType(pool);
+
+        expect(await repository.exists(typeId)).toBe(true);
+        expect(await repository.exists(typeId + 1_000_000)).toBe(false);
     });
 });

@@ -7,16 +7,13 @@ import type {
 } from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
-import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
-import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
-import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
-import { MENU_FILTER_CLAUSES } from "infrastructure/persistence/pg/menuFilterClauses";
-import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
-import {
-    ratingColumns,
-    ratingSortOrder,
-} from "infrastructure/persistence/pg/ratingColumns";
-import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import { authorColumn } from "./authorColumn";
+import { isFavouriteColumn } from "./isFavouriteColumn";
+import { isOwnerColumn } from "./isOwnerColumn";
+import { MENU_FILTER_CLAUSES } from "./menuFilterClauses";
+import { extractPaginatedRows } from "./pagination";
+import { ratingColumns, ratingSortOrder } from "./ratingColumns";
+import { SqlFilterBuilder } from "./sqlFilterBuilder";
 
 interface MenuSearchQueryRow extends MenuSearchRow {
     total_count: number;
@@ -33,8 +30,8 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
       SELECT
         m.menu_id AS id,
         m.menu_title AS title,
-        mc.category_name AS categoryName,
-        m.menu_content AS menuContent,
+        mc.category_name AS "categoryName",
+        m.menu_content AS "menuContent",
         m.language,
         m.photo_key,
         m.creation_date,

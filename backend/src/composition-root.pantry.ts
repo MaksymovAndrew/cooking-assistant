@@ -14,46 +14,51 @@ import UndoCooking from "application/use-cases/pantry/UndoCooking";
 import UpdatePurchaseQuantity from "application/use-cases/pantry/UpdatePurchaseQuantity";
 
 import PantryConsumptionController from "controller/pantryConsumption.controller";
+import PurchaseHistoryController from "controller/purchaseHistory.controller";
 import UserIngredientsController from "controller/userIngredients.controller";
 
-// split out of composition-root.ts, which hit the file's line-count lint cap once this was inlined
 export interface PantryControllerDeps {
     pantryRepository: PantryRepository;
     ingredientRepository: IngredientRepository;
-}
-
-export function buildPantryController({
-    pantryRepository,
-    ingredientRepository,
-}: PantryControllerDeps): UserIngredientsController {
-    return new UserIngredientsController({
-        getUserIngredients: new GetUserIngredients(pantryRepository),
-        addUserIngredients: new AddUserIngredients(
-            pantryRepository,
-            ingredientRepository,
-        ),
-        deleteUserIngredient: new DeleteUserIngredient(pantryRepository),
-        updatePurchaseQuantity: new UpdatePurchaseQuantity(pantryRepository),
-        getPurchaseHistory: new GetPurchaseHistory(pantryRepository),
-        deletePurchase: new DeletePurchase(pantryRepository),
-        discardPurchases: new DiscardPurchases(pantryRepository),
-    });
-}
-
-export interface PantryConsumptionControllerDeps {
     pantryConsumptionRepository: PantryConsumptionRepository;
     calorieRepository: CalorieRepository;
 }
 
-export function buildPantryConsumptionController({
+export interface PantryControllers {
+    userIngredientsController: UserIngredientsController;
+    purchaseHistoryController: PurchaseHistoryController;
+    pantryConsumptionController: PantryConsumptionController;
+}
+
+export function buildPantryControllers({
+    pantryRepository,
+    ingredientRepository,
     pantryConsumptionRepository,
     calorieRepository,
-}: PantryConsumptionControllerDeps): PantryConsumptionController {
-    return new PantryConsumptionController({
-        cookRecord: new CookRecord(
-            pantryConsumptionRepository,
-            calorieRepository,
-        ),
-        undoCooking: new UndoCooking(pantryConsumptionRepository),
-    });
+}: PantryControllerDeps): PantryControllers {
+    return {
+        userIngredientsController: new UserIngredientsController({
+            getUserIngredients: new GetUserIngredients(pantryRepository),
+            addUserIngredients: new AddUserIngredients(
+                pantryRepository,
+                ingredientRepository,
+            ),
+            deleteUserIngredient: new DeleteUserIngredient(pantryRepository),
+        }),
+        purchaseHistoryController: new PurchaseHistoryController({
+            updatePurchaseQuantity: new UpdatePurchaseQuantity(
+                pantryRepository,
+            ),
+            getPurchaseHistory: new GetPurchaseHistory(pantryRepository),
+            deletePurchase: new DeletePurchase(pantryRepository),
+            discardPurchases: new DiscardPurchases(pantryRepository),
+        }),
+        pantryConsumptionController: new PantryConsumptionController({
+            cookRecord: new CookRecord(
+                pantryConsumptionRepository,
+                calorieRepository,
+            ),
+            undoCooking: new UndoCooking(pantryConsumptionRepository),
+        }),
+    };
 }

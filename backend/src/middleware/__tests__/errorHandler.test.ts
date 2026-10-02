@@ -13,11 +13,15 @@ import errorHandler from "middleware/errorHandler";
 import { errorBody } from "test/helpers/errorBody";
 
 // no Accept-Language match - the default language
-function makeRequest() {
+function makeRequest(language: string | false = false) {
     return Object.assign({} as Request, {
-        acceptsLanguages: jest.fn().mockReturnValue(false),
+        acceptsLanguages: jest.fn().mockReturnValue(language),
     });
 }
+
+const LIMIT_TOO_BIG = new ValidationError(ERROR_CODES.VALIDATION_ERROR, [
+    { path: "limit", message: "atMost", params: { max: 100 } },
+]);
 
 function makeResponse(headersSent = false) {
     return {
@@ -43,30 +47,46 @@ describe("errorHandler", () => {
         expect(next).not.toHaveBeenCalled();
     });
 
-    it("should respond with the detail instead of the catalog text when the AppError carries one", () => {
-        const err = new ValidationError(
-            ERROR_CODES.VALIDATION_ERROR,
-            "limit: Limit must be at most 100",
-        );
-        const req = makeRequest();
+    it("should spell out each rejected field instead of the catalog text for a validation error", () => {
         const res = makeResponse();
-        const next = jest.fn() as NextFunction;
 
-        errorHandler(err, req, res, next);
+        errorHandler(LIMIT_TOO_BIG, makeRequest(), res, jest.fn());
 
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
-            error: "limit: Limit must be at most 100",
+            error: "limit: Must be at most 100",
+            code: ERROR_CODES.VALIDATION_ERROR,
+        });
+    });
+
+    it("should spell out a validation error in the language of the request", () => {
+        const res = makeResponse();
+
+        errorHandler(LIMIT_TOO_BIG, makeRequest("ru"), res, jest.fn());
+
+        expect(res.json).toHaveBeenCalledWith({
+            error: "limit: Должно быть не больше 100",
+            code: ERROR_CODES.VALIDATION_ERROR,
+        });
+    });
+
+    it("should join several rejected fields and leave a field-less one unprefixed", () => {
+        const err = new ValidationError(ERROR_CODES.VALIDATION_ERROR, [
+            { path: "title", message: "required", params: {} },
+            { path: "", message: "exactlyOneSource", params: {} },
+        ]);
+        const res = makeResponse();
+
+        errorHandler(err, makeRequest(), res, jest.fn());
+
+        expect(res.json).toHaveBeenCalledWith({
+            error: "title: Required; Provide either a recipe or a menu, not both",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
     });
 
     it("should hide an AppError with a 5xx status behind server_error", () => {
-        const err = new AppError(
-            ERROR_CODES.RECIPE_NOT_FOUND,
-            503,
-            "pool down",
-        );
+        const err = new AppError(ERROR_CODES.RECIPE_NOT_FOUND, 503);
         const req = makeRequest();
         const res = makeResponse();
         const next = jest.fn() as NextFunction;
@@ -95,7 +115,7 @@ describe("errorHandler", () => {
         expect(next).not.toHaveBeenCalled();
     });
 
-    it("should keep the message of a non-AppError with a 4xx status and mark it bad_request", () => {
+    it("should answer a framework 4xx with the bad_request copy, never its own message", () => {
         const err = Object.assign(new Error("Unexpected token in JSON"), {
             status: 400,
         });
@@ -106,11 +126,24 @@ describe("errorHandler", () => {
         errorHandler(err, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({
-            error: "Unexpected token in JSON",
-            code: ERROR_CODES.BAD_REQUEST,
-        });
+        expect(res.json).toHaveBeenCalledWith(
+            errorBody(ERROR_CODES.BAD_REQUEST),
+        );
         expect(next).not.toHaveBeenCalled();
+    });
+
+    it("should answer an oversized body with payload_too_large", () => {
+        const err = Object.assign(new Error("request entity too large"), {
+            status: 413,
+        });
+        const res = makeResponse();
+
+        errorHandler(err, makeRequest(), res, jest.fn());
+
+        expect(res.status).toHaveBeenCalledWith(413);
+        expect(res.json).toHaveBeenCalledWith(
+            errorBody(ERROR_CODES.PAYLOAD_TOO_LARGE),
+        );
     });
 
     it("should fall back to the bad_request text when a 4xx non-AppError has no message", () => {

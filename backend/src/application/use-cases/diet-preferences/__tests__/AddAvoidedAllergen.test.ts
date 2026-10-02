@@ -49,7 +49,7 @@ describe("AddAvoidedAllergen", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Unknown allergen",
+            "Must be one of: gluten, crustaceans, eggs, fish, peanuts, soybeans, milk, nuts, celery, mustard, sesame, sulphites, lupin, molluscs",
         );
         expect(dietPreferencesRepository.addAllergen).not.toHaveBeenCalled();
     });

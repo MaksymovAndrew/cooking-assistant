@@ -1,3 +1,4 @@
+import { logger } from "config/logger";
 import { PASSWORD_RESET_TOKEN_TTL_SECONDS } from "config/security";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
@@ -43,10 +44,11 @@ export default class RequestPasswordReset {
             candidate.locale,
         );
 
-        await this.emailSender.sendPasswordResetEmail(
-            email,
-            link,
-            candidate.locale,
-        );
+        // not awaited: waiting on the mail provider would make a real, verified address answer slower than any other
+        this.emailSender
+            .sendPasswordResetEmail(email, link, candidate.locale)
+            .catch((err: unknown) => {
+                logger.error({ err }, "password reset email failed");
+            });
     }
 }

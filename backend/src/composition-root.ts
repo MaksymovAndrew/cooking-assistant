@@ -6,7 +6,10 @@ import { buildCaloriesController } from "./composition-root.calories";
 import { buildDietPreferencesControllers } from "./composition-root.dietPreferences";
 import { buildFavouriteController } from "./composition-root.favourites";
 import { buildMenuController } from "./composition-root.menu";
-import { buildPantryController } from "./composition-root.pantry";
+import {
+    buildPantryConsumptionController,
+    buildPantryController,
+} from "./composition-root.pantry";
 import { createPgDeps } from "./composition-root.pg";
 import { buildPhotoControllers } from "./composition-root.photos";
 import { buildRatingController } from "./composition-root.ratings";
@@ -26,6 +29,7 @@ export function buildControllers({
     menuRepository,
     menuCategoryRepository,
     pantryRepository,
+    pantryConsumptionRepository,
     userRepository,
     calorieRepository,
     favouriteRepository,
@@ -67,6 +71,10 @@ export function buildControllers({
         userIngredientsController: buildPantryController({
             pantryRepository,
             ingredientRepository,
+        }),
+        pantryConsumptionController: buildPantryConsumptionController({
+            pantryConsumptionRepository,
+            calorieRepository,
         }),
         menuController: buildMenuController({
             menuRepository,

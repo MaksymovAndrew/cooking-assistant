@@ -114,6 +114,8 @@
         "menu/recipes_not_exist": "One or more recipes no longer exist.",
         "pantry/ingredient_not_found": "This ingredient isn't in your pantry.",
         "pantry/purchase_not_found": "This purchase no longer exists.",
+        "pantry/consumption_not_found": "This cooking was already undone or no longer exists.",
+        "pantry/undo_expired": "It's too late to undo this - the products stay used.",
         "calories/intake_not_found": "This entry no longer exists.",
         "calories/not_available": "Calories aren't available for this item.",
         "favourites/requires_login": "Log in to see your favourites.",

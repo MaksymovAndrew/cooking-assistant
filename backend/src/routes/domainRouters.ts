@@ -36,6 +36,7 @@ export function createDomainRouters(controllers: Controllers): Router[] {
         createTypeRouter(controllers.recipeTypeController, controllers.auth),
         createUserIngredientsRouter(
             controllers.userIngredientsController,
+            controllers.pantryConsumptionController,
             controllers.auth,
         ),
         createMenuRouter(controllers.menuController, controllers.auth),

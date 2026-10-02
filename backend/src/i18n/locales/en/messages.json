@@ -13,6 +13,7 @@
     "ingredientDeleted": "Ingredient and its history successfully deleted",
     "purchaseUpdated": "Purchase quantity updated successfully",
     "purchaseDeleted": "Purchase deleted",
+    "cookingUndone": "Cooking undone",
 
     "intakeDeleted": "Intake entry successfully deleted",
     "calorieGoalUpdated": "Calorie goal updated successfully",

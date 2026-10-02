@@ -48,6 +48,8 @@ export const ROUTES = {
         purchaseHistory: "/user-ingredients/history/:ingredientId",
         purchase: "/user-ingredients/history/:purchaseId",
         discard: "/user-ingredients/history/discard",
+        cook: "/user-ingredients/cook",
+        undoCook: "/user-ingredients/cook/:consumptionId/undo",
     },
 
     menu: {

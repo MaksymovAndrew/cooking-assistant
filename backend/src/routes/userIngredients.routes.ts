@@ -2,11 +2,13 @@ import express, { type Router } from "express";
 
 import { ROUTES } from "constants/routes";
 
+import type PantryConsumptionController from "controller/pantryConsumption.controller";
 import type UserIngredientsController from "controller/userIngredients.controller";
 import type { SessionAuth } from "middleware/jwtMiddleware";
 
 export default function createUserIngredientsRouter(
     userIngredientsController: UserIngredientsController,
+    pantryConsumptionController: PantryConsumptionController,
     { authenticateToken }: SessionAuth,
 ): Router {
     const router = express.Router();
@@ -35,6 +37,18 @@ export default function createUserIngredientsRouter(
         ROUTES.userIngredients.discard,
         authenticateToken,
         userIngredientsController.discardPurchases,
+    );
+
+    router.post(
+        ROUTES.userIngredients.cook,
+        authenticateToken,
+        pantryConsumptionController.cookRecord,
+    );
+
+    router.post(
+        ROUTES.userIngredients.undoCook,
+        authenticateToken,
+        pantryConsumptionController.undoCooking,
     );
 
     router.delete(

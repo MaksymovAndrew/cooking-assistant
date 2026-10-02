@@ -25,6 +25,7 @@ module.exports = {
     collectCoverageFrom: [
         "src/application/use-cases/**/*.ts",
         "src/domain/entities/**/*.ts",
+        "src/domain/pantry/**/*.ts",
         "src/domain/errors/**/*.ts",
         "src/middleware/**/*.ts",
         "src/controller/**/*.ts",

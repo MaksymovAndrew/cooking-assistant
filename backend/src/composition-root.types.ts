@@ -4,6 +4,7 @@ import type { FavouriteRepository } from "domain/repositories/FavouriteRepositor
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
+import type { PantryConsumptionRepository } from "domain/repositories/PantryConsumptionRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
 import type { PhotoRepository } from "domain/repositories/PhotoRepository";
 import type { RatingRepository } from "domain/repositories/RatingRepository";
@@ -22,6 +23,7 @@ import type { TokenService } from "application/ports/TokenService";
 import type CalorieController from "controller/calorie.controller";
 import type FavouriteController from "controller/favourite.controller";
 import type MenuController from "controller/menu.controller";
+import type PantryConsumptionController from "controller/pantryConsumption.controller";
 import type RatingController from "controller/rating.controller";
 import type ShoppingListController from "controller/shoppingList.controller";
 import type UserIngredientsController from "controller/userIngredients.controller";
@@ -41,6 +43,7 @@ export interface RepositoryDeps {
     menuRepository: MenuRepository;
     menuCategoryRepository: MenuCategoryRepository;
     pantryRepository: PantryRepository;
+    pantryConsumptionRepository: PantryConsumptionRepository;
     userRepository: UserRepository;
     calorieRepository: CalorieRepository;
     favouriteRepository: FavouriteRepository;
@@ -67,6 +70,7 @@ export interface Controllers
         RecipeControllers {
     auth: SessionAuth;
     userIngredientsController: UserIngredientsController;
+    pantryConsumptionController: PantryConsumptionController;
     menuController: MenuController;
     calorieController: CalorieController;
     favouriteController: FavouriteController;

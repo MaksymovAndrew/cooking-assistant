@@ -318,7 +318,7 @@ Express app creation in [backend/src/app.ts](backend/src/app.ts) mounts operatio
 - `ingredient.routes` -> ingredient catalog list
 - `recipe.routes` -> recipe CRUD, filters, stats
 - `type.routes` -> recipe types (read-only list; CRUD removed in 1.40)
-- `userIngredients.routes` -> per-user pantry + purchase history
+- `userIngredients.routes` -> per-user pantry + purchase history, and "Cooked it" (`POST /user-ingredients/cook`, undo at `/user-ingredients/cook/:consumptionId/undo`) through its own `pantryConsumption.controller`
 - `menu.routes` -> menu CRUD + per-user filter
 - `menuCategory.routes` -> menu category list, menus by category
 - `calorie.routes` -> calorie intake log and calorie goal
@@ -403,6 +403,7 @@ Key tables and joins (see the initial migration [backend/migrations/178118564836
 - `recipes` <-> `ingredients` through `recipe_ingredients` (with `quantity_recipe_ingredients`)
 - `recipes.type_id` -> `recipe_types`
 - `person` <-> `ingredients` through `person_ingredients` (the pantry, with `quantity_person_ingradient` - note the misspelling, it's the actual column name) and `ingredient_purchases` (history)
+- `pantry_consumptions` / `pantry_consumption_lots` (one row per "Cooked it" and what it took from which lot) - cooking takes from the oldest lots first in one transaction under the person lock, with the allocation itself a pure function (`domain/pantry/allocateFifo.ts`). `purchase_id` is not a foreign key on purpose: a lot used up is deleted, and undo recreates it under the same id and purchase date so its expiry does not move. Undo is allowed once, within `COOKING_UNDO_WINDOW_MS` (`constants/cooking.ts`), and also removes the calorie entry the cooking logged
 - `menu` (per-user, with `category_id` -> `menu_category`) <-> `recipes` through `menu_recipe`
 - `recipe_favourites` / `menu_favourites` (person <-> recipe / menu, composite primary key) - every foreign key is `ON DELETE CASCADE`, because recipe, menu and account deletion are hand-written transactions that know nothing about favourites. Search and detail queries add a per-requester `isFavourite` column (`isFavouriteColumn`, `null` for an anonymous requester) next to `isOwner`, and the `favourites=true` filter is one shared clause (`favouritesFilterClause`) in both registries
 - `shopping_list_items` (per-user, optional `ingredient_id` -> `ingredients` with `ON DELETE SET NULL` plus `quantity`) - writes run in one transaction that locks the owner's `person` row, so the item limit and `position` can't race; adding an ingredient merges into its unchecked item (the quantities add up, a `null` one leaves the other as is) instead of duplicating it

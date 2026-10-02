@@ -69,3 +69,53 @@ export async function createMenuCategory(pool: Pool): Promise<number> {
 }
 
 export { unique };
+
+export interface RecipeIngredientFixture {
+    ingredientId: number;
+    quantity: number;
+}
+
+export async function createRecipe(
+    pool: Pool,
+    personId: number,
+    ingredients: RecipeIngredientFixture[],
+): Promise<number> {
+    const result = await pool.query<{ id: number }>(
+        `INSERT INTO recipes (title, content, person_id) VALUES ($1, $2, $3) RETURNING id`,
+        [unique("recipe"), "Cook it.", personId],
+    );
+    const recipeId = result.rows[0].id;
+
+    for (const { ingredientId, quantity } of ingredients) {
+        await pool.query(
+            `INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity_recipe_ingredients)
+             VALUES ($1, $2, $3)`,
+            [recipeId, ingredientId, quantity],
+        );
+    }
+
+    return recipeId;
+}
+
+// recipe ids may repeat, which is how a menu lists the same recipe twice
+export async function createMenu(
+    pool: Pool,
+    personId: number,
+    categoryId: number,
+    recipeIds: number[],
+): Promise<number> {
+    const result = await pool.query<{ menu_id: number }>(
+        `INSERT INTO menu (menu_title, person_id, category_id) VALUES ($1, $2, $3) RETURNING menu_id`,
+        [unique("menu"), personId, categoryId],
+    );
+    const menuId = result.rows[0].menu_id;
+
+    for (const recipeId of recipeIds) {
+        await pool.query(
+            `INSERT INTO menu_recipe (menu_id, recipe_id) VALUES ($1, $2)`,
+            [menuId, recipeId],
+        );
+    }
+
+    return menuId;
+}

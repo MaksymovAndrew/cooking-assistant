@@ -29,6 +29,8 @@
 
     "pantry/ingredient_not_found": "Ingredient not found for this user",
     "pantry/purchase_not_found": "Purchase not found",
+    "pantry/consumption_not_found": "This cooking record no longer exists",
+    "pantry/undo_expired": "This cooking can no longer be undone",
 
     "calories/intake_not_found": "Intake entry not found",
     "calories/not_available": "Calories are not available for this item",

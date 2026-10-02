@@ -6,6 +6,7 @@ import type { FavouriteRepository } from "domain/repositories/FavouriteRepositor
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
+import type { PantryConsumptionRepository } from "domain/repositories/PantryConsumptionRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
 import type { PhotoRepository } from "domain/repositories/PhotoRepository";
 import type { RatingRepository } from "domain/repositories/RatingRepository";
@@ -30,6 +31,7 @@ export interface FakeRepositoryDeps extends RepositoryDeps {
     menuRepository: jest.Mocked<MenuRepository>;
     menuCategoryRepository: jest.Mocked<MenuCategoryRepository>;
     pantryRepository: jest.Mocked<PantryRepository>;
+    pantryConsumptionRepository: jest.Mocked<PantryConsumptionRepository>;
     userRepository: jest.Mocked<UserRepository>;
     calorieRepository: jest.Mocked<CalorieRepository>;
     favouriteRepository: jest.Mocked<FavouriteRepository>;
@@ -86,6 +88,14 @@ function createPantryRepository(): jest.Mocked<PantryRepository> {
         updatePurchaseQuantity: jest.fn(),
         deletePurchases: jest.fn(),
         findPurchaseHistory: jest.fn(),
+    };
+}
+
+function createPantryConsumptionRepository(): jest.Mocked<PantryConsumptionRepository> {
+    return {
+        findRequirements: jest.fn(),
+        cook: jest.fn(),
+        undo: jest.fn(),
     };
 }
 
@@ -213,6 +223,7 @@ export function buildFakeDeps(): FakeRepositoryDeps {
         menuRepository: createMenuRepository(),
         menuCategoryRepository: { findAll: jest.fn() },
         pantryRepository: createPantryRepository(),
+        pantryConsumptionRepository: createPantryConsumptionRepository(),
         userRepository: createUserRepository(),
         calorieRepository: createCalorieRepository(),
         favouriteRepository: createFavouriteRepository(),

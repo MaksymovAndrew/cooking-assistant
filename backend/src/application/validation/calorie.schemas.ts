@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { numberSchema, positiveIntegerSchema } from "./common.schemas";
 
-const EXACTLY_ONE_SOURCE_MESSAGE =
+export const EXACTLY_ONE_SOURCE_MESSAGE =
     "Provide either a recipe or a menu, not both";
 
 export const logIntakeSchema = z

@@ -9,6 +9,8 @@ import { logIntakeSchema } from "application/validation/calorie.schemas";
 import { idSchema } from "application/validation/common.schemas";
 import { validate } from "application/validation/validate";
 
+import { intakeCalories } from "./intakeCalories";
+
 export default class LogIntake {
     constructor(
         private calorieRepository: Pick<
@@ -53,9 +55,8 @@ export default class LogIntake {
             recipe_id,
             menu_id,
             title: source.title,
-            // round the per-portion value first, then multiply - matches the frontend's scaleCaloriesForPortions
             portions,
-            calories: Math.round(source.calories) * portions,
+            calories: intakeCalories(source.calories, portions),
         });
     }
 }

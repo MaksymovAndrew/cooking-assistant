@@ -114,6 +114,8 @@
         "menu/recipes_not_exist": "Co najmniej jednego przepisu już nie ma.",
         "pantry/ingredient_not_found": "Tego produktu nie ma w twojej spiżarni.",
         "pantry/purchase_not_found": "Tego zakupu już nie ma.",
+        "pantry/consumption_not_found": "To gotowanie zostało już cofnięte albo już go nie ma.",
+        "pantry/undo_expired": "Na cofnięcie jest już za późno - produkty pozostają zużyte.",
         "calories/intake_not_found": "Tego wpisu już nie ma.",
         "calories/not_available": "Kaloryczność tej pozycji jest nieznana.",
         "favourites/requires_login": "Zaloguj się, żeby zobaczyć ulubione.",

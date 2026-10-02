@@ -32,6 +32,8 @@ export const ERROR_CODES = {
 
     INGREDIENT_NOT_FOUND_FOR_USER: "pantry/ingredient_not_found",
     PURCHASE_NOT_FOUND: "pantry/purchase_not_found",
+    CONSUMPTION_NOT_FOUND: "pantry/consumption_not_found",
+    UNDO_EXPIRED: "pantry/undo_expired",
 
     INTAKE_NOT_FOUND: "calories/intake_not_found",
     CALORIES_NOT_AVAILABLE: "calories/not_available",

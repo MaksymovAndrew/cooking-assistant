@@ -130,9 +130,9 @@ jobs:
                   restore-keys: next-${{ hashFiles('frontend/package-lock.json') }}-
             - name: npm run ${{ matrix.task }}
               # a production build refuses to guess the public origin; CI builds are never deployed,
-              # so a placeholder is enough to exercise the build itself
+              # so a placeholder is enough. Build only - the tests expect the local default origin
               env:
-                  NEXT_PUBLIC_SITE_URL: https://example.com
+                  NEXT_PUBLIC_SITE_URL: ${{ matrix.task == 'build' && 'https://example.com' || '' }}
               run: npm --prefix frontend run ${{ matrix.task }}
 
     e2e:

@@ -9,6 +9,7 @@ import PgFavouriteRepository from "infrastructure/persistence/pg/PgFavouriteRepo
 import PgIngredientRepository from "infrastructure/persistence/pg/PgIngredientRepository";
 import PgMenuCategoryRepository from "infrastructure/persistence/pg/PgMenuCategoryRepository";
 import PgMenuRepository from "infrastructure/persistence/pg/PgMenuRepository";
+import PgPantryConsumptionRepository from "infrastructure/persistence/pg/PgPantryConsumptionRepository";
 import PgPantryRepository from "infrastructure/persistence/pg/PgPantryRepository";
 import PgPhotoRepository from "infrastructure/persistence/pg/PgPhotoRepository";
 import PgRatingRepository from "infrastructure/persistence/pg/PgRatingRepository";
@@ -32,6 +33,7 @@ export function createPgDeps(): RepositoryDeps {
         menuRepository: new PgMenuRepository(pool),
         menuCategoryRepository: new PgMenuCategoryRepository(pool),
         pantryRepository: new PgPantryRepository(pool),
+        pantryConsumptionRepository: new PgPantryConsumptionRepository(pool),
         userRepository: new PgUserRepository(pool),
         calorieRepository: new PgCalorieRepository(pool),
         favouriteRepository: new PgFavouriteRepository(pool),

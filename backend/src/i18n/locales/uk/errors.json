@@ -29,6 +29,8 @@
 
     "pantry/ingredient_not_found": "Цього продукту немає у ваших запасах",
     "pantry/purchase_not_found": "Покупку не знайдено",
+    "pantry/consumption_not_found": "Цього запису про готування більше немає",
+    "pantry/undo_expired": "Це готування вже не можна скасувати",
 
     "calories/intake_not_found": "Запис не знайдено",
     "calories/not_available": "Калорійність цієї позиції невідома",

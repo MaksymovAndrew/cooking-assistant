@@ -8,6 +8,8 @@ import type {
     CalorieSourceInfo,
 } from "domain/repositories/CalorieRepository";
 
+import { insertIntake } from "./PgCalorieRepository.insertIntake";
+
 export default class PgCalorieRepository implements CalorieRepository {
     constructor(private pool: Pool) {}
 
@@ -30,20 +32,7 @@ export default class PgCalorieRepository implements CalorieRepository {
         personId: number,
         entry: CalorieIntakeEntry,
     ): Promise<CalorieIntakeRow> {
-        const result = await this.pool.query<CalorieIntakeRow>(
-            `INSERT INTO calorie_intake (person_id, recipe_id, menu_id, title, portions, calories)
-             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [
-                personId,
-                entry.recipe_id ?? null,
-                entry.menu_id ?? null,
-                entry.title,
-                entry.portions,
-                entry.calories,
-            ],
-        );
-
-        return result.rows[0];
+        return insertIntake(this.pool, personId, entry);
     }
 
     async deleteIntake(personId: number, intakeId: number): Promise<boolean> {

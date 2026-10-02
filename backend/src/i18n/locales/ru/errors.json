@@ -29,6 +29,8 @@
 
     "pantry/ingredient_not_found": "Этого продукта нет в ваших запасах",
     "pantry/purchase_not_found": "Покупка не найдена",
+    "pantry/consumption_not_found": "Этой записи о готовке больше нет",
+    "pantry/undo_expired": "Эту готовку уже нельзя отменить",
 
     "calories/intake_not_found": "Запись не найдена",
     "calories/not_available": "Калорийность этой позиции неизвестна",

@@ -114,6 +114,8 @@
         "menu/recipes_not_exist": "Одного или нескольких рецептов больше нет.",
         "pantry/ingredient_not_found": "Этого продукта нет в ваших запасах.",
         "pantry/purchase_not_found": "Этой покупки больше нет.",
+        "pantry/consumption_not_found": "Эту готовку уже отменили, или её больше нет.",
+        "pantry/undo_expired": "Отменить уже нельзя - продукты остаются списанными.",
         "calories/intake_not_found": "Этой записи больше нет.",
         "calories/not_available": "Для этого блюда калорийность неизвестна.",
         "favourites/requires_login": "Войдите, чтобы увидеть избранное.",

@@ -560,15 +560,17 @@ table and aggregating client-side.
 
 ### User pantry ([src/routes/userIngredients.routes.ts](src/routes/userIngredients.routes.ts))
 
-| Method | Path                                      | Purpose                                                                           |
-| ------ | ----------------------------------------- | --------------------------------------------------------------------------------- |
-| GET    | `/user-ingredients`                       | Get the current user's pantry, each ingredient with its purchase lots             |
-| PUT    | `/user-ingredients`                       | Add/replace pantry items                                                          |
-| GET    | `/user-ingredients/history/:ingredientId` | Purchase history for one ingredient                                               |
-| PUT    | `/user-ingredients/history/:purchaseId`   | Update a purchase entry                                                           |
-| DELETE | `/user-ingredients/history/:purchaseId`   | Delete one purchase; its quantity leaves the stock, the last one removes the item |
-| POST   | `/user-ingredients/history/discard`       | Delete several purchases at once (`{ purchaseIds }`), e.g. every expired one      |
-| DELETE | `/user-ingredients/:ingredientId`         | Remove a pantry item                                                              |
+| Method | Path                                         | Purpose                                                                           |
+| ------ | -------------------------------------------- | --------------------------------------------------------------------------------- |
+| GET    | `/user-ingredients`                          | Get the current user's pantry, each ingredient with its purchase lots             |
+| PUT    | `/user-ingredients`                          | Add/replace pantry items                                                          |
+| GET    | `/user-ingredients/history/:ingredientId`    | Purchase history for one ingredient                                               |
+| PUT    | `/user-ingredients/history/:purchaseId`      | Update a purchase entry                                                           |
+| DELETE | `/user-ingredients/history/:purchaseId`      | Delete one purchase; its quantity leaves the stock, the last one removes the item |
+| POST   | `/user-ingredients/history/discard`          | Delete several purchases at once (`{ purchaseIds }`), e.g. every expired one      |
+| DELETE | `/user-ingredients/:ingredientId`            | Remove a pantry item                                                              |
+| POST   | `/user-ingredients/cook`                     | "Cooked it": take a recipe's or menu's ingredients × portions out of the pantry   |
+| POST   | `/user-ingredients/cook/:consumptionId/undo` | Put a cooking back, within 10 minutes and only once                               |
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 
@@ -701,6 +703,16 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
   `quantity_person_ingradient` - typo in the real column name, leave it) and `ingredient_purchases`
   (one row per purchase lot). Expiry is computed per lot from `ingredient_purchases.purchase_date`,
   not the aggregate's own date - a top-up must not "refresh" older stock's expiry.
+- `pantry_consumptions` / `pantry_consumption_lots` - one row per "Cooked it" and what it took from which
+  lot. `POST /user-ingredients/cook` (`{ recipe_id | menu_id, portions, log_calories }`) runs in one
+  transaction under the person lock: it reads the lots oldest first (`FOR UPDATE`), allocates with the pure
+  `domain/pantry/allocateFifo.ts`, records each lot's share, then shrinks or deletes the lots and lowers
+  `quantity_person_ingradient` the same way deleting a purchase does. An ingredient the pantry lacks is
+  skipped, not an error, and a menu counts each of its recipes once. With `log_calories` the calorie entry
+  is written in that same transaction (and refused up front with `calories/not_available` when the source
+  has none). `purchase_id` is deliberately not a foreign key: undo re-inserts a used-up lot under its own id
+  and purchase date, so its expiry is unchanged. Undo is a conditional `UPDATE` (`undone_at IS NULL` and
+  inside `COOKING_UNDO_WINDOW_MS`), so a second or late undo answers `409 pantry/undo_expired`.
 - `shopping_list_items` - one row per item on a person's shopping list: free text, or a catalog
   ingredient with a quantity (`ingredient_id` is `ON DELETE SET NULL`, so the item outlives it as text).
   Writes lock the owner's `person` row, so the 200-item limit and the next `position` can't race.

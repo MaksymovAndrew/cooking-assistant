@@ -114,6 +114,8 @@
         "menu/recipes_not_exist": "Одного чи кількох рецептів більше немає.",
         "pantry/ingredient_not_found": "Цього продукту немає у ваших запасах.",
         "pantry/purchase_not_found": "Цієї покупки більше немає.",
+        "pantry/consumption_not_found": "Це готування вже скасовано, або його більше немає.",
+        "pantry/undo_expired": "Скасувати вже не можна - продукти залишаються списаними.",
         "calories/intake_not_found": "Цього запису більше немає.",
         "calories/not_available": "Калорійність цієї страви невідома.",
         "favourites/requires_login": "Увійдіть, щоб побачити обране.",

@@ -20,6 +20,11 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Backend
+
+- Added: "Cooked it" - cooking a recipe or a menu takes its ingredients, times the portions, out of the pantry in one go, oldest purchases first. What the pantry does not have is skipped and reported, and the calories can be logged at the same time.
+- Added: a cooking can be undone within ten minutes - every product comes back with its original purchase date, and the logged calories go away with it.
+
 ### Project
 
 - Changed: all dependencies brought up to their latest minor and patch releases (Next.js 16.3.8, Redux Toolkit 2.13, sharp 0.35.5, pg 8.23.1 and the tooling around them); TypeScript 7 and ESLint 10 stay on hold until the lint plugins support them.

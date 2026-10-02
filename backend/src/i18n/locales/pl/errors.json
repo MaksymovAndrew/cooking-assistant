@@ -29,6 +29,8 @@
 
     "pantry/ingredient_not_found": "Tego produktu nie ma w twojej spiżarni",
     "pantry/purchase_not_found": "Nie znaleziono zakupu",
+    "pantry/consumption_not_found": "Tego gotowania już nie ma",
+    "pantry/undo_expired": "Tego gotowania nie można już cofnąć",
 
     "calories/intake_not_found": "Nie znaleziono wpisu",
     "calories/not_available": "Kaloryczność tej pozycji jest nieznana",

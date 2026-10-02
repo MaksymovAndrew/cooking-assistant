@@ -1,5 +1,5 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createAction, createSlice, nanoid } from "@reduxjs/toolkit";
 
 export type NotificationType = "success" | "error" | "info";
 
@@ -9,11 +9,19 @@ export interface NotificationLink {
     label: string;
 }
 
+// a one-press follow-up, kept as plain data so the store stays serialisable; the middleware runs it
+export interface NotificationAction {
+    kind: "undoCooking";
+    consumptionId: number;
+    label: string;
+}
+
 export interface Notification {
     id: string;
     type: NotificationType;
     message: string;
     link: NotificationLink | null;
+    action: NotificationAction | null;
 }
 
 // what a caller provides; the id is generated in the action `prepare` step
@@ -21,6 +29,7 @@ export interface NotificationInput {
     type: NotificationType;
     message: string;
     link?: NotificationLink | null;
+    action?: NotificationAction | null;
 }
 
 interface NotificationsState {
@@ -44,8 +53,12 @@ const notificationsSlice = createSlice({
                 );
                 state.items.push(action.payload);
             },
-            prepare: ({ link = null, ...input }: NotificationInput) => ({
-                payload: { id: nanoid(), ...input, link },
+            prepare: ({
+                link = null,
+                action = null,
+                ...input
+            }: NotificationInput) => ({
+                payload: { id: nanoid(), ...input, link, action },
             }),
         },
         removeNotification: (state, action: PayloadAction<string>) => {
@@ -55,6 +68,10 @@ const notificationsSlice = createSlice({
         },
     },
 });
+
+export const runNotificationAction = createAction<NotificationAction>(
+    "notifications/runAction",
+);
 
 export const { addNotification, removeNotification } =
     notificationsSlice.actions;

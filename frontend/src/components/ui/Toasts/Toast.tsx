@@ -7,11 +7,12 @@ import { useAppDispatch } from "redux/hooks";
 import type { Notification } from "redux/slices/notificationsSlice";
 import { removeNotification } from "redux/slices/notificationsSlice";
 
-import { Link } from "components/ui/Link";
-
 import styles from "./Toast.module.scss";
+import { ToastBody } from "./ToastBody";
 
 const AUTO_DISMISS_MS = 4000;
+// long enough to reach the button; matches .toast--lingering in the stylesheet
+const ACTION_DISMISS_MS = 10000;
 const LEAVE_DURATION_MS = 280;
 const ICON_SIZE = 22;
 const DISMISS_ICON_SIZE = 16;
@@ -33,16 +34,23 @@ export const Toast = ({ notification }: { notification: Notification }) => {
     const dispatch = useAppDispatch();
     const [isLeaving, setIsLeaving] = useState(false);
     const Icon = ICON_BY_TYPE[notification.type];
+    const hasAction = notification.action !== null;
+    const leave = () => {
+        setIsLeaving(true);
+    };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLeaving(true);
-        }, AUTO_DISMISS_MS);
+        const timer = setTimeout(
+            () => {
+                setIsLeaving(true);
+            },
+            hasAction ? ACTION_DISMISS_MS : AUTO_DISMISS_MS,
+        );
 
         return () => {
             clearTimeout(timer);
         };
-    }, []);
+    }, [hasAction]);
 
     useEffect(() => {
         if (!isLeaving) {
@@ -62,6 +70,7 @@ export const Toast = ({ notification }: { notification: Notification }) => {
     const classNames = [
         styles.toast,
         TYPE_CLASS[notification.type],
+        hasAction && styles["toast--lingering"],
         isLeaving && styles["toast--leaving"],
     ]
         .filter(Boolean)
@@ -72,25 +81,10 @@ export const Toast = ({ notification }: { notification: Notification }) => {
             <span className={styles.toast__icon}>
                 <Icon size={ICON_SIZE} aria-hidden="true" />
             </span>
-            <div className={styles.toast__body}>
-                <p className={styles.toast__message}>{notification.message}</p>
-                {notification.link && (
-                    <Link
-                        href={notification.link.href}
-                        className={styles.toast__link}
-                        onClick={() => {
-                            setIsLeaving(true);
-                        }}
-                    >
-                        {notification.link.label}
-                    </Link>
-                )}
-            </div>
+            <ToastBody notification={notification} onLeave={leave} />
             <button
                 type="button"
-                onClick={() => {
-                    setIsLeaving(true);
-                }}
+                onClick={leave}
                 aria-label={t("toast.dismiss")}
                 className={styles.toast__dismiss}
             >

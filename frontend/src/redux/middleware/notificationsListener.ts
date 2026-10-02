@@ -11,7 +11,9 @@ import type { AxiosBaseQueryError } from "redux/services/axiosBaseQuery";
 import { caloriesApi } from "redux/services/caloriesApi";
 import { addNotification } from "redux/slices/notificationsSlice";
 
+import { registerNotificationActions } from "./notificationActions";
 import { registerSuccessToasts } from "./successToasts";
+import { registerPantryToasts } from "./successToasts.pantry";
 
 const isQueryError = (payload: unknown): payload is AxiosBaseQueryError => {
     if (typeof payload !== "object" || payload === null) {
@@ -64,3 +66,5 @@ notificationsListener.startListening({
 });
 
 registerSuccessToasts(notificationsListener);
+registerPantryToasts(notificationsListener);
+registerNotificationActions(notificationsListener);

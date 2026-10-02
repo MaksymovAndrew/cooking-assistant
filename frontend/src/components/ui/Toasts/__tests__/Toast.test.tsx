@@ -1,6 +1,8 @@
 import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { API_ROUTES } from "api/endpoints";
+
 import type {
     Notification,
     NotificationType,
@@ -8,10 +10,14 @@ import type {
 
 import { Toast } from "components/ui/Toasts/Toast";
 
+import { mockedPost } from "test/apiClientMock";
 import { renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
 
+jest.mock("api/client");
+
 const AUTO_DISMISS_MS = 4000;
+const ACTION_DISMISS_MS = 10000;
 const LEAVE_DURATION_MS = 280;
 const LEAVING_CLASS = "toast--leaving";
 
@@ -26,6 +32,12 @@ const makeNotification = (type: NotificationType): Notification => ({
     type,
     message: "Boom",
     link: null,
+    action: null,
+});
+
+const withUndo = (): Notification => ({
+    ...makeNotification("success"),
+    action: { kind: "undoCooking", consumptionId: 42, label: "Undo" },
 });
 
 describe("Toast", () => {
@@ -118,6 +130,42 @@ describe("Toast", () => {
             });
 
             expect(store.getState().notifications.items).toHaveLength(0);
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it("should run the toast's action once and start leaving when its button is pressed", async () => {
+        mockedPost.mockResolvedValue({ data: null });
+        renderWithProviders(<Toast notification={withUndo()} />);
+
+        await userEvent.click(screen.getByRole("button", { name: "Undo" }));
+
+        expect(screen.getByRole("status")).toHaveClass(LEAVING_CLASS);
+        expect(mockedPost).toHaveBeenCalledTimes(1);
+        expect(mockedPost).toHaveBeenCalledWith(
+            API_ROUTES.userIngredients.undoCook(42),
+            undefined,
+        );
+    });
+
+    it("should stay long enough to reach the action button", () => {
+        jest.useFakeTimers();
+
+        try {
+            renderWithProviders(<Toast notification={withUndo()} />);
+
+            act(() => {
+                jest.advanceTimersByTime(AUTO_DISMISS_MS);
+            });
+
+            expect(screen.getByRole("status")).not.toHaveClass(LEAVING_CLASS);
+
+            act(() => {
+                jest.advanceTimersByTime(ACTION_DISMISS_MS - AUTO_DISMISS_MS);
+            });
+
+            expect(screen.getByRole("status")).toHaveClass(LEAVING_CLASS);
         } finally {
             jest.useRealTimers();
         }

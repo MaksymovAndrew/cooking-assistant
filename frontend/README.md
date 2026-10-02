@@ -359,6 +359,23 @@ visible copy (so an error storm shows one toast, and a repeated confirmation sho
 `MAX_VISIBLE = 3` ([components/ui/Toasts/](src/components/ui/Toasts/)). Toasts are non-blocking and
 several are visible at once; modals are blocking and strictly serialized. Don't merge the two. A toast
 may carry an optional `link` (`{ href, label }`) to where the change landed - the shopping list uses it.
+It may instead carry an `action`, a one-press follow-up such as "Undo" after "Cooked it": the
+store keeps only plain data (`{ kind, consumptionId, label }`), the button dispatches
+`runNotificationAction`, and `redux/middleware/notificationActions.ts` makes the request for that
+`kind` - a kind without a runner there is a compile error. A toast with an action stays 10 seconds
+instead of 4.
+
+**A server-rendered page refreshes itself after a write it cannot see.** The menu page's missing
+ingredients come from the server render, so there is no cache entry to invalidate when a toast's undo
+puts products back. A write like that dispatches `markServerDataStale` (`serverDataSlice`), and a page
+that mounts `useRefreshOnServerData` answers with `useAppRouter().refresh()` - a fresh server render that
+keeps the client state. `refresh` skips the unsaved-changes guard: it navigates nowhere.
+
+**"Cooked it"** takes a recipe's or menu's ingredients, times the portions, out of the pantry. The
+pages hand `useCookedItHandler` the ingredients they already hold (`recipeCookRequirements` /
+`menuCookRequirements` in `utils/cookPreview.ts`, a menu counting each recipe once like the server), and
+`CookedItModal` previews against the pantry query - what is taken in full, what is used up, what is not
+there and gets skipped. The calorie switch shows only when the record has calories.
 
 ## Internationalization
 

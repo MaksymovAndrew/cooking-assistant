@@ -1,6 +1,6 @@
 import { lazy } from "react";
 
-// ModalRoot sits in the root layout, so a static import would put all fourteen modals -
+// ModalRoot sits in the root layout, so a static import would put every modal -
 // and every API service they use - in the bundle every visitor downloads
 export const OfflineModal = lazy(() =>
     import("components/connectivity/OfflineModal").then((m) => ({
@@ -89,5 +89,11 @@ export const SignOutEverywhereModal = lazy(() =>
 export const ThemeChangeConfirmModal = lazy(() =>
     import("components/modals/ThemeChangeConfirmModal").then((m) => ({
         default: m.ThemeChangeConfirmModal,
+    })),
+);
+
+export const CookedItModal = lazy(() =>
+    import("components/modals/CookedItModal").then((m) => ({
+        default: m.CookedItModal,
     })),
 );

@@ -179,6 +179,7 @@
         "metaFallbackDescription_other": "A {{type}} recipe with {{count}} ingredients.",
         "cookingTimeUnavailable": "—",
         "metaFallbackDescriptionUntyped_one": "A recipe with {{count}} ingredient.",
-        "metaFallbackDescriptionUntyped_other": "A recipe with {{count}} ingredients."
+        "metaFallbackDescriptionUntyped_other": "A recipe with {{count}} ingredients.",
+        "cookedIt": "Cooked it"
     }
 }

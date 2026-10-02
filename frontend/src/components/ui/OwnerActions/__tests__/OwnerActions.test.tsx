@@ -96,4 +96,46 @@ describe("OwnerActions", () => {
 
         expect(onLogIntake).toHaveBeenCalledTimes(1);
     });
+
+    it("should call onCook when the cooked-it button is clicked", async () => {
+        const onCook = jest.fn();
+
+        renderWithRouter(
+            <OwnerActions
+                editTo="/change-recipe/5"
+                onDelete={jest.fn()}
+                editLabel="Edit"
+                deleteLabel="Delete"
+                favourite={FAVOURITE}
+                favouriteLabel="Favourite"
+                shareTitle="Borscht"
+                onCook={onCook}
+                cookLabel="Cooked it"
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Cooked it" }),
+        );
+
+        expect(onCook).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not show a cooked-it button when onCook is not provided", () => {
+        renderWithRouter(
+            <OwnerActions
+                editTo="/change-recipe/5"
+                onDelete={jest.fn()}
+                editLabel="Edit"
+                deleteLabel="Delete"
+                favourite={FAVOURITE}
+                favouriteLabel="Favourite"
+                shareTitle="Borscht"
+            />,
+        );
+
+        expect(
+            screen.queryByRole("button", { name: "Cooked it" }),
+        ).not.toBeInTheDocument();
+    });
 });

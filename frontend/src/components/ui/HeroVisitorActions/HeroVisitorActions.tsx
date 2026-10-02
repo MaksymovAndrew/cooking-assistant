@@ -1,4 +1,4 @@
-import { Flame, Sparkles } from "lucide-react";
+import { ChefHat, Flame, Sparkles } from "lucide-react";
 import React from "react";
 
 import { ROUTES } from "constants/routes";
@@ -23,6 +23,8 @@ interface HeroVisitorActionsProps {
     guestCtaLabel: string;
     logIntakeLabel: string;
     onLogIntake?: () => void;
+    cookLabel?: string;
+    onCook?: () => void;
 }
 
 const ICON_SIZE = 20;
@@ -35,6 +37,8 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
     guestCtaLabel,
     logIntakeLabel,
     onLogIntake,
+    cookLabel,
+    onCook,
 }) => {
     if (favourite === null) {
         return (
@@ -43,7 +47,7 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
                     href={ROUTES.login}
                     onClick={rememberLoginRedirect}
                     variant="secondary"
-                    className={styles["hero-visitor-actions__log-intake"]}
+                    className={styles["hero-visitor-actions__wide"]}
                 >
                     <Sparkles size={ICON_SIZE} aria-hidden="true" />
                     {guestCtaLabel}
@@ -63,10 +67,20 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
             >
                 {favouriteLabel}
             </FavouriteButton>
+            {onCook && (
+                <Button
+                    variant="secondary"
+                    className={styles["hero-visitor-actions__wide"]}
+                    onClick={onCook}
+                >
+                    <ChefHat size={ICON_SIZE} aria-hidden="true" />
+                    {cookLabel}
+                </Button>
+            )}
             {onLogIntake && (
                 <Button
                     variant="secondary"
-                    className={styles["hero-visitor-actions__log-intake"]}
+                    className={styles["hero-visitor-actions__wide"]}
                     onClick={onLogIntake}
                 >
                     <Flame size={ICON_SIZE} aria-hidden="true" />

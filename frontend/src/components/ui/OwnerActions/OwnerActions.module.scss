@@ -6,12 +6,12 @@
     gap: var(--s-2);
 
     @include respond-to(tablet) {
-        flex-wrap: nowrap;
         gap: var(--s-3);
     }
 
     // on a phone the edit button takes the first row and the icon buttons share the second equally,
-    // whatever the language makes of the label; from tablet up everything sits in one row
+    // whatever the language makes of the label; from tablet up the labelled buttons wrap when a
+    // long language or an extra action outgrows the column
     &__edit {
         flex: 1 1 100%;
 
@@ -55,7 +55,7 @@
         }
     }
 
-    &__log-intake {
+    &__accent {
         display: inline-flex;
         flex: none;
         align-items: center;

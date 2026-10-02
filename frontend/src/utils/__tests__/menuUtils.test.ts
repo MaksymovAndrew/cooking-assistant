@@ -1,6 +1,9 @@
 import type { MenuDetailRecipe } from "types/menu";
 
-import { aggregateMenuIngredients } from "utils/menuUtils";
+import {
+    aggregateMenuIngredients,
+    menuCaloriesPerPortion,
+} from "utils/menuUtils";
 
 const makeRecipe = (
     id: number,
@@ -165,5 +168,36 @@ describe("aggregateMenuIngredients", () => {
         ];
 
         expect(aggregateMenuIngredients(recipes)[50].sufficient).toBe(false);
+    });
+});
+
+describe("menuCaloriesPerPortion", () => {
+    const withCalories = (calories: number | null): MenuDetailRecipe => ({
+        recipe_id: 1,
+        title: "Recipe",
+        language: "en",
+        type_name: null,
+        cooking_time: 10,
+        creation_date: "2026-01-01T00:00:00.000Z",
+        calories_per_portion: calories,
+        photo_key: null,
+        ratingAverage: null,
+        ratingCount: 0,
+    });
+
+    it("should add up every recipe's calories", () => {
+        expect(
+            menuCaloriesPerPortion([withCalories(300), withCalories(450)]),
+        ).toBe(750);
+    });
+
+    it("should be unknown as soon as one recipe's calories are", () => {
+        expect(
+            menuCaloriesPerPortion([withCalories(300), withCalories(null)]),
+        ).toBeNull();
+    });
+
+    it("should be unknown for a menu without recipes", () => {
+        expect(menuCaloriesPerPortion([])).toBeNull();
     });
 });

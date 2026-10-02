@@ -28,6 +28,7 @@ interface RecipeHeroProps {
     editTo: string;
     onDelete: () => void;
     onLogIntake?: () => void;
+    onCook?: () => void;
     exceedsBudget?: boolean;
 }
 
@@ -37,6 +38,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     editTo,
     onDelete,
     onLogIntake,
+    onCook,
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
@@ -111,6 +113,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 editTo={editTo}
                 onDelete={onDelete}
                 onLogIntake={onLogIntake}
+                onCook={onCook}
             />
         </div>
     );

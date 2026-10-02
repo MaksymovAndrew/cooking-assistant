@@ -136,6 +136,7 @@
         "metaFallbackDescription_other": "A {{category}} menu built from {{count}} recipes.",
         "metaFallbackDescriptionUncategorised_one": "A menu built from {{count}} recipe.",
         "metaFallbackDescriptionUncategorised_other": "A menu built from {{count}} recipes.",
-        "creationDate": "Creation date"
+        "creationDate": "Creation date",
+        "cookedIt": "Cooked it"
     }
 }

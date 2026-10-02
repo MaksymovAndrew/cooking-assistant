@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 import { FAVOURITE_TARGET } from "constants/favourites";
 import type { MenuDetailRecipe } from "types/menu";
@@ -11,12 +10,11 @@ import { useFavouriteToggle } from "hooks/useFavouriteToggle";
 
 import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
 import { MenuRecipesPanel } from "components/menu/MenuRecipesPanel";
-import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
-import { OwnerActions } from "components/ui/OwnerActions";
 
 import { aggregateMenuIngredients } from "utils/menuUtils";
 import { filterAllergens } from "utils/recipeAllergens";
 
+import { MenuDetailsActions } from "./MenuDetailsActions";
 import styles from "./MenuDetailsView.module.scss";
 
 interface MenuDetailsSecondaryProps {
@@ -31,6 +29,7 @@ interface MenuDetailsSecondaryProps {
     editTo: string;
     onDelete: () => void;
     onLogIntake?: () => void;
+    onCook?: () => void;
 }
 
 // ingredients -> actions -> recipes, in that DOM order everywhere - the reading order the page
@@ -47,8 +46,8 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     editTo,
     onDelete,
     onLogIntake,
+    onCook,
 }) => {
-    const { t } = useTranslation("menu");
     const { canUsePantry } = useAppSelector(selectViewerCapabilities);
     const favourite = useFavouriteToggle(
         FAVOURITE_TARGET.menu,
@@ -65,8 +64,6 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     const gridClassName = showIngredientsAside
         ? `${styles["menu-details-page__grid"]} ${styles["menu-details-page__grid--with-aside"]}`
         : styles["menu-details-page__grid"];
-    const favouriteLabel = t("menuDetailsPage.favourite");
-    const logIntakeLabel = t("menuDetailsPage.logIntake");
 
     return (
         <div className={gridClassName}>
@@ -79,28 +76,16 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
                 </div>
             )}
             <div className={styles["menu-details-page__actions-area"]}>
-                {isOwner ? (
-                    <OwnerActions
-                        editTo={editTo}
-                        onDelete={onDelete}
-                        editLabel={t("menuDetailsPage.editButton")}
-                        deleteLabel={t("menuDetailsPage.deleteButton")}
-                        favourite={favourite}
-                        favouriteLabel={favouriteLabel}
-                        shareTitle={title}
-                        onLogIntake={onLogIntake}
-                        logIntakeLabel={logIntakeLabel}
-                    />
-                ) : (
-                    <HeroVisitorActions
-                        favourite={visitorFavourite}
-                        favouriteLabel={favouriteLabel}
-                        shareTitle={title}
-                        guestCtaLabel={t("menuDetailsPage.guestCta")}
-                        logIntakeLabel={logIntakeLabel}
-                        onLogIntake={onLogIntake}
-                    />
-                )}
+                <MenuDetailsActions
+                    title={title}
+                    isOwner={isOwner}
+                    favourite={favourite}
+                    visitorFavourite={visitorFavourite}
+                    editTo={editTo}
+                    onDelete={onDelete}
+                    onLogIntake={onLogIntake}
+                    onCook={onCook}
+                />
             </div>
             <div className={styles["menu-details-page__recipes-area"]}>
                 <MenuRecipesPanel

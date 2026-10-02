@@ -7,11 +7,9 @@ import { useTranslation } from "react-i18next";
 import { changeRecipePath, ROUTES } from "constants/routes";
 import type { RecipeDetails } from "types/recipe";
 
-import { useDeleteRecipeHandler } from "hooks/useDeleteRecipeHandler";
-import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 import { useIngredientAvailability } from "hooks/useIngredientAvailability";
-import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
 import { usePortionScaling } from "hooks/usePortionScaling";
+import { useRecipeDetailActions } from "hooks/useRecipeDetailActions";
 
 import { AppShell } from "components/layout/AppShell";
 import { RecipeDetailsSecondary } from "components/recipes/RecipeDetailsSecondary";
@@ -37,17 +35,7 @@ export const RecipeDetailsView: React.FC<RecipeDetailsViewProps> = ({
         recipe.ingredients,
     );
     const allergens = getRecipeAllergens(recipe.ingredients);
-    const handleDeleteRecipe = useDeleteRecipeHandler(recipe);
-    const handleLogIntake = useLogIntakeHandler({
-        recipeId: recipe.id,
-        title: recipe.title,
-        caloriesPerPortion: recipe.calories_per_portion,
-        initialPortions: portions.count,
-    });
-    const exceedsBudget = useExceedsCalorieBudget(
-        recipe.calories_per_portion,
-        portions.count,
-    );
+    const actions = useRecipeDetailActions(recipe, portions.count);
 
     return (
         <AppShell mobileBackTo={ROUTES.allRecipes}>
@@ -68,9 +56,10 @@ export const RecipeDetailsView: React.FC<RecipeDetailsViewProps> = ({
                             recipe={recipe}
                             portionCount={portions.count}
                             editTo={changeRecipePath(recipe.id)}
-                            onDelete={handleDeleteRecipe}
-                            onLogIntake={handleLogIntake}
-                            exceedsBudget={exceedsBudget}
+                            onDelete={actions.onDelete}
+                            onLogIntake={actions.onLogIntake}
+                            onCook={actions.onCook}
+                            exceedsBudget={actions.exceedsBudget}
                         />
                     </div>
                     <RecipeDetailsSecondary

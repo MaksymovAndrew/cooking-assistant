@@ -205,6 +205,7 @@
         "metaFallbackDescriptionUntyped_one": "Przepis z {{count}} składnika.",
         "metaFallbackDescriptionUntyped_few": "Przepis z {{count}} składników.",
         "metaFallbackDescriptionUntyped_many": "Przepis z {{count}} składników.",
-        "metaFallbackDescriptionUntyped_other": "Przepis z {{count}} składnika."
+        "metaFallbackDescriptionUntyped_other": "Przepis z {{count}} składnika.",
+        "cookedIt": "Ugotowane"
     }
 }

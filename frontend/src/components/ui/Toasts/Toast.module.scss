@@ -79,6 +79,27 @@
         }
     }
 
+    // an undo reads as a button, not a link, but sits in the same place a link would
+    &__action {
+        align-self: flex-start;
+        min-height: 32px;
+        padding: 0 var(--s-3);
+        border: 1px solid color-mix(in srgb, var(--brand) 40%, var(--border));
+        border-radius: var(--r-sm);
+        background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+        color: var(--brand-strong);
+        font:
+            600 13px/1.4 Inter,
+            sans-serif;
+        cursor: pointer;
+
+        @include focus-ring;
+
+        @include on-hover {
+            background: color-mix(in srgb, var(--brand) 14%, var(--surface));
+        }
+    }
+
     &__dismiss {
         display: flex;
         flex: none;
@@ -108,6 +129,10 @@
         background: currentcolor;
         animation: toast-shrink 4s linear forwards;
     }
+}
+
+.toast--lingering .toast__progress {
+    animation-duration: 10s;
 }
 
 .toast--leaving {

@@ -1,0 +1,85 @@
+@use "styles/abstracts" as *;
+
+.cooked-it-modal {
+    &__title {
+        margin: 0 0 var(--s-2);
+        color: var(--text);
+        font:
+            600 16px Inter,
+            sans-serif;
+    }
+
+    &__note {
+        margin: 0 0 var(--s-4);
+        color: var(--text-2);
+        font:
+            400 13.5px/1.45 Inter,
+            sans-serif;
+    }
+
+    &__portions,
+    &__calories {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+        margin-bottom: var(--s-4);
+    }
+
+    &__label {
+        color: var(--text-muted);
+        font:
+            600 14px Inter,
+            sans-serif;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    // name and amount share the first line; a status pill drops below them on its own line
+    &__row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--s-1) var(--s-3);
+        padding: var(--s-2) var(--s-3);
+        border-radius: var(--r-sm);
+        background: var(--surface-2);
+    }
+
+    &__name {
+        min-width: 0;
+        color: var(--text);
+        font:
+            500 14px Inter,
+            sans-serif;
+        overflow-wrap: anywhere;
+    }
+
+    &__amount {
+        flex: none;
+        color: var(--text-2);
+        font:
+            500 13px "Geist Mono",
+            monospace;
+    }
+
+    &__pill {
+        flex-basis: 100%;
+        color: var(--warning);
+        font:
+            600 12.5px Inter,
+            sans-serif;
+
+        &--missing {
+            color: var(--text-muted);
+        }
+    }
+}

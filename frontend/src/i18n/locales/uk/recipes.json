@@ -205,6 +205,7 @@
         "metaFallbackDescriptionUntyped_one": "Рецепт з {{count}} інгредієнта.",
         "metaFallbackDescriptionUntyped_few": "Рецепт з {{count}} інгредієнтів.",
         "metaFallbackDescriptionUntyped_many": "Рецепт з {{count}} інгредієнтів.",
-        "metaFallbackDescriptionUntyped_other": "Рецепт з {{count}} інгредієнта."
+        "metaFallbackDescriptionUntyped_other": "Рецепт з {{count}} інгредієнта.",
+        "cookedIt": "Приготовано"
     }
 }

@@ -20,6 +20,12 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Frontend
+
+- Added: a "Cooked it" button on recipe and menu pages. It shows what will come out of your pantry for the portions you pick - what is used up and what you don't have - and can log the calories at the same time.
+- Added: the confirmation after cooking has an "Undo" button that puts everything back.
+- Fixed: the "Log intake" button no longer shows on a menu whose recipes don't all have calories - logging it was always refused.
+
 ### Backend
 
 - Added: "Cooked it" - cooking a recipe or a menu takes its ingredients, times the portions, out of the pantry in one go, oldest purchases first. What the pantry does not have is skipped and reported, and the calories can be logged at the same time.

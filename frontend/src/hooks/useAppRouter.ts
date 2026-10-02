@@ -14,6 +14,8 @@ export interface AppRouter {
     // altogether, when a form holds unsaved changes
     push: (href: string) => boolean;
     replace: (href: string) => boolean;
+    // re-renders the current page on the server; nothing is left behind, so no unsaved-changes guard
+    refresh: () => void;
 }
 
 // the only way pages and hooks navigate programmatically: next/router itself cannot be
@@ -49,6 +51,9 @@ export const useAppRouter = (): AppRouter => {
                 run(() => {
                     router.replace(localizePath(href, locale));
                 }),
+            refresh: () => {
+                router.refresh();
+            },
         }),
         [router, run, locale],
     );

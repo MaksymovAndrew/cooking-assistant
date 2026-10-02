@@ -22,6 +22,7 @@ describe("notificationsSlice", () => {
             type: "success",
             message: "Saved",
             link: null,
+            action: null,
         });
         expect(state.items[0].id.length).toBeGreaterThan(0);
     });
@@ -56,15 +57,27 @@ describe("notificationsSlice", () => {
     it("should remove a notification by id", () => {
         const start = {
             items: [
-                { id: "a", type: "info" as const, message: "x", link: null },
-                { id: "b", type: "info" as const, message: "y", link: null },
+                {
+                    id: "a",
+                    type: "info" as const,
+                    message: "x",
+                    link: null,
+                    action: null,
+                },
+                {
+                    id: "b",
+                    type: "info" as const,
+                    message: "y",
+                    link: null,
+                    action: null,
+                },
             ],
         };
 
         const state = notificationsReducer(start, removeNotification("a"));
 
         expect(state.items).toEqual([
-            { id: "b", type: "info", message: "y", link: null },
+            { id: "b", type: "info", message: "y", link: null, action: null },
         ]);
     });
 });

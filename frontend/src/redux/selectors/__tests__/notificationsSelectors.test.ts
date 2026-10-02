@@ -6,7 +6,7 @@ import { makeTestStore } from "test/store";
 describe("notificationsSelectors", () => {
     it("should select the notifications list", () => {
         const items: Notification[] = [
-            { id: "a", type: "info", message: "x", link: null },
+            { id: "a", type: "info", message: "x", link: null, action: null },
         ];
         const store = makeTestStore({ notifications: { items } });
 

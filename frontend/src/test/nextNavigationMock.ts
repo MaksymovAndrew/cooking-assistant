@@ -59,6 +59,9 @@ const navigate = (href: string) => {
     });
 };
 
+// asserted by the pages that re-render on the server after a write
+export const mockRefresh = jest.fn();
+
 // one stable instance, like the real router: a new object per render would re-fire every
 // effect that depends on it
 const router = {
@@ -66,7 +69,7 @@ const router = {
     replace: navigate,
     back: jest.fn(),
     forward: jest.fn(),
-    refresh: jest.fn(),
+    refresh: mockRefresh,
     prefetch: jest.fn(),
 };
 

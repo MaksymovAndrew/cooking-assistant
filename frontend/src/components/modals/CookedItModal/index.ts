@@ -1,0 +1,1 @@
+export { CookedItModal } from "./CookedItModal";

@@ -153,7 +153,14 @@
         "profileUpdated": "Profil zaktualizowany",
         "accountDeleted": "Konto usunięte",
         "calorieIntakeDeleted": "Wpis usunięty",
-        "intakeLogged": "Dodano do dzisiejszego dziennika"
+        "intakeLogged": "Dodano do dzisiejszego dziennika",
+        "cooked_one": "Gotowe! Ze spiżarni zeszedł {{count}} produkt",
+        "cooked_few": "Gotowe! Ze spiżarni zeszły {{count}} produkty",
+        "cooked_many": "Gotowe! Ze spiżarni zeszło {{count}} produktów",
+        "cooked_other": "Gotowe! Ze spiżarni zeszło {{count}} produktu",
+        "cookedNothing": "Gotowe! Niczego z tego nie było w spiżarni",
+        "undo": "Cofnij",
+        "cookingUndone": "Cofnięto - wszystko wróciło do spiżarni"
     },
     "timeAgo": {
         "justNow": "Przed chwilą",

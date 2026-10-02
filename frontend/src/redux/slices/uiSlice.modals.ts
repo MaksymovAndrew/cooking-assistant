@@ -3,6 +3,10 @@ import type { PantryIngredient } from "types/userIngredient";
 
 import type { ThemeChoice } from "redux/slices/themeSlice";
 
+import type { CookedItModalInput } from "./uiSlice.modals.cooking";
+
+export type { CookedItModalInput };
+
 // discriminated union keyed by `type` so ModalRoot renders the matching modal with a typed payload
 export const MODAL_TYPE = {
     ingredientHistory: "ingredientHistory",
@@ -20,6 +24,7 @@ export const MODAL_TYPE = {
     offline: "offline",
     restockIngredient: "restockIngredient",
     deleteTag: "deleteTag",
+    cookedIt: "cookedIt",
 } as const;
 
 export interface IngredientHistoryModalInput {
@@ -119,7 +124,8 @@ export type ModalInput =
     | NewsModalInput
     | OfflineModalInput
     | RestockIngredientModalInput
-    | DeleteTagModalInput;
+    | DeleteTagModalInput
+    | CookedItModalInput;
 
 // distributes over the union so `modal.type` still narrows to the matching payload
 type WithId<T> = T extends unknown ? T & { id: string } : never;

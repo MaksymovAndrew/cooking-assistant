@@ -49,3 +49,24 @@ export const aggregateMenuIngredients = (
             },
             {},
         );
+
+// a menu's calories are unknown as soon as one of its recipes' are - the server refuses to log them then
+export const menuCaloriesPerPortion = (
+    recipes: MenuDetailRecipe[],
+): number | null => {
+    if (recipes.length === 0) {
+        return null;
+    }
+
+    let total = 0;
+
+    for (const recipe of recipes) {
+        if (recipe.calories_per_portion === null) {
+            return null;
+        }
+
+        total += recipe.calories_per_portion;
+    }
+
+    return total;
+};

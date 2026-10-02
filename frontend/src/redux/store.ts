@@ -4,6 +4,7 @@ import { notificationsListener } from "redux/middleware/notificationsListener";
 import { baseApi } from "redux/services/baseApi";
 import { emailVerificationReducer } from "redux/slices/emailVerificationSlice";
 import { notificationsReducer } from "redux/slices/notificationsSlice";
+import { serverDataReducer } from "redux/slices/serverDataSlice";
 import { sessionReducer, type SessionStatus } from "redux/slices/sessionSlice";
 import { getInitialThemeMode, themeReducer } from "redux/slices/themeSlice";
 import { uiReducer } from "redux/slices/uiSlice";
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     notifications: notificationsReducer,
     theme: themeReducer,
     emailVerification: emailVerificationReducer,
+    serverData: serverDataReducer,
     [baseApi.reducerPath]: baseApi.reducer,
 });
 

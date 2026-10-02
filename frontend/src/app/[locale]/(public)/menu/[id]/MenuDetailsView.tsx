@@ -10,12 +10,17 @@ import type { MenuDetails } from "types/menu";
 import { useAppDispatch } from "redux/hooks";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
+import { useCookedItHandler } from "hooks/useCookedItHandler";
 import { useExceedsCalorieBudget } from "hooks/useExceedsCalorieBudget";
 import { useLogIntakeHandler } from "hooks/useLogIntakeHandler";
+import { useRefreshOnServerData } from "hooks/useRefreshOnServerData";
 
 import { AppShell } from "components/layout/AppShell";
 import { MenuHero } from "components/menu/MenuHero";
 import { Link } from "components/ui/Link";
+
+import { menuCookRequirements } from "utils/cookPreview";
+import { menuCaloriesPerPortion } from "utils/menuUtils";
 
 import { MenuDetailsSecondary } from "./MenuDetailsSecondary";
 import styles from "./MenuDetailsView.module.scss";
@@ -29,18 +34,23 @@ interface MenuDetailsViewProps {
 export const MenuDetailsView: React.FC<MenuDetailsViewProps> = ({ menu }) => {
     const { t } = useTranslation("menu");
     const dispatch = useAppDispatch();
-    // sum of each recipe's own per-portion calories - null recipes contribute nothing, matching the backend's SUM(COALESCE(...)) in findMenuCalories; 0 is falsy, so an empty/zero-calorie menu also reads as "no calorie data" rather than a literal 0
-    const menuCalories =
-        menu.recipes.reduce(
-            (total, recipe) => total + (recipe.calories_per_portion ?? 0),
-            0,
-        ) || null;
+    const menuCalories = menuCaloriesPerPortion(menu.recipes);
     const handleLogIntake = useLogIntakeHandler({
         menuId: menu.menu.id,
         title: menu.menu.title,
         caloriesPerPortion: menuCalories,
     });
+    const handleCook = useCookedItHandler({
+        menuId: menu.menu.id,
+        title: menu.menu.title,
+        requirements: menuCookRequirements(menu.recipes),
+        caloriesPerPortion: menuCalories,
+        isSignedIn: menu.menu.isFavourite !== null,
+    });
     const exceedsBudget = useExceedsCalorieBudget(menuCalories);
+
+    // the missing-ingredients panel was computed by the server render
+    useRefreshOnServerData();
     const totalCookingTime = menu.recipes.reduce(
         (total, recipe) => total + recipe.cooking_time,
         0,
@@ -85,6 +95,7 @@ export const MenuDetailsView: React.FC<MenuDetailsViewProps> = ({ menu }) => {
                         );
                     }}
                     onLogIntake={handleLogIntake}
+                    onCook={handleCook}
                 />
             </div>
         </AppShell>

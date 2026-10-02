@@ -12,6 +12,7 @@ import {
     PurchaseHistoryModal,
     RestockIngredientModal,
 } from "./ModalRoot.lazy";
+import { renderCookingModal } from "./ModalRoot.renderers.cooking";
 
 // the calorie-feature modals manage their own dispatch/close internally (like DeleteIngredientModal), so they only need the modal itself
 const renderCalorieModal = (modal: ActiveModal | null) => {
@@ -48,7 +49,7 @@ const renderCalorieModal = (modal: ActiveModal | null) => {
         );
     }
 
-    return null;
+    return renderCookingModal(modal);
 };
 
 // app-level modals with no payload of their own - both are enqueued rather than rendered

@@ -158,6 +158,7 @@
         "metaFallbackDescriptionUncategorised_few": "Jadłospis z {{count}} przepisów.",
         "metaFallbackDescriptionUncategorised_many": "Jadłospis z {{count}} przepisów.",
         "metaFallbackDescriptionUncategorised_other": "Jadłospis z {{count}} przepisu.",
-        "creationDate": "Data dodania"
+        "creationDate": "Data dodania",
+        "cookedIt": "Ugotowane"
     }
 }

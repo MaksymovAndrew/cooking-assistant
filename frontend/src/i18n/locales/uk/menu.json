@@ -158,6 +158,7 @@
         "metaFallbackDescriptionUncategorised_few": "Меню з {{count}} рецептів.",
         "metaFallbackDescriptionUncategorised_many": "Меню з {{count}} рецептів.",
         "metaFallbackDescriptionUncategorised_other": "Меню з {{count}} рецепта.",
-        "creationDate": "Дата створення"
+        "creationDate": "Дата створення",
+        "cookedIt": "Приготовано"
     }
 }

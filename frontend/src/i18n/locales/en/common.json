@@ -153,7 +153,12 @@
         "profileUpdated": "Profile updated",
         "accountDeleted": "Account deleted",
         "calorieIntakeDeleted": "Entry deleted",
-        "intakeLogged": "Logged to today's intake"
+        "intakeLogged": "Logged to today's intake",
+        "cooked_one": "Cooked! {{count}} product taken from your pantry",
+        "cooked_other": "Cooked! {{count}} products taken from your pantry",
+        "cookedNothing": "Cooked! None of it was in your pantry",
+        "undo": "Undo",
+        "cookingUndone": "Undone - everything is back in your pantry"
     },
     "timeAgo": {
         "justNow": "Just now",

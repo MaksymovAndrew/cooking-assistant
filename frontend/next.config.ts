@@ -26,10 +26,16 @@ const scssLoadPaths = [srcDir, path.join(rootDir, "node_modules")];
 const themeColors = readThemeColors();
 const isProduction = process.env.NODE_ENV === "production";
 
+const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
+
 const apiProxyTarget = process.env.API_INTERNAL_URL ?? "http://localhost:3000";
 
 // the Content-Security-Policy is not here: it carries a per-request nonce, so src/proxy.ts sends it
 const SECURITY_HEADERS = [
+    {
+        key: "Strict-Transport-Security",
+        value: `max-age=${ONE_YEAR_IN_SECONDS}; includeSubDomains; preload`,
+    },
     { key: "X-Frame-Options", value: "DENY" },
     { key: "X-Content-Type-Options", value: "nosniff" },
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

@@ -246,6 +246,8 @@ backend/
     │   ├── rateLimit.ts      createGlobalLimiter + per-route limiters: login/register (each with a
     │   │                     stricter per-login limiter and a looser per-IP one), forgotPassword,
     │   │                     resetPassword, changePassword, resendVerification, confirmEmail, deleteAccount
+    │   ├── requestLogger.ts  pino-http request logging: request id, short log lines, quiet health/media
+    │   ├── requestLogger.ts  pino-http request logging: request id, short log lines, quiet health/media
     │   └── errorHandler.ts   turns every error into a { error, code } response (mounted last)
     │
     ├── routes/               route factories (controller) => router, all under /api
@@ -269,7 +271,9 @@ domain, with the shared types in `composition-root.types.ts`) and consumed by [s
 public health check, the media route, a global rate limiter, then the domain routers in the order
 [src/routes/domainRouters.ts](src/routes/domainRouters.ts) lists them, and finally the error handler.
 Every request gets an id (the caller's `X-Request-Id` when it is a plain token, else a fresh UUID),
-answered in the same header and attached to its log lines.
+answered in the same header and attached to its log lines. A request line is kept short
+([src/middleware/requestLogger.ts](src/middleware/requestLogger.ts)): the id, method, URL, `User-Agent`,
+`X-Forwarded-For`, status and response time - no other header of the request or the response.
 
 - **routes/** - factory functions `(controller) => router`; map `METHOD /path` directly to a
   controller handler, guard with `authenticateToken` (the public routes are `/health`, `/register`,
@@ -405,7 +409,7 @@ reads it. Cookie name and options live in [src/config/cookie.ts](src/config/cook
     its own 5/min bucket. Forgot-password keys on `email`; change-password/resend-verification key on the
     authenticated `req.user.id` (a stolen session cookie, not a shared network, is the threat there) - see
     `userIdLimiterKey` in the same file. Login returns the same generic error for unknown user vs wrong
-    password (anti-enumeration). pino redacts the `cookie` and `authorization` headers from logs.
+    password (anti-enumeration). Request logs carry neither the `cookie` nor the `authorization` header: the serializers leave them out, and pino redacts them should one ever be let back in.
 
 8. Every error response carries a stable machine-readable `code` alongside its text (see
    [Error codes and the message catalog](#error-codes-and-the-message-catalog)), so the frontend can show

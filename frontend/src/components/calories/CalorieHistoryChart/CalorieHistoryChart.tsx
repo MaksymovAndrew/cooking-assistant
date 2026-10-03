@@ -14,6 +14,7 @@ import {
     computeStreak,
     isDayInBudget,
 } from "utils/computeDailyIntake";
+import { sumBy } from "utils/sum";
 
 import { CalorieHistoryBars } from "./CalorieHistoryBars";
 import styles from "./CalorieHistoryChart.module.scss";
@@ -48,10 +49,7 @@ export const CalorieHistoryChart: React.FC<CalorieHistoryChartProps> = ({
     const best = computeBestStreak(days, goal);
     const average =
         days.length > 0
-            ? Math.round(
-                  days.reduce((sum, day) => sum + day.consumed, 0) /
-                      days.length,
-              )
+            ? Math.round(sumBy(days, (day) => day.consumed) / days.length)
             : 0;
     const daysOnGoal = days.filter((day) => isDayInBudget(day, goal)).length;
 

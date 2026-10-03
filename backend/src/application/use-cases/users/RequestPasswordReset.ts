@@ -1,3 +1,4 @@
+import { logger } from "config/logger";
 import { PASSWORD_RESET_TOKEN_TTL_SECONDS } from "config/security";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
@@ -24,7 +25,7 @@ export default class RequestPasswordReset {
         const candidate =
             await this.userRepository.findPasswordResetCandidateByEmail(email);
 
-        // silently no-ops for "no such email" and "unverified email" alike - same response either way (anti-enumeration)
+        // no such email and an unverified one answer alike (anti-enumeration)
         if (!candidate?.email_verified_at) {
             return;
         }
@@ -43,10 +44,11 @@ export default class RequestPasswordReset {
             candidate.locale,
         );
 
-        await this.emailSender.sendPasswordResetEmail(
-            email,
-            link,
-            candidate.locale,
-        );
+        // not awaited: the mail provider's latency would reveal a real, verified address
+        this.emailSender
+            .sendPasswordResetEmail(email, link, candidate.locale)
+            .catch((err: unknown) => {
+                logger.error({ err }, "password reset email failed");
+            });
     }
 }

@@ -64,7 +64,7 @@ export const MenuStatsTiles: React.FC<MenuStatsTilesProps> = ({
                 label={t("statsPage.mostUsedCategoryTile")}
                 value={
                     mostUsedCategory
-                        ? menuCategoryName(t, mostUsedCategory.categoryname)
+                        ? menuCategoryName(t, mostUsedCategory.categoryName)
                         : NO_VALUE
                 }
                 valueVariant="text"

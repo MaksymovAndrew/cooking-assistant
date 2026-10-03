@@ -6,7 +6,6 @@ import { API_ROUTES } from "api/endpoints";
 
 import { menuCategoriesApi } from "redux/services/menuCategoriesApi";
 import { menusApi } from "redux/services/menusApi";
-import { recipesApi } from "redux/services/recipesApi";
 
 import { useUpdateMenuPage } from "hooks/useUpdateMenuPage";
 
@@ -20,7 +19,7 @@ jest.mock("api/client");
 
 const TITLE = "Weekday menu";
 const CATEGORY_ID = 2;
-// distinct from recipe_id on purpose: the hook must map menu.recipes through recipe_id, so a test that conflated the two fields could pass for the wrong reason
+// id differs from recipe_id on purpose, so a hook mapping the wrong field fails here
 const MENU_RECIPE = {
     id: 99,
     recipe_id: 10,
@@ -42,8 +41,8 @@ const SAMPLE: MenuDetails = {
         id: 1,
         title: TITLE,
         language: "en",
-        categoryname: "Lunch",
-        menucontent: "quick",
+        categoryName: "Lunch",
+        menuContent: "quick",
         category_id: CATEGORY_ID,
         isOwner: true,
         photo_key: null,
@@ -55,12 +54,11 @@ const SAMPLE: MenuDetails = {
     allergens: [],
 };
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts, so useGetMenuByIdQuery/etc. read already-fulfilled data on first render instead of racing a guessed number of promise ticks
+// the cache is filled before the hook mounts, so its queries read finished data on first render
 const setup = async (sample: MenuDetails = SAMPLE) => {
     mockGetByUrl({
         [API_ROUTES.menu.byId("1")]: sample,
         [API_ROUTES.menuCategories.list]: CATEGORIES,
-        [API_ROUTES.recipes.list]: [],
     });
 
     const store = makeTestStore();
@@ -70,7 +68,6 @@ const setup = async (sample: MenuDetails = SAMPLE) => {
         store.dispatch(
             menuCategoriesApi.endpoints.getMenuCategories.initiate(null),
         ),
-        store.dispatch(recipesApi.endpoints.getAllRecipes.initiate(null)),
     ]);
 
     return renderHookWithStore(() => useUpdateMenuPage(), store);
@@ -86,7 +83,16 @@ describe("useUpdateMenuPage", () => {
 
         expect(result.current.form.menuTitle).toBe(TITLE);
         expect(result.current.form.selectedCategory).toBe(CATEGORY_ID);
-        expect(result.current.isLoading).toBe(false);
+        expect(result.current.form.selectedRecipes).toEqual([
+            {
+                id: MENU_RECIPE.recipe_id,
+                title: "Borscht",
+                type_name: "Soup",
+                creation_date: "2024-01-01",
+                cooking_time: 60,
+            },
+        ]);
+        expect(result.current.pageState).toBe("ready");
     });
 
     it("should update the menu and navigate to menus on valid submit", async () => {

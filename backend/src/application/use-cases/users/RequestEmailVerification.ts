@@ -8,7 +8,6 @@ import type { TokenService } from "application/ports/TokenService";
 
 import { emailLink } from "./emailLink";
 
-// re-sends the verification link for the email already on file - used by Settings and the Home nudge
 export default class RequestEmailVerification {
     constructor(
         private userRepository: Pick<UserRepository, "findById">,

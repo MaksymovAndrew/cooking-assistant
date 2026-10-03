@@ -11,6 +11,7 @@ import { errorBody } from "test/helpers/errorBody";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const RECIPE_PHOTO_PATH = "/api/recipe/5/photo";
+const MENU_PHOTO_PATH = "/api/menu/3/photo";
 const CONTENT_TYPE = "Content-Type";
 const IMAGE_JPEG = "image/jpeg";
 const JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
@@ -19,7 +20,6 @@ const VARIANTS = IMAGE_VARIANTS.map((spec) => ({
     data: Buffer.from(spec.name),
 }));
 const UUID = /^[0-9a-f-]{36}$/;
-// one byte over the 10 MB upload limit
 const OVERSIZED = Buffer.alloc(10 * 1024 * 1024 + 1);
 
 function buildUploadApp() {
@@ -108,7 +108,7 @@ describe("photo routes", () => {
         expect(deps.imageProcessor.toVariants).not.toHaveBeenCalled();
     });
 
-    it("should accept an image sent with no Content-Type at all", async () => {
+    it("should accept an image sent as a generic application/octet-stream", async () => {
         const { app } = buildUploadApp();
 
         const res = await request(app)
@@ -146,13 +146,44 @@ describe("photo routes", () => {
         expect(deps.imageProcessor.toVariants).not.toHaveBeenCalled();
     });
 
+    it("should store a menu photo, then delete the files of the one it replaced", async () => {
+        const { app, deps } = buildUploadApp();
+
+        deps.photoRepository.replace.mockResolvedValue({
+            previousKey: "old-key",
+        });
+
+        const res = await request(app)
+            .put(MENU_PHOTO_PATH)
+            .set("Cookie", authCookie(7))
+            .set(CONTENT_TYPE, IMAGE_JPEG)
+            .send(JPEG);
+
+        const body = res.body as { photo_key: string };
+
+        expect(res.status).toBe(200);
+        expect(body.photo_key).toMatch(UUID);
+        expect(deps.mediaStorage.save).toHaveBeenCalledWith(
+            body.photo_key,
+            VARIANTS,
+        );
+        expect(deps.photoRepository.replace).toHaveBeenCalledWith(
+            7,
+            "menu",
+            3,
+            body.photo_key,
+        );
+        expect(deps.mediaStorage.remove).toHaveBeenCalledTimes(1);
+        expect(deps.mediaStorage.remove).toHaveBeenCalledWith("old-key");
+    });
+
     it("should map a menu that is not the user's to a 404", async () => {
         const { app, deps } = buildUploadApp();
 
         deps.photoRepository.replace.mockResolvedValue(null);
 
         const res = await request(app)
-            .put("/api/menu/3/photo")
+            .put(MENU_PHOTO_PATH)
             .set("Cookie", authCookie(7))
             .set(CONTENT_TYPE, IMAGE_JPEG)
             .send(JPEG);
@@ -181,56 +212,31 @@ describe("photo routes", () => {
         );
     });
 
-    it("should remove a recipe photo with a 204", async () => {
-        const { app, deps } = buildUploadApp();
+    it.each([
+        [RECIPE_PHOTO_PATH, "recipe", 5],
+        [MENU_PHOTO_PATH, "menu", 3],
+        ["/api/me/avatar", "avatar", 7],
+    ] as const)(
+        "should remove the photo at %s with a 204 and delete its files",
+        async (path, target, targetId) => {
+            const { app, deps } = buildUploadApp();
 
-        deps.photoRepository.replace.mockResolvedValue({
-            previousKey: "old-key",
-        });
+            deps.photoRepository.replace.mockResolvedValue({
+                previousKey: "old-key",
+            });
 
-        const res = await request(app)
-            .delete(RECIPE_PHOTO_PATH)
-            .set("Cookie", authCookie(7));
+            const res = await request(app)
+                .delete(path)
+                .set("Cookie", authCookie(7));
 
-        expect(res.status).toBe(204);
-        expect(deps.photoRepository.replace).toHaveBeenCalledWith(
-            7,
-            "recipe",
-            5,
-            null,
-        );
-        expect(deps.mediaStorage.remove).toHaveBeenCalledWith("old-key");
-    });
-
-    it("should remove the avatar photo with a 204", async () => {
-        const { app, deps } = buildUploadApp();
-
-        const res = await request(app)
-            .delete("/api/me/avatar")
-            .set("Cookie", authCookie(7));
-
-        expect(res.status).toBe(204);
-        expect(deps.photoRepository.replace).toHaveBeenCalledWith(
-            7,
-            "avatar",
-            7,
-            null,
-        );
-    });
-
-    it("should remove a menu cover with a 204", async () => {
-        const { app, deps } = buildUploadApp();
-
-        const res = await request(app)
-            .delete("/api/menu/3/photo")
-            .set("Cookie", authCookie(7));
-
-        expect(res.status).toBe(204);
-        expect(deps.photoRepository.replace).toHaveBeenCalledWith(
-            7,
-            "menu",
-            3,
-            null,
-        );
-    });
+            expect(res.status).toBe(204);
+            expect(deps.photoRepository.replace).toHaveBeenCalledWith(
+                7,
+                target,
+                targetId,
+                null,
+            );
+            expect(deps.mediaStorage.remove).toHaveBeenCalledWith("old-key");
+        },
+    );
 });

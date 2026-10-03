@@ -16,8 +16,6 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-// targets recompute-on-write, the calories_override COALESCE, the menu LEFT JOIN sum, and the
-// ownership-scoped delete/goal update - all invisible to mocked-repository unit tests
 describe("PgCalorieRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgCalorieRepository;
@@ -111,10 +109,10 @@ describe("PgCalorieRepository (real Postgres)", () => {
             personId,
             recipeIds: [recipeAId, recipeBId],
         });
-        const menuId = (await menuRepository.create(menu, [
+        const menuId = await menuRepository.create(menu, [
             recipeAId,
             recipeBId,
-        ])) as number;
+        ]);
 
         const found = await repository.findMenuCalories(menuId);
 
@@ -147,10 +145,10 @@ describe("PgCalorieRepository (real Postgres)", () => {
             personId,
             recipeIds: [knownRecipeId, unknownRecipeId],
         });
-        const menuId = (await menuRepository.create(menu, [
+        const menuId = await menuRepository.create(menu, [
             knownRecipeId,
             unknownRecipeId,
-        ])) as number;
+        ]);
 
         const found = await repository.findMenuCalories(menuId);
 

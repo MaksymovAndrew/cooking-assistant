@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 
 import { PrivateRoute } from "components/layout/PrivateRoute";
 
-// one rule for the whole private area rather than a line per page: nothing under here is
-// meaningful to a crawler, and every page of it answers a guest with a redirect to login
+// nothing here is meaningful to a crawler: every page answers a guest with a login redirect
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 interface PrivateLayoutProps {

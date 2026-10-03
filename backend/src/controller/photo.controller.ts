@@ -14,7 +14,6 @@ interface PhotoControllerDependencies {
     removeAvatarPhoto: RemovePhoto;
 }
 
-// an upload answers with the new key so the client can show it at once; a removal has nothing to say
 export default class PhotoController {
     private uploadRecipePhotoUseCase: UploadPhoto;
     private removeRecipePhotoUseCase: RemovePhoto;

@@ -1,5 +1,8 @@
 import i18next from "i18next";
 
+import ukCommon from "i18n/locales/uk/common.json";
+import { getServerTranslation } from "i18n/server";
+
 import {
     menuCategoryName,
     quantityWithUnit,
@@ -14,8 +17,12 @@ const UNKNOWN_TYPE = "Brunch special";
 const STORED_DESCRIPTION = "stored description";
 
 describe("recipeTypeName", () => {
-    it("should find a type by its stored English name", () => {
-        expect(recipeTypeName(t, "Main course")).toBe("Main course");
+    it("should find a type by its stored English name", async () => {
+        const uk = await getServerTranslation("uk");
+
+        expect(recipeTypeName(uk, "Main course")).toBe(
+            ukCommon.recipeTypes.main_course.name,
+        );
     });
 
     it("should fall back to the stored name for a type it does not know", () => {
@@ -24,9 +31,13 @@ describe("recipeTypeName", () => {
 });
 
 describe("recipeTypeLabel", () => {
-    it("should name a type and give nothing for a recipe without one", () => {
-        expect(recipeTypeLabel(t, "Dessert")).toBe("Dessert");
-        expect(recipeTypeLabel(t, null)).toBeNull();
+    it("should name a type and give nothing for a recipe without one", async () => {
+        const uk = await getServerTranslation("uk");
+
+        expect(recipeTypeLabel(uk, "Dessert")).toBe(
+            ukCommon.recipeTypes.dessert.name,
+        );
+        expect(recipeTypeLabel(uk, null)).toBeNull();
     });
 });
 
@@ -47,8 +58,12 @@ describe("recipeTypeDescription", () => {
 });
 
 describe("menuCategoryName", () => {
-    it("should find a category by its stored English name", () => {
-        expect(menuCategoryName(t, "Dinner")).toBe("Dinner");
+    it("should find a category by its stored English name", async () => {
+        const uk = await getServerTranslation("uk");
+
+        expect(menuCategoryName(uk, "Dinner")).toBe(
+            ukCommon.menuCategories.dinner,
+        );
     });
 
     it("should fall back to the stored name for a category it does not know", () => {

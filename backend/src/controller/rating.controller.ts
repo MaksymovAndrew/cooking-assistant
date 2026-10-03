@@ -12,7 +12,6 @@ interface RatingControllerDependencies {
     removeMenuRating: RemoveRating;
 }
 
-// PUT and DELETE are idempotent with nothing to return - the new average arrives with the refetched record
 export default class RatingController {
     private rateRecipeUseCase: RateRecord;
     private removeRecipeRatingUseCase: RemoveRating;

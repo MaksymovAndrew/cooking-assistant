@@ -1,83 +1,92 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { deleteMenu, deleteRecipe } from "./api";
 import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE, readSharedAccounts } from "./sharedAccounts";
 
-// visits every private route once - a broken heading or blank screen fails here even if no other spec touches that route
+// visits every route once - a broken heading or blank screen fails here even if no other spec touches that route
 test.describe.configure({ mode: "serial" });
 
 let context: BrowserContext;
+let guestContext: BrowserContext;
 let page: Page;
+let guestPage: Page;
 let runId: string;
 let recipeId: string;
 let menuId: string;
 
 const MOBILE_VIEWPORT = { width: 390, height: 844 };
+// the int4 ceiling: well-formed, so the lookup itself answers 404 rather than a validation error
+const MISSING_RECIPE_ID = 2147483647;
+const HTTP_NOT_FOUND = 404;
 
 test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
-    // reuses the shared primary account (registered once in global-setup) instead of registering a fresh one here - keeps the suite's total auth calls low
     context = await browser.newContext({ storageState: PRIMARY_STORAGE_STATE });
     page = await context.newPage();
-});
+    // the sign-in pages are a guest's, so they get a fresh, cookie-less context
+    guestContext = await browser.newContext();
+    guestPage = await guestContext.newPage();
 
-// permanent regression guard: the route each test lands on must not scroll horizontally at 390px
-test.afterEach(async () => {
-    const desktopViewport = page.viewportSize();
-
-    await page.setViewportSize(MOBILE_VIEWPORT);
-    await expect
-        .poll(() =>
-            page.evaluate(
-                () =>
-                    document.documentElement.scrollWidth -
-                    document.documentElement.clientWidth,
-            ),
-        )
-        .toBeLessThanOrEqual(0);
-
-    if (desktopViewport) {
-        await page.setViewportSize(desktopViewport);
-    }
-});
-
-test.afterAll(async () => {
-    await context.close();
-});
-
-test("should create a recipe from /add-recipe and capture its id", async () => {
-    await page.goto("/add-recipe");
-    await expect(
-        page.getByRole("heading", { name: "Create recipe" }),
-    ).toBeVisible();
-
-    const created = await createRecipeViaForm(page, {
+    ({ recipeId } = await createRecipeViaForm(page, {
         title: `Routes recipe ${runId}`,
         description: "Created by routes-smoke e2e.",
         ingredient: "Tomato",
         cookingHours: "0",
         cookingMinutes: "15",
-    });
-
-    recipeId = created.recipeId;
-    expect(recipeId).toBeTruthy();
+    }));
+    ({ menuId } = await createMenuViaForm(page, {
+        title: `Routes menu ${runId}`,
+        description: "Created by routes-smoke e2e.",
+        recipeTitle: `Routes recipe ${runId}`,
+    }));
 });
 
-test("should create a menu from /add-menu and capture its id", async () => {
+// permanent regression guard: the route each test lands on must not scroll horizontally at 390px
+test.afterEach(async () => {
+    for (const target of [page, guestPage]) {
+        const desktopViewport = target.viewportSize();
+
+        await target.setViewportSize(MOBILE_VIEWPORT);
+        await expect
+            .poll(() =>
+                target.evaluate(
+                    () =>
+                        document.documentElement.scrollWidth -
+                        document.documentElement.clientWidth,
+                ),
+            )
+            .toBeLessThanOrEqual(0);
+
+        if (desktopViewport) {
+            await target.setViewportSize(desktopViewport);
+        }
+    }
+});
+
+test.afterAll(async () => {
+    try {
+        await deleteMenu(context.request, menuId);
+        await deleteRecipe(context.request, recipeId);
+    } finally {
+        await context.close();
+        await guestContext.close();
+    }
+});
+
+test("should render /add-recipe", async () => {
+    await page.goto("/add-recipe");
+    await expect(
+        page.getByRole("heading", { name: "Create recipe" }),
+    ).toBeVisible();
+});
+
+test("should render /add-menu", async () => {
     await page.goto("/add-menu");
     await expect(
         page.getByRole("heading", { name: "Create menu" }),
     ).toBeVisible();
-
-    const created = await createMenuViaForm(page, {
-        title: `Routes menu ${runId}`,
-        description: "Created by routes-smoke e2e.",
-        recipeTitle: `Routes recipe ${runId}`,
-    });
-
-    menuId = created.menuId;
-    expect(menuId).toBeTruthy();
 });
 
 test("should render the home dashboard at /", async () => {
@@ -178,8 +187,60 @@ test("should render /change-menu/:id", async () => {
 });
 
 test("should render the not-found page for an unknown route", async () => {
-    await page.goto("/this-route-does-not-exist");
+    const response = await page.goto("/this-route-does-not-exist");
+
+    expect(response?.status()).toBe(HTTP_NOT_FOUND);
     await expect(
         page.getByRole("heading", { name: "Page not found" }),
+    ).toBeVisible();
+});
+
+test("should answer a recipe that does not exist with a real 404", async () => {
+    const response = await page.goto(`/recipe/${MISSING_RECIPE_ID}`);
+
+    expect(response?.status()).toBe(HTTP_NOT_FOUND);
+    await expect(
+        page.getByRole("heading", { name: "Page not found" }),
+    ).toBeVisible();
+});
+
+test("should render /login for a guest", async () => {
+    await guestPage.goto("/login");
+    await expect(
+        guestPage.getByRole("heading", { name: "Welcome back" }),
+    ).toBeVisible();
+});
+
+test("should render /registration for a guest", async () => {
+    await guestPage.goto("/registration");
+    await expect(
+        guestPage.getByRole("heading", { name: "Create an account" }),
+    ).toBeVisible();
+});
+
+test("should render /forgot-password for a guest", async () => {
+    await guestPage.goto("/forgot-password");
+    await expect(
+        guestPage.getByRole("heading", { name: "Forgot password" }),
+    ).toBeVisible();
+});
+
+test("should render /reset-password without a token as an invalid link", async () => {
+    await guestPage.goto("/reset-password");
+    await expect(
+        guestPage.getByRole("heading", { name: "Link invalid or expired" }),
+    ).toBeVisible();
+    await expect(
+        guestPage.getByRole("link", { name: "Request a new link" }),
+    ).toBeVisible();
+});
+
+test("should render /verify-email without a token as an invalid link", async () => {
+    await guestPage.goto("/verify-email");
+    await expect(
+        guestPage.getByRole("heading", { name: "Link invalid or expired" }),
+    ).toBeVisible();
+    await expect(
+        guestPage.getByRole("link", { name: "Back to log in" }),
     ).toBeVisible();
 });

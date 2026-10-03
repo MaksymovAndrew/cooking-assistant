@@ -5,6 +5,8 @@ import type {
     RecipeFormCreateMessages,
 } from "types/recipeForm";
 
+import { useFocusFirstInvalid } from "hooks/useFocusFirstInvalid";
+
 import type {
     RecipeFormErrors,
     RecipeFormValues,
@@ -23,9 +25,9 @@ const NO_ERRORS: RecipeFormErrors = {
     cookingTimeError: null,
 };
 
-// the rules live in utils/recipeFormValidation; this only keeps their verdict on screen
 export const useRecipeFormValidation = () => {
     const [errors, setErrors] = useState<RecipeFormErrors>(NO_ERRORS);
+    const { attachForm, focusFirstInvalid } = useFocusFirstInvalid();
 
     const validateCreate = useCallback(
         (values: RecipeFormValues, messages: RecipeFormCreateMessages) => {
@@ -33,9 +35,15 @@ export const useRecipeFormValidation = () => {
 
             setErrors(next);
 
-            return !hasRecipeFormErrors(next);
+            if (hasRecipeFormErrors(next)) {
+                focusFirstInvalid();
+
+                return false;
+            }
+
+            return true;
         },
-        [],
+        [focusFirstInvalid],
     );
 
     // an edit only re-checks the cooking time; the other fields keep whatever they showed
@@ -52,10 +60,16 @@ export const useRecipeFormValidation = () => {
 
             setErrors((current) => ({ ...current, cookingTimeError: error }));
 
-            return error === null;
+            if (error !== null) {
+                focusFirstInvalid();
+
+                return false;
+            }
+
+            return true;
         },
-        [],
+        [focusFirstInvalid],
     );
 
-    return { ...errors, validateCreate, validateChange };
+    return { ...errors, attachForm, validateCreate, validateChange };
 };

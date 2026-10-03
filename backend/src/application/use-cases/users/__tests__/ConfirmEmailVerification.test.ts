@@ -1,5 +1,5 @@
 import { ERROR_CODES } from "constants/errorCodes";
-import { UnauthorizedError } from "domain/errors/AppError";
+import { UnauthorizedError, ValidationError } from "domain/errors/AppError";
 
 import ConfirmEmailVerification from "application/use-cases/users/ConfirmEmailVerification";
 
@@ -60,7 +60,14 @@ describe("ConfirmEmailVerification", () => {
             deps.tokenService,
         );
 
-        await expect(useCase.execute({})).rejects.toThrow();
+        const error = await catchError(useCase.execute({}));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "token: Required",
+        );
         expect(deps.tokenService.verifyPurposeToken).not.toHaveBeenCalled();
     });
 });

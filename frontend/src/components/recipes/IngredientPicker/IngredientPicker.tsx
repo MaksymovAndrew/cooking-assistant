@@ -45,8 +45,7 @@ export const IngredientPicker: React.FC<IngredientPickerProps> = ({
         inputRef.current?.focus();
     };
 
-    // reopens the dropdown on typing after it's been dismissed with Escape - Escape doesn't blur the
-    // input, so onFocus alone never fires again and results would stay hidden until a manual re-click
+    // closing on Escape doesn't blur the input, so typing has to reopen the dropdown
     const handleQueryChange = (value: string) => {
         search.setQuery(value);
         setIsOpen(true);

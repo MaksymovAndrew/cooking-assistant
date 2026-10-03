@@ -1,29 +1,24 @@
 import type { Recipe } from "domain/entities/Recipe";
-import type { PaginatedResult } from "domain/repositories/pagination.types";
-import type { DeletedRecord } from "domain/repositories/PhotoRepository";
-import type {
-    RecipeFilters,
-    RecipeSearchRow,
-} from "domain/repositories/recipe.filters";
-import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types";
+
+import type { PaginatedResult } from "./pagination.types";
+import type { DeletedRecord } from "./PhotoRepository";
+import type { RecipeFilters, RecipeSearchRow } from "./recipe.filters";
+import type { RecipeDetailRow, RecipeRow } from "./recipe.types";
+import type { RecipeStatisticsDto } from "./recipeStats.types";
 
 export interface RecipeRepository {
-    create(recipe: Recipe): Promise<unknown>;
-    findAllWithIngredients(): Promise<unknown[]>;
+    create(recipe: Recipe): Promise<RecipeRow>;
     findByIdWithIngredients(
-        id: string | number,
+        id: number,
         currentUserId: number | null,
-    ): Promise<unknown>;
+    ): Promise<RecipeDetailRow | null>;
+    // null when the record doesn't exist or belongs to someone else
     update(
-        id: string | number,
+        id: number,
         personId: number,
         data: Recipe,
-    ): Promise<unknown>;
-    // null when the record doesn't exist or belongs to someone else
-    deleteById(
-        id: string | number,
-        personId: number,
-    ): Promise<DeletedRecord | null>;
+    ): Promise<RecipeRow | null>;
+    deleteById(id: number, personId: number): Promise<DeletedRecord | null>;
     search(
         userId: number | null,
         filters: RecipeFilters,

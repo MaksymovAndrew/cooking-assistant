@@ -22,8 +22,6 @@ interface TaggedRow {
 
 const TAG_NAME = "Weeknight";
 
-// targets the case-insensitive name rule, the per-person limit, the replace-set write, the per-viewer
-// tags column and the tag filter
 describe("PgTagRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgTagRepository;

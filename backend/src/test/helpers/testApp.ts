@@ -14,7 +14,6 @@ export function buildTestApp() {
     return { app, deps };
 }
 
-// the session is an httpOnly cookie, so tests authenticate via the Cookie header
 export function authCookie(userId = 1): string {
     const token = jwt.sign(
         { id: userId, typ: SESSION_TOKEN_TYPE, sv: 0 },

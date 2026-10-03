@@ -26,7 +26,6 @@ export const useRecipeForm = () => {
     const locale = useLocale();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    // a new recipe starts in the language the author is using the app in
     const [language, setLanguage] = useState<Locale>(locale);
     const [cookingHours, setCookingHours] = useState("");
     const [cookingMinutes, setCookingMinutes] = useState("");

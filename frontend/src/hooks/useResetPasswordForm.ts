@@ -10,12 +10,12 @@ import { useResetPasswordMutation } from "redux/services/accountSecurityApi";
 
 import { useAppRouter } from "hooks/useAppRouter";
 
-import { isValidPassword } from "utils/authValidation";
+import { isPasswordTooLong, isValidPassword } from "utils/authValidation";
 import { getQueryErrorCode, getQueryErrorStatus } from "utils/queryError";
 
 const SERVER_ERROR_STATUS_THRESHOLD = 500;
 
-// INVALID_OR_EXPIRED_TOKEN is handled separately by the caller (flips tokenInvalid), so this covers the rest
+// the caller handles INVALID_OR_EXPIRED_TOKEN itself (tokenInvalid)
 function getResetPasswordErrorMessage(error: unknown, t: TFunction): string {
     if (getQueryErrorCode(error) === ERROR_CODES.NEW_PASSWORD_SAME_AS_CURRENT) {
         return t("errors.newPasswordSameAsCurrent");
@@ -47,6 +47,11 @@ export const useResetPasswordForm = () => {
 
         if (!newPassword || !confirmPassword) {
             setError(t("errors.allFieldsRequired"));
+
+            return;
+        }
+        if (isPasswordTooLong(newPassword)) {
+            setError(t("errors.passwordTooLong"));
 
             return;
         }

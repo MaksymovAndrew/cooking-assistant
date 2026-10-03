@@ -10,7 +10,6 @@ interface BooleanFilterConfig<TParams> {
     chipLabel?: (value: boolean, t: TFunction) => string;
 }
 
-// exported so a page can build a link that pre-sets a boolean filter (see PantryRecipesCard)
 export const BOOLEAN_URL_TRUE = "1";
 
 export function booleanFilter<TParams>({

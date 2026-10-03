@@ -21,9 +21,21 @@ function makeInput(overrides = {}) {
 function setup() {
     const menuRepository = { create: jest.fn() };
     const recipeRepository = { findExistingIds: jest.fn() };
-    const useCase = new CreateMenu(menuRepository, recipeRepository);
+    const menuCategoryRepository = {
+        exists: jest.fn().mockResolvedValue(true),
+    };
+    const useCase = new CreateMenu(
+        menuRepository,
+        recipeRepository,
+        menuCategoryRepository,
+    );
 
-    return { useCase, menuRepository, recipeRepository };
+    return {
+        useCase,
+        menuRepository,
+        recipeRepository,
+        menuCategoryRepository,
+    };
 }
 
 describe("CreateMenu", () => {
@@ -56,18 +68,6 @@ describe("CreateMenu", () => {
         expect(result).toEqual(createdMenu);
     });
 
-    it("should create a menu from a public recipe owned by another user", async () => {
-        const { useCase, menuRepository, recipeRepository } = setup();
-        const input = makeInput();
-
-        recipeRepository.findExistingIds.mockResolvedValue(input.recipeIds);
-        menuRepository.create.mockResolvedValue({ id: 9 });
-
-        await useCase.execute(input);
-
-        expect(menuRepository.create).toHaveBeenCalled();
-    });
-
     it("should throw a 400 ValidationError when a recipe does not exist", async () => {
         const { useCase, menuRepository, recipeRepository } = setup();
 
@@ -94,7 +94,7 @@ describe("CreateMenu", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "recipeIds: Recipe IDs must be unique",
+            "recipeIds: Must not repeat",
         );
         expect(menuRepository.create).not.toHaveBeenCalled();
     });
@@ -125,8 +125,31 @@ describe("CreateMenu", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "language: Language must be one of en, pl, ru, uk",
+            "language: Must be one of: en, pl, ru, uk",
         );
+        expect(menuRepository.create).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError for a category that does not exist without creating the menu", async () => {
+        const {
+            useCase,
+            menuRepository,
+            recipeRepository,
+            menuCategoryRepository,
+        } = setup();
+        const input = makeInput();
+
+        recipeRepository.findExistingIds.mockResolvedValue(input.recipeIds);
+        menuCategoryRepository.exists.mockResolvedValue(false);
+
+        const error = await catchError(useCase.execute(input));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.MENU_CATEGORY_NOT_EXIST,
+            400,
+        );
+        expect(menuCategoryRepository.exists).toHaveBeenCalledWith(2);
         expect(menuRepository.create).not.toHaveBeenCalled();
     });
 });

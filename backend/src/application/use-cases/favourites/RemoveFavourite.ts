@@ -6,8 +6,7 @@ import type {
 import { idSchema } from "application/validation/common.schemas";
 import { validate } from "application/validation/validate";
 
-// idempotent: removing what isn't favourited - or a recipe or menu already deleted, whose favourites
-// cascaded away with it - is simply a no-op
+// idempotent: removing a missing favourite, even of a deleted record, is a no-op
 export default class RemoveFavourite {
     constructor(
         private favouriteRepository: Pick<FavouriteRepository, "remove">,

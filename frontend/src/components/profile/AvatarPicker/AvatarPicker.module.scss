@@ -16,8 +16,7 @@
     background: none;
     cursor: pointer;
 
-    // a plain `outline` doesn't hug a fully round (pill) element in every browser - a circular
-    // box-shadow keeps the ring perfectly round instead of the squarish default outline
+    // a box-shadow ring, since an outline doesn't hug a round element in every browser
     &:focus-visible {
         outline: none;
         box-shadow:
@@ -33,8 +32,7 @@
 .avatar-picker__option--selected {
     border-color: var(--brand);
 
-    // higher specificity than the plain :hover rule above, so hovering a selected avatar
-    // keeps its brand-colored ring instead of it being overridden back to the neutral hover color
+    // keeps a hovered selected avatar's brand ring over the plain hover rule above
     @include on-hover {
         border-color: var(--brand);
     }

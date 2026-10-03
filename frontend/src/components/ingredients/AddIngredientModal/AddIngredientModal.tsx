@@ -49,9 +49,7 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
             size="md"
             title={t("addIngredientModal.title")}
             onClose={onClose}
-            // while the dropdown is open, its own Escape handler (usePopoverDismiss below) should close
-            // just the dropdown - BaseModal's document-level listener is registered first (at mount) and
-            // would otherwise fire first and close the whole modal on the same keypress
+            // BaseModal's Escape listener fires first, so it is off while the dropdown is open
             closeOnEscape={wizard.step === "pick" ? !isOpen : true}
             footer={
                 <AddIngredientModalFooter

@@ -28,8 +28,10 @@ e2e/.auth/
 # Testcontainers db-integration connection handoff file
 backend/src/test/db-integration/.connection.json
 
-# Local secrets - keep .env out of git, commit .env.example instead
+# Local secrets - keep every .env out of git, commit .env.example instead
 .env
+.env.*
+!.env.example
 
 # user-uploaded images in local development
 backend/uploads/
@@ -37,8 +39,7 @@ backend/uploads/
 /orc/
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+.vscode/
 .idea
 .DS_Store
 *.suo

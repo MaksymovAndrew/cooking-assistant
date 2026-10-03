@@ -10,6 +10,7 @@ ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copy manifests first to cache the npm ci layer independently of source changes.
 COPY package*.json ./
@@ -29,6 +30,7 @@ FROM node:24-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 # standalone's server.js binds HOSTNAME:PORT; the default host is loopback, which the reverse
 # proxy on the shared network cannot reach
 ENV HOSTNAME=0.0.0.0

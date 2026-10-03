@@ -6,7 +6,6 @@ import styles from "./StatsSkeleton.module.scss";
 const TILE_KEYS = ["recipes", "time", "type", "calories"];
 const CARD_KEYS = ["types", "times"];
 
-// the page's own shape - a row of tiles over two chart cards - so nothing jumps when it loads
 export const StatsSkeleton: React.FC = () => {
     const { t } = useTranslation("stats");
 

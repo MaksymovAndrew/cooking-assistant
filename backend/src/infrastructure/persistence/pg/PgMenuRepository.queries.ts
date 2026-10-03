@@ -7,25 +7,21 @@ import type {
 } from "domain/repositories/menu.filters";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 
-import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
-import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
-import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
-import { MENU_FILTER_CLAUSES } from "infrastructure/persistence/pg/menuFilterClauses";
-import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
-import {
-    ratingColumns,
-    ratingSortOrder,
-} from "infrastructure/persistence/pg/ratingColumns";
-import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import { authorColumn } from "./authorColumn";
+import { isFavouriteColumn } from "./isFavouriteColumn";
+import { isOwnerColumn } from "./isOwnerColumn";
+import { MENU_FILTER_CLAUSES } from "./menuFilterClauses";
+import { extractPaginatedRows } from "./pagination";
+import { ratingColumns, ratingSortOrder } from "./ratingColumns";
+import { SqlFilterBuilder } from "./sqlFilterBuilder";
 
 interface MenuSearchQueryRow extends MenuSearchRow {
     total_count: number;
 }
 
-// shared by both paginated list queries: menu_recipe joined for the per-menu recipe count needs this GROUP BY over every non-aggregated selected column
 const MENU_LIST_GROUP_BY = ` GROUP BY m.menu_id, mc.category_name`;
 
-// newest first; menu_id is the primary key, so it settles ties deterministically
+// menu_id breaks ties, so OFFSET pages never repeat or skip a menu
 export const MENU_ORDER_BY = ` ORDER BY m.creation_date DESC, m.menu_id DESC`;
 
 function buildMenuListSelect(ownerPlaceholder: string): string {
@@ -33,8 +29,8 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
       SELECT
         m.menu_id AS id,
         m.menu_title AS title,
-        mc.category_name AS categoryName,
-        m.menu_content AS menuContent,
+        mc.category_name AS "categoryName",
+        m.menu_content AS "menuContent",
         m.language,
         m.photo_key,
         m.creation_date,
@@ -51,7 +47,6 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
     `;
 }
 
-// shared tail of both menu list queries: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed
 async function runMenuSearch(
     pool: Pool,
     builder: SqlFilterBuilder,

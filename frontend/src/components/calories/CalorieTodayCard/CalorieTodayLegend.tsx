@@ -34,7 +34,6 @@ export const CalorieTodayLegend: React.FC<CalorieTodayLegendProps> = ({
     const { t } = useTranslation("calories");
     const locale = useLocale();
 
-    // over the limit the ring reads as goal + overshoot, below it as eaten + left
     const rows: LegendRow[] = isOverLimit
         ? [
               {

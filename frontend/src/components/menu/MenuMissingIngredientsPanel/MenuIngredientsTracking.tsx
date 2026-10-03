@@ -1,7 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import type { AggregatedIngredient } from "utils/menuUtils";
+import {
+    type AggregatedIngredient,
+    countMissingIngredients,
+} from "utils/menuUtils";
 
 import { MenuIngredientRow } from "./MenuIngredientRow";
 import { MenuIngredientsActions } from "./MenuIngredientsActions";
@@ -11,27 +14,25 @@ interface MenuIngredientsTrackingProps {
     ingredients: Record<number, AggregatedIngredient>;
 }
 
-// the pantry-aware section of MenuMissingIngredientsPanel - split out to keep the panel under
-// the components/ max-lines cap, and only rendered for a viewer with a pantry to check against
 export const MenuIngredientsTracking: React.FC<
     MenuIngredientsTrackingProps
 > = ({ ingredients }) => {
     const { t } = useTranslation("menu");
     const entries = Object.entries(ingredients);
-    const missingCount = entries.filter(
-        ([, ingredient]) => !ingredient.sufficient,
-    ).length;
+    const missingCount = countMissingIngredients(ingredients);
 
     return (
         <>
             <div className={styles["menu-missing-ingredients-panel__header"]}>
-                <span
-                    className={styles["menu-missing-ingredients-panel__title"]}
-                >
+                <h2 className={styles["menu-missing-ingredients-panel__title"]}>
                     {t("menuDetailsPage.ingredientsPanelTitle")}
-                </span>
+                </h2>
                 {missingCount > 0 && (
                     <span
+                        role="img"
+                        aria-label={t("menuDetailsPage.missingCountLabel", {
+                            count: missingCount,
+                        })}
                         className={
                             styles["menu-missing-ingredients-panel__badge"]
                         }

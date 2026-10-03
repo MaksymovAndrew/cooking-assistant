@@ -1,9 +1,36 @@
 import i18next from "i18next";
 
-import { formatJoinedDate, formatRelativeTime } from "utils/dateUtils";
+import {
+    formatFullDate,
+    formatJoinedDate,
+    formatRelativeTime,
+    formatShortDate,
+} from "utils/dateUtils";
 
 const t = i18next.getFixedT("en");
 const LOCALE = "en";
+
+describe("formatShortDate", () => {
+    it("should keep the stored day from its first minute to its last, in any time zone", () => {
+        expect(formatShortDate("2026-03-01T00:00:00.000Z", LOCALE)).toBe(
+            "Mar 1",
+        );
+        expect(formatShortDate("2026-03-01T23:59:00.000Z", LOCALE)).toBe(
+            "Mar 1",
+        );
+    });
+});
+
+describe("formatFullDate", () => {
+    it("should write the date the page language's way", () => {
+        expect(formatFullDate("2026-03-12T00:00:00.000Z", LOCALE)).toBe(
+            "Mar 12, 2026",
+        );
+        expect(formatFullDate("2026-03-12T00:00:00.000Z", "pl")).toBe(
+            "12 mar 2026",
+        );
+    });
+});
 
 describe("formatJoinedDate", () => {
     it("should format a date as short month and year", () => {

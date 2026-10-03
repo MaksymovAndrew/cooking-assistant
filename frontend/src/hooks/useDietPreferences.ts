@@ -16,15 +16,14 @@ import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 import { useIsHydrated } from "hooks/useIsHydrated";
 import { useLocale } from "hooks/useLocale";
 
+import { ignoreRejection } from "utils/ignoreRejection";
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 const SAVED_INDICATOR_MS = 3000;
 
 // a failed write is rolled back by the api layer and toasted by the global listener
-const ignoreRejection = () => undefined;
 
-// the profile's avoid list: every tap saves on its own, the chip flips at once (see dietPreferencesApi),
-// and a short "saved" note confirms the last write that landed
+// the optimistic flip lives in dietPreferencesApi; this only confirms each write that lands
 export const useDietPreferences = () => {
     const isHydrated = useIsHydrated();
     const { t } = useTranslation();

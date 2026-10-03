@@ -5,16 +5,12 @@ import type { MenuDetails } from "types/menu";
 
 import { API_ROUTES } from "api/endpoints";
 
-import { selectActiveModal } from "redux/selectors/uiSelectors";
-import { MODAL_TYPE } from "redux/slices/uiSlice";
-
 import { ModalRoot } from "components/modals";
 
 import { MenuDetailsView } from "app/[locale]/(public)/menu/[id]/MenuDetailsView";
 import { mockedDelete, mockGetByUrl } from "test/apiClientMock";
 import {
     BTN_DELETE_MENU,
-    BTN_EDIT_MENU,
     ROUTE_ALL_MENUS,
     TEST_AUTHOR,
     TEST_UNRATED,
@@ -25,14 +21,16 @@ import { makeTestStore } from "test/store";
 jest.mock("api/client");
 
 const TITLE = "Weekday menu";
+const LOG_INTAKE_BUTTON = "Log intake";
+const DELETE_DIALOG = "Delete menu?";
 const SAMPLE: MenuDetails = {
     menu: {
         creation_date: "2026-01-01T00:00:00.000Z",
         id: 1,
         title: TITLE,
         language: "en",
-        categoryname: "Lunch",
-        menucontent: "quick",
+        categoryName: "Lunch",
+        menuContent: "quick",
         category_id: 2,
         isOwner: true,
         photo_key: null,
@@ -86,8 +84,7 @@ const SAMPLE_WITH_CALORIES: MenuDetails = {
     ],
 };
 
-// the menu itself comes from the server render now, as a prop; AppShell (via
-// AppHeader/useExpiredIngredientsNotice) still hits getMe and the pantry list from the browser
+// the menu is a prop; AppShell still fetches getMe and the pantry list from the browser
 const renderPage = (
     menu: MenuDetails = SAMPLE,
     store = makeTestStore({ session: { status: "authed" } }),
@@ -111,15 +108,15 @@ const renderPage = (
     );
 };
 
+const openDeleteDialog = async () => {
+    await userEvent.click(
+        screen.getByRole("button", { name: BTN_DELETE_MENU }),
+    );
+
+    return screen.findByRole("dialog", { name: DELETE_DIALOG });
+};
+
 describe("MenuDetailsView", () => {
-    it("should render the menu title it is given", () => {
-        renderPage();
-
-        expect(
-            screen.getByRole("heading", { name: TITLE }),
-        ).toBeInTheDocument();
-    });
-
     it("should render the menu's recipes and its missing ingredients", () => {
         renderPage();
 
@@ -128,31 +125,24 @@ describe("MenuDetailsView", () => {
         expect(screen.getByText("2 pieces")).toBeInTheDocument();
     });
 
-    it("should show Edit and Delete buttons when current user is the menu owner", () => {
+    it("should title the page with one level-one heading, the menu's own", () => {
         renderPage();
 
-        expect(
-            screen.getByRole("link", { name: BTN_EDIT_MENU }),
-        ).toBeInTheDocument();
-        expect(
-            screen.getByRole("button", { name: BTN_DELETE_MENU }),
-        ).toBeInTheDocument();
+        const headings = screen.getAllByRole("heading", { level: 1 });
+
+        expect(headings).toHaveLength(1);
+        expect(headings[0]).toHaveTextContent(TITLE);
     });
 
-    it("should open the global delete modal and navigate to /menu after delete", async () => {
+    it("should delete the menu it names once confirmed and go back to the menu list", async () => {
         mockedDelete.mockResolvedValue({ data: null });
+        renderPage();
 
-        const { store } = renderPage();
+        const dialog = await openDeleteDialog();
 
-        await userEvent.click(
-            screen.getByRole("button", { name: BTN_DELETE_MENU }),
-        );
-
-        expect(selectActiveModal(store.getState())?.type).toBe(
-            MODAL_TYPE.deleteMenu,
-        );
-
-        const dialog = await screen.findByRole("dialog");
+        expect(
+            within(dialog).getByText(/delete "Weekday menu"/),
+        ).toBeInTheDocument();
 
         await userEvent.click(
             within(dialog).getByRole("button", { name: BTN_DELETE_MENU }),
@@ -165,39 +155,41 @@ describe("MenuDetailsView", () => {
     });
 
     it("should close the modal when Cancel is clicked", async () => {
-        const { store } = renderPage();
+        renderPage();
+
+        const dialog = await openDeleteDialog();
 
         await userEvent.click(
-            screen.getByRole("button", { name: BTN_DELETE_MENU }),
+            within(dialog).getByRole("button", { name: "Cancel" }),
         );
-        await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
-        expect(selectActiveModal(store.getState())).toBeNull();
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+        expect(mockedDelete).not.toHaveBeenCalled();
     });
 
     it("should not show the log-intake button when no recipe has calorie data", () => {
         renderPage();
 
         expect(
-            screen.queryByRole("button", { name: "Log intake" }),
+            screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
         ).not.toBeInTheDocument();
     });
 
     it("should open the log-intake modal with the summed calories across recipes", async () => {
-        const { store } = renderPage(SAMPLE_WITH_CALORIES);
+        renderPage(SAMPLE_WITH_CALORIES);
 
         const triggers = screen.getAllByRole("button", {
-            name: "Log intake",
+            name: LOG_INTAKE_BUTTON,
         });
 
         await userEvent.click(triggers[0]);
 
-        expect(selectActiveModal(store.getState())).toMatchObject({
-            type: MODAL_TYPE.logIntake,
-            menuId: 1,
-            title: TITLE,
-            caloriesPerPortion: 600,
+        const dialog = await screen.findByRole("dialog", {
+            name: LOG_INTAKE_BUTTON,
         });
+
+        expect(within(dialog).getByText(TITLE)).toBeInTheDocument();
+        expect(within(dialog).getByText("600 kcal total")).toBeInTheDocument();
     });
 
     it("should not render the missing-ingredients aside for a guest when the menu has no allergens", () => {
@@ -205,5 +197,23 @@ describe("MenuDetailsView", () => {
 
         expect(screen.queryByText("Carrot")).not.toBeInTheDocument();
         expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+    });
+
+    it("should explain a menu whose recipes were all deleted and offer nothing to cook or log", () => {
+        renderPage({ ...SAMPLE, recipes: [] });
+
+        expect(
+            screen.getByText("The recipes in this menu were removed"),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", { name: /Add recipes/ }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: BTN_DELETE_MENU }),
+        ).toBeInTheDocument();
+        expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole("button", { name: /Log intake|Cooked it/ }),
+        ).not.toBeInTheDocument();
     });
 });

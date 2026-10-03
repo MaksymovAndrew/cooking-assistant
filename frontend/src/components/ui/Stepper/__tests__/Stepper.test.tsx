@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { Stepper } from "components/ui/Stepper";
 
 describe("Stepper", () => {
-    it("should display the current value", () => {
+    it("should announce the value politely as it changes", () => {
         render(
             <Stepper
                 value={4}
@@ -14,7 +14,11 @@ describe("Stepper", () => {
             />,
         );
 
-        expect(screen.getByText("4")).toBeInTheDocument();
+        expect(screen.getByRole("status")).toHaveTextContent("4");
+        expect(screen.getByRole("status")).toHaveAttribute(
+            "aria-live",
+            "polite",
+        );
     });
 
     it("should call onChange with value + step when incremented", async () => {

@@ -11,7 +11,7 @@ import type RegisterUser from "application/use-cases/users/RegisterUser";
 import type UpdateLocale from "application/use-cases/users/UpdateLocale";
 import type UpdateProfile from "application/use-cases/users/UpdateProfile";
 
-import { getOptionalUserId, getUserId } from "controller/requestUser";
+import { getOptionalUserId, getUserId } from "./requestUser";
 
 interface UserControllerDependencies {
     registerUser: RegisterUser;
@@ -48,7 +48,7 @@ export default class UserController {
 
     registerUser: RequestHandler = async (req, res) => {
         const { token } = await this.registerUserUseCase.execute(
-            req.body as Record<string, unknown>,
+            req.body,
             requestLocale(req),
         );
 
@@ -59,9 +59,7 @@ export default class UserController {
     };
 
     loginUser: RequestHandler = async (req, res) => {
-        const { token } = await this.loginUserUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
+        const { token } = await this.loginUserUseCase.execute(req.body);
 
         res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
         res.json({ message: translateMessage("loggedIn", requestLocale(req)) });
@@ -85,10 +83,7 @@ export default class UserController {
     };
 
     updateProfile: RequestHandler = async (req, res) => {
-        await this.updateProfileUseCase.execute(
-            getUserId(req),
-            req.body as Record<string, unknown>,
-        );
+        await this.updateProfileUseCase.execute(getUserId(req), req.body);
 
         res.json({
             message: translateMessage("profileUpdated", requestLocale(req)),
@@ -96,19 +91,13 @@ export default class UserController {
     };
 
     updateLocale: RequestHandler = async (req, res) => {
-        await this.updateLocaleUseCase.execute(
-            getUserId(req),
-            req.body as Record<string, unknown>,
-        );
+        await this.updateLocaleUseCase.execute(getUserId(req), req.body);
 
         res.status(204).end();
     };
 
     deleteAccount: RequestHandler = async (req, res) => {
-        await this.deleteAccountUseCase.execute(
-            getUserId(req),
-            req.body as Record<string, unknown>,
-        );
+        await this.deleteAccountUseCase.execute(getUserId(req), req.body);
 
         res.clearCookie(AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS);
         res.json({

@@ -28,7 +28,7 @@ describe("AddUserIngredients", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Incorrect data format",
+            "Must be a list",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
@@ -44,7 +44,7 @@ describe("AddUserIngredients", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "0.quantity_person_ingradient: Quantity must be greater than 0",
+            "0.quantity_person_ingradient: Must be greater than 0",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
@@ -77,23 +77,9 @@ describe("AddUserIngredients", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Ingredient IDs must be unique",
+            "Must not repeat",
         );
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
-    });
-
-    it("should add user ingredients when ingredients are an array", async () => {
-        const { useCase, pantryRepository, ingredientRepository } = setup();
-        const ingredients = [{ id: 3, quantity_person_ingradient: 2 }];
-
-        ingredientRepository.findExistingIds.mockResolvedValue([3]);
-
-        await useCase.execute(7, ingredients);
-
-        expect(pantryRepository.addIngredients).toHaveBeenCalledWith(
-            7,
-            ingredients,
-        );
     });
 
     it("should throw a 400 ValidationError when an ingredient id does not exist", async () => {

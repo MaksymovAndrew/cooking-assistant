@@ -72,15 +72,43 @@ describe("CalorieHistoryChart", () => {
         expect(screen.getByText(GOAL_LABEL)).toBeInTheDocument();
     });
 
+    it("should label each bar with its day and kcal and the weekdays by local date", async () => {
+        mockGetByUrl({
+            [API_ROUTES.calories.intake]: [
+                {
+                    id: 1,
+                    title: "Lunch",
+                    portions: 1,
+                    calories: 1800,
+                    eaten_at: isoOnDay(1),
+                    recipe_id: 1,
+                    menu_id: null,
+                    person_id: 1,
+                },
+            ],
+        });
+
+        renderWithRouter(<CalorieHistoryChart goal={2000} />);
+
+        expect(
+            await screen.findByRole("img", {
+                name: "Tuesday, January 13: 1,800 kcal",
+            }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("img", { name: "Wednesday, January 14: 0 kcal" }),
+        ).toBeInTheDocument();
+        expect(screen.getByText("Tue")).toBeInTheDocument();
+        expect(screen.getByText("Thu")).toBeInTheDocument();
+    });
+
     it("should show the empty state overlaid on the same bars/footer skeleton, not in place of it", async () => {
         mockGetByUrl({ [API_ROUTES.calories.intake]: [] });
 
         renderWithRouter(<CalorieHistoryChart goal={2000} />);
 
         expect(await screen.findByText("No history yet.")).toBeInTheDocument();
-        // the footer still renders (same height as a populated chart), just with the goal line
         expect(screen.getByText(GOAL_LABEL)).toBeInTheDocument();
-        // each day column shows a dash instead of a misleading "0"
         expect(screen.getAllByText("—").length).toBeGreaterThan(0);
     });
 
@@ -97,7 +125,7 @@ describe("CalorieHistoryChart", () => {
         expect(screen.getByText("Days on goal —/30")).toBeInTheDocument();
     });
 
-    it("should switch to the 30-day view and show the footer stats", async () => {
+    it("should switch to the 30-day view and show its daily average and days on goal", async () => {
         jest.useRealTimers();
         mockGetByUrl({
             [API_ROUTES.calories.intake]: [
@@ -120,7 +148,8 @@ describe("CalorieHistoryChart", () => {
 
         await userEvent.click(screen.getByRole("radio", { name: "30 days" }));
 
-        expect(await screen.findByText(/Days on goal/)).toBeInTheDocument();
-        expect(screen.getByText(GOAL_LABEL)).toBeInTheDocument();
+        // one 1,000 kcal day spread over 30 days, and the only day within the goal
+        expect(await screen.findByText("Daily average 33")).toBeInTheDocument();
+        expect(screen.getByText("Days on goal 1/30")).toBeInTheDocument();
     });
 });

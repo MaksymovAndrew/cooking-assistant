@@ -112,7 +112,6 @@
         }
     }
 
-    // still-missing ingredients get the warning highlight, mirroring RecipeIngredientsPanel's row--missing treatment
     &__row--missing {
         border-color: color-mix(in srgb, var(--warning) 35%, var(--border));
         background: color-mix(in srgb, var(--warning) 9%, var(--surface));
@@ -191,7 +190,7 @@
         @include respond-to(tablet) {
             display: inline;
             border-radius: var(--r-sm);
-            color: var(--brand);
+            color: var(--brand-text);
             text-decoration: none;
             font:
                 600 13px Inter,
@@ -287,7 +286,7 @@
         gap: 5px;
         border-color: color-mix(in srgb, var(--brand) 45%, transparent);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__sr-only {

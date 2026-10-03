@@ -1,9 +1,7 @@
 import type { RefObject } from "react";
 import { useEffect, useLayoutEffect, useRef } from "react";
 
-// a control outside the popover container (e.g. a modal footer button) can opt out of being
-// treated as an "outside" click by carrying this attribute - otherwise a mousedown-triggered
-// close mid-click can shift the layout under a still-in-flight mouseup/click
+// opts a control out of outside clicks: a close on mousedown can shift the layout under the click
 export const CLICK_OUTSIDE_SAFE_ATTR = "data-click-outside-safe";
 
 export const useClickOutside = <T extends HTMLElement>(

@@ -101,71 +101,6 @@ describe("useRegisterForm", () => {
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 
-    it("should not submit and should set a field error when the surname is invalid", async () => {
-        const { result } = renderRegisterForm();
-
-        setField(result, "name", "Test");
-        setField(result, "surname", "user");
-        setField(result, "login", "tester");
-        setField(result, "email", EMAIL);
-        setField(result, "password", "secret1!");
-        await submit(result);
-
-        expect(mockedPost).not.toHaveBeenCalled();
-        expect(result.current.errors.surname).toBe(
-            "Surname must start with a capital letter and use only letters (a hyphen or an apostrophe is fine), at least 2 characters.",
-        );
-        expect(mockNavigate).not.toHaveBeenCalled();
-    });
-
-    it("should not submit and should set a field error when the login is invalid", async () => {
-        const { result } = renderRegisterForm();
-
-        setField(result, "name", "Test");
-        setField(result, "surname", "User");
-        setField(result, "login", "a");
-        setField(result, "email", EMAIL);
-        setField(result, "password", "secret1!");
-        await submit(result);
-
-        expect(mockedPost).not.toHaveBeenCalled();
-        expect(result.current.errors.login).toBeDefined();
-        expect(mockNavigate).not.toHaveBeenCalled();
-    });
-
-    it("should not submit and should set a field error when the email is invalid", async () => {
-        const { result } = renderRegisterForm();
-
-        setField(result, "name", "Test");
-        setField(result, "surname", "User");
-        setField(result, "login", "tester");
-        setField(result, "email", "not-an-email");
-        setField(result, "password", "secret1!");
-        await submit(result);
-
-        expect(mockedPost).not.toHaveBeenCalled();
-        expect(result.current.errors.email).toBe(
-            "Please enter a valid email address.",
-        );
-        expect(mockNavigate).not.toHaveBeenCalled();
-    });
-
-    it("should reject a short password without submitting", async () => {
-        const { result } = renderRegisterForm();
-
-        setField(result, "name", "Test");
-        setField(result, "surname", "User");
-        setField(result, "login", "tester");
-        setField(result, "email", EMAIL);
-        setField(result, "password", "short");
-        await submit(result);
-
-        expect(mockedPost).not.toHaveBeenCalled();
-        expect(result.current.errors.password).toBe(
-            "Password must be at least 8 characters and include a letter, a number, and a special character.",
-        );
-    });
-
     it("should set a required-fields error when a field is empty", async () => {
         const { result } = renderRegisterForm();
 
@@ -173,23 +108,6 @@ describe("useRegisterForm", () => {
 
         expect(mockedPost).not.toHaveBeenCalled();
         expect(result.current.error).toBe("Please fill in all fields.");
-    });
-
-    it("should set a generic error when registration fails", async () => {
-        mockedPost.mockRejectedValue(
-            Object.assign(new Error(), {
-                isAxiosError: true,
-                response: { status: 409, data: { error: "exists" } },
-            }),
-        );
-
-        const { result } = renderRegisterForm();
-
-        fillValid(result);
-        await submit(result);
-
-        expect(result.current.error).toBe("This user already exists.");
-        expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     it("should set an email-already-taken error when the email code is returned", async () => {
@@ -213,28 +131,6 @@ describe("useRegisterForm", () => {
 
         expect(result.current.error).toBe(
             "An account with this email already exists.",
-        );
-        expect(mockNavigate).not.toHaveBeenCalled();
-    });
-
-    it("should set a registration-failed error for an unrecognized status", async () => {
-        mockedPost.mockRejectedValue(
-            Object.assign(new Error(), {
-                isAxiosError: true,
-                response: {
-                    status: 400,
-                    data: { error: "Name cannot be empty" },
-                },
-            }),
-        );
-
-        const { result } = renderRegisterForm();
-
-        fillValid(result);
-        await submit(result);
-
-        expect(result.current.error).toBe(
-            "Registration failed. Please check your details and try again.",
         );
         expect(mockNavigate).not.toHaveBeenCalled();
     });

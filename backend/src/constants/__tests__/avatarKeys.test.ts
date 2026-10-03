@@ -3,7 +3,7 @@ import path from "path";
 
 import { AVATAR_KEYS } from "constants/avatarKeys";
 
-// the zod enum for profile updates is built from this list, so a key the frontend offers but this copy lacks rejects a valid avatar
+// profile updates accept only these keys, so a frontend-only key would reject a valid avatar
 const FRONTEND_AVATARS_PATH = path.resolve(
     __dirname,
     "../../../../frontend/src/constants/avatars.ts",

@@ -7,9 +7,7 @@ const getMediaQueryList = (query: string): MediaQueryList | null =>
         : window.matchMedia(query);
 
 export const useMediaQuery = (query: string): boolean => {
-    // false for the server render and the first client render alike - reading the real value
-    // here instead would hydrate a phone with the markup the server built for a desktop. The
-    // effect below corrects it in the same commit as hydration
+    // false at first, as on the server, or a phone would hydrate desktop markup; the effect corrects it
     const [matches, setMatches] = useState(false);
 
     useEffect(() => {

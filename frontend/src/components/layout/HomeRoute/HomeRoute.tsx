@@ -13,9 +13,6 @@ interface HomeRouteProps {
     guestElement: ReactNode;
 }
 
-// "/" is the one route whose content itself depends on auth status, not just its chrome -
-// PrivateRoute's redirect-to-login doesn't apply here since a guest is allowed on "/", they
-// just see the marketing landing instead of the dashboard
 export const HomeRoute: React.FC<HomeRouteProps> = ({
     authedElement,
     guestElement,

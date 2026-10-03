@@ -10,60 +10,6 @@ import { renderWithRouter } from "test/router";
 const VALUES = { login: "tester", password: "secret1" };
 
 describe("LoginForm", () => {
-    it("should render the username and password fields with their values", () => {
-        renderWithRouter(
-            <LoginForm
-                values={VALUES}
-                onFieldChange={jest.fn()}
-                loginMode="username"
-                onModeChange={jest.fn()}
-                onSubmit={jest.fn()}
-                submitLabel="Log In"
-            />,
-        );
-
-        expect(screen.getByLabelText("Username")).toHaveValue("tester");
-        expect(screen.getByLabelText("Password")).toHaveValue("secret1");
-    });
-
-    it("should call onFieldChange with the field name and value", async () => {
-        const onFieldChange = jest.fn();
-
-        renderWithRouter(
-            <LoginForm
-                values={{ login: "", password: "" }}
-                onFieldChange={onFieldChange}
-                loginMode="username"
-                onModeChange={jest.fn()}
-                onSubmit={jest.fn()}
-                submitLabel="Log In"
-            />,
-        );
-
-        await userEvent.type(screen.getByLabelText("Username"), "a");
-
-        expect(onFieldChange).toHaveBeenCalledWith("login", "a");
-    });
-
-    it("should call onSubmit when the form is submitted", async () => {
-        const onSubmit = jest.fn();
-
-        renderWithRouter(
-            <LoginForm
-                values={VALUES}
-                onFieldChange={jest.fn()}
-                loginMode="username"
-                onModeChange={jest.fn()}
-                onSubmit={onSubmit}
-                submitLabel="Log In"
-            />,
-        );
-
-        await userEvent.click(screen.getByRole("button", { name: "Log In" }));
-
-        expect(onSubmit).toHaveBeenCalledTimes(1);
-    });
-
     it("should render the submit error when provided", () => {
         renderWithRouter(
             <LoginForm

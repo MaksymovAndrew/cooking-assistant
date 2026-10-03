@@ -8,17 +8,14 @@ import { useSaveUserIngredientMutation } from "redux/services/userIngredientsApi
 import { closeModal } from "redux/slices/uiSlice";
 
 import { useEditableQuantity } from "hooks/useEditableQuantity";
-import { useLocale } from "hooks/useLocale";
 
 import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
-import { NumberInput } from "components/ui/NumberInput";
 
 import { resolvePantryIngredientName } from "utils/ingredientName";
-import { unitName } from "utils/referenceLabels";
-import { formatQuantity } from "utils/roundQuantity";
+import { restockRequest } from "utils/restockRequest";
 
-import styles from "./RestockIngredientModal.module.scss";
+import { RestockQuantityField } from "./RestockQuantityField";
 
 interface RestockIngredientModalProps {
     modalId: string;
@@ -28,15 +25,12 @@ interface RestockIngredientModalProps {
 const DEFAULT_QUANTITY = 1;
 const MIN_QUANTITY = 0.01;
 
-// buying more of an ingredient you already have: this reuses the same saveUserIngredient
-// endpoint AddIngredientModal uses for brand-new ingredients - it already adds to the existing
-// quantity and logs a new purchase lot dated today, leaving older lots (and their expiry) alone
+// saveUserIngredient adds a new lot dated today, leaving older lots and their expiry alone
 export const RestockIngredientModal = ({
     modalId,
     ingredient,
 }: RestockIngredientModalProps) => {
     const { t } = useTranslation("ingredients");
-    const locale = useLocale();
     const dispatch = useAppDispatch();
     const [saveUserIngredient, { isLoading }] = useSaveUserIngredientMutation();
     const [addedQuantity, setAddedQuantity] = useState(DEFAULT_QUANTITY);
@@ -51,16 +45,9 @@ export const RestockIngredientModal = ({
 
     const handleConfirm = async () => {
         // a failed mutation is already toasted by the global listener
-        const result = await saveUserIngredient({
-            ingredients: [
-                {
-                    id: ingredient.id,
-                    ingredient_name:
-                        ingredient.ingredient_name ?? ingredient.name ?? "",
-                    quantity_person_ingradient: addedQuantity,
-                },
-            ],
-        });
+        const result = await saveUserIngredient(
+            restockRequest(ingredient, addedQuantity),
+        );
 
         if ("data" in result) {
             handleClose();
@@ -93,34 +80,11 @@ export const RestockIngredientModal = ({
                 </>
             }
         >
-            <p className={styles["restock-modal__current"]}>
-                {t("restockModal.current", {
-                    quantity: formatQuantity(
-                        ingredient.quantity_person_ingradient,
-                        locale,
-                    ),
-                    unit: unitName(
-                        t,
-                        ingredient.unit_name,
-                        ingredient.quantity_person_ingradient,
-                    ),
-                })}
-            </p>
-            <div className={styles["restock-modal__input"]}>
-                <NumberInput
-                    min={MIN_QUANTITY}
-                    value={editableQuantity.text}
-                    onChange={editableQuantity.onChange}
-                    onBlur={editableQuantity.onBlur}
-                />
-                <span>
-                    {unitName(
-                        t,
-                        ingredient.unit_name,
-                        Number(editableQuantity.text),
-                    )}
-                </span>
-            </div>
+            <RestockQuantityField
+                ingredient={ingredient}
+                quantity={editableQuantity}
+                min={MIN_QUANTITY}
+            />
         </BaseModal>
     );
 };

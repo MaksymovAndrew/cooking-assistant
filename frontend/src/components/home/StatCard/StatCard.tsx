@@ -1,6 +1,8 @@
 import type { LucideIcon } from "lucide-react";
 import React from "react";
 
+import { cx } from "utils/cx";
+
 import styles from "./StatCard.module.scss";
 
 interface StatCardProps {
@@ -20,12 +22,10 @@ export const StatCard: React.FC<StatCardProps> = ({
     shortLabel,
     tone = "default",
 }) => {
-    const cardClass = [
+    const cardClass = cx(
         styles["stat-card"],
         tone === "warning" && styles["stat-card--warning"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <div className={cardClass}>

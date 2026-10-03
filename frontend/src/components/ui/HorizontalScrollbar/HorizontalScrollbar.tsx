@@ -7,12 +7,7 @@ interface HorizontalScrollbarProps {
     scrollRef: React.RefObject<HTMLElement | null>;
 }
 
-// a custom track+thumb for any horizontally-scrollable element - the native
-// scrollbar is invisible on touch and only shows on desktop hover, so this
-// gives every device the same "there's more content" affordance and lets a
-// mouse/touch drag on the track scroll directly. Renders nothing once the
-// content already fits (tracks size via ResizeObserver, so callers never
-// need to tell it when their content changes)
+// the native scrollbar is invisible on touch screens, so every device gets this draggable one
 export const HorizontalScrollbar: React.FC<HorizontalScrollbarProps> = ({
     scrollRef,
 }) => {
@@ -33,8 +28,7 @@ export const HorizontalScrollbar: React.FC<HorizontalScrollbarProps> = ({
         update();
         el.addEventListener("scroll", update);
 
-        // jsdom (tests) has no ResizeObserver - same guard pattern as
-        // useMediaQuery's window.matchMedia check
+        // jsdom has no ResizeObserver
         const resizeObserver =
             typeof ResizeObserver === "function"
                 ? new ResizeObserver(update)
@@ -57,8 +51,7 @@ export const HorizontalScrollbar: React.FC<HorizontalScrollbarProps> = ({
                 return;
             }
 
-            // not implemented in jsdom (tests) or some older browsers - the
-            // document-level move/up listeners below still work without it
+            // missing in jsdom and some older browsers; the document listeners below work without it
             if (typeof e.currentTarget.setPointerCapture === "function") {
                 e.currentTarget.setPointerCapture(e.pointerId);
             }

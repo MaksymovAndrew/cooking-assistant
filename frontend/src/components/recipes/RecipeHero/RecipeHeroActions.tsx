@@ -18,6 +18,7 @@ interface RecipeHeroActionsProps {
     editTo: string;
     onDelete: () => void;
     onLogIntake?: () => void;
+    onCook?: () => void;
 }
 
 export const RecipeHeroActions: React.FC<RecipeHeroActionsProps> = ({
@@ -29,6 +30,7 @@ export const RecipeHeroActions: React.FC<RecipeHeroActionsProps> = ({
     editTo,
     onDelete,
     onLogIntake,
+    onCook,
 }) => {
     const { t } = useTranslation("recipes");
 
@@ -45,6 +47,8 @@ export const RecipeHeroActions: React.FC<RecipeHeroActionsProps> = ({
                     shareTitle={shareTitle}
                     onLogIntake={onLogIntake}
                     logIntakeLabel={t("recipeDetailsPage.logIntake")}
+                    onCook={onCook}
+                    cookLabel={t("recipeDetailsPage.cookedIt")}
                 />
             </div>
         );
@@ -59,6 +63,8 @@ export const RecipeHeroActions: React.FC<RecipeHeroActionsProps> = ({
                 guestCtaLabel={t("recipeDetailsPage.guestCta")}
                 logIntakeLabel={t("recipeDetailsPage.logIntake")}
                 onLogIntake={onLogIntake}
+                cookLabel={t("recipeDetailsPage.cookedIt")}
+                onCook={onCook}
             />
         </div>
     );

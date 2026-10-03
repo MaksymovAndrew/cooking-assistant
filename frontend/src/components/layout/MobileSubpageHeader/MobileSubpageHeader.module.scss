@@ -37,18 +37,6 @@
         justify-content: center;
     }
 
-    &__title {
-        flex: 1;
-        overflow: hidden;
-        color: var(--text);
-        text-align: center;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font:
-            600 15px Fraunces,
-            serif;
-    }
-
     &__edit {
         display: flex;
         flex: none;

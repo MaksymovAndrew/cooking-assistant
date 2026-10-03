@@ -9,7 +9,7 @@
     border: 1px solid var(--border);
     border-radius: var(--r-md);
     background: var(--surface);
-    color: var(--brand);
+    color: var(--brand-text);
 
     &--danger {
         border-color: color-mix(in srgb, var(--danger) 30%, var(--border));
@@ -17,10 +17,10 @@
         color: var(--danger);
     }
 
-    // at least as wide as its unwrapped title, so a control that doesn't fit beside it wraps
-    // to its own line instead of covering it
+    // as wide as its nowrap title and value, so a control that doesn't fit wraps below, but never wider than the row
     &__text {
         flex: 1;
+        max-width: 100%;
     }
 
     &__title {
@@ -38,15 +38,22 @@
         }
     }
 
+    &__value,
     &__description {
-        display: none;
         margin-top: 2px;
         color: var(--text-muted);
         font:
             400 12px Inter,
             sans-serif;
+    }
 
-        // mobile is tight for a control-bearing row (e.g. the theme segmented control) - drop the description there, keep it from tablet up
+    &__value {
+        @include wrap-anywhere;
+    }
+
+    &__description {
+        display: none;
+
         @include respond-to(tablet) {
             display: block;
         }

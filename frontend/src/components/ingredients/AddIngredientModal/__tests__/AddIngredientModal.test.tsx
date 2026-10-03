@@ -145,7 +145,9 @@ describe("AddIngredientModal", () => {
 
         expect(screen.getByText("Potato")).toBeInTheDocument();
 
-        await userEvent.click(screen.getByRole("button", { name: "Remove" }));
+        await userEvent.click(
+            screen.getByRole("button", { name: "Remove Potato" }),
+        );
 
         expect(onToggle).toHaveBeenCalledWith(1);
     });
@@ -163,24 +165,6 @@ describe("AddIngredientModal", () => {
         );
 
         expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
-    });
-
-    it("should call onClose from the Cancel button", async () => {
-        const onClose = jest.fn();
-
-        render(
-            <AddIngredientModal
-                allIngredients={ALL_INGREDIENTS}
-                personIngredients={OWNED}
-                selectedIngredients={[]}
-                onToggle={jest.fn()}
-                onConfirm={jest.fn()}
-                onClose={onClose}
-            />,
-        );
-
-        await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
-        expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it("should step through each selected ingredient's quantity and call onConfirm with all of them", async () => {
@@ -202,7 +186,9 @@ describe("AddIngredientModal", () => {
         expect(screen.getByText("1 of 2")).toBeInTheDocument();
         expect(screen.getByText("Potato")).toBeInTheDocument();
 
-        const quantityInput = screen.getByRole("spinbutton");
+        const quantityInput = screen.getByRole("spinbutton", {
+            name: "Quantity of Potato",
+        });
 
         await userEvent.clear(quantityInput);
         await userEvent.type(quantityInput, "5");

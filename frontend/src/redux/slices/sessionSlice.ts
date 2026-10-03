@@ -58,8 +58,7 @@ const sessionSlice = createSlice({
                     state.status = isAuthFailure ? "guest" : "error";
                 },
             )
-            // the session is real but not loaded yet: leaving it "guest" until the getMe
-            // refetch lands would bounce the user straight back off the page they just logged in for
+            // real but not loaded yet: "guest" until getMe lands would bounce the user off the page
             .addMatcher(authApi.endpoints.login.matchFulfilled, (state) => {
                 state.status = "checking";
             })

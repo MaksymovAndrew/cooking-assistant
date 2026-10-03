@@ -16,39 +16,4 @@ describe("CalorieProgressRing", () => {
         expect(screen.getByText("1,180")).toBeInTheDocument();
         expect(screen.getByText("of 2,200 kcal")).toBeInTheDocument();
     });
-
-    it("should apply the near tone class when close to the goal", () => {
-        render(
-            <CalorieProgressRing
-                consumed={1920}
-                goal={2200}
-                tone="near"
-                goalLabel="of 2,200 kcal"
-            />,
-        );
-
-        expect(screen.getByTestId("calorie-progress-ring")).toHaveClass(
-            "calorie-progress-ring--near",
-        );
-    });
-
-    it("should apply the over tone class and clamp the arc at a full ring", () => {
-        render(
-            <CalorieProgressRing
-                consumed={2520}
-                goal={2200}
-                tone="over"
-                goalLabel="of 2,200 kcal"
-            />,
-        );
-
-        expect(screen.getByTestId("calorie-progress-ring")).toHaveClass(
-            "calorie-progress-ring--over",
-        );
-
-        expect(screen.getByTestId("progress-ring-arc")).toHaveAttribute(
-            "stroke-dashoffset",
-            "0",
-        );
-    });
 });

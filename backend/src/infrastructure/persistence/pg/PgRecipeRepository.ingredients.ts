@@ -1,47 +1,39 @@
 import type { PoolClient } from "pg";
 
 import type { RecipeIngredient } from "domain/entities/Recipe";
+import type { RecipeRow } from "domain/repositories/recipe.types";
 
-export interface RecipeRow {
-    id: number;
-    title: string;
-    content: string;
-    person_id: number;
-    type_id: number | null;
-    creation_date: Date;
-    cooking_time: number | null;
-    calories_override: number | null;
-    calories_computed: number | null;
-}
+import { computedRecipeCalories } from "./calorieColumns";
 
 export async function insertRecipeIngredients(
     client: PoolClient,
-    recipeId: string | number,
+    recipeId: number,
     ingredients: RecipeIngredient[],
 ): Promise<void> {
-    for (const { id, quantity_recipe_ingredients } of ingredients) {
-        await client.query(
-            `INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity_recipe_ingredients)
-             VALUES ($1, $2, $3)`,
-            [recipeId, id, quantity_recipe_ingredients],
-        );
-    }
+    await client.query(
+        `INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity_recipe_ingredients)
+         SELECT $1, item.ingredient_id, item.quantity
+         FROM unnest($2::int[], $3::float8[]) AS item(ingredient_id, quantity)`,
+        [
+            recipeId,
+            ingredients.map((ingredient) => ingredient.id),
+            ingredients.map(
+                (ingredient) => ingredient.quantity_recipe_ingredients,
+            ),
+        ],
+    );
 }
 
-// keeps calories_computed in sync with the ingredients just written, so lists/filters can read
-// it as a plain column instead of aggregating recipe_ingredients on every query; RETURNING * here
-// (not on the earlier INSERT/UPDATE) is what makes the row handed back to the caller accurate
+// denormalized for lists and filters; RETURNING here, after the recompute, keeps the row accurate
 export async function recomputeRecipeCalories(
     client: PoolClient,
     recipeId: number,
 ): Promise<RecipeRow> {
     const result = await client.query<RecipeRow>(
-        `UPDATE recipes SET calories_computed = (
-             SELECT SUM(ri.quantity_recipe_ingredients * i.calories_per_unit)
-             FROM recipe_ingredients ri
-                      JOIN ingredients i ON i.id = ri.ingredient_id
-             WHERE ri.recipe_id = $1
-         ) WHERE id = $1 RETURNING *`,
+        `UPDATE recipes SET calories_computed = ${computedRecipeCalories("$1")}
+         WHERE id = $1
+         RETURNING id, title, content, language, person_id, type_id, creation_date,
+                   cooking_time, calories_override, calories_computed, photo_key`,
         [recipeId],
     );
 

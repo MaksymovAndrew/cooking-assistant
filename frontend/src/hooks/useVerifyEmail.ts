@@ -12,7 +12,7 @@ export const useVerifyEmail = (): {
 } => {
     const searchParams = useSearchParams();
     const [confirmEmail] = useConfirmEmailMutation();
-    // /api/me is exempt from the global 401 redirect, so this is safe to call whether or not the browser already has a session
+    // /api/me is exempt from the global 401 redirect, so this is safe without a session
     const { data: currentUser } = useGetMeQuery(null);
     const token = searchParams.get("token") ?? "";
     const [status, setStatus] = useState<VerifyEmailStatus>(

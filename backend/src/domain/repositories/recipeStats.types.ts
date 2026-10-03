@@ -3,6 +3,12 @@ export interface RecipeTypeStat {
     count: number;
 }
 
+// typeName null gathers the recipes without a type, so the buckets add up to recipesCount
+export interface RecipeTypeBucket {
+    typeName: string | null;
+    count: number;
+}
+
 export interface AverageCookingTime {
     typeName: string;
     averageCookingTime: number;
@@ -27,7 +33,7 @@ export interface RecipeCalorieEntry {
 }
 
 export interface RecipeStatisticsDto {
-    stats: RecipeTypeStat[];
+    stats: RecipeTypeBucket[];
     recipesCount: number;
     averageCookingTimeOverall: number | null;
     averageCookingTimesByType: AverageCookingTime[];

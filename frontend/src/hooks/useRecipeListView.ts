@@ -15,11 +15,11 @@ import {
 import { useGetRecipeTypesQuery } from "redux/services/recipeTypesApi";
 
 import { useCalorieBudget } from "hooks/useCalorieBudget";
+import { useSelectedRecipeTypes } from "hooks/useSelectedRecipeTypes";
 
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 import { RECIPE_FILTER_DEFS } from "utils/filters/recipeFilterDefs";
 import { getQueryErrorMessage } from "utils/queryError";
-import { recipeTypeName } from "utils/referenceLabels";
 
 import { isRecipeListEmpty } from "./recipeListViewHelpers";
 import { useListFilters } from "./useListFilters";
@@ -34,8 +34,6 @@ export const RECIPE_SOURCE = {
 
 export type RecipeSource = (typeof RECIPE_SOURCE)[keyof typeof RECIPE_SOURCE];
 
-// view model for the two recipe lists: the URL is the single source of truth for
-// filters, pages come from RTK Query's infiniteQuery, sorting is server-side
 export const useRecipeListView = (source: RecipeSource) => {
     const { t } = useTranslation();
     const {
@@ -51,7 +49,6 @@ export const useRecipeListView = (source: RecipeSource) => {
         RECIPE_FILTER_DEFS,
     );
 
-    // feeds the ingredients filter's search-and-pick UI - already cached by the ingredient picker/pantry pages, so this is a read, not a new request
     const { data: ingredientCatalog = [] } = useGetIngredientsQuery(null);
 
     const { queryParams, isHeldBack, isPantryEmpty } = useRecipeListGate(
@@ -75,22 +72,12 @@ export const useRecipeListView = (source: RecipeSource) => {
     const total = getPaginatedTotal(active.data);
     const hasLoadedRecipes = recipes.length > 0;
     const errorMessage = active.isError
-        ? getQueryErrorMessage(active.error)
+        ? getQueryErrorMessage(t, active.error)
         : null;
 
     const { data: allTypes = [] } = useGetRecipeTypesQuery(null);
 
-    const hasSelectedTypes = filters.types.length > 0;
-    const { data: descriptionTypes = [] } = useGetRecipeTypesQuery(
-        hasSelectedTypes ? { ids: filters.types.join(",") } : null,
-        { skip: !hasSelectedTypes },
-    );
-    const descriptions = descriptionTypes.filter((type) =>
-        filters.types.includes(type.id),
-    );
-    const typesHeader = descriptions
-        .map((type) => recipeTypeName(t, type.type_name))
-        .join(", ");
+    const { descriptions, typesHeader } = useSelectedRecipeTypes(filters.types);
 
     return {
         filters,

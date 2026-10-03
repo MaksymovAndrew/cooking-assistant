@@ -1,6 +1,7 @@
-// hand-written like the category names in catalogVocabulary.ts - the allergen list is closed, so it never comes from the translation source
+// hand-written: the allergen list is closed, so it never comes from the translation source
+import type { Locale } from "constants/locales";
+
 import type { ALLERGEN_SLUGS } from "./catalog.types";
-import type { Locale } from "./catalogVocabulary";
 
 export const ALLERGEN_NAMES: Record<
     (typeof ALLERGEN_SLUGS)[number],

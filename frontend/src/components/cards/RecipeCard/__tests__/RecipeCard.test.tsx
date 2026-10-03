@@ -16,6 +16,8 @@ const RECIPE = {
 
 const CALORIES_OVER_BUDGET = 700;
 const CALORIES_OVER_BUDGET_LABEL = `${CALORIES_OVER_BUDGET} kcal`;
+const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
+const ALLERGENS_TOOLTIP = "Contains allergens";
 const RECIPE_OVER_BUDGET = {
     ...RECIPE,
     calories_per_portion: CALORIES_OVER_BUDGET,
@@ -51,18 +53,6 @@ describe("RecipeCard", () => {
         expect(screen.getByText("1 hr : 25 min")).toBeInTheDocument();
     });
 
-    it("should not show a creation date meta item", () => {
-        renderWithRouter(<RecipeCard recipe={RECIPE} />);
-
-        expect(screen.queryByText(/Jan|2026/)).not.toBeInTheDocument();
-    });
-
-    it("should mark the card as mine when requested", () => {
-        renderWithRouter(<RecipeCard recipe={RECIPE} mine />);
-
-        expect(screen.getByRole("article")).toHaveClass("content-card--mine");
-    });
-
     it("should show the calorie meta item when the recipe has a calorie total", () => {
         renderWithRouter(
             <RecipeCard recipe={{ ...RECIPE, calories_per_portion: 245.6 }} />,
@@ -77,28 +67,44 @@ describe("RecipeCard", () => {
         expect(screen.queryByText(/kcal/)).not.toBeInTheDocument();
     });
 
-    it("should recolor the calorie border and meta item when exceedsBudget is true", () => {
+    it("should explain the calories are over budget when exceedsBudget is true", () => {
         renderWithRouter(
             <RecipeCard recipe={RECIPE_OVER_BUDGET} exceedsBudget />,
         );
 
-        expect(screen.getByRole("article")).toHaveClass(
-            "content-card--calorie-over",
-        );
-        expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).toHaveClass(
-            "content-card__meta-item--calorie-over",
+        expect(screen.getByTitle(OVER_BUDGET_TOOLTIP)).toHaveTextContent(
+            CALORIES_OVER_BUDGET_LABEL,
         );
     });
 
-    it("should not recolor the calorie meta item by default", () => {
+    it("should not flag the calories as over budget by default", () => {
         renderWithRouter(<RecipeCard recipe={RECIPE_OVER_BUDGET} />);
 
-        expect(screen.getByRole("article")).not.toHaveClass(
-            "content-card--calorie-over",
+        expect(
+            screen.getByText(CALORIES_OVER_BUDGET_LABEL),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByTitle(OVER_BUDGET_TOOLTIP),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should warn that a recipe contains allergens, and nothing when it has none", () => {
+        const { unmount } = renderWithRouter(
+            <RecipeCard
+                recipe={{ ...RECIPE, ingredients: [{ allergens: ["milk"] }] }}
+            />,
         );
-        expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).not.toHaveClass(
-            "content-card__meta-item--calorie-over",
+
+        expect(screen.getByTitle(ALLERGENS_TOOLTIP)).toBeInTheDocument();
+
+        unmount();
+        renderWithRouter(
+            <RecipeCard
+                recipe={{ ...RECIPE, ingredients: [{ allergens: [] }] }}
+            />,
         );
+
+        expect(screen.queryByTitle(ALLERGENS_TOOLTIP)).not.toBeInTheDocument();
     });
 
     it("should show a heart when the server sent a favourite flag", () => {

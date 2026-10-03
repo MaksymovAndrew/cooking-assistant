@@ -27,7 +27,6 @@ export const useRecipeHeroLabels = (
     const locale = useLocale();
 
     return {
-        // a recipe can carry no cooking time at all - the column is nullable
         formattedCookingTime:
             recipe.cooking_time === null
                 ? t("recipeDetailsPage.cookingTimeUnavailable")

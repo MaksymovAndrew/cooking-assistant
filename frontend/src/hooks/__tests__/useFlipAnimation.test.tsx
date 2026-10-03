@@ -35,7 +35,6 @@ const mountList = (ids: string[]) => {
     renderedOrder = ids;
     const view = render(<List ids={ids} />);
 
-    // hands back a way to re-render the same list in a new order
     return (nextIds: string[]) => {
         renderedOrder = nextIds;
         view.rerender(<List ids={nextIds} />);

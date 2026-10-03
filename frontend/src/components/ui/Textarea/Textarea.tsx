@@ -1,5 +1,9 @@
 import React from "react";
 
+import { useFormFieldAria } from "components/ui/FormField";
+
+import { cx } from "utils/cx";
+
 import styles from "./Textarea.module.scss";
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -11,13 +15,12 @@ export const Textarea: React.FC<TextareaProps> = ({
     className,
     ...rest
 }) => {
-    const classNames = [
+    const fieldAria = useFormFieldAria(rest);
+    const classNames = cx(
         styles.textarea,
         hasError && styles["textarea--error"],
         className,
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
-    return <textarea className={classNames} {...rest} />;
+    return <textarea className={classNames} {...rest} {...fieldAria} />;
 };

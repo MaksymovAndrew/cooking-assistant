@@ -19,7 +19,6 @@ interface ColumnLook {
     tone: StatListTone;
 }
 
-// every extremes card compares one of two fixed pairs, so a caller names the pair, not its looks
 const COLUMN_PAIRS = {
     time: [
         { labelKey: "statsPage.fastest", tone: "success" },
@@ -57,9 +56,9 @@ export const StatExtremesGrid: React.FC<StatExtremesGridProps> = ({
 
                 return (
                     <StatCard key={heading}>
-                        <h2 className={styles["stat-extremes-grid__title"]}>
+                        <h3 className={styles["stat-extremes-grid__title"]}>
                             {heading}
-                        </h2>
+                        </h3>
                         <TwoColumnStatList left={left} right={right} />
                     </StatCard>
                 );

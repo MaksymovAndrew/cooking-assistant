@@ -9,13 +9,13 @@ import { useLocale } from "hooks/useLocale";
 import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 import { useSwitchLocale } from "hooks/useSwitchLocale";
 
+import { cx } from "utils/cx";
+
 import styles from "./LanguageSwitcher.module.scss";
 import { LanguageSwitcherMenu } from "./LanguageSwitcherMenu";
 
 interface LanguageSwitcherProps {
-    // which edge of the trigger the menu lines up with
     align?: "start" | "end";
-    // the globe in front of the code; left out where a label beside it already says "Language"
     withIcon?: boolean;
     className?: string;
 }
@@ -34,21 +34,21 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     const isHydrated = useIsHydrated();
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
 
     const closeMenu = () => {
         setIsOpen(false);
     };
 
-    usePopoverDismiss(containerRef, isOpen, closeMenu);
+    usePopoverDismiss(containerRef, isOpen, closeMenu, triggerRef);
 
     return (
         <div
             ref={containerRef}
-            className={[styles["language-switcher"], className]
-                .filter(Boolean)
-                .join(" ")}
+            className={cx(styles["language-switcher"], className)}
         >
             <button
+                ref={triggerRef}
                 type="button"
                 onClick={() => {
                     setIsOpen((prev) => !prev);

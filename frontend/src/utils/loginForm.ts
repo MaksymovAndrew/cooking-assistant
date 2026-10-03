@@ -6,7 +6,7 @@ import { isValidEmail } from "utils/authValidation";
 
 export type LoginMode = "username" | "email";
 
-// the auth-namespace key of what stops the form from being sent, or null when it can go
+// an "auth" namespace key, or null when the form can be sent
 export const loginInputErrorKey = (
     values: LoginRequest,
     mode: LoginMode,
@@ -20,8 +20,7 @@ export const loginInputErrorKey = (
         : null;
 };
 
-// runs `update` only if `login` is still the identifier on screen, guarding against a stale
-// response overwriting a since-changed account's state
+// guards against a stale response overwriting a since-changed account's state
 export const applyIfCurrent = (
     currentLoginRef: RefObject<string>,
     login: string,

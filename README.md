@@ -13,7 +13,8 @@ In English, Polish, Russian and Ukrainian.
 - **Menus** - put recipes together for breakfast, lunch or dinner. The app shows which ingredients you
   are missing and adds them to your shopping list in one go.
 - **Pantry** - what you have, how much, when you bought it and when it expires, with a heads-up for
-  what needs using soon.
+  what needs using soon. Mark a recipe or menu "Cooked it" and its ingredients come out of the pantry,
+  oldest purchases first, with an undo.
 - **Shopping list** - tick items off as you shop, reorder them, clear what you bought.
 - **Diet** - mark the allergens and ingredients you avoid; recipes that contain them are flagged and can
   be hidden.
@@ -22,11 +23,12 @@ In English, Polish, Russian and Ukrainian.
   what I can cook with what I have". Every filtered view is a link you can share.
 - **Four languages** - the whole app, emails included, in English, Polski, Русский and Українська. Every
   recipe and menu shows the language it is written in, and the lists filter by it.
-- **Light and dark theme**, on phones, tablets and desktops.
+- **Light and dark theme**, on phones, tablets and desktops. Install it to your home screen, and use it
+  with a keyboard or a screen reader.
 
 ## Run it locally
 
-You need Node 24+, PostgreSQL 14+, and a Postgres client (pgAdmin / DBeaver / psql).
+You need Node 24+, PostgreSQL 14+ (CI and production run 18), and a Postgres client (pgAdmin / DBeaver / psql).
 
 ```bash
 # 1. Clone
@@ -87,8 +89,8 @@ npm start                # boot backend + frontend together (alias: npm run dev)
 npm run start:backend    # backend only (tsx watch -> :3000)
 npm run start:frontend   # frontend only (next dev -> :8080)
 npm test                 # run both Jest suites
-npm run verify           # full local gate: format:check + lint + sonarjs + stylelint + typecheck + test + build
-npm run test:e2e         # Playwright smoke suite against a live dev stack (needs both apps running)
+npm run verify           # full local gate: format:check + lint + sonarjs + stylelint + typecheck + test:coverage + build
+npm run test:e2e         # Playwright smoke suite; boots both dev servers itself, or reuses a running npm start
 npm run test:db          # backend repository tests against a real Postgres (needs Docker running)
 npm run bump             # set the shared release version by hand (normally happens automatically on commit)
 ```
@@ -108,7 +110,7 @@ How to track it:
 - [CHANGELOG.md](CHANGELOG.md) records each version with `### Backend` / `### Frontend` sections.
 
 Workflow: branch from `main` as `release/X.Y`, make the change, add a changelog entry, commit, push,
-open a PR for review. No git tags. The version bumps itself on commit (see `npm run bump` above) - no
+open a PR for review. No version tags (a `v*` tag only triggers a deploy, see below). The version bumps itself on commit (see `npm run bump` above) - no
 manual step needed.
 
 > We used to keep three independent versions and three changelogs with tag conventions. For a two-app
@@ -120,7 +122,7 @@ manual step needed.
 Deployment is tag-triggered: push a `v*` tag and [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
 builds both Docker images for `linux/arm64`, pushes them to GHCR, then connects to the server over SSH and
 runs [deploy/deploy.sh](deploy/deploy.sh) - which applies migrations, starts the new containers, and waits
-for both of them to report healthy, restoring the previous image tag automatically if either never does.
+for both of them to report healthy, then checks the site and the API through the proxy - restoring the previous image tag automatically if anything fails.
 
 ```bash
 git tag v2.0
@@ -128,7 +130,7 @@ git push origin v2.0
 ```
 
 The same workflow can be started manually from the Actions tab to re-deploy or roll back to any published
-tag without inventing a new one.
+tag without inventing a new one; it rebuilds the source of that exact tag.
 
 Infrastructure: a single self-hosted ARM server (Ubuntu 24.04, Frankfurt) running Docker, with Caddy as a
 shared reverse proxy that obtains and renews HTTPS certificates automatically, PostgreSQL in a container
@@ -140,9 +142,9 @@ for the variables it must define.
 
 - **Branch from `main`** named after the release (`release/X.Y`); never commit straight to `main` (a `pre-push` hook blocks it). Open a PR for review.
 - **One commit = code change + version bump + changelog entry**, bundled together. Commit title: `<version>: <short description>` (e.g. `1.27: fix purchase-edit stock recalculation`).
-- **PR description: short and to the point** - an `Added:` and/or `Fixed:` bullet list of what changed in user-facing terms. Omit a section if it has nothing. No "Checks" line, no git tags, no co-author trailer.
-- **Quality gates must pass to merge:** CI runs a Prettier check plus, on both sides, ESLint, a `tsc` typecheck, a SonarJS lint, and Jest with coverage (80% gate); the frontend also runs a production build and Stylelint. Two more jobs run the slower suites on every PR: a Playwright e2e smoke test (real browser, live dev stack) and a backend repository suite against a real Postgres (Testcontainers). A `ci-success` job aggregates them all. The quick suite also runs locally on `pre-commit` (Husky + lint-staged), and `pre-push` blocks pushing to `main` and runs the frontend build. Reproduce the quick gate in one command with `npm run verify` (e2e/db-integration are separate - see `test:e2e`/`test:db` above). For pure ops-only commits (`.github/workflows/`, `.husky/`, docs) use `git skip-checks commit -m "..."` / `git skip-checks push origin <branch>` - a repo-local alias (auto-installed on `npm install`) that runs the command with `SKIP_CHECKS=1`. On commit it skips the local pre-commit hooks and auto-stamps `[skip-checks]` onto the commit subject so all CI jobs skip too (the required `ci-success` gate still passes); on push it also skips the frontend build. It is scoped to that one command, so a plain `git commit` afterwards runs the full checks. The direct-push-to-`main` block is never bypassed. In CI a `gate` job reads the head commit message (on a PR too), so `[skip-checks]` in the commit skips the jobs on both push and PR - no need to put it in the PR title.
-- **Urgent hotfix:** branch as `hotfix/X.Y.Z` (the exact patch version, e.g. `hotfix/3.9.1`) instead of `release/X.Y`. This is automatic - no `skip-checks` typing needed. `pre-commit` still auto-bumps the version (the branch name already is the target, nothing to guess) but runs only `typecheck` on both sides instead of the full lint/test/stylelint suite; `prepare-commit-msg` auto-stamps `[skip-checks]` so CI's heavy jobs skip the same way they would under the manual escape hatch; `pre-push` auto-skips the frontend build. Everything else is unchanged - still a PR into `main`, the direct-push-to-`main` block still applies, still no tags from Claude. It triggers on branch name alone (no file-path check), so reserve it for small, already-understood fixes - typecheck is the one guardrail that always still runs.
+- **PR description: short and to the point** - an `Added:` and/or `Fixed:` bullet list of what changed in user-facing terms. Omit a section if it has nothing. No "Checks" line, no version tags, no co-author trailer.
+- **Quality gates must pass to merge:** CI runs a Prettier check and a license-line check plus, on both sides, ESLint, a `tsc` typecheck, a SonarJS lint, and Jest with coverage (80% gate); the frontend also runs a production build and Stylelint, and the e2e suite is linted and type-checked. Two more jobs run the slower suites on every PR: a Playwright e2e smoke test (real browser, live dev stack) and a backend repository suite against a real Postgres (Testcontainers). A `ci-success` job aggregates them all. The quick suite also runs locally on `pre-commit` (Husky + lint-staged), and `pre-push` blocks pushing to `main` and runs the frontend build. Reproduce the quick gate in one command with `npm run verify` (e2e/db-integration are separate - see `test:e2e`/`test:db` above). For pure ops-only commits (`.github/workflows/`, `.husky/`, docs) use `git skip-checks commit -m "..."` / `git skip-checks push origin <branch>` - a repo-local alias (auto-installed on `npm install`) that runs the command with `SKIP_CHECKS=1`. On commit it skips the local pre-commit hooks and auto-stamps `[skip-checks]` onto the commit subject so the CI jobs skip too (the required `ci-success` gate still passes) - unless the change touches `backend/src` or `frontend/src`, where CI ignores the marker and runs everything; on push it also skips the frontend build. It is scoped to that one command, so a plain `git commit` afterwards runs the full checks. The direct-push-to-`main` block is never bypassed. In CI a `gate` job reads the head commit message (on a PR too), so `[skip-checks]` in the commit skips the jobs on both push and PR - no need to put it in the PR title.
+- **Urgent hotfix:** branch as `hotfix/X.Y.Z` (the exact patch version, e.g. `hotfix/3.9.1`) instead of `release/X.Y`. This is automatic - no `skip-checks` typing needed. `pre-commit` still auto-bumps the version (the branch name already is the target, nothing to guess) but runs only `typecheck` on both sides instead of the full lint/test/stylelint suite; `prepare-commit-msg` auto-stamps `[skip-checks]`, but since a hotfix changes application code, CI still runs in full on the PR; `pre-push` auto-skips the frontend build. Everything else is unchanged - still a PR into `main`, the direct-push-to-`main` block still applies, still no tags from Claude. It triggers on branch name alone (no file-path check), so reserve it for small, already-understood fixes - typecheck is the one guardrail that always still runs.
 
 ### Tech stack
 
@@ -152,12 +154,19 @@ for the variables it must define.
 - Infra: Docker multi-stage builds (arm64), GHCR, GitHub Actions, Docker Compose on a self-hosted ARM server, Caddy with automatic HTTPS
 - Tests: Jest on both sides (backend ts-jest + Supertest, frontend @swc/jest + React Testing Library + jsdom, 80% coverage gate each) plus a Playwright e2e suite and a Testcontainers real-Postgres repository suite
 
-Both sides have a Jest test suite with an 80% coverage gate: backend (`npm --prefix backend test`) uses ts-jest + Supertest with fake repositories; frontend (`npm --prefix frontend test`) uses @swc/jest + React Testing Library + jsdom (~340 test files). Run `npm test` from the root to run both. The e2e suite (`npm run test:e2e`) drives real login/CRUD flows through Chromium; the db-integration suite (`npm run test:db`) runs backend repositories against a real Postgres started by Testcontainers - Docker must be running locally for that one (GitHub-hosted CI runners already have Docker running, so nothing to configure there).
+Both sides have a Jest test suite with an 80% coverage gate: backend (`npm --prefix backend test`) uses ts-jest + Supertest with fake repositories; frontend (`npm --prefix frontend test`) uses @swc/jest + React Testing Library + jsdom (~390 test files). Run `npm test` from the root to run both. The e2e suite (`npm run test:e2e`) drives real login/CRUD flows through Chromium; the db-integration suite (`npm run test:db`) runs backend repositories against a real Postgres started by Testcontainers - Docker must be running locally for that one (GitHub-hosted CI runners already have Docker running, so nothing to configure there).
 
 ## License
 
 [GNU AGPLv3](LICENSE). You're free to use, modify, and self-host this project. The one condition:
 if you run a modified version as a network service (e.g. your own hosted copy), you must make that
 modified source available to its users too - the AGPL closes the loophole plain GPL leaves for
-software running behind a server rather than being distributed. Copyright (c) 2026 Andrew Maksymov,
-Milana Pershyna.
+software running behind a server rather than being distributed.
+
+Copyright (c) 2026 Andrew Maksymov, Milana Pershyna.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+Affero General Public License as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version. It is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the [GNU Affero General Public License](LICENSE) for more details.

@@ -5,7 +5,7 @@ import {
 } from "constants/loginLockout";
 import { MS_PER_MINUTE, MS_PER_SECOND } from "constants/time";
 
-// the ladder values live in constants/loginLockout.ts; re-exported so form/hook consumers keep one import site for the whole lockout API
+// re-exported so consumers import the whole lockout API from one place
 export { ATTEMPTS_PER_LOCK, LOCKOUT_LADDER_MINUTES };
 
 const LOGIN_STORAGE_KEY_PREFIX = "cooking.loginLockout";
@@ -14,7 +14,7 @@ const LOGIN_STORAGE_KEY_PREFIX = "cooking.loginLockout";
 export const DELETE_ACCOUNT_STORAGE_KEY_PREFIX = "cooking.deleteAccountLockout";
 const FAILURE_RESET_IDLE_MS = FAILURE_RESET_IDLE_MINUTES * MS_PER_MINUTE;
 
-// scoped per identifier (trimmed only - never lowercased, since login lookups are case-sensitive server-side) so a shared/kiosk browser can't cross-lock unrelated accounts; the prefix defaults to the login flow's own namespace, but a second flow (e.g. delete-account) can pass its own so the two never share attempt counters
+// per account, trimmed but never lowercased: logins are case-sensitive on the server
 const storageKey = (
     login: string,
     prefix: string = LOGIN_STORAGE_KEY_PREFIX,
@@ -75,7 +75,7 @@ export const clearLockout = (login: string, prefix?: string): void => {
     localStorage.removeItem(storageKey(login, prefix));
 };
 
-// how long the lock earned by this many failures lasts - the ladder's top step repeats from then on
+// the ladder's top step repeats once it is reached
 export const ladderStageMs = (failures: number): number =>
     LOCKOUT_LADDER_MINUTES[
         Math.min(
@@ -84,11 +84,9 @@ export const ladderStageMs = (failures: number): number =>
         )
     ] * MS_PER_MINUTE;
 
-// the full length of the current lock, for the countdown's progress bar; null below the first step
 export const lockoutDurationMs = (state: LockoutState): number | null =>
     state.failures >= ATTEMPTS_PER_LOCK ? ladderStageMs(state.failures) : null;
 
-// bumps the counter and locks once it hits the next ATTEMPTS_PER_LOCK multiple; a stale-enough streak resets first
 export const registerFailure = (state: LockoutState): LockoutState => {
     const now = Date.now();
     const isStreakStale =
@@ -111,7 +109,7 @@ export const registerFailure = (state: LockoutState): LockoutState => {
     return { failures, lockedUntil, lastFailureAt: now };
 };
 
-// the server's 429 Retry-After is authoritative for duration: take whichever lockout (client ladder or server cool-down) ends later
+// whichever lock ends later wins: the server's Retry-After is authoritative
 export const mergeServerRetryAfter = (
     state: LockoutState,
     seconds: number,

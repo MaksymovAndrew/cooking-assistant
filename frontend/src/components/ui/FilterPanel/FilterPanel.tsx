@@ -1,9 +1,9 @@
-import { ListFilter, X } from "lucide-react";
 import type { ReactNode } from "react";
 import React, { useRef, useState } from "react";
 
 import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
 
+import { useFocusOnOpen } from "hooks/useFocusOnOpen";
 import { useMediaQuery } from "hooks/useMediaQuery";
 import { usePopoverDismiss } from "hooks/usePopoverDismiss";
 import { usePopoverViewportClamp } from "hooks/usePopoverViewportClamp";
@@ -11,6 +11,8 @@ import { useScrollLock } from "hooks/useScrollLock";
 
 import styles from "./FilterPanel.module.scss";
 import { FilterPanelFooter } from "./FilterPanelFooter";
+import { FilterPanelHeader } from "./FilterPanelHeader";
+import { FilterPanelTrigger } from "./FilterPanelTrigger";
 
 export interface FilterPanelProps {
     title: string;
@@ -24,11 +26,6 @@ export interface FilterPanelProps {
     children: ReactNode;
 }
 
-const FILTER_ICON_SIZE = 17;
-const CLOSE_ICON_SIZE = 14;
-
-// trigger + badge + popover chrome shared by every filter panel (recipes, menus, ...);
-// the popover body is page-specific and passed in as children
 export const FilterPanel: React.FC<FilterPanelProps> = ({
     title,
     closeLabel,
@@ -43,72 +40,71 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const popoverRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const closeRef = useRef<HTMLButtonElement>(null);
     const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
 
     const closePopover = () => {
         setIsOpen(false);
     };
 
-    usePopoverDismiss(containerRef, isOpen, closePopover);
+    // the close and apply buttons leave with the popover, taking focus with them
+    const closeToTrigger = () => {
+        closePopover();
+        triggerRef.current?.focus();
+    };
+
+    usePopoverDismiss(containerRef, isOpen, closePopover, triggerRef);
     useScrollLock(isOpen);
+    useFocusOnOpen(closeRef, isOpen);
 
     usePopoverViewportClamp(containerRef, popoverRef, isOpen && !isMobile);
 
     return (
-        <div ref={containerRef} className={styles["filter-panel"]}>
-            <button
-                type="button"
-                onClick={() => {
-                    setIsOpen((prev) => !prev);
-                }}
-                aria-haspopup="dialog"
-                aria-expanded={isOpen}
-                className={[
-                    styles["filter-panel__trigger"],
-                    activeCount > 0 && styles["filter-panel__trigger--active"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
-            >
-                <ListFilter size={FILTER_ICON_SIZE} aria-hidden="true" />
-                {title}
-                {activeCount > 0 && (
-                    <span className={styles["filter-panel__badge"]}>
-                        {activeCount}
-                    </span>
-                )}
-            </button>
+        <>
             {isOpen && (
                 <div
-                    ref={popoverRef}
-                    role="dialog"
-                    aria-label={title}
-                    className={styles["filter-panel__popover"]}
-                >
-                    <div className={styles["filter-panel__header"]}>
-                        <span>{title}</span>
-                        <button
-                            type="button"
-                            aria-label={closeLabel}
-                            onClick={closePopover}
-                            className={styles["filter-panel__close"]}
-                        >
-                            <X size={CLOSE_ICON_SIZE} aria-hidden="true" />
-                        </button>
-                    </div>
-
-                    {children}
-
-                    <FilterPanelFooter
-                        resetLabel={resetLabel}
-                        applyAriaLabel={applyAriaLabel}
-                        applyMobileLabel={applyMobileLabel}
-                        applyDesktopLabel={applyDesktopLabel}
-                        onReset={onReset}
-                        onApply={closePopover}
-                    />
-                </div>
+                    role="presentation"
+                    className={styles["filter-panel__backdrop"]}
+                />
             )}
-        </div>
+            <div ref={containerRef} className={styles["filter-panel"]}>
+                <FilterPanelTrigger
+                    title={title}
+                    activeCount={activeCount}
+                    isOpen={isOpen}
+                    onToggle={() => {
+                        setIsOpen((prev) => !prev);
+                    }}
+                    triggerRef={triggerRef}
+                />
+                {isOpen && (
+                    <div
+                        ref={popoverRef}
+                        role="dialog"
+                        aria-label={title}
+                        className={styles["filter-panel__popover"]}
+                    >
+                        <FilterPanelHeader
+                            title={title}
+                            closeLabel={closeLabel}
+                            onClose={closeToTrigger}
+                            closeRef={closeRef}
+                        />
+
+                        {children}
+
+                        <FilterPanelFooter
+                            resetLabel={resetLabel}
+                            applyAriaLabel={applyAriaLabel}
+                            applyMobileLabel={applyMobileLabel}
+                            applyDesktopLabel={applyDesktopLabel}
+                            onReset={onReset}
+                            onApply={closeToTrigger}
+                        />
+                    </div>
+                )}
+            </div>
+        </>
     );
 };

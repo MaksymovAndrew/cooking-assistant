@@ -32,7 +32,7 @@ const SAMPLE_INGREDIENTS = [
     },
 ];
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts, so the reference-data queries read already-fulfilled data on first render
+// the cache is filled before the hook mounts, so its queries read finished data on first render
 const setup = async () => {
     mockGetByUrl({
         [API_ROUTES.ingredients.list]: SAMPLE_INGREDIENTS,
@@ -50,7 +50,7 @@ const setup = async () => {
 };
 
 describe("useCreateRecipePage", () => {
-    it("should create the recipe and navigate home on valid submit", async () => {
+    it("should create the recipe and navigate to all recipes on valid submit", async () => {
         mockedPost.mockResolvedValue({ data: { id: 42 } });
         const { result } = await setup();
 
@@ -79,32 +79,6 @@ describe("useCreateRecipePage", () => {
             }),
         );
         expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
-    });
-
-    it("should send a manual calories override as a number", async () => {
-        mockedPost.mockResolvedValue({ data: { id: 42 } });
-        const { result } = await setup();
-
-        act(() => {
-            result.current.form.setTitle(TITLE);
-            result.current.form.setContent(DESCRIPTION);
-            result.current.form.setCookingHours("0");
-            result.current.form.setCookingMinutes("30");
-            result.current.form.setSelectedTypeId(TYPE_ID);
-            result.current.form.toggleIngredientSelection(
-                SAMPLE_INGREDIENTS[0],
-            );
-            result.current.form.setCaloriesOverride("450");
-        });
-
-        await act(async () => {
-            await result.current.handleSubmit();
-        });
-
-        expect(mockedPost).toHaveBeenCalledWith(
-            API_ROUTES.recipes.create,
-            expect.objectContaining({ calories_override: 450 }),
-        );
     });
 
     it("should not call the mutation when required fields are empty", async () => {

@@ -8,7 +8,7 @@ const RESEND_API_URL = "https://api.resend.com/emails";
 
 const BODY_FONT_STACK =
     "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
-// serif fallback stack, no webfont - email clients can't reliably load the app's Fraunces display font
+// no webfont: email clients can't reliably load the app's Fraunces
 const HEADING_FONT_STACK = "Georgia,'Iowan Old Style','Times New Roman',serif";
 
 const BG_WASH = "#f4f1fa";
@@ -21,8 +21,7 @@ const DIVIDER_COLOR = "#ece7f6";
 const TEXT_STYLE = `margin:0 0 28px;color:${BODY_COLOR};font-size:15px;line-height:1.6;`;
 const BUTTON_STYLE = `display:inline-block;padding:13px 28px;background-color:${BRAND_COLOR};color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;border-radius:10px;`;
 
-// bowl + steam mark (Compact tier of frontend/src/components/icons/DonburiMarkCompact.tsx), stroke hardcoded since
-// currentColor inheritance can't be relied on across email clients
+// DonburiMarkCompact's paths; stroke is hardcoded as email clients drop currentColor
 const BRAND_MARK_SVG = `<svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke="${BRAND_COLOR}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M12.5 12.5c-1-1.2 1-2.2 0-3.4"/><path d="M19.5 12.5c-1-1.2 1-2.2 0-3.4"/><path d="M5 15h22"/><path d="M5 15a11 11 0 0 0 22 0"/></svg>`;
 
 interface EmailContent {
@@ -58,7 +57,7 @@ function contentHtml(
     );
 }
 
-// Resend's REST API via native fetch (Node 22) - no SDK dependency needed for a single POST
+// Resend's REST API via native fetch - no SDK dependency needed for a single POST
 export default class ResendEmailService implements EmailSender {
     constructor(
         private apiKey: string,

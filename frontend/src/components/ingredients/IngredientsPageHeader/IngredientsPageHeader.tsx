@@ -7,7 +7,8 @@ import { Button } from "components/ui/Button";
 import styles from "./IngredientsPageHeader.module.scss";
 
 interface IngredientsPageHeaderProps {
-    count: number;
+    // null while the pantry is still loading - "0 items" would be a lie until it arrives
+    count: number | null;
     onAddIngredient: () => void;
 }
 
@@ -26,7 +27,7 @@ export const IngredientsPageHeader: React.FC<IngredientsPageHeaderProps> = ({
                     {t("page.heading")}
                 </h1>
                 <p className={styles["ingredients-page-header__count"]}>
-                    {t("page.itemCount", { count })}
+                    {count !== null && t("page.itemCount", { count })}
                 </p>
             </div>
             <div className={styles["ingredients-page-header__actions"]}>

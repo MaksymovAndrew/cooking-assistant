@@ -2,7 +2,6 @@ import { ROUTES } from "constants/routes";
 import type { RecordAuthor } from "types/media";
 import type { RecordRating } from "types/rating";
 
-// navigation route targets used in navigate() assertions, sourced from the app route constants so expectations can never drift from the real paths
 export const ROUTE_HOME = ROUTES.home;
 export const ROUTE_LOGIN = ROUTES.login;
 export const ROUTE_ALL_RECIPES = ROUTES.allRecipes;
@@ -14,12 +13,13 @@ export const BTN_DELETE_RECIPE = "Delete recipe";
 export const BTN_EDIT_RECIPE = "Edit recipe";
 
 export const BTN_DELETE_MENU = "Delete menu";
-export const BTN_EDIT_MENU = "Edit menu";
 
 export const BTN_ADD_INGREDIENT = "Add ingredient";
 
 export const ERROR_RECIPES_REQUIRED = "Please select at least one recipe.";
 export const ERROR_COOKING_TIME_FORMAT = "Enter hours and minutes.";
+
+export const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 
 export const MOCK_ERROR_SERVER = "Server error";
 

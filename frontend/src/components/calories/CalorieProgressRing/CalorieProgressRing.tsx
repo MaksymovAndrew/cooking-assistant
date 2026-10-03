@@ -36,7 +36,6 @@ export const CalorieProgressRing: React.FC<CalorieProgressRingProps> = ({
 
     return (
         <div
-            data-testid="calorie-progress-ring"
             className={[styles["calorie-progress-ring"], TONE_CLASS[tone]].join(
                 " ",
             )}

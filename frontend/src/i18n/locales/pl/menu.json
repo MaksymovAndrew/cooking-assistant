@@ -42,7 +42,9 @@
     },
     "recipePicker": {
         "searchPlaceholder": "Znajdź przepis…",
-        "noMatches": "Nie znaleziono przepisów"
+        "noMatches": "Nie znaleziono przepisów",
+        "searching": "Szukam…",
+        "loadMore": "Pokaż więcej przepisów"
     },
     "menuPage": {
         "allMenus": "Wszystkie jadłospisy",
@@ -94,7 +96,9 @@
         "categoryPlaceholder": "Wybierz kategorię",
         "recipesLabel": "Przepisy",
         "updateButton": "Zapisz zmiany",
-        "loading": "Ładowanie…",
+        "notFoundTitle": "Tego jadłospisu nie można edytować",
+        "notFoundDescription": "Mógł zostać usunięty albo należy do kogoś innego.",
+        "backToMenus": "Wróć do jadłospisów",
         "errorTitle": "Podaj nazwę jadłospisu.",
         "errorDescription": "Dodaj opis jadłospisu.",
         "errorCategory": "Wybierz kategorię jadłospisu.",
@@ -106,7 +110,7 @@
         "recipesAdded_few": "Dodano {{count}} przepisy",
         "recipesAdded_many": "Dodano {{count}} przepisów",
         "recipesAdded_other": "Dodano {{count}} przepisu",
-        "reorderHint": "Przeciągnij za uchwyt, żeby zmienić kolejność",
+        "reorderHint": "Przeciągnij za uchwyt albo użyj strzałek, żeby zmienić kolejność",
         "summary_one": "{{count}} przepis",
         "summary_few": "{{count}} przepisy",
         "summary_many": "{{count}} przepisów",
@@ -135,10 +139,15 @@
         "recipesCaption_other": "{{count}} przepisu",
         "searchPlaceholder": "Szukaj w tym jadłospisie…",
         "noSearchResults": "Żaden przepis nie pasuje do wyszukiwania.",
-        "noRecipesYet": "Nie ma jeszcze przepisów",
-        "noRecipesYetDescription": "Dodaj przepisy do jadłospisu, żeby zaplanować gotowanie.",
+        "recipesRemoved": "Przepisy z tego jadłospisu zostały usunięte",
+        "recipesRemovedOwnerHint": "Ich autorzy je usunęli. Dodaj nowe przepisy albo usuń jadłospis, jeśli nie jest już potrzebny.",
+        "recipesRemovedVisitorHint": "Ich autorzy je usunęli, więc na razie nie ma tu nic do ugotowania.",
         "addRecipes": "Dodaj przepisy",
         "ingredientsPanelTitle": "Składniki",
+        "missingCountLabel_one": "Brakuje {{count}} składnika",
+        "missingCountLabel_few": "Brakuje {{count}} składników",
+        "missingCountLabel_many": "Brakuje {{count}} składników",
+        "missingCountLabel_other": "Brakuje {{count}} składnika",
         "noMissingIngredients": "Ten jadłospis nie ma jeszcze składników.",
         "haveEnough": "Wystarczy",
         "goToPantry": "Przejdź do spiżarni",
@@ -158,6 +167,7 @@
         "metaFallbackDescriptionUncategorised_few": "Jadłospis z {{count}} przepisów.",
         "metaFallbackDescriptionUncategorised_many": "Jadłospis z {{count}} przepisów.",
         "metaFallbackDescriptionUncategorised_other": "Jadłospis z {{count}} przepisu.",
-        "creationDate": "Data dodania"
+        "creationDate": "Data dodania",
+        "cookedIt": "Ugotowane"
     }
 }

@@ -1,10 +1,8 @@
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { THEME_STORAGE_KEY } from "constants/theme";
-
 import { useAppDispatch } from "redux/hooks";
-import type { ThemeChoice } from "redux/slices/themeSlice";
+import { storeThemeChoice, type ThemeChoice } from "redux/slices/themeSlice";
 import { closeModal } from "redux/slices/uiSlice";
 
 import { BaseModal } from "components/modals/BaseModal";
@@ -27,7 +25,7 @@ const TITLE_KEY_BY_MODE = {
     system: "themeModal.titleSystem",
 } as const;
 
-// a full reload, not a live repaint: iOS Safari only recolors its status/address bars on a fresh load, never on an in-place theme toggle
+// a full reload: iOS Safari recolors its status and address bars only on a fresh load
 export const ThemeChangeConfirmModal = ({
     modalId,
     nextMode,
@@ -39,12 +37,7 @@ export const ThemeChangeConfirmModal = ({
     const handleClose = () => dispatch(closeModal(modalId));
 
     const handleConfirm = () => {
-        if (nextMode === "system") {
-            localStorage.removeItem(THEME_STORAGE_KEY);
-        } else {
-            localStorage.setItem(THEME_STORAGE_KEY, nextMode);
-        }
-
+        storeThemeChoice(nextMode);
         reloadPage();
     };
 

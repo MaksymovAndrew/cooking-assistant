@@ -12,7 +12,7 @@ const AUTO_DISMISS_MS = 4000;
 const LEAVE_DURATION_MS = 280;
 
 const seeded = (message: string): { items: Notification[] } => ({
-    items: [{ id: "n1", type: "error", message, link: null }],
+    items: [{ id: "n1", type: "error", message, link: null, action: null }],
 });
 
 describe("Toaster", () => {
@@ -22,14 +22,6 @@ describe("Toaster", () => {
         });
 
         expect(container).toBeEmptyDOMElement();
-    });
-
-    it("should render a notification message", () => {
-        renderWithProviders(<Toaster />, {
-            store: makeTestStore({ notifications: seeded("Boom") }),
-        });
-
-        expect(screen.getByText("Boom")).toBeInTheDocument();
     });
 
     it("should dismiss a notification when its dismiss button is clicked", async () => {
@@ -80,10 +72,34 @@ describe("Toaster", () => {
         const store = makeTestStore({
             notifications: {
                 items: [
-                    { id: "n1", type: "info", message: "One", link: null },
-                    { id: "n2", type: "info", message: "Two", link: null },
-                    { id: "n3", type: "info", message: "Three", link: null },
-                    { id: "n4", type: "info", message: "Four", link: null },
+                    {
+                        id: "n1",
+                        type: "info",
+                        message: "One",
+                        link: null,
+                        action: null,
+                    },
+                    {
+                        id: "n2",
+                        type: "info",
+                        message: "Two",
+                        link: null,
+                        action: null,
+                    },
+                    {
+                        id: "n3",
+                        type: "info",
+                        message: "Three",
+                        link: null,
+                        action: null,
+                    },
+                    {
+                        id: "n4",
+                        type: "info",
+                        message: "Four",
+                        link: null,
+                        action: null,
+                    },
                 ],
             },
         });

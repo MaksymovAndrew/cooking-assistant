@@ -70,20 +70,6 @@ describe("AccountMenu", () => {
         ).toBeInTheDocument();
     });
 
-    it("should give the Logout item the same full-width item class as Profile and Settings", async () => {
-        renderMenu();
-
-        await openMenu();
-
-        const itemClass = screen.getByRole("menuitem", {
-            name: /Profile/,
-        }).className;
-
-        expect(
-            screen.getByRole("menuitem", { name: "Log out" }).className,
-        ).toContain(itemClass);
-    });
-
     it("should call onLogout when the Logout item is clicked", async () => {
         const onLogout = jest.fn();
 
@@ -123,5 +109,51 @@ describe("AccountMenu", () => {
         await userEvent.click(screen.getByRole("button", { name: "Outside" }));
 
         expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    });
+
+    it("should land on the first item when the menu opens", async () => {
+        renderMenu();
+
+        await openMenu();
+
+        expect(screen.getByRole("menuitem", { name: /Profile/ })).toHaveFocus();
+    });
+
+    it("should move between the items with the arrow keys and wrap at the ends", async () => {
+        renderMenu();
+
+        await openMenu();
+        await userEvent.keyboard("{ArrowDown}");
+
+        expect(
+            screen.getByRole("menuitem", { name: /Settings/ }),
+        ).toHaveFocus();
+
+        await userEvent.keyboard("{Home}{ArrowUp}");
+
+        expect(screen.getByRole("menuitem", { name: "Log out" })).toHaveFocus();
+    });
+
+    it("should leave the language menu's own keys to it", async () => {
+        renderMenu();
+
+        await openMenu();
+        await userEvent.keyboard("{End}{ArrowUp}{ArrowUp}{Enter}");
+        await userEvent.keyboard("{ArrowDown}");
+
+        expect(
+            screen.getByRole("menuitemradio", { name: "Polski" }),
+        ).toHaveFocus();
+    });
+
+    it("should return focus to the trigger when Escape closes the menu", async () => {
+        renderMenu();
+
+        await openMenu();
+        await userEvent.keyboard("{Escape}");
+
+        expect(
+            screen.getByRole("button", { name: TRIGGER_NAME }),
+        ).toHaveFocus();
     });
 });

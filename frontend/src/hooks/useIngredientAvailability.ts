@@ -11,10 +11,7 @@ export interface IngredientAvailability extends RecipeDetailIngredient {
     have: boolean;
 }
 
-// cross-references a recipe's ingredients against the current user's pantry, the same way the
-// existing "missing ingredients for a menu" feature does - skipped until the session is
-// confirmed authed (recipe detail is public now, and an anonymous or not-yet-checked visitor has
-// no pantry to check against - firing early would 401 during the initial checking window)
+// skipped until authed: firing during the session check would 401 and trip the auth redirect
 export const useIngredientAvailability = (
     ingredients: RecipeDetailIngredient[],
 ) => {

@@ -2,6 +2,7 @@ import { Info } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { FormPageKey } from "types/formPage";
 import type { Ingredient } from "types/ingredient";
 
 import type { useRecipeForm } from "hooks/useRecipeForm";
@@ -12,12 +13,10 @@ import { FormCard } from "components/ui/FormCard";
 
 import styles from "./RecipeForm.module.scss";
 
-type RecipePageKey = "createRecipePage" | "changeRecipePage";
-
 interface RecipeFormIngredientsCardProps {
     form: ReturnType<typeof useRecipeForm>;
     allIngredients: Ingredient[];
-    keyPrefix: RecipePageKey;
+    keyPrefix: FormPageKey<"Recipe">;
 }
 
 const HINT_ICON_SIZE = 14;

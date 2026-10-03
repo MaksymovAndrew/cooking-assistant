@@ -28,7 +28,7 @@ export function assertConsistentEmailConfig(cfg: {
     }
 }
 
-// JWT code reads the key lazily, so without this a production deploy boots healthy and 500s on every login
+// JWT code reads the key lazily: without this a deploy boots healthy and 500s every login
 export function assertProductionSecrets(cfg: {
     isProduction: boolean;
     jwtSecret?: string;

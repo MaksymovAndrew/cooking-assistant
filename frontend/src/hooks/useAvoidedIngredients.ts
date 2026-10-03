@@ -14,7 +14,6 @@ export interface AvoidedIngredients {
     isIngredientAvoided: (ingredient: AvoidableIngredient) => boolean;
 }
 
-// what the viewer avoids, for marking rows on pages that already hold the ingredients; a guest avoids nothing
 export const useAvoidedIngredients = (): AvoidedIngredients => {
     const isAuthed = useAppSelector(selectIsAuthed);
     const { data } = useGetDietPreferencesQuery(null, { skip: !isAuthed });

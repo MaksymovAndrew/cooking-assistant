@@ -9,7 +9,6 @@ interface SiteImageProps {
     params: Promise<{ locale: string }>;
 }
 
-// the site-wide preview: every route that has no record of its own to show inherits it
 export const generateImageMetadata = async ({
     params,
 }: {

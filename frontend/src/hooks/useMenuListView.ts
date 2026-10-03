@@ -30,8 +30,6 @@ export const MENU_SOURCE = {
 
 export type MenuSource = (typeof MENU_SOURCE)[keyof typeof MENU_SOURCE];
 
-// view model for the two menu lists: the URL is the single source of truth for
-// filters, pages come from RTK Query's infiniteQuery
 export const useMenuListView = (source: MenuSource) => {
     const { t } = useTranslation();
     const {
@@ -45,8 +43,7 @@ export const useMenuListView = (source: MenuSource) => {
         hasActiveFilters,
     } = useListFilters<MenuFilterState, MenuListParams>(MENU_FILTER_DEFS);
 
-    // the favourites toggle is hidden for a guest; a stale ?fav=1 (a bookmark, an expired session) is
-    // dropped here instead of sending a request the backend rejects with a 400
+    // a guest's stale ?fav=1 is dropped rather than sent to a backend that answers it with a 400
     const { isAuthed, isAwaitingSession } = useViewerFilterGate(
         filters.favourites,
     );
@@ -67,7 +64,7 @@ export const useMenuListView = (source: MenuSource) => {
     const total = getPaginatedTotal(active.data);
     const hasLoadedMenus = menus.length > 0;
     const errorMessage = active.isError
-        ? getQueryErrorMessage(active.error)
+        ? getQueryErrorMessage(t, active.error)
         : null;
 
     const selectedCategoryNames = categories

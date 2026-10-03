@@ -2,5 +2,10 @@ node_modules
 dist
 dist-ssr
 build
+coverage
+.next
+test-results
+playwright-report
+uploads
 package-lock.json
 *.sql

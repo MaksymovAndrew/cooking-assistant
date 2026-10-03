@@ -20,7 +20,8 @@
         "loading": "Zapisywanie…"
     },
     "chip": {
-        "remove": "Usuń"
+        "remove": "Usuń „{{name}}”",
+        "quantity": "Ilość: {{name}}"
     },
     "passwordInput": {
         "show": "Pokaż hasło",
@@ -67,7 +68,10 @@
         "logout": "Wyloguj się",
         "login": "Zaloguj się",
         "register": "Rejestracja",
-        "scrollToTop": "Na górę"
+        "scrollToTop": "Na górę",
+        "skipToContent": "Przejdź do treści",
+        "mainLabel": "Główna",
+        "tabBarLabel": "Pasek kart"
     },
     "theme": {
         "toggleLabel": "Zmień motyw"
@@ -82,6 +86,7 @@
         "backToRecipes": "Wróć do przepisów",
         "recipes": "Przepisy",
         "pantry": "Spiżarnia",
+        "home": "Strona główna",
         "menus": "Jadłospisy"
     },
     "errors": {
@@ -89,6 +94,7 @@
     },
     "apiErrors": {
         "bad_request": "Nie udało się przetworzyć żądania. Spróbuj ponownie.",
+        "payload_too_large": "To za dużo do wysłania naraz. Spróbuj krótszego tekstu.",
         "not_found": "Nie znaleźliśmy tego, czego szukasz.",
         "server_error": "Coś się u nas zepsuło. Spróbuj trochę później.",
         "validation_error": "Część danych jest nieprawidłowa.",
@@ -104,16 +110,18 @@
         "auth/new_password_same_as_current": "Nowe hasło musi się różnić od obecnego.",
         "recipe/not_found": "Tego przepisu nie ma albo został usunięty.",
         "recipe/ingredients_empty": "Dodaj co najmniej jeden składnik.",
-        "recipe/ingredients_missing_id": "Wybierz każdy składnik z listy.",
         "recipe/ingredients_not_exist": "Co najmniej jednego składnika już nie ma.",
-        "recipe/title_content_empty": "Dodaj tytuł i opis.",
         "recipe/in_pantry_requires_login": "Zaloguj się, żeby dobierać przepisy do zawartości spiżarni.",
+        "recipe/type_not_exist": "Ten typ przepisu już nie istnieje. Wybierz inny.",
         "menu/not_found": "Tego jadłospisu nie ma albo został usunięty.",
         "menu/insufficient_data_create": "Dodaj tytuł, kategorię i co najmniej jeden przepis.",
         "menu/insufficient_data_update": "Dodaj tytuł, kategorię i co najmniej jeden przepis.",
         "menu/recipes_not_exist": "Co najmniej jednego przepisu już nie ma.",
+        "menu/category_not_exist": "Ta kategoria jadłospisu już nie istnieje. Wybierz inną.",
         "pantry/ingredient_not_found": "Tego produktu nie ma w twojej spiżarni.",
         "pantry/purchase_not_found": "Tego zakupu już nie ma.",
+        "pantry/consumption_not_found": "To gotowanie zostało już cofnięte albo już go nie ma.",
+        "pantry/undo_expired": "Na cofnięcie jest już za późno - produkty pozostają zużyte.",
         "calories/intake_not_found": "Tego wpisu już nie ma.",
         "calories/not_available": "Kaloryczność tej pozycji jest nieznana.",
         "favourites/requires_login": "Zaloguj się, żeby zobaczyć ulubione.",
@@ -135,6 +143,7 @@
     },
     "errorState": {
         "title": "Coś poszło nie tak",
+        "loadFailed": "Nie udało się tego wczytać. Sprawdź połączenie i spróbuj ponownie.",
         "retry": "Spróbuj ponownie"
     },
     "notifications": {
@@ -151,7 +160,14 @@
         "profileUpdated": "Profil zaktualizowany",
         "accountDeleted": "Konto usunięte",
         "calorieIntakeDeleted": "Wpis usunięty",
-        "intakeLogged": "Dodano do dzisiejszego dziennika"
+        "intakeLogged": "Dodano do dzisiejszego dziennika",
+        "cooked_one": "Gotowe! Ze spiżarni zeszedł {{count}} produkt",
+        "cooked_few": "Gotowe! Ze spiżarni zeszły {{count}} produkty",
+        "cooked_many": "Gotowe! Ze spiżarni zeszło {{count}} produktów",
+        "cooked_other": "Gotowe! Ze spiżarni zeszło {{count}} produktu",
+        "cookedNothing": "Gotowe! Niczego z tego nie było w spiżarni",
+        "undo": "Cofnij",
+        "cookingUndone": "Cofnięto - wszystko wróciło do spiżarni"
     },
     "timeAgo": {
         "justNow": "Przed chwilą",
@@ -309,5 +325,12 @@
         "filterChip_few": "{{count}} języki",
         "filterChip_many": "{{count}} języków",
         "filterChip_other": "{{count}} języka"
+    },
+    "contentSkeleton": {
+        "loading": "Wczytywanie…"
+    },
+    "moveButtons": {
+        "up": "Przesuń „{{name}}” wyżej",
+        "down": "Przesuń „{{name}}” niżej"
     }
 }

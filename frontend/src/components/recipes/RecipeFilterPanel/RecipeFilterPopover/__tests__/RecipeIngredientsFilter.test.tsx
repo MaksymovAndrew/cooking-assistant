@@ -35,8 +35,7 @@ const ONION: Ingredient = {
     days_to_expire: 30,
     calories_per_unit: null,
 };
-// slugs deliberately don't match any real catalog entry, so resolveIngredientName
-// falls back to the fixture's own "name" instead of a real i18n catalog translation
+// fixture slugs match no catalog entry, so the fixture's own name is shown
 const ALMOND: Ingredient = {
     id: 3,
     slug: "fixture-almond",
@@ -178,7 +177,7 @@ describe("RecipeIngredientsFilter", () => {
         );
 
         await userEvent.click(
-            screen.getAllByRole("button", { name: "Remove" })[0],
+            screen.getByRole("button", { name: "Remove Milk" }),
         );
 
         expect(onChange).toHaveBeenCalledWith([ONION.id]);

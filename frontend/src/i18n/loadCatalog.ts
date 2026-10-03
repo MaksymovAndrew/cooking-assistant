@@ -4,7 +4,7 @@ import type { Locale } from "constants/locales";
 import { toLocale } from "constants/locales";
 
 const CATALOG_NAMESPACE = "catalog";
-// categories and allergens arrive with the page's other copy; the ingredient names are what this loads
+// categories and allergens ship with the page; only the ingredient names load lazily
 const INGREDIENT_KEY = "ingredient";
 
 // literal paths, so each language's catalog is its own chunk and only the one in use is fetched
@@ -21,8 +21,7 @@ const IMPORT_CATALOG: Record<Locale, () => Promise<object>> = {
 
 const pending = new Map<Locale, Promise<object>>();
 
-// shared while in flight or resolved; dropped on failure so a later call retries instead of
-// reusing a rejected promise forever
+// dropped on failure, so a later call retries instead of reusing a rejected promise
 const importCatalog = (locale: Locale): Promise<object> => {
     const existing = pending.get(locale);
 

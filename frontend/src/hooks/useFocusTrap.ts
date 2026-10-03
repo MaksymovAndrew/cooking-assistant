@@ -3,7 +3,6 @@ import { useEffect } from "react";
 const FOCUSABLE_SELECTOR =
     'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-// traps Tab navigation inside the container so it can't escape to the page behind it
 export const useFocusTrap = (
     containerRef: React.RefObject<HTMLElement | null>,
 ): void => {
@@ -28,8 +27,15 @@ export const useFocusTrap = (
 
             const first = focusable[0];
             const last = focusable[focusable.length - 1];
+            // the container itself holds focus right after opening, and it is not in the list
+            const isOutsideFocusable = !focusable.some(
+                (element) => element === document.activeElement,
+            );
 
-            if (e.shiftKey && document.activeElement === first) {
+            if (isOutsideFocusable) {
+                e.preventDefault();
+                (e.shiftKey ? last : first).focus();
+            } else if (e.shiftKey && document.activeElement === first) {
                 e.preventDefault();
                 last.focus();
             } else if (!e.shiftKey && document.activeElement === last) {

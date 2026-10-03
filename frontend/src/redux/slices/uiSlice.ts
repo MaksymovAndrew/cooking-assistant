@@ -6,8 +6,7 @@ import type { ActiveModal, ModalInput } from "redux/slices/uiSlice.modals";
 export * from "redux/slices/uiSlice.modals";
 
 interface UiState {
-    // FIFO: openModal enqueues, closeModal dequeues - only queue[0] is ever rendered, so a second
-    // modal opened while one is showing waits its turn instead of clobbering the first
+    // only queue[0] renders, so a second modal waits its turn instead of clobbering the first
     queue: ActiveModal[];
 }
 
@@ -18,8 +17,7 @@ const uiSlice = createSlice({
     initialState,
     reducers: {
         openModal: {
-            // a modal covers the screen, so a second one of the same type is always an accidental
-            // double dispatch (double-clicked delete button), never a real second request
+            // a modal covers the screen, so a second one of the same type is an accidental double dispatch
             reducer: (state, action: PayloadAction<ActiveModal>) => {
                 const isQueued = state.queue.some(
                     (modal) => modal.type === action.payload.type,

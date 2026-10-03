@@ -30,8 +30,6 @@
         "boughtEmpty": "Tu trafią odhaczone pozycje."
     },
     "item": {
-        "moveUp": "Przesuń „{{name}}” wyżej",
-        "moveDown": "Przesuń „{{name}}” niżej",
         "remove": "Usuń „{{name}}”"
     },
     "empty": {

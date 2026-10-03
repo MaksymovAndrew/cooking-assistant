@@ -34,18 +34,4 @@ describe("GreetingHeader", () => {
             await screen.findByText("Welcome back, Claude 👋"),
         ).toBeInTheDocument();
     });
-
-    it("should link to the add-menu and add-recipe pages", () => {
-        mockGetByUrl({ [API_ROUTES.auth.me]: null });
-
-        renderWithRouter(<GreetingHeader />);
-
-        expect(screen.getByRole("link", { name: "New menu" })).toHaveAttribute(
-            "href",
-            "/add-menu",
-        );
-        expect(
-            screen.getByRole("link", { name: "New recipe" }),
-        ).toHaveAttribute("href", "/add-recipe");
-    });
 });

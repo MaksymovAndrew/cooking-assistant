@@ -11,8 +11,7 @@ import { RecipeRangeFields } from "./RecipeRangeFields";
 interface RecipeRangeSectionsProps {
     filters: RecipeFilterState;
     setValue: SetFilterValue<RecipeFilterState>;
-    // bumped by RecipeFilterPanel's "Reset filters" - remounts the fields so a pending,
-    // still-debouncing edit can't commit after the reset (see RecipeFilterPanel)
+    // a new key remounts the fields, dropping a still-debouncing edit on reset
     fieldsResetKey?: number;
 }
 

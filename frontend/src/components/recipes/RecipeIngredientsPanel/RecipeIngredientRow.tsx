@@ -6,6 +6,7 @@ import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 import { useLocale } from "hooks/useLocale";
 
 import { formatKcal, scaleCaloriesForPortions } from "utils/calories";
+import { cx } from "utils/cx";
 import { resolveIngredientName } from "utils/ingredientName";
 import { quantityWithUnit } from "utils/referenceLabels";
 
@@ -42,14 +43,12 @@ export const RecipeIngredientRow: React.FC<RecipeIngredientRowProps> = ({
 
     return (
         <li
-            className={[
+            className={cx(
                 styles["recipe-ingredients-panel__row"],
                 canUsePantry &&
                     !ingredient.have &&
                     styles["recipe-ingredients-panel__row--missing"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
+            )}
         >
             {canUsePantry &&
                 (ingredient.have ? (

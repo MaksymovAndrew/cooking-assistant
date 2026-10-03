@@ -2,16 +2,26 @@ import express, { type Router } from "express";
 
 import { ROUTES } from "constants/routes";
 
+import type PantryConsumptionController from "controller/pantryConsumption.controller";
+import type PurchaseHistoryController from "controller/purchaseHistory.controller";
 import type UserIngredientsController from "controller/userIngredients.controller";
 import type { SessionAuth } from "middleware/jwtMiddleware";
 
+interface PantryRouterControllers {
+    userIngredientsController: UserIngredientsController;
+    purchaseHistoryController: PurchaseHistoryController;
+    pantryConsumptionController: PantryConsumptionController;
+}
+
 export default function createUserIngredientsRouter(
-    userIngredientsController: UserIngredientsController,
+    {
+        userIngredientsController,
+        purchaseHistoryController,
+        pantryConsumptionController,
+    }: PantryRouterControllers,
     { authenticateToken }: SessionAuth,
 ): Router {
     const router = express.Router();
-
-    // the user always comes from the auth cookie, never from the path
 
     router.get(
         ROUTES.userIngredients.list,
@@ -28,25 +38,37 @@ export default function createUserIngredientsRouter(
     router.put(
         ROUTES.userIngredients.purchase,
         authenticateToken,
-        userIngredientsController.updatePurchaseQuantity,
+        purchaseHistoryController.updatePurchaseQuantity,
     );
 
     router.post(
         ROUTES.userIngredients.discard,
         authenticateToken,
-        userIngredientsController.discardPurchases,
+        purchaseHistoryController.discardPurchases,
+    );
+
+    router.post(
+        ROUTES.userIngredients.cook,
+        authenticateToken,
+        pantryConsumptionController.cookRecord,
+    );
+
+    router.post(
+        ROUTES.userIngredients.undoCook,
+        authenticateToken,
+        pantryConsumptionController.undoCooking,
     );
 
     router.delete(
         ROUTES.userIngredients.purchase,
         authenticateToken,
-        userIngredientsController.deletePurchase,
+        purchaseHistoryController.deletePurchase,
     );
 
     router.get(
         ROUTES.userIngredients.purchaseHistory,
         authenticateToken,
-        userIngredientsController.getPurchaseHistory,
+        purchaseHistoryController.getPurchaseHistory,
     );
 
     router.delete(

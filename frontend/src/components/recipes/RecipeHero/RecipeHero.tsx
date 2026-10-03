@@ -12,15 +12,13 @@ import { useRecipeHeroLabels } from "hooks/useRecipeHeroLabels";
 import { RecipeHeroImage } from "components/recipes/RecipeHero/RecipeHeroImage";
 import { RecipeHeroStats } from "components/recipes/RecipeHero/RecipeHeroStats";
 import { AuthorByline } from "components/ui/AuthorByline";
-import { Chip } from "components/ui/Chip";
-import { LanguageBadge } from "components/ui/LanguageBadge";
 import { StarRatingInput } from "components/ui/StarRatingInput";
 
-import { mediaUrl } from "utils/mediaUrl";
-import { recipeTypeName } from "utils/referenceLabels";
+import { mediaSrcSet, mediaUrl } from "utils/mediaUrl";
 
 import styles from "./RecipeHero.module.scss";
 import { RecipeHeroActions } from "./RecipeHeroActions";
+import { RecipeHeroTags } from "./RecipeHeroTags";
 
 interface RecipeHeroProps {
     recipe: RecipeDetails;
@@ -28,6 +26,7 @@ interface RecipeHeroProps {
     editTo: string;
     onDelete: () => void;
     onLogIntake?: () => void;
+    onCook?: () => void;
     exceedsBudget?: boolean;
 }
 
@@ -37,6 +36,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
     editTo,
     onDelete,
     onLogIntake,
+    onCook,
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
@@ -45,11 +45,9 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
         recipe.id,
         recipe.isFavourite === true,
     );
-    // isFavourite is null exactly when the server rendered this record for an anonymous requester -
-    // deciding the guest branch from it, not from the client session check, keeps the first paint right
+    // null isFavourite means a guest render; the session check isn't done on first paint
     const visitorFavourite = recipe.isFavourite === null ? null : favourite;
     const rating = useRatingControl(RATING_TARGET.recipe, recipe.id, recipe);
-    // a signed-in viewer rates anyone's recipe but their own
     const canRate = visitorFavourite !== null && !recipe.isOwner;
     const photoSrc = mediaUrl(recipe.photo_key, "hero");
     const favouriteLabel = t("recipeDetailsPage.favourite");
@@ -64,19 +62,13 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
         <div className={styles["recipe-hero"]}>
             <RecipeHeroImage
                 photoSrc={photoSrc}
+                photoSrcSet={mediaSrcSet(recipe.photo_key)}
                 title={recipe.title}
                 favourite={visitorFavourite}
                 favouriteLabel={favouriteLabel}
             />
 
-            <div className={styles["recipe-hero__tags"]}>
-                {recipe.type_name !== null && (
-                    <Chip variant="type">
-                        {recipeTypeName(t, recipe.type_name)}
-                    </Chip>
-                )}
-                <LanguageBadge language={recipe.language} />
-            </div>
+            <RecipeHeroTags recipe={recipe} rating={rating} />
             <h1 className={styles["recipe-hero__title"]} lang={recipe.language}>
                 {recipe.title}
             </h1>
@@ -111,6 +103,7 @@ export const RecipeHero: React.FC<RecipeHeroProps> = ({
                 editTo={editTo}
                 onDelete={onDelete}
                 onLogIntake={onLogIntake}
+                onCook={onCook}
             />
         </div>
     );

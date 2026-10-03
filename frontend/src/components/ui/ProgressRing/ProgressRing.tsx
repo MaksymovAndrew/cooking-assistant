@@ -1,14 +1,14 @@
 import React from "react";
 
+import { cx } from "utils/cx";
+
 import styles from "./ProgressRing.module.scss";
 
 interface ProgressRingProps {
-    // 0..1, clamped
     fraction: number;
     // viewBox units; the rendered size comes from className
     size: number;
     thickness: number;
-    // empty space between the ring and the viewBox edge
     inset?: number;
     className?: string;
     children?: React.ReactNode;
@@ -32,11 +32,7 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
     const filled = clamp(fraction);
 
     return (
-        <div
-            className={[styles["progress-ring"], className]
-                .filter(Boolean)
-                .join(" ")}
-        >
+        <div className={cx(styles["progress-ring"], className)}>
             <svg
                 viewBox={`0 0 ${size} ${size}`}
                 className={styles["progress-ring__svg"]}

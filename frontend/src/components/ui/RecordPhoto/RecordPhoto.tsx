@@ -4,12 +4,10 @@ import styles from "./RecordPhoto.module.scss";
 
 interface RecordPhotoProps {
     src: string | null;
-    // what the slot shows when the record has no photo
     fallback: React.ReactNode;
 }
 
-// a card thumbnail: fills its slot, which must be positioned and clip its overflow. Decorative,
-// because a card always names its record in text right beside it
+// the slot must be positioned and clip; alt is empty because the card names its record in text
 export const RecordPhoto: React.FC<RecordPhotoProps> = ({ src, fallback }) =>
     src ? (
         <img

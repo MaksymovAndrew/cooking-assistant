@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-// the part of a React drag event the drop logic reads
 export interface FileDragEvent {
     preventDefault: () => void;
     dataTransfer: { types: readonly string[]; files: ArrayLike<File> };

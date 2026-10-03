@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 import { FAVOURITE_TARGET } from "constants/favourites";
 import type { MenuDetailRecipe } from "types/menu";
@@ -11,12 +10,11 @@ import { useFavouriteToggle } from "hooks/useFavouriteToggle";
 
 import { MenuMissingIngredientsPanel } from "components/menu/MenuMissingIngredientsPanel";
 import { MenuRecipesPanel } from "components/menu/MenuRecipesPanel";
-import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
-import { OwnerActions } from "components/ui/OwnerActions";
 
 import { aggregateMenuIngredients } from "utils/menuUtils";
 import { filterAllergens } from "utils/recipeAllergens";
 
+import { MenuDetailsActions } from "./MenuDetailsActions";
 import styles from "./MenuDetailsView.module.scss";
 
 interface MenuDetailsSecondaryProps {
@@ -31,11 +29,10 @@ interface MenuDetailsSecondaryProps {
     editTo: string;
     onDelete: () => void;
     onLogIntake?: () => void;
+    onCook?: () => void;
 }
 
-// ingredients -> actions -> recipes, in that DOM order everywhere - the reading order the page
-// commits to. Desktop keeps ingredients as a right-side aside via grid-template-areas, which
-// repositions items visually without changing this source order (see MenuDetailsView.module.scss)
+// DOM order is ingredients, actions, recipes everywhere; desktop only moves them via grid areas
 export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     menuId,
     title,
@@ -47,8 +44,8 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     editTo,
     onDelete,
     onLogIntake,
+    onCook,
 }) => {
-    const { t } = useTranslation("menu");
     const { canUsePantry } = useAppSelector(selectViewerCapabilities);
     const favourite = useFavouriteToggle(
         FAVOURITE_TARGET.menu,
@@ -59,14 +56,12 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     const visitorFavourite = isFavourite === null ? null : favourite;
     const menuIngredients = aggregateMenuIngredients(recipes);
     const menuAllergens = filterAllergens(allergens);
-    // the aside is empty for a guest with an allergen-free menu - see MenuMissingIngredientsPanel's
-    // own early return - so neither the grid column nor an empty row gap is reserved for it
-    const showIngredientsAside = canUsePantry || menuAllergens.length > 0;
+    // a guest's allergen-free menu or an emptied menu has an empty aside, so no column is reserved
+    const hasAsideContent = canUsePantry || menuAllergens.length > 0;
+    const showIngredientsAside = recipes.length > 0 && hasAsideContent;
     const gridClassName = showIngredientsAside
         ? `${styles["menu-details-page__grid"]} ${styles["menu-details-page__grid--with-aside"]}`
         : styles["menu-details-page__grid"];
-    const favouriteLabel = t("menuDetailsPage.favourite");
-    const logIntakeLabel = t("menuDetailsPage.logIntake");
 
     return (
         <div className={gridClassName}>
@@ -79,28 +74,16 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
                 </div>
             )}
             <div className={styles["menu-details-page__actions-area"]}>
-                {isOwner ? (
-                    <OwnerActions
-                        editTo={editTo}
-                        onDelete={onDelete}
-                        editLabel={t("menuDetailsPage.editButton")}
-                        deleteLabel={t("menuDetailsPage.deleteButton")}
-                        favourite={favourite}
-                        favouriteLabel={favouriteLabel}
-                        shareTitle={title}
-                        onLogIntake={onLogIntake}
-                        logIntakeLabel={logIntakeLabel}
-                    />
-                ) : (
-                    <HeroVisitorActions
-                        favourite={visitorFavourite}
-                        favouriteLabel={favouriteLabel}
-                        shareTitle={title}
-                        guestCtaLabel={t("menuDetailsPage.guestCta")}
-                        logIntakeLabel={logIntakeLabel}
-                        onLogIntake={onLogIntake}
-                    />
-                )}
+                <MenuDetailsActions
+                    title={title}
+                    isOwner={isOwner}
+                    favourite={favourite}
+                    visitorFavourite={visitorFavourite}
+                    editTo={editTo}
+                    onDelete={onDelete}
+                    onLogIntake={onLogIntake}
+                    onCook={onCook}
+                />
             </div>
             <div className={styles["menu-details-page__recipes-area"]}>
                 <MenuRecipesPanel

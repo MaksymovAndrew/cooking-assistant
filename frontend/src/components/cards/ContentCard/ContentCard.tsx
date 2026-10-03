@@ -4,6 +4,8 @@ import type { Locale } from "constants/locales";
 
 import { Link } from "components/ui/Link";
 
+import { cx } from "utils/cx";
+
 import styles from "./ContentCard.module.scss";
 import type {
     ContentCardFavouriteState,
@@ -28,28 +30,20 @@ interface ContentCardProps {
     href: string;
     title: string;
     imageIcon: ContentCardIcon;
-    // an uploaded photo takes the icon's place; without one the card keeps its glyph
     imageSrc?: string | null;
-    // the recipe type or menu category; a recipe without a type shows no chip
     chipLabel: string | null;
-    // the language the record is written in; null leaves the badge out
     language?: Locale | null;
-    // icon+label meta row (recipe cards); mutually exclusive with metaText
+    // mutually exclusive with metaText
     metaItems?: ContentCardMetaItem[];
-    // plain-text meta line, no icons (menu cards' "Category: X · N recipes")
     metaText?: string;
     variant?: ContentCardVariant;
     mine?: boolean;
     badge?: boolean;
-    // the viewer avoids something in it - a personal mark, shown beside the allergen badge rather than instead of it
+    // a personal mark, shown beside the allergen badge, never instead of it
     avoided?: boolean;
-    // border-only signal (the calorie icon/text itself is recolored via a metaItem's own `tone`,
-    // not through this prop) - kept as its own modifier so it can carry a different border color
-    // than the allergen badge, and both can be active on the same card at once
+    // border only; the calorie text is recolored by its meta item's own tone
     calorieOver?: boolean;
-    // null hides the heart - a guest's card, or a record fetched without a per-viewer flag
     favourite?: ContentCardFavouriteState | null;
-    // null leaves the rating out - a record fetched without its rating totals
     rating?: ContentCardRating | null;
 }
 
@@ -72,20 +66,15 @@ export const ContentCard: React.FC<ContentCardProps> = ({
 }) => {
     const isRow = variant === "row";
 
-    const cardClassNames = [
+    const cardClassNames = cx(
         styles["content-card"],
         styles[`content-card--${variant}`],
         mine && styles["content-card--mine"],
         badge && styles["content-card--badge"],
-        // declared after --badge in both class order and SCSS source, so a card that's somehow
-        // both allergenic and over budget shows the calorie-over border - the more actionable cue
         calorieOver && styles["content-card--calorie-over"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
-    // an article with a title link stretched over it rather than one big link: the heart is a
-    // button of its own, and a button nested inside an anchor is invalid markup
+    // not one big link: a heart button nested inside an anchor is invalid markup
     return (
         <article className={cardClassNames}>
             <ContentCardImage

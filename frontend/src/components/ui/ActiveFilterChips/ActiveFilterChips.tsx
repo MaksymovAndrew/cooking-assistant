@@ -21,8 +21,6 @@ export interface ActiveFilterChipsProps {
 
 const REMOVE_ICON_SIZE = 12;
 
-// generic active-filter row shared by every filterable list (recipes, menus, ...):
-// a result-count label, one removable chip per active filter, and a clear-all button
 export const ActiveFilterChips: React.FC<ActiveFilterChipsProps> = ({
     countLabel,
     chips,

@@ -3,6 +3,8 @@ import React from "react";
 import { AvoidPill } from "components/ui/AvoidPill";
 import { RatingSummary } from "components/ui/RatingSummary";
 
+import { cx } from "utils/cx";
+
 import styles from "./ContentCard.module.scss";
 import {
     type ContentCardMetaItem,
@@ -25,13 +27,11 @@ interface ContentCardBodyProps {
 }
 
 const metaItemClassName = (tone: ContentCardMetaItem["tone"]): string =>
-    [
+    cx(
         styles["content-card__meta-item"],
         tone === META_ITEM_TONE_CALORIE_OVER &&
             styles["content-card__meta-item--calorie-over"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
 export const ContentCardBody: React.FC<ContentCardBodyProps> = ({
     isRow,

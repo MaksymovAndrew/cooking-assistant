@@ -1,7 +1,7 @@
 .pie-chart-card {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: var(--s-5);
 
     &__pie-wrapper {
         position: relative;
@@ -9,8 +9,7 @@
         cursor: default;
     }
 
-    // z-index below the recharts tooltip (see TOOLTIP_WRAPPER_STYLE) - without this, being later in
-    // the DOM would otherwise let this absolutely-positioned label paint over the tooltip, not the other way round
+    // below the recharts tooltip, which this label would cover by coming later in the DOM
     &__center {
         position: absolute;
         top: 50%;

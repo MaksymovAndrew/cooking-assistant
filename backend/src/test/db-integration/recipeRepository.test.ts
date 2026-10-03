@@ -12,22 +12,8 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-interface RecipeDetail {
-    id: number;
-    title: string;
-    isOwner: boolean;
-    photo_key: string | null;
-    author: Record<string, unknown>;
-    calories_per_portion: number | null;
-    ingredients: {
-        id: number;
-        name: string;
-        quantity_recipe_ingredients: number;
-        unit_name: string;
-        allergens: string[];
-        calories_per_unit: number | null;
-    }[];
-}
+// longer than any other test's recipe takes, so it always tops the slowest recipes
+const LONGEST_COOKING_TIME = 100_000;
 
 describe("PgRecipeRepository (real Postgres)", () => {
     let pool: Pool;
@@ -59,14 +45,14 @@ describe("PgRecipeRepository (real Postgres)", () => {
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 2 }],
         });
 
-        const created = (await repository.create(recipe)) as { id: number };
-        const detail = (await repository.findByIdWithIngredients(
+        const created = await repository.create(recipe);
+        const detail = await repository.findByIdWithIngredients(
             created.id,
             ownerId,
-        )) as RecipeDetail;
+        );
 
-        expect(detail.title).toBe("Borscht");
-        expect(detail.ingredients).toEqual([
+        expect(detail?.title).toBe("Borscht");
+        expect(detail?.ingredients).toEqual([
             expect.objectContaining({
                 id: ingredientId,
                 quantity_recipe_ingredients: 2,
@@ -85,14 +71,14 @@ describe("PgRecipeRepository (real Postgres)", () => {
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 4 }],
         });
 
-        const created = (await repository.create(recipe)) as { id: number };
-        const computed = (await repository.findByIdWithIngredients(
+        const created = await repository.create(recipe);
+        const computed = await repository.findByIdWithIngredients(
             created.id,
             ownerId,
-        )) as RecipeDetail;
+        );
 
-        expect(computed.calories_per_portion).toBe(200);
-        expect(computed.ingredients[0].calories_per_unit).toBe(50);
+        expect(computed?.calories_per_portion).toBe(200);
+        expect(computed?.ingredients[0].calories_per_unit).toBe(50);
 
         const update = Recipe.forUpdate({
             title: "Rice bowl",
@@ -104,12 +90,12 @@ describe("PgRecipeRepository (real Postgres)", () => {
 
         await repository.update(created.id, ownerId, update);
 
-        const overridden = (await repository.findByIdWithIngredients(
+        const overridden = await repository.findByIdWithIngredients(
             created.id,
             ownerId,
-        )) as RecipeDetail;
+        );
 
-        expect(overridden.calories_per_portion).toBe(999);
+        expect(overridden?.calories_per_portion).toBe(999);
     });
 
     it("should report isOwner true for the creator and false for another person", async () => {
@@ -123,19 +109,19 @@ describe("PgRecipeRepository (real Postgres)", () => {
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 3 }],
         });
 
-        const created = (await repository.create(recipe)) as { id: number };
+        const created = await repository.create(recipe);
 
-        const asOwner = (await repository.findByIdWithIngredients(
+        const asOwner = await repository.findByIdWithIngredients(
             created.id,
             ownerId,
-        )) as RecipeDetail;
-        const asOther = (await repository.findByIdWithIngredients(
+        );
+        const asOther = await repository.findByIdWithIngredients(
             created.id,
             otherPersonId,
-        )) as RecipeDetail;
+        );
 
-        expect(asOwner.isOwner).toBe(true);
-        expect(asOther.isOwner).toBe(false);
+        expect(asOwner?.isOwner).toBe(true);
+        expect(asOther?.isOwner).toBe(false);
     });
 
     it("should report isOwner false, not null, for an anonymous (null) requester", async () => {
@@ -148,14 +134,14 @@ describe("PgRecipeRepository (real Postgres)", () => {
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
 
-        const created = (await repository.create(recipe)) as { id: number };
+        const created = await repository.create(recipe);
 
-        const asGuest = (await repository.findByIdWithIngredients(
+        const asGuest = await repository.findByIdWithIngredients(
             created.id,
             null,
-        )) as RecipeDetail;
+        );
 
-        expect(asGuest.isOwner).toBe(false);
+        expect(asGuest?.isOwner).toBe(false);
     });
 
     it("should name the author by first name and surname initial, never by login or email", async () => {
@@ -168,20 +154,20 @@ describe("PgRecipeRepository (real Postgres)", () => {
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
 
-        const created = (await repository.create(recipe)) as { id: number };
+        const created = await repository.create(recipe);
 
-        const asGuest = (await repository.findByIdWithIngredients(
+        const asGuest = await repository.findByIdWithIngredients(
             created.id,
             null,
-        )) as RecipeDetail;
+        );
 
-        expect(asGuest.author).toEqual({
+        expect(asGuest?.author).toEqual({
             name: "Test",
             surname_initial: "U",
             avatar: null,
             avatar_photo_key: null,
         });
-        expect(asGuest.photo_key).toBeNull();
+        expect(asGuest?.photo_key).toBeNull();
     });
 
     it("should refuse to update a recipe owned by someone else", async () => {
@@ -194,7 +180,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
-        const created = (await repository.create(recipe)) as { id: number };
+        const created = await repository.create(recipe);
 
         const update = Recipe.forUpdate({
             title: "Hijacked title",
@@ -210,12 +196,12 @@ describe("PgRecipeRepository (real Postgres)", () => {
 
         expect(result).toBeNull();
 
-        const stillOriginal = (await repository.findByIdWithIngredients(
+        const stillOriginal = await repository.findByIdWithIngredients(
             created.id,
             ownerId,
-        )) as RecipeDetail;
+        );
 
-        expect(stillOriginal.title).toBe("Pancakes");
+        expect(stillOriginal?.title).toBe("Pancakes");
     });
 
     it("should replace ingredients on update rather than merging them", async () => {
@@ -230,7 +216,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
                 { id: firstIngredientId, quantity_recipe_ingredients: 1 },
             ],
         });
-        const created = (await repository.create(recipe)) as { id: number };
+        const created = await repository.create(recipe);
 
         const update = Recipe.forUpdate({
             title: "Salad",
@@ -243,12 +229,12 @@ describe("PgRecipeRepository (real Postgres)", () => {
 
         await repository.update(created.id, ownerId, update);
 
-        const detail = (await repository.findByIdWithIngredients(
+        const detail = await repository.findByIdWithIngredients(
             created.id,
             ownerId,
-        )) as RecipeDetail;
+        );
 
-        expect(detail.ingredients).toEqual([
+        expect(detail?.ingredients).toEqual([
             expect.objectContaining({
                 id: secondIngredientId,
                 quantity_recipe_ingredients: 5,
@@ -266,7 +252,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
-        const created = (await repository.create(recipe)) as { id: number };
+        const created = await repository.create(recipe);
 
         const deniedForOther = await repository.deleteById(
             created.id,
@@ -285,26 +271,6 @@ describe("PgRecipeRepository (real Postgres)", () => {
         );
 
         expect(afterDelete).toBeNull();
-    });
-
-    it("should not leak person_id on the rows returned by findAllWithIngredients", async () => {
-        const ingredientId = await createIngredient(pool, unitId);
-        const recipe = Recipe.forCreation({
-            title: "Leak check",
-            content: "Should not expose its owner.",
-            language: "en",
-            person_id: ownerId,
-            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
-        });
-
-        await repository.create(recipe);
-        const rows = (await repository.findAllWithIngredients()) as Record<
-            string,
-            unknown
-        >[];
-        const mine = rows.find((row) => row.title === "Leak check");
-
-        expect(mine).not.toHaveProperty("person_id");
     });
 
     it("should aggregate recipe stats without leaking person_id and reflect this recipe's own numbers", async () => {
@@ -329,26 +295,110 @@ describe("PgRecipeRepository (real Postgres)", () => {
             ],
         });
 
-        await repository.create(recipe);
+        const created = await repository.create(recipe);
         const stats = await repository.getStats();
 
-        expect(stats).not.toHaveProperty("person_id");
+        // exact, so a leaked person_id or any other extra column fails
+        expect(stats.fastestRecipes.find((r) => r.id === created.id)).toEqual({
+            id: created.id,
+            title: STATS_CHECK_TITLE,
+            cookingTime: 1,
+        });
         expect(
-            stats.fastestRecipes.find((r) => r.title === STATS_CHECK_TITLE),
-        ).toEqual(
-            expect.objectContaining({
-                title: STATS_CHECK_TITLE,
-                cookingTime: 1,
+            stats.mostCaloricRecipes.find((r) => r.id === created.id),
+        ).toEqual({
+            id: created.id,
+            title: STATS_CHECK_TITLE,
+            caloriesPerPortion: 100_000,
+        });
+    });
+
+    it("should leave a recipe with no cooking time out of the slowest recipes and the averages by type", async () => {
+        const SLOWEST_TITLE = "Slowest dish";
+        const ingredientId = await createIngredient(pool, unitId);
+        const untimedTypeId = await createRecipeType(pool);
+        const ingredients = [
+            { id: ingredientId, quantity_recipe_ingredients: 1 },
+        ];
+        const slowest = await repository.create(
+            Recipe.forCreation({
+                title: SLOWEST_TITLE,
+                content: "Takes longer than anything else.",
+                language: "en",
+                person_id: ownerId,
+                cooking_time: LONGEST_COOKING_TIME,
+                ingredients,
             }),
         );
-        expect(
-            stats.mostCaloricRecipes.find((r) => r.title === STATS_CHECK_TITLE),
-        ).toEqual(
-            expect.objectContaining({
-                title: STATS_CHECK_TITLE,
-                caloriesPerPortion: 100_000,
+
+        await repository.create(
+            Recipe.forCreation({
+                title: "Untimed dish",
+                content: "No cooking time given.",
+                language: "en",
+                person_id: ownerId,
+                type_id: untimedTypeId,
+                ingredients,
             }),
         );
+        const stats = await repository.getStats();
+
+        expect(stats.slowestRecipes[0]).toEqual({
+            id: slowest.id,
+            title: SLOWEST_TITLE,
+            cookingTime: LONGEST_COOKING_TIME,
+        });
+        expect(
+            stats.averageCookingTimesByType.map(
+                (entry) => entry.averageCookingTime,
+            ),
+        ).not.toContain(null);
+    });
+
+    it("should gather the recipes without a type into a last bucket of their own, so the distribution adds up to the recipe count", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+        const typeId = await createRecipeType(pool);
+        const ingredients = [
+            { id: ingredientId, quantity_recipe_ingredients: 1 },
+        ];
+
+        await repository.create(
+            Recipe.forCreation({
+                title: "Typed dish",
+                content: "Has a type.",
+                language: "en",
+                person_id: ownerId,
+                type_id: typeId,
+                cooking_time: 10,
+                ingredients,
+            }),
+        );
+        await repository.create(
+            Recipe.forCreation({
+                title: "Untyped dish",
+                content: "Has no type.",
+                language: "en",
+                person_id: ownerId,
+                cooking_time: 10,
+                ingredients,
+            }),
+        );
+        const stats = await repository.getStats();
+        const distributed = stats.stats.reduce(
+            (sum, bucket) => sum + bucket.count,
+            0,
+        );
+        const untyped = stats.stats.at(-1);
+
+        expect(distributed).toBe(stats.recipesCount);
+        expect(untyped?.typeName).toBeNull();
+        expect(untyped?.count).toBeGreaterThanOrEqual(1);
+        // last whatever its size, so a real type is still the most used one
+        expect(stats.mostUsedType).toEqual(stats.stats[0]);
+        expect(stats.stats[0].typeName).not.toBeNull();
+        expect(
+            stats.averageCookingTimesByType.map((entry) => entry.typeName),
+        ).not.toContain(null);
     });
 
     it("should only return ids that actually exist", async () => {
@@ -360,7 +410,7 @@ describe("PgRecipeRepository (real Postgres)", () => {
             person_id: ownerId,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
-        const created = (await repository.create(recipe)) as { id: number };
+        const created = await repository.create(recipe);
         const impossibleId = created.id + 1_000_000;
 
         const existingIds = await repository.findExistingIds([

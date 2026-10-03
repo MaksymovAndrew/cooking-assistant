@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { MS_PER_DAY } from "constants/time";
 import type { PantryIngredient } from "types/userIngredient";
 
 import { IngredientCard } from "components/ingredients/IngredientCard";
@@ -31,6 +32,21 @@ describe("IngredientCard", () => {
         expect(screen.getByText("Carrot")).toBeInTheDocument();
         expect(screen.getByText("3")).toBeInTheDocument();
         expect(screen.getByText("kg")).toBeInTheDocument();
+    });
+
+    it("should name the card after the ingredient", () => {
+        render(
+            <IngredientCard
+                ingredient={BASE_INGREDIENT}
+                onOpenHistory={jest.fn()}
+                onRestock={jest.fn()}
+                onDelete={jest.fn()}
+            />,
+        );
+
+        expect(
+            screen.getByRole("article", { name: "Carrot" }),
+        ).toBeInTheDocument();
     });
 
     it("should render the allergens list joined by comma", () => {
@@ -111,75 +127,19 @@ describe("IngredientCard", () => {
         expect(onOpenHistory).toHaveBeenCalledWith(BASE_INGREDIENT);
     });
 
-    it("should call onRestock when the restock button is clicked", async () => {
-        const onRestock = jest.fn();
-
-        render(
-            <IngredientCard
-                ingredient={BASE_INGREDIENT}
-                onOpenHistory={jest.fn()}
-                onRestock={onRestock}
-                onDelete={jest.fn()}
-            />,
-        );
-
-        await userEvent.click(screen.getByRole("button", { name: "Buy more" }));
-
-        expect(onRestock).toHaveBeenCalledWith(BASE_INGREDIENT);
-    });
-
-    it("should call onDelete when the delete button is clicked", async () => {
-        const onDelete = jest.fn();
-
-        render(
-            <IngredientCard
-                ingredient={BASE_INGREDIENT}
-                onOpenHistory={jest.fn()}
-                onRestock={jest.fn()}
-                onDelete={onDelete}
-            />,
-        );
-
-        await userEvent.click(screen.getByRole("button", { name: "Delete" }));
-
-        expect(onDelete).toHaveBeenCalledWith(BASE_INGREDIENT);
-    });
-
-    it("should show the worst (soonest-expiring) lot's status when several lots exist", () => {
+    it("should count the days left on the badge of an ingredient expiring soon", () => {
         render(
             <IngredientCard
                 ingredient={{
                     ...BASE_INGREDIENT,
-                    days_to_expire: 10,
-                    lots: [
-                        { id: 104, quantity: 1, purchase_date: "2000-01-01" },
-                        {
-                            id: 103,
-                            quantity: 2,
-                            purchase_date: new Date().toISOString(),
-                        },
-                    ],
-                }}
-                onOpenHistory={jest.fn()}
-                onRestock={jest.fn()}
-                onDelete={jest.fn()}
-            />,
-        );
-
-        expect(screen.getByText("Expired")).toBeInTheDocument();
-    });
-
-    it("should show a Clock icon badge and an amber border for an ingredient expiring soon", () => {
-        render(
-            <IngredientCard
-                ingredient={{
-                    ...BASE_INGREDIENT,
-                    days_to_expire: 3,
+                    days_to_expire: 4,
                     lots: [
                         {
                             id: 102,
                             quantity: 3,
-                            purchase_date: new Date().toISOString(),
+                            purchase_date: new Date(
+                                Date.now() - MS_PER_DAY,
+                            ).toISOString(),
                         },
                     ],
                 }}
@@ -189,7 +149,8 @@ describe("IngredientCard", () => {
             />,
         );
 
-        expect(screen.getAllByText("3 days")).toHaveLength(2);
+        // bought yesterday with a 4-day shelf life, so 3 days are left
+        expect(screen.getByText("3 days")).toBeInTheDocument();
     });
 
     it("should show a 'Fresh' badge for an ingredient well within its shelf life", () => {

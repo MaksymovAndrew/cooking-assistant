@@ -18,7 +18,6 @@ interface IngredientPickerDropdownProps {
     onSelect: (ingredient: Ingredient) => void;
 }
 
-// with no query it browses by category; a query or an opened category lists matching ingredients
 export const IngredientPickerDropdown: React.FC<
     IngredientPickerDropdownProps
 > = ({ search, selectedIds, onSelect }) => {

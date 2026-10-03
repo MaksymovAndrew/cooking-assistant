@@ -1,9 +1,9 @@
-import type { ExpiredPantryIngredient } from "types/expiry";
-import type { PantryIngredient } from "types/userIngredient";
-
 import type { ThemeChoice } from "redux/slices/themeSlice";
 
-// discriminated union keyed by `type` so ModalRoot renders the matching modal with a typed payload
+import type { AccountModalInput } from "./uiSlice.modals.account";
+import type { CookedItModalInput } from "./uiSlice.modals.cooking";
+import type { PantryModalInput } from "./uiSlice.modals.pantry";
+
 export const MODAL_TYPE = {
     ingredientHistory: "ingredientHistory",
     deleteRecipe: "deleteRecipe",
@@ -20,13 +20,12 @@ export const MODAL_TYPE = {
     offline: "offline",
     restockIngredient: "restockIngredient",
     deleteTag: "deleteTag",
+    cookedIt: "cookedIt",
+    addIngredient: "addIngredient",
+    editProfile: "editProfile",
+    changePassword: "changePassword",
+    deleteAccount: "deleteAccount",
 } as const;
-
-export interface IngredientHistoryModalInput {
-    type: typeof MODAL_TYPE.ingredientHistory;
-    ingredientId: number;
-    ingredientName: string;
-}
 
 export interface DeleteRecipeModalInput {
     type: typeof MODAL_TYPE.deleteRecipe;
@@ -40,11 +39,6 @@ export interface DeleteMenuModalInput {
     menuTitle: string;
 }
 
-export interface DeleteIngredientModalInput {
-    type: typeof MODAL_TYPE.deleteIngredient;
-    ingredient: PantryIngredient;
-}
-
 export interface LogoutModalInput {
     type: typeof MODAL_TYPE.logout;
 }
@@ -56,11 +50,6 @@ export interface SignOutEverywhereModalInput {
 export interface ThemeChangeModalInput {
     type: typeof MODAL_TYPE.themeChange;
     nextMode: ThemeChoice;
-}
-
-export interface ExpiredIngredientsModalInput {
-    type: typeof MODAL_TYPE.expiredIngredients;
-    ingredients: ExpiredPantryIngredient[];
 }
 
 export interface DeleteCalorieIntakeModalInput {
@@ -92,12 +81,6 @@ export interface OfflineModalInput {
     type: typeof MODAL_TYPE.offline;
 }
 
-export interface RestockIngredientModalInput {
-    type: typeof MODAL_TYPE.restockIngredient;
-    ingredient: PantryIngredient;
-}
-
-// what a caller provides; the id is generated in the action `prepare` step
 export interface DeleteTagModalInput {
     type: typeof MODAL_TYPE.deleteTag;
     tagId: number;
@@ -105,21 +88,20 @@ export interface DeleteTagModalInput {
 }
 
 export type ModalInput =
-    | IngredientHistoryModalInput
     | DeleteRecipeModalInput
     | DeleteMenuModalInput
-    | DeleteIngredientModalInput
     | LogoutModalInput
     | SignOutEverywhereModalInput
     | ThemeChangeModalInput
-    | ExpiredIngredientsModalInput
     | DeleteCalorieIntakeModalInput
     | CalorieLimitModalInput
     | LogIntakeModalInput
     | NewsModalInput
     | OfflineModalInput
-    | RestockIngredientModalInput
-    | DeleteTagModalInput;
+    | DeleteTagModalInput
+    | CookedItModalInput
+    | PantryModalInput
+    | AccountModalInput;
 
 // distributes over the union so `modal.type` still narrows to the matching payload
 type WithId<T> = T extends unknown ? T & { id: string } : never;

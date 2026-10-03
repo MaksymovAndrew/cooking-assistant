@@ -6,14 +6,13 @@ import type { Resources } from "i18n/resources";
 
 export const DEFAULT_NAMESPACE = "common";
 
-// resources are inlined, so init is synchronous and t() returns real strings at once; "added"
-// re-renders a component when the lazily loaded catalog arrives
+// inlined resources make init synchronous; "added" re-renders once the lazy catalog arrives
 export const i18nOptions = (
     locale: Locale,
     resources: Resources,
     namespace: string = DEFAULT_NAMESPACE,
 ): InitOptions => ({
-    // i18next keeps the object it is given and writes later bundles into it; a copy keeps the shared resources clean
+    // i18next writes later bundles into the object it is given; a copy keeps the shared one clean
     resources: { [locale]: { ...resources } },
     lng: locale,
     fallbackLng: false,

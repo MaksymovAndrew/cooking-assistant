@@ -19,9 +19,21 @@ function makeInput() {
 function setup() {
     const menuRepository = { update: jest.fn() };
     const recipeRepository = { findExistingIds: jest.fn() };
-    const useCase = new UpdateMenu(menuRepository, recipeRepository);
+    const menuCategoryRepository = {
+        exists: jest.fn().mockResolvedValue(true),
+    };
+    const useCase = new UpdateMenu(
+        menuRepository,
+        recipeRepository,
+        menuCategoryRepository,
+    );
 
-    return { useCase, menuRepository, recipeRepository };
+    return {
+        useCase,
+        menuRepository,
+        recipeRepository,
+        menuCategoryRepository,
+    };
 }
 
 describe("UpdateMenu", () => {
@@ -96,21 +108,45 @@ describe("UpdateMenu", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "recipeIds: Recipe IDs must be unique",
+            "recipeIds: Must not repeat",
         );
         expect(menuRepository.update).not.toHaveBeenCalled();
     });
 
-    it("should throw a 400 ValidationError and not update when input is invalid", async () => {
+    it("should throw a 400 ValidationError and not update when the menu title is blank", async () => {
         const { useCase, menuRepository } = setup();
 
-        const error = await catchError(useCase.execute(null, 7, makeInput()));
+        const error = await catchError(
+            useCase.execute(9, 7, { ...makeInput(), menuTitle: "   " }),
+        );
 
         expect(error).toBeAppError(
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "ID is required",
+            "menuTitle: Cannot be empty",
+        );
+        expect(menuRepository.update).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError for a category that does not exist without updating the menu", async () => {
+        const {
+            useCase,
+            menuRepository,
+            recipeRepository,
+            menuCategoryRepository,
+        } = setup();
+        const input = makeInput();
+
+        recipeRepository.findExistingIds.mockResolvedValue(input.recipeIds);
+        menuCategoryRepository.exists.mockResolvedValue(false);
+
+        const error = await catchError(useCase.execute(9, 7, input));
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.MENU_CATEGORY_NOT_EXIST,
+            400,
         );
         expect(menuRepository.update).not.toHaveBeenCalled();
     });

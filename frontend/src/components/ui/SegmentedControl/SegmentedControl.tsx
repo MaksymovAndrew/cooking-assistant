@@ -1,5 +1,7 @@
 import React from "react";
 
+import { cx } from "utils/cx";
+
 import styles from "./SegmentedControl.module.scss";
 
 export interface SegmentedOption<T extends string> {
@@ -27,12 +29,10 @@ export const SegmentedControl = <T extends string>({
     >
         {options.map((option) => {
             const isActive = option.value === value;
-            const classNames = [
+            const classNames = cx(
                 styles["segmented-control__segment"],
                 isActive && styles["segmented-control__segment--active"],
-            ]
-                .filter(Boolean)
-                .join(" ");
+            );
 
             return (
                 <button

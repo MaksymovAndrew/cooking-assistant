@@ -15,17 +15,15 @@
         display: none;
     }
 
-    // the icon/label row's own box is never touched by the animating safe-area value below, so
-    // there is nothing here for Chrome's non-fast-path repaint lag to visibly squeeze
+    // never sized by the safe-area inset, so Chrome's repaint lag can't squeeze the icons
     &__content {
         display: flex;
         flex: none;
         align-items: stretch;
-        height: 64px;
+        height: var(--bottom-nav-height);
     }
 
-    // a separate, contentless block absorbs the safe-area inset - if its own resize lags behind
-    // the address bar animation, there is no icon/text inside it for that lag to be visible on
+    // an empty spacer takes the inset, so a resize lagging the address bar shows on nothing
     &__safe-area-spacer {
         flex: none;
         height: env(safe-area-inset-bottom);
@@ -37,7 +35,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 4px;
+        gap: var(--s-1);
         color: var(--text-muted);
         text-decoration: none;
         font:
@@ -48,7 +46,7 @@
     }
 
     &__item--active {
-        color: var(--brand);
+        color: var(--brand-text);
         font-weight: 700;
     }
 }

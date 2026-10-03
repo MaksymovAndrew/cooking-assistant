@@ -5,8 +5,7 @@ import { closeModal, MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
 import { useOnlineStatus } from "hooks/useOnlineStatus";
 
-// enqueues the offline modal while offline and withdraws it on reconnect; the effect only runs
-// when connectivity flips, so dismissing it stays quiet until the next drop
+// runs only when connectivity flips, so a dismissed notice stays quiet until the next drop
 export const useOfflineNotice = (): void => {
     const dispatch = useAppDispatch();
     const isOnline = useOnlineStatus();

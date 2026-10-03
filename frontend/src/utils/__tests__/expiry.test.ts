@@ -5,25 +5,24 @@ import {
     isLotExpired,
 } from "utils/expiry";
 
+const NOW = new Date("2026-07-10T12:00:00.000Z").getTime();
+const TODAY = "2026-07-10T00:00:00.000Z";
+const LONG_AGO = "2026-06-10T00:00:00.000Z";
 const DAYS_TO_EXPIRE = 10;
 
-// local YYYY-MM-DD string for "n days ago" - avoids UTC round-trip drift near midnight
-const purchasedDaysAgo = (days: number): string => {
-    const date = new Date();
+beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(NOW);
+});
 
-    date.setDate(date.getDate() - days);
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-};
+afterEach(() => {
+    jest.useRealTimers();
+});
 
 describe("getExpiryStatus", () => {
     it("should return null when daysToExpire is not a number", () => {
-        expect(getExpiryStatus(null, purchasedDaysAgo(0))).toBeNull();
-        expect(getExpiryStatus(undefined, purchasedDaysAgo(0))).toBeNull();
+        expect(getExpiryStatus(null, TODAY)).toBeNull();
+        expect(getExpiryStatus(undefined, TODAY)).toBeNull();
     });
 
     it("should return null when there is no purchase date", () => {
@@ -31,22 +30,22 @@ describe("getExpiryStatus", () => {
     });
 
     it("should mark the ingredient as expired when the expiry date is in the past", () => {
-        const status = getExpiryStatus(DAYS_TO_EXPIRE, purchasedDaysAgo(30));
-
-        expect(status).toEqual(expect.objectContaining({ tone: "expired" }));
-        expect(status?.days).toBeLessThan(0);
+        expect(getExpiryStatus(DAYS_TO_EXPIRE, LONG_AGO)).toEqual({
+            tone: "expired",
+            days: -20,
+        });
     });
 
     it("should mark the ingredient as warning when it expires within the threshold", () => {
-        const status = getExpiryStatus(DAYS_TO_EXPIRE, purchasedDaysAgo(8));
-
-        expect(status).toEqual(expect.objectContaining({ tone: "warning" }));
+        expect(
+            getExpiryStatus(DAYS_TO_EXPIRE, "2026-07-04T00:00:00.000Z"),
+        ).toEqual({ tone: "warning", days: 4 });
     });
 
-    it("should mark the ingredient as ok when it expires well in the future", () => {
-        const status = getExpiryStatus(DAYS_TO_EXPIRE, purchasedDaysAgo(0));
-
-        expect(status).toEqual(expect.objectContaining({ tone: "ok" }));
+    it("should mark the ingredient as ok once its expiry is past the threshold", () => {
+        expect(
+            getExpiryStatus(DAYS_TO_EXPIRE, "2026-07-05T00:00:00.000Z"),
+        ).toEqual({ tone: "ok", days: 5 });
     });
 });
 
@@ -65,29 +64,35 @@ describe("getWorstLotExpiryStatus", () => {
 
     it("should use the oldest lot (lots[0]) as the worst case, ignoring a fresher lot bought since", () => {
         const status = getWorstLotExpiryStatus(DAYS_TO_EXPIRE, [
-            { id: 102, quantity: 1, purchase_date: purchasedDaysAgo(30) },
-            { id: 101, quantity: 1, purchase_date: purchasedDaysAgo(0) },
+            { id: 102, quantity: 1, purchase_date: LONG_AGO },
+            { id: 101, quantity: 1, purchase_date: TODAY },
         ]);
 
-        expect(status).toEqual(expect.objectContaining({ tone: "expired" }));
+        expect(status).toEqual({ tone: "expired", days: -20 });
     });
 });
 
 describe("isLotExpired", () => {
     it("should expire a lot once its expiry day has passed", () => {
-        expect(isLotExpired(DAYS_TO_EXPIRE, purchasedDaysAgo(30))).toBe(true);
+        expect(isLotExpired(DAYS_TO_EXPIRE, "2026-06-29T00:00:00.000Z")).toBe(
+            true,
+        );
     });
 
     it("should keep a lot on its expiry day itself", () => {
-        expect(isLotExpired(0, purchasedDaysAgo(0))).toBe(false);
+        expect(isLotExpired(DAYS_TO_EXPIRE, "2026-06-30T00:00:00.000Z")).toBe(
+            false,
+        );
     });
 
     it("should keep a lot that has not expired yet", () => {
-        expect(isLotExpired(DAYS_TO_EXPIRE, purchasedDaysAgo(1))).toBe(false);
+        expect(isLotExpired(DAYS_TO_EXPIRE, "2026-07-09T00:00:00.000Z")).toBe(
+            false,
+        );
     });
 
     it("should not expire a lot without expiry data", () => {
-        expect(isLotExpired(null, purchasedDaysAgo(30))).toBe(false);
+        expect(isLotExpired(null, LONG_AGO)).toBe(false);
         expect(isLotExpired(DAYS_TO_EXPIRE, undefined)).toBe(false);
     });
 });

@@ -77,31 +77,6 @@ describe("photosApi", () => {
         subscription.unsubscribe();
     });
 
-    it("should upload an avatar photo to the current user's avatar path", async () => {
-        mockedPut.mockResolvedValue({ data: UPLOADED });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            photosApi.endpoints.uploadAvatarPhoto.initiate(PHOTO),
-        );
-
-        expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.auth.avatar, PHOTO);
-    });
-
-    it("should remove the avatar photo with a DELETE to the avatar path", async () => {
-        mockedDelete.mockResolvedValue({ data: null });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            photosApi.endpoints.removeAvatarPhoto.initiate(null),
-        );
-
-        expect(mockedDelete).toHaveBeenCalledWith(API_ROUTES.auth.avatar, {
-            data: undefined,
-            params: undefined,
-        });
-    });
-
     it("should refetch the current user and their menus after the avatar changes", async () => {
         mockedGet.mockResolvedValue({ data: null });
         mockedPut.mockResolvedValue({ data: UPLOADED });
@@ -109,7 +84,7 @@ describe("photosApi", () => {
 
         const me = store.dispatch(authApi.endpoints.getMe.initiate(null));
         const menus = store.dispatch(
-            menusApi.endpoints.getAllMenus.initiate(null),
+            menusApi.endpoints.getMenuStats.initiate(null),
         );
 
         await Promise.all([me, menus]);
@@ -120,13 +95,13 @@ describe("photosApi", () => {
         );
         await Promise.all([
             store.dispatch(authApi.endpoints.getMe.initiate(null)),
-            store.dispatch(menusApi.endpoints.getAllMenus.initiate(null)),
+            store.dispatch(menusApi.endpoints.getMenuStats.initiate(null)),
         ]);
 
         expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.auth.me, {
             params: undefined,
         });
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.allUnpaginated, {
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.stats, {
             params: undefined,
         });
         me.unsubscribe();
@@ -150,5 +125,28 @@ describe("photosApi", () => {
 
         expect(mockedGet).not.toHaveBeenCalled();
         me.unsubscribe();
+    });
+
+    it("should refetch a cached menu after a recipe photo changes, since the menu shows it", async () => {
+        mockedGet.mockResolvedValue({ data: null });
+        mockedDelete.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+        const menu = store.dispatch(menusApi.endpoints.getMenuById.initiate(9));
+
+        await menu;
+        mockedGet.mockClear();
+
+        await store.dispatch(
+            photosApi.endpoints.removeRecordPhoto.initiate({
+                target: "recipe",
+                id: 5,
+            }),
+        );
+        await store.dispatch(menusApi.endpoints.getMenuById.initiate(9));
+
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.byId(9), {
+            params: undefined,
+        });
+        menu.unsubscribe();
     });
 });

@@ -5,6 +5,8 @@ import { RATING_VALUES } from "constants/ratings";
 
 import type { RatingControl } from "hooks/useRatingControl";
 
+import { cx } from "utils/cx";
+
 import { RatingStar } from "./RatingStar";
 import { starKeyTarget } from "./starKeyTarget";
 import styles from "./StarRatingInput.module.scss";
@@ -15,8 +17,7 @@ interface StarRatingInputProps {
     className?: string;
 }
 
-// arrows move focus and preview a value without sending anything; Enter, Space or a click commits,
-// so browsing the stars by keyboard doesn't fire a request per keypress
+// arrows only preview; Enter, Space or a click commits, so browsing never fires a request
 export const StarRatingInput: React.FC<StarRatingInputProps> = ({
     rating,
     label,
@@ -47,11 +48,7 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
     };
 
     return (
-        <div
-            className={[styles["star-rating-input"], className]
-                .filter(Boolean)
-                .join(" ")}
-        >
+        <div className={cx(styles["star-rating-input"], className)}>
             <span id={labelId} className={styles["star-rating-input__label"]}>
                 {label}
             </span>
@@ -71,7 +68,6 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
                         isLit={starValue <= shown}
                         isTabStop={starValue === tabStop}
                         disabled={disabled}
-                        // pressing the chosen star again takes the vote back
                         onCommit={() => {
                             if (starValue === value) {
                                 clear();

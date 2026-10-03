@@ -80,13 +80,7 @@ describe("RecipeStatsSection", () => {
             />,
         );
 
-        expect(screen.getByText("Avg calories")).toBeInTheDocument();
-    });
-
-    it("should render the recipe extremes", () => {
-        renderWithRouter(<RecipeStatsSection stats={STATS} menusCount={5} />);
-
-        expect(screen.getAllByText("Borscht").length).toBeGreaterThan(0);
+        expect(screen.getByText("—")).toBeInTheDocument();
     });
 
     it("should link each extreme recipe to its own detail page", () => {

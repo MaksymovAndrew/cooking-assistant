@@ -6,6 +6,8 @@ import type { RecordRating } from "types/rating";
 
 import { RatingStars } from "components/ui/RatingStars";
 
+import { cx } from "utils/cx";
+
 import styles from "./RecipeHero.module.scss";
 
 interface RecipeHeroStatsProps {
@@ -29,12 +31,10 @@ export const RecipeHeroStats: React.FC<RecipeHeroStatsProps> = ({
     exceedsBudget = false,
 }) => {
     const { t } = useTranslation("recipes");
-    const caloriesStatClassName = [
+    const caloriesStatClassName = cx(
         styles["recipe-hero__stat"],
         exceedsBudget && styles["recipe-hero__stat--calorie-over"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <div className={styles["recipe-hero__stats"]}>

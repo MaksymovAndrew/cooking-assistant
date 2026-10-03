@@ -32,10 +32,10 @@
 
 .main-nav__item--active {
     background: var(--brand-subtle);
-    color: var(--brand);
+    color: var(--brand-text);
 
     @include on-hover {
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 }

@@ -43,7 +43,8 @@
         "streakBest": "Рекорд: {{count}}",
         "avgLabel": "В среднем {{count}} в день",
         "daysOnGoalLabel": "В пределах цели {{onGoal}} из {{total}}",
-        "todayLabel": "Сегодня"
+        "todayLabel": "Сегодня",
+        "barLabel": "{{day}}: {{kcal}} ккал"
     },
     "homeTile": {
         "label": "Ккал сегодня",

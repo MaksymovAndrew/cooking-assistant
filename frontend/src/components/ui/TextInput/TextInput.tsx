@@ -1,5 +1,9 @@
 import React from "react";
 
+import { useFormFieldAria } from "components/ui/FormField";
+
+import { cx } from "utils/cx";
+
 import styles from "./TextInput.module.scss";
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -8,15 +12,16 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     ({ hasError = false, className, ...rest }, ref) => {
-        const classNames = [
+        const fieldAria = useFormFieldAria(rest);
+        const classNames = cx(
             styles["text-input"],
             hasError && styles["text-input--error"],
             className,
-        ]
-            .filter(Boolean)
-            .join(" ");
+        );
 
-        return <input ref={ref} className={classNames} {...rest} />;
+        return (
+            <input ref={ref} className={classNames} {...rest} {...fieldAria} />
+        );
     },
 );
 

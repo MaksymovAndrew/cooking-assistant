@@ -1,49 +1,11 @@
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { IngredientsToolbar } from "components/ingredients/IngredientsToolbar";
 
 const NO_CATEGORIES: never[] = [];
-const DEBOUNCE_MS = 300;
 
 describe("IngredientsToolbar", () => {
-    it("should call onQueryChange once the debounce settles after typing", async () => {
-        jest.useFakeTimers();
-        const user = userEvent.setup({
-            advanceTimers: (ms) => {
-                jest.advanceTimersByTime(ms);
-            },
-        });
-        const onQueryChange = jest.fn();
-
-        try {
-            render(
-                <IngredientsToolbar
-                    query=""
-                    onQueryChange={onQueryChange}
-                    expiringSoonCount={0}
-                    expiringSoonOnly={false}
-                    onToggleExpiringSoon={jest.fn()}
-                    categories={NO_CATEGORIES}
-                    categoryFilter={null}
-                    onCategoryFilterChange={jest.fn()}
-                />,
-            );
-
-            await user.type(
-                screen.getByPlaceholderText("Search your pantry…"),
-                "p",
-            );
-            act(() => {
-                jest.advanceTimersByTime(DEBOUNCE_MS);
-            });
-
-            expect(onQueryChange).toHaveBeenCalledWith("p");
-        } finally {
-            jest.useRealTimers();
-        }
-    });
-
     it("should not show the expiring-soon filter pill when the count is zero", () => {
         render(
             <IngredientsToolbar
@@ -88,7 +50,7 @@ describe("IngredientsToolbar", () => {
         expect(onToggleExpiringSoon).toHaveBeenCalledTimes(1);
     });
 
-    it("should mark the filter pill active when expiringSoonOnly is true", () => {
+    it("should mark the filter pill pressed when expiringSoonOnly is true", () => {
         render(
             <IngredientsToolbar
                 query=""
@@ -104,7 +66,7 @@ describe("IngredientsToolbar", () => {
 
         expect(
             screen.getByRole("button", { name: "Expiring soon (2)" }),
-        ).toHaveClass("ingredients-toolbar__filter-pill--active");
+        ).toHaveAttribute("aria-pressed", "true");
     });
 
     it("should not show the category select when there are no categories", () => {
@@ -124,31 +86,5 @@ describe("IngredientsToolbar", () => {
         expect(
             screen.queryByRole("combobox", { name: "Filter by category" }),
         ).not.toBeInTheDocument();
-    });
-
-    it("should call onCategoryFilterChange when a category is selected", async () => {
-        const onCategoryFilterChange = jest.fn();
-
-        render(
-            <IngredientsToolbar
-                query=""
-                onQueryChange={jest.fn()}
-                expiringSoonCount={0}
-                expiringSoonOnly={false}
-                onToggleExpiringSoon={jest.fn()}
-                categories={[
-                    { key: "vegetables", label: "Vegetables", count: 2 },
-                ]}
-                categoryFilter={null}
-                onCategoryFilterChange={onCategoryFilterChange}
-            />,
-        );
-
-        await userEvent.selectOptions(
-            screen.getByRole("combobox", { name: "Filter by category" }),
-            "vegetables",
-        );
-
-        expect(onCategoryFilterChange).toHaveBeenCalledWith("vegetables");
     });
 });

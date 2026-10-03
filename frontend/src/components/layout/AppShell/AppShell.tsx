@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { MAIN_CONTENT_ID } from "constants/landmarks";
+
 import { useCalorieLimitNotice } from "hooks/useCalorieLimitNotice";
 import { useExpiredIngredientsNotice } from "hooks/useExpiredIngredientsNotice";
 
@@ -8,24 +10,22 @@ import { AppHeader } from "components/layout/AppHeader";
 import { BottomNav } from "components/layout/BottomNav";
 import { MobileSubpageHeader } from "components/layout/MobileSubpageHeader";
 import { ScrollToTopButton } from "components/layout/ScrollToTopButton";
+import { SkipLink } from "components/layout/SkipLink";
 import { ensureCatalogLoaded } from "i18n/loadCatalog";
 
 import styles from "./AppShell.module.scss";
 
 interface AppShellProps {
     children: React.ReactNode;
-    // when set, mobile viewports show a back-button subpage header instead of the full app header (tablet+ always shows the full header)
     mobileBackTo?: string;
-    mobileTitle?: string;
     mobileEditTo?: string;
-    // opts a create/edit form page out of the expired-ingredients/calorie-limit popups (P4), which would otherwise interrupt mid-edit
+    // form pages skip the expired and calorie popups, which would interrupt mid-edit
     skipNotices?: boolean;
 }
 
 export const AppShell: React.FC<AppShellProps> = ({
     children,
     mobileBackTo,
-    mobileTitle,
     mobileEditTo,
     skipNotices = false,
 }) => {
@@ -41,10 +41,10 @@ export const AppShell: React.FC<AppShellProps> = ({
 
     return (
         <div className={styles["app-shell"]}>
+            <SkipLink />
             {mobileBackTo && (
                 <MobileSubpageHeader
                     backTo={mobileBackTo}
-                    title={mobileTitle}
                     editTo={mobileEditTo}
                 />
             )}
@@ -57,7 +57,13 @@ export const AppShell: React.FC<AppShellProps> = ({
             >
                 <AppHeader />
             </div>
-            <main className={styles["app-shell__main"]}>{children}</main>
+            <main
+                id={MAIN_CONTENT_ID}
+                tabIndex={-1}
+                className={styles["app-shell__main"]}
+            >
+                {children}
+            </main>
             <ScrollToTopButton />
             <BottomNav />
         </div>

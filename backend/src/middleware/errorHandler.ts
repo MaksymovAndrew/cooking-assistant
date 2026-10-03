@@ -3,11 +3,13 @@ import type { ErrorRequestHandler } from "express";
 import { logger } from "config/logger";
 import { ERROR_CODES, type ErrorCode } from "constants/errorCodes";
 import type { Locale } from "constants/locales";
-import { AppError } from "domain/errors/AppError";
+import { AppError, ValidationError } from "domain/errors/AppError";
+import { errorField } from "domain/errors/errorField";
 import { requestLocale } from "i18n/requestLocale";
-import { translateError } from "i18n/translate";
+import { translateError, translateValidationIssues } from "i18n/translate";
 
 const SERVER_ERROR_STATUS = 500;
+const PAYLOAD_TOO_LARGE_STATUS = 413;
 
 interface ErrorBody {
     error: string;
@@ -19,18 +21,17 @@ function getErrorStatus(err: unknown): number {
         return err.status;
     }
 
-    const hasStatus =
-        typeof err === "object" && err !== null && "status" in err;
+    const status = errorField(err, "status");
 
-    if (hasStatus) {
-        const { status } = err as { status?: unknown };
+    return typeof status === "number" && status > 0
+        ? status
+        : SERVER_ERROR_STATUS;
+}
 
-        if (typeof status === "number") {
-            return status || SERVER_ERROR_STATUS;
-        }
-    }
-
-    return SERVER_ERROR_STATUS;
+function frameworkErrorCode(status: number): ErrorCode {
+    return status === PAYLOAD_TOO_LARGE_STATUS
+        ? ERROR_CODES.PAYLOAD_TOO_LARGE
+        : ERROR_CODES.BAD_REQUEST;
 }
 
 function toErrorBody(err: unknown, status: number, locale: Locale): ErrorBody {
@@ -42,28 +43,25 @@ function toErrorBody(err: unknown, status: number, locale: Locale): ErrorBody {
         };
     }
 
-    if (err instanceof AppError) {
+    if (err instanceof ValidationError && err.issues.length > 0) {
         return {
-            error: err.detail ?? translateError(err.code, locale),
+            error: translateValidationIssues(err.issues, locale),
             code: err.code,
         };
     }
 
-    // a framework 4xx (malformed JSON, oversized body) has no code of its own
-    const message = err instanceof Error ? err.message : "";
+    // a framework 4xx (broken JSON, oversized body) has no code, and its text is not ours to show
+    const code =
+        err instanceof AppError ? err.code : frameworkErrorCode(status);
 
-    return {
-        error: message || translateError(ERROR_CODES.BAD_REQUEST, locale),
-        code: ERROR_CODES.BAD_REQUEST,
-    };
+    return { error: translateError(code, locale), code };
 }
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     const status = getErrorStatus(err);
     const body = toErrorBody(err, status, requestLocale(req));
 
-    // a 4xx is the client's mistake, not an incident: one compact warn line with no stack, so bots
-    // probing unknown routes can't crowd the rotated logs - only a 5xx is logged in full
+    // a 4xx is one compact warn line, so bots probing unknown routes can't crowd the logs
     if (status >= SERVER_ERROR_STATUS) {
         logger.error(err);
     } else {

@@ -6,7 +6,12 @@ import type { RecipeDetails } from "types/recipe";
 import { API_ROUTES } from "api/endpoints";
 
 import ChangeRecipePage from "app/[locale]/(private)/change-recipe/[id]/page";
-import { mockedPut, mockGetByUrl } from "test/apiClientMock";
+import {
+    makeAxiosError,
+    mockedGet,
+    mockedPut,
+    mockGetByUrl,
+} from "test/apiClientMock";
 import {
     ERROR_COOKING_TIME_FORMAT,
     LABEL_COOKING_TIME,
@@ -22,6 +27,7 @@ import { makeTestStore } from "test/store";
 jest.mock("api/client");
 
 const TITLE = "Borscht";
+const NEW_TITLE = "Beetroot borscht";
 const UPDATE_RECIPE = "Save changes";
 const SAMPLE: RecipeDetails = {
     id: 1,
@@ -44,9 +50,9 @@ const SAMPLE: RecipeDetails = {
     calories_override: null,
 };
 
-const setup = () => {
+const setup = (recipe: RecipeDetails = SAMPLE) => {
     mockGetByUrl({
-        [API_ROUTES.recipes.byId("1")]: SAMPLE,
+        [API_ROUTES.recipes.byId("1")]: recipe,
         [API_ROUTES.ingredients.list]: [],
         [API_ROUTES.recipeTypes.list]: [],
     });
@@ -65,12 +71,6 @@ const submit = () =>
     userEvent.click(screen.getByRole("button", { name: UPDATE_RECIPE }));
 
 describe("ChangeRecipePage", () => {
-    it("should load the recipe into the edit form", async () => {
-        setup();
-
-        expect(await screen.findByDisplayValue(TITLE)).toBeInTheDocument();
-    });
-
     it("should show a cooking-time error when submitting with invalid time", async () => {
         setup();
 
@@ -85,26 +85,20 @@ describe("ChangeRecipePage", () => {
         expect(screen.getByText(ERROR_COOKING_TIME_FORMAT)).toBeInTheDocument();
     });
 
-    it("should update the recipe with the changed values on valid submit", async () => {
+    it("should save the changed recipe and go back to the recipe list", async () => {
         mockedPut.mockResolvedValue({ data: null });
         setup();
 
-        await screen.findByDisplayValue(TITLE);
+        const titleInput = await screen.findByDisplayValue(TITLE);
+
+        await userEvent.clear(titleInput);
+        await userEvent.type(titleInput, NEW_TITLE);
         await submit();
 
         expect(mockedPut).toHaveBeenCalledWith(
             API_ROUTES.recipes.byId("1"),
-            expect.objectContaining({ title: TITLE, cooking_time: 60 }),
+            expect.objectContaining({ title: NEW_TITLE, cooking_time: 60 }),
         );
-    });
-
-    it("should navigate home after successful update", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-        setup();
-
-        await screen.findByDisplayValue(TITLE);
-        await submit();
-
         expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
     });
 
@@ -126,5 +120,70 @@ describe("ChangeRecipePage", () => {
             }),
         ]);
         expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it("should show a skeleton, not an empty form, while the recipe loads", async () => {
+        setup();
+
+        expect(screen.getByRole("status", { name: "Loading…" })).toBeVisible();
+        expect(
+            screen.queryByRole("button", { name: UPDATE_RECIPE }),
+        ).not.toBeInTheDocument();
+        expect(await screen.findByDisplayValue(TITLE)).toBeInTheDocument();
+    });
+
+    it("should say the recipe cannot be edited when it does not exist", async () => {
+        mockedGet.mockRejectedValue(makeAxiosError(404, "Not found"));
+        setTestParams({ id: "1" });
+        renderWithProviders(<ChangeRecipePage />);
+
+        expect(
+            await screen.findByText("This recipe can't be edited"),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole("button", { name: UPDATE_RECIPE }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should offer a retry when the recipe fails to load", async () => {
+        mockGetByUrl({
+            [API_ROUTES.recipes.byId("1")]: SAMPLE,
+            [API_ROUTES.ingredients.list]: [],
+            [API_ROUTES.recipeTypes.list]: [],
+        });
+        const loadByUrl = mockedGet.getMockImplementation();
+        let failures = 1;
+
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.recipes.byId("1") && failures > 0) {
+                failures -= 1;
+
+                return Promise.reject(makeAxiosError(500, "Boom"));
+            }
+
+            return loadByUrl ? loadByUrl(url) : Promise.reject(new Error(url));
+        });
+        setTestParams({ id: "1" });
+        renderWithProviders(<ChangeRecipePage />);
+
+        await userEvent.click(
+            await screen.findByRole("button", { name: "Try again" }),
+        );
+
+        expect(await screen.findByDisplayValue(TITLE)).toBeInTheDocument();
+    });
+
+    it("should say the recipe cannot be edited when it belongs to someone else", async () => {
+        setup({ ...SAMPLE, isOwner: false });
+
+        expect(
+            await screen.findByText("This recipe can't be edited"),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", { name: "Back to recipes" }),
+        ).toHaveAttribute("href", ROUTE_ALL_RECIPES);
+        expect(
+            screen.queryByRole("button", { name: UPDATE_RECIPE }),
+        ).not.toBeInTheDocument();
     });
 });

@@ -17,9 +17,6 @@
             serif;
     }
 
-    // a fixed-width streak box next to the bars leaves too little room for 7
-    // columns on mobile (each bar's value label + weekday label need real
-    // space) - stack the streak below the chart until there's room for both
     &__body {
         display: flex;
         flex-direction: column;
@@ -37,8 +34,6 @@
         min-width: 0;
     }
 
-    // purely decorative now - the "Goal X kcal" text lives in the footer below
-    // instead of floating on the line, where a tall bar could crowd it
     &__goal-line {
         position: absolute;
         right: 0;
@@ -47,18 +42,11 @@
             color-mix(in srgb, var(--text-muted) 50%, transparent);
     }
 
-    // columns never shrink below a readable 44px (a flexible width crushes 30
-    // columns to invisible slivers), but they DO grow to fill extra space, so
-    // 7 columns stretch edge-to-edge whenever the panel is wide enough and
-    // only fall back to horizontal scroll once the minimum width is hit. The
-    // native scrollbar stays hidden - components/ui/HorizontalScrollbar
-    // renders a custom track+thumb below instead, so the same affordance
-    // and drag-to-scroll work identically on touch and mouse alike
-    // positioned so the empty-state message can overlay it without collapsing the row's height
     &__bars-wrapper {
         position: relative;
     }
 
+    // HorizontalScrollbar replaces the hidden native bar, so dragging works with a mouse too
     &__bars {
         display: flex;
         align-items: flex-end;
@@ -70,6 +58,11 @@
         &::-webkit-scrollbar {
             display: none;
         }
+
+        // a week always fits, so its days share the width and a long label may spill into the gap
+        &--week {
+            overflow: visible;
+        }
     }
 
     &__column {
@@ -80,6 +73,11 @@
         justify-content: flex-end;
         gap: var(--s-1);
         height: 100%;
+    }
+
+    &__bars--week &__column {
+        flex: 1 1 0;
+        min-width: 0;
     }
 
     &__value {
@@ -126,7 +124,6 @@
         }
     }
 
-    // lives inside each __column (not a separate row) so it scrolls with its bar
     &__day-label {
         color: var(--text-muted);
         font:
@@ -156,7 +153,6 @@
         }
     }
 
-    // overlaid on the all-zero-height bars rather than replacing them, so the footprint stays fixed
     &__empty {
         position: absolute;
         inset: 0;

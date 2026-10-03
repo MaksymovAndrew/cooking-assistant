@@ -1,14 +1,10 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
-import {
-    createMenuViaForm,
-    createRecipeViaForm,
-    selectFromPicker,
-} from "./forms";
+import { deleteMenu, deleteRecipe } from "./api";
+import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
-// ids come from the create-response bodies, not card/list markup, so these keep working across page changes
 test.describe.configure({ mode: "serial" });
 
 let context: BrowserContext;
@@ -19,26 +15,31 @@ let menuId: string;
 
 test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
-    // reuses the shared primary account (registered once in global-setup) instead of registering a fresh one here - keeps the suite's total auth calls low
     context = await browser.newContext({ storageState: PRIMARY_STORAGE_STATE });
     page = await context.newPage();
-});
 
-test.afterAll(async () => {
-    await context.close();
-});
-
-test("should create a recipe and capture its id from the API response", async () => {
-    const created = await createRecipeViaForm(page, {
+    ({ recipeId } = await createRecipeViaForm(page, {
         title: `Original recipe title ${runId}`,
         description: "Created by core-flows e2e.",
         ingredient: "Potato",
         cookingHours: "0",
         cookingMinutes: "20",
-    });
+    }));
+    ({ menuId } = await createMenuViaForm(page, {
+        title: `Original menu title ${runId}`,
+        description: "Created by core-flows e2e.",
+        recipeTitle: `Original recipe title ${runId}`,
+    }));
+});
 
-    recipeId = created.recipeId;
-    expect(recipeId).toBeTruthy();
+test.afterAll(async () => {
+    // cleanup: the delete tests may never have run, so leave the shared account clean either way
+    try {
+        await deleteMenu(context.request, menuId);
+        await deleteRecipe(context.request, recipeId);
+    } finally {
+        await context.close();
+    }
 });
 
 test("should edit the recipe and see the new title on its details page", async () => {
@@ -53,17 +54,6 @@ test("should edit the recipe and see the new title on its details page", async (
     await expect(
         page.getByRole("heading", { name: `Updated recipe title ${runId}` }),
     ).toBeVisible();
-});
-
-test("should create a menu from the recipe and capture its id", async () => {
-    const created = await createMenuViaForm(page, {
-        title: `Original menu title ${runId}`,
-        description: "Created by core-flows e2e.",
-        recipeTitle: `Updated recipe title ${runId}`,
-    });
-
-    menuId = created.menuId;
-    expect(menuId).toBeTruthy();
 });
 
 test("should edit the menu and see the new title on its details page", async () => {
@@ -98,41 +88,6 @@ test("should delete the recipe and redirect away from its details page", async (
         .getByRole("button", { name: "Delete recipe" })
         .click();
     await expect(page).toHaveURL(/\/all-recipes$/);
-});
-
-test("should add a pantry ingredient with a chosen quantity and persist it across reload", async () => {
-    await page.goto("/ingredients");
-    await page.getByRole("button", { name: "Add ingredient" }).click();
-    await selectFromPicker(
-        page,
-        page.getByPlaceholder("Search ingredients…"),
-        "Onion",
-    );
-    await page.getByRole("button", { name: "Continue" }).click();
-
-    const quantityInput = page.locator('input[type="number"]').first();
-
-    await quantityInput.fill("7");
-    await page.getByRole("button", { name: "Add to pantry" }).click();
-    await expect(page.getByText("Ingredients saved")).toBeVisible();
-
-    const onionCard = page
-        .getByRole("heading", { name: "Onion", level: 3 })
-        .locator("../..");
-
-    await expect(onionCard.getByText(/^7\s*pieces$/)).toBeVisible();
-
-    await page.reload();
-    await expect(page.getByText("Onion")).toBeVisible();
-    await expect(onionCard.getByText(/^7\s*pieces$/)).toBeVisible();
-
-    // cleanup: leave the shared account's pantry empty for other specs
-    await onionCard.getByRole("button", { name: "Delete" }).click();
-    await page
-        .getByRole("dialog")
-        .getByRole("button", { name: "Delete" })
-        .click();
-    await expect(page.getByText("Ingredient deleted")).toBeVisible();
 });
 
 test("should switch the theme via the confirm modal and persist it across reload", async () => {

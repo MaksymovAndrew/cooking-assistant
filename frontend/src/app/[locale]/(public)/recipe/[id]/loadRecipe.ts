@@ -12,7 +12,7 @@ import { getServerTranslation } from "i18n/server";
 import { localizeRecipeIngredients } from "utils/localizeIngredientNames";
 import { isRecordId } from "utils/recordIdParam";
 
-// the metadata and the page both need the recipe; cache() makes that one request, in the page's language
+// the metadata and the page both need the recipe; cache() makes that one request
 export const loadRecipe = cache(
     async (id: string, locale: Locale): Promise<RecipeDetails | null> => {
         if (!isRecordId(id)) {

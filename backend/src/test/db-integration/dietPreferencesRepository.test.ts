@@ -20,8 +20,6 @@ interface FlaggedRow {
     containsAvoided: boolean | null;
 }
 
-// targets the idempotent writes, the per-viewer containsAvoided flag, both diet filters and the ranking
-// that sinks avoided recipes below the rest
 describe("PgDietPreferencesRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgDietPreferencesRepository;

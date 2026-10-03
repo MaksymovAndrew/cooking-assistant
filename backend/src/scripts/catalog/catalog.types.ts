@@ -1,5 +1,3 @@
-// single source of truth for the closed sets the catalog pipeline and its consumers (zod schema, locale generator) all iterate over
-
 export const CATEGORY_KEYS = [
     "vegetables",
     "fruits",
@@ -52,7 +50,7 @@ export const UNIT_KEYS = [
 
 export type UnitKey = (typeof UNIT_KEYS)[number];
 
-// units with a fixed weight/volume-per-unit coefficient; the rest are counted units with no fixed conversion
+// only weight and volume units convert; the rest are counted, with no fixed coefficient
 export const UNIT_COEFFICIENTS: Partial<Record<UnitKey, number>> = {
     g: 1,
     kg: 1000,
@@ -69,12 +67,12 @@ export const COUNTED_UNIT_KEYS = UNIT_KEYS.filter(
 export interface CatalogMapEntry {
     slug: string;
     category: CategoryKey;
-    // canonical English name used to look up translations and nutrition data - kept distinct from slug so it can be a full, disambiguated phrase ("Bell pepper", not "pepper")
+    // distinct from slug so it can be a full, disambiguated phrase ("Bell pepper", not "pepper")
     searchName: string;
-    // exact (case-insensitive) nutrition-source description override, for entries where the source's naming diverges from searchName; omit to match searchName directly
+    // exact, case-insensitive source description when its naming diverges from searchName
     nutritionMatch?: string;
     unit: UnitKey;
-    // grams per one counted unit (piece/clove/bunch/...) - required so calories-per-100g can convert to calories-per-unit; irrelevant for weight/volume units
+    // grams per counted unit, so calories per 100 g can convert to calories per unit
     unitGrams?: number;
     allergens: AllergenSlug[];
     daysToExpire: number;

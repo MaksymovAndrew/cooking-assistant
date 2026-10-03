@@ -16,8 +16,7 @@ import {
 } from "components/avatars";
 import type { IconProps } from "components/icons";
 
-// one source of truth for the preset avatar set - the backend keeps its own copy
-// (backend/src/constants/avatarKeys.ts) for z.enum validation; the two must stay in sync
+// keep in sync with backend/src/constants/avatarKeys.ts, which validates the keys
 export const AVATAR_REGISTRY: Record<string, React.ComponentType<IconProps>> = {
     "chef-toque": ChefToqueAvatar,
     "ramen-bowl": RamenBowlAvatar,

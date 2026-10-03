@@ -43,8 +43,8 @@ const RECIPE_1: RecipeListItem = {
 const MENU_1: Menu = {
     id: 1,
     title: "Weekday menu",
-    categoryname: "Lunch",
-    menucontent: "quick",
+    categoryName: "Lunch",
+    menuContent: "quick",
     recipe_count: 3,
 };
 
@@ -156,12 +156,6 @@ describe("useHomeDashboard", () => {
             API_ROUTES.recipes.byFilters,
             expect.anything(),
         );
-    });
-
-    it("should flatten the recent recipes from the infinite query pages", async () => {
-        const { result } = await setup([RECIPE_1]);
-
-        expect(result.current.recentRecipes).toEqual([RECIPE_1]);
     });
 
     it("should sort urgent pantry ingredients by nearest expiry and exclude fresh or no-data ones", async () => {

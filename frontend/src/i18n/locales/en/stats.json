@@ -18,6 +18,7 @@
         "perRecipeCaption": "per recipe",
         "recipeTypesHeading": "Recipe types summary",
         "recipeTypesSubtitle": "Distribution across {{count}} recipes",
+        "untypedRecipesLabel": "No type",
         "avgTimeByTypeHeading": "Average cooking time by recipe types",
         "avgTimeByTypeSubtitle": "In minutes",
         "menuCategoriesHeading": "Menu categories summary",
@@ -45,6 +46,7 @@
         "errorFetch": "Error fetching statistics",
         "emptyTitle": "No statistics yet",
         "emptyDescription": "Numbers show up here once the first recipes are in.",
-        "emptyAction": "Add a recipe"
+        "emptyAction": "Add a recipe",
+        "heading": "Statistics"
     }
 }

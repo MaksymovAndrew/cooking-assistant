@@ -1,8 +1,16 @@
 import type { ErrorCode } from "constants/errorCodes";
+import { ValidationError } from "domain/errors/AppError";
+import { translateValidationIssues } from "i18n/translate";
 
 process.env.JWT_SECRET_KEY ??= "test-secret-test-secret-test-secret";
 
 type ErrorClass = abstract new (...args: never[]) => Error;
+
+function renderedDetail(received: unknown): string | null {
+    return received instanceof ValidationError && received.issues.length > 0
+        ? translateValidationIssues(received.issues, "en")
+        : null;
+}
 
 expect.extend({
     toBeAppError(
@@ -18,13 +26,12 @@ expect.extend({
             received.code === code &&
             "status" in received &&
             received.status === status &&
-            "detail" in received &&
-            received.detail === detail;
+            renderedDetail(received) === detail;
 
         return {
             pass,
             message: () =>
-                `expected error to be ${ErrorClass.name} with code "${code}", status ${status} and detail ${JSON.stringify(detail)}`,
+                `expected error to be ${ErrorClass.name} with code "${code}", status ${status} and detail ${JSON.stringify(detail)}, got detail ${JSON.stringify(renderedDetail(received))}`,
         };
     },
 });

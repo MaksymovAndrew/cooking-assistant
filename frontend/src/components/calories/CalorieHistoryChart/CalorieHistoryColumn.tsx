@@ -3,40 +3,32 @@ import { useTranslation } from "react-i18next";
 
 import { useLocale } from "hooks/useLocale";
 
-import { formatKcal } from "utils/calories";
 import {
-    calorieToneFor,
-    computeCalorieSummary,
-} from "utils/computeCalorieSummary";
+    barHeightPercent,
+    dayTone,
+    formatHistoryDay,
+    formatWeekday,
+} from "utils/calorieHistory";
+import { formatKcal } from "utils/calories";
 import type { DailyIntakeDay } from "utils/computeDailyIntake";
+import { cx } from "utils/cx";
 
 import styles from "./CalorieHistoryChart.module.scss";
 
-const WEEKDAY_FORMAT = new Intl.DateTimeFormat("en-US", { weekday: "short" });
-const PERCENT_MULTIPLIER = 100;
 const DASH = "—";
 
-const barClass = (day: DailyIntakeDay, goal: number, isToday: boolean) => {
-    const tone = calorieToneFor(
-        computeCalorieSummary([{ calories: day.consumed }], goal),
+const barClass = (day: DailyIntakeDay, goal: number, isToday: boolean) =>
+    cx(
+        styles["calorie-history-chart__bar"],
+        styles[`calorie-history-chart__bar--${dayTone(day, goal)}`],
+        isToday && styles["calorie-history-chart__bar--today"],
     );
 
-    return [
-        styles["calorie-history-chart__bar"],
-        styles[`calorie-history-chart__bar--${tone}`],
-        isToday && styles["calorie-history-chart__bar--today"],
-    ]
-        .filter(Boolean)
-        .join(" ");
-};
-
 const dayLabelClass = (isToday: boolean) =>
-    [
+    cx(
         styles["calorie-history-chart__day-label"],
         isToday && styles["calorie-history-chart__day-label--today"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
 interface CalorieHistoryColumnProps {
     day: DailyIntakeDay;
@@ -44,7 +36,6 @@ interface CalorieHistoryColumnProps {
     maxValue: number;
     isToday: boolean;
     hasHistory: boolean;
-    // the 30-day range has no room for per-day numbers or weekday labels
     showLabels: boolean;
 }
 
@@ -58,25 +49,34 @@ export const CalorieHistoryColumn: React.FC<CalorieHistoryColumnProps> = ({
 }) => {
     const { t } = useTranslation("calories");
     const locale = useLocale();
+    const kcal = formatKcal(day.consumed, locale);
 
     return (
         <div className={styles["calorie-history-chart__column"]}>
             {showLabels && (
-                <span className={styles["calorie-history-chart__value"]}>
-                    {hasHistory ? formatKcal(day.consumed, locale) : DASH}
+                <span
+                    className={styles["calorie-history-chart__value"]}
+                    aria-hidden="true"
+                >
+                    {hasHistory ? kcal : DASH}
                 </span>
             )}
             <div
+                role="img"
+                aria-label={t("dietaryTab.barLabel", {
+                    day: formatHistoryDay(day.date, locale),
+                    kcal,
+                })}
                 className={barClass(day, goal, isToday)}
                 style={{
-                    height: `${(day.consumed / maxValue) * PERCENT_MULTIPLIER}%`,
+                    height: `${barHeightPercent(day.consumed, maxValue)}%`,
                 }}
             />
             {showLabels && (
-                <span className={dayLabelClass(isToday)}>
+                <span className={dayLabelClass(isToday)} aria-hidden="true">
                     {isToday
                         ? t("dietaryTab.todayLabel")
-                        : WEEKDAY_FORMAT.format(new Date(day.date))}
+                        : formatWeekday(day.date, locale)}
                 </span>
             )}
         </div>

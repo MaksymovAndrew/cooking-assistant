@@ -25,8 +25,7 @@ export interface MenuFilterPanelProps {
     categories: MenuCategory[];
     searchPlaceholder: string;
     total: number;
-    // bumped by the caller on a full reset ("Clear all") - remounts SearchField so it can't
-    // commit a debounce that was still pending when the reset happened
+    // bumped on "Clear all" to remount SearchField and drop a pending debounce
     searchResetKey?: number;
 }
 
@@ -44,9 +43,7 @@ export const MenuFilterPanel: React.FC<MenuFilterPanelProps> = ({
     const { canFavourite } = useAppSelector(selectViewerCapabilities);
     const showResultsLabel = t("categoryFilter.showResults", { count: total });
 
-    // resets only the fields the popover itself controls, leaving the search box (rendered
-    // outside the popover) untouched - resetFilters is the full reset, used by "Clear all".
-    // one setValues() call: separate setValue() calls would each read the same pre-reset URL
+    // one setValues call: separate setValue calls would each read the same pre-reset URL
     const resetPanelFields = () => {
         setValues({
             categories: [],

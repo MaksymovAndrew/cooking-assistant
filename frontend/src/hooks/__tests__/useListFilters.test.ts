@@ -82,8 +82,7 @@ describe("useListFilters", () => {
 
         expect(result.current.values.types).toEqual([3]);
         expect(result.current.params).toEqual({ type_ids: "3" });
-        // the derived values come from the write we asked for, so the URL itself is asserted
-        // too - otherwise a wrong URL param would go unnoticed here
+        // the values come from the requested write, so only the URL proves the param is right
         expect(mockNavigate).toHaveBeenCalledWith("/test?types=3");
     });
 
@@ -107,9 +106,7 @@ describe("useListFilters", () => {
     it("should lose all but the last update when setValue is called several times in the same tick, unlike setValues", () => {
         const { result } = setup(["/test?types=1"]);
 
-        // each setValue() call reads the same pre-update searchParams from this render's
-        // closure, so - unlike setValues() - calling it repeatedly in one go only keeps
-        // the last call's effect; this pins that known limitation, not a desired behavior
+        // each call reads this render's searchParams; a known limitation pinned here, not a goal
         act(() => {
             result.current.setValue("types", []);
             result.current.setValue("inStock", true);
@@ -141,8 +138,7 @@ describe("useListFilters", () => {
     it("should base a write on the previous one when the URL has not caught up yet", () => {
         const { result } = setup(["/test?types=1"]);
 
-        // a router push does not update the URL straight away: resetting and immediately
-        // picking another filter must not merge back onto the pre-reset value
+        // a push lands later, so a filter picked right after a reset must not merge onto the old URL
         act(() => {
             result.current.reset();
         });

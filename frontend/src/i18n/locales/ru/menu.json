@@ -42,7 +42,9 @@
     },
     "recipePicker": {
         "searchPlaceholder": "Найти рецепт…",
-        "noMatches": "Рецептов не нашлось"
+        "noMatches": "Рецептов не нашлось",
+        "searching": "Ищем…",
+        "loadMore": "Показать ещё рецепты"
     },
     "menuPage": {
         "allMenus": "Все меню",
@@ -94,7 +96,9 @@
         "categoryPlaceholder": "Выберите категорию",
         "recipesLabel": "Рецепты",
         "updateButton": "Сохранить изменения",
-        "loading": "Загрузка…",
+        "notFoundTitle": "Это меню нельзя изменить",
+        "notFoundDescription": "Возможно, его удалили или оно принадлежит другому человеку.",
+        "backToMenus": "К меню",
         "errorTitle": "Укажите название меню.",
         "errorDescription": "Добавьте описание меню.",
         "errorCategory": "Выберите категорию меню.",
@@ -106,7 +110,7 @@
         "recipesAdded_few": "Добавлено {{count}} рецепта",
         "recipesAdded_many": "Добавлено {{count}} рецептов",
         "recipesAdded_other": "Добавлено {{count}} рецепта",
-        "reorderHint": "Перетаскивайте за ручку, чтобы поменять порядок",
+        "reorderHint": "Перетаскивайте за ручку или нажимайте стрелки, чтобы поменять порядок",
         "summary_one": "{{count}} рецепт",
         "summary_few": "{{count}} рецепта",
         "summary_many": "{{count}} рецептов",
@@ -135,10 +139,15 @@
         "recipesCaption_other": "{{count}} рецепта",
         "searchPlaceholder": "Найти в этом меню…",
         "noSearchResults": "Подходящих рецептов нет.",
-        "noRecipesYet": "Рецептов пока нет",
-        "noRecipesYetDescription": "Добавьте в меню рецепты, чтобы спланировать, что готовить.",
+        "recipesRemoved": "Рецепты из этого меню удалены",
+        "recipesRemovedOwnerHint": "Их авторы удалили их. Добавьте новые рецепты или удалите меню, если оно больше не нужно.",
+        "recipesRemovedVisitorHint": "Их авторы удалили их, поэтому готовить по этому меню пока нечего.",
         "addRecipes": "Добавить рецепты",
         "ingredientsPanelTitle": "Ингредиенты",
+        "missingCountLabel_one": "Не хватает {{count}} ингредиента",
+        "missingCountLabel_few": "Не хватает {{count}} ингредиентов",
+        "missingCountLabel_many": "Не хватает {{count}} ингредиентов",
+        "missingCountLabel_other": "Не хватает {{count}} ингредиента",
         "noMissingIngredients": "В этом меню пока нет ингредиентов.",
         "haveEnough": "Хватает",
         "goToPantry": "К продуктам",
@@ -158,6 +167,7 @@
         "metaFallbackDescriptionUncategorised_few": "Меню из {{count}} рецептов.",
         "metaFallbackDescriptionUncategorised_many": "Меню из {{count}} рецептов.",
         "metaFallbackDescriptionUncategorised_other": "Меню из {{count}} рецепта.",
-        "creationDate": "Дата создания"
+        "creationDate": "Дата создания",
+        "cookedIt": "Приготовлено"
     }
 }

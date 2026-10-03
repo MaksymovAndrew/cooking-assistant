@@ -1,7 +1,6 @@
 import type { CSSProperties } from "react";
 
-// the image renderer reads no stylesheet and no custom properties, so these mirror the dark
-// theme in styles/_tokens.scss by value
+// dark-theme colours by value (the renderer reads no CSS); brand and accent use brighter shades
 export const SOCIAL_COLORS = {
     bg: "#15131a",
     surface: "#1e1b26",

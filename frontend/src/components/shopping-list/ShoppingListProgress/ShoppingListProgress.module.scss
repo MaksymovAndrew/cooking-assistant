@@ -1,6 +1,5 @@
 @use "styles/abstracts" as *;
 
-// a bare ring on phones and tablets; from desktop it grows into a card with a caption
 .shopping-list-progress {
     --progress-ring-track: var(--surface-2);
     --progress-ring-arc: var(--success);

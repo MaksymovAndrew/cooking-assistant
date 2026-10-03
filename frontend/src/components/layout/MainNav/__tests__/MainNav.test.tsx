@@ -6,6 +6,14 @@ import { renderWithProviders, renderWithRouter } from "test/router";
 import { makeTestStore } from "test/store";
 
 describe("MainNav", () => {
+    it("should label the landmark apart from the tab bar", () => {
+        renderWithRouter(<MainNav />);
+
+        expect(
+            screen.getByRole("navigation", { name: "Main" }),
+        ).toBeInTheDocument();
+    });
+
     it("should render the Recipes, Menus, Ingredients, Shopping and Stats links", () => {
         renderWithRouter(<MainNav />);
 
@@ -14,14 +22,14 @@ describe("MainNav", () => {
         ).toEqual(["Recipes", "Menus", "Ingredients", "Shopping", "Stats"]);
     });
 
-    it("should mark the link matching the current route as active", () => {
+    it("should mark the link matching the current route as the current page", () => {
         renderWithRouter(<MainNav />, ["/ingredients"]);
 
-        expect(screen.getByRole("link", { name: /Ingredients/ })).toHaveClass(
-            "main-nav__item--active",
-        );
-        expect(screen.getByRole("link", { name: /Stats/ })).not.toHaveClass(
-            "main-nav__item--active",
+        expect(
+            screen.getByRole("link", { name: /Ingredients/ }),
+        ).toHaveAttribute("aria-current", "page");
+        expect(screen.getByRole("link", { name: /Stats/ })).not.toHaveAttribute(
+            "aria-current",
         );
     });
 

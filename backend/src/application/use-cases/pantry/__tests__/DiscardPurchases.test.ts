@@ -36,7 +36,7 @@ describe("DiscardPurchases", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Purchase IDs are required",
+            "Cannot be empty",
         );
         expect(pantryRepository.deletePurchases).not.toHaveBeenCalled();
     });
@@ -50,7 +50,7 @@ describe("DiscardPurchases", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Purchase IDs must be unique",
+            "Must not repeat",
         );
         expect(pantryRepository.deletePurchases).not.toHaveBeenCalled();
     });

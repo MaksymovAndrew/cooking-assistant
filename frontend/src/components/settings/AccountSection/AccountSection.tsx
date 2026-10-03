@@ -49,7 +49,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
             <SettingsRow
                 icon={Mail}
                 title={t("accountSection.emailTitle")}
-                description={email}
+                value={email}
             >
                 <div className={styles["account-section__email-controls"]}>
                     {emailVerified ? (

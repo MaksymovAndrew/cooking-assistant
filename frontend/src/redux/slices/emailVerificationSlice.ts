@@ -7,7 +7,7 @@ interface EmailVerificationState {
 
 const initialState: EmailVerificationState = { resendCooldownUntil: null };
 
-// shared across every page (Home banner, Settings) so resending on one no longer resets the cooldown shown on the other
+// global so the Home banner and Settings share one resend cooldown
 const emailVerificationSlice = createSlice({
     name: "emailVerification",
     initialState,

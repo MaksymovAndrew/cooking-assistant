@@ -25,8 +25,7 @@ interface SocialCardProps {
     facts: string[];
 }
 
-// rendered to a PNG for link previews, never into the page: flexbox and inline styles only, and
-// no client component - the renderer calls every component as a plain function
+// rendered to a PNG: inline styles and flexbox only, no client components (called as plain functions)
 export const SocialCard: React.FC<SocialCardProps> = ({
     appName,
     eyebrow,

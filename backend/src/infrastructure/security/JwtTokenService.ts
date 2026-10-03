@@ -11,7 +11,7 @@ import type {
 
 const BINDING_FINGERPRINT_LENGTH = 16;
 
-// the purpose claim means a reset/verify link can never be replayed as a session token, or vice versa
+// the purpose claim keeps a reset/verify link from replaying as a session token, or vice versa
 function isPurposePayload(
     decoded: string | JwtPayload | null,
     purpose: TokenPurpose,
@@ -32,7 +32,7 @@ function isPurposePayload(
     );
 }
 
-// one-way fingerprint so the token carries proof a binding source hasn't changed, without embedding the source value itself (e.g. a password hash) in an emailed link
+// one-way, so an emailed link never carries the source itself, e.g. a password hash
 function fingerprintBinding(bindingSource: string): string {
     return createHash("sha256")
         .update(bindingSource)

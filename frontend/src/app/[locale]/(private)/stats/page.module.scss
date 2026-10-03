@@ -1,3 +1,5 @@
+@use "styles/abstracts" as *;
+
 .stats-page {
     display: flex;
     flex-direction: column;
@@ -5,4 +7,8 @@
     max-width: 1280px;
     margin: 0 auto;
     padding: var(--s-6) var(--s-4);
+
+    &__heading {
+        @include sr-only;
+    }
 }

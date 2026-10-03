@@ -3,7 +3,9 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
+import { GUEST_LANDING_MENU_COUNT } from "constants/guestLanding";
 import { ROUTES } from "constants/routes";
+import type { Menu } from "types/menu";
 
 import { flattenPages } from "redux/services/infiniteQueryHelpers";
 import { useGetMenusInfiniteQuery } from "redux/services/menusApi";
@@ -18,17 +20,23 @@ import { Link } from "components/ui/Link";
 import styles from "./GuestLanding.module.scss";
 
 const SEE_ALL_ICON_SIZE = 15;
-const MENU_COUNT = 4;
 
-// reuses the same MenuCard as /all-menus and every other menu list in the app - no bespoke
-// card style for the landing page
-export const GuestLandingMenus: React.FC = () => {
+interface GuestLandingMenusProps {
+    // null when the server could not load them
+    menus: Menu[] | null;
+}
+
+export const GuestLandingMenus: React.FC<GuestLandingMenusProps> = ({
+    menus: loaded,
+}) => {
     const { t } = useTranslation("guestLanding");
     const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
-    // same request /all-menus fires with no filters applied, so it's already cached once a
-    // guest clicks through - the count is trimmed client-side, not by a second endpoint
-    const { data } = useGetMenusInfiniteQuery({});
-    const menus = flattenPages(data).slice(0, MENU_COUNT);
+    // the unfiltered /all-menus request, trimmed here; skipped when the server sent the menus
+    const { data } = useGetMenusInfiniteQuery({}, { skip: loaded !== null });
+    const menus = (loaded ?? flattenPages(data)).slice(
+        0,
+        GUEST_LANDING_MENU_COUNT,
+    );
 
     return (
         <section className={styles["guest-landing-section"]}>

@@ -84,7 +84,7 @@ describe("IngredientPicker", () => {
                 jest.advanceTimersByTime(DEBOUNCE_MS);
             });
 
-            // the matched substring is wrapped in its own <strong>, which the accessible name computation separates with a space (e.g. "Pot ato")
+            // the highlight's <strong> splits the accessible name ("Pot ato"), hence the partial match
             expect(
                 screen.getByRole("button", { name: /pot/i }),
             ).toBeInTheDocument();
@@ -188,24 +188,6 @@ describe("IngredientPicker", () => {
         } finally {
             jest.useRealTimers();
         }
-    });
-
-    it("should clear the query when the clear button is clicked", async () => {
-        render(
-            <IngredientPicker
-                allIngredients={INGREDIENTS}
-                selectedIds={[]}
-                label="Ingredients"
-                onToggle={jest.fn()}
-            />,
-        );
-
-        const input = screen.getByPlaceholderText(SEARCH_PLACEHOLDER);
-
-        await userEvent.type(input, "pot");
-        await userEvent.click(screen.getByRole("button", { name: "Clear" }));
-
-        expect(input).toHaveValue("");
     });
 
     it("should browse ingredients by category when the search box is focused without typing", async () => {

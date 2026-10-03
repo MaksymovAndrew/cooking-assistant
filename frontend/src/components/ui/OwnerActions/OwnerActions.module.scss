@@ -6,12 +6,10 @@
     gap: var(--s-2);
 
     @include respond-to(tablet) {
-        flex-wrap: nowrap;
         gap: var(--s-3);
     }
 
-    // on a phone the edit button takes the first row and the icon buttons share the second equally,
-    // whatever the language makes of the label; from tablet up everything sits in one row
+    // phones: edit fills the first row and the rest share the second, whatever the label's length
     &__edit {
         flex: 1 1 100%;
 
@@ -41,7 +39,7 @@
         border: 1px solid var(--border);
         border-radius: 10px;
         background: var(--surface);
-        color: var(--brand);
+        color: var(--brand-text);
         cursor: pointer;
 
         svg {
@@ -55,7 +53,7 @@
         }
     }
 
-    &__log-intake {
+    &__accent {
         display: inline-flex;
         flex: none;
         align-items: center;
@@ -67,7 +65,7 @@
         border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border));
         border-radius: 10px;
         background: color-mix(in srgb, var(--brand) 8%, var(--surface));
-        color: var(--brand);
+        color: var(--brand-text);
         cursor: pointer;
         transition:
             background var(--dur-fast) var(--ease-out),

@@ -147,9 +147,16 @@ describe("ConfirmPasswordReset", () => {
             deps.tokenService,
         );
 
-        await expect(
+        const error = await catchError(
             useCase.execute({ token: TOKEN, newPassword: "short" }),
-        ).rejects.toThrow();
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "newPassword: Must be at least 8 characters and include a letter, a number and a special character",
+        );
         expect(deps.tokenService.verifyPurposeToken).not.toHaveBeenCalled();
     });
 });

@@ -1,9 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { MAIN_CONTENT_ID } from "constants/landmarks";
 import { ROUTES } from "constants/routes";
 
 import { DonburiMarkDetailed } from "components/icons";
+import { SkipLink } from "components/layout/SkipLink";
 import { LanguageSwitcher } from "components/ui/LanguageSwitcher";
 import { Link } from "components/ui/Link";
 
@@ -33,6 +35,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
 
     return (
         <div className={styles["auth-layout"]}>
+            <SkipLink />
             <div className={styles["auth-layout__illustration"]}>
                 <Link
                     href={ROUTES.home}
@@ -77,7 +80,13 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
                         {t("appName")}
                     </span>
                 </Link>
-                <div className={styles["auth-layout__card"]}>{children}</div>
+                <main
+                    id={MAIN_CONTENT_ID}
+                    tabIndex={-1}
+                    className={styles["auth-layout__card"]}
+                >
+                    {children}
+                </main>
             </div>
         </div>
     );

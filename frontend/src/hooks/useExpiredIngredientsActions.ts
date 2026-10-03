@@ -9,10 +9,10 @@ import { closeModal } from "redux/slices/uiSlice";
 
 import { useAddToShoppingList } from "hooks/useAddToShoppingList";
 
-// failures surface through the global error toast, so the handler only swallows the rejected promise
-const ignoreRejection = () => undefined;
+import { ignoreRejection } from "utils/ignoreRejection";
 
-// what the expired-ingredients notice can do about what it lists: throw it all out, or rebuy it
+// failures are toasted globally, so the handler only swallows the rejected promise
+
 export const useExpiredIngredientsActions = (
     modalId: string,
     ingredients: ExpiredPantryIngredient[],

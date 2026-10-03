@@ -1,44 +1,26 @@
 import type { Pool } from "pg";
 
-import type { Locale } from "constants/locales";
-import type {
-    RecordAuthor,
-    RecordRating,
-} from "domain/repositories/recordAuthor";
+import type { MenuDetail, MenuDetailRow } from "domain/repositories/menu.types";
 
-import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
-import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
-import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
-import { ratingColumns } from "infrastructure/persistence/pg/ratingColumns";
-
+import { authorColumn } from "./authorColumn";
+import { isFavouriteColumn } from "./isFavouriteColumn";
+import { isOwnerColumn } from "./isOwnerColumn";
 import { loadMissingIngredients } from "./PgMenuRepository.missingIngredients";
 import { loadMenuRecipes } from "./PgMenuRepository.recipes";
-
-interface MenuRow extends RecordRating {
-    id: number;
-    title: string;
-    menuContent: string;
-    language: Locale;
-    categoryName: string;
-    category_id: number;
-    isOwner: boolean;
-    isFavourite: boolean | null;
-    photo_key: string | null;
-    author: RecordAuthor;
-}
+import { ratingColumns } from "./ratingColumns";
 
 export async function findMenuByIdWithRecipes(
     pool: Pool,
-    id: string | number,
+    id: number,
     personId: number | null,
-): Promise<unknown> {
-    const menuResult = await pool.query<MenuRow>(
+): Promise<MenuDetail | null> {
+    const menuResult = await pool.query<MenuDetailRow>(
         `SELECT
         m.menu_id AS id,
         m.menu_title AS title,
-        m.menu_content AS menuContent,
+        m.menu_content AS "menuContent",
         m.language,
-        mc.category_name AS categoryName,
+        mc.category_name AS "categoryName",
         m.category_id,
         m.photo_key,
         m.creation_date,
@@ -67,8 +49,6 @@ export async function findMenuByIdWithRecipes(
         personId,
     );
 
-    // despite the name, this carries every ingredient requirement, not only shortfalls -
-    // fully-stocked ones come back with missing_quantity: 0 so the client can render both states
     const recipesWithDetails = recipes.map((recipe) => ({
         ...recipe,
         missingIngredients: missingByRecipe.get(recipe.recipe_id) ?? [],

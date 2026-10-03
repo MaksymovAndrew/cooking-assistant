@@ -116,7 +116,7 @@ describe("RegisterUser", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "password: Password must be at least 8 characters and include a letter, a number, and a special character",
+            "password: Must be at least 8 characters and include a letter, a number and a special character",
         );
         expect(deps.passwordHasher.hash).not.toHaveBeenCalled();
         expect(deps.userRepository.create).not.toHaveBeenCalled();
@@ -175,7 +175,7 @@ describe("RegisterUser", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "password: Password must be at least 8 characters and include a letter, a number, and a special character",
+            "password: Must be at least 8 characters and include a letter, a number and a special character",
         );
     });
 
@@ -204,7 +204,7 @@ describe("RegisterUser", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "email: Email must be a valid email address",
+            "email: Must be a valid email address",
         );
         expect(deps.userRepository.create).not.toHaveBeenCalled();
     });

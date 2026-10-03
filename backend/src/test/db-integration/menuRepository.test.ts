@@ -15,17 +15,8 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-interface MenuDetail {
-    menu: { id: number; title: string; isOwner: boolean };
-    recipes: {
-        recipe_id: number;
-        missingIngredients: {
-            ingredient_name: string;
-            missing_quantity: number;
-        }[];
-    }[];
-    allergens: string[];
-}
+// far more recipes than any other test's menu, so it always tops the recipe-count extremes
+const LARGE_MENU_CALORIES = Array.from({ length: 50 }, () => 10);
 
 describe("PgMenuRepository (real Postgres)", () => {
     let pool: Pool;
@@ -82,16 +73,14 @@ describe("PgMenuRepository (real Postgres)", () => {
             recipeIds: [recipeId],
         });
 
-        const menuId = (await menuRepository.create(menu, [
-            recipeId,
-        ])) as number;
-        const detail = (await menuRepository.findByIdWithRecipes(
+        const menuId = await menuRepository.create(menu, [recipeId]);
+        const detail = await menuRepository.findByIdWithRecipes(
             menuId,
             ownerId,
-        )) as MenuDetail;
+        );
 
-        expect(detail.menu.title).toBe("Weekly plan");
-        expect(detail.recipes.map((r) => r.recipe_id)).toEqual([recipeId]);
+        expect(detail?.menu.title).toBe("Weekly plan");
+        expect(detail?.recipes.map((r) => r.recipe_id)).toEqual([recipeId]);
     });
 
     it("should report isOwner true for the creator and false for a different viewer (menus are public-read)", async () => {
@@ -105,22 +94,20 @@ describe("PgMenuRepository (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId],
         });
-        const menuId = (await menuRepository.create(menu, [
-            recipeId,
-        ])) as number;
+        const menuId = await menuRepository.create(menu, [recipeId]);
 
-        const asOwner = (await menuRepository.findByIdWithRecipes(
+        const asOwner = await menuRepository.findByIdWithRecipes(
             menuId,
             ownerId,
-        )) as MenuDetail;
-        const asOtherViewer = (await menuRepository.findByIdWithRecipes(
+        );
+        const asOtherViewer = await menuRepository.findByIdWithRecipes(
             menuId,
             otherViewerId,
-        )) as MenuDetail;
+        );
 
-        expect(asOwner.menu.isOwner).toBe(true);
-        expect(asOtherViewer.menu.isOwner).toBe(false);
-        expect(asOtherViewer.menu.title).toBe("Shared plan");
+        expect(asOwner?.menu.isOwner).toBe(true);
+        expect(asOtherViewer?.menu.isOwner).toBe(false);
+        expect(asOtherViewer?.menu.title).toBe("Shared plan");
     });
 
     it("should report isOwner false and skip the missing-ingredients query for an anonymous (null) requester", async () => {
@@ -133,17 +120,12 @@ describe("PgMenuRepository (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId],
         });
-        const menuId = (await menuRepository.create(menu, [
-            recipeId,
-        ])) as number;
+        const menuId = await menuRepository.create(menu, [recipeId]);
 
-        const asGuest = (await menuRepository.findByIdWithRecipes(
-            menuId,
-            null,
-        )) as MenuDetail;
+        const asGuest = await menuRepository.findByIdWithRecipes(menuId, null);
 
-        expect(asGuest.menu.isOwner).toBe(false);
-        expect(asGuest.recipes[0].missingIngredients).toEqual([]);
+        expect(asGuest?.menu.isOwner).toBe(false);
+        expect(asGuest?.recipes[0].missingIngredients).toEqual([]);
     });
 
     it("should compute missing ingredients against the viewer's own pantry, floored at zero", async () => {
@@ -157,28 +139,26 @@ describe("PgMenuRepository (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId],
         });
-        const menuId = (await menuRepository.create(menu, [
-            recipeId,
-        ])) as number;
+        const menuId = await menuRepository.create(menu, [recipeId]);
 
-        const beforeStock = (await menuRepository.findByIdWithRecipes(
+        const beforeStock = await menuRepository.findByIdWithRecipes(
             menuId,
             viewerId,
-        )) as MenuDetail;
+        );
 
-        expect(beforeStock.recipes[0].missingIngredients).toEqual([
+        expect(beforeStock?.recipes[0].missingIngredients).toEqual([
             expect.objectContaining({ missing_quantity: 5 }),
         ]);
 
         await pantryRepository.addIngredients(viewerId, [
             { id: ingredientId, quantity_person_ingradient: 10 },
         ]);
-        const afterStock = (await menuRepository.findByIdWithRecipes(
+        const afterStock = await menuRepository.findByIdWithRecipes(
             menuId,
             viewerId,
-        )) as MenuDetail;
+        );
 
-        expect(afterStock.recipes[0].missingIngredients).toEqual([
+        expect(afterStock?.recipes[0].missingIngredients).toEqual([
             expect.objectContaining({ missing_quantity: 0 }),
         ]);
     });
@@ -212,17 +192,17 @@ describe("PgMenuRepository (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeA.id, recipeB.id],
         });
-        const menuId = (await menuRepository.create(menu, [
+        const menuId = await menuRepository.create(menu, [
             recipeA.id,
             recipeB.id,
-        ])) as number;
+        ]);
 
-        const detail = (await menuRepository.findByIdWithRecipes(
+        const detail = await menuRepository.findByIdWithRecipes(
             menuId,
             ownerId,
-        )) as MenuDetail;
+        );
 
-        expect(detail.allergens).toEqual(["gluten", "milk"]);
+        expect(detail?.allergens).toEqual(["gluten", "milk"]);
     });
 
     it("should refuse to update or delete a menu owned by someone else", async () => {
@@ -236,11 +216,9 @@ describe("PgMenuRepository (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId],
         });
-        const menuId = (await menuRepository.create(menu, [
-            recipeId,
-        ])) as number;
+        const menuId = await menuRepository.create(menu, [recipeId]);
 
-        const update = Menu.forUpdate(menuId, {
+        const update = Menu.forUpdate({
             menuTitle: "Hijacked plan",
             menuContent: "Hijacked.",
             language: "en",
@@ -261,12 +239,12 @@ describe("PgMenuRepository (real Postgres)", () => {
         expect(updateResult).toBe(false);
         expect(deleteResult).toBeNull();
 
-        const stillOriginal = (await menuRepository.findByIdWithRecipes(
+        const stillOriginal = await menuRepository.findByIdWithRecipes(
             menuId,
             ownerId,
-        )) as MenuDetail;
+        );
 
-        expect(stillOriginal.menu.title).toBe("Protected plan");
+        expect(stillOriginal?.menu.title).toBe("Protected plan");
     });
 
     it("should delete a menu it owns, cascading to menu_recipe", async () => {
@@ -279,9 +257,7 @@ describe("PgMenuRepository (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId],
         });
-        const menuId = (await menuRepository.create(menu, [
-            recipeId,
-        ])) as number;
+        const menuId = await menuRepository.create(menu, [recipeId]);
 
         const deleted = await menuRepository.deleteById(menuId, ownerId);
         const afterDelete = await menuRepository.findByIdWithRecipes(
@@ -307,6 +283,7 @@ describe("PgMenuRepository (real Postgres)", () => {
             content: "For stats tests.",
             language: "en",
             person_id: ownerId,
+            cooking_time: 2,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
         const created = (await recipeRepository.create(recipe)) as {
@@ -316,55 +293,54 @@ describe("PgMenuRepository (real Postgres)", () => {
         return created.id;
     }
 
-    interface UnpaginatedMenuRow {
-        title: string;
-        total_calories: number | null;
+    async function createMenuOfRecipes(
+        menuTitle: string,
+        calories: (number | null)[],
+    ): Promise<number> {
+        const recipeIds = await Promise.all(
+            calories.map((value) => createRecipeWithCalories(value)),
+        );
+        const menu = Menu.forCreation({
+            menuTitle,
+            menuContent: "Notes.",
+            language: "en",
+            categoryId,
+            personId: ownerId,
+            recipeIds,
+        });
+
+        return menuRepository.create(menu, recipeIds);
     }
 
-    it("should sum total_calories across a menu's recipes when all of them have calorie data", async () => {
-        const recipeAId = await createRecipeWithCalories(10);
-        const recipeBId = await createRecipeWithCalories(50);
-        const menu = Menu.forCreation({
-            menuTitle: "Stats calorie check - complete",
-            menuContent: "Notes.",
-            language: "en",
-            categoryId,
-            personId: ownerId,
-            recipeIds: [recipeAId, recipeBId],
-        });
-
-        await menuRepository.create(menu, [recipeAId, recipeBId]);
-        const rows =
-            (await menuRepository.findAllUnpaginated()) as UnpaginatedMenuRow[];
-        const mine = rows.find(
-            (row) => row.title === "Stats calorie check - complete",
+    it("should sum a menu's calories, recipes and cooking time into its statistics", async () => {
+        const menuId = await createMenuOfRecipes(
+            "Stats sum check",
+            LARGE_MENU_CALORIES,
         );
 
-        expect(mine?.total_calories).toBe(60);
+        const stats = await menuRepository.getStats();
+
+        expect(
+            stats.mostRecipesMenus.find((entry) => entry.id === menuId),
+        ).toMatchObject({
+            recipe_count: 50,
+            total_calories: 500,
+            total_cooking_time: 100,
+        });
     });
 
-    it("should report total_calories as null (not an undercounted number) when one of the menu's recipes has no calorie data", async () => {
-        const recipeWithCaloriesId = await createRecipeWithCalories(10);
-        const recipeWithoutCaloriesId = await createRecipeWithCalories(null);
-        const menu = Menu.forCreation({
-            menuTitle: "Stats calorie check - incomplete",
-            menuContent: "Notes.",
-            language: "en",
-            categoryId,
-            personId: ownerId,
-            recipeIds: [recipeWithCaloriesId, recipeWithoutCaloriesId],
-        });
-
-        await menuRepository.create(menu, [
-            recipeWithCaloriesId,
-            recipeWithoutCaloriesId,
+    it("should report a menu's calories as null and keep it out of the calorie extremes when one recipe has none", async () => {
+        const menuId = await createMenuOfRecipes("Stats gap check", [
+            ...LARGE_MENU_CALORIES,
+            null,
         ]);
-        const rows =
-            (await menuRepository.findAllUnpaginated()) as UnpaginatedMenuRow[];
-        const mine = rows.find(
-            (row) => row.title === "Stats calorie check - incomplete",
-        );
 
-        expect(mine?.total_calories).toBeNull();
+        const stats = await menuRepository.getStats();
+        const caloric = [...stats.mostCaloricMenus, ...stats.leastCaloricMenus];
+
+        expect(
+            stats.mostRecipesMenus.find((entry) => entry.id === menuId),
+        ).toMatchObject({ recipe_count: 51, total_calories: null });
+        expect(caloric.some((entry) => entry.id === menuId)).toBe(false);
     });
 });

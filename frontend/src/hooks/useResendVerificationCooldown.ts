@@ -12,14 +12,14 @@ import {
 
 const RESEND_COOLDOWN_MS = MS_PER_MINUTE;
 
-// client-side throttle on top of the server's own rate limit, so a rapid click doesn't fire off several emails before the 429 kicks in; kept in redux so the cooldown is shared across every page (Home banner, Settings), not reset by navigating between them
+// a client throttle on top of the server's rate limit, in redux so navigating doesn't reset it
 export const useResendVerificationCooldown = () => {
     const dispatch = useAppDispatch();
     const [requestEmailVerification] = useRequestEmailVerificationMutation();
     const cooldownUntil = useAppSelector(selectResendCooldownUntil);
     const isOnCooldown = cooldownUntil !== null;
 
-    // re-arms the auto-clear against whatever cooldown is already in the store, so mounting mid-cooldown (e.g. after navigating pages) still ends it on time - also self-corrects a stale cooldownUntil already in the past (immediately dispatches expiry instead of waiting out a negative timeout)
+    // re-armed from the stored cooldown on mount; one already in the past expires at once
     useEffect(() => {
         if (cooldownUntil === null) {
             return undefined;

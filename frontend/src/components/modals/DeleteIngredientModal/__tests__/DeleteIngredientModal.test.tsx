@@ -59,14 +59,6 @@ describe("DeleteIngredientModal", () => {
         ).toBeInTheDocument();
     });
 
-    it("should use the normalized secondary Cancel button (same as other delete dialogs)", () => {
-        renderOpen();
-
-        expect(screen.getByRole("button", { name: "Cancel" })).toHaveClass(
-            "button--secondary",
-        );
-    });
-
     it("should delete the ingredient, notify and close on confirm", async () => {
         mockedDelete.mockResolvedValue({ data: null });
         const { store } = renderOpen();

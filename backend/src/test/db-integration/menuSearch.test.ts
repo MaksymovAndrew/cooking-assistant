@@ -17,7 +17,6 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-// targets the hand-built SQL in PgMenuRepository.queries.ts (ILIKE/ANY filters, COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
 describe("PgMenuRepository search (real Postgres)", () => {
     let pool: Pool;
     let menuRepository: PgMenuRepository;
@@ -67,7 +66,7 @@ describe("PgMenuRepository search (real Postgres)", () => {
             recipeIds: [recipeId],
         });
 
-        return (await menuRepository.create(menu, [recipeId])) as number;
+        return await menuRepository.create(menu, [recipeId]);
     }
 
     it("should filter by menu title", async () => {
@@ -113,8 +112,7 @@ describe("PgMenuRepository search (real Postgres)", () => {
     it("should treat literal % and _ in menu_name as text, not SQL LIKE wildcards", async () => {
         const categoryId = await createMenuCategory(pool);
         const tag = unique("wildcard");
-        // if the % below were sent unescaped to ILIKE, "week 1%" would become the wildcard
-        // pattern %week 1%% (equivalent to %week 1%) and match this decoy too
+        // unescaped, the % would make "week 1%" a wildcard that matches this decoy too
         const literalTitle = `${tag} week 1% off`;
         const decoyTitle = `${tag} week 1X off`;
         const menuId = await createOwnedMenu(literalTitle, categoryId);
@@ -218,10 +216,10 @@ describe("PgMenuRepository search (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId, secondRecipeId],
         });
-        const twoRecipeMenuId = (await menuRepository.create(twoRecipeMenu, [
+        const twoRecipeMenuId = await menuRepository.create(twoRecipeMenu, [
             recipeId,
             secondRecipeId,
-        ])) as number;
+        ]);
         const emptyMenuId = await createOwnedMenu(
             unique("Empty menu"),
             categoryId,

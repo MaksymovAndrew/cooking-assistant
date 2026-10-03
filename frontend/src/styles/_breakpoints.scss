@@ -16,7 +16,7 @@ $bp-short-landscape-height: 500px;
     }
 }
 
-// a phone rotated to landscape is too short for the normal tablet/desktop width tiers to kick in usefully, so it gets its own layout by height+orientation
+// a landscape phone is too short for the width tiers, so it is matched by height and orientation
 @mixin respond-to-short-landscape {
     @media (orientation: landscape) and (max-height: $bp-short-landscape-height) {
         @content;

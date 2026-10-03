@@ -12,7 +12,7 @@ const entries = parseCatalogData(rawCatalogData);
 const namesOf = (field: (typeof NAME_FIELDS)[number]) =>
     entries.map((entry) => ({ slug: entry.slug, name: entry[field] ?? "" }));
 
-// a word that mixes alphabets (a latin "c" in "cливочное") looks right and never matches a search
+// a word that mixes alphabets (a Latin "c" in "cливочное") looks right and never matches a search
 const mixesAlphabets = (name: string): boolean =>
     (name.match(WORD) ?? []).some(
         (word) => CYRILLIC.test(word) && LATIN.test(word),

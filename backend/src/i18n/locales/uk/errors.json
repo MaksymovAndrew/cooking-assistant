@@ -1,5 +1,6 @@
 {
     "bad_request": "Некоректний запит",
+    "payload_too_large": "Запит завеликий",
     "not_found": "Не знайдено",
     "server_error": "Помилка сервера",
     "validation_error": "Некоректні дані запиту",
@@ -17,18 +18,20 @@
 
     "recipe/not_found": "Рецепт не знайдено",
     "recipe/ingredients_empty": "Додайте хоча б один інгредієнт",
-    "recipe/ingredients_missing_id": "Кожен інгредієнт потрібно вибрати зі списку",
     "recipe/ingredients_not_exist": "Одного чи кількох інгредієнтів більше немає",
-    "recipe/title_content_empty": "Потрібні назва й опис",
     "recipe/in_pantry_requires_login": "Увійдіть, щоб шукати рецепти за своїми продуктами",
+    "recipe/type_not_exist": "Такого типу рецепта немає",
 
     "menu/not_found": "Меню не знайдено",
     "menu/insufficient_data_create": "Недостатньо даних, щоб створити меню",
     "menu/insufficient_data_update": "Недостатньо даних, щоб змінити меню",
     "menu/recipes_not_exist": "Одного чи кількох рецептів більше немає",
+    "menu/category_not_exist": "Такої категорії меню немає",
 
     "pantry/ingredient_not_found": "Цього продукту немає у ваших запасах",
     "pantry/purchase_not_found": "Покупку не знайдено",
+    "pantry/consumption_not_found": "Цього запису про готування більше немає",
+    "pantry/undo_expired": "Це готування вже не можна скасувати",
 
     "calories/intake_not_found": "Запис не знайдено",
     "calories/not_available": "Калорійність цієї позиції невідома",

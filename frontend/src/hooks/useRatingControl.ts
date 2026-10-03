@@ -43,9 +43,7 @@ const withVote = (server: RecordRating, next: number | null): RecordRating => {
     };
 };
 
-// optimistic, like useFavouriteToggle: the vote and the average move on press and roll back if the
-// request fails. A detail page has no cache entry to refetch, so the local figures are what it keeps
-// showing; on a list, the refetch the mutation triggers brings new server values, which replace them
+// optimistic: a detail page has no cache entry to refetch, so the local figures are what it shows
 export const useRatingControl = (
     target: RatingTarget,
     id: number,

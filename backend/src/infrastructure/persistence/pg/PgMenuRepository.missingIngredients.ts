@@ -1,29 +1,12 @@
 import type { Pool } from "pg";
 
-interface MissingIngredientRow {
+import type { MissingIngredient } from "domain/repositories/menu.types";
+
+interface MissingIngredientRow extends MissingIngredient {
     recipe_id: number;
-    ingredient_id: number;
-    ingredient_slug: string;
-    ingredient_name: string;
-    needed_quantity: number;
-    missing_quantity: number;
-    unit_name: string;
-    coefficient: number;
 }
 
-export interface MissingIngredient {
-    ingredient_id: number;
-    ingredient_slug: string;
-    ingredient_name: string;
-    needed_quantity: number;
-    missing_quantity: number;
-    unit_name: string;
-    coefficient: number;
-}
-
-// one query for every recipe of the menu, then grouped in memory - skipped for a guest
-// (personId null): joining pi.person_id = NULL would match no pantry rows, so every ingredient
-// would come back as fully missing instead of "unknown, show nothing"
+// skipped for a guest: pi.person_id = NULL matches nothing, so all would read as missing
 export async function loadMissingIngredients(
     pool: Pool,
     recipeIds: number[],
@@ -60,16 +43,10 @@ export async function loadMissingIngredients(
     for (const row of missingResult.rows) {
         const group = missingByRecipe.get(row.recipe_id) ?? [];
 
-        group.push({
-            ingredient_id: row.ingredient_id,
-            ingredient_slug: row.ingredient_slug,
-            ingredient_name: row.ingredient_name,
-            needed_quantity: row.needed_quantity,
-            missing_quantity: row.missing_quantity,
-            unit_name: row.unit_name,
-            coefficient: row.coefficient,
-        });
-        missingByRecipe.set(row.recipe_id, group);
+        const { recipe_id, ...ingredient } = row;
+
+        group.push(ingredient);
+        missingByRecipe.set(recipe_id, group);
     }
 
     return missingByRecipe;

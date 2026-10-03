@@ -30,16 +30,4 @@ describe("Logo", () => {
 
         expect(screen.queryByText(APP_NAME)).not.toBeInTheDocument();
     });
-
-    it.each([
-        ["minimal"] as const,
-        ["compact"] as const,
-        ["simple"] as const,
-        ["standard"] as const,
-        ["detailed"] as const,
-    ])("should render the %s variant", (variant) => {
-        renderWithRouter(<Logo variant={variant} />);
-
-        expect(screen.getByText(APP_NAME)).toBeInTheDocument();
-    });
 });

@@ -18,6 +18,7 @@
         "perRecipeCaption": "na przepis",
         "recipeTypesHeading": "Przepisy według rodzaju",
         "recipeTypesSubtitle": "Podział {{count}} przepisów",
+        "untypedRecipesLabel": "Bez rodzaju",
         "avgTimeByTypeHeading": "Średni czas przygotowania według rodzaju",
         "avgTimeByTypeSubtitle": "W minutach",
         "menuCategoriesHeading": "Jadłospisy według kategorii",
@@ -49,6 +50,7 @@
         "errorFetch": "Nie udało się wczytać statystyk",
         "emptyTitle": "Na razie brak statystyk",
         "emptyDescription": "Liczby pojawią się tutaj, gdy dodasz pierwsze przepisy.",
-        "emptyAction": "Dodaj przepis"
+        "emptyAction": "Dodaj przepis",
+        "heading": "Statystyki"
     }
 }

@@ -18,8 +18,7 @@ import {
 } from "utils/expiredIngredientsNoticeStorage";
 import { computeExpiryDate, getExpiryStatus } from "utils/expiry";
 
-// every individually-expired lot, not just the ingredient's worst one - a single ingredient can
-// have both an expired lot and a fresh one bought since
+// every expired lot, since one ingredient can hold an expired lot and a fresh one
 const toExpiredIngredient = (
     ingredient: UserIngredient,
 ): ExpiredPantryIngredient | null => {
@@ -60,11 +59,11 @@ const isExpiringIngredient = (
 ): item is ExpiredPantryIngredient => item !== null;
 
 interface UseExpiredIngredientsNoticeOptions {
-    // "not ready yet", not "consumed" - the one-shot notice can still fire later on a route that doesn't skip it
+    // "not yet", not "used up": the notice can still fire later on a route that doesn't skip it
     skip?: boolean;
 }
 
-// one-shot per tab session: opens the shared modal the first time the pantry is found to contain an expired ingredient after login
+// once per tab session: the first time the pantry holds an expired ingredient after login
 export const useExpiredIngredientsNotice = ({
     skip: skipOption = false,
 }: UseExpiredIngredientsNoticeOptions = {}): void => {
@@ -107,8 +106,7 @@ export const useExpiredIngredientsNotice = ({
         ).payload.id;
     }, [skip, pantry, dispatch]);
 
-    // marks on presentation, not on enqueue - a notice still waiting behind another modal
-    // would otherwise be silenced before it was ever seen
+    // marked when shown, not when queued, or a notice waiting behind another modal is never seen
     useEffect(() => {
         if (
             enqueuedId.current === null ||

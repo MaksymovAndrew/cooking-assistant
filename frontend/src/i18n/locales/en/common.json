@@ -20,7 +20,8 @@
         "loading": "Saving…"
     },
     "chip": {
-        "remove": "Remove"
+        "remove": "Remove {{name}}",
+        "quantity": "Quantity of {{name}}"
     },
     "passwordInput": {
         "show": "Show password",
@@ -67,7 +68,10 @@
         "logout": "Log out",
         "login": "Log in",
         "register": "Sign up",
-        "scrollToTop": "Scroll to top"
+        "scrollToTop": "Scroll to top",
+        "skipToContent": "Skip to content",
+        "mainLabel": "Main",
+        "tabBarLabel": "Tab bar"
     },
     "theme": {
         "toggleLabel": "Toggle theme"
@@ -82,6 +86,7 @@
         "backToRecipes": "Back to recipes",
         "recipes": "Recipes",
         "pantry": "Pantry",
+        "home": "Home",
         "menus": "Menus"
     },
     "errors": {
@@ -89,6 +94,7 @@
     },
     "apiErrors": {
         "bad_request": "The request couldn't be processed. Please try again.",
+        "payload_too_large": "That was too much to send at once. Try a shorter text.",
         "not_found": "We couldn't find what you were looking for.",
         "server_error": "Something went wrong on our side. Please try again later.",
         "validation_error": "Some of the details you entered aren't valid.",
@@ -104,16 +110,18 @@
         "auth/new_password_same_as_current": "Your new password must be different from the current one.",
         "recipe/not_found": "This recipe doesn't exist or has been removed.",
         "recipe/ingredients_empty": "Add at least one ingredient.",
-        "recipe/ingredients_missing_id": "Choose every ingredient from the list.",
         "recipe/ingredients_not_exist": "One or more ingredients no longer exist.",
-        "recipe/title_content_empty": "Add a title and a description.",
         "recipe/in_pantry_requires_login": "Log in to filter recipes by what's in your pantry.",
+        "recipe/type_not_exist": "That recipe type no longer exists. Pick another one.",
         "menu/not_found": "This menu doesn't exist or has been removed.",
         "menu/insufficient_data_create": "Add a title, a category and at least one recipe.",
         "menu/insufficient_data_update": "Add a title, a category and at least one recipe.",
         "menu/recipes_not_exist": "One or more recipes no longer exist.",
+        "menu/category_not_exist": "That menu category no longer exists. Pick another one.",
         "pantry/ingredient_not_found": "This ingredient isn't in your pantry.",
         "pantry/purchase_not_found": "This purchase no longer exists.",
+        "pantry/consumption_not_found": "This cooking was already undone or no longer exists.",
+        "pantry/undo_expired": "It's too late to undo this - the products stay used.",
         "calories/intake_not_found": "This entry no longer exists.",
         "calories/not_available": "Calories aren't available for this item.",
         "favourites/requires_login": "Log in to see your favourites.",
@@ -135,6 +143,7 @@
     },
     "errorState": {
         "title": "Something went wrong",
+        "loadFailed": "We couldn't load this. Check your connection and try again.",
         "retry": "Try again"
     },
     "notifications": {
@@ -151,7 +160,12 @@
         "profileUpdated": "Profile updated",
         "accountDeleted": "Account deleted",
         "calorieIntakeDeleted": "Entry deleted",
-        "intakeLogged": "Logged to today's intake"
+        "intakeLogged": "Logged to today's intake",
+        "cooked_one": "Cooked! {{count}} product taken from your pantry",
+        "cooked_other": "Cooked! {{count}} products taken from your pantry",
+        "cookedNothing": "Cooked! None of it was in your pantry",
+        "undo": "Undo",
+        "cookingUndone": "Undone - everything is back in your pantry"
     },
     "timeAgo": {
         "justNow": "Just now",
@@ -279,5 +293,12 @@
         "filterLabel": "Language",
         "filterChip_one": "{{count}} language",
         "filterChip_other": "{{count}} languages"
+    },
+    "contentSkeleton": {
+        "loading": "Loading…"
+    },
+    "moveButtons": {
+        "up": "Move {{name}} up",
+        "down": "Move {{name}} down"
     }
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 
@@ -14,10 +12,7 @@ interface FilterSearchParams {
     ) => void;
 }
 
-// a router push does not update useSearchParams() straight away, so a second write made
-// before the first one lands would merge onto pre-write state - resetting the filters and
-// immediately picking another one would silently keep both. Until some navigation lands,
-// the value we last asked for is the truth; any change to the URL hands control back to it
+// a push lands later, so the last requested value is the truth until the URL itself changes
 export function useFilterSearchParams(): FilterSearchParams {
     const router = useAppRouter();
     const pathname = usePathname();
@@ -47,8 +42,7 @@ export function useFilterSearchParams(): FilterSearchParams {
             const query = next.toString();
             const href = query ? `${pathname}?${query}` : pathname;
 
-            // only remember the write once the navigation is under way: a write the guard
-            // defers may be dropped, and the filters must not claim to be applied then
+            // a navigation the guard defers may be dropped, so only a started one is remembered
             const navigated = options?.replace
                 ? router.replace(href)
                 : router.push(href);

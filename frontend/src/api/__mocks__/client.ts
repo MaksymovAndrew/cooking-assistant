@@ -1,4 +1,4 @@
-// manual mock for src/api/client.ts - activated by a bare jest.mock("../client") in api tests; the handles are exposed typed via src/test/apiClientMock.ts
+// picked up by a bare jest.mock of api/client; test/apiClientMock.ts exposes it typed
 export const apiClient = {
     get: jest.fn(),
     post: jest.fn(),

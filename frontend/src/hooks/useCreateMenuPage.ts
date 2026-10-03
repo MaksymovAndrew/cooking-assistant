@@ -4,10 +4,11 @@ import { ROUTES } from "constants/routes";
 
 import { useGetMenuCategoriesQuery } from "redux/services/menuCategoriesApi";
 import { useCreateMenuMutation } from "redux/services/menusApi";
-import { useGetAllRecipesQuery } from "redux/services/recipesApi";
 
 import { useAppRouter } from "hooks/useAppRouter";
 import { useMenuForm } from "hooks/useMenuForm";
+
+import { recipeIdsOf } from "utils/menuFormRecipes";
 
 export const useCreateMenuPage = () => {
     const { t } = useTranslation("menu");
@@ -21,7 +22,6 @@ export const useCreateMenuPage = () => {
         },
     });
     const { data: categories = [] } = useGetMenuCategoriesQuery(null);
-    const { data: allRecipes = [] } = useGetAllRecipesQuery(null);
     const [createMenu] = useCreateMenuMutation();
 
     const handleSubmit = async () => {
@@ -35,7 +35,7 @@ export const useCreateMenuPage = () => {
             menuContent: form.menuDescription,
             language: form.language,
             categoryId: form.selectedCategory,
-            recipeIds: form.selectedRecipes,
+            recipeIds: recipeIdsOf(form.selectedRecipes),
         });
 
         if (result.data) {
@@ -45,5 +45,5 @@ export const useCreateMenuPage = () => {
         }
     };
 
-    return { form, categories, allRecipes, handleSubmit };
+    return { form, categories, handleSubmit };
 };

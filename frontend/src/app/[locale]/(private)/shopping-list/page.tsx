@@ -12,6 +12,8 @@ import { ShoppingListAddForm } from "components/shopping-list/ShoppingListAddFor
 import { ShoppingListHeader } from "components/shopping-list/ShoppingListHeader";
 import { ShoppingListSections } from "components/shopping-list/ShoppingListSections";
 
+import { cx } from "utils/cx";
+
 import styles from "./page.module.scss";
 import { ShoppingListStatus } from "./ShoppingListStatus";
 
@@ -42,12 +44,10 @@ const ShoppingListPage: React.FC = () => {
 
                 <div
                     ref={layoutRef}
-                    className={[
+                    className={cx(
                         styles["shopping-list-page__layout"],
                         hasList && styles["shopping-list-page__layout--split"],
-                    ]
-                        .filter(Boolean)
-                        .join(" ")}
+                    )}
                 >
                     <div className={styles["shopping-list-page__add"]}>
                         <ShoppingListAddForm

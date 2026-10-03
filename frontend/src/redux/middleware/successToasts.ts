@@ -92,7 +92,7 @@ export const registerSuccessToasts = (listener: ListenerMiddlewareInstance) => {
         accountSecurityApi.endpoints.requestEmailVerification.matchFulfilled,
         "notifications.verificationEmailSent",
     );
-    // a deliberate logout gets its own confirmation - distinct from the silent hard-redirect that happens when a session merely expires
+    // a deliberate logout is confirmed; an expired session's hard redirect stays silent
     registerSuccessToast(
         listener,
         authApi.endpoints.logout.matchFulfilled,

@@ -5,7 +5,6 @@ export interface ThumbMetrics {
 
 const PERCENT_MULTIPLIER = 100;
 
-// null once the content fits, so the scrollbar renders nothing at all
 export const computeThumb = (el: HTMLElement): ThumbMetrics | null => {
     const { scrollWidth, clientWidth, scrollLeft } = el;
 

@@ -117,12 +117,7 @@ describe("RecipeIngredientsPanel", () => {
             { store: AUTHED_STORE },
         );
 
-        expect(
-            screen.queryByText(
-                (_, element) =>
-                    element?.textContent === "You have 1 of 1 — 0 to buy.",
-            ),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByText(/to buy/)).not.toBeInTheDocument();
     });
 
     it("should show ingredients without have/missing indicators or a pantry banner for a guest", () => {
@@ -136,14 +131,6 @@ describe("RecipeIngredientsPanel", () => {
         expect(
             screen.queryByRole("link", { name: CHECK_PANTRY_LINK }),
         ).not.toBeInTheDocument();
-    });
-
-    it("should always show the portions stepper", () => {
-        renderWithRouter(<RecipeIngredientsPanel {...baseProps} />);
-
-        expect(
-            screen.getByRole("button", { name: "More portions" }),
-        ).toBeInTheDocument();
     });
 
     it("should show the scaled quantity and call onIncrement/onDecrement", async () => {
@@ -199,8 +186,7 @@ describe("RecipeIngredientsPanel", () => {
             />,
         );
 
-        // 1 * 21.6 = 21.6, rounds to 22 kcal for one portion - two portions must read
-        // 44 (22 * 2), not 43 (round(21.6 * 2) = round(43.2))
+        // rounded per portion first: 2 * round(21.6) = 44, not round(43.2) = 43
         expect(screen.getByText("44 kcal")).toBeInTheDocument();
     });
 

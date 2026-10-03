@@ -73,4 +73,26 @@ describe("HeroVisitorActions", () => {
 
         expect(onLogIntake).toHaveBeenCalledTimes(1);
     });
+
+    it("should call onCook when the cooked-it button is clicked", async () => {
+        const onCook = jest.fn();
+
+        renderWithRouter(
+            <HeroVisitorActions
+                favourite={FAVOURITE}
+                favouriteLabel="Favourite"
+                shareTitle="Borscht"
+                guestCtaLabel="Log in for the full experience"
+                logIntakeLabel="Log intake"
+                cookLabel="Cooked it"
+                onCook={onCook}
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole("button", { name: "Cooked it" }),
+        );
+
+        expect(onCook).toHaveBeenCalledTimes(1);
+    });
 });

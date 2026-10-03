@@ -24,7 +24,6 @@ export interface NavItem {
     Icon: NavIcon;
 }
 
-// shared items, reused across the authed/guest x top-bar/bottom-bar variants below
 const RECIPES_ITEM: NavItem = {
     href: ROUTES.allRecipes,
     labelKey: "nav.recipes",
@@ -61,7 +60,7 @@ const LOGIN_ITEM: NavItem = {
     Icon: UserCircleMark,
 };
 
-// desktop top-bar nav - My Menus and My Recipes live under Profile instead
+// desktop top bar; My Menus and My Recipes live under Profile
 export const NAV_ITEMS: NavItem[] = [
     RECIPES_ITEM,
     MENUS_ITEM,
@@ -70,7 +69,7 @@ export const NAV_ITEMS: NavItem[] = [
     STATS_ITEM,
 ];
 
-// tablet/mobile bottom bar - a fixed 5-tab order (Shopping, Menus, Recipes, Pantry, Profile) that replaces the desktop top nav on narrow screens; Stats and Settings are reachable from Profile instead
+// tablet/mobile bottom bar; Stats and Settings are reached through Profile
 export const BOTTOM_NAV_ITEMS: NavItem[] = [
     SHOPPING_LIST_ITEM,
     MENUS_ITEM,
@@ -79,11 +78,8 @@ export const BOTTOM_NAV_ITEMS: NavItem[] = [
     PROFILE_ITEM,
 ];
 
-// guest desktop top-bar nav - only the sections a guest can actually reach
 export const GUEST_NAV_ITEMS: NavItem[] = [RECIPES_ITEM, MENUS_ITEM];
 
-// guest tablet/mobile bottom bar - three tabs, not five: Ingredients/Stats/Profile are all
-// account-only, replaced by a single Log In tab
 export const GUEST_BOTTOM_NAV_ITEMS: NavItem[] = [
     RECIPES_ITEM,
     MENUS_ITEM,

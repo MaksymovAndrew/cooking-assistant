@@ -19,8 +19,6 @@ import { RecipePantryBanner } from "./RecipePantryBanner";
 
 interface RecipeListViewProps
     extends RecipeFilterPanelProps, RecipeListResultsProps {
-    // the full reset, used by RecipeActiveFilters ("Clear all") and the empty state -
-    // RecipeFilterPanel now owns a narrower reset scoped to just its own popover fields
     resetFilters: () => void;
     descriptions: RecipeTypeSummary[];
     heading: string;
@@ -47,10 +45,7 @@ export const RecipeListView: React.FC<RecipeListViewProps> = ({
     total,
     ...results
 }) => {
-    // bumped on every full reset so SearchField remounts and drops any pending, uncommitted
-    // debounce - otherwise a search typed just before "Clear all" can commit moments later and
-    // silently re-apply a filter the user explicitly just cleared (the prop value alone can't
-    // signal this: it was already "" before the reset too, so SearchField sees no change)
+    // remount SearchField on reset, or a pending debounce re-applies the search just cleared
     const [searchResetKey, setSearchResetKey] = useState(0);
 
     const handleResetFilters = () => {

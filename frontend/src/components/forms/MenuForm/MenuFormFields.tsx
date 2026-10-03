@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { FormPageKey } from "types/formPage";
 import type { MenuCategory } from "types/menu";
 
 import type { useMenuForm } from "hooks/useMenuForm";
@@ -15,12 +16,10 @@ import { TextInput } from "components/ui/TextInput";
 
 import styles from "./MenuForm.module.scss";
 
-type MenuPageKey = "createMenuPage" | "changeMenuPage";
-
 interface MenuFormFieldsProps {
     form: ReturnType<typeof useMenuForm>;
     categories: MenuCategory[];
-    keyPrefix: MenuPageKey;
+    keyPrefix: FormPageKey<"Menu">;
     idPrefix: string;
 }
 

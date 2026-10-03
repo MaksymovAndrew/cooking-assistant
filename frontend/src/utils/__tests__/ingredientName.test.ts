@@ -4,6 +4,7 @@ import {
     resolveAllergen,
     resolveCategory,
     resolveIngredientName,
+    resolvePantryIngredientName,
 } from "utils/ingredientName";
 
 const t = i18next.getFixedT("en");
@@ -22,6 +23,29 @@ describe("resolveIngredientName", () => {
                 name: "Mystery",
             }),
         ).toBe("Mystery");
+    });
+});
+
+describe("resolvePantryIngredientName", () => {
+    it("should fall back to whichever name field the pantry row carries", () => {
+        expect(
+            resolvePantryIngredientName(t, {
+                slug: "not_in_catalog",
+                ingredient_name: "Mystery",
+            }),
+        ).toBe("Mystery");
+        expect(
+            resolvePantryIngredientName(t, {
+                slug: "not_in_catalog",
+                name: "Mystery",
+            }),
+        ).toBe("Mystery");
+    });
+
+    it("should show no name rather than a lookup key for a row without one", () => {
+        expect(resolvePantryIngredientName(t, { slug: "not_in_catalog" })).toBe(
+            "",
+        );
     });
 });
 

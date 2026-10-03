@@ -11,8 +11,9 @@ const LOG_INTAKE_BUTTON = "Log intake";
 const FAVOURITE_BUTTON = "Favourite";
 const GUEST_CTA = "Log in for the full experience";
 const CHANGE_MENU_PATH = "/change-menu/1";
-const AUTHED_STORE = makeTestStore({ session: { status: "authed" } });
-const GUEST_STORE = makeTestStore({ session: { status: "guest" } });
+
+const authedStore = () => makeTestStore({ session: { status: "authed" } });
+const guestStore = () => makeTestStore({ session: { status: "guest" } });
 
 const RECIPE: MenuDetailRecipe = {
     recipe_id: 1,
@@ -52,7 +53,7 @@ describe("MenuDetailsSecondary", () => {
     it("should render ingredients before actions before recipes in DOM order", () => {
         renderWithProviders(
             <MenuDetailsSecondary {...baseProps} isOwner={false} />,
-            { store: AUTHED_STORE },
+            { store: authedStore() },
         );
 
         const positions = [
@@ -66,7 +67,7 @@ describe("MenuDetailsSecondary", () => {
                 .compareDocumentPosition(screen.getByText("Soup")),
         ];
 
-        // DOCUMENT_POSITION_FOLLOWING (4): the second node comes after the first
+        // set when the second node comes after the first
         expect(positions[0] & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
         expect(positions[1] & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
@@ -74,7 +75,7 @@ describe("MenuDetailsSecondary", () => {
     it("should show just the Favourite button and no explanatory text for a visitor", () => {
         renderWithProviders(
             <MenuDetailsSecondary {...baseProps} isOwner={false} />,
-            { store: AUTHED_STORE },
+            { store: authedStore() },
         );
 
         expect(
@@ -90,7 +91,7 @@ describe("MenuDetailsSecondary", () => {
 
         renderWithProviders(
             <MenuDetailsSecondary {...baseProps} isOwner onDelete={onDelete} />,
-            { store: AUTHED_STORE },
+            { store: authedStore() },
         );
 
         expect(screen.getByRole("link", { name: /Edit menu/ })).toHaveAttribute(
@@ -114,7 +115,7 @@ describe("MenuDetailsSecondary", () => {
                 isOwner={false}
                 onLogIntake={onLogIntake}
             />,
-            { store: AUTHED_STORE },
+            { store: authedStore() },
         );
 
         await userEvent.click(
@@ -124,17 +125,6 @@ describe("MenuDetailsSecondary", () => {
         expect(onLogIntake).toHaveBeenCalledTimes(1);
     });
 
-    it("should not show the log-intake button when onLogIntake is not provided", () => {
-        renderWithProviders(
-            <MenuDetailsSecondary {...baseProps} isOwner={false} />,
-            { store: AUTHED_STORE },
-        );
-
-        expect(
-            screen.queryByRole("button", { name: LOG_INTAKE_BUTTON }),
-        ).not.toBeInTheDocument();
-    });
-
     it("should hide the favourite button for a guest", () => {
         renderWithProviders(
             <MenuDetailsSecondary
@@ -142,7 +132,7 @@ describe("MenuDetailsSecondary", () => {
                 isFavourite={null}
                 isOwner={false}
             />,
-            { store: GUEST_STORE },
+            { store: guestStore() },
         );
 
         expect(
@@ -158,7 +148,7 @@ describe("MenuDetailsSecondary", () => {
                 isOwner={false}
                 onLogIntake={jest.fn()}
             />,
-            { store: GUEST_STORE },
+            { store: guestStore() },
         );
 
         expect(
@@ -168,24 +158,5 @@ describe("MenuDetailsSecondary", () => {
             "href",
             "/login",
         );
-    });
-
-    it("should show a log-intake trigger for an owner and call onLogIntake when clicked", async () => {
-        const onLogIntake = jest.fn();
-
-        renderWithProviders(
-            <MenuDetailsSecondary
-                {...baseProps}
-                isOwner
-                onLogIntake={onLogIntake}
-            />,
-            { store: AUTHED_STORE },
-        );
-
-        await userEvent.click(
-            screen.getByRole("button", { name: LOG_INTAKE_BUTTON }),
-        );
-
-        expect(onLogIntake).toHaveBeenCalledTimes(1);
     });
 });

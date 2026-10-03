@@ -1,11 +1,17 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createAction, createSlice, nanoid } from "@reduxjs/toolkit";
 
 export type NotificationType = "success" | "error" | "info";
 
-// a follow-up destination shown under the message, e.g. the list something was just added to
 export interface NotificationLink {
     href: string;
+    label: string;
+}
+
+// plain data so the store stays serialisable; the middleware runs it
+export interface NotificationAction {
+    kind: "undoCooking";
+    consumptionId: number;
     label: string;
 }
 
@@ -14,13 +20,14 @@ export interface Notification {
     type: NotificationType;
     message: string;
     link: NotificationLink | null;
+    action: NotificationAction | null;
 }
 
-// what a caller provides; the id is generated in the action `prepare` step
 export interface NotificationInput {
     type: NotificationType;
     message: string;
     link?: NotificationLink | null;
+    action?: NotificationAction | null;
 }
 
 interface NotificationsState {
@@ -34,8 +41,7 @@ const notificationsSlice = createSlice({
     initialState,
     reducers: {
         addNotification: {
-            // a repeat replaces the visible copy: several requests failing at once (e.g. the server going down
-            // mid-session) still show one toast, and a confirmation repeated while on screen shows again in full
+            // a repeat replaces the visible copy, so many requests failing at once still show one toast
             reducer: (state, action: PayloadAction<Notification>) => {
                 state.items = state.items.filter(
                     (item) =>
@@ -44,8 +50,12 @@ const notificationsSlice = createSlice({
                 );
                 state.items.push(action.payload);
             },
-            prepare: ({ link = null, ...input }: NotificationInput) => ({
-                payload: { id: nanoid(), ...input, link },
+            prepare: ({
+                link = null,
+                action = null,
+                ...input
+            }: NotificationInput) => ({
+                payload: { id: nanoid(), ...input, link, action },
             }),
         },
         removeNotification: (state, action: PayloadAction<string>) => {
@@ -55,6 +65,10 @@ const notificationsSlice = createSlice({
         },
     },
 });
+
+export const runNotificationAction = createAction<NotificationAction>(
+    "notifications/runAction",
+);
 
 export const { addNotification, removeNotification } =
     notificationsSlice.actions;

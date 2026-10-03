@@ -7,11 +7,11 @@ import { useAppDispatch } from "redux/hooks";
 import { useAddIngredientsToShoppingListMutation } from "redux/services/shoppingListApi";
 import { addNotification } from "redux/slices/notificationsSlice";
 
-// failures surface through the global error toast, so the handler only swallows the rejected promise
-const ignoreRejection = () => undefined;
+import { ignoreRejection } from "utils/ignoreRejection";
 
-// sends catalog ingredients to the list from anywhere in the app; the server merges an ingredient
-// already waiting to be bought instead of listing it twice
+// failures are toasted globally, so the handler only swallows the rejected promise
+
+// the server merges an ingredient already waiting to be bought instead of listing it twice
 export const useAddToShoppingList = () => {
     const { t } = useTranslation("shoppingList");
     const dispatch = useAppDispatch();

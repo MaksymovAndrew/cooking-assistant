@@ -12,7 +12,6 @@ import styles from "./FoodPreferences.module.scss";
 
 const STRIP_ICON_SIZE = 15;
 
-// the viewer's avoid list: allergens and single ingredients, each saved on the tap that changes it
 export const FoodPreferences: React.FC = () => {
     const { t } = useTranslation("dietPreferences");
     const preferences = useDietPreferences();

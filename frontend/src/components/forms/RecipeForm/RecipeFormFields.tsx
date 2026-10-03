@@ -1,14 +1,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { FormPageKey } from "types/formPage";
 import type { RecipeTypeSummary } from "types/recipeType";
 
 import type { useRecipeForm } from "hooks/useRecipeForm";
 
 import { ContentLanguageSelect } from "components/forms/ContentLanguageSelect";
 import { FormPhotoCard } from "components/forms/FormPhotoCard";
-import { CookingTimeField } from "components/recipes/CookingTimeField";
-import { RecipeTypeSelect } from "components/recipes/RecipeTypeSelect";
 import { FormCard } from "components/ui/FormCard";
 import { FormField } from "components/ui/FormField";
 import { Textarea } from "components/ui/Textarea";
@@ -16,13 +15,12 @@ import { TextInput } from "components/ui/TextInput";
 
 import styles from "./RecipeForm.module.scss";
 import { RecipeFormCaloriesCard } from "./RecipeFormCaloriesCard";
-
-type RecipePageKey = "createRecipePage" | "changeRecipePage";
+import { RecipeFormTypeTimeCard } from "./RecipeFormTypeTimeCard";
 
 interface RecipeFormFieldsProps {
     form: ReturnType<typeof useRecipeForm>;
     allTypes: RecipeTypeSummary[];
-    keyPrefix: RecipePageKey;
+    keyPrefix: FormPageKey<"Recipe">;
     idPrefix: string;
 }
 
@@ -67,28 +65,12 @@ export const RecipeFormFields: React.FC<RecipeFormFieldsProps> = ({
                 </div>
             </FormCard>
 
-            <FormCard>
-                <div className={styles["recipe-form__type-time-row"]}>
-                    <RecipeTypeSelect
-                        id={`${idPrefix}-type`}
-                        label={t(`${keyPrefix}.recipeTypeLabel`)}
-                        placeholder={t(`${keyPrefix}.recipeTypePlaceholder`)}
-                        types={allTypes}
-                        value={form.selectedTypeId}
-                        error={form.typeError}
-                        onChange={form.setSelectedTypeId}
-                    />
-                    <CookingTimeField
-                        id={`${idPrefix}-cooking-time`}
-                        label={t(`${keyPrefix}.cookingTimeLabel`)}
-                        hours={form.cookingHours}
-                        minutes={form.cookingMinutes}
-                        error={form.cookingTimeError}
-                        onHoursChange={form.setCookingHours}
-                        onMinutesChange={form.setCookingMinutes}
-                    />
-                </div>
-            </FormCard>
+            <RecipeFormTypeTimeCard
+                form={form}
+                allTypes={allTypes}
+                keyPrefix={keyPrefix}
+                idPrefix={idPrefix}
+            />
 
             <FormCard>
                 <FormField

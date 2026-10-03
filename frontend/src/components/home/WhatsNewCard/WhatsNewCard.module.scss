@@ -1,6 +1,6 @@
 @use "styles/abstracts" as *;
 
-// desktop-only (mobile/tablet use the HomeActions bell instead); a <button> so the card opens the full NewsModal
+// desktop only: below it the HomeActions bell opens the news
 .whats-new-card {
     display: none;
     width: 100%;
@@ -38,7 +38,7 @@
             serif;
 
         svg {
-            color: var(--brand);
+            color: var(--brand-text);
         }
     }
 
@@ -83,9 +83,7 @@
         }
     }
 
-    // flex:1 + min-width:0 lets the item grow to fill the row and lets the
-    // truncate/line-clamp mixins below actually clip instead of the row
-    // stretching to fit their full content
+    // min-width: 0 lets the truncate and line-clamp below actually clip
     &__item-body {
         flex: 1;
         min-width: 0;

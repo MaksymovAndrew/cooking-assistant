@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
 import { IngredientsPageHeader } from "components/ingredients/IngredientsPageHeader";
 
@@ -10,20 +9,11 @@ describe("IngredientsPageHeader", () => {
         expect(screen.getByText("3 items in your pantry")).toBeInTheDocument();
     });
 
-    it("should call onAddIngredient when Add ingredient is clicked", async () => {
-        const onAddIngredient = jest.fn();
-
+    it("should show no count while the pantry is still loading", () => {
         render(
-            <IngredientsPageHeader
-                count={3}
-                onAddIngredient={onAddIngredient}
-            />,
+            <IngredientsPageHeader count={null} onAddIngredient={jest.fn()} />,
         );
 
-        await userEvent.click(
-            screen.getByRole("button", { name: "Add ingredient" }),
-        );
-
-        expect(onAddIngredient).toHaveBeenCalledTimes(1);
+        expect(screen.queryByText(/in your pantry/)).not.toBeInTheDocument();
     });
 });

@@ -9,10 +9,10 @@ import {
     VIEWER_STORAGE_STATE,
 } from "./sharedAccounts";
 
-// registers two shared accounts ONCE per suite run (not once per spec file) so the full suite stays well under the login/register rate limiter - specs read accounts.json for the run-unique login/name and reuse the saved cookie via storageState
+// registering once per run, not per spec, keeps the suite well under the login/register rate limiter
 const BACKEND_URL = "http://localhost:3000";
 
-// meets the backend's password policy (8+ chars, a letter, a digit, a special char) regardless of what the login happens to contain
+// meets the password policy (8+ chars, a letter, a digit, a special char) whatever the login is
 const passwordFor = (login: string) => `${login}-Aa1!`;
 
 async function createAccount(

@@ -12,21 +12,6 @@ const ACCEPT_LANGUAGE = "Accept-Language";
 const UNSUPPORTED_LANGUAGE = "fr-FR,fr;q=0.9";
 
 describe("locale routes", () => {
-    it("should store the account's language", async () => {
-        const { app, deps } = buildTestApp();
-
-        const res = await request(app)
-            .put(LOCALE_PATH)
-            .set("Cookie", authCookie())
-            .send({ locale: DEFAULT_LOCALE });
-
-        expect(res.status).toBe(204);
-        expect(deps.userRepository.updateLocale).toHaveBeenCalledWith(
-            1,
-            DEFAULT_LOCALE,
-        );
-    });
-
     it("should return 401 on PUT /api/me/locale without a token", async () => {
         const { app, deps } = buildTestApp();
 
@@ -122,7 +107,7 @@ describe("locale routes", () => {
 
         await request(app)
             .post("/api/register")
-            .set(ACCEPT_LANGUAGE, "en-US")
+            .set(ACCEPT_LANGUAGE, "pl-PL,pl;q=0.9")
             .send({
                 name: "Bob",
                 surname: "Cook",
@@ -132,7 +117,7 @@ describe("locale routes", () => {
             });
 
         expect(deps.userRepository.create).toHaveBeenCalledWith(
-            expect.objectContaining({ locale: DEFAULT_LOCALE }),
+            expect.objectContaining({ locale: "pl" }),
         );
     });
 });

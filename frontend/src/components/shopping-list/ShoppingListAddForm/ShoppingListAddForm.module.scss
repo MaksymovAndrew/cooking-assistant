@@ -19,7 +19,6 @@
             grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto;
         }
 
-        // a short landscape phone puts the form in a narrow side column, so it stacks again
         @include respond-to-short-landscape {
             grid-template-areas:
                 "name name"
@@ -38,7 +37,7 @@
         position: absolute;
         top: 50%;
         left: 14px;
-        color: var(--brand);
+        color: var(--brand-text);
         transform: translateY(-50%);
         pointer-events: none;
     }

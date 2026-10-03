@@ -26,7 +26,7 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
 }) => {
     const { t } = useTranslation("stats");
 
-    // keyed by type name (not array index) so a given recipe type keeps the same color here as in the donut chart, even if the two lists differ in order or length
+    // keyed by type name so each type keeps its donut color, whatever the list order
     const colorByTypeName = new Map(
         stats.stats.map((entry, index) => [
             entry.typeName,
@@ -39,9 +39,9 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
 
     return (
         <section className={styles["recipe-stats-section"]}>
-            <h1 className={styles["recipe-stats-section__heading"]}>
+            <h2 className={styles["recipe-stats-section__heading"]}>
                 {t("statsPage.recipeSectionHeading")}
-            </h1>
+            </h2>
 
             <RecipeStatsTiles
                 stats={stats}
@@ -51,9 +51,9 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
 
             <div className={styles["recipe-stats-section__grid"]}>
                 <StatCard>
-                    <h2 className={styles["recipe-stats-section__card-title"]}>
+                    <h3 className={styles["recipe-stats-section__card-title"]}>
                         {t("statsPage.recipeTypesHeading")}
-                    </h2>
+                    </h3>
                     <p
                         className={
                             styles["recipe-stats-section__card-subtitle"]
@@ -66,9 +66,9 @@ export const RecipeStatsSection: React.FC<RecipeStatsSectionProps> = ({
                     <RecipeTypeChart stats={stats.stats} />
                 </StatCard>
                 <StatCard>
-                    <h2 className={styles["recipe-stats-section__card-title"]}>
+                    <h3 className={styles["recipe-stats-section__card-title"]}>
                         {t("statsPage.avgTimeByTypeHeading")}
-                    </h2>
+                    </h3>
                     <p
                         className={
                             styles["recipe-stats-section__card-subtitle"]

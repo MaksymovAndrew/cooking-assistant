@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppDispatch } from "redux/hooks";
@@ -13,20 +13,20 @@ import { useResendVerificationCooldown } from "hooks/useResendVerificationCooldo
 import { AppShell } from "components/layout/AppShell";
 import { AccountSection } from "components/settings/AccountSection";
 import { AppearanceSection } from "components/settings/AppearanceSection";
-import { ChangePasswordModal } from "components/settings/ChangePasswordModal";
-import { DeleteAccountModal } from "components/settings/DeleteAccountModal";
 import { LanguageSection } from "components/settings/LanguageSection";
+import { AsyncContent } from "components/ui/AsyncContent";
+
+import { hasFailedWithoutData } from "utils/queryStatus";
 
 import styles from "./page.module.scss";
 
 const SettingsPage: React.FC = () => {
     const { t } = useTranslation("settings");
     const dispatch = useAppDispatch();
-    const { data: currentUser } = useGetMeQuery(null);
+    const meQuery = useGetMeQuery(null);
+    const currentUser = meQuery.data;
     const { send: sendVerificationEmail, isOnCooldown } =
         useResendVerificationCooldown();
-    const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-    const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
 
     usePageTitle(t("settingsPage.heading"));
 
@@ -42,40 +42,41 @@ const SettingsPage: React.FC = () => {
 
                 <AppearanceSection />
                 <LanguageSection />
-                <AccountSection
-                    email={currentUser?.email ?? ""}
-                    emailVerified={Boolean(currentUser?.email_verified_at)}
-                    onResendVerification={sendVerificationEmail}
-                    isResendDisabled={isOnCooldown}
-                    onChangePassword={() => {
-                        setIsChangePasswordOpen(true);
+                <AsyncContent
+                    isLoading={meQuery.isLoading}
+                    isError={hasFailedWithoutData(meQuery)}
+                    onRetry={() => {
+                        void meQuery.refetch();
                     }}
-                    onSignOutEverywhere={() => {
-                        dispatch(
-                            openModal({ type: MODAL_TYPE.signOutEverywhere }),
-                        );
-                    }}
-                    onDeleteAccount={() => {
-                        setIsDeleteAccountOpen(true);
-                    }}
-                />
+                >
+                    <AccountSection
+                        email={currentUser?.email ?? ""}
+                        emailVerified={Boolean(currentUser?.email_verified_at)}
+                        onResendVerification={sendVerificationEmail}
+                        isResendDisabled={isOnCooldown}
+                        onChangePassword={() => {
+                            dispatch(
+                                openModal({ type: MODAL_TYPE.changePassword }),
+                            );
+                        }}
+                        onSignOutEverywhere={() => {
+                            dispatch(
+                                openModal({
+                                    type: MODAL_TYPE.signOutEverywhere,
+                                }),
+                            );
+                        }}
+                        onDeleteAccount={() => {
+                            dispatch(
+                                openModal({
+                                    type: MODAL_TYPE.deleteAccount,
+                                    login: currentUser?.login ?? "",
+                                }),
+                            );
+                        }}
+                    />
+                </AsyncContent>
             </div>
-
-            {isChangePasswordOpen && (
-                <ChangePasswordModal
-                    onClose={() => {
-                        setIsChangePasswordOpen(false);
-                    }}
-                />
-            )}
-            {isDeleteAccountOpen && (
-                <DeleteAccountModal
-                    login={currentUser?.login ?? ""}
-                    onClose={() => {
-                        setIsDeleteAccountOpen(false);
-                    }}
-                />
-            )}
         </AppShell>
     );
 };

@@ -22,18 +22,16 @@ const TEST_TIMEOUT_MS = ASYNC_UTIL_TIMEOUT_MS * 4;
 
 configure({ asyncUtilTimeout: ASYNC_UTIL_TIMEOUT_MS });
 
-// the app hands its instance down through a provider; tests render components on their own, so the
-// global instance stands in for it and useTranslation() renders real English strings
+// tests render without the app's i18n provider, so the global instance stands in for it
 i18next
     .use(initReactI18next)
     .init(i18nOptions(DEFAULT_LOCALE, RESOURCES[DEFAULT_LOCALE]))
     .catch(logger.error);
 jest.setTimeout(TEST_TIMEOUT_MS);
 
-// production loads the catalog namespace lazily; tests need it available up front like before
+// production loads the catalog lazily; tests need it up front
 beforeAll(() => ensureCatalogLoaded(i18next));
 
-// keep tests isolated from each other's auth-token / pantry state
 afterEach(() => {
     localStorage.clear();
     sessionStorage.clear();

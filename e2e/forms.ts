@@ -1,22 +1,13 @@
 import type { Locator, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
-// shared create-recipe/create-menu form flows - four specs need them, and the returned select-option texts feed the filter assertions in search-filter.spec.ts
-
-// a public page is on screen before React hydrates, and anything typed before then is discarded
-// when hydration takes over; the submit control is the app's own signal that it is ready
+// typing before hydration is lost; the submit button enables itself only once hydrated
 export async function gotoPublicForm(page: Page, path: string): Promise<void> {
     await page.goto(path);
     await expect(page.locator("button[type=submit]").first()).toBeEnabled();
 }
 
-// an ingredient option's accessible name is "<name> <unit>" (HighlightedMatch highlights the
-// matched substring wherever it occurs, so a plain exact-text match on that substring still
-// matches longer names built from it, e.g. "Tomato" inside "Tomato juice") - anchoring the query
-// at the start and requiring a known unit word right after it picks out only the exact ingredient.
-// These are the *displayed* unit words (catalog.json's "en" translations), not the raw catalog
-// unit keys - g/kg/ml/l render as "gram"/"kilogram"/"milliliter"/"liter".
-// the short forms the UI prints, straight from unit_measurement - they anchor the option's name
+// option names read "<name> <unit>" (en common.json "units"), so "Tomato" never picks "Tomato juice"
 const CATALOG_UNITS = [
     "g",
     "kg",
@@ -38,7 +29,6 @@ function escapeRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// types into a searchable-combobox picker, then clicks the resulting option
 export async function selectFromPicker(
     page: Page,
     searchBox: Locator,
@@ -52,13 +42,10 @@ export async function selectFromPicker(
     });
     const substringOption = page.getByRole("button", { name: query });
 
-    // the picker's search is debounced, so results only render a beat after fill() -
-    // wait for whichever option shows up before counting, instead of counting immediately
+    // the search is debounced, so wait for an option to render before counting
     await exactIngredientOption.or(substringOption).first().waitFor();
 
-    // ingredient options resolve through the unit anchor above; the recipe picker (no unit
-    // suffix) falls back to the original substring match, which stays unambiguous for the
-    // uniquely-generated recipe titles these specs use
+    // recipe options have no unit, so they take the substring match - titles are unique per run
     if ((await exactIngredientOption.count()) === 1) {
         await exactIngredientOption.click();
 
@@ -74,8 +61,7 @@ interface RecipeFormInput {
     ingredient: string;
     cookingHours: string;
     cookingMinutes: string;
-    typeIndex?: number;
-    // a language code; left out, the form keeps the page's own language
+    // left out, the form keeps the page's own language
     language?: string;
 }
 
@@ -83,34 +69,19 @@ interface MenuFormInput {
     title: string;
     description: string;
     recipeTitle: string;
-    categoryIndex?: number;
     language?: string;
-}
-
-async function readSelectedOptionText(
-    page: Page,
-    label: string,
-): Promise<string> {
-    return page.getByLabel(label).evaluate((el) => {
-        const select = el as HTMLSelectElement;
-
-        return select.selectedOptions[0].textContent ?? "";
-    });
 }
 
 export async function createRecipeViaForm(
     page: Page,
     input: RecipeFormInput,
-): Promise<{ recipeId: string; typeText: string }> {
+): Promise<{ recipeId: string }> {
     await page.goto("/add-recipe");
     await page.getByLabel("Title").fill(input.title);
     await page.getByLabel("Description").fill(input.description);
     await page.getByLabel("Cooking time").fill(input.cookingHours);
     await page.getByLabel("Minutes").fill(input.cookingMinutes);
-    await page
-        .getByLabel("Recipe type")
-        .selectOption({ index: input.typeIndex ?? 1 });
-    const typeText = await readSelectedOptionText(page, "Recipe type");
+    await page.getByLabel("Recipe type").selectOption({ index: 1 });
     if (input.language) {
         await page.getByLabel("Recipe language").selectOption(input.language);
     }
@@ -120,6 +91,7 @@ export async function createRecipeViaForm(
         input.ingredient,
     );
 
+    // the id comes from the create response, not page markup, so it survives page changes
     const [response] = await Promise.all([
         page.waitForResponse(
             (res) =>
@@ -130,20 +102,17 @@ export async function createRecipeViaForm(
     ]);
     const body = (await response.json()) as { id: number };
 
-    return { recipeId: String(body.id), typeText };
+    return { recipeId: String(body.id) };
 }
 
 export async function createMenuViaForm(
     page: Page,
     input: MenuFormInput,
-): Promise<{ menuId: string; categoryText: string }> {
+): Promise<{ menuId: string }> {
     await page.goto("/add-menu");
     await page.getByLabel("Menu title").fill(input.title);
     await page.getByLabel("Menu description").fill(input.description);
-    await page
-        .getByLabel("Menu category")
-        .selectOption({ index: input.categoryIndex ?? 1 });
-    const categoryText = await readSelectedOptionText(page, "Menu category");
+    await page.getByLabel("Menu category").selectOption({ index: 1 });
     if (input.language) {
         await page.getByLabel("Menu language").selectOption(input.language);
     }
@@ -159,5 +128,5 @@ export async function createMenuViaForm(
     ]);
     const body = (await response.json()) as { menuId: number };
 
-    return { menuId: String(body.menuId), categoryText };
+    return { menuId: String(body.menuId) };
 }

@@ -6,11 +6,9 @@ const OUTPUT_FORMATS = {
 export type OutputFormat = keyof typeof OUTPUT_FORMATS;
 
 export interface ImageVariantSpec {
-    // the file name suffix after the key
     name: string;
     width: number;
     height: number;
-    // inside: scaled down to fit the box, never up; cover: filled and cropped to exactly the box
     fit: "inside" | "cover";
     format: OutputFormat;
 }
@@ -18,8 +16,7 @@ export interface ImageVariantSpec {
 // recipes, menus and the avatar together; replacing a photo never counts against it
 export const MAX_PHOTOS_PER_ACCOUNT = 500;
 
-// every stored image exists in each of these: cards use the small one, heroes the large, and link
-// previews the fixed 1.91:1 JPEG - the one frame and format every messenger renders
+// link previews need the fixed 1.91:1 JPEG, the one frame and format every messenger renders
 export const IMAGE_VARIANTS: readonly ImageVariantSpec[] = [
     { name: "400", width: 400, height: 400, fit: "inside", format: "webp" },
     { name: "1200", width: 1200, height: 1200, fit: "inside", format: "webp" },
@@ -43,7 +40,6 @@ export function mediaFileName(key: string, spec: ImageVariantSpec): string {
     return `${key}-${variantSuffix(spec)}`;
 }
 
-// null for any name we did not generate
 export function variantOfFileName(fileName: string): ImageVariantSpec | null {
     if (!MEDIA_FILE_NAME_PATTERN.test(fileName)) {
         return null;

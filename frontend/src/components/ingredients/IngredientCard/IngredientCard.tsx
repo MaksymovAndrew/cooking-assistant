@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { PantryIngredient } from "types/userIngredient";
@@ -8,6 +8,7 @@ import { useLocale } from "hooks/useLocale";
 import { BasketAddMark, TrashMark } from "components/icons";
 import { Chip } from "components/ui/Chip";
 
+import { cx } from "utils/cx";
 import { getWorstLotExpiryStatus } from "utils/expiry";
 import { resolvePantryIngredientName } from "utils/ingredientName";
 import { unitName } from "utils/referenceLabels";
@@ -41,15 +42,15 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
     );
     const expiry = getExpiryPresentation(status, t);
     const displayName = resolvePantryIngredientName(t, ingredient);
+    const nameId = useId();
 
     return (
-        <div
-            className={[styles["ingredient-card"], expiry.borderModifier]
-                .filter(Boolean)
-                .join(" ")}
+        <article
+            aria-labelledby={nameId}
+            className={cx(styles["ingredient-card"], expiry.borderModifier)}
         >
             <div className={styles["ingredient-card__header"]}>
-                <h3 className={styles["ingredient-card__name"]}>
+                <h3 id={nameId} className={styles["ingredient-card__name"]}>
                     {displayName}
                 </h3>
                 <Chip variant={expiry.variant} icon={expiry.icon}>
@@ -103,6 +104,6 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
                     </button>
                 </div>
             </div>
-        </div>
+        </article>
     );
 };

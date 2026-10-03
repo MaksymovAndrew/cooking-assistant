@@ -18,7 +18,6 @@ import styles from "./PantryRecipesCard.module.scss";
 const ICON_SIZE = 20;
 const PANTRY_LINK = `${ROUTES.allRecipes}?${RECIPE_PANTRY_URL_PARAM}=${BOOLEAN_URL_TRUE}`;
 
-// where the button leads in each state; the list opens already filtered when there is something to show
 const CTA_HREF: Record<PantryRecipesCardState, string> = {
     "empty-pantry": ROUTES.ingredients,
     counting: PANTRY_LINK,

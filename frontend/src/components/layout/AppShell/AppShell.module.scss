@@ -16,11 +16,23 @@
 }
 
 .app-shell__main {
+    // the end of a page scrolls clear of the fixed scroll-to-top button
+    --scroll-to-top-clearance: calc(
+        var(--scroll-to-top-size) + 2 * var(--s-4) + env(safe-area-inset-bottom)
+    );
+
     max-width: 1280px;
     margin: 0 auto;
-    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+    padding-bottom: calc(
+        var(--bottom-nav-height) + var(--scroll-to-top-clearance)
+    );
 
     @include respond-to(desktop) {
-        padding-bottom: 0;
+        padding-bottom: var(--scroll-to-top-clearance);
+    }
+
+    // a skip-link target, not a control: focus lands here without a ring
+    &:focus {
+        outline: none;
     }
 }

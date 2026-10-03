@@ -7,6 +7,7 @@ import enCalories from "i18n/locales/en/calories.json";
 import enCatalog from "i18n/locales/en/catalog.json";
 import enCommon from "i18n/locales/en/common.json";
 import enDietPreferences from "i18n/locales/en/dietPreferences.json";
+import enGlobalError from "i18n/locales/en/globalError.json";
 import enGuestLanding from "i18n/locales/en/guestLanding.json";
 import enHome from "i18n/locales/en/home.json";
 import enIngredients from "i18n/locales/en/ingredients.json";
@@ -23,6 +24,7 @@ import plCalories from "i18n/locales/pl/calories.json";
 import plCatalog from "i18n/locales/pl/catalog.json";
 import plCommon from "i18n/locales/pl/common.json";
 import plDietPreferences from "i18n/locales/pl/dietPreferences.json";
+import plGlobalError from "i18n/locales/pl/globalError.json";
 import plGuestLanding from "i18n/locales/pl/guestLanding.json";
 import plHome from "i18n/locales/pl/home.json";
 import plIngredients from "i18n/locales/pl/ingredients.json";
@@ -39,6 +41,7 @@ import ruCalories from "i18n/locales/ru/calories.json";
 import ruCatalog from "i18n/locales/ru/catalog.json";
 import ruCommon from "i18n/locales/ru/common.json";
 import ruDietPreferences from "i18n/locales/ru/dietPreferences.json";
+import ruGlobalError from "i18n/locales/ru/globalError.json";
 import ruGuestLanding from "i18n/locales/ru/guestLanding.json";
 import ruHome from "i18n/locales/ru/home.json";
 import ruIngredients from "i18n/locales/ru/ingredients.json";
@@ -55,6 +58,7 @@ import ukCalories from "i18n/locales/uk/calories.json";
 import ukCatalog from "i18n/locales/uk/catalog.json";
 import ukCommon from "i18n/locales/uk/common.json";
 import ukDietPreferences from "i18n/locales/uk/dietPreferences.json";
+import ukGlobalError from "i18n/locales/uk/globalError.json";
 import ukGuestLanding from "i18n/locales/uk/guestLanding.json";
 import ukHome from "i18n/locales/uk/home.json";
 import ukIngredients from "i18n/locales/uk/ingredients.json";
@@ -72,8 +76,7 @@ interface Catalog {
     allergen: Record<string, string>;
 }
 
-// the short category and allergen lists travel with the page; the 700-odd ingredient names are loaded on demand
-// (loadCatalog.ts), and pages rendered on the server receive their records with those names already translated
+// the 700-odd ingredient names load on demand (loadCatalog.ts); only these short lists ship with the page
 const catalogLabels = ({ category, allergen }: Catalog): Catalog => ({
     category,
     allergen,
@@ -88,6 +91,7 @@ const en = {
     auth: enAuth,
     home: enHome,
     guestLanding: enGuestLanding,
+    globalError: enGlobalError,
     news: enNews,
     profile: enProfile,
     settings: enSettings,
@@ -100,8 +104,7 @@ const en = {
 
 export type Resources = typeof en;
 
-// the server holds every language; a page hands the browser only its own, so the bundle does not grow with each one.
-// Typing each one as Resources makes a namespace missing from any language a compile error
+// a page hands the browser only its own language, so the bundle does not grow with each one
 export const RESOURCES: Record<Locale, Resources> = {
     en,
     pl: {
@@ -113,6 +116,7 @@ export const RESOURCES: Record<Locale, Resources> = {
         auth: plAuth,
         home: plHome,
         guestLanding: plGuestLanding,
+        globalError: plGlobalError,
         news: plNews,
         profile: plProfile,
         settings: plSettings,
@@ -131,6 +135,7 @@ export const RESOURCES: Record<Locale, Resources> = {
         auth: ruAuth,
         home: ruHome,
         guestLanding: ruGuestLanding,
+        globalError: ruGlobalError,
         news: ruNews,
         profile: ruProfile,
         settings: ruSettings,
@@ -149,6 +154,7 @@ export const RESOURCES: Record<Locale, Resources> = {
         auth: ukAuth,
         home: ukHome,
         guestLanding: ukGuestLanding,
+        globalError: ukGlobalError,
         news: ukNews,
         profile: ukProfile,
         settings: ukSettings,

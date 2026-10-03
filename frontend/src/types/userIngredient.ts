@@ -1,6 +1,5 @@
 import type { CatalogIngredientRef } from "types/catalogIngredientRef";
 
-// one purchase-history row, as returned nested under a pantry ingredient
 export interface PantryLot {
     id: number;
     quantity: number;
@@ -18,8 +17,7 @@ export interface UserIngredient {
     seasonality?: string;
     days_to_expire?: number | null;
     allergens: string[];
-    // the oldest (soonest-expiring) lot's date, not the aggregate row's own date - a top-up must
-    // not "refresh" older stock's expiry
+    // the oldest lot's date, so a top-up never "refreshes" older stock's expiry
     purchase_date?: string;
     lots: PantryLot[];
 }

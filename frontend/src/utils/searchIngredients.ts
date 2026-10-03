@@ -9,7 +9,7 @@ interface CategoryLabel {
     label: string;
 }
 
-// ranks name matches (starts-with, then contains) ahead of category matches, so searching "meat" surfaces Steak (category Meat) even though "meat" isn't in its name
+// category matches follow the name matches, so "meat" still finds Steak
 export const searchIngredients = (
     ingredients: Ingredient[],
     categories: CategoryLabel[],
@@ -17,7 +17,7 @@ export const searchIngredients = (
     t: TFunction,
     locale: string,
 ): Ingredient[] => {
-    // resolve each name once (i18next lookup) and reuse it for both matching and sorting, instead of re-resolving per comparison
+    // resolved once, not per comparison
     const names = new Map<number, string>(
         ingredients.map((ingredient) => [
             ingredient.id,

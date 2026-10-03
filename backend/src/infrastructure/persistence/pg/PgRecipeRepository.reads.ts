@@ -1,75 +1,21 @@
 import type { Pool } from "pg";
 
-import type { Locale } from "constants/locales";
-import type {
-    RecordAuthor,
-    RecordRating,
-} from "domain/repositories/recordAuthor";
+import type { RecipeDetailRow } from "domain/repositories/recipe.types";
 
-import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
-import { containsAvoidedColumn } from "infrastructure/persistence/pg/containsAvoidedColumn";
-import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
-import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
-import { ratingColumns } from "infrastructure/persistence/pg/ratingColumns";
-import { recipeTagsColumn } from "infrastructure/persistence/pg/recipeTagsColumn";
+import { authorColumn } from "./authorColumn";
+import { caloriesPerPortion } from "./calorieColumns";
+import { containsAvoidedColumn } from "./containsAvoidedColumn";
+import { isFavouriteColumn } from "./isFavouriteColumn";
+import { isOwnerColumn } from "./isOwnerColumn";
+import { ratingColumns } from "./ratingColumns";
+import { recipeTagsColumn } from "./recipeTagsColumn";
 
-interface RecipeTag {
-    id: number;
-    name: string;
-}
-
-interface RecipeListRow {
-    id: number;
-    title: string;
-    type_id: number | null;
-    creation_date: Date;
-    cooking_time: number | null;
-    type_name: string | null;
-    ingredients: string[];
-}
-
-interface RecipeDetailRow extends RecordRating {
-    id: number;
-    title: string;
-    content: string;
-    language: Locale;
-    type_id: number | null;
-    creation_date: Date;
-    cooking_time: number | null;
-    calories_override: number | null;
-    calories_computed: number | null;
-    type_name: string | null;
-    ingredients: string[];
-    isOwner: boolean;
-    isFavourite: boolean | null;
-    containsAvoided: boolean | null;
-    tags: RecipeTag[] | null;
-    calories_per_portion: number | null;
-    photo_key: string | null;
-    author: RecordAuthor;
-}
-
-// explicit columns - r.* would leak the owner's raw person_id to every caller (this list is not
-// filtered by owner, unlike the search endpoints, which compute an isOwner flag instead)
-export async function findAllRecipes(pool: Pool): Promise<unknown[]> {
-    const result = await pool.query<RecipeListRow>(
-        `SELECT r.id, r.title, r.type_id, r.creation_date, r.cooking_time,
-                rt.type_name, array_agg(i.name) AS ingredients
-         FROM recipes r
-                LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-                LEFT JOIN ingredients i ON ri.ingredient_id = i.id
-                LEFT JOIN recipe_types rt ON r.type_id = rt.id
-         GROUP BY r.id, rt.type_name`,
-    );
-
-    return result.rows;
-}
-
+// explicit columns: r.* would leak the owner's person_id to every caller
 export async function findRecipeByIdWithIngredients(
     pool: Pool,
-    recipeId: string | number,
+    recipeId: number,
     currentUserId: number | null,
-): Promise<unknown> {
+): Promise<RecipeDetailRow | null> {
     const result = await pool.query<RecipeDetailRow>(
         `SELECT r.id, r.title, r.content, r.language, r.type_id, r.creation_date, r.cooking_time,
                   r.calories_override, r.calories_computed, r.photo_key,
@@ -79,7 +25,7 @@ export async function findRecipeByIdWithIngredients(
                   ${containsAvoidedColumn("r.id", "$2")},
                   ${recipeTagsColumn("r.id", "$2")},
                   ${ratingColumns("recipe", "r", "$2")},
-                  COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
+                  ${caloriesPerPortion("r")} AS calories_per_portion,
                   json_agg(
                       json_build_object(
                           'id', i.id,

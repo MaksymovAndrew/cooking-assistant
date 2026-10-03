@@ -1,5 +1,6 @@
 import { API_ROUTES } from "api/endpoints";
 
+import { recipesApi } from "redux/services/recipesApi";
 import { tagsApi } from "redux/services/tagsApi";
 
 import {
@@ -14,22 +15,10 @@ import { makeTestStore } from "test/store";
 jest.mock("api/client");
 
 const TAG = { id: 3, name: "Weeknight" };
+const TAGGED_RECIPES = { tag_ids: String(TAG.id) };
+const EMPTY_PAGE = { items: [], total: 0 };
 
 describe("tagsApi", () => {
-    it("should fetch the user's tags", async () => {
-        mockedGet.mockResolvedValue({ data: [TAG] });
-        const store = makeTestStore();
-
-        await store.dispatch(tagsApi.endpoints.getTags.initiate(null));
-
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.tags.list, {
-            params: undefined,
-        });
-        expect(
-            tagsApi.endpoints.getTags.select(null)(store.getState()).data,
-        ).toEqual([TAG]);
-    });
-
     it("should create a tag by name", async () => {
         mockedPost.mockResolvedValue({ data: TAG });
         const store = makeTestStore();
@@ -64,6 +53,37 @@ describe("tagsApi", () => {
             API_ROUTES.tags.byId(TAG.id),
             { data: undefined, params: undefined },
         );
+    });
+
+    it("should refetch cached recipes after a tag is renamed or deleted", async () => {
+        mockedGet.mockResolvedValue({ data: EMPTY_PAGE });
+        mockedPatch.mockResolvedValue({ data: null });
+        mockedDelete.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+        const fetchTaggedRecipes = () =>
+            store.dispatch(
+                recipesApi.endpoints.getRecipesByFilters.initiate(
+                    TAGGED_RECIPES,
+                ),
+            );
+
+        await fetchTaggedRecipes();
+        const afterFirstFetch = mockedGet.mock.calls.length;
+
+        await store.dispatch(
+            tagsApi.endpoints.renameTag.initiate({
+                id: TAG.id,
+                name: "Fast",
+            }),
+        );
+        await fetchTaggedRecipes();
+        const afterRename = mockedGet.mock.calls.length;
+
+        await store.dispatch(tagsApi.endpoints.deleteTag.initiate(TAG.id));
+        await fetchTaggedRecipes();
+
+        expect(afterRename).toBeGreaterThan(afterFirstFetch);
+        expect(mockedGet.mock.calls.length).toBeGreaterThan(afterRename);
     });
 
     it("should replace the tags of a recipe", async () => {

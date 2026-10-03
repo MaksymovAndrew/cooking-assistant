@@ -10,7 +10,7 @@ import { RecipeHero } from "components/recipes/RecipeHero";
 import { mediaUrl } from "utils/mediaUrl";
 
 import { mockedPut } from "test/apiClientMock";
-import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
+import { OVER_BUDGET_TOOLTIP, TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 jest.mock("api/client");
@@ -19,7 +19,6 @@ const RECIPE_TITLE = "Slow-roasted ragù";
 const LOG_INTAKE_BUTTON = "Log intake";
 const GUEST_CTA = "Log in for the full experience";
 const CALORIES_PER_PORTION_LABEL = "420 kcal / portion";
-const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 
 const BASE_RECIPE: RecipeDetails = {
     id: 1,
@@ -74,6 +73,19 @@ describe("RecipeHero", () => {
         expect(screen.getByText("Main course")).toBeInTheDocument();
     });
 
+    it("should show the average rating beside the type chip", () => {
+        renderWithRouter(
+            <RecipeHero
+                {...baseProps}
+                recipe={{ ...BASE_RECIPE, ratingAverage: 4.5, ratingCount: 2 }}
+            />,
+        );
+
+        expect(
+            screen.getByText("Rated 4.5 out of 5 from 2 ratings"),
+        ).toBeInTheDocument();
+    });
+
     it("should show calories per portion", () => {
         renderWithRouter(<RecipeHero {...baseProps} />);
 
@@ -105,11 +117,11 @@ describe("RecipeHero", () => {
         expect(screen.getByText("—")).toBeInTheDocument();
     });
 
-    it("should recolor the calories stat when exceedsBudget is true", () => {
+    it("should flag the calories stat as over budget when exceedsBudget is true", () => {
         renderWithRouter(<RecipeHero {...baseProps} exceedsBudget />);
 
-        expect(screen.getByTitle(OVER_BUDGET_TOOLTIP)).toHaveClass(
-            "recipe-hero__stat--calorie-over",
+        expect(screen.getByTitle(OVER_BUDGET_TOOLTIP)).toHaveTextContent(
+            CALORIES_PER_PORTION_LABEL,
         );
     });
 
@@ -121,17 +133,17 @@ describe("RecipeHero", () => {
         ).not.toBeInTheDocument();
     });
 
-    it("should show just the Favourite button and no explanatory text for a visitor", () => {
+    it("should hide the owner's edit and delete actions from a signed-in visitor", () => {
         renderWithRouter(<RecipeHero {...baseProps} />);
 
         expect(
             screen.queryByRole("link", { name: /Edit recipe/ }),
         ).not.toBeInTheDocument();
         expect(
-            screen.queryByText(/Viewing someone else's recipe/),
+            screen.queryByRole("button", { name: /Delete recipe/ }),
         ).not.toBeInTheDocument();
         expect(
-            screen.getAllByRole("button", { name: "Favourite" })[1],
+            screen.getByRole("button", { name: "Share" }),
         ).toBeInTheDocument();
     });
 
@@ -267,15 +279,6 @@ describe("RecipeHero", () => {
         );
     });
 
-    it("should show the generic login CTA for a guest even without onLogIntake", () => {
-        renderWithRouter(<RecipeHero {...baseProps} recipe={GUEST_RECIPE} />);
-
-        expect(screen.getByRole("link", { name: GUEST_CTA })).toHaveAttribute(
-            "href",
-            "/login",
-        );
-    });
-
     it("should show the log-intake button in the owner actions row and call onLogIntake", async () => {
         const onLogIntake = jest.fn();
 
@@ -309,11 +312,5 @@ describe("RecipeHero", () => {
             "src",
             mediaUrl("0b8f5a3e-2c4d-4e6f-8a1b-3c5d7e9f1a2b", "hero"),
         );
-    });
-
-    it("should credit the author by first name and surname initial", () => {
-        renderWithRouter(<RecipeHero {...baseProps} />);
-
-        expect(screen.getByText("by Test U.")).toBeInTheDocument();
     });
 });

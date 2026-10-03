@@ -1,7 +1,4 @@
-// the "in my pantry" filter has nothing to search against once the pantry itself is empty - the
-// caller shows a dedicated empty state instead. Gated on the pantry query's own loading state so a
-// cold-cache visit (pantry still defaults to []) doesn't read as "pantry is empty" before the real
-// count arrives
+// gated on loading: a cold cache defaults the pantry to [], which must not read as empty
 export const isPantryFilterEmpty = (
     inPantry: boolean,
     pantryCount: number,
@@ -16,8 +13,7 @@ export const isRecipeListEmpty = (
     hasLoadedRecipes: boolean,
 ): boolean => isPantryEmpty || (isSuccess && !hasLoadedRecipes);
 
-// the filters that need a session: the controls setting them are hidden from a guest, so one left
-// in the URL is a stale bookmark or an expired session
+// a guest never sees these controls, so one in the URL is a stale bookmark or an expired session
 export const hasViewerOnlyFilter = (filters: {
     favourites: boolean;
     hideAvoided: boolean;

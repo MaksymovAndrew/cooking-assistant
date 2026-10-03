@@ -7,12 +7,11 @@
         @include sr-only;
     }
 
-    // overrides SearchField's default surface for the slightly recessed look pickers use
     &__search {
         background: var(--surface-2);
     }
 
-    // wrapper owns the border/radius/overflow:hidden so the list's scrollbar (on __results below) can't poke past the rounded corner
+    // the wrapper clips, so the list's scrollbar can't poke past the rounded corner
     &__results-wrapper {
         position: absolute;
         top: 100%;
@@ -25,7 +24,7 @@
         margin: 4px 0 0;
         overflow: hidden;
         border: 1px solid var(--brand);
-        border-radius: 12px;
+        border-radius: var(--r-md);
         background: var(--surface);
         box-shadow: var(--e-3);
     }
@@ -67,6 +66,24 @@
         }
     }
 
+    &__more {
+        width: 100%;
+        padding: var(--s-3) var(--s-4);
+        border: none;
+        border-top: 1px solid var(--border);
+        background: none;
+        color: var(--brand-text);
+        cursor: pointer;
+        font:
+            600 13px Inter,
+            sans-serif;
+        text-align: center;
+
+        @include on-hover {
+            background: var(--brand-subtle);
+        }
+    }
+
     &__result-name {
         @include truncate;
 
@@ -77,7 +94,7 @@
             sans-serif;
 
         strong {
-            color: var(--brand);
+            color: var(--brand-text);
         }
     }
 

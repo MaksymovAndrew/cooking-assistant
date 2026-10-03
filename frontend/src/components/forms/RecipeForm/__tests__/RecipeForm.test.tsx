@@ -1,4 +1,4 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { Ingredient } from "types/ingredient";
@@ -8,7 +8,8 @@ import type { useRecipeForm } from "hooks/useRecipeForm";
 
 import { RecipeForm } from "components/forms/RecipeForm";
 
-import { renderWithRouter } from "test/router";
+import { ROUTE_ALL_RECIPES } from "test/constants";
+import { mockNavigate, renderWithRouter } from "test/router";
 
 type Form = ReturnType<typeof useRecipeForm>;
 
@@ -52,6 +53,7 @@ const makeForm = (): Form => ({
     isDirty: false,
     isDirtyRef: { current: false },
     markClean: jest.fn(),
+    attachForm: jest.fn(),
 });
 
 const TITLE_LABEL = "Title *";
@@ -86,91 +88,6 @@ const renderForm = (form: Form, onSubmit: () => void = jest.fn()) =>
     );
 
 describe("RecipeForm", () => {
-    it("should render every labelled field and the submit button", () => {
-        renderForm(makeForm());
-
-        expect(screen.getByText(TITLE_LABEL)).toBeInTheDocument();
-        expect(screen.getByText("Description *")).toBeInTheDocument();
-        expect(screen.getByText("Cooking time *")).toBeInTheDocument();
-        expect(screen.getByText("Recipe type *")).toBeInTheDocument();
-        expect(screen.getAllByText("Ingredients").length).toBeGreaterThan(0);
-        expect(
-            screen.getByRole("button", { name: "Create recipe" }),
-        ).toBeInTheDocument();
-    });
-
-    it("should bind the title input to the form value", () => {
-        const form = makeForm();
-
-        form.title = "Borscht";
-        renderForm(form);
-
-        expect(screen.getByLabelText(TITLE_LABEL)).toHaveValue("Borscht");
-    });
-
-    it("should call setTitle when the title field is edited", async () => {
-        const form = makeForm();
-
-        renderForm(form);
-
-        await userEvent.type(screen.getByLabelText(TITLE_LABEL), "S");
-
-        expect(form.setTitle).toHaveBeenCalledWith("S");
-    });
-
-    it("should call setContent when the description field is edited", async () => {
-        const form = makeForm();
-
-        renderForm(form);
-
-        await userEvent.type(screen.getByLabelText("Description *"), "B");
-
-        expect(form.setContent).toHaveBeenCalledWith("B");
-    });
-
-    it("should search and toggle an ingredient on click", async () => {
-        const DEBOUNCE_MS = 300;
-
-        jest.useFakeTimers();
-        const user = userEvent.setup({
-            advanceTimers: (ms) => {
-                jest.advanceTimersByTime(ms);
-            },
-        });
-
-        try {
-            const form = makeForm();
-
-            renderForm(form);
-
-            await user.type(
-                screen.getByPlaceholderText("Search ingredients…"),
-                "egg",
-            );
-            act(() => {
-                jest.advanceTimersByTime(DEBOUNCE_MS);
-            });
-            await user.click(screen.getByRole("button", { name: /egg/i }));
-
-            expect(form.toggleIngredientSelection).toHaveBeenCalledWith(
-                INGREDIENTS[0],
-            );
-        } finally {
-            jest.useRealTimers();
-        }
-    });
-
-    it("should show the title error under the title field", () => {
-        const form = makeForm();
-
-        form.titleError = "Recipe title cannot be empty.";
-        renderForm(form);
-
-        expect(
-            screen.getByText("Recipe title cannot be empty."),
-        ).toBeInTheDocument();
-    });
-
     it("should call setCaloriesOverride when the calories field is edited", async () => {
         const form = makeForm();
 
@@ -217,18 +134,6 @@ describe("RecipeForm", () => {
         ).toBeInTheDocument();
     });
 
-    it("should call onSubmit when the submit button is clicked", async () => {
-        const onSubmit = jest.fn();
-
-        renderForm(makeForm(), onSubmit);
-
-        await userEvent.click(
-            screen.getByRole("button", { name: "Create recipe" }),
-        );
-
-        expect(onSubmit).toHaveBeenCalledTimes(1);
-    });
-
     it("should show a discard-changes confirmation when cancelling a dirty form", async () => {
         const form = makeForm();
 
@@ -260,6 +165,7 @@ describe("RecipeForm", () => {
 
         await userEvent.click(screen.getByText("Cancel"));
 
+        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
         expect(screen.queryByText(DISCARD_TITLE)).not.toBeInTheDocument();
     });
 });

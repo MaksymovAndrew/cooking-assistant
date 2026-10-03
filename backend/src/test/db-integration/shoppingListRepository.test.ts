@@ -9,8 +9,6 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-// targets the per-person transaction: the size limit, position assignment, the reorder set check and the
-// merge of an ingredient into an unchecked item - plus the ownership scoping on every write
 describe("PgShoppingListRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgShoppingListRepository;

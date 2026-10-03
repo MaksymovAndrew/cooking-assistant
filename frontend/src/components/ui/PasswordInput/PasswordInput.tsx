@@ -2,6 +2,10 @@ import { Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useFormFieldAria } from "components/ui/FormField";
+
+import { cx } from "utils/cx";
+
 import styles from "./PasswordInput.module.scss";
 
 interface PasswordInputProps extends Omit<
@@ -20,14 +24,13 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
 }) => {
     const { t } = useTranslation();
     const [visible, setVisible] = useState(false);
+    const fieldAria = useFormFieldAria(rest);
 
-    const inputClassNames = [
+    const inputClassNames = cx(
         styles["password-input__field"],
         hasError && styles["password-input__field--error"],
         className,
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <div className={styles["password-input"]}>
@@ -35,6 +38,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
                 type={visible ? "text" : "password"}
                 className={inputClassNames}
                 {...rest}
+                {...fieldAria}
             />
             <button
                 type="button"

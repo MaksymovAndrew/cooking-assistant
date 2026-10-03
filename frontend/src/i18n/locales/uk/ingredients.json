@@ -58,6 +58,7 @@
         "noHistory": "Покупок поки немає.",
         "closeButton": "Закрити",
         "editButton": "Змінити кількість",
+        "quantityLabel": "Кількість: {{name}}, куплено {{date}}",
         "deleteButton": "Видалити покупку"
     },
     "restockModal": {
@@ -79,5 +80,19 @@
         "discardButton": "Викинути прострочене",
         "addToListButton": "До списку покупок",
         "discarded": "Прострочене викинуто"
+    },
+    "cookedItModal": {
+        "title": "Приготовано",
+        "intro": "Ці продукти спишуться з ваших запасів, починаючи з найстаріших покупок.",
+        "portions": "Порції",
+        "fewerPortions": "Менше порцій",
+        "morePortions": "Більше порцій",
+        "notInPantry": "Немає в запасах - пропустимо",
+        "partial": "Залишилося лише {{amount}} - піде все",
+        "nothingToDeduct": "Тут нічого списувати із запасів.",
+        "logCalories": "Записати калорії в щоденник",
+        "loadingPantry": "Перевіряємо запаси…",
+        "cancel": "Скасувати",
+        "confirm": "Приготовано"
     }
 }

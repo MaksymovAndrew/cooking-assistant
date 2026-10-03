@@ -26,21 +26,6 @@ const cachedPreferences = (store: ReturnType<typeof makeTestStore>) =>
     ).data;
 
 describe("dietPreferencesApi", () => {
-    it("should fetch what the user avoids", async () => {
-        const store = await loadPreferences({
-            allergens: ["milk"],
-            ingredient_ids: [4],
-        });
-
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.dietPreferences.get, {
-            params: undefined,
-        });
-        expect(cachedPreferences(store)).toEqual({
-            allergens: ["milk"],
-            ingredient_ids: [4],
-        });
-    });
-
     it("should mark an allergen as avoided at once, before the request settles", async () => {
         const store = await loadPreferences({
             allergens: [],

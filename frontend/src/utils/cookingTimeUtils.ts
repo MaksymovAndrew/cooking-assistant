@@ -7,7 +7,6 @@ export interface CookingTimeParts {
     minutes: number;
 }
 
-// the single source of the "/60" math that display formatters and components build their labels on
 export const splitCookingTime = (totalMinutes: number): CookingTimeParts => ({
     hours: Math.floor(totalMinutes / MINUTES_PER_HOUR),
     minutes: totalMinutes % MINUTES_PER_HOUR,
@@ -25,7 +24,7 @@ export const formatRecipeDuration = (
         : t("recipeDetailsPage.cookingTimeMinutes", { minutes });
 };
 
-// t is bound to the "stats" namespace: "1h 30m", or "45 min" under an hour
+// t is bound to the "stats" namespace
 export const formatCompactDuration = (
     t: TFunction,
     totalMinutes: number,

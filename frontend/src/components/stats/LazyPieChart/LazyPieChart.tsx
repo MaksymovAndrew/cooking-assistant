@@ -12,7 +12,6 @@ interface LazyPieChartProps {
     centerLabel: string;
 }
 
-// shared lazy wrapper for the stats donuts: loads the recharts chunk on demand and keeps the layout stable while it arrives
 export const LazyPieChart = ({ data, centerLabel }: LazyPieChartProps) => (
     <Suspense fallback={<div style={CHART_FALLBACK_STYLE} />}>
         <LazyPieChartCard data={data} centerLabel={centerLabel} />

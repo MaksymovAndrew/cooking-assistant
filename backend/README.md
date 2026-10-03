@@ -33,9 +33,10 @@ In production the backend is compiled by `tsup` into `dist/` and run with plain 
 TypeScript toolchain). The [Dockerfile](Dockerfile) handles this in two stages:
 
 1. **builder** - installs all deps (including devDeps for tsup), runs `npm run build`, produces `dist/index.js`,
-   `dist/scripts/migrate.js`, `dist/scripts/seed.js`, `dist/scripts/deploy-db.js`.
-2. **runner** - installs prod-only deps (`npm ci --omit=dev`), copies `dist/` and `migrations/`, runs
-   `node dist/index.js`.
+   `dist/scripts/migrate.js`, `dist/scripts/seed.js`, `dist/scripts/deploy-db.js`, each with a source map.
+2. **runner** - installs prod-only deps (`npm ci --omit=dev`, then clears the npm cache), copies `dist/` and
+   `migrations/`, runs `node --enable-source-maps dist/index.js`, so a production stack trace points at
+   `src/` rather than into the bundle.
 
 Migrations and seed run before the new containers go live, as a one-shot container started by the
 deploy script:
@@ -95,6 +96,8 @@ without it at all. In development, without it, login and every protected route r
 error.
 The rest of the env is validated with zod on startup; invalid ports or logger levels fail fast with a
 clear configuration error. `LOG_LEVEL` controls the pino logger level and defaults to `info` when unset.
+`DB_POOL_MAX`, `DB_CONNECTION_TIMEOUT_MS`, `DB_IDLE_TIMEOUT_MS` and `DB_STATEMENT_TIMEOUT_MS` bound the
+app's connection pool (defaults 10, 5000, 30000 and 15000); the migrate and seed scripts do not use them.
 
 `RESEND_API_KEY` and `EMAIL_FROM` configure transactional email (password reset and email verification
 links). Leave both empty for local dev/CI: the composition root picks `LoggingEmailService`, which logs
@@ -133,21 +136,8 @@ Pick the path that matches your situation:
     - **createdb** (only works if the Postgres `bin/` folder is on your PATH, otherwise use the full path to it):
       `createdb -U <DB_USER> <DB_NAME>`
 2. `npm run migrate` - builds every table from the files in [migrations/](migrations/).
-3. `npm run seed` - loads reference + sample data (units, recipe types, menu categories, sample ingredients).
-
-#### B. A database that already has the schema (the original `database.sql` setup, from before migrations)
-
-Do **not** run a plain `npm run migrate` - it would fail because the tables already exist. Adopt the migrations
-once, without touching any data:
-
-```bash
-npm run migrate -- up --fake
-```
-
-This records the initial migration as "already applied" (it writes one row to the `pgmigrations` tracking
-table) but runs no SQL, so existing rows are untouched. After this one-time step the database is in sync with
-the migrations and you treat it like any other. (The `--` is needed only because `--fake` is a flag; bare words
-such as `down` are forwarded without it.)
+3. `npm run seed` - loads the reference data (units, recipe types, menu categories) and the ingredient catalog,
+   in one transaction.
 
 #### Day to day: which change goes where
 
@@ -156,14 +146,14 @@ Structure and data are different things - this is the part people trip on:
 | What you are doing                                                         | Where it goes                                                           |
 | -------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | A user creates a recipe / adds a pantry ingredient through the running app | Nowhere - it is runtime data via the normal API. No migration, no seed. |
-| A new **starter ingredient** that every fresh DB should ship with          | A row in `seed.ts`, then `npm run seed`                                 |
+| A new **catalog ingredient** that every DB should have                     | An entry in `catalogData.json`, then `npm run seed`                     |
 | A new table / column / constraint / index (the **shape** of the DB)        | A new migration                                                         |
 
-**Add a starter ingredient (e.g. a 23rd):** add one row to the ingredients `VALUES` list in
-[src/scripts/seed.ts](src/scripts/seed.ts) - the columns are `(name, unit, allergens, days_to_expire,
-seasonality, storage_condition)` - then `npm run seed`. Seed is idempotent (`ON CONFLICT (name) DO NOTHING`), so
-on an existing DB it inserts only the new row and leaves the rest alone. Commit `seed.ts`. Do **not** write a
-migration - ingredients are rows, not schema.
+**Add or change a catalog ingredient:** the catalog is data in
+[src/scripts/catalog/catalogData.json](src/scripts/catalog/catalogData.json), keyed by `slug` - add or edit
+the entry, run `npm run catalog:locales` for the frontend names, then `npm run seed`. The seed upserts on
+`slug` (`ON CONFLICT (slug) DO UPDATE`) and skips rows whose values already match, so an existing DB takes
+exactly what the catalog changed. Do **not** write a migration - ingredients are rows, not schema.
 
 **Make a schema change (the only time you write a migration):**
 
@@ -272,15 +262,19 @@ backend/
 ## Architecture - clean (layered)
 
 Dependencies point inward (Dependency Rule). The real graph is built in
-[src/composition-root.ts](src/composition-root.ts) (split into `.recipe.ts` and `.user.ts` companions for
-the two largest controllers) and consumed by [src/index.ts](src/index.ts). Tests can reuse
+[src/composition-root.ts](src/composition-root.ts) (split into one `composition-root.<area>.ts` companion per
+domain, with the shared types in `composition-root.types.ts`) and consumed by [src/index.ts](src/index.ts). Tests can reuse
 `buildControllers(deps)` with fakes and pass the result to [src/app.ts](src/app.ts). The app factory mounts
 `helmet`, pino request logging, CORS (with credentials), `cookie-parser`, the 100kb JSON body parser, the
-public health check, a global rate limiter, then the seven domain routers, and finally the error handler.
+public health check, the media route, a global rate limiter, then the domain routers in the order
+[src/routes/domainRouters.ts](src/routes/domainRouters.ts) lists them, and finally the error handler.
+Every request gets an id (the caller's `X-Request-Id` when it is a plain token, else a fresh UUID),
+answered in the same header and attached to its log lines.
 
 - **routes/** - factory functions `(controller) => router`; map `METHOD /path` directly to a
   controller handler, guard with `authenticateToken` (the public routes are `/health`, `/register`,
-  `/login`, `/logout`, `/forgot-password`, `/reset-password`, and `/confirm-email`). Paths are never
+  `/login`, `/logout`, `/forgot-password`, `/reset-password`, `/confirm-email` and `/media/:file`;
+  the read endpoints use `optionalAuth`, so a guest gets them without per-viewer fields). Paths are never
   literals here: they live in [src/constants/routes.ts](src/constants/routes.ts) as `ROUTES`, grouped
   by domain and router-relative, alongside `API_PREFIX` (the `/api` mount) and `HEALTH_PATH` (derived
   from both, because request logging has to filter the probe out by its full path).
@@ -301,13 +295,16 @@ rather than by hand. Each filter is one entry in a clause registry (`recipeFilte
 `$n` placeholders through a `bind()` callback, so parameter indices can never drift out of sync with the
 values array (the old hand-rolled `paramIndex` counter had exactly that bug). `escapeLikePattern()`
 escapes `\`, `%`, and `_` before any `ILIKE` interpolation so literal wildcards in user input stay
-literal. Adding a filter means one clause entry plus one zod field - no changes to the query assembly.
+literal. Adding a filter means one clause entry plus one zod field - no changes to the query assembly;
+a clause on one optional field is `whenDefined("field", (builder, value) => ...)`, which hands it the
+value already narrowed.
 
 Errors: a use case throws a domain error -> Express 5 forwards the rejected promise -> `errorHandler`
 replies `{ error, code }` with `err.status || 500`. Every error body has that shape, and every one goes
 through `errorHandler` - auth middleware failures, rate-limit rejections and the JSON 404 for unknown
-routes call `next(error)` instead of writing a response themselves. Transactions live inside a single
-repository method (see menu/pantry repos).
+routes call `next(error)` instead of writing a response themselves. A transaction lives inside a single
+repository method and goes through `withTransaction` (`transaction.ts`); a person's pantry, shopping list
+and cooking writes go through `inPersonWriteTransaction`, which locks the person row first.
 
 ### Error codes and the message catalog
 
@@ -318,9 +315,11 @@ repository method (see menu/pantry repos).
   `errors.json` in every `i18n/locales/<locale>/` + the same entry in the frontend mirror (`frontend/src/constants/errorCodes.ts`) -
   a missing catalog line is a compile error, and a test fails if the frontend mirror drifts either way. The frontend's own copy for each code lives under `apiErrors` in
   every frontend `common.json`, guarded by the frontend sync and completeness tests.
-- **No display text in `AppError`.** It holds `code`, `status` and an optional `detail` (request-specific
-  context, e.g. the zod issue list on `validation_error`). `errorHandler` resolves the text at the HTTP
-  edge - `detail ?? translateError(code, locale)`.
+- **No display text in `AppError`.** It holds `code` and `status`; a `ValidationError` also holds its
+  issues as data (`{ path, message, params }`, `message` a key from `constants/validationMessages.ts`).
+  `errorHandler` resolves the text at the HTTP edge - `translateError(code, locale)`, or for a validation
+  error each field's reason from `i18n/locales/<locale>/validation.json`, joined as `field: text; field: text`.
+  A framework 4xx answers `bad_request` or `payload_too_large` from the catalog, never the parser's message.
 - **Every piece of server copy is written in a locale, and there are exactly two sources for it.** A
   response - error text and `{ message }` bodies alike - follows the request: `requestLocale(req)`
   ([src/i18n/requestLocale.ts](src/i18n/requestLocale.ts)) picks the best match for `Accept-Language`
@@ -466,15 +465,16 @@ Every account always has an email (required and unique at registration - see poi
 
 ## API reference
 
-All endpoints under `/api`. Public routes: `/health`, `/register`, `/login`, `/logout`. Every other route
+All endpoints under `/api`. Public routes: `/health`, `/register`, `/login`, `/logout`, `/forgot-password`,
+`/reset-password`, `/confirm-email`, `/media/:file`, and the read endpoints behind `optionalAuth`. Every other route
 requires the `authToken` session cookie (sent automatically by the browser); there is no `Authorization`
 header. Routes that act on "the current user" take the id from the cookie, not from a path segment.
 
 ### Health ([src/routes/health.routes.ts](src/routes/health.routes.ts))
 
-| Method | Path      | Purpose                                    |
-| ------ | --------- | ------------------------------------------ |
-| GET    | `/health` | Liveness check, returns `{ status: "ok" }` |
+| Method | Path      | Purpose                                                                                                |
+| ------ | --------- | ------------------------------------------------------------------------------------------------------ |
+| GET    | `/health` | Asks the database (`SELECT 1`, 2 s deadline): `{ status: "ok" }`, or a 503 `{ status: "unavailable" }` |
 
 ### Auth ([src/routes/user.routes.ts](src/routes/user.routes.ts))
 
@@ -505,7 +505,6 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | Method | Path                      | Purpose                                                                                            |
 | ------ | ------------------------- | -------------------------------------------------------------------------------------------------- |
 | POST   | `/recipe`                 | Create a recipe with ingredients                                                                   |
-| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                                  |
 | GET    | `/recipe/:id`             | Single recipe with ingredients                                                                     |
 | PUT    | `/recipe/:id`             | Update a recipe                                                                                    |
 | DELETE | `/recipe/:id`             | Delete a recipe                                                                                    |
@@ -542,12 +541,15 @@ voted). A rating for a record that does not exist answers `404`, one on the requ
 five-star vote can't outrank fifty votes averaging 4.8. Rating writes live in
 [src/routes/rating.routes.ts](src/routes/rating.routes.ts).
 
-`GET /recipes` and `GET /recipes-stats` both use explicit columns rather than `SELECT r.*`, so
-neither ships a recipe's raw owner `person_id` to the client - the same rule the list/search
-endpoints already followed. `/recipes-stats` computes every aggregate (type distribution, cooking
-time and calorie extremes/averages, most-used type) in SQL across every recipe, not just the
-current user's - the statistics page reads it directly instead of downloading the whole recipe
-table and aggregating client-side.
+`GET /recipes-stats` and `GET /menus-stats` compute every aggregate (type or category distribution,
+cooking time, recipe count and calorie extremes/averages, the most used type or category) in one SQL
+statement each, across every record, not just the current user's, with explicit columns so no owner
+`person_id` reaches the client. The statistics page reads them directly. Every recipe and menu list is
+paginated (`limit`/`offset`, `limit` at most 100) - no endpoint returns every recipe or menu, and the
+menu form's recipe picker searches `/recipes-by-filters` page by page. A menu's calorie total is
+`null` once any of its recipes has none, so it is left out of the calorie extremes rather than
+undercounted. A recipe with no cooking time is likewise left out of the cooking time extremes, and a
+recipe type none of whose recipes has one gets no average cooking time.
 
 ### Recipe types ([src/routes/type.routes.ts](src/routes/type.routes.ts))
 
@@ -559,22 +561,24 @@ table and aggregating client-side.
 
 ### User pantry ([src/routes/userIngredients.routes.ts](src/routes/userIngredients.routes.ts))
 
-| Method | Path                                      | Purpose                                                                           |
-| ------ | ----------------------------------------- | --------------------------------------------------------------------------------- |
-| GET    | `/user-ingredients`                       | Get the current user's pantry, each ingredient with its purchase lots             |
-| PUT    | `/user-ingredients`                       | Add/replace pantry items                                                          |
-| GET    | `/user-ingredients/history/:ingredientId` | Purchase history for one ingredient                                               |
-| PUT    | `/user-ingredients/history/:purchaseId`   | Update a purchase entry                                                           |
-| DELETE | `/user-ingredients/history/:purchaseId`   | Delete one purchase; its quantity leaves the stock, the last one removes the item |
-| POST   | `/user-ingredients/history/discard`       | Delete several purchases at once (`{ purchaseIds }`), e.g. every expired one      |
-| DELETE | `/user-ingredients/:ingredientId`         | Remove a pantry item                                                              |
+| Method | Path                                         | Purpose                                                                           |
+| ------ | -------------------------------------------- | --------------------------------------------------------------------------------- |
+| GET    | `/user-ingredients`                          | Get the current user's pantry, each ingredient with its purchase lots             |
+| PUT    | `/user-ingredients`                          | Add/replace pantry items                                                          |
+| GET    | `/user-ingredients/history/:ingredientId`    | Purchase history for one ingredient                                               |
+| PUT    | `/user-ingredients/history/:purchaseId`      | Update a purchase entry                                                           |
+| DELETE | `/user-ingredients/history/:purchaseId`      | Delete one purchase; its quantity leaves the stock, the last one removes the item |
+| POST   | `/user-ingredients/history/discard`          | Delete several purchases at once (`{ purchaseIds }`), e.g. every expired one      |
+| DELETE | `/user-ingredients/:ingredientId`            | Remove a pantry item                                                              |
+| POST   | `/user-ingredients/cook`                     | "Cooked it": take a recipe's or menu's ingredients × portions out of the pantry   |
+| POST   | `/user-ingredients/cook/:consumptionId/undo` | Put a cooking back, within 10 minutes and only once                               |
 
 ### Menus ([src/routes/menu.routes.ts](src/routes/menu.routes.ts))
 
 | Method | Path                   | Purpose                                                                     |
 | ------ | ---------------------- | --------------------------------------------------------------------------- |
 | GET    | `/menu`                | All menus, paginated (category, favourites and rating filters, rating sort) |
-| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page)                        |
+| GET    | `/menus-stats`         | Aggregated menu stats for the statistics page                               |
 | POST   | `/create-menu`         | Create a menu with recipes                                                  |
 | GET    | `/menu/:id`            | Menu details + recipes                                                      |
 | PUT    | `/menu/:id`            | Update a menu                                                               |
@@ -700,6 +704,16 @@ Full schema in the initial migration [migrations/1781185648364_initial-schema.sq
   `quantity_person_ingradient` - typo in the real column name, leave it) and `ingredient_purchases`
   (one row per purchase lot). Expiry is computed per lot from `ingredient_purchases.purchase_date`,
   not the aggregate's own date - a top-up must not "refresh" older stock's expiry.
+- `pantry_consumptions` / `pantry_consumption_lots` - one row per "Cooked it" and what it took from which
+  lot. `POST /user-ingredients/cook` (`{ recipe_id | menu_id, portions, log_calories }`) runs in one
+  transaction under the person lock: it reads the lots oldest first (`FOR UPDATE`), allocates with the pure
+  `domain/pantry/allocateFifo.ts`, records each lot's share, then shrinks or deletes the lots and lowers
+  `quantity_person_ingradient` the same way deleting a purchase does. An ingredient the pantry lacks is
+  skipped, not an error, and a menu counts each of its recipes once. With `log_calories` the calorie entry
+  is written in that same transaction (and refused up front with `calories/not_available` when the source
+  has none). `purchase_id` is deliberately not a foreign key: undo re-inserts a used-up lot under its own id
+  and purchase date, so its expiry is unchanged. Undo is a conditional `UPDATE` (`undone_at IS NULL` and
+  inside `COOKING_UNDO_WINDOW_MS`), so a second or late undo answers `409 pantry/undo_expired`.
 - `shopping_list_items` - one row per item on a person's shopping list: free text, or a catalog
   ingredient with a quantity (`ingredient_id` is `ON DELETE SET NULL`, so the item outlives it as text).
   Writes lock the owner's `person` row, so the 200-item limit and the next `position` can't race.

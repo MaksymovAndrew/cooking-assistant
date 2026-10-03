@@ -7,7 +7,6 @@ const STEP_BY_KEY: Record<string, number> = {
     ArrowDown: -1,
 };
 
-// the star a key moves focus to from `current`, or null for a key the stars don't handle
 export const starKeyTarget = (key: string, current: number): number | null => {
     if (key === "Home") {
         return 1;

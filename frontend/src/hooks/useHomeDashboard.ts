@@ -19,7 +19,7 @@ import { useCalorieBudget } from "hooks/useCalorieBudget";
 import { roundCalories } from "utils/calories";
 import { getExpiryStatus } from "utils/expiry";
 
-// fetched once at the desktop count (3x3); tablet/mobile crop the same 9 down to 4/2 via CSS (nth-child), so there's only ever one request
+// the desktop's 3x3; smaller screens crop the same nine in CSS, so there is only one request
 const RECENT_RECIPES_LIMIT = 9;
 const EXPIRING_SOON_LIMIT = 5;
 // omitting sort_order falls back to the backend's creation_date DESC
@@ -40,7 +40,6 @@ export const useHomeDashboard = () => {
     const recent = useGetRecipesByPersonInfiniteQuery(RECENT_RECIPES_PARAMS);
     const myMenus = useGetMenusByPersonInfiniteQuery(MY_MENUS_PARAMS);
     const pantryCount = pantry.data?.length ?? 0;
-    // an empty pantry covers no recipe, so there is nothing to ask the server
     const cookable = useGetRecipesByFiltersInfiniteQuery(
         COOKABLE_RECIPES_PARAMS,
         { skip: pantryCount === 0 },

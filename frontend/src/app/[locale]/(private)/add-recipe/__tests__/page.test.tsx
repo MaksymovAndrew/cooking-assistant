@@ -16,6 +16,8 @@ const INGREDIENT_ID = 11;
 const INGREDIENT_NAME = "Potato";
 const TITLE = "Mashed potatoes";
 const DESCRIPTION = "Boil and mash";
+const CREATE_BUTTON = "Create recipe";
+const DEBOUNCE_MS = 300;
 
 const SAMPLE_TYPES = [{ id: TYPE_ID, type_name: TYPE_NAME, description: "" }];
 const SAMPLE_INGREDIENTS = [
@@ -32,32 +34,7 @@ const SAMPLE_INGREDIENTS = [
 ];
 
 describe("CreateRecipePage", () => {
-    it("should create the recipe and navigate home on submit", async () => {
-        mockGetByUrl({
-            [API_ROUTES.ingredients.list]: SAMPLE_INGREDIENTS,
-            [API_ROUTES.recipeTypes.list]: SAMPLE_TYPES,
-        });
-        mockedPost.mockResolvedValue({ data: { id: 42 } });
-
-        renderWithRouter(<CreateRecipePage />);
-
-        await screen.findByPlaceholderText("Search ingredients…");
-        await screen.findByRole("option", { name: TYPE_NAME });
-
-        await userEvent.type(screen.getByLabelText("Title *"), TITLE);
-        await userEvent.type(
-            screen.getByLabelText("Description *"),
-            DESCRIPTION,
-        );
-        await userEvent.type(screen.getByLabelText(LABEL_COOKING_TIME), "0");
-        await userEvent.type(screen.getByLabelText("Minutes"), "30");
-        await userEvent.selectOptions(
-            screen.getByLabelText("Recipe type *"),
-            String(TYPE_ID),
-        );
-
-        const DEBOUNCE_MS = 300;
-
+    it("should create the recipe and go to the recipe list on submit", async () => {
         jest.useFakeTimers();
         const user = userEvent.setup({
             advanceTimers: (ms) => {
@@ -66,8 +43,28 @@ describe("CreateRecipePage", () => {
         });
 
         try {
+            mockGetByUrl({
+                [API_ROUTES.ingredients.list]: SAMPLE_INGREDIENTS,
+                [API_ROUTES.recipeTypes.list]: SAMPLE_TYPES,
+            });
+            mockedPost.mockResolvedValue({ data: { id: 42 } });
+
+            renderWithRouter(<CreateRecipePage />);
+
+            await screen.findByRole("option", { name: TYPE_NAME });
+            await user.type(screen.getByLabelText("Title *"), TITLE);
             await user.type(
-                screen.getByPlaceholderText("Search ingredients…"),
+                screen.getByLabelText("Description *"),
+                DESCRIPTION,
+            );
+            await user.type(screen.getByLabelText(LABEL_COOKING_TIME), "0");
+            await user.type(screen.getByLabelText("Minutes"), "30");
+            await user.selectOptions(
+                screen.getByLabelText("Recipe type *"),
+                String(TYPE_ID),
+            );
+            await user.type(
+                await screen.findByPlaceholderText("Search ingredients…"),
                 INGREDIENT_NAME,
             );
             act(() => {
@@ -78,24 +75,51 @@ describe("CreateRecipePage", () => {
                     name: new RegExp(INGREDIENT_NAME, "i"),
                 }),
             );
+            await user.click(
+                screen.getByRole("button", { name: CREATE_BUTTON }),
+            );
+            // flushes the promise chain between the save and the navigation
+            await act(async () => {
+                await jest.runOnlyPendingTimersAsync();
+            });
+
+            expect(mockedPost).toHaveBeenCalledWith(
+                API_ROUTES.recipes.create,
+                expect.objectContaining({
+                    title: TITLE,
+                    content: DESCRIPTION,
+                    type_id: TYPE_ID,
+                    calories_override: null,
+                    ingredients: [{ id: INGREDIENT_ID, quantity: 1 }],
+                }),
+            );
+            expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
         } finally {
             jest.useRealTimers();
         }
+    });
 
+    it("should take focus to the first field in error on a failed submit", async () => {
+        mockGetByUrl({
+            [API_ROUTES.ingredients.list]: SAMPLE_INGREDIENTS,
+            [API_ROUTES.recipeTypes.list]: SAMPLE_TYPES,
+        });
+
+        renderWithRouter(<CreateRecipePage />);
+
+        await screen.findByRole("option", { name: TYPE_NAME });
         await userEvent.click(
-            screen.getByRole("button", { name: "Create recipe" }),
+            screen.getByRole("button", { name: CREATE_BUTTON }),
         );
 
-        expect(mockedPost).toHaveBeenCalledWith(
-            API_ROUTES.recipes.create,
-            expect.objectContaining({
-                title: TITLE,
-                content: DESCRIPTION,
-                type_id: TYPE_ID,
-                calories_override: null,
-                ingredients: [{ id: INGREDIENT_ID, quantity: 1 }],
-            }),
+        expect(screen.getByLabelText("Title *")).toHaveFocus();
+
+        await userEvent.type(screen.getByLabelText("Title *"), TITLE);
+        await userEvent.click(
+            screen.getByRole("button", { name: CREATE_BUTTON }),
         );
-        expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
+
+        expect(screen.getByLabelText("Recipe type *")).toHaveFocus();
+        expect(mockedPost).not.toHaveBeenCalled();
     });
 });

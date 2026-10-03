@@ -1,37 +1,35 @@
-// switching [data-theme] on <html> repaints every var(--...) consumer instantly.
-// the --bg values are read at build time and mirrored into the theme-color meta by the
-// pre-paint script, which takes the first as dark and the second as light - keep the
-// dark block above the light one
+// keep the dark block first: next.config.ts reads the --bg values in order, dark then light
 :root,
 [data-theme="dark"] {
     color-scheme: dark;
 
-    // theme-conditional visibility, so a component can ship both variants and let the
-    // applied theme pick one, without reading the theme in JavaScript
+    // lets a component ship both variants and the theme pick one, without reading it in JavaScript
     --show-in-dark: flex;
     --show-in-light: none;
     --bg: #15131a;
     --surface: #1e1b26;
     --surface-2: #2a2533;
     --border: #332e40;
-    --brand: #8e72cc;
+    --brand: #8365c7;
+
+    // brand as a text colour: light enough to read on every surface, where --brand is not
+    --brand-text: #9a81d1;
     --brand-strong: #7e60bf;
     --brand-press: #6b4fa8;
     --brand-subtle: rgb(126 96 191 / 16%);
     --text: #f4f1f8;
     --text-2: #b4adc2;
-    --text-muted: #7c7689;
+    --text-muted: #908b9b;
     --on-brand: #fff;
     --success: #46c988;
     --danger: #f06d6d;
+    --danger-fill: #e82020;
     --warning: #e0a33e;
 
-    // distinct from --danger/--warning on purpose - flags "this item alone would put you over
-    // your remaining calories today", a lighter-weight per-item nudge than the app-wide --danger
-    // used for aggregate over-goal states (the Dietary tab's progress ring and history chart)
+    // not --danger on purpose: a per-item over-budget nudge, lighter than the aggregate over-goal state
     --calorie-over: #ff8a3d;
     --info: #7fa8e0;
-    --accent: #b692c2;
+    --accent: #8c589e;
     --e-1: 0 1px 2px rgb(0 0 0 / 40%);
     --e-2: 0 8px 24px rgb(0 0 0 / 45%);
     --e-3: 0 24px 64px rgb(0 0 0 / 55%);
@@ -47,19 +45,21 @@
     --surface-2: #f1edf8;
     --border: #e4def0;
     --brand: #6b4fa8;
+    --brand-text: #6b4fa8;
     --brand-strong: #7e60bf;
     --brand-press: #5a3f94;
     --brand-subtle: rgb(126 96 191 / 10%);
     --text: #1b1726;
     --text-2: #5a5468;
-    --text-muted: #8b8499;
+    --text-muted: #71697f;
     --on-brand: #fff;
-    --success: #2e9e68;
-    --danger: #d64545;
-    --warning: #b9791f;
-    --calorie-over: #e2650c;
-    --info: #4f7fbf;
-    --accent: #b692c2;
+    --success: #247b51;
+    --danger: #ce2d2d;
+    --danger-fill: #ce2d2d;
+    --warning: #956219;
+    --calorie-over: #b25009;
+    --info: #3f6ead;
+    --accent: #8c589e;
     --e-1: 0 1px 2px rgb(20 16 30 / 6%);
     --e-2: 0 8px 24px rgb(20 16 30 / 10%);
     --e-3: 0 24px 64px rgb(20 16 30 / 16%);
@@ -70,8 +70,6 @@
     --r-md: 12px;
     --r-lg: 16px;
     --r-pill: 999px;
-
-    // spacing scale (4/8/12/16/24/32/48/64 in rem)
     --s-1: 0.25rem;
     --s-2: 0.5rem;
     --s-3: 0.75rem;
@@ -80,6 +78,8 @@
     --s-6: 2rem;
     --s-7: 3rem;
     --s-8: 4rem;
+    --bottom-nav-height: 64px;
+    --scroll-to-top-size: 44px;
 
     // hover/press feedback: fast; most transitions: base; drawer/sheet: slow
     --dur-fast: 150ms;
@@ -87,15 +87,14 @@
     --dur-slow: 350ms;
     --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-
-    // z-index scale: header < dropdown < drawer < modal < toast
     --z-header: 50;
     --z-dropdown: 60;
     --z-drawer: 70;
     --z-modal: 80;
     --z-toast: 90;
 
-    // chart palette - brand family, same in both themes
+    // the page dimmed behind a modal or a sheet, the same in both themes
+    --scrim: rgb(0 0 0 / 55%);
     --chart-1: #7e60bf;
     --chart-2: #b692c2;
     --chart-3: #8e72cc;

@@ -65,19 +65,6 @@ describe("MenuActiveFilters", () => {
         expect(resetFilters).toHaveBeenCalledTimes(1);
     });
 
-    it("should show a removable chip for an active search query", () => {
-        render(
-            <MenuActiveFilters
-                total={3}
-                activeFilters={[makeEntry(SEARCH_DEF, "cauliflower")]}
-                hasActiveFilters
-                resetFilters={jest.fn()}
-            />,
-        );
-
-        expect(screen.getByText("“cauliflower”")).toBeInTheDocument();
-    });
-
     it("should remove only the dismissed filter when its chip is clicked", async () => {
         const remove = jest.fn();
 

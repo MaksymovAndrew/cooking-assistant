@@ -24,12 +24,7 @@ const initialState = (
         {},
     );
 
-// client-side mirror of useListFilters: state lives in component state instead of the
-// URL, and every filter is an AND'd predicate over the item list instead of a request
-// param - visibleItems is the memoized equivalent of the server side's request params.
-// state is a plain Record (defs aren't parameterized by TState), so the caller-specified
-// TState is applied with one deliberate cast below, correct by construction: every key
-// it holds comes from a def built for this exact TState (mirrors useListFilters.ts)
+// the TState cast below holds: every key comes from a def built for this exact TState
 export function useClientFilters<TItem, TState extends object>(
     defs: readonly ClientFilterDef<TItem, unknown>[],
     items: TItem[],

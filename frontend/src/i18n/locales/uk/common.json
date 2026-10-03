@@ -20,7 +20,8 @@
         "loading": "Зберігаємо…"
     },
     "chip": {
-        "remove": "Прибрати"
+        "remove": "Прибрати «{{name}}»",
+        "quantity": "Кількість: {{name}}"
     },
     "passwordInput": {
         "show": "Показати пароль",
@@ -67,7 +68,10 @@
         "logout": "Вийти",
         "login": "Увійти",
         "register": "Реєстрація",
-        "scrollToTop": "Нагору"
+        "scrollToTop": "Нагору",
+        "skipToContent": "Перейти до вмісту",
+        "mainLabel": "Основна",
+        "tabBarLabel": "Панель вкладок"
     },
     "theme": {
         "toggleLabel": "Змінити тему"
@@ -82,6 +86,7 @@
         "backToRecipes": "До рецептів",
         "recipes": "Рецепти",
         "pantry": "Продукти",
+        "home": "Головна",
         "menus": "Меню"
     },
     "errors": {
@@ -89,6 +94,7 @@
     },
     "apiErrors": {
         "bad_request": "Не вдалося обробити запит. Спробуйте ще раз.",
+        "payload_too_large": "Забагато даних за раз. Спробуйте коротший текст.",
         "not_found": "Не знайшли того, що ви шукали.",
         "server_error": "У нас щось зламалося. Спробуйте трохи пізніше.",
         "validation_error": "Деякі дані введено неправильно.",
@@ -104,16 +110,18 @@
         "auth/new_password_same_as_current": "Новий пароль має відрізнятися від поточного.",
         "recipe/not_found": "Такого рецепта немає або його видалили.",
         "recipe/ingredients_empty": "Додайте хоча б один інгредієнт.",
-        "recipe/ingredients_missing_id": "Виберіть кожен інгредієнт зі списку.",
         "recipe/ingredients_not_exist": "Одного чи кількох інгредієнтів більше немає.",
-        "recipe/title_content_empty": "Додайте назву й опис.",
         "recipe/in_pantry_requires_login": "Увійдіть, щоб добирати рецепти за своїми продуктами.",
+        "recipe/type_not_exist": "Такого типу рецепта більше немає. Виберіть інший.",
         "menu/not_found": "Такого меню немає або його видалили.",
         "menu/insufficient_data_create": "Додайте назву, категорію й хоча б один рецепт.",
         "menu/insufficient_data_update": "Додайте назву, категорію й хоча б один рецепт.",
         "menu/recipes_not_exist": "Одного чи кількох рецептів більше немає.",
+        "menu/category_not_exist": "Такої категорії меню більше немає. Виберіть іншу.",
         "pantry/ingredient_not_found": "Цього продукту немає у ваших запасах.",
         "pantry/purchase_not_found": "Цієї покупки більше немає.",
+        "pantry/consumption_not_found": "Це готування вже скасовано, або його більше немає.",
+        "pantry/undo_expired": "Скасувати вже не можна - продукти залишаються списаними.",
         "calories/intake_not_found": "Цього запису більше немає.",
         "calories/not_available": "Калорійність цієї страви невідома.",
         "favourites/requires_login": "Увійдіть, щоб побачити обране.",
@@ -135,6 +143,7 @@
     },
     "errorState": {
         "title": "Щось пішло не так",
+        "loadFailed": "Не вдалося завантажити. Перевірте з’єднання і спробуйте ще раз.",
         "retry": "Спробувати знову"
     },
     "notifications": {
@@ -151,7 +160,14 @@
         "profileUpdated": "Профіль оновлено",
         "accountDeleted": "Обліковий запис видалено",
         "calorieIntakeDeleted": "Запис видалено",
-        "intakeLogged": "Додано до сьогоднішнього щоденника"
+        "intakeLogged": "Додано до сьогоднішнього щоденника",
+        "cooked_one": "Готово! Із запасів списано {{count}} продукт",
+        "cooked_few": "Готово! Із запасів списано {{count}} продукти",
+        "cooked_many": "Готово! Із запасів списано {{count}} продуктів",
+        "cooked_other": "Готово! Із запасів списано {{count}} продукту",
+        "cookedNothing": "Готово! Нічого з цього не було в запасах",
+        "undo": "Скасувати",
+        "cookingUndone": "Скасовано - усе повернулося в запаси"
     },
     "timeAgo": {
         "justNow": "Щойно",
@@ -309,5 +325,12 @@
         "filterChip_few": "{{count}} мови",
         "filterChip_many": "{{count}} мов",
         "filterChip_other": "{{count}} мови"
+    },
+    "contentSkeleton": {
+        "loading": "Завантаження…"
+    },
+    "moveButtons": {
+        "up": "Підняти «{{name}}» вище",
+        "down": "Опустити «{{name}}» нижче"
     }
 }

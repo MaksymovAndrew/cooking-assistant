@@ -1,4 +1,4 @@
-// the owner's first name, surname initial and avatar only; person_id itself still never leaves the server
+// a public face only: person_id itself never leaves the server
 export function authorColumn(tableAlias: string): string {
     return `(
         SELECT json_build_object(

@@ -1,6 +1,5 @@
 import { useSyncExternalStore } from "react";
 
-// shared navigate spy: useRouter().push and replace both record here
 export const mockNavigate = jest.fn();
 
 // neutral non-root default: avoids coupling tests to whatever page currently lives at "/"
@@ -20,12 +19,10 @@ const subscribe = (listener: () => void) => {
     };
 };
 
-// the URL is real state, not a fixed value: hooks built on it (useListFilters) are only
-// meaningful in a test if writing to it re-renders the reader
+// real state: a hook built on the URL is only tested if writing to it re-renders the reader
 export const setTestLocation = (url: string): void => {
     currentUrl = url;
-    // window.location is read directly by the api layer and the login redirect, so the two
-    // views of "where am I" must never disagree in a test
+    // the api layer and the login redirect read window.location, so it must agree with the mock
     window.history.replaceState(null, "", url);
     listeners.forEach((listener) => {
         listener();
@@ -50,8 +47,7 @@ export const useSearchParams = (): URLSearchParams =>
 
 export const useParams = (): Record<string, string> => currentParams;
 
-// the real router does not update useSearchParams()/usePathname() before the transition lands,
-// and a mock that updates them synchronously hides every bug that depends on that gap
+// async like the real router, which updates the URL hooks only once the transition lands
 const navigate = (href: string) => {
     mockNavigate(href);
     queueMicrotask(() => {
@@ -59,14 +55,15 @@ const navigate = (href: string) => {
     });
 };
 
-// one stable instance, like the real router: a new object per render would re-fire every
-// effect that depends on it
+export const mockRefresh = jest.fn();
+
+// one stable instance, like the real router: a new one per render would re-fire dependent effects
 const router = {
     push: navigate,
     replace: navigate,
     back: jest.fn(),
     forward: jest.fn(),
-    refresh: jest.fn(),
+    refresh: mockRefresh,
     prefetch: jest.fn(),
 };
 
@@ -78,6 +75,5 @@ export const notFound = jest.fn((): never => {
 });
 export const redirect = jest.fn();
 
-// the real one re-throws Next's own control-flow errors and ignores everything else; nothing
-// in a test throws one of those, so ignoring is the faithful behaviour here
+// the real one re-throws only Next's control-flow errors, which no test throws
 export const unstable_rethrow = (): void => undefined;

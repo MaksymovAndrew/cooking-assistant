@@ -33,7 +33,6 @@ export interface RecipeFilterState {
     languages: Locale[];
 }
 
-// shared with links that pre-set the filter before navigating (see GuestLandingRecipeFilters)
 export const RECIPE_TYPE_URL_PARAM = "types";
 
 export const RECIPE_FILTER_DEFS: readonly FilterDef<

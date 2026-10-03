@@ -58,6 +58,7 @@
         "noHistory": "Покупок пока нет.",
         "closeButton": "Закрыть",
         "editButton": "Изменить количество",
+        "quantityLabel": "Количество: {{name}}, куплено {{date}}",
         "deleteButton": "Удалить покупку"
     },
     "restockModal": {
@@ -79,5 +80,19 @@
         "discardButton": "Выбросить просроченное",
         "addToListButton": "В список покупок",
         "discarded": "Просроченное выброшено"
+    },
+    "cookedItModal": {
+        "title": "Приготовлено",
+        "intro": "Эти продукты спишутся из ваших запасов, начиная с самых старых покупок.",
+        "portions": "Порции",
+        "fewerPortions": "Меньше порций",
+        "morePortions": "Больше порций",
+        "notInPantry": "Нет в запасах - пропустим",
+        "partial": "Осталось только {{amount}} - уйдёт всё",
+        "nothingToDeduct": "Здесь нечего списывать из запасов.",
+        "logCalories": "Записать калории в дневник",
+        "loadingPantry": "Проверяем запасы…",
+        "cancel": "Отмена",
+        "confirm": "Приготовлено"
     }
 }

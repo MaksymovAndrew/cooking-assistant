@@ -17,8 +17,6 @@ import styles from "./GuestLandingFilters.module.scss";
 const SEARCH_ICON_SIZE = 18;
 const CHIP_ICON_SIZE = 14;
 
-// each chip links straight to /all-recipes with the filter already in the URL - one source of
-// truth for filtering, no second state machine duplicating RecipeFilterPanel here
 export const GuestLandingRecipeFilters: React.FC = () => {
     const { t } = useTranslation("guestLanding");
     const { data: types = [] } = useGetRecipeTypesQuery(null);

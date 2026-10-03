@@ -7,18 +7,16 @@ import type {
     RecipeSearchRow,
 } from "domain/repositories/recipe.filters";
 
-import { authorColumn } from "infrastructure/persistence/pg/authorColumn";
-import { containsAvoidedColumn } from "infrastructure/persistence/pg/containsAvoidedColumn";
-import { isFavouriteColumn } from "infrastructure/persistence/pg/isFavouriteColumn";
-import { isOwnerColumn } from "infrastructure/persistence/pg/isOwnerColumn";
-import { extractPaginatedRows } from "infrastructure/persistence/pg/pagination";
-import {
-    ratingColumns,
-    ratingSortOrder,
-} from "infrastructure/persistence/pg/ratingColumns";
-import { RECIPE_FILTER_CLAUSES } from "infrastructure/persistence/pg/recipeFilterClauses";
-import { recipeTagsColumn } from "infrastructure/persistence/pg/recipeTagsColumn";
-import { SqlFilterBuilder } from "infrastructure/persistence/pg/sqlFilterBuilder";
+import { authorColumn } from "./authorColumn";
+import { caloriesPerPortion } from "./calorieColumns";
+import { containsAvoidedColumn } from "./containsAvoidedColumn";
+import { isFavouriteColumn } from "./isFavouriteColumn";
+import { isOwnerColumn } from "./isOwnerColumn";
+import { extractPaginatedRows } from "./pagination";
+import { ratingColumns, ratingSortOrder } from "./ratingColumns";
+import { RECIPE_FILTER_CLAUSES } from "./recipeFilterClauses";
+import { recipeTagsColumn } from "./recipeTagsColumn";
+import { SqlFilterBuilder } from "./sqlFilterBuilder";
 
 interface RecipeSearchQueryRow extends RecipeSearchRow {
     total_count: number;
@@ -27,7 +25,7 @@ interface RecipeSearchQueryRow extends RecipeSearchRow {
 function buildBaseRecipeSelect(ownerPlaceholder: string): string {
     return `
         SELECT r.id, r.title, r.content, r.language, r.type_id, r.creation_date, r.cooking_time, r.photo_key,
-               COALESCE(r.calories_override, r.calories_computed) AS calories_per_portion,
+               ${caloriesPerPortion("r")} AS calories_per_portion,
                ${authorColumn("r")},
                ${isOwnerColumn("r", ownerPlaceholder)},
                ${isFavouriteColumn("recipe", "r.id", ownerPlaceholder)},
@@ -44,7 +42,7 @@ function buildBaseRecipeSelect(ownerPlaceholder: string): string {
       `;
 }
 
-// every branch ends with the ", id" tie-breaker so OFFSET pagination never duplicates or skips rows
+// every branch ends on an id tie-breaker, so OFFSET pages never repeat or skip a row
 function buildRecipeOrderBy(sortOrder?: RecipeFilters["sort_order"]): string {
     if (sortOrder === "rating") {
         return ` ORDER BY ${ratingSortOrder("r")}, r.id DESC`;
@@ -54,12 +52,10 @@ function buildRecipeOrderBy(sortOrder?: RecipeFilters["sort_order"]): string {
         return ` ORDER BY r.cooking_time ${sortOrder === "asc" ? "ASC" : "DESC"}, r.id DESC`;
     }
 
-    // for a signed-in viewer: favourites first, anything they avoid last (favourites among those still lead);
-    // both flags are null for a guest, so the date order is untouched
+    // favourites first, avoided last; both flags are null for a guest, leaving the date order
     return ` ORDER BY "containsAvoided" ASC, "isFavourite" DESC, r.creation_date DESC, r.id DESC`;
 }
 
-// shared tail of both searches: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed
 async function runRecipeSearch(
     pool: Pool,
     builder: SqlFilterBuilder,

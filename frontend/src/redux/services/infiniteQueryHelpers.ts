@@ -3,17 +3,17 @@ import type { InfiniteData } from "@reduxjs/toolkit/query";
 import { PAGE_SIZE } from "constants/pagination";
 import type { PaginatedResult } from "types/pagination";
 
-// the next OFFSET to request, or undefined once every item has been loaded - shared getNextPageParam for every offset-paginated infiniteQuery endpoint
+import { sumBy } from "utils/sum";
+
 export const getNextOffsetParam = (
     lastPage: PaginatedResult<unknown>,
     allPages: PaginatedResult<unknown>[],
 ): number | undefined => {
-    const loaded = allPages.reduce((sum, page) => sum + page.items.length, 0);
+    const loaded = sumBy(allPages, (page) => page.items.length);
 
     return loaded < lastPage.total ? loaded : undefined;
 };
 
-// the paging half of every offset-paginated list endpoint - one page of PAGE_SIZE rows per request
 export const offsetPagedQuery = <TArg extends object>(url: string) => ({
     infiniteQueryOptions: {
         initialPageParam: 0,
@@ -35,7 +35,7 @@ export const flattenPages = <T>(
     data: InfiniteData<PaginatedResult<T>, number> | undefined,
 ): T[] => data?.pages.flatMap((page) => page.items) ?? [];
 
-// the total row count reported by the most recently fetched page - self-corrects after a mutation invalidates and refetches the cached pages
+// the most recently fetched page carries the freshest total
 export const getPaginatedTotal = (
     data: InfiniteData<PaginatedResult<unknown>, number> | undefined,
 ): number => {

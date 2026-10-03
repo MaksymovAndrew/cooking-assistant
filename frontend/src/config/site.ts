@@ -1,8 +1,6 @@
 const DEV_SITE_URL = "http://localhost:8080";
 
-// canonical, social, robots and sitemap URLs all resolve against this, so it follows the
-// deployment. A production build without it would ship localhost URLs that nothing downstream
-// would flag, so it fails the build instead.
+// throws in production: localhost URLs would ship and nothing downstream would flag them
 export const resolveSiteUrl = (): string => {
     const configured = process.env.NEXT_PUBLIC_SITE_URL;
 

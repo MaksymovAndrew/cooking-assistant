@@ -1,5 +1,6 @@
 {
     "bad_request": "Некорректный запрос",
+    "payload_too_large": "Запрос слишком большой",
     "not_found": "Не найдено",
     "server_error": "Ошибка сервера",
     "validation_error": "Некорректные данные запроса",
@@ -17,18 +18,20 @@
 
     "recipe/not_found": "Рецепт не найден",
     "recipe/ingredients_empty": "Добавьте хотя бы один ингредиент",
-    "recipe/ingredients_missing_id": "Каждый ингредиент нужно выбрать из списка",
     "recipe/ingredients_not_exist": "Одного или нескольких ингредиентов больше нет",
-    "recipe/title_content_empty": "Нужны название и описание",
     "recipe/in_pantry_requires_login": "Войдите, чтобы искать рецепты по своим продуктам",
+    "recipe/type_not_exist": "Такого типа рецепта нет",
 
     "menu/not_found": "Меню не найдено",
     "menu/insufficient_data_create": "Недостаточно данных, чтобы создать меню",
     "menu/insufficient_data_update": "Недостаточно данных, чтобы изменить меню",
     "menu/recipes_not_exist": "Одного или нескольких рецептов больше нет",
+    "menu/category_not_exist": "Такой категории меню нет",
 
     "pantry/ingredient_not_found": "Этого продукта нет в ваших запасах",
     "pantry/purchase_not_found": "Покупка не найдена",
+    "pantry/consumption_not_found": "Этой записи о готовке больше нет",
+    "pantry/undo_expired": "Эту готовку уже нельзя отменить",
 
     "calories/intake_not_found": "Запись не найдена",
     "calories/not_available": "Калорийность этой позиции неизвестна",

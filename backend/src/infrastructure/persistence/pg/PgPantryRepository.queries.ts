@@ -1,34 +1,15 @@
 import type { Pool } from "pg";
 
-interface PantryLotRow {
-    id: number;
-    quantity: number;
-    purchase_date: Date;
-}
-
-interface PantryIngredientRow {
-    ingredient_id: number;
-    ingredient_slug: string;
-    ingredient_name: string;
-    category: string;
-    quantity_person_ingradient: number;
-    unit_name: string;
-    allergens: string[];
-    days_to_expire: number | null;
-    seasonality: string | null;
-    storage_condition: string | null;
-    // the oldest (soonest-expiring) lot's date - MIN(ingredient_purchases.purchase_date), not
-    // person_ingredients.purchase_date, which a top-up resets and would wrongly "refresh" older stock
-    purchase_date: Date | null;
-    lots: PantryLotRow[];
-    calories_per_unit: number | null;
-}
+import type {
+    PantryIngredient,
+    PurchaseHistoryEntry,
+} from "domain/repositories/PantryRepository";
 
 export async function findPantryByUser(
     pool: Pool,
-    userId: string | number,
-): Promise<unknown[]> {
-    const result = await pool.query<PantryIngredientRow>(
+    userId: number,
+): Promise<PantryIngredient[]> {
+    const result = await pool.query<PantryIngredient>(
         `SELECT
          pi.ingredient_id,
          i.slug AS ingredient_slug,
@@ -60,6 +41,29 @@ export async function findPantryByUser(
          um.unit_name, i.allergens, i.days_to_expire, i.seasonality, i.storage_condition,
          i.calories_per_unit`,
         [userId],
+    );
+
+    return result.rows;
+}
+
+export async function findIngredientPurchaseHistory(
+    pool: Pool,
+    userId: number,
+    ingredientId: number,
+): Promise<PurchaseHistoryEntry[]> {
+    const result = await pool.query<PurchaseHistoryEntry>(
+        `SELECT
+                     ip.id,
+                     ip.quantity,
+                     ip.purchase_date,
+                     um.unit_name,
+                     i.days_to_expire
+                 FROM ingredient_purchases ip
+                          JOIN ingredients i ON ip.ingredient_id = i.id
+                          JOIN unit_measurement um ON i.id_unit_measurement = um.id
+                 WHERE ip.person_id = $1 AND ip.ingredient_id = $2
+                 ORDER BY ip.purchase_date ASC`,
+        [userId, ingredientId],
     );
 
     return result.rows;

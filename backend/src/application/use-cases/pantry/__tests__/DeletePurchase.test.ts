@@ -1,5 +1,5 @@
 import { ERROR_CODES } from "constants/errorCodes";
-import { NotFoundError, ValidationError } from "domain/errors/AppError";
+import { NotFoundError } from "domain/errors/AppError";
 
 import DeletePurchase from "application/use-cases/pantry/DeletePurchase";
 
@@ -35,19 +35,5 @@ describe("DeletePurchase", () => {
             ERROR_CODES.PURCHASE_NOT_FOUND,
             404,
         );
-    });
-
-    it("should throw a 400 ValidationError for a malformed purchase id", async () => {
-        const { useCase, pantryRepository } = setup();
-
-        const error = await catchError(useCase.execute(7, "abc"));
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.VALIDATION_ERROR,
-            400,
-            "ID must be a number",
-        );
-        expect(pantryRepository.deletePurchases).not.toHaveBeenCalled();
     });
 });

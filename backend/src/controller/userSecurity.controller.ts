@@ -11,7 +11,7 @@ import type RequestEmailVerification from "application/use-cases/users/RequestEm
 import type RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
 import type SignOutEverywhere from "application/use-cases/users/SignOutEverywhere";
 
-import { getUserId } from "controller/requestUser";
+import { getUserId } from "./requestUser";
 
 interface UserSecurityControllerDependencies {
     requestPasswordReset: RequestPasswordReset;
@@ -47,9 +47,7 @@ export default class UserSecurityController {
     }
 
     requestPasswordReset: RequestHandler = async (req, res) => {
-        await this.requestPasswordResetUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
+        await this.requestPasswordResetUseCase.execute(req.body);
 
         res.json({
             message: translateMessage(
@@ -60,9 +58,7 @@ export default class UserSecurityController {
     };
 
     confirmPasswordReset: RequestHandler = async (req, res) => {
-        await this.confirmPasswordResetUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
+        await this.confirmPasswordResetUseCase.execute(req.body);
 
         res.json({
             message: translateMessage("passwordReset", requestLocale(req)),
@@ -72,7 +68,7 @@ export default class UserSecurityController {
     changePassword: RequestHandler = async (req, res) => {
         const { token } = await this.changePasswordUseCase.execute(
             getUserId(req),
-            req.body as Record<string, unknown>,
+            req.body,
         );
 
         res.cookie(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
@@ -107,9 +103,7 @@ export default class UserSecurityController {
     };
 
     confirmEmailVerification: RequestHandler = async (req, res) => {
-        await this.confirmEmailVerificationUseCase.execute(
-            req.body as Record<string, unknown>,
-        );
+        await this.confirmEmailVerificationUseCase.execute(req.body);
 
         res.json({
             message: translateMessage("emailVerified", requestLocale(req)),

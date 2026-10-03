@@ -14,8 +14,7 @@ interface MenuImageProps {
     params: Promise<{ locale: string; id: string }>;
 }
 
-// declared for every menu: it runs without a request (as static params), so it cannot load one.
-// A menu with a cover photo still previews as that photo - the page's own images take precedence
+// runs without a request (as static params), so it loads nothing; a page photo still takes precedence
 export const generateImageMetadata = async ({
     params,
 }: {
@@ -49,9 +48,9 @@ const MenuSocialImage = async ({ params }: MenuImageProps) => {
         <SocialCard
             appName={tCommon("appName")}
             eyebrow={
-                menu.categoryname === null
+                menu.categoryName === null
                     ? null
-                    : menuCategoryName(tCommon, menu.categoryname)
+                    : menuCategoryName(tCommon, menu.categoryName)
             }
             title={menu.title}
             subtitle={tCommon("author.byline", {

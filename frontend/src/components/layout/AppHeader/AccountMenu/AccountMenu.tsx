@@ -35,6 +35,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
     const avatarProps = {
         initials: personInitials({ name, surname }),
         avatarKey: avatar,
@@ -48,11 +49,12 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
 
     const isHydrated = useIsHydrated();
 
-    usePopoverDismiss(containerRef, isOpen, closeMenu);
+    usePopoverDismiss(containerRef, isOpen, closeMenu, triggerRef);
 
     return (
         <div ref={containerRef} className={styles["account-menu"]}>
             <button
+                ref={triggerRef}
                 type="button"
                 onClick={() => {
                     setIsOpen((prev) => !prev);

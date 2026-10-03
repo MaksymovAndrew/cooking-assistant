@@ -6,10 +6,9 @@ import type {
     RatingTarget,
 } from "domain/repositories/RatingRepository";
 
-import { RATING_TABLES } from "infrastructure/persistence/pg/ratingTables";
+import { RATING_TABLES } from "./ratingTables";
 
-// the record's running totals are kept by a trigger on the vote tables (see the ratings migration),
-// so a vote here is a plain upsert or delete
+// a trigger on the vote tables keeps the record's running totals (see the ratings migration)
 export default class PgRatingRepository implements RatingRepository {
     constructor(private pool: Pool) {}
 
@@ -43,7 +42,6 @@ export default class PgRatingRepository implements RatingRepository {
         return result.rows[0].outcome;
     }
 
-    // removing a vote that isn't there - or one whose record is already gone - is a no-op
     async remove(
         personId: number,
         target: RatingTarget,

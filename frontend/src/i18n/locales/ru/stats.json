@@ -18,6 +18,7 @@
         "perRecipeCaption": "на рецепт",
         "recipeTypesHeading": "Рецепты по типам",
         "recipeTypesSubtitle": "Распределение {{count}} рецептов",
+        "untypedRecipesLabel": "Без типа",
         "avgTimeByTypeHeading": "Среднее время приготовления по типам",
         "avgTimeByTypeSubtitle": "В минутах",
         "menuCategoriesHeading": "Меню по категориям",
@@ -49,6 +50,7 @@
         "errorFetch": "Не удалось загрузить статистику",
         "emptyTitle": "Статистики пока нет",
         "emptyDescription": "Цифры появятся здесь, как только будут добавлены первые рецепты.",
-        "emptyAction": "Добавить рецепт"
+        "emptyAction": "Добавить рецепт",
+        "heading": "Статистика"
     }
 }

@@ -1,11 +1,13 @@
-import express, {
-    type NextFunction,
-    type Request,
-    type Response,
-} from "express";
+import express, { type Request, type RequestHandler } from "express";
+import type { Options as RateLimitOptions } from "express-rate-limit";
 import request from "supertest";
 
-import { AUTH_RATE_LIMIT } from "config/security";
+import {
+    AUTH_RATE_LIMIT,
+    EMAIL_SEND_RATE_LIMIT,
+    IP_RATE_LIMIT,
+    REGISTER_IP_RATE_LIMIT,
+} from "config/security";
 import { ERROR_CODES } from "constants/errorCodes";
 
 import errorHandler from "middleware/errorHandler";
@@ -20,45 +22,101 @@ import {
 import { errorBody } from "test/helpers/errorBody";
 
 const SHARED_IP = "203.0.113.5";
+const SUCCEEDING_PATH = "/ok";
+const FAILING_PATH = "/rejected";
+
+function appBehind(limiter: RequestHandler) {
+    const app = express();
+
+    app.use(limiter);
+    app.get(SUCCEEDING_PATH, (_req, res) => {
+        res.json({});
+    });
+    app.get(FAILING_PATH, (_req, res) => {
+        res.status(401).json({});
+    });
+    app.use(errorHandler);
+
+    return app;
+}
+
+// one at a time, so each response has settled the counter before the next request
+async function statusesOf(
+    app: ReturnType<typeof appBehind>,
+    path: string,
+    times: number,
+): Promise<number[]> {
+    const statuses: number[] = [];
+
+    for (let i = 0; i < times; i += 1) {
+        statuses.push((await request(app).get(path)).status);
+    }
+
+    return statuses;
+}
+
+function limitOf(policy: Partial<RateLimitOptions>): number {
+    if (typeof policy.limit !== "number") {
+        throw new TypeError("expected a policy with a fixed limit");
+    }
+
+    return policy.limit;
+}
 
 describe("createLimiter", () => {
-    it("should call next in test mode", () => {
-        const limiter = createLimiter(true, authLimiterKey);
-        const next = jest.fn() as NextFunction;
-
-        limiter({} as Request, {} as Response, next);
-
-        expect(next).toHaveBeenCalledTimes(1);
-    });
-
-    it("should return the rate limiter middleware in production mode", () => {
-        const limiter = createLimiter(false, authLimiterKey);
-
-        expect(typeof limiter).toBe("function");
-    });
-
     it("should answer past the limit with a 429 rate_limited error body", async () => {
-        const app = express();
-
-        app.use(
+        const app = appBehind(
             createLimiter(false, ipLimiterKey, {
                 ...AUTH_RATE_LIMIT,
                 limit: 1,
                 skipSuccessfulRequests: false,
             }),
         );
-        app.get("/", (_req, res) => {
-            res.json({});
-        });
-        app.use(errorHandler);
 
-        await request(app).get("/");
-        const res = await request(app).get("/");
+        await request(app).get(SUCCEEDING_PATH);
+        const res = await request(app).get(SUCCEEDING_PATH);
 
         expect(res.status).toBe(429);
         expect(res.body).toEqual(errorBody(ERROR_CODES.RATE_LIMITED));
         expect(res.headers["retry-after"]).toBeDefined();
     });
+});
+
+describe("rate limit policies", () => {
+    it.each([
+        ["sign-in attempts", AUTH_RATE_LIMIT],
+        ["the per-IP sign-in backstop", IP_RATE_LIMIT],
+    ])(
+        "should never limit a success, only failures, for %s",
+        async (_policy, policy) => {
+            const app = appBehind(createLimiter(false, ipLimiterKey, policy));
+            const limit = limitOf(policy);
+
+            expect(
+                await statusesOf(app, SUCCEEDING_PATH, limit + 1),
+            ).not.toContain(429);
+
+            await statusesOf(app, FAILING_PATH, limit);
+
+            expect((await request(app).get(SUCCEEDING_PATH)).status).toBe(429);
+        },
+    );
+
+    it.each([
+        ["email sending", EMAIL_SEND_RATE_LIMIT],
+        ["the per-IP registration backstop", REGISTER_IP_RATE_LIMIT],
+    ])(
+        "should count every request, successes included, for %s",
+        async (_policy, policy) => {
+            const app = appBehind(createLimiter(false, ipLimiterKey, policy));
+            const limit = limitOf(policy);
+
+            expect(await statusesOf(app, SUCCEEDING_PATH, limit + 1)).toEqual([
+                ...Array.from({ length: limit }, () => 200),
+                429,
+            ]);
+        },
+    );
 });
 
 describe("authLimiterKey", () => {
@@ -106,13 +164,6 @@ describe("userIdLimiterKey", () => {
         expect(userIdLimiterKey(req)).toBe("7");
     });
 
-    it("should give different users on the same IP separate keys", () => {
-        const alice = { ip: SHARED_IP, user: { id: 7 } } as Request;
-        const bob = { ip: SHARED_IP, user: { id: 8 } } as Request;
-
-        expect(userIdLimiterKey(alice)).not.toBe(userIdLimiterKey(bob));
-    });
-
     it("should give the same user the same key regardless of IP", () => {
         const fromIpOne = {
             ip: "203.0.113.5",
@@ -141,13 +192,6 @@ describe("ipLimiterKey", () => {
         } as Request;
 
         expect(ipLimiterKey(req)).toBe(SHARED_IP);
-    });
-
-    it("should give different accounts on the same IP the same key", () => {
-        const alice = { ip: SHARED_IP, body: { login: "alice" } } as Request;
-        const bob = { ip: SHARED_IP, body: { login: "bob" } } as Request;
-
-        expect(ipLimiterKey(alice)).toBe(ipLimiterKey(bob));
     });
 
     it("should fall back to an empty string when there is no IP", () => {

@@ -6,6 +6,7 @@ import type { FavouriteRepository } from "domain/repositories/FavouriteRepositor
 import type { IngredientRepository } from "domain/repositories/IngredientRepository";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
+import type { PantryConsumptionRepository } from "domain/repositories/PantryConsumptionRepository";
 import type { PantryRepository } from "domain/repositories/PantryRepository";
 import type { PhotoRepository } from "domain/repositories/PhotoRepository";
 import type { RatingRepository } from "domain/repositories/RatingRepository";
@@ -15,21 +16,24 @@ import type { ShoppingListRepository } from "domain/repositories/ShoppingListRep
 import type { TagRepository } from "domain/repositories/TagRepository";
 import type { UserRepository } from "domain/repositories/UserRepository";
 
+import type { DatabaseProbe } from "application/ports/DatabaseProbe";
 import type { EmailSender } from "application/ports/EmailSender";
 import type { ImageProcessor } from "application/ports/ImageProcessor";
 import type { MediaStorage } from "application/ports/MediaStorage";
 import type { PasswordHasher } from "application/ports/PasswordHasher";
 import type { TokenService } from "application/ports/TokenService";
 
-import { TEST_FRONTEND_ORIGIN } from "test/helpers/testConstants";
+import { TEST_FRONTEND_ORIGIN } from "./testConstants";
 
 export interface FakeRepositoryDeps extends RepositoryDeps {
+    databaseProbe: jest.Mocked<DatabaseProbe>;
     ingredientRepository: jest.Mocked<IngredientRepository>;
     recipeRepository: jest.Mocked<RecipeRepository>;
     recipeTypeRepository: jest.Mocked<RecipeTypeRepository>;
     menuRepository: jest.Mocked<MenuRepository>;
     menuCategoryRepository: jest.Mocked<MenuCategoryRepository>;
     pantryRepository: jest.Mocked<PantryRepository>;
+    pantryConsumptionRepository: jest.Mocked<PantryConsumptionRepository>;
     userRepository: jest.Mocked<UserRepository>;
     calorieRepository: jest.Mocked<CalorieRepository>;
     favouriteRepository: jest.Mocked<FavouriteRepository>;
@@ -55,7 +59,6 @@ function createIngredientRepository(): jest.Mocked<IngredientRepository> {
 function createRecipeRepository(): jest.Mocked<RecipeRepository> {
     return {
         create: jest.fn(),
-        findAllWithIngredients: jest.fn(),
         findByIdWithIngredients: jest.fn(),
         update: jest.fn(),
         deleteById: jest.fn(),
@@ -69,7 +72,7 @@ function createRecipeRepository(): jest.Mocked<RecipeRepository> {
 function createMenuRepository(): jest.Mocked<MenuRepository> {
     return {
         findAll: jest.fn(),
-        findAllUnpaginated: jest.fn(),
+        getStats: jest.fn(),
         create: jest.fn(),
         findByIdWithRecipes: jest.fn(),
         update: jest.fn(),
@@ -86,6 +89,14 @@ function createPantryRepository(): jest.Mocked<PantryRepository> {
         updatePurchaseQuantity: jest.fn(),
         deletePurchases: jest.fn(),
         findPurchaseHistory: jest.fn(),
+    };
+}
+
+function createPantryConsumptionRepository(): jest.Mocked<PantryConsumptionRepository> {
+    return {
+        findRequirements: jest.fn(),
+        cook: jest.fn(),
+        undo: jest.fn(),
     };
 }
 
@@ -185,7 +196,7 @@ function createTokenService(): jest.Mocked<TokenService> {
 
 function createEmailSender(): jest.Mocked<EmailSender> {
     return {
-        sendPasswordResetEmail: jest.fn(),
+        sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
         sendVerificationEmail: jest.fn(),
     };
 }
@@ -207,12 +218,20 @@ function createMediaStorage(): jest.Mocked<MediaStorage> {
 
 export function buildFakeDeps(): FakeRepositoryDeps {
     return {
+        databaseProbe: { isReachable: jest.fn().mockResolvedValue(true) },
         ingredientRepository: createIngredientRepository(),
         recipeRepository: createRecipeRepository(),
-        recipeTypeRepository: { findAll: jest.fn() },
+        recipeTypeRepository: {
+            findAll: jest.fn(),
+            exists: jest.fn().mockResolvedValue(true),
+        },
         menuRepository: createMenuRepository(),
-        menuCategoryRepository: { findAll: jest.fn() },
+        menuCategoryRepository: {
+            findAll: jest.fn(),
+            exists: jest.fn().mockResolvedValue(true),
+        },
         pantryRepository: createPantryRepository(),
+        pantryConsumptionRepository: createPantryConsumptionRepository(),
         userRepository: createUserRepository(),
         calorieRepository: createCalorieRepository(),
         favouriteRepository: createFavouriteRepository(),

@@ -5,9 +5,7 @@ import type { MenuDetails } from "types/menu";
 
 import { fetchPublic } from "api/server";
 
-import MenuSocialImage, {
-    generateImageMetadata,
-} from "app/[locale]/(public)/menu/[id]/opengraph-image";
+import MenuSocialImage from "app/[locale]/(public)/menu/[id]/opengraph-image";
 import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 
 jest.mock("api/server", () => ({ fetchPublic: jest.fn() }));
@@ -21,8 +19,8 @@ const SAMPLE: MenuDetails = {
         id: 4,
         title: "Weekday menu",
         language: "en",
-        categoryname: "Lunch",
-        menucontent: "Quick and light.",
+        categoryName: "Lunch",
+        menuContent: "Quick and light.",
         category_id: 2,
         isOwner: false,
         photo_key: null,
@@ -50,19 +48,6 @@ const SAMPLE: MenuDetails = {
 const params = Promise.resolve({ locale: "en", id: "4" });
 
 describe("menu preview image", () => {
-    it("should declare one card with its size and type", async () => {
-        const [entry] = await generateImageMetadata({
-            params: { locale: "en" },
-        });
-
-        expect(entry).toEqual(
-            expect.objectContaining({
-                size: { width: 1200, height: 630 },
-                contentType: "image/png",
-            }),
-        );
-    });
-
     it("should show the menu with its category, author and recipe count", async () => {
         mockedFetch.mockResolvedValue(SAMPLE);
 

@@ -1,19 +1,21 @@
 import { screen } from "@testing-library/react";
 
 import { menuDetailsPath } from "constants/routes";
-import type { MenuWithStats } from "types/menu";
-import type { MenuStatistics, MenuWithCalories } from "types/stats";
+import type {
+    MenuStatistics,
+    MenuStatsEntry,
+    MenuWithCalories,
+} from "types/stats";
 
 import { MenuStatsSection } from "components/stats/MenuStatsSection";
 
 import { renderWithRouter } from "test/router";
 
 const MENU_ID = 1;
-const MENU: MenuWithStats = {
+const MENU: MenuStatsEntry = {
     id: MENU_ID,
     title: "Sunday dinners",
-    categoryname: "Lunch",
-    menucontent: "",
+    categoryName: "Lunch",
     recipe_count: 4,
     total_cooking_time: 90,
     total_calories: 1200,
@@ -22,12 +24,12 @@ const CALORIE_MENU: MenuWithCalories = { ...MENU, total_calories: 1200 };
 
 const STATS: MenuStatistics = {
     menusCount: 3,
-    menuCountByCategory: [{ categoryname: "Lunch", menuCount: 2 }],
-    mostUsedCategory: { categoryname: "Lunch", menuCount: 2 },
+    menuCountByCategory: [{ categoryName: "Lunch", menuCount: 2 }],
+    mostUsedCategory: { categoryName: "Lunch", menuCount: 2 },
     averageTotalTime: 90,
     averageRecipesPerMenu: 4,
     averageTotalTimeByCategory: [
-        { categoryname: "Lunch", averageTotalTime: 90 },
+        { categoryName: "Lunch", averageTotalTime: 90 },
     ],
     fastestMenus: [MENU],
     slowestMenus: [MENU],
@@ -72,13 +74,7 @@ describe("MenuStatsSection", () => {
             />,
         );
 
-        expect(screen.getByText("Avg calories")).toBeInTheDocument();
-    });
-
-    it("should render the menu extremes", () => {
-        renderWithRouter(<MenuStatsSection stats={STATS} />);
-
-        expect(screen.getAllByText("Sunday dinners").length).toBeGreaterThan(0);
+        expect(screen.getByText("—")).toBeInTheDocument();
     });
 
     it("should link each extreme menu to its own detail page", () => {

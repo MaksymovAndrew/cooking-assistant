@@ -31,7 +31,12 @@ export const CookingTimeField: React.FC<CookingTimeFieldProps> = ({
     const { t } = useTranslation("recipes");
 
     return (
-        <FormField htmlFor={`${id}-hours`} label={label} error={error}>
+        <FormField
+            htmlFor={`${id}-hours`}
+            label={label}
+            error={error}
+            hint={error ? null : t("recipeForm.cookingTimeHint")}
+        >
             <div className={styles["cooking-time-field"]}>
                 <div className={styles["cooking-time-field__input"]}>
                     <NumberInput
@@ -68,11 +73,6 @@ export const CookingTimeField: React.FC<CookingTimeFieldProps> = ({
                     </span>
                 </div>
             </div>
-            {!error && (
-                <p className={styles["cooking-time-field__hint"]}>
-                    {t("recipeForm.cookingTimeHint")}
-                </p>
-            )}
         </FormField>
     );
 };

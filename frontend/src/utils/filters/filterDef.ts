@@ -1,8 +1,6 @@
 import type { TFunction } from "i18next";
 
-// method shorthand (not arrow-typed properties) is deliberate: it gives bivariant
-// parameter checking, which is what lets defs of different concrete TValue live
-// together in one array typed FilterDef<unknown, TParams> without an `as` cast
+// method shorthand on purpose: bivariant params let any TValue share a FilterDef<unknown> array
 export interface FilterDef<TValue, TParams> {
     key: string;
     defaultValue: TValue;

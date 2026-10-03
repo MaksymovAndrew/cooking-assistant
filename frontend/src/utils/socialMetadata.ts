@@ -26,7 +26,6 @@ interface SocialMetadataInput {
     image: SocialImage | null;
 }
 
-// a record's own photo, in the fixed-frame JPEG the server keeps for exactly this
 export const photoSocialImage = (
     photoKey: string | null,
     alt: string,
@@ -36,9 +35,7 @@ export const photoSocialImage = (
     return url ? { url, ...SOCIAL_IMAGE_SIZE, type: "image/jpeg", alt } : null;
 };
 
-// a route that sets its own openGraph replaces the parent's wholesale, so every page restates the
-// large card type. The images key is left out entirely without a photo: even an undefined one
-// overrides the route's generated card with nothing
+// openGraph replaces the parent's wholesale; images is omitted, as even undefined wipes the card
 export const socialMetadata = ({
     type,
     path,

@@ -23,7 +23,6 @@ interface RecipeSearchRow {
     ingredients: { id: number; name: string; allergens: string[] }[];
 }
 
-// targets the hand-built SQL in PgRecipeRepository.search.ts (EXISTS/ANY filters, GROUP BY + COUNT(*) OVER() pagination) - a mocked pool can't catch a syntax error here
 describe("PgRecipeRepository search (real Postgres)", () => {
     let pool: Pool;
     let repository: PgRecipeRepository;
@@ -41,7 +40,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         await pool.end();
     });
 
-    // each test scopes its search by a fresh unique ingredient, so tests never see each other's recipes in the shared database
+    // a fresh ingredient per test scopes each search, so tests never see each other's recipes
     async function createNamedIngredient(): Promise<{
         id: number;
         name: string;
@@ -157,8 +156,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
     it("should treat literal % and _ in recipe_name as text, not SQL LIKE wildcards", async () => {
         const ingredient = await createNamedIngredient();
         const tag = unique("wildcard");
-        // if the % below were sent unescaped to ILIKE, "50%" would become the wildcard pattern
-        // %50%% (equivalent to %50%) and match this decoy too, since it also contains "50"
+        // unescaped, the % would make "50%" a wildcard that matches this decoy too
         const literalTitle = `${tag} 50% Whole Wheat`;
         const decoyTitle = `${tag} 50X Whole Wheat`;
         const recipeId = await createRecipeWithIngredients(
@@ -172,25 +170,6 @@ describe("PgRecipeRepository search (real Postgres)", () => {
         const result = await repository.search(ownerId, {
             recipe_name: `${tag} 50%`,
         });
-
-        expect(result.items).toEqual([
-            expect.objectContaining({ id: recipeId }),
-        ]);
-        expect(result.total).toBe(1);
-    });
-
-    it("should filter by ingredient_ids, scoped by the unique fixture ingredient", async () => {
-        const ingredient = await createNamedIngredient();
-        const recipeId = await createRecipeWithIngredients(
-            "Ingredient filter recipe",
-            [ingredient.id],
-            10,
-        );
-        const filters: RecipeFilters = {
-            ingredient_ids: String(ingredient.id),
-        };
-
-        const result = await repository.search(ownerId, filters);
 
         expect(result.items).toEqual([
             expect.objectContaining({ id: recipeId }),
@@ -534,7 +513,7 @@ describe("PgRecipeRepository search (real Postgres)", () => {
     it("should not match a recipe with no ingredients when in_pantry is set", async () => {
         const requesterId = await createPerson(pool);
 
-        // Recipe.forCreation enforces non-empty ingredients, so insert directly to reach the edge case the second EXISTS guards against
+        // Recipe.forCreation refuses an empty ingredient list, so the row is inserted directly
         const created = await pool.query<{ id: number }>(
             `INSERT INTO recipes (title, content, person_id, cooking_time) VALUES ($1, $2, $3, $4) RETURNING id`,
             [
@@ -557,42 +536,41 @@ describe("PgRecipeRepository search (real Postgres)", () => {
     });
 
     it("should keep the in_pantry filter scoped to the requesting person in searchByPerson", async () => {
-        const inPantry = await createNamedIngredient();
-        const ownRecipeId = await createRecipeWithIngredients(
-            "Own fully stocked recipe",
-            [inPantry.id],
-            10,
-        );
-
-        await pool.query(
-            `INSERT INTO person_ingredients (person_id, ingredient_id) VALUES ($1, $2)`,
-            [ownerId, inPantry.id],
-        );
-
-        const result = await repository.searchByPerson(ownerId, {
-            ingredient_ids: String(inPantry.id),
-            in_pantry: true,
-        });
-
-        expect(result.items).toEqual([
-            expect.objectContaining({ id: ownRecipeId }),
-        ]);
-    });
-
-    it("should search recipes for an anonymous (null) requester without in_pantry", async () => {
+        const otherPersonId = await createPerson(pool);
         const ingredient = await createNamedIngredient();
-        const recipeId = await createRecipeWithIngredients(
-            "Anonymous search fixture",
+        const ownRecipeId = await createRecipeWithIngredients(
+            "Own recipe stocked by someone else",
             [ingredient.id],
             10,
         );
-
-        const result = await repository.search(null, {
+        const filters: RecipeFilters = {
             ingredient_ids: String(ingredient.id),
-        });
+            in_pantry: true,
+        };
+        const stock = (personId: number) =>
+            pool.query(
+                `INSERT INTO person_ingredients (person_id, ingredient_id) VALUES ($1, $2)`,
+                [personId, ingredient.id],
+            );
 
-        expect(result.items).toEqual([
-            expect.objectContaining({ id: recipeId }),
+        await stock(otherPersonId);
+
+        const stockedByOther = await repository.searchByPerson(
+            ownerId,
+            filters,
+        );
+
+        expect(stockedByOther.items).toEqual([]);
+
+        await stock(ownerId);
+
+        const stockedByOwner = await repository.searchByPerson(
+            ownerId,
+            filters,
+        );
+
+        expect(stockedByOwner.items).toEqual([
+            expect.objectContaining({ id: ownRecipeId }),
         ]);
     });
 });

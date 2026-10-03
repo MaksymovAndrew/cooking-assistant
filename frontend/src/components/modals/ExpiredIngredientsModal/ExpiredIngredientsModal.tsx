@@ -13,6 +13,8 @@ import { BaseModal } from "components/modals/BaseModal";
 import { Button } from "components/ui/Button";
 import { LinkButton } from "components/ui/LinkButton";
 
+import { sumBy } from "utils/sum";
+
 import { ExpiredIngredientsList } from "./ExpiredIngredientsList";
 import styles from "./ExpiredIngredientsModal.module.scss";
 
@@ -32,10 +34,7 @@ export const ExpiredIngredientsModal = ({
     const actions = useExpiredIngredientsActions(modalId, ingredients);
 
     const handleClose = () => dispatch(closeModal(modalId));
-    const lotCount = ingredients.reduce(
-        (total, ingredient) => total + ingredient.lots.length,
-        0,
-    );
+    const lotCount = sumBy(ingredients, (ingredient) => ingredient.lots.length);
 
     return (
         <BaseModal

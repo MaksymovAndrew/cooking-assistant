@@ -3,11 +3,9 @@
 .profile-tabs {
     display: flex;
     flex-wrap: nowrap;
-    gap: 4px;
+    gap: var(--s-1);
     margin-bottom: var(--s-5);
     overflow-x: auto;
-
-    // the row still swipes on narrow phones, just without a visible bar
     scrollbar-width: none;
 
     &::-webkit-scrollbar {
@@ -38,7 +36,7 @@
 
         &--on {
             background: var(--brand-subtle);
-            color: var(--brand);
+            color: var(--brand-text);
         }
     }
 

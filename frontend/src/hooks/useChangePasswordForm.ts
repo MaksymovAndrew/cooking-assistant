@@ -6,7 +6,7 @@ import { ERROR_CODES } from "constants/errorCodes";
 
 import { useChangePasswordMutation } from "redux/services/accountSecurityApi";
 
-import { isValidPassword } from "utils/authValidation";
+import { isPasswordTooLong, isValidPassword } from "utils/authValidation";
 import { getQueryErrorCode } from "utils/queryError";
 
 function getChangePasswordErrorMessage(error: unknown, t: TFunction): string {
@@ -40,6 +40,11 @@ export const useChangePasswordForm = (onSuccess: () => void) => {
 
         if (hasEmptyField) {
             setError(t("changePasswordModal.errors.allFieldsRequired"));
+
+            return;
+        }
+        if (isPasswordTooLong(newPassword)) {
+            setError(t("changePasswordModal.errors.passwordTooLong"));
 
             return;
         }

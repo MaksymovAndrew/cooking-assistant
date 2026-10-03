@@ -1,6 +1,10 @@
+import { ERROR_CODES } from "constants/errorCodes";
 import { DEFAULT_LOCALE } from "constants/locales";
+import { ValidationError } from "domain/errors/AppError";
 
 import UpdateLocale from "application/use-cases/users/UpdateLocale";
+
+import { catchError } from "test/helpers/assertions";
 
 const USER_ID = 5;
 
@@ -21,13 +25,20 @@ describe("UpdateLocale", () => {
         );
     });
 
-    it("should throw a validation error for a language the server has no copy for", async () => {
+    it("should throw a 400 ValidationError for a language the server has no copy for", async () => {
         const deps = makeDeps();
         const useCase = new UpdateLocale(deps.userRepository);
 
-        await expect(
+        const error = await catchError(
             useCase.execute(USER_ID, { locale: "fr" }),
-        ).rejects.toThrow();
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "locale: Must be one of: en, pl, ru, uk",
+        );
         expect(deps.userRepository.updateLocale).not.toHaveBeenCalled();
     });
 });

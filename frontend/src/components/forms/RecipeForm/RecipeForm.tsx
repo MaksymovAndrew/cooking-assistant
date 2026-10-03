@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
+import type { FormPageKey } from "types/formPage";
 import type { Ingredient } from "types/ingredient";
 import type { RecipeTypeSummary } from "types/recipeType";
 
@@ -18,13 +19,11 @@ import styles from "./RecipeForm.module.scss";
 import { RecipeFormFields } from "./RecipeFormFields";
 import { RecipeFormIngredientsCard } from "./RecipeFormIngredientsCard";
 
-type RecipePageKey = "createRecipePage" | "changeRecipePage";
-
 interface RecipeFormProps {
     form: ReturnType<typeof useRecipeForm>;
     allIngredients: Ingredient[];
     allTypes: RecipeTypeSummary[];
-    keyPrefix: RecipePageKey;
+    keyPrefix: FormPageKey<"Recipe">;
     idPrefix: string;
     submitLabel: string;
     onSubmit: () => void;
@@ -42,8 +41,8 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
     onSubmit,
 }) => {
     const { t } = useTranslation("recipes");
-    // catches every way out of a dirty form (Cancel, navbar, breadcrumb, back)
     const blocker = useUnsavedChangesBlocker(form.isDirty, form.isDirtyRef);
+    const { attachForm } = form;
 
     const totalMinutes =
         (Number(form.cookingHours) || 0) * MINUTES_PER_HOUR +
@@ -52,7 +51,7 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
         splitCookingTime(totalMinutes);
 
     return (
-        <form className={styles["recipe-form"]}>
+        <form ref={attachForm} className={styles["recipe-form"]}>
             <div className={styles["recipe-form__grid"]}>
                 <div className={styles["recipe-form__column"]}>
                     <RecipeFormFields

@@ -7,7 +7,6 @@ interface ExtremeRecord {
     title: string;
 }
 
-// the top few records of one extreme, each row linking to the record it describes
 export const extremeItems = <T extends ExtremeRecord>(
     records: T[],
     value: (record: T) => string,

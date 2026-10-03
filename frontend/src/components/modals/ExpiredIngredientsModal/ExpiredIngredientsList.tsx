@@ -15,7 +15,6 @@ interface ExpiredIngredientsListProps {
     ingredients: ExpiredPantryIngredient[];
 }
 
-// one group per ingredient, one row per expired purchase of it
 export const ExpiredIngredientsList = ({
     ingredients,
 }: ExpiredIngredientsListProps) => {

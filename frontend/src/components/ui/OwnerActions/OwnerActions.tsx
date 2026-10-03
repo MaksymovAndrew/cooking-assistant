@@ -1,14 +1,14 @@
-import { Flame } from "lucide-react";
+import { ChefHat, Flame } from "lucide-react";
 import React from "react";
 
 import type { FavouriteToggle } from "hooks/useFavouriteToggle";
-import { useIsHydrated } from "hooks/useIsHydrated";
 
 import { EditMark, TrashMark } from "components/icons";
 import { FavouriteButton } from "components/ui/FavouriteButton";
 import { LinkButton } from "components/ui/LinkButton";
 import { ShareButton } from "components/ui/ShareButton";
 
+import { OwnerActionButton } from "./OwnerActionButton";
 import styles from "./OwnerActions.module.scss";
 
 interface OwnerActionsProps {
@@ -21,6 +21,8 @@ interface OwnerActionsProps {
     shareTitle: string;
     onLogIntake?: () => void;
     logIntakeLabel?: string;
+    onCook?: () => void;
+    cookLabel?: string;
 }
 
 const ICON_SIZE = 16;
@@ -34,55 +36,47 @@ export const OwnerActions: React.FC<OwnerActionsProps> = ({
     favouriteLabel,
     shareTitle,
     onLogIntake,
-    logIntakeLabel,
-}) => {
-    // these buttons are on screen from the server render; until React hydrates their handlers
-    // do not exist, so a press would be silently swallowed
-    const isHydrated = useIsHydrated();
-
-    return (
-        <div className={styles["owner-actions"]}>
-            <LinkButton href={editTo} className={styles["owner-actions__edit"]}>
-                <EditMark size={ICON_SIZE} />
-                {editLabel}
-            </LinkButton>
-            <FavouriteButton
-                favourite={favourite}
-                label={favouriteLabel}
-                iconSize={ICON_SIZE}
-                className={styles["owner-actions__favourite"]}
-            >
-                <span className={styles["owner-actions__label"]}>
-                    {favouriteLabel}
-                </span>
-            </FavouriteButton>
-            {onLogIntake && (
-                <button
-                    type="button"
-                    onClick={onLogIntake}
-                    disabled={!isHydrated}
-                    aria-label={logIntakeLabel}
-                    className={styles["owner-actions__log-intake"]}
-                >
-                    <Flame size={ICON_SIZE} aria-hidden="true" />
-                    <span className={styles["owner-actions__label"]}>
-                        {logIntakeLabel}
-                    </span>
-                </button>
-            )}
-            <ShareButton title={shareTitle} iconSize={ICON_SIZE} />
-            <button
-                type="button"
-                onClick={onDelete}
-                disabled={!isHydrated}
-                aria-label={deleteLabel}
-                className={styles["owner-actions__delete"]}
-            >
-                <TrashMark size={ICON_SIZE} />
-                <span className={styles["owner-actions__label"]}>
-                    {deleteLabel}
-                </span>
-            </button>
-        </div>
-    );
-};
+    logIntakeLabel = "",
+    onCook,
+    cookLabel = "",
+}) => (
+    <div className={styles["owner-actions"]}>
+        <LinkButton href={editTo} className={styles["owner-actions__edit"]}>
+            <EditMark size={ICON_SIZE} />
+            {editLabel}
+        </LinkButton>
+        <FavouriteButton
+            favourite={favourite}
+            label={favouriteLabel}
+            iconSize={ICON_SIZE}
+            className={styles["owner-actions__favourite"]}
+        >
+            <span className={styles["owner-actions__label"]}>
+                {favouriteLabel}
+            </span>
+        </FavouriteButton>
+        {onCook && (
+            <OwnerActionButton
+                icon={<ChefHat size={ICON_SIZE} aria-hidden="true" />}
+                label={cookLabel}
+                onClick={onCook}
+                className={styles["owner-actions__accent"]}
+            />
+        )}
+        {onLogIntake && (
+            <OwnerActionButton
+                icon={<Flame size={ICON_SIZE} aria-hidden="true" />}
+                label={logIntakeLabel}
+                onClick={onLogIntake}
+                className={styles["owner-actions__accent"]}
+            />
+        )}
+        <ShareButton title={shareTitle} iconSize={ICON_SIZE} />
+        <OwnerActionButton
+            icon={<TrashMark size={ICON_SIZE} />}
+            label={deleteLabel}
+            onClick={onDelete}
+            className={styles["owner-actions__delete"]}
+        />
+    </div>
+);

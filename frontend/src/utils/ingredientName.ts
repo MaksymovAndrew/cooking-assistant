@@ -1,12 +1,11 @@
 import type { TFunction } from "i18next";
 
-interface ResolvableIngredient {
+export interface ResolvableIngredient {
     slug: string;
     name: string;
 }
 
-// t comes from the component's own instance, never the global one: on the server that is this
-// request's language. The DB name is the defaultValue so a missing catalog translation still renders something
+// t is the component's own, never the global one (the request's language); the DB name is the fallback
 export const resolveIngredientName = (
     t: TFunction,
     { slug, name }: ResolvableIngredient,

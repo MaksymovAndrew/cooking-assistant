@@ -13,8 +13,7 @@ import { NumberInput } from "components/ui/NumberInput";
 import styles from "./ProfileDietaryTab.module.scss";
 
 interface CalorieGoalCardProps {
-    // owned by ProfileDietaryTab: this card changes place in the tree when the goal
-    // loads, so state kept here would be lost together with anything already typed
+    // lifted to the parent: this card moves in the tree once the goal loads, losing its state
     form: ReturnType<typeof useCalorieGoalForm>;
     hasGoal: boolean;
     justSaved: boolean;

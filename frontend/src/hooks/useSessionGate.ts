@@ -12,7 +12,6 @@ interface SessionGate {
     isGuest: boolean;
 }
 
-// shared checking/authed/guest state machine behind HomeRoute and PrivateRoute's own outcomes
 export const useSessionGate = (): SessionGate => {
     useGetMeQuery(null);
 

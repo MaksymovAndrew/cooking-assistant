@@ -24,7 +24,6 @@ export interface RecipeFormErrors {
     cookingTimeError: string | null;
 }
 
-// a whole number of hours and minutes, not zero overall - the message says which rule failed
 export const cookingTimeError = (
     hours: string,
     minutes: string,

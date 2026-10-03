@@ -12,7 +12,6 @@
         margin: 0 0 var(--s-3);
     }
 
-    // wraps to one button per row once a translated label no longer fits beside the other
     &__actions {
         display: flex;
         flex-wrap: wrap;

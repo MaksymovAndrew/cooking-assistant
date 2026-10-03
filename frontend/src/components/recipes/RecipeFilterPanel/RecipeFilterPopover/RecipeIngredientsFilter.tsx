@@ -26,8 +26,6 @@ export const RecipeIngredientsFilter: React.FC<
     const { t } = useTranslation("recipes");
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // excludes already-selected ingredients from the search itself, same reasoning as
-    // RecipePicker/IngredientPicker - so a picked ingredient can't show up again in its own results
     const selectableIngredients = useMemo(
         () =>
             allIngredients.filter(
@@ -35,10 +33,7 @@ export const RecipeIngredientsFilter: React.FC<
             ),
         [allIngredients, selectedIds],
     );
-    // same ranked search (starts-with, then contains, then category match) as the
-    // ingredient picker on the recipe form - category browsing is unused here on purpose,
-    // so nothing renders until a query is typed. unlike that picker, this list scrolls,
-    // so every match renders instead of hard-capping at a handful
+    // uncapped: unlike the recipe form's picker, this list scrolls
     const { query, setQuery, trimmedQuery, visibleIngredients } =
         useCategorizedIngredients({
             ingredients: selectableIngredients,
@@ -80,17 +75,22 @@ export const RecipeIngredientsFilter: React.FC<
                 <div
                     className={styles["recipe-filter-panel__ingredients-chips"]}
                 >
-                    {selectedIngredients.map((ingredient) => (
-                        <Chip
-                            key={ingredient.id}
-                            removable
-                            onRemove={() => {
-                                handleRemove(ingredient.id);
-                            }}
-                        >
-                            {resolveIngredientName(t, ingredient)}
-                        </Chip>
-                    ))}
+                    {selectedIngredients.map((ingredient) => {
+                        const name = resolveIngredientName(t, ingredient);
+
+                        return (
+                            <Chip
+                                key={ingredient.id}
+                                removable
+                                name={name}
+                                onRemove={() => {
+                                    handleRemove(ingredient.id);
+                                }}
+                            >
+                                {name}
+                            </Chip>
+                        );
+                    })}
                 </div>
             )}
         </FilterSection>

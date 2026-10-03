@@ -20,6 +20,73 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 5.0 - 2026-10-03
+
+### Frontend
+
+- Added: a "Cooked it" button on recipe and menu pages. It shows what will come out of your pantry for the portions you pick - what is used up and what you don't have - and can log the calories at the same time.
+- Added: the confirmation after cooking has an "Undo" button that puts everything back.
+- Added: a "Skip to content" link that jumps past the header and navigation, on the sign-in pages too; a dialog keeps a screen reader inside it while open and hands the focus back to where you were when it closes; a form that fails to save moves you to the first field to fix.
+- Added: every field is read out together with its hint and its error, remove buttons say what they remove, the calorie history bars say their day and amount, and the account menu works with the arrow keys.
+- Added: up and down buttons reorder the recipes in a menu and the ingredients in a recipe without dragging, and keep the focus on the item as it moves - on the shopping list too.
+- Added: screen readers announce the page you are on in the header and tab-bar navigation.
+- Added: the app can be installed to your home screen, and the browser bar follows the light or dark theme.
+- Changed: stronger text contrast in both themes.
+- Changed: the home page shows a visitor without an account its recipes and menus straight away, instead of loading them after the page opens.
+- Changed: recipe and menu pages load a photo the size your screen needs, so a phone downloads far less.
+- Changed: the menu form's recipe search looks through every recipe on the server, with "Show more recipes" for the rest, instead of downloading them all and showing only the first eight matches.
+- Changed: the statistics page gets its menu numbers from the server instead of downloading every menu to count them, so it opens faster.
+- Fixed: the "Log intake" button no longer shows on a menu whose recipes don't all have calories - logging it was always refused.
+- Fixed: a clear message when the recipe type or menu category you picked has been removed in the meantime, or when what you send is too large.
+- Fixed: the calorie history names the days in the app's language, and no longer shows them a day off west of UTC.
+- Fixed: a purchase quantity that failed to save no longer looks saved - the old amount comes back.
+- Fixed: opening the edit page of a recipe or menu that is gone or belongs to someone else says so, instead of showing an empty form.
+- Fixed: menu pages update after a change to your pantry, to one of their recipes or to your profile.
+- Fixed: a menu whose recipes were all deleted by their authors explains what happened instead of looking empty.
+- Fixed: the pantry, profile and settings pages show that they are loading, or that loading failed, instead of flashing "nothing here".
+- Fixed: a visitor without an account gets a link home on the "page not found" page, and a verification link that no longer works sends them to sign in rather than to Settings.
+- Fixed: a password longer than 72 bytes - 72 Latin letters, or 36 Cyrillic ones - is caught in the form instead of being refused by the server.
+- Fixed: an unexpected crash shows a proper error page with a "Try again" button, in your language.
+- Fixed: search engines no longer index the password-reset and email-verification pages, and every sign-in page has its own title and description.
+- Fixed: recipe tags no longer disappear when an earlier save fails after a later one.
+- Fixed: screen readers read the missing-ingredients badge on a menu page as "2 missing ingredients" rather than a bare "2".
+- Fixed: the statistics page counts recipes without a type as "No type", so the chart's total matches the recipe count, and the names in its lists show in full or on two lines instead of a few letters.
+- Fixed: the 7-day calorie history fits every day on a phone screen.
+- Fixed: on a phone, the ingredients of a recipe and the recipes of a menu being edited keep their names readable, the quantity field fits "0,125", and a menu page and the reset-password page have a proper heading.
+- Fixed: the "Scroll to top" button no longer covers the last button on a page, a recipe's rating shows on a phone, and Settings show the account email on a phone.
+- Fixed: opening the filters moves the focus into them, the phone filter sheet dims the page behind it, and the pantry toolbar no longer jumps when the add-ingredient window opens.
+- Fixed: the page-not-found screen opens in your theme straight away.
+
+### Backend
+
+- Changed: when something you send is not valid, the message says which field and why in your language (English, Polish, Russian or Ukrainian), instead of always in English.
+- Fixed: a request with a missing body, an id too large for the database, a title longer than its column or a recipe type or menu category that does not exist is refused with a clear 400 instead of a server error.
+- Fixed: the "to" date of the recipe date filter now includes that whole day.
+- Fixed: a login containing "@" can no longer be registered - signing in would have treated it as an email and never found the account.
+- Fixed: passwords longer than 72 bytes are refused, since only the first 72 ever counted.
+- Fixed: lists sort names alphabetically in every language - capitalised names, Polish letters and Cyrillic no longer land out of order.
+- Fixed: a recipe deleted by its author leaves the menus that held it cleanly, and a menu can no longer list the same recipe twice.
+- Fixed: a recipe without a cooking time no longer tops the slowest recipes in the statistics, and a recipe type with no timed recipe no longer shows a 0-minute average.
+- Changed: the health check also asks the database, so a backend that cannot reach it reports itself unhealthy.
+- Changed: the session cookie set at sign-in is no longer written to the logs, every request carries an id for following it through the logs, and the connection pool has limits and timeouts.
+- Changed: requesting a password reset answers in the same time whether or not the address has an account.
+- Added: "Cooked it" - cooking a recipe or a menu takes its ingredients, times the portions, out of the pantry in one go, oldest purchases first. What the pantry does not have is skipped and reported, and the calories can be logged at the same time.
+- Added: a cooking can be undone within ten minutes - every product comes back with its original purchase date, and the logged calories go away with it.
+- Added: menu statistics are counted on the server, and recipe and menu statistics each take a single database query.
+- Removed: the two lists that sent every recipe or every menu at once; recipes and menus always come a page at a time now.
+
+### Project
+
+- Changed: all dependencies brought up to their latest minor and patch releases (Next.js 16.3.8, Redux Toolkit 2.13, sharp 0.35.5, pg 8.23.1 and the tooling around them); TypeScript 7 and ESLint 10 stay on hold until the lint plugins support them.
+- Changed: CI runs each side's checks as one matrix job, lints and type-checks the end-to-end suite too, tests against PostgreSQL 18 like production, caches the browser and the Next.js build, and pins every action to a commit.
+- Fixed: a commit marked to skip checks no longer skips CI when it changes application code.
+- Fixed: re-deploying or rolling back an older release from the Actions tab now rebuilds that release's own code instead of the current branch, and no longer moves the `latest` image back.
+- Added: after a deploy the server checks the site and the API through the proxy, as a visitor reaches them, and rolls back if either fails; a rollback now waits until the restored release is healthy and says so.
+- Added: production stack traces point at the source files, Postgres gets enough shared memory for parallel queries, and every container's logs are capped so they cannot fill the disk.
+- Added: the nightly backup script is now kept in the repository, and the server report shows the age of the latest photo archive.
+- Fixed: the backup and status scripts no longer hand the app's secrets to the throwaway database containers they start.
+- Fixed: the pre-commit hook handles route folders such as `[locale]` and `(public)` on macOS and Linux, and checks frontend coverage like CI does.
+
 ## 4.9.2 - 2026-10-01
 
 ### Backend

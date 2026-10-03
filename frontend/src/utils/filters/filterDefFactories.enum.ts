@@ -47,7 +47,7 @@ interface EnumListFilterConfig<T extends string, TParams> {
     chipLabel?: (value: T[], t: TFunction) => string;
 }
 
-// a multi-pick of known values; anything else in the URL is dropped rather than sent for the backend to reject
+// unknown values in the URL are dropped rather than sent for the backend to reject
 export function enumListFilter<T extends string, TParams>({
     key,
     urlParam,

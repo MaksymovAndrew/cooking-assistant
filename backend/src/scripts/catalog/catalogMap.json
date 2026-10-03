@@ -351,9 +351,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "celery"
-        ],
+        "allergens": ["celery"],
         "unitGrams": 450,
         "nutritionMatch": "Celery, raw"
     },
@@ -365,9 +363,7 @@
         "daysToExpire": 30,
         "seasonality": "Autumn, Winter",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "celery"
-        ],
+        "allergens": ["celery"],
         "unitGrams": 400,
         "nutritionMatch": "Celeriac, raw"
     },
@@ -3118,9 +3114,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, salmon, Atlantic, farmed, raw"
     },
     {
@@ -3131,9 +3125,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, trout, rainbow, farmed, raw"
     },
     {
@@ -3144,9 +3136,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, tuna, fresh, bluefin, raw"
     },
     {
@@ -3157,9 +3147,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, cod, Atlantic, raw"
     },
     {
@@ -3170,9 +3158,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, haddock, raw"
     },
     {
@@ -3183,9 +3169,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, halibut, Atlantic and Pacific, raw"
     },
     {
@@ -3196,9 +3180,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "unitGrams": 250,
         "nutritionMatch": "Fish, mackerel, Atlantic, raw"
     },
@@ -3210,9 +3192,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "unitGrams": 150,
         "nutritionMatch": "Fish, herring, Atlantic, raw"
     },
@@ -3224,9 +3204,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "unitGrams": 40,
         "nutritionMatch": "Fish, sardine, Atlantic, canned in oil, drained solids with bone"
     },
@@ -3238,9 +3216,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "unitGrams": 4,
         "nutritionMatch": "Fish, anchovy, european, canned in oil, drained solids"
     },
@@ -3252,9 +3228,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, bass, striped, raw"
     },
     {
@@ -3265,9 +3239,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "unitGrams": 350,
         "nutritionMatch": "Fish, snapper, mixed species, raw"
     },
@@ -3279,9 +3251,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, pike, northern, raw"
     },
     {
@@ -3292,9 +3262,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, perch, mixed species, raw"
     },
     {
@@ -3305,9 +3273,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, catfish, channel, wild, raw"
     },
     {
@@ -3318,9 +3284,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, carp, raw"
     },
     {
@@ -3331,9 +3295,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, flatfish (flounder and sole species), raw"
     },
     {
@@ -3344,9 +3306,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, swordfish, raw"
     },
     {
@@ -3357,9 +3317,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, eel, mixed species, raw"
     },
     {
@@ -3370,9 +3328,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, salmon, chinook, smoked, (lox), regular"
     },
     {
@@ -3383,9 +3339,7 @@
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, cod, Atlantic, dried and salted"
     },
     {
@@ -3396,9 +3350,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, roe, mixed species, raw"
     },
     {
@@ -3409,9 +3361,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, roe, mixed species, raw"
     },
     {
@@ -3422,9 +3372,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, tilapia, raw"
     },
     {
@@ -3435,9 +3383,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, mahimahi, raw"
     },
     {
@@ -3448,9 +3394,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, monkfish, raw"
     },
     {
@@ -3461,9 +3405,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, pollock, Atlantic, raw"
     },
     {
@@ -3474,9 +3416,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, snapper, mixed species, raw"
     },
     {
@@ -3487,9 +3427,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, grouper, mixed species, raw"
     },
     {
@@ -3500,9 +3438,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, tilefish, raw"
     },
     {
@@ -3513,9 +3449,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, mullet, striped, raw"
     },
     {
@@ -3526,9 +3460,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, whitefish, mixed species, raw"
     },
     {
@@ -3539,9 +3471,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, sablefish, raw"
     },
     {
@@ -3552,9 +3482,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, bluefish, raw"
     },
     {
@@ -3565,9 +3493,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, shark, mixed species, raw"
     },
     {
@@ -3578,9 +3504,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, sturgeon, mixed species, raw"
     },
     {
@@ -3591,9 +3515,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, smelt, rainbow, raw"
     },
     {
@@ -3604,9 +3526,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, tuna, fresh, bluefin, raw"
     },
     {
@@ -3617,9 +3537,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, salmon, pink, raw"
     },
     {
@@ -3630,9 +3548,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, salmon, sockeye, raw"
     },
     {
@@ -3643,9 +3559,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, flatfish (flounder and sole species), raw"
     },
     {
@@ -3656,9 +3570,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, trout, rainbow, farmed, raw"
     },
     {
@@ -3669,9 +3581,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, pompano, florida, raw"
     },
     {
@@ -3682,9 +3592,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Fish, croaker, atlantic, raw"
     },
     {
@@ -3695,9 +3603,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "nutritionMatch": "Crustaceans, shrimp, mixed species, raw"
     },
     {
@@ -3708,9 +3614,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "unitGrams": 20,
         "nutritionMatch": "Crustaceans, shrimp, mixed species, raw"
     },
@@ -3722,9 +3626,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "nutritionMatch": "Crustaceans, crab, blue, raw"
     },
     {
@@ -3735,9 +3637,7 @@
         "daysToExpire": 1,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "unitGrams": 500,
         "nutritionMatch": "Crustaceans, spiny lobster, mixed species, raw"
     },
@@ -3749,9 +3649,7 @@
         "daysToExpire": 1,
         "seasonality": "Summer",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "nutritionMatch": "Crustaceans, crayfish, mixed species, wild, raw"
     },
     {
@@ -3762,9 +3660,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, mussel, blue, raw"
     },
     {
@@ -3775,9 +3671,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, clam, mixed species, raw"
     },
     {
@@ -3788,9 +3682,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "unitGrams": 50,
         "nutritionMatch": "Mollusks, oyster, eastern, wild, raw"
     },
@@ -3802,9 +3694,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, scallop, mixed species, raw"
     },
     {
@@ -3815,9 +3705,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, squid, mixed species, raw"
     },
     {
@@ -3828,9 +3716,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, octopus, common, raw"
     },
     {
@@ -3841,9 +3727,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, snail, raw"
     },
     {
@@ -3887,9 +3771,7 @@
         "daysToExpire": 1,
         "seasonality": "Spring, Summer",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "nutritionMatch": "Crustaceans, crayfish, mixed species, wild, raw"
     },
     {
@@ -3900,9 +3782,7 @@
         "daysToExpire": 1,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "unitGrams": 30,
         "nutritionMatch": "Crustaceans, spiny lobster, mixed species, raw"
     },
@@ -3914,9 +3794,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "nutritionMatch": "Crustaceans, crab, alaska king, raw"
     },
     {
@@ -3927,9 +3805,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "nutritionMatch": "Crustaceans, crab, queen, raw"
     },
     {
@@ -3940,9 +3816,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, clam, mixed species, raw"
     },
     {
@@ -3953,9 +3827,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, abalone, mixed species, raw"
     },
     {
@@ -3966,9 +3838,7 @@
         "daysToExpire": 1,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ]
+        "allergens": ["molluscs"]
     },
     {
         "slug": "cockles",
@@ -3978,9 +3848,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, clam, mixed species, raw"
     },
     {
@@ -3991,9 +3859,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ],
+        "allergens": ["molluscs"],
         "nutritionMatch": "Mollusks, clam, mixed species, raw"
     },
     {
@@ -4026,9 +3892,7 @@
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Milk, whole, 3.25% milkfat, without added vitamin A and vitamin D"
     },
     {
@@ -4039,9 +3903,7 @@
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Milk, nonfat, fluid, without added vitamin A and vitamin D (fat free or skim)"
     },
     {
@@ -4052,9 +3914,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Milk, buttermilk, fluid, whole"
     },
     {
@@ -4065,9 +3925,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cream, fluid, heavy whipping"
     },
     {
@@ -4078,9 +3936,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cream, fluid, light (coffee cream or table cream)"
     },
     {
@@ -4091,9 +3947,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cream, sour, cultured"
     },
     {
@@ -4104,9 +3958,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Sour cream, reduced fat, cultured"
     },
     {
@@ -4117,9 +3969,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Yogurt, plain, whole milk"
     },
     {
@@ -4130,9 +3980,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Yogurt, Greek, plain, whole milk"
     },
     {
@@ -4143,9 +3991,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Kefir, lowfat, plain, LIFEWAY"
     },
     {
@@ -4156,9 +4002,7 @@
         "daysToExpire": 60,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Butter, salted"
     },
     {
@@ -4169,9 +4013,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Butter, clarified butter"
     },
     {
@@ -4182,9 +4024,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Milk, canned, condensed, sweetened"
     },
     {
@@ -4195,9 +4035,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Milk, canned, evaporated, with added vitamin A"
     },
     {
@@ -4208,9 +4046,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Milk, dry, whole, without added vitamin D"
     },
     {
@@ -4221,9 +4057,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cream, whipped, cream topping, pressurized"
     },
     {
@@ -4256,9 +4090,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Beverages, almond milk, unsweetened, shelf stable"
     },
     {
@@ -4269,9 +4101,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ]
+        "allergens": ["gluten"]
     },
     {
         "slug": "soy_milk",
@@ -4281,9 +4111,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "nutritionMatch": "Soymilk, original and vanilla, unfortified"
     },
     {
@@ -4294,9 +4122,7 @@
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Milk, reduced fat, fluid, 2% milkfat, without added vitamin A and vitamin D"
     },
     {
@@ -4307,9 +4133,7 @@
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cream, fluid, heavy whipping"
     },
     {
@@ -4320,9 +4144,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, cottage, creamed, large or small curd"
     },
     {
@@ -4333,9 +4155,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Yogurt, Greek, plain, nonfat"
     },
     {
@@ -4346,9 +4166,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Yogurt, Greek, plain, whole milk"
     },
     {
@@ -4359,9 +4177,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cream, fluid, heavy whipping"
     },
     {
@@ -4383,9 +4199,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "nuts"
-        ]
+        "allergens": ["nuts"]
     },
     {
         "slug": "half_and_half",
@@ -4395,9 +4209,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cream, fluid, half and half"
     },
     {
@@ -4408,9 +4220,7 @@
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Yogurt, plain, whole milk"
     },
     {
@@ -4421,9 +4231,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "unitGrams": 50,
         "nutritionMatch": "Egg, whole, raw, fresh"
     },
@@ -4435,9 +4243,7 @@
         "daysToExpire": 4,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "nutritionMatch": "Egg, white, raw, fresh"
     },
     {
@@ -4448,9 +4254,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "unitGrams": 17,
         "nutritionMatch": "Egg, yolk, raw, fresh"
     },
@@ -4462,9 +4266,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "unitGrams": 9,
         "nutritionMatch": "Egg, quail, whole, fresh, raw"
     },
@@ -4476,9 +4278,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "unitGrams": 70,
         "nutritionMatch": "Egg, duck, whole, fresh, raw"
     },
@@ -4490,9 +4290,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "unitGrams": 144,
         "nutritionMatch": "Egg, goose, whole, fresh, raw"
     },
@@ -4504,9 +4302,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "unitGrams": 79,
         "nutritionMatch": "Egg, turkey, whole, fresh, raw"
     },
@@ -4518,9 +4314,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, cheddar"
     },
     {
@@ -4531,9 +4325,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, mozzarella, whole milk"
     },
     {
@@ -4544,9 +4336,7 @@
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, parmesan, grated"
     },
     {
@@ -4557,9 +4347,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, feta"
     },
     {
@@ -4570,9 +4358,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, gouda"
     },
     {
@@ -4583,9 +4369,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, brie"
     },
     {
@@ -4596,9 +4380,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, camembert"
     },
     {
@@ -4609,9 +4391,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, blue"
     },
     {
@@ -4622,9 +4402,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, gorgonzola"
     },
     {
@@ -4635,9 +4413,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, ricotta, whole milk"
     },
     {
@@ -4648,9 +4424,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, cottage, creamed, large or small curd"
     },
     {
@@ -4661,9 +4435,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, cream"
     },
     {
@@ -4674,9 +4446,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, mascarpone"
     },
     {
@@ -4687,9 +4457,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, swiss"
     },
     {
@@ -4700,9 +4468,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, provolone"
     },
     {
@@ -4713,9 +4479,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, feta"
     },
     {
@@ -4726,9 +4490,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, mozzarella, whole milk"
     },
     {
@@ -4739,9 +4501,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, goat, soft type"
     },
     {
@@ -4752,9 +4512,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, colby"
     },
     {
@@ -4765,9 +4523,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, monterey"
     },
     {
@@ -4778,9 +4534,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, muenster"
     },
     {
@@ -4791,9 +4545,7 @@
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, romano"
     },
     {
@@ -4804,9 +4556,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, roquefort"
     },
     {
@@ -4817,9 +4567,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, edam"
     },
     {
@@ -4830,9 +4578,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, fontina"
     },
     {
@@ -4843,9 +4589,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, gruyere"
     },
     {
@@ -4856,9 +4600,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, neufchatel"
     },
     {
@@ -4869,9 +4611,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, tilsit"
     },
     {
@@ -4882,9 +4622,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, american, restaurant"
     },
     {
@@ -4895,9 +4633,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, queso fresco"
     },
     {
@@ -4908,9 +4644,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, queso blanco"
     },
     {
@@ -4921,9 +4655,7 @@
         "daysToExpire": 60,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, asiago"
     },
     {
@@ -4934,9 +4666,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ]
+        "allergens": ["milk"]
     },
     {
         "slug": "cheese_manchego",
@@ -4946,9 +4676,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ]
+        "allergens": ["milk"]
     },
     {
         "slug": "cheese_emmental",
@@ -4958,9 +4686,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, swiss"
     },
     {
@@ -4971,9 +4697,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ]
+        "allergens": ["milk"]
     },
     {
         "slug": "cheese_pepper_jack",
@@ -4983,9 +4707,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, monterey"
     },
     {
@@ -4996,9 +4718,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, gouda"
     },
     {
@@ -5009,9 +4729,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, mozzarella, whole milk"
     },
     {
@@ -5022,9 +4740,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, blue"
     },
     {
@@ -5035,9 +4751,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ]
+        "allergens": ["milk"]
     },
     {
         "slug": "cheese_string",
@@ -5047,9 +4761,7 @@
         "daysToExpire": 21,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "unitGrams": 28,
         "nutritionMatch": "Cheese, mozzarella, low moisture, part-skim"
     },
@@ -5061,9 +4773,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Cheese, cheshire"
     },
     {
@@ -5140,9 +4850,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Oats"
     },
     {
@@ -5153,9 +4861,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Barley, pearled, raw"
     },
     {
@@ -5166,9 +4872,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Bulgur, dry"
     },
     {
@@ -5179,9 +4883,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Couscous, dry"
     },
     {
@@ -5214,9 +4916,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Semolina, enriched"
     },
     {
@@ -5337,9 +5037,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "nutritionMatch": "Soybeans, mature seeds, raw"
     },
     {
@@ -5350,9 +5048,7 @@
         "daysToExpire": 270,
         "seasonality": "All seasons",
         "storageCondition": "-18°C",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "nutritionMatch": "Soybeans, green, raw"
     },
     {
@@ -5363,9 +5059,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "nutritionMatch": "Tofu, raw, regular, prepared with calcium sulfate"
     },
     {
@@ -5376,9 +5070,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "soybeans"
-        ],
+        "allergens": ["soybeans"],
         "nutritionMatch": "Tempeh"
     },
     {
@@ -5399,9 +5091,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Spelt, uncooked"
     },
     {
@@ -5434,9 +5124,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ]
+        "allergens": ["gluten"]
     },
     {
         "slug": "sorghum_grain",
@@ -5567,9 +5255,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5580,9 +5266,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5593,9 +5277,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5606,9 +5288,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5619,9 +5299,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5632,9 +5310,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5645,9 +5321,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5658,10 +5332,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten",
-            "eggs"
-        ],
+        "allergens": ["gluten", "eggs"],
         "nutritionMatch": "Noodles, egg, dry, unenriched"
     },
     {
@@ -5683,9 +5354,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Noodles, japanese, soba, dry"
     },
     {
@@ -5696,9 +5365,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Noodles, japanese, somen, dry"
     },
     {
@@ -5709,11 +5376,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten",
-            "eggs",
-            "milk"
-        ],
+        "allergens": ["gluten", "eggs", "milk"],
         "nutritionMatch": "Ravioli, cheese-filled, canned"
     },
     {
@@ -5724,9 +5387,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5737,9 +5398,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5750,9 +5409,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5763,9 +5420,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5776,11 +5431,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten",
-            "eggs",
-            "milk"
-        ],
+        "allergens": ["gluten", "eggs", "milk"],
         "nutritionMatch": "Ravioli, cheese-filled, canned"
     },
     {
@@ -5791,9 +5442,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5804,9 +5453,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5817,9 +5464,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5830,9 +5475,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5843,9 +5486,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5856,9 +5497,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Pasta, dry, unenriched"
     },
     {
@@ -5869,9 +5508,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Wheat flour, white, all-purpose, enriched, unbleached"
     },
     {
@@ -5882,9 +5519,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Wheat flour, whole-grain"
     },
     {
@@ -5895,9 +5530,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Wheat flour, white, bread, enriched"
     },
     {
@@ -5908,9 +5541,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Wheat flour, white, cake, enriched"
     },
     {
@@ -5921,9 +5552,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Rye flour, dark"
     },
     {
@@ -5956,9 +5585,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, almond flour, blanched"
     },
     {
@@ -6013,9 +5640,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Bread crumbs, dry, grated, plain"
     },
     {
@@ -6026,9 +5651,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Bread crumbs, dry, grated, plain"
     },
     {
@@ -6039,9 +5662,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 30,
         "nutritionMatch": "Bread, white, commercially prepared"
     },
@@ -6053,9 +5674,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 30,
         "nutritionMatch": "Bread, whole-wheat, commercially prepared"
     },
@@ -6067,9 +5686,7 @@
         "daysToExpire": 2,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 250,
         "nutritionMatch": "Bread, french or vienna (includes sourdough)"
     },
@@ -6081,9 +5698,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 60,
         "nutritionMatch": "Bread, pita, white, enriched"
     },
@@ -6095,9 +5710,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 45,
         "nutritionMatch": "Tortillas, ready-to-bake or -fry, flour, refrigerated"
     },
@@ -6121,10 +5734,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten",
-            "milk"
-        ],
+        "allergens": ["gluten", "milk"],
         "nutritionMatch": "Puff pastry, frozen, ready-to-bake"
     },
     {
@@ -6135,9 +5745,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Phyllo dough"
     },
     {
@@ -6148,9 +5756,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ]
+        "allergens": ["gluten"]
     },
     {
         "slug": "flour_spelt",
@@ -6160,9 +5766,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Spelt, uncooked"
     },
     {
@@ -6204,9 +5808,7 @@
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 32,
         "nutritionMatch": "Bread, rye"
     },
@@ -6218,9 +5820,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 35,
         "nutritionMatch": "Bread, french or vienna (includes sourdough)"
     },
@@ -6232,9 +5832,7 @@
         "daysToExpire": 3,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 120,
         "nutritionMatch": "Bread, french or vienna (includes sourdough)"
     },
@@ -6246,9 +5844,7 @@
         "daysToExpire": 7,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 57,
         "nutritionMatch": "English muffins, plain, unenriched, with calcium propionate (includes sourdough)"
     },
@@ -6260,9 +5856,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 95,
         "nutritionMatch": "Bagels, plain, enriched, with calcium propionate (includes onion, poppy, sesame)"
     },
@@ -6274,9 +5868,7 @@
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Snacks, pretzels, hard, plain, salted"
     },
     {
@@ -6287,10 +5879,7 @@
         "daysToExpire": 3,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten",
-            "milk"
-        ],
+        "allergens": ["gluten", "milk"],
         "unitGrams": 57,
         "nutritionMatch": "Croissants, butter"
     },
@@ -6302,9 +5891,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 90,
         "nutritionMatch": "Bread, pita, white, enriched"
     },
@@ -6316,9 +5903,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, almonds"
     },
     {
@@ -6329,9 +5914,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, walnuts, english"
     },
     {
@@ -6342,9 +5925,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, pecans"
     },
     {
@@ -6355,9 +5936,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, cashew nuts, raw"
     },
     {
@@ -6368,9 +5947,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, pistachio nuts, raw"
     },
     {
@@ -6381,9 +5958,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, hazelnuts or filberts"
     },
     {
@@ -6394,9 +5969,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "peanuts"
-        ],
+        "allergens": ["peanuts"],
         "nutritionMatch": "Peanuts, all types, raw"
     },
     {
@@ -6407,9 +5980,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "peanuts"
-        ],
+        "allergens": ["peanuts"],
         "nutritionMatch": "Peanut butter, smooth style, without salt"
     },
     {
@@ -6420,9 +5991,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, brazilnuts, dried, unblanched"
     },
     {
@@ -6433,9 +6002,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, macadamia nuts, raw"
     },
     {
@@ -6446,9 +6013,7 @@
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, pine nuts, dried"
     },
     {
@@ -6459,9 +6024,7 @@
         "daysToExpire": 30,
         "seasonality": "Autumn",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, chestnuts, european, raw"
     },
     {
@@ -6494,9 +6057,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "sesame"
-        ],
+        "allergens": ["sesame"],
         "nutritionMatch": "Seeds, sesame seeds, whole, dried"
     },
     {
@@ -6540,9 +6101,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "sesame"
-        ],
+        "allergens": ["sesame"],
         "nutritionMatch": "Seeds, sesame butter, tahini"
     },
     {
@@ -6553,9 +6112,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, almond butter, plain, without salt added"
     },
     {
@@ -6566,9 +6123,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, cashew butter, plain, without salt added"
     },
     {
@@ -6590,9 +6145,7 @@
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Nuts, pecans"
     },
     {
@@ -6614,10 +6167,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "nuts",
-            "peanuts"
-        ],
+        "allergens": ["nuts", "peanuts"],
         "nutritionMatch": "Nuts, mixed nuts, dry roasted, with peanuts, without salt added"
     },
     {
@@ -6683,9 +6233,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dark place, room temperature",
-        "allergens": [
-            "sesame"
-        ],
+        "allergens": ["sesame"],
         "nutritionMatch": "Oil, sesame, salad or cooking"
     },
     {
@@ -6696,9 +6244,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dark place, room temperature",
-        "allergens": [
-            "peanuts"
-        ],
+        "allergens": ["peanuts"],
         "nutritionMatch": "Oil, peanut, salad or cooking"
     },
     {
@@ -6775,9 +6321,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "nuts"
-        ],
+        "allergens": ["nuts"],
         "nutritionMatch": "Oil, walnut"
     },
     {
@@ -7085,9 +6629,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "celery"
-        ],
+        "allergens": ["celery"],
         "unitGrams": 10,
         "nutritionMatch": "Soup, bouillon cubes and granules, low sodium, dry"
     },
@@ -7153,9 +6695,7 @@
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "mustard"
-        ],
+        "allergens": ["mustard"],
         "nutritionMatch": "Spices, mustard seed, ground"
     },
     {
@@ -7381,9 +6921,7 @@
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "celery"
-        ],
+        "allergens": ["celery"],
         "nutritionMatch": "Spices, celery seed"
     },
     {
@@ -7458,10 +6996,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "soybeans",
-            "gluten"
-        ],
+        "allergens": ["soybeans", "gluten"],
         "nutritionMatch": "Soy sauce made from soy and wheat (shoyu)"
     },
     {
@@ -7472,9 +7007,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Sauce, fish, ready-to-serve"
     },
     {
@@ -7485,9 +7018,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "molluscs"
-        ]
+        "allergens": ["molluscs"]
     },
     {
         "slug": "worcestershire_sauce",
@@ -7497,9 +7028,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "nutritionMatch": "Sauce, worcestershire"
     },
     {
@@ -7532,9 +7061,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "mustard"
-        ],
+        "allergens": ["mustard"],
         "nutritionMatch": "Mustard, prepared, yellow"
     },
     {
@@ -7545,9 +7072,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "mustard"
-        ],
+        "allergens": ["mustard"],
         "nutritionMatch": "Mustard, prepared, yellow"
     },
     {
@@ -7558,9 +7083,7 @@
         "daysToExpire": 60,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "nutritionMatch": "Salad dressing, mayonnaise, regular"
     },
     {
@@ -7582,10 +7105,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "soybeans",
-            "gluten"
-        ],
+        "allergens": ["soybeans", "gluten"],
         "nutritionMatch": "Sauce, hoisin, ready-to-serve"
     },
     {
@@ -7618,10 +7138,7 @@
         "daysToExpire": 10,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "nuts",
-            "milk"
-        ],
+        "allergens": ["nuts", "milk"],
         "nutritionMatch": "Sauce, pesto, ready-to-serve, refrigerated"
     },
     {
@@ -7632,9 +7149,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "sesame"
-        ],
+        "allergens": ["sesame"],
         "nutritionMatch": "Seeds, sesame butter, tahini, from roasted and toasted kernels (most common type)"
     },
     {
@@ -7667,9 +7182,7 @@
         "daysToExpire": 1825,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Vinegar, balsamic"
     },
     {
@@ -7691,9 +7204,7 @@
         "daysToExpire": 1825,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Vinegar, red wine"
     },
     {
@@ -7715,10 +7226,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "soybeans",
-            "gluten"
-        ],
+        "allergens": ["soybeans", "gluten"],
         "nutritionMatch": "Sauce, teriyaki, ready-to-serve"
     },
     {
@@ -7729,10 +7237,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk",
-            "eggs"
-        ],
+        "allergens": ["milk", "eggs"],
         "nutritionMatch": "Salad dressing, ranch dressing, regular"
     },
     {
@@ -7754,9 +7259,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "nutritionMatch": "Salad dressing, thousand island, commercial, regular"
     },
     {
@@ -7767,10 +7270,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs",
-            "fish"
-        ],
+        "allergens": ["eggs", "fish"],
         "nutritionMatch": "Salad dressing, caesar dressing, regular"
     },
     {
@@ -7803,9 +7303,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "eggs"
-        ],
+        "allergens": ["eggs"],
         "nutritionMatch": "Salad dressing, mayonnaise, regular"
     },
     {
@@ -7838,9 +7336,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Vinegar, balsamic"
     },
     {
@@ -7851,9 +7347,7 @@
         "daysToExpire": 1825,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Vinegar, red wine"
     },
     {
@@ -7905,9 +7399,7 @@
         "daysToExpire": 90,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "mustard"
-        ],
+        "allergens": ["mustard"],
         "nutritionMatch": "Mustard, prepared, yellow"
     },
     {
@@ -8016,10 +7508,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "milk",
-            "soybeans"
-        ],
+        "allergens": ["milk", "soybeans"],
         "nutritionMatch": "Candies, chocolate, dark, NFS (45-59% cacao solids 90%; 60-69% cacao solids 5%; 70-85% cacao solids 5%)"
     },
     {
@@ -8030,10 +7519,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "milk",
-            "soybeans"
-        ],
+        "allergens": ["milk", "soybeans"],
         "nutritionMatch": "Candies, milk chocolate"
     },
     {
@@ -8044,10 +7530,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "milk",
-            "soybeans"
-        ],
+        "allergens": ["milk", "soybeans"],
         "nutritionMatch": "Candies, semisweet chocolate"
     },
     {
@@ -8178,9 +7661,7 @@
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "unitGrams": 140,
         "nutritionMatch": "Fish, tuna, light, canned in water, drained solids"
     },
@@ -8300,9 +7781,7 @@
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "unitGrams": 120,
         "nutritionMatch": "Fish, sardine, Atlantic, canned in oil, drained solids with bone"
     },
@@ -8314,9 +7793,7 @@
         "daysToExpire": 1095,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "fish"
-        ],
+        "allergens": ["fish"],
         "unitGrams": 50,
         "nutritionMatch": "Fish, anchovy, european, canned in oil, drained solids"
     },
@@ -8447,9 +7924,7 @@
         "daysToExpire": 730,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "crustaceans"
-        ],
+        "allergens": ["crustaceans"],
         "unitGrams": 170,
         "nutritionMatch": "Crustaceans, crab, blue, raw"
     },
@@ -8572,9 +8047,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Alcoholic beverage, wine, table, red"
     },
     {
@@ -8585,9 +8058,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Alcoholic beverage, wine, table, white"
     },
     {
@@ -8598,9 +8069,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "nutritionMatch": "Alcoholic beverage, beer, regular, all"
     },
     {
@@ -8611,9 +8080,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Alcoholic beverage, wine, dessert, sherry"
     },
     {
@@ -8723,9 +8190,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Alcoholic beverage, wine, table, all"
     },
     {
@@ -8736,9 +8201,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "sulphites"
-        ],
+        "allergens": ["sulphites"],
         "nutritionMatch": "Alcoholic beverage, wine, dessert, sweet"
     },
     {
@@ -8793,9 +8256,7 @@
         "daysToExpire": 365,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "milk"
-        ],
+        "allergens": ["milk"],
         "nutritionMatch": "Beverages, chocolate-flavor beverage mix, powder"
     },
     {
@@ -8868,9 +8329,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ]
+        "allergens": ["gluten"]
     },
     {
         "slug": "potato_starch",
@@ -8900,9 +8359,7 @@
         "daysToExpire": 30,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "milk"
-        ]
+        "allergens": ["milk"]
     },
     {
         "slug": "kvass",
@@ -8912,9 +8369,7 @@
         "daysToExpire": 14,
         "seasonality": "All seasons",
         "storageCondition": "+4 - +8°C",
-        "allergens": [
-            "gluten"
-        ]
+        "allergens": ["gluten"]
     },
     {
         "slug": "lingonberry",
@@ -8954,9 +8409,7 @@
         "daysToExpire": 5,
         "seasonality": "All seasons",
         "storageCondition": "Room temperature",
-        "allergens": [
-            "gluten"
-        ],
+        "allergens": ["gluten"],
         "unitGrams": 60
     },
     {
@@ -8967,10 +8420,7 @@
         "daysToExpire": 180,
         "seasonality": "All seasons",
         "storageCondition": "Dry place, room temperature",
-        "allergens": [
-            "gluten",
-            "eggs"
-        ],
+        "allergens": ["gluten", "eggs"],
         "unitGrams": 8
     }
 ]

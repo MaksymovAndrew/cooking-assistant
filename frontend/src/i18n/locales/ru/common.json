@@ -20,7 +20,8 @@
         "loading": "Сохраняем…"
     },
     "chip": {
-        "remove": "Убрать"
+        "remove": "Убрать «{{name}}»",
+        "quantity": "Количество: {{name}}"
     },
     "passwordInput": {
         "show": "Показать пароль",
@@ -67,7 +68,10 @@
         "logout": "Выйти",
         "login": "Войти",
         "register": "Регистрация",
-        "scrollToTop": "Наверх"
+        "scrollToTop": "Наверх",
+        "skipToContent": "Перейти к содержимому",
+        "mainLabel": "Основная",
+        "tabBarLabel": "Панель вкладок"
     },
     "theme": {
         "toggleLabel": "Сменить тему"
@@ -82,6 +86,7 @@
         "backToRecipes": "К рецептам",
         "recipes": "Рецепты",
         "pantry": "Продукты",
+        "home": "Главная",
         "menus": "Меню"
     },
     "errors": {
@@ -89,6 +94,7 @@
     },
     "apiErrors": {
         "bad_request": "Не удалось обработать запрос. Попробуйте ещё раз.",
+        "payload_too_large": "Слишком много данных за раз. Попробуйте текст покороче.",
         "not_found": "Не нашли то, что вы искали.",
         "server_error": "У нас что-то сломалось. Попробуйте чуть позже.",
         "validation_error": "Некоторые данные введены неверно.",
@@ -104,16 +110,18 @@
         "auth/new_password_same_as_current": "Новый пароль должен отличаться от текущего.",
         "recipe/not_found": "Такого рецепта нет или его удалили.",
         "recipe/ingredients_empty": "Добавьте хотя бы один ингредиент.",
-        "recipe/ingredients_missing_id": "Выберите каждый ингредиент из списка.",
         "recipe/ingredients_not_exist": "Одного или нескольких ингредиентов больше нет.",
-        "recipe/title_content_empty": "Добавьте название и описание.",
         "recipe/in_pantry_requires_login": "Войдите, чтобы подбирать рецепты по своим продуктам.",
+        "recipe/type_not_exist": "Такого типа рецепта больше нет. Выберите другой.",
         "menu/not_found": "Такого меню нет или его удалили.",
         "menu/insufficient_data_create": "Добавьте название, категорию и хотя бы один рецепт.",
         "menu/insufficient_data_update": "Добавьте название, категорию и хотя бы один рецепт.",
         "menu/recipes_not_exist": "Одного или нескольких рецептов больше нет.",
+        "menu/category_not_exist": "Такой категории меню больше нет. Выберите другую.",
         "pantry/ingredient_not_found": "Этого продукта нет в ваших запасах.",
         "pantry/purchase_not_found": "Этой покупки больше нет.",
+        "pantry/consumption_not_found": "Эту готовку уже отменили, или её больше нет.",
+        "pantry/undo_expired": "Отменить уже нельзя - продукты остаются списанными.",
         "calories/intake_not_found": "Этой записи больше нет.",
         "calories/not_available": "Для этого блюда калорийность неизвестна.",
         "favourites/requires_login": "Войдите, чтобы увидеть избранное.",
@@ -135,6 +143,7 @@
     },
     "errorState": {
         "title": "Что-то пошло не так",
+        "loadFailed": "Не удалось загрузить. Проверьте подключение и попробуйте ещё раз.",
         "retry": "Попробовать снова"
     },
     "notifications": {
@@ -151,7 +160,14 @@
         "profileUpdated": "Профиль обновлён",
         "accountDeleted": "Аккаунт удалён",
         "calorieIntakeDeleted": "Запись удалена",
-        "intakeLogged": "Добавлено в сегодняшний дневник"
+        "intakeLogged": "Добавлено в сегодняшний дневник",
+        "cooked_one": "Готово! Из запасов списан {{count}} продукт",
+        "cooked_few": "Готово! Из запасов списано {{count}} продукта",
+        "cooked_many": "Готово! Из запасов списано {{count}} продуктов",
+        "cooked_other": "Готово! Из запасов списано {{count}} продукта",
+        "cookedNothing": "Готово! Ничего из этого не было в запасах",
+        "undo": "Отменить",
+        "cookingUndone": "Отменено - всё вернулось в запасы"
     },
     "timeAgo": {
         "justNow": "Только что",
@@ -309,5 +325,12 @@
         "filterChip_few": "{{count}} языка",
         "filterChip_many": "{{count}} языков",
         "filterChip_other": "{{count}} языка"
+    },
+    "contentSkeleton": {
+        "loading": "Загрузка…"
+    },
+    "moveButtons": {
+        "up": "Поднять «{{name}}» выше",
+        "down": "Опустить «{{name}}» ниже"
     }
 }

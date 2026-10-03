@@ -58,6 +58,7 @@
         "noHistory": "Brak historii zakupów.",
         "closeButton": "Zamknij",
         "editButton": "Zmień ilość",
+        "quantityLabel": "Ilość: {{name}}, kupione {{date}}",
         "deleteButton": "Usuń zakup"
     },
     "restockModal": {
@@ -79,5 +80,19 @@
         "discardButton": "Wyrzuć przeterminowane",
         "addToListButton": "Dodaj do listy zakupów",
         "discarded": "Przeterminowane zakupy wyrzucone"
+    },
+    "cookedItModal": {
+        "title": "Ugotowane",
+        "intro": "Te produkty zejdą ze spiżarni, zaczynając od najstarszych zakupów.",
+        "portions": "Porcje",
+        "fewerPortions": "Mniej porcji",
+        "morePortions": "Więcej porcji",
+        "notInPantry": "Brak w spiżarni - pominięte",
+        "partial": "Zostało tylko {{amount}} - zużyjemy wszystko",
+        "nothingToDeduct": "Nie ma tu niczego do zdjęcia ze spiżarni.",
+        "logCalories": "Zapisz też kalorie w dzienniku",
+        "loadingPantry": "Sprawdzamy spiżarnię…",
+        "cancel": "Anuluj",
+        "confirm": "Ugotowane"
     }
 }

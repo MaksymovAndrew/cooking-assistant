@@ -22,8 +22,6 @@ interface FlaggedRow {
     isFavourite: boolean | null;
 }
 
-// targets the idempotent insert, the per-viewer isFavourite flag, the favourites filter and the CASCADE
-// foreign keys - hand-written delete transactions would break silently without them
 describe("PgFavouriteRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgFavouriteRepository;
@@ -74,7 +72,7 @@ describe("PgFavouriteRepository (real Postgres)", () => {
             recipeIds: [recipeId],
         });
 
-        return (await menuRepository.create(menu, [recipeId])) as number;
+        return await menuRepository.create(menu, [recipeId]);
     }
 
     async function countFavourites(

@@ -5,7 +5,7 @@ import { getLatestReleaseDate, getNewsItems } from "utils/newsItems";
 
 const STORAGE_KEY = "cooking.newsLastSeen";
 
-// showing every historical entry as "unseen" would be noisy, so a fresh account defaults to just before the latest release, marking only that one new
+// a fresh account sees only the latest release as new, not the whole history
 const getDefaultLastSeenDate = (t: TFunction): string => {
     const latestReleaseDate = getLatestReleaseDate(t);
 

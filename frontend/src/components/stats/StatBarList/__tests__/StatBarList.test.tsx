@@ -19,22 +19,31 @@ describe("StatBarList", () => {
         expect(screen.getByText("00:10")).toBeInTheDocument();
     });
 
-    it("should apply the given color to each bar's fill", () => {
+    it("should size each bar against the largest value", () => {
         render(
             <StatBarList
                 items={[
-                    {
-                        label: "Soup",
-                        value: 20,
-                        displayValue: "00:20",
-                        color: "#7E60BF",
-                    },
+                    { label: "Soup", value: 20, displayValue: "00:20" },
+                    { label: "Salad", value: 10, displayValue: "00:10" },
                 ]}
             />,
         );
 
+        const [soup, salad] = screen.getAllByTestId("stat-bar-fill");
+
+        expect(soup).toHaveStyle({ width: "100%" });
+        expect(salad).toHaveStyle({ width: "50%" });
+    });
+
+    it("should leave every bar empty, not broken, when all values are zero", () => {
+        render(
+            <StatBarList
+                items={[{ label: "Soup", value: 0, displayValue: "00:00" }]}
+            />,
+        );
+
         expect(screen.getByTestId("stat-bar-fill")).toHaveStyle({
-            backgroundColor: "#7E60BF",
+            width: "0%",
         });
     });
 });

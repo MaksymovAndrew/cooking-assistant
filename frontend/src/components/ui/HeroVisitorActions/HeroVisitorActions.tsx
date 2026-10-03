@@ -1,4 +1,4 @@
-import { Flame, Sparkles } from "lucide-react";
+import { ChefHat, Flame, Sparkles } from "lucide-react";
 import React from "react";
 
 import { ROUTES } from "constants/routes";
@@ -15,19 +15,19 @@ import { rememberLoginRedirect } from "utils/loginRedirect";
 import styles from "./HeroVisitorActions.module.scss";
 
 interface HeroVisitorActionsProps {
-    // null for an anonymous viewer - the caller reads it off the server-rendered record, not the client
-    // session, so the page never flashes the guest CTA at someone who is signed in
+    // null for a guest; read off the server-rendered record, not the session, so the CTA never flashes
     favourite: FavouriteToggle | null;
     favouriteLabel: string;
     shareTitle: string;
     guestCtaLabel: string;
     logIntakeLabel: string;
     onLogIntake?: () => void;
+    cookLabel?: string;
+    onCook?: () => void;
 }
 
 const ICON_SIZE = 20;
 
-// non-owner branch of RecipeHero/MenuHero's action row; copy is caller-provided to stay domain-agnostic
 export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
     favourite,
     favouriteLabel,
@@ -35,6 +35,8 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
     guestCtaLabel,
     logIntakeLabel,
     onLogIntake,
+    cookLabel,
+    onCook,
 }) => {
     if (favourite === null) {
         return (
@@ -43,7 +45,7 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
                     href={ROUTES.login}
                     onClick={rememberLoginRedirect}
                     variant="secondary"
-                    className={styles["hero-visitor-actions__log-intake"]}
+                    className={styles["hero-visitor-actions__wide"]}
                 >
                     <Sparkles size={ICON_SIZE} aria-hidden="true" />
                     {guestCtaLabel}
@@ -63,10 +65,20 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
             >
                 {favouriteLabel}
             </FavouriteButton>
+            {onCook && (
+                <Button
+                    variant="secondary"
+                    className={styles["hero-visitor-actions__wide"]}
+                    onClick={onCook}
+                >
+                    <ChefHat size={ICON_SIZE} aria-hidden="true" />
+                    {cookLabel}
+                </Button>
+            )}
             {onLogIntake && (
                 <Button
                     variant="secondary"
-                    className={styles["hero-visitor-actions__log-intake"]}
+                    className={styles["hero-visitor-actions__wide"]}
                     onClick={onLogIntake}
                 >
                     <Flame size={ICON_SIZE} aria-hidden="true" />

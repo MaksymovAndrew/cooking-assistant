@@ -45,8 +45,7 @@ export const shoppingListApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: [SHOPPING_LIST],
         }),
-        // optimistic: the box ticks on press and unticks if the request fails. The refetch that follows either way
-        // replaces anything a list refetch overlapping the request brought back from before it
+        // the refetch after the write replaces whatever an overlapping refetch brought back from before it
         setShoppingListItemChecked: build.mutation<
             ShoppingListItem,
             UpdateShoppingListItemRequest

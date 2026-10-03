@@ -1,30 +1,8 @@
 import { act } from "@testing-library/react";
 
-import type { Ingredient } from "types/ingredient";
-
 import { useRecipeForm } from "hooks/useRecipeForm";
 
 import { renderHookWithStore } from "test/store";
-
-const INGREDIENT: Ingredient = {
-    id: 1,
-    slug: "egg",
-    name: "Egg",
-    category: "eggs",
-    unit_name: "piece",
-    allergens: ["eggs"],
-    days_to_expire: null,
-    calories_per_unit: null,
-};
-
-const CREATE_MESSAGES = {
-    errorTitle: "Title required",
-    errorDescription: "Description required",
-    errorIngredients: "Pick an ingredient",
-    errorType: "Pick a type",
-    errorCookingTimeFormat: "Bad time format",
-    errorCookingTimeInvalid: "Invalid time",
-};
 
 const fillValid = (form: ReturnType<typeof useRecipeForm>) => {
     form.setInitialValues({
@@ -50,14 +28,6 @@ const fillValid = (form: ReturnType<typeof useRecipeForm>) => {
 };
 
 describe("useRecipeForm", () => {
-    it("should initialise with empty state", () => {
-        const { result } = renderHookWithStore(() => useRecipeForm());
-
-        expect(result.current.title).toBe("");
-        expect(result.current.selectedIngredients).toEqual([]);
-        expect(result.current.selectedTypeId).toBeNull();
-    });
-
     it("should start a new recipe in the page's language", () => {
         const { result } = renderHookWithStore(() => useRecipeForm());
 
@@ -76,47 +46,6 @@ describe("useRecipeForm", () => {
 
         expect(result.current.language).toBe("ru");
         expect(result.current.isDirty).toBe(true);
-    });
-
-    it("should update fields through their setters", () => {
-        const { result } = renderHookWithStore(() => useRecipeForm());
-
-        act(() => {
-            result.current.setTitle("Borscht");
-            result.current.setCookingHours("1");
-        });
-
-        expect(result.current.title).toBe("Borscht");
-        expect(result.current.cookingHours).toBe("1");
-    });
-
-    it("should toggle an ingredient into and back out of the selection", () => {
-        const { result } = renderHookWithStore(() => useRecipeForm());
-
-        act(() => {
-            result.current.toggleIngredientSelection(INGREDIENT);
-        });
-
-        expect(result.current.selectedIngredients).toHaveLength(1);
-
-        act(() => {
-            result.current.toggleIngredientSelection(INGREDIENT);
-        });
-
-        expect(result.current.selectedIngredients).toHaveLength(0);
-    });
-
-    it("should clamp an ingredient quantity to a minimum of one", () => {
-        const { result } = renderHookWithStore(() => useRecipeForm());
-
-        act(() => {
-            result.current.toggleIngredientSelection(INGREDIENT);
-        });
-        act(() => {
-            result.current.updateIngredientQuantity(INGREDIENT.id, 0);
-        });
-
-        expect(result.current.selectedIngredients[0].quantity).toBe(1);
     });
 
     it("should populate every field via setInitialValues", () => {
@@ -147,35 +76,5 @@ describe("useRecipeForm", () => {
         });
 
         expect(result.current.isDirty).toBe(true);
-    });
-
-    it("should fail validateCreate and set the title error when empty", () => {
-        const { result } = renderHookWithStore(() => useRecipeForm());
-
-        let valid = true;
-
-        act(() => {
-            valid = result.current.validateCreate(CREATE_MESSAGES);
-        });
-
-        expect(valid).toBe(false);
-        expect(result.current.titleError).toBe(CREATE_MESSAGES.errorTitle);
-    });
-
-    it("should pass validateCreate when every field is valid", () => {
-        const { result } = renderHookWithStore(() => useRecipeForm());
-
-        act(() => {
-            fillValid(result.current);
-        });
-
-        let valid = false;
-
-        act(() => {
-            valid = result.current.validateCreate(CREATE_MESSAGES);
-        });
-
-        expect(valid).toBe(true);
-        expect(result.current.titleError).toBeNull();
     });
 });

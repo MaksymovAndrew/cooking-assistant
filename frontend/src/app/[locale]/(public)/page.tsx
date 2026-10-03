@@ -16,12 +16,13 @@ import { pageAlternates } from "utils/pageAlternates";
 
 import { GuestLandingView } from "./GuestLandingView";
 import { HomeDashboardView } from "./HomeDashboardView";
+import { CLIENT_LOADED_LANDING, loadGuestLanding } from "./loadGuestLanding";
 
 interface HomePageProps {
     params: Promise<{ locale: string }>;
 }
 
-// canonical is a per-route fact: the root layout deliberately sets none, so each route carries its own
+// the root layout sets no canonical on purpose, so each route carries its own
 export const generateMetadata = async ({
     params,
 }: HomePageProps): Promise<Metadata> => ({
@@ -46,8 +47,7 @@ const loadSession = async (locale: Locale): Promise<Session> => {
 
         return currentUser ? SESSION.authed : SESSION.guest;
     } catch (error) {
-        // reading the cookie is also how Next signals that this route must render dynamically -
-        // swallowing that signal would break the route rather than degrade it
+        // reading the cookie throws Next's dynamic-rendering signal; swallowing it breaks the route
         unstable_rethrow(error);
         logger.error(error);
 
@@ -55,19 +55,19 @@ const loadSession = async (locale: Locale): Promise<Session> => {
     }
 };
 
-// "/" is the one route whose content depends on the session, not just its chrome - deciding
-// that here is what removes the flash of the wrong page a client-side check always had
+// the one route whose content depends on the session; deciding it here avoids a wrong-page flash
 const HomePage = async ({ params }: HomePageProps) => {
-    const session = await loadSession(toLocale((await params).locale));
+    const locale = toLocale((await params).locale);
+    const session = await loadSession(locale);
 
-    // the API was unreachable: hand the decision back to the browser, the way this route made
-    // it before it was server-rendered, rather than showing a signed-in visitor the landing
-    // page until they think to reload
+    // API unreachable: let the browser decide rather than show a signed-in visitor the landing
     if (session === SESSION.unknown) {
         return (
             <HomeRoute
                 authedElement={<HomeDashboardView />}
-                guestElement={<GuestLandingView />}
+                guestElement={
+                    <GuestLandingView content={CLIENT_LOADED_LANDING} />
+                }
             />
         );
     }
@@ -75,7 +75,7 @@ const HomePage = async ({ params }: HomePageProps) => {
     return session === SESSION.authed ? (
         <HomeDashboardView />
     ) : (
-        <GuestLandingView />
+        <GuestLandingView content={await loadGuestLanding(locale)} />
     );
 };
 

@@ -26,7 +26,6 @@ interface UseCategorizedIngredientsResult {
     visibleIngredients: Ingredient[];
 }
 
-// shared browse/search state for the ingredient picker and the pantry add-ingredient modal - both need the same "search across everything, or drill into a category" combobox behaviour
 export const useCategorizedIngredients = ({
     ingredients,
     maxSearchResults,
@@ -39,7 +38,7 @@ export const useCategorizedIngredients = ({
 
     const categories = useIngredientCategories(ingredients);
 
-    // drops a stale category selection (its last addable item just got picked) rather than showing a "back" panel for a category that no longer exists - adjusted during render, not via an effect, since it's already a conditional, idempotent correction
+    // a category whose last item was just picked is gone; reset during render, not in an effect
     if (
         activeCategory &&
         !categories.some((category) => category.key === activeCategory)

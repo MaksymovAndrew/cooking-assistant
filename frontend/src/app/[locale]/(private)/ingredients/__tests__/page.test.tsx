@@ -62,12 +62,19 @@ const ALL_INGREDIENTS: Ingredient[] = [
 ];
 
 let pantry: UserIngredient[];
+let pantryFailures: number;
 
 const setup = (initialPantry: UserIngredient[] = USER_INGREDIENTS) => {
     pantry = initialPantry;
     mockedGet.mockImplementation((url: string) => {
         if (url === API_ROUTES.ingredients.list) {
             return Promise.resolve({ data: ALL_INGREDIENTS });
+        }
+
+        if (url === API_ROUTES.userIngredients.list && pantryFailures > 0) {
+            pantryFailures -= 1;
+
+            return Promise.reject(new Error("offline"));
         }
 
         if (url === API_ROUTES.userIngredients.list) {
@@ -85,95 +92,84 @@ const setup = (initialPantry: UserIngredient[] = USER_INGREDIENTS) => {
     );
 };
 
+beforeEach(() => {
+    pantryFailures = 0;
+});
+
 const deleteMessage = `Are you sure you want to delete the ingredient "${INGREDIENT_NAME}"?`;
 
 describe("IngredientsPage", () => {
-    it("should render the user's pantry ingredients loaded from the api", async () => {
+    it("should show a loading state instead of an empty pantry until it arrives", async () => {
         setup();
+
+        expect(screen.getByRole("status", { name: "Loading…" })).toBeVisible();
+        expect(
+            screen.queryByText("You currently have no ingredients."),
+        ).not.toBeInTheDocument();
+        expect(await screen.findByText(INGREDIENT_NAME)).toBeInTheDocument();
+    });
+
+    it("should show an error with a retry when the pantry cannot be loaded", async () => {
+        pantryFailures = 1;
+        setup();
+
+        await userEvent.click(
+            await screen.findByRole("button", { name: "Try again" }),
+        );
 
         expect(await screen.findByText(INGREDIENT_NAME)).toBeInTheDocument();
     });
 
-    it("should open the add-ingredient modal and search for a new ingredient", async () => {
-        setup();
-
-        await screen.findByText(INGREDIENT_NAME);
-
-        await userEvent.click(
-            screen.getByRole("button", { name: BTN_ADD_INGREDIENT }),
-        );
-
-        jest.useFakeTimers();
-        const user = setupUser();
-
-        try {
-            await user.type(
-                screen.getByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
-                "tom",
-            );
-            act(() => {
-                jest.advanceTimersByTime(DEBOUNCE_MS);
-            });
-
-            expect(
-                screen.getByRole("button", { name: /tom/i }),
-            ).toBeInTheDocument();
-        } finally {
-            jest.useRealTimers();
-        }
-    });
-
     it("should step through quantities and save the new ingredient with its chosen amount", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-        setup();
-
-        await screen.findByText(INGREDIENT_NAME);
-
-        await userEvent.click(
-            screen.getByRole("button", { name: BTN_ADD_INGREDIENT }),
-        );
-
         jest.useFakeTimers();
         const user = setupUser();
 
         try {
+            mockedPut.mockResolvedValue({ data: null });
+            setup();
+
+            await screen.findByText(INGREDIENT_NAME);
+            await user.click(
+                screen.getByRole("button", { name: BTN_ADD_INGREDIENT }),
+            );
             await user.type(
-                screen.getByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
+                await screen.findByPlaceholderText(
+                    SEARCH_INGREDIENTS_PLACEHOLDER,
+                ),
                 "tom",
             );
             act(() => {
                 jest.advanceTimersByTime(DEBOUNCE_MS);
             });
             await user.click(screen.getByRole("button", { name: /tom/i }));
+            await user.click(screen.getByRole("button", { name: "Continue" }));
+
+            const quantityInput = screen.getByRole("spinbutton");
+
+            await user.clear(quantityInput);
+            await user.type(quantityInput, "3");
+            await user.click(
+                screen.getByRole("button", { name: "Add to pantry" }),
+            );
+
+            expect(mockedPut).toHaveBeenCalledWith(
+                API_ROUTES.userIngredients.list,
+                {
+                    ingredients: [
+                        {
+                            id: 6,
+                            ingredient_name: "Tomato",
+                            quantity_person_ingradient: 3,
+                        },
+                    ],
+                },
+            );
+            expect(
+                screen.queryByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
+            ).not.toBeInTheDocument();
         } finally {
             jest.useRealTimers();
         }
-
-        await userEvent.click(screen.getByRole("button", { name: "Continue" }));
-
-        const quantityInput = screen.getByRole("spinbutton");
-
-        await userEvent.clear(quantityInput);
-        await userEvent.type(quantityInput, "3");
-        await userEvent.click(
-            screen.getByRole("button", { name: "Add to pantry" }),
-        );
-
-        expect(mockedPut).toHaveBeenCalledWith(
-            API_ROUTES.userIngredients.list,
-            {
-                ingredients: [
-                    {
-                        id: 6,
-                        ingredient_name: "Tomato",
-                        quantity_person_ingradient: 3,
-                    },
-                ],
-            },
-        );
-        expect(
-            screen.queryByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER),
-        ).not.toBeInTheDocument();
     });
 
     it("should close the add-ingredient modal without saving on Cancel", async () => {
@@ -184,6 +180,7 @@ describe("IngredientsPage", () => {
         await userEvent.click(
             screen.getByRole("button", { name: BTN_ADD_INGREDIENT }),
         );
+        await screen.findByPlaceholderText(SEARCH_INGREDIENTS_PLACEHOLDER);
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
         expect(
@@ -222,22 +219,13 @@ describe("IngredientsPage", () => {
         );
     });
 
-    it("should show the delete confirmation modal when Delete is clicked", async () => {
-        setup();
-
-        await screen.findByText(INGREDIENT_NAME);
-
-        await userEvent.click(screen.getByRole("button", { name: "Delete" }));
-
-        expect(await screen.findByText(deleteMessage)).toBeInTheDocument();
-    });
-
     it("should close the delete confirmation modal when Cancel is clicked", async () => {
         setup();
 
         await screen.findByText(INGREDIENT_NAME);
 
         await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+        await screen.findByText(deleteMessage);
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
         expect(screen.queryByText(deleteMessage)).not.toBeInTheDocument();
@@ -255,25 +243,24 @@ describe("IngredientsPage", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Delete" }));
         await userEvent.click(
-            within(screen.getByRole("dialog")).getByRole("button", {
+            within(await screen.findByRole("dialog")).getByRole("button", {
                 name: "Delete",
             }),
         );
 
-        // RTK Query refetch after Pantry tag invalidation is async; wait for the empty-state text before asserting the ingredient is gone
+        // the refetch after the Pantry invalidation is async, so wait for the empty state first
         await screen.findByText("You currently have no ingredients.");
         expect(screen.queryByText(INGREDIENT_NAME)).not.toBeInTheDocument();
     });
 
     it("should filter ingredients by the search box", async () => {
-        setup();
-
-        await screen.findByText(INGREDIENT_NAME);
-
         jest.useFakeTimers();
         const user = setupUser();
 
         try {
+            setup();
+
+            await screen.findByText(INGREDIENT_NAME);
             await user.type(
                 screen.getByPlaceholderText("Search your pantry…"),
                 "zzz",

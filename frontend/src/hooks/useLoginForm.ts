@@ -18,7 +18,7 @@ import { useLoginLockout } from "./useLoginLockout";
 
 const EMPTY_FORM: LoginRequest = { login: "", password: "" };
 
-// a failed login shows one generic message, never revealing whether the username or the password was wrong
+// one generic failure message: never reveal whether the login or the password was wrong
 export const useLoginForm = () => {
     const { t } = useTranslation("auth");
     const [login, { isLoading: isSubmitting }] = useLoginMutation();
@@ -43,7 +43,7 @@ export const useLoginForm = () => {
         setValues((prev) => ({ ...prev, [field]: value }));
     }, []);
 
-    // switching mode clears the identifier field so a typed username can't be submitted as an email or vice versa
+    // a typed username must not be submitted as an email, or the reverse
     const setMode = useCallback((mode: LoginMode) => {
         setLoginMode(mode);
         setValues((prev) => ({ ...prev, login: "" }));
@@ -63,7 +63,7 @@ export const useLoginForm = () => {
             return;
         }
 
-        // applyIfCurrent guards the visible state, since the field may change before this request resolves
+        // the field may change before this resolves, so applyIfCurrent guards the visible state
         const submittedLogin = values.login;
         const result = await login({ ...values, login: submittedLogin.trim() });
 

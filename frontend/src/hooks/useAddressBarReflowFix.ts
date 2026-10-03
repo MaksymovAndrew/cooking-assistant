@@ -1,10 +1,7 @@
 import type { RefObject } from "react";
 import { useEffect } from "react";
 
-// a longstanding Chrome bug (chromium issue 41395555) leaves a `position: fixed` element's
-// painted content stuck at its old layout while the address bar collapses/expands on scroll -
-// a plain layout read (getBoundingClientRect) isn't enough to make Chrome repaint the subtree,
-// so this briefly removes the element from rendering and restores it to force a full repaint
+// chromium 41395555: fixed content keeps stale paint as the address bar moves; a layout read can't fix it
 export const useAddressBarReflowFix = <T extends HTMLElement>(
     ref: RefObject<T | null>,
 ): void => {

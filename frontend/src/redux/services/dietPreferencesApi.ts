@@ -14,7 +14,7 @@ import { undoOnFailure } from "./undoOnFailure";
 
 const DIET_PREFERENCES = "DietPreferences" as const;
 
-// every recipe carries a per-viewer containsAvoided flag and lists rank by it, so a change refetches them all
+// recipes carry a per-viewer containsAvoided flag and lists rank by it, so all of them refetch
 const DIET_WRITE_TAGS = [DIET_PREFERENCES, "Recipe"] as const;
 
 const updatePreferences = (recipe: (preferences: DietPreferences) => void) =>

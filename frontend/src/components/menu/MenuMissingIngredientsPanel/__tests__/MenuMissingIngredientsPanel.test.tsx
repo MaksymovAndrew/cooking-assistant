@@ -34,7 +34,9 @@ describe("MenuMissingIngredientsPanel", () => {
         );
 
         expect(screen.getByText("Ingredients")).toBeInTheDocument();
-        expect(screen.getByText("1")).toBeInTheDocument();
+        expect(
+            screen.getByRole("img", { name: "1 missing ingredient" }),
+        ).toHaveTextContent("1");
         expect(screen.getByText("Tomato")).toBeInTheDocument();
         expect(screen.getByText("2 kg")).toBeInTheDocument();
         expect(
@@ -61,6 +63,37 @@ describe("MenuMissingIngredientsPanel", () => {
         );
 
         expect(screen.getByText("1.25 kg")).toBeInTheDocument();
+    });
+
+    it("should name the count badge with every ingredient still missing", () => {
+        renderWithProviders(
+            <MenuMissingIngredientsPanel
+                ingredients={{
+                    1: {
+                        slug: "tomato",
+                        name: "Tomato",
+                        quantity: 2,
+                        missingQuantity: 2,
+                        unit: "kg",
+                        sufficient: false,
+                    },
+                    2: {
+                        slug: "onion",
+                        name: "Onion",
+                        quantity: 1,
+                        missingQuantity: 1,
+                        unit: "piece",
+                        sufficient: false,
+                    },
+                }}
+                allergens={[]}
+            />,
+            { store: AUTHED_STORE },
+        );
+
+        expect(
+            screen.getByRole("img", { name: "2 missing ingredients" }),
+        ).toHaveTextContent("2");
     });
 
     it("should send only the shortfall of the missing ingredients to the shopping list", async () => {
@@ -120,7 +153,9 @@ describe("MenuMissingIngredientsPanel", () => {
             { store: AUTHED_STORE },
         );
 
-        expect(screen.queryByText("1")).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole("img", { name: /missing/ }),
+        ).not.toBeInTheDocument();
         expect(screen.getByText("Onion")).toBeInTheDocument();
         expect(screen.getByText("3 pieces")).toBeInTheDocument();
         expect(screen.getByLabelText("You have enough")).toBeInTheDocument();

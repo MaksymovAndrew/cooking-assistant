@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useDebouncedValue } from "hooks/useDebouncedValue";
 
-// instant local typing feedback + a debounced commit, with the local value resynced to `value`
-// whenever it changes from outside (a reset or a chip) - adjusted during render, not via an
-// effect. Comparing the settled debounce against the local value (not just `value`) means a
-// mid-debounce external reset can't leak a stale commit once its own pending timer catches up
+// commits only a settled value that still equals the local one, so a reset can't leak a stale edit
 export const useDebouncedFieldSync = (
     value: string,
     onCommit: (value: string) => void,

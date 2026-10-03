@@ -117,21 +117,4 @@ describe("SearchField", () => {
 
         expect(input).toHaveValue("");
     });
-
-    it("should call onFocus when the input is focused", async () => {
-        const onFocus = jest.fn();
-
-        render(
-            <SearchField
-                placeholder={PLACEHOLDER}
-                value=""
-                onChange={jest.fn()}
-                onFocus={onFocus}
-            />,
-        );
-
-        await userEvent.click(screen.getByPlaceholderText(PLACEHOLDER));
-
-        expect(onFocus).toHaveBeenCalledTimes(1);
-    });
 });

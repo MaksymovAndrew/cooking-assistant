@@ -8,11 +8,17 @@ import {
     useSetRecipeTagsMutation,
 } from "redux/services/tagsApi";
 
-// a failed write is reverted here and toasted by the global listener
-const ignoreRejection = () => undefined;
+import { ignoreRejection } from "utils/ignoreRejection";
 
-// the recipe page is server-rendered, so its tags arrive as props and the assignment lives here
-// from then on - the tag catalog itself comes from the cache, so a rename shows up at once
+// a failed write is reverted here and toasted by the global listener
+
+// a save not known to have failed; request 0 is the selection the page was rendered with
+interface StandingSave {
+    request: number;
+    ids: number[];
+}
+
+// the page is server-rendered, so the assignment lives here; the catalog is cached, so a rename shows at once
 export const useRecipeTags = (recipeId: number, initialTags: Tag[]) => {
     const { data: tags = [], isSuccess } = useGetTagsQuery(null);
     const [setRecipeTags] = useSetRecipeTagsMutation();
@@ -20,39 +26,46 @@ export const useRecipeTags = (recipeId: number, initialTags: Tag[]) => {
     const [selectedIds, setSelectedIds] = useState(() =>
         initialTags.map((tag) => tag.id),
     );
-    // the endpoint replaces the whole set, so two quick taps must not both start from the same
-    // render's selection - the second would drop the first
-    const selectionRef = useRef(selectedIds);
+    // the endpoint replaces the whole set, so two quick taps must not both start from one render's selection
+    const savesRef = useRef<StandingSave[]>([{ request: 0, ids: selectedIds }]);
+    const requestCountRef = useRef(0);
 
     const selectedTags = useMemo(
         () => tags.filter((tag) => selectedIds.includes(tag.id)),
         [tags, selectedIds],
     );
 
-    const apply = (ids: number[]) => {
-        selectionRef.current = ids;
+    const newestIds = (): number[] =>
+        savesRef.current[savesRef.current.length - 1].ids;
+
+    const persist = (ids: number[]) => {
+        requestCountRef.current += 1;
+        const sent = { request: requestCountRef.current, ids };
+
+        savesRef.current = [...savesRef.current, sent];
         setSelectedIds(ids);
-    };
-
-    const persist = (nextIds: number[]) => {
-        const previousIds = selectionRef.current;
-
-        apply(nextIds);
-        setRecipeTags({ recipeId, tagIds: nextIds })
+        setRecipeTags({ recipeId, tagIds: ids })
             .unwrap()
+            .then(() => {
+                // the server is past every save sent before this one
+                savesRef.current = savesRef.current.filter(
+                    (save) => save.request >= sent.request,
+                );
+            })
             .catch(() => {
-                apply(previousIds);
+                // saves settle in any order, so only a failed newest one changes the screen
+                savesRef.current = savesRef.current.filter(
+                    (save) => save !== sent,
+                );
+                setSelectedIds(newestIds());
             });
     };
 
-    // a tag deleted anywhere leaves its id behind here, and a save carrying one the account no
-    // longer owns is refused whole
+    // a deleted tag leaves its id behind, and a save carrying one the account no longer owns is refused whole
     const ownedSelection = (): number[] =>
         isSuccess
-            ? selectionRef.current.filter((id) =>
-                  tags.some((tag) => tag.id === id),
-              )
-            : selectionRef.current;
+            ? newestIds().filter((id) => tags.some((tag) => tag.id === id))
+            : newestIds();
 
     const toggleTag = (tagId: number) => {
         const current = ownedSelection();

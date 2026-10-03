@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { CurrentUser } from "types/auth";
@@ -7,8 +7,10 @@ import type { RecipeSearchResultItem } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { ModalRoot } from "components/modals";
+
 import ProfilePage from "app/[locale]/(private)/profile/page";
-import { mockGetByUrl } from "test/apiClientMock";
+import { mockedGet, mockGetByUrl } from "test/apiClientMock";
 import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithProviders } from "test/router";
 
@@ -56,12 +58,12 @@ const FAVOURITE_RECIPE: RecipeSearchResultItem = {
 const MENU: Menu = {
     id: 1,
     title: "Weekday menu",
-    categoryname: "Lunch",
-    menucontent: "",
+    categoryName: "Lunch",
+    menuContent: "",
     recipe_count: 3,
 };
 
-const setup = () => {
+const stubApi = () => {
     mockGetByUrl({
         [API_ROUTES.auth.me]: CURRENT_USER,
         [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
@@ -70,6 +72,10 @@ const setup = () => {
         [API_ROUTES.menu.list]: { items: [], total: 0 },
         [API_ROUTES.calories.intake]: [],
     });
+};
+
+const setup = () => {
+    stubApi();
 
     return renderWithProviders(<ProfilePage />);
 };
@@ -98,4 +104,63 @@ describe("ProfilePage", () => {
             expect(await screen.findByText(expectedText)).toBeInTheDocument();
         },
     );
+
+    it("should show a loading state instead of an empty tab until the recipes arrive", async () => {
+        setup();
+
+        expect(screen.getByRole("status", { name: "Loading…" })).toBeVisible();
+        expect(
+            screen.queryByText("You haven't created any recipes yet."),
+        ).not.toBeInTheDocument();
+        expect(await screen.findByText("Borscht")).toBeInTheDocument();
+    });
+
+    it("should show an error with a retry when the active tab cannot be loaded", async () => {
+        stubApi();
+        const loadByUrl = mockedGet.getMockImplementation();
+        let failures = 1;
+
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.recipes.byPerson && failures > 0) {
+                failures -= 1;
+
+                return Promise.reject(new Error("offline"));
+            }
+
+            return loadByUrl ? loadByUrl(url) : Promise.reject(new Error(url));
+        });
+        renderWithProviders(<ProfilePage />);
+
+        await userEvent.click(
+            await screen.findByRole("button", { name: "Try again" }),
+        );
+
+        expect(await screen.findByText("Borscht")).toBeInTheDocument();
+    });
+
+    it("should open the edit-profile dialog filled in with the user's name", async () => {
+        stubApi();
+        renderWithProviders(
+            <>
+                <ProfilePage />
+                <ModalRoot />
+            </>,
+        );
+
+        await screen.findByText("Claude Cook");
+        await userEvent.click(
+            screen.getByRole("button", { name: "Edit profile" }),
+        );
+
+        const dialog = await screen.findByRole("dialog", {
+            name: "Edit profile",
+        });
+
+        expect(within(dialog).getByLabelText("Name")).toHaveValue(
+            CURRENT_USER.name,
+        );
+        expect(within(dialog).getByLabelText("Surname")).toHaveValue(
+            CURRENT_USER.surname,
+        );
+    });
 });

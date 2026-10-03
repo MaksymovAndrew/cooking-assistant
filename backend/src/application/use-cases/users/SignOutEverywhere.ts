@@ -10,7 +10,7 @@ export default class SignOutEverywhere {
         private tokenService: Pick<TokenService, "generate">,
     ) {}
 
-    // every other session ends; the one that asked gets a fresh token and stays signed in
+    // ends every other session; the caller gets a fresh token and stays signed in
     async execute(userId: number): Promise<{ token: string }> {
         const sessionVersion = await this.userRepository.revokeSessions(userId);
 

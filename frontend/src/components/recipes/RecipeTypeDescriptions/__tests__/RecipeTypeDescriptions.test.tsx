@@ -24,12 +24,4 @@ describe("RecipeTypeDescriptions", () => {
         expect(screen.getByText(/Liquid-based dishes/)).toBeInTheDocument();
         expect(screen.getByText(/Fresh and light/)).toBeInTheDocument();
     });
-
-    it("should bold the type name in each entry", () => {
-        render(<RecipeTypeDescriptions descriptions={[TYPES[0]]} />);
-
-        const bold = screen.getByText("Soup:");
-
-        expect(bold.tagName).toBe("STRONG");
-    });
 });

@@ -10,7 +10,7 @@
     overflow: hidden;
     border: none;
     border-radius: var(--r-sm);
-    background: var(--danger);
+    background: var(--danger-fill);
     color: var(--on-brand);
     font:
         600 13px Inter,
@@ -31,11 +31,10 @@
     position: absolute;
     inset: 0;
     width: 0;
-    background: color-mix(in srgb, rgb(0 0 0) 25%, var(--danger));
+    background: color-mix(in srgb, rgb(0 0 0) 25%, var(--danger-fill));
 }
 
-// the animation only applies while holding - releasing early drops this class, so the fill
-// snaps straight back to the static width: 0 above instead of animating out
+// only while holding, so releasing early snaps the fill back instead of animating out
 .delete-account-button--holding .delete-account-button__fill {
     animation-name: delete-hold-fill;
     animation-timing-function: linear;

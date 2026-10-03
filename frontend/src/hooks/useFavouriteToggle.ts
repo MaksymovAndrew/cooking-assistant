@@ -21,9 +21,7 @@ interface Override {
     value: boolean;
 }
 
-// optimistic: the heart flips on press and flips back if the request fails. A detail page gets its record
-// as server props with no cache entry to refetch, so the flip is what it keeps showing; on a list, the
-// refetch the mutation triggers brings a new server value, which replaces the flip
+// optimistic: a detail page has no cache entry to refetch, so the flip is what it keeps showing
 export const useFavouriteToggle = (
     target: FavouriteTarget,
     id: number,
@@ -35,8 +33,7 @@ export const useFavouriteToggle = (
     const [removeFavourite, removeState] = useRemoveFavouriteMutation();
     const [override, setOverride] = useState<Override | null>(null);
 
-    // a new server value supersedes the flip for good - kept around, the flip would resurface the
-    // moment the server value happened to swing back to the one it was made against
+    // dropped for good, or the flip would resurface if the server value swung back to its base
     if (override !== null && override.base !== serverValue) {
         setOverride(null);
     }

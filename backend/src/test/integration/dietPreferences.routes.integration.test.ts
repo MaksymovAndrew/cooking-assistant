@@ -76,7 +76,7 @@ describe("diet preferences routes", () => {
 
         expect(res.status).toBe(400);
         expect(res.body).toEqual({
-            error: "Unknown allergen",
+            error: "Must be one of: gluten, crustaceans, eggs, fish, peanuts, soybeans, milk, nuts, celery, mustard, sesame, sulphites, lupin, molluscs",
             code: ERROR_CODES.VALIDATION_ERROR,
         });
         expect(

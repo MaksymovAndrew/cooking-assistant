@@ -11,7 +11,9 @@ import type { AxiosBaseQueryError } from "redux/services/axiosBaseQuery";
 import { caloriesApi } from "redux/services/caloriesApi";
 import { addNotification } from "redux/slices/notificationsSlice";
 
+import { registerNotificationActions } from "./notificationActions";
 import { registerSuccessToasts } from "./successToasts";
+import { registerPantryToasts } from "./successToasts.pantry";
 
 const isQueryError = (payload: unknown): payload is AxiosBaseQueryError => {
     if (typeof payload !== "object" || payload === null) {
@@ -21,13 +23,12 @@ const isQueryError = (payload: unknown): payload is AxiosBaseQueryError => {
     return "data" in payload && typeof payload.data === "string";
 };
 
-// pull the user-facing message out of a rejected RTK Query action payload
 export const getErrorMessage = (payload: unknown): string =>
     isQueryError(payload)
         ? payload.data
         : i18next.t("notifications.somethingWentWrong");
 
-// excluded from the global toast - these already show their own feedback (inline form errors, PrivateRoute's session message) or shouldn't surface a scary generic error (logout)
+// these show their own feedback, or (logout) shouldn't surface a scary generic error
 export const isSelfHandledRejection = isAnyOf(
     authApi.endpoints.login.matchRejected,
     authApi.endpoints.register.matchRejected,
@@ -38,15 +39,12 @@ export const isSelfHandledRejection = isAnyOf(
     accountSecurityApi.endpoints.changePassword.matchRejected,
     accountSecurityApi.endpoints.signOutEverywhere.matchRejected,
     authApi.endpoints.updateProfile.matchRejected,
-    // confirmEmail's page renders its own rich success/failure state - a toast would be redundant
     accountSecurityApi.endpoints.confirmEmail.matchRejected,
-    // useCalorieGoalForm already renders its own inline error, same as updateProfile above
     caloriesApi.endpoints.updateCalorieGoal.matchRejected,
 );
 
 export const notificationsListener = createListenerMiddleware();
 
-// single global error channel: every failed request becomes an error toast, except the auth forms above that already show their own inline error
 notificationsListener.startListening({
     matcher: isRejectedWithValue,
     effect: (action, listenerApi) => {
@@ -64,3 +62,5 @@ notificationsListener.startListening({
 });
 
 registerSuccessToasts(notificationsListener);
+registerPantryToasts(notificationsListener);
+registerNotificationActions(notificationsListener);

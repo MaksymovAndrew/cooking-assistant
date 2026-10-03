@@ -43,7 +43,12 @@ describe("ResetPasswordPage", () => {
     it("should show the invalid-link state when there is no token in the URL", () => {
         renderWithRouter(<ResetPasswordPage />, ["/reset-password"]);
 
-        expect(screen.getByText("Link invalid or expired")).toBeInTheDocument();
+        expect(
+            screen.getByRole("heading", {
+                name: "Link invalid or expired",
+                level: 1,
+            }),
+        ).toBeInTheDocument();
         expect(screen.queryByLabelText("New password")).not.toBeInTheDocument();
     });
 });

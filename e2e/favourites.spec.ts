@@ -1,11 +1,10 @@
 import type { BrowserContext, Locator, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { deleteMenu, deleteRecipe } from "./api";
 import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE, VIEWER_STORAGE_STATE } from "./sharedAccounts";
 
-// favouriting someone else's recipe and menu: the hearts on the detail pages and on the cards, the
-// favourites filter and the profile tab that lists them
 test.describe.configure({ mode: "serial" });
 
 let ownerContext: BrowserContext;
@@ -21,7 +20,6 @@ test.beforeAll(async ({ browser }) => {
 
     recipeTitle = `Favourite recipe ${runId}`;
     menuTitle = `Favourite menu ${runId}`;
-    // reuses the shared primary/viewer accounts (registered once in global-setup) instead of registering fresh ones here - keeps the suite's total auth calls low
     ownerContext = await browser.newContext({
         storageState: PRIMARY_STORAGE_STATE,
     });
@@ -47,8 +45,14 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    await ownerContext.close();
-    await viewerContext.close();
+    // cleanup: deleting the menu and recipe takes the viewer's favourites with them
+    try {
+        await deleteMenu(ownerContext.request, menuId);
+        await deleteRecipe(ownerContext.request, recipeId);
+    } finally {
+        await ownerContext.close();
+        await viewerContext.close();
+    }
 });
 
 async function pressHeart(

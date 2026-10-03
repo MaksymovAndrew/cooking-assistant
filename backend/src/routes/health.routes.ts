@@ -2,13 +2,15 @@ import express, { type Router } from "express";
 
 import { ROUTES } from "constants/routes";
 
-export default function createHealthRouter(): Router {
+import type HealthController from "controller/health.controller";
+
+export default function createHealthRouter(
+    healthController: HealthController,
+): Router {
     const router = express.Router();
 
-    // liveness probe, no auth
-    router.get(ROUTES.health, (_req, res) => {
-        res.json({ status: "ok" });
-    });
+    // no auth; it asks the database too, since a backend that cannot reach it serves nothing
+    router.get(ROUTES.health, healthController.check);
 
     return router;
 }

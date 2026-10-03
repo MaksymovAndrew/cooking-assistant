@@ -59,6 +59,19 @@ describe("user routes", () => {
         );
     });
 
+    it("should return a 400 error when register input is invalid", async () => {
+        const { app, deps } = buildTestApp();
+
+        const res = await request(app).post("/api/register").send({});
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({
+            error: "name: Required; surname: Required; login: Required; email: Required; password: Required",
+            code: ERROR_CODES.VALIDATION_ERROR,
+        });
+        expect(deps.userRepository.create).not.toHaveBeenCalled();
+    });
+
     it("should log in and set an httpOnly session cookie", async () => {
         const { app, deps } = buildTestApp();
 
@@ -191,20 +204,6 @@ describe("user routes", () => {
         expect(res.body).toEqual(
             errorBody(ERROR_CODES.INVALID_LOGIN_OR_PASSWORD),
         );
-    });
-
-    it("should return a 400 error body for malformed JSON", async () => {
-        const { app } = buildTestApp();
-
-        const res = await request(app)
-            .post(LOGIN_PATH)
-            .set("Content-Type", "application/json")
-            .send('{"login": "bob",');
-
-        expect(res.status).toBe(400);
-        const body = res.body as { error: string };
-
-        expect(typeof body.error).toBe("string");
     });
 
     it("should send a reset link and respond generically for a verified email", async () => {

@@ -6,7 +6,7 @@ import type {
 import { idSchema } from "application/validation/common.schemas";
 import { validate } from "application/validation/validate";
 
-// idempotent: removing a vote that isn't there - or one whose record is already gone - is a no-op
+// idempotent: removing a missing vote, even on a deleted record, is a no-op
 export default class RemoveRating {
     constructor(
         private ratingRepository: Pick<RatingRepository, "remove">,

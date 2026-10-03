@@ -1,13 +1,11 @@
 @use "styles/abstracts" as *;
 
 .add-ingredient-modal {
-    // overrides SearchField's default surface for the slightly recessed look pickers use
     &__search {
         background: var(--surface-2);
     }
 
-    // wrapper owns the border/radius/overflow:hidden so the list's
-    // scrollbar (on __results below) can't poke past the rounded corner
+    // the wrapper clips, so the list's scrollbar can't poke past the rounded corner
     &__results-wrapper {
         display: flex;
         flex-direction: column;
@@ -15,7 +13,7 @@
         margin: var(--s-2) 0 0;
         overflow: hidden;
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: var(--r-md);
     }
 
     &__results {

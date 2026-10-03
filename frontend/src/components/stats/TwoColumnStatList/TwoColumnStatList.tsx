@@ -10,7 +10,6 @@ export interface StatListItem {
     key: string | number;
     name: string;
     value: string;
-    // links the row to the recipe/menu it describes - omit for a plain, non-interactive row
     href?: string;
 }
 

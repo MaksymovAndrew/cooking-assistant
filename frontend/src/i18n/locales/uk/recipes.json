@@ -19,7 +19,7 @@
         "itemsAdded_many": "Додано {{count}} інгредієнтів",
         "itemsAdded_other": "Додано {{count}} інгредієнта",
         "perPortionHint": "Кількість — на одну порцію, решту буде пораховано автоматично.",
-        "reorderHint": "Перетягуйте за ручку, щоб змінити порядок · одиницю підставлено з каталогу",
+        "reorderHint": "Перетягуйте за ручку або натискайте стрілки, щоб змінити порядок · одиницю підставлено з каталогу",
         "summary_one": "{{count}} інгредієнт · {{hours}} год {{minutes}} хв",
         "summary_few": "{{count}} інгредієнти · {{hours}} год {{minutes}} хв",
         "summary_many": "{{count}} інгредієнтів · {{hours}} год {{minutes}} хв",
@@ -155,7 +155,9 @@
         "recipeTypePlaceholder": "Виберіть тип",
         "ingredientsLabel": "Інгредієнти",
         "updateButton": "Зберегти зміни",
-        "loading": "Завантаження…",
+        "notFoundTitle": "Цей рецепт не можна змінити",
+        "notFoundDescription": "Можливо, його видалили або він належить іншій людині.",
+        "backToRecipes": "До рецептів",
         "errorCookingTimeFormat": "Вкажіть години й хвилини.",
         "errorCookingTimeInvalid": "Вкажіть правильний час приготування."
     },
@@ -205,6 +207,7 @@
         "metaFallbackDescriptionUntyped_one": "Рецепт з {{count}} інгредієнта.",
         "metaFallbackDescriptionUntyped_few": "Рецепт з {{count}} інгредієнтів.",
         "metaFallbackDescriptionUntyped_many": "Рецепт з {{count}} інгредієнтів.",
-        "metaFallbackDescriptionUntyped_other": "Рецепт з {{count}} інгредієнта."
+        "metaFallbackDescriptionUntyped_other": "Рецепт з {{count}} інгредієнта.",
+        "cookedIt": "Приготовано"
     }
 }

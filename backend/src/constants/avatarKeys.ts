@@ -1,6 +1,4 @@
-// allowed preset avatar keys - the backend's own copy of the list the frontend registry
-// (frontend/src/constants/avatars.ts) maps to SVG components. Front and back don't share code,
-// so these string literals are duplicated on purpose; the two sets must stay in sync.
+// must stay in sync with frontend/src/constants/avatars.ts; the apps share no code
 export const AVATAR_KEYS = [
     "chef-toque",
     "ramen-bowl",

@@ -3,7 +3,6 @@
 .account-menu {
     position: relative;
 
-    // the same rounded square as the theme and language buttons beside it; the avatar stays round
     &__trigger {
         display: flex;
         align-items: center;
@@ -31,7 +30,7 @@
         }
     }
 
-    // scoped to the chevron only - an unscoped `svg` selector here would also flip the avatar's own SVG when open
+    // chevron only: an unscoped svg selector would also flip the avatar's own SVG
     &__chevron {
         transition: transform var(--dur-fast) var(--ease-out);
     }

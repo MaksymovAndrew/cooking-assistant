@@ -4,7 +4,7 @@ import { useGetMeQuery } from "redux/services/authApi";
 
 import { useResendVerificationCooldown } from "hooks/useResendVerificationCooldown";
 
-// dismiss is component-state only (not persisted) - "Later" just hides it for this session, not forever
+// not persisted on purpose: "Later" hides the nudge for this visit only
 export const useEmailVerificationNudge = () => {
     const { data: currentUser } = useGetMeQuery(null);
     const { send, isOnCooldown } = useResendVerificationCooldown();

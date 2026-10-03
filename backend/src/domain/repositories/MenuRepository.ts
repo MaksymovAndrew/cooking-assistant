@@ -1,33 +1,30 @@
 import type { Menu } from "domain/entities/Menu";
-import type {
-    MenuFilters,
-    MenuSearchRow,
-} from "domain/repositories/menu.filters";
-import type { PaginatedResult } from "domain/repositories/pagination.types";
-import type { DeletedRecord } from "domain/repositories/PhotoRepository";
+
+import type { MenuFilters, MenuSearchRow } from "./menu.filters";
+import type { MenuDetail } from "./menu.types";
+import type { MenuStatisticsDto } from "./menuStats.types";
+import type { PaginatedResult } from "./pagination.types";
+import type { DeletedRecord } from "./PhotoRepository";
 
 export interface MenuRepository {
     findAll(
         filters: MenuFilters,
         userId: number | null,
     ): Promise<PaginatedResult<MenuSearchRow>>;
-    findAllUnpaginated(): Promise<unknown[]>;
-    create(menu: Menu, recipeIds: number[]): Promise<unknown>;
+    getStats(): Promise<MenuStatisticsDto>;
+    create(menu: Menu, recipeIds: number[]): Promise<number>;
     findByIdWithRecipes(
-        id: string | number,
+        id: number,
         personId: number | null,
-    ): Promise<unknown>;
+    ): Promise<MenuDetail | null>;
     update(
-        id: string | number,
+        id: number,
         personId: number,
         menu: Menu,
         recipeIds: number[],
     ): Promise<boolean>;
     // null when the record doesn't exist or belongs to someone else
-    deleteById(
-        id: string | number,
-        personId: number,
-    ): Promise<DeletedRecord | null>;
+    deleteById(id: number, personId: number): Promise<DeletedRecord | null>;
     searchByPerson(
         personId: number,
         filters: MenuFilters,

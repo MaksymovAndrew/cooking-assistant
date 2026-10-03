@@ -1,20 +1,20 @@
 import type { Controllers } from "composition-root";
 import type { Router } from "express";
 
-import createCalorieRouter from "routes/calorie.routes";
-import createDietPreferencesRouter from "routes/dietPreferences.routes";
-import createFavouriteRouter from "routes/favourite.routes";
-import createIngredientRouter from "routes/ingredient.routes";
-import createMenuRouter from "routes/menu.routes";
-import createMenuCategoryRouter from "routes/menuCategory.routes";
-import createPhotoRouter from "routes/photo.routes";
-import createRatingRouter from "routes/rating.routes";
-import createRecipeRouter from "routes/recipe.routes";
-import createShoppingListRouter from "routes/shoppingList.routes";
-import createTagRouter from "routes/tag.routes";
-import createTypeRouter from "routes/type.routes";
-import createUserRouter from "routes/user.routes";
-import createUserIngredientsRouter from "routes/userIngredients.routes";
+import createCalorieRouter from "./calorie.routes";
+import createDietPreferencesRouter from "./dietPreferences.routes";
+import createFavouriteRouter from "./favourite.routes";
+import createIngredientRouter from "./ingredient.routes";
+import createMenuRouter from "./menu.routes";
+import createMenuCategoryRouter from "./menuCategory.routes";
+import createPhotoRouter from "./photo.routes";
+import createRatingRouter from "./rating.routes";
+import createRecipeRouter from "./recipe.routes";
+import createShoppingListRouter from "./shoppingList.routes";
+import createTagRouter from "./tag.routes";
+import createTypeRouter from "./type.routes";
+import createUserRouter from "./user.routes";
+import createUserIngredientsRouter from "./userIngredients.routes";
 
 // every router behind the global limiter, in mount order
 export function createDomainRouters(controllers: Controllers): Router[] {
@@ -34,10 +34,7 @@ export function createDomainRouters(controllers: Controllers): Router[] {
             controllers.auth,
         ),
         createTypeRouter(controllers.recipeTypeController, controllers.auth),
-        createUserIngredientsRouter(
-            controllers.userIngredientsController,
-            controllers.auth,
-        ),
+        createUserIngredientsRouter(controllers, controllers.auth),
         createMenuRouter(controllers.menuController, controllers.auth),
         createMenuCategoryRouter(
             controllers.menuCategoryController,

@@ -1,5 +1,7 @@
 import React from "react";
 
+import { cx } from "utils/cx";
+
 import styles from "./ContentCard.module.scss";
 
 export const ContentCardChip: React.FC<{ isRow: boolean; label: string }> = ({
@@ -7,12 +9,10 @@ export const ContentCardChip: React.FC<{ isRow: boolean; label: string }> = ({
     label,
 }) => (
     <span
-        className={[
+        className={cx(
             styles["content-card__chip"],
             isRow && styles["content-card__chip--row"],
-        ]
-            .filter(Boolean)
-            .join(" ")}
+        )}
     >
         {label}
     </span>

@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { BookMark } from "components/icons";
 
+import { cx } from "utils/cx";
+
 import styles from "./MenuHero.module.scss";
 
 interface MenuHeroMobileMetaProps {
@@ -15,7 +17,6 @@ interface MenuHeroMobileMetaProps {
 
 const META_ICON_SIZE = 16;
 
-// the phone layout's one-line summary, standing in for the stat blocks
 export const MenuHeroMobileMeta: React.FC<MenuHeroMobileMetaProps> = ({
     formattedTotalTime,
     recipeCount,
@@ -23,12 +24,10 @@ export const MenuHeroMobileMeta: React.FC<MenuHeroMobileMetaProps> = ({
     exceedsBudget,
 }) => {
     const { t } = useTranslation("menu");
-    const caloriesClassName = [
+    const caloriesClassName = cx(
         styles["menu-hero__mobile-meta-item"],
         exceedsBudget && styles["menu-hero__mobile-meta-item--calorie-over"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <div className={styles["menu-hero__mobile-meta"]}>

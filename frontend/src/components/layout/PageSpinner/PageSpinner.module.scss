@@ -1,10 +1,5 @@
 @use "styles/abstracts" as *;
-
-@keyframes page-spinner-spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
+@include spin-keyframes;
 
 @keyframes page-spinner-steam-rise {
     0% {
@@ -59,7 +54,7 @@
         justify-content: center;
         width: 104px;
         height: 104px;
-        color: var(--brand);
+        color: var(--brand-text);
 
         // the border ring spins on its own layer so the logo it wraps stays still
         &::before {
@@ -69,7 +64,7 @@
             border: 4px solid var(--brand-subtle);
             border-top-color: var(--brand);
             border-radius: var(--r-pill);
-            animation: page-spinner-spin 1s linear infinite;
+            animation: spin 1s linear infinite;
         }
 
         svg path:nth-child(1) {

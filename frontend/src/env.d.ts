@@ -1,5 +1,4 @@
-// the build-time environment the app is allowed to read; Next inlines these into the
-// bundle, so the list doubles as the contract of what the frontend needs configured
+// Next inlines these at build time, so the list is the contract of what the frontend needs configured
 declare namespace NodeJS {
     interface ProcessEnv {
         readonly NODE_ENV: "development" | "production" | "test";

@@ -1,83 +1,87 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-import type { ExpiredPantryIngredient } from "types/expiry";
+import type { CurrentUser } from "types/auth";
 import type { PantryIngredient } from "types/userIngredient";
 
 import { selectActiveModal } from "redux/selectors/uiSelectors";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
-import { OfflineModal } from "components/connectivity/OfflineModal";
 import { ModalRoot } from "components/modals";
-import { CalorieLimitModal } from "components/modals/CalorieLimitModal";
-import { DeleteCalorieIntakeModal } from "components/modals/DeleteCalorieIntakeModal";
-import { DeleteIngredientModal } from "components/modals/DeleteIngredientModal";
-import { DeleteMenuModal } from "components/modals/DeleteMenuModal";
-import { DeleteRecipeModal } from "components/modals/DeleteRecipeModal";
-import { ExpiredIngredientsModal } from "components/modals/ExpiredIngredientsModal";
-import { LogIntakeModal } from "components/modals/LogIntakeModal";
-import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
-import { NewsModal } from "components/modals/NewsModal";
-import { PurchaseHistoryModal } from "components/modals/PurchaseHistoryModal";
-import { RestockIngredientModal } from "components/modals/RestockIngredientModal";
-import { ThemeChangeConfirmModal } from "components/modals/ThemeChangeConfirmModal";
 
 import { renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
 
-jest.mock("components/modals/PurchaseHistoryModal", () => ({
-    PurchaseHistoryModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/DeleteRecipeModal", () => ({
-    DeleteRecipeModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/DeleteMenuModal", () => ({
-    DeleteMenuModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/DeleteIngredientModal", () => ({
-    DeleteIngredientModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/RestockIngredientModal", () => ({
-    RestockIngredientModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/LogoutConfirmModal", () => ({
-    LogoutConfirmModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/ThemeChangeConfirmModal", () => ({
-    ThemeChangeConfirmModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/ExpiredIngredientsModal", () => ({
-    ExpiredIngredientsModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/DeleteCalorieIntakeModal", () => ({
-    DeleteCalorieIntakeModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/CalorieLimitModal", () => ({
-    CalorieLimitModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/LogIntakeModal", () => ({
-    LogIntakeModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/modals/NewsModal", () => ({
-    NewsModal: jest.fn(() => <div data-testid="modal" />),
-}));
-jest.mock("components/connectivity/OfflineModal", () => ({
-    OfflineModal: jest.fn(() => <div data-testid="modal" />),
-}));
+// each modal stands in as its own name, so a test sees which one ModalRoot mounted
+const mockStandIn = (name: string) => ({
+    [name]: () => <p>{name}</p>,
+});
 
-const mockedModal = jest.mocked(PurchaseHistoryModal);
-const mockedDeleteRecipe = jest.mocked(DeleteRecipeModal);
-const mockedDeleteMenu = jest.mocked(DeleteMenuModal);
-const mockedDeleteIngredient = jest.mocked(DeleteIngredientModal);
-const mockedRestockIngredient = jest.mocked(RestockIngredientModal);
-const mockedLogout = jest.mocked(LogoutConfirmModal);
-const mockedThemeChange = jest.mocked(ThemeChangeConfirmModal);
-const mockedExpiredIngredients = jest.mocked(ExpiredIngredientsModal);
-const mockedDeleteCalorieIntake = jest.mocked(DeleteCalorieIntakeModal);
-const mockedCalorieLimit = jest.mocked(CalorieLimitModal);
-const mockedLogIntake = jest.mocked(LogIntakeModal);
-const mockedNews = jest.mocked(NewsModal);
-const mockedOffline = jest.mocked(OfflineModal);
+jest.mock("components/modals/PurchaseHistoryModal", () => ({
+    PurchaseHistoryModal: ({ onClose }: { onClose: () => void }) => (
+        <button type="button" onClick={onClose}>
+            PurchaseHistoryModal
+        </button>
+    ),
+}));
+jest.mock("components/modals/DeleteRecipeModal", () =>
+    mockStandIn("DeleteRecipeModal"),
+);
+jest.mock("components/modals/DeleteMenuModal", () =>
+    mockStandIn("DeleteMenuModal"),
+);
+jest.mock("components/modals/DeleteIngredientModal", () =>
+    mockStandIn("DeleteIngredientModal"),
+);
+jest.mock("components/modals/RestockIngredientModal", () =>
+    mockStandIn("RestockIngredientModal"),
+);
+jest.mock("components/modals/LogoutConfirmModal", () =>
+    mockStandIn("LogoutConfirmModal"),
+);
+jest.mock("components/modals/SignOutEverywhereModal", () =>
+    mockStandIn("SignOutEverywhereModal"),
+);
+jest.mock("components/modals/ThemeChangeConfirmModal", () =>
+    mockStandIn("ThemeChangeConfirmModal"),
+);
+jest.mock("components/modals/ExpiredIngredientsModal", () =>
+    mockStandIn("ExpiredIngredientsModal"),
+);
+jest.mock("components/modals/DeleteCalorieIntakeModal", () =>
+    mockStandIn("DeleteCalorieIntakeModal"),
+);
+jest.mock("components/modals/CalorieLimitModal", () =>
+    mockStandIn("CalorieLimitModal"),
+);
+jest.mock("components/modals/LogIntakeModal", () =>
+    mockStandIn("LogIntakeModal"),
+);
+jest.mock("components/modals/NewsModal", () => mockStandIn("NewsModal"));
+jest.mock("components/connectivity/OfflineModal", () =>
+    mockStandIn("OfflineModal"),
+);
+jest.mock("components/modals/DeleteTagModal", () =>
+    mockStandIn("DeleteTagModal"),
+);
+jest.mock("components/modals/CookedItModal", () =>
+    mockStandIn("CookedItModal"),
+);
+jest.mock("components/ingredients/AddIngredientModal", () =>
+    mockStandIn("PantryAddIngredientModal"),
+);
+jest.mock("components/profile/EditProfileModal", () =>
+    mockStandIn("EditProfileModal"),
+);
+jest.mock("components/settings/ChangePasswordModal", () =>
+    mockStandIn("ChangePasswordModal"),
+);
+jest.mock("components/settings/DeleteAccountModal", () =>
+    mockStandIn("DeleteAccountModal"),
+);
+
+const MODAL_ID = "modal-1";
 
 const INGREDIENT: PantryIngredient = {
     id: 9,
@@ -90,319 +94,196 @@ const INGREDIENT: PantryIngredient = {
     lots: [],
 };
 
-const MODAL: ActiveModal = {
-    id: "modal-1",
+const CURRENT_USER: CurrentUser = {
+    id: 1,
+    name: "Claude",
+    surname: "Cook",
+    login: "claude",
+    created_at: "2025-06-15T00:00:00.000Z",
+    email: "claude@example.com",
+    email_verified_at: null,
+    avatar: null,
+    avatar_photo_key: null,
+    calorie_goal: null,
+    locale: "en",
+};
+
+type ModalOf<Type extends ActiveModal["type"]> = Extract<
+    ActiveModal,
+    { type: Type }
+>;
+
+const HISTORY: ModalOf<"ingredientHistory"> = {
+    id: MODAL_ID,
     type: MODAL_TYPE.ingredientHistory,
     ingredientId: 7,
     ingredientName: "Salt",
 };
 
-// the modals load lazily, so a render is only settled once the chosen one has appeared
-const renderModalRoot = async (store = makeTestStore()) => {
-    const view = renderWithProviders(<ModalRoot />, { store });
-
-    await screen.findByTestId("modal");
-
-    return view;
+// keyed by type, so a modal type without a row here fails to compile
+const MOUNTED_BY_TYPE: {
+    [Type in ActiveModal["type"]]: [string, ModalOf<Type>];
+} = {
+    ingredientHistory: ["PurchaseHistoryModal", HISTORY],
+    deleteRecipe: [
+        "DeleteRecipeModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.deleteRecipe,
+            recipeId: "42",
+            recipeTitle: "Slow-roasted ragù",
+        },
+    ],
+    deleteMenu: [
+        "DeleteMenuModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.deleteMenu,
+            menuId: 7,
+            menuTitle: "Week of Comfort",
+        },
+    ],
+    deleteIngredient: [
+        "DeleteIngredientModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.deleteIngredient,
+            ingredient: INGREDIENT,
+        },
+    ],
+    restockIngredient: [
+        "RestockIngredientModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.restockIngredient,
+            ingredient: INGREDIENT,
+        },
+    ],
+    logout: ["LogoutConfirmModal", { id: MODAL_ID, type: MODAL_TYPE.logout }],
+    signOutEverywhere: [
+        "SignOutEverywhereModal",
+        { id: MODAL_ID, type: MODAL_TYPE.signOutEverywhere },
+    ],
+    themeChange: [
+        "ThemeChangeConfirmModal",
+        { id: MODAL_ID, type: MODAL_TYPE.themeChange, nextMode: "dark" },
+    ],
+    expiredIngredients: [
+        "ExpiredIngredientsModal",
+        { id: MODAL_ID, type: MODAL_TYPE.expiredIngredients, ingredients: [] },
+    ],
+    deleteCalorieIntake: [
+        "DeleteCalorieIntakeModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.deleteCalorieIntake,
+            intakeId: 9,
+            title: "Miso ramen",
+        },
+    ],
+    calorieLimit: [
+        "CalorieLimitModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.calorieLimit,
+            consumed: 2520,
+            goal: 2200,
+        },
+    ],
+    logIntake: [
+        "LogIntakeModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.logIntake,
+            recipeId: 7,
+            title: "Chicken teriyaki don",
+            caloriesPerPortion: 620,
+        },
+    ],
+    news: ["NewsModal", { id: MODAL_ID, type: MODAL_TYPE.news }],
+    offline: ["OfflineModal", { id: MODAL_ID, type: MODAL_TYPE.offline }],
+    deleteTag: [
+        "DeleteTagModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.deleteTag,
+            tagId: 3,
+            tagName: "Weeknight",
+        },
+    ],
+    cookedIt: [
+        "CookedItModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.cookedIt,
+            recipeId: 7,
+            title: "Chicken teriyaki don",
+            requirements: [],
+            caloriesPerPortion: 620,
+        },
+    ],
+    addIngredient: [
+        "PantryAddIngredientModal",
+        { id: MODAL_ID, type: MODAL_TYPE.addIngredient },
+    ],
+    editProfile: [
+        "EditProfileModal",
+        {
+            id: MODAL_ID,
+            type: MODAL_TYPE.editProfile,
+            currentUser: CURRENT_USER,
+        },
+    ],
+    changePassword: [
+        "ChangePasswordModal",
+        { id: MODAL_ID, type: MODAL_TYPE.changePassword },
+    ],
+    deleteAccount: [
+        "DeleteAccountModal",
+        { id: MODAL_ID, type: MODAL_TYPE.deleteAccount, login: "claude" },
+    ],
 };
 
-describe("ModalRoot", () => {
-    it("should render the history modal for the ingredientHistory type", async () => {
-        await renderModalRoot(makeTestStore({ ui: { queue: [MODAL] } }));
-
-        expect(mockedModal).toHaveBeenCalled();
-
-        const props = mockedModal.mock.calls[0][0];
-
-        expect(props.ingredientId).toBe(7);
-        expect(props.ingredientName).toBe("Salt");
+const renderModalRoot = (queue: ActiveModal[]) =>
+    renderWithProviders(<ModalRoot />, {
+        store: makeTestStore({ ui: { queue } }),
     });
 
+describe("ModalRoot", () => {
+    it.each(Object.values(MOUNTED_BY_TYPE))(
+        "should mount %s for its modal type",
+        async (name, modal) => {
+            renderModalRoot([modal]);
+
+            expect(await screen.findByText(name)).toBeInTheDocument();
+        },
+    );
+
     it("should close the modal when the child requests it", async () => {
-        const store = makeTestStore({ ui: { queue: [MODAL] } });
+        const { store } = renderModalRoot([HISTORY]);
 
-        await renderModalRoot(store);
-
-        const props = mockedModal.mock.calls[0][0];
-
-        act(() => {
-            props.onClose();
-        });
+        await userEvent.click(
+            await screen.findByRole("button", { name: "PurchaseHistoryModal" }),
+        );
 
         expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should render nothing when no modal is open", () => {
-        const { container } = renderWithProviders(<ModalRoot />, {
-            store: makeTestStore(),
-        });
+        const { container } = renderModalRoot([]);
 
         expect(container).toBeEmptyDOMElement();
-        expect(mockedModal).not.toHaveBeenCalled();
-    });
-
-    it("should render the delete-recipe modal with its id, recipe id and title", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-2",
-                            type: MODAL_TYPE.deleteRecipe,
-                            recipeId: "42",
-                            recipeTitle: "Slow-roasted ragù",
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedDeleteRecipe.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-2");
-        expect(props.recipeId).toBe("42");
-        expect(props.recipeTitle).toBe("Slow-roasted ragù");
-    });
-
-    it("should render the delete-menu modal with its id and menu id", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-3",
-                            type: MODAL_TYPE.deleteMenu,
-                            menuId: 7,
-                            menuTitle: "Week of Comfort",
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedDeleteMenu.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-3");
-        expect(props.menuId).toBe(7);
-    });
-
-    it("should render the delete-ingredient modal with its id and ingredient", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-4",
-                            type: MODAL_TYPE.deleteIngredient,
-                            ingredient: INGREDIENT,
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedDeleteIngredient.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-4");
-        expect(props.ingredient).toEqual(INGREDIENT);
-    });
-
-    it("should render the restock-ingredient modal with its id and ingredient", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-4b",
-                            type: MODAL_TYPE.restockIngredient,
-                            ingredient: INGREDIENT,
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedRestockIngredient.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-4b");
-        expect(props.ingredient).toEqual(INGREDIENT);
-    });
-
-    it("should render the logout modal with its id", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: { queue: [{ id: "modal-5", type: MODAL_TYPE.logout }] },
-            }),
-        );
-
-        const props = mockedLogout.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-5");
-    });
-
-    it("should render the theme-change modal with its id and next mode", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-6",
-                            type: MODAL_TYPE.themeChange,
-                            nextMode: "dark",
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedThemeChange.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-6");
-        expect(props.nextMode).toBe("dark");
-    });
-
-    it("should render the expired-ingredients modal with its id and ingredient list", async () => {
-        const ingredients: ExpiredPantryIngredient[] = [
-            {
-                ingredientId: 1,
-                slug: "milk",
-                name: "Milk",
-                unitName: "l",
-                lots: [
-                    {
-                        purchaseId: 101,
-                        quantity: 1,
-                        purchaseDate: "2026-01-01T00:00:00.000Z",
-                        expiryDate: "2026-01-05T00:00:00.000Z",
-                    },
-                ],
-            },
-        ];
-
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-7",
-                            type: MODAL_TYPE.expiredIngredients,
-                            ingredients,
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedExpiredIngredients.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-7");
-        expect(props.ingredients).toEqual(ingredients);
-    });
-
-    it("should render the delete-calorie-intake modal with its id, intake id and title", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-8",
-                            type: MODAL_TYPE.deleteCalorieIntake,
-                            intakeId: 9,
-                            title: "Miso ramen",
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedDeleteCalorieIntake.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-8");
-        expect(props.intakeId).toBe(9);
-        expect(props.title).toBe("Miso ramen");
-    });
-
-    it("should render the calorie-limit modal with its id, consumed and goal", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-9",
-                            type: MODAL_TYPE.calorieLimit,
-                            consumed: 2520,
-                            goal: 2200,
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedCalorieLimit.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-9");
-        expect(props.consumed).toBe(2520);
-        expect(props.goal).toBe(2200);
-    });
-
-    it("should render the news modal with its id", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: { queue: [{ id: "modal-11", type: MODAL_TYPE.news }] },
-            }),
-        );
-
-        expect(mockedNews.mock.calls[0][0].modalId).toBe("modal-11");
-    });
-
-    it("should render the offline modal with its id", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: { queue: [{ id: "modal-12", type: MODAL_TYPE.offline }] },
-            }),
-        );
-
-        expect(mockedOffline.mock.calls[0][0].modalId).toBe("modal-12");
     });
 
     it("should render only the head of the queue", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        { id: "modal-13", type: MODAL_TYPE.logout },
-                        { id: "modal-14", type: MODAL_TYPE.news },
-                    ],
-                },
-            }),
-        );
+        renderModalRoot([
+            { id: MODAL_ID, type: MODAL_TYPE.logout },
+            { id: "modal-2", type: MODAL_TYPE.news },
+        ]);
 
-        expect(mockedLogout).toHaveBeenCalled();
-        expect(mockedNews).not.toHaveBeenCalled();
-    });
-
-    it("should render the log-intake modal with its id, recipe/menu ids, title and calories", async () => {
-        await renderModalRoot(
-            makeTestStore({
-                ui: {
-                    queue: [
-                        {
-                            id: "modal-10",
-                            type: MODAL_TYPE.logIntake,
-                            recipeId: 7,
-                            title: "Chicken teriyaki don",
-                            caloriesPerPortion: 620,
-                        },
-                    ],
-                },
-            }),
-        );
-
-        const props = mockedLogIntake.mock.calls[0][0];
-
-        expect(props.modalId).toBe("modal-10");
-        expect(props.recipeId).toBe(7);
-        expect(props.title).toBe("Chicken teriyaki don");
-        expect(props.caloriesPerPortion).toBe(620);
+        expect(
+            await screen.findByText("LogoutConfirmModal"),
+        ).toBeInTheDocument();
+        expect(screen.queryByText("NewsModal")).not.toBeInTheDocument();
     });
 });

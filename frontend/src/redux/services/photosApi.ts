@@ -24,14 +24,21 @@ const PATH_BY_TARGET = {
     menu: API_ROUTES.menu.photo,
 } satisfies Record<RecordPhotoTarget, (id: number) => string>;
 
+// a menu shows its recipes' photos, so a recipe's photo refetches every menu too
 const invalidateRecordPhoto = (
     _result: unknown,
-    _error: unknown,
+    error: unknown,
     { target, id }: RecordPhotoArgs,
-) => [{ type: TAG_BY_TARGET[target], id }, listTag(TAG_BY_TARGET[target])];
+) =>
+    error
+        ? []
+        : [
+              { type: TAG_BY_TARGET[target], id },
+              listTag(TAG_BY_TARGET[target]),
+              ...(target === "recipe" ? [{ type: TAG_BY_TARGET.menu }] : []),
+          ];
 
-// an author's avatar is shown on every record they own, so those refetch along with the profile;
-// nothing is invalidated on error, since a refetched session would unmount the open profile modal
+// records show their author's avatar; skipped on error, as a refetched session unmounts the modal
 const invalidateAvatar = (_result: unknown, error: unknown) =>
     error ? [] : (["Me", "Recipe", "Menu"] as const);
 

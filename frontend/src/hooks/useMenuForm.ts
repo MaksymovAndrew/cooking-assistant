@@ -7,9 +7,9 @@ import { useDirtyRef } from "hooks/useDirtyRef";
 import { useLocale } from "hooks/useLocale";
 import { useMenuFormValidation } from "hooks/useMenuFormValidation";
 import { useRecordPhotoDraft } from "hooks/useRecordPhotoDraft";
+import { useSelectedRecipes } from "hooks/useSelectedRecipes";
 
 import { differsFromSnapshot } from "utils/formSnapshot";
-import { moveBefore, toggleValue } from "utils/listOrder";
 
 export interface UseMenuFormOptions {
     errorMessages: MenuFormErrorMessages;
@@ -26,13 +26,13 @@ const BLANK_SNAPSHOT: Omit<MenuFormValues, "language"> = {
 export const useMenuForm = (options: UseMenuFormOptions) => {
     const locale = useLocale();
     const [menuTitle, setMenuTitle] = useState("");
-    // a new menu starts in the language the author is using the app in
     const [language, setLanguage] = useState<Locale>(locale);
     const [menuDescription, setMenuDescription] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<number | null>(
         null,
     );
-    const [selectedRecipes, setSelectedRecipes] = useState<number[]>([]);
+    const recipes = useSelectedRecipes();
+    const { selectedRecipes, setSelectedRecipes } = recipes;
     const [initialSnapshot, setInitialSnapshot] = useState<MenuFormValues>({
         ...BLANK_SNAPSHOT,
         language: locale,
@@ -40,7 +40,9 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
     const photo = useRecordPhotoDraft("menu");
     const { reset: resetPhoto } = photo;
 
-    const { errors, validate } = useMenuFormValidation(options.errorMessages);
+    const { errors, attachForm, validate } = useMenuFormValidation(
+        options.errorMessages,
+    );
 
     const validateForm = useCallback(
         (): boolean =>
@@ -59,19 +61,6 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
         ],
     );
 
-    const toggleRecipeSelection = useCallback((recipeId: number) => {
-        setSelectedRecipes((prev) => toggleValue(prev, recipeId));
-    }, []);
-
-    const reorderSelectedRecipes = useCallback(
-        (fromId: number, toId: number) => {
-            setSelectedRecipes((prev) =>
-                moveBefore(prev, prev.indexOf(fromId), prev.indexOf(toId)),
-            );
-        },
-        [],
-    );
-
     const setInitialValues = useCallback(
         (values: MenuFormValues) => {
             setMenuTitle(values.menuTitle);
@@ -82,7 +71,7 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
             resetPhoto(values.photoKey);
             setInitialSnapshot(values);
         },
-        [resetPhoto],
+        [resetPhoto, setSelectedRecipes],
     );
 
     // the photo keeps its own dirty state: a picked file is not a value that serializes
@@ -108,12 +97,14 @@ export const useMenuForm = (options: UseMenuFormOptions) => {
         selectedRecipes,
         photo,
         errors,
+        attachForm,
         setMenuTitle,
         setMenuDescription,
         setSelectedCategory,
         validateForm,
-        toggleRecipeSelection,
-        reorderSelectedRecipes,
+        toggleRecipeSelection: recipes.toggleRecipeSelection,
+        removeRecipe: recipes.removeRecipe,
+        reorderSelectedRecipes: recipes.reorderSelectedRecipes,
         setInitialValues,
         isDirty,
         isDirtyRef,

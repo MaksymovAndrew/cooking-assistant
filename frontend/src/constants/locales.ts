@@ -1,4 +1,3 @@
-// the languages the app is served in; the first is the default and the only one without a URL prefix
 export const LOCALES = ["en", "pl", "ru", "uk"] as const;
 
 export type Locale = (typeof LOCALES)[number];
@@ -29,7 +28,7 @@ export const LOCALE_NAMES: Record<Locale, string> = {
     uk: "Українська",
 };
 
-// the short mark on a switcher or a badge; Ukrainian reads as the country code people know
+// Ukrainian reads as the country code people know
 export const LOCALE_BADGES: Record<Locale, string> = {
     en: "EN",
     pl: "PL",

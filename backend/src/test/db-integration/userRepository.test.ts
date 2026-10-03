@@ -4,7 +4,7 @@ import { ERROR_CODES } from "constants/errorCodes";
 import { DEFAULT_LOCALE } from "constants/locales";
 import { Menu } from "domain/entities/Menu";
 import Recipe from "domain/entities/Recipe";
-import { AppError } from "domain/errors/AppError";
+import { ConflictError } from "domain/errors/AppError";
 
 import PgMenuRepository from "infrastructure/persistence/pg/PgMenuRepository";
 import PgPantryRepository from "infrastructure/persistence/pg/PgPantryRepository";
@@ -74,9 +74,11 @@ describe("PgUserRepository (real Postgres)", () => {
             }),
         );
 
-        expect(error).toBeInstanceOf(AppError);
-        expect((error as AppError).status).toBe(409);
-        expect((error as AppError).code).toBe(ERROR_CODES.LOGIN_ALREADY_TAKEN);
+        expect(error).toBeAppError(
+            ConflictError,
+            ERROR_CODES.LOGIN_ALREADY_TAKEN,
+            409,
+        );
     });
 
     it("should reject a duplicate email with a 409", async () => {
@@ -102,9 +104,11 @@ describe("PgUserRepository (real Postgres)", () => {
             }),
         );
 
-        expect(error).toBeInstanceOf(AppError);
-        expect((error as AppError).status).toBe(409);
-        expect((error as AppError).code).toBe(ERROR_CODES.EMAIL_ALREADY_TAKEN);
+        expect(error).toBeAppError(
+            ConflictError,
+            ERROR_CODES.EMAIL_ALREADY_TAKEN,
+            409,
+        );
     });
 
     it("should find the full record by login including the password hash", async () => {
@@ -375,17 +379,14 @@ describe("PgUserRepository (real Postgres)", () => {
             email: uniqueEmail("katherine"),
         });
 
-        await repository.updateLocale(created.id, DEFAULT_LOCALE);
+        await repository.updateLocale(created.id, "uk");
 
         const found = await repository.findById(created.id);
 
-        expect(found?.locale).toBe(DEFAULT_LOCALE);
+        expect(found?.locale).toBe("uk");
     });
 
-    // exercises the real transactional cascade - a person's recipe linked into someone
-    // ELSE's menu, their own menu, and their own pantry data - since menu.person_id and
-    // menu_recipe.recipe_id have no ON DELETE CASCADE, mocked-repository tests can't catch a
-    // half-cleaned delete leaving orphaned rows behind
+    // the cascades finish the delete, so only a real database shows nothing of the account is left
     it("should delete a person and clean up their recipes, menus, and cross-referenced menu_recipe rows", async () => {
         const menuRepository = new PgMenuRepository(pool);
         const recipeRepository = new PgRecipeRepository(pool);
@@ -432,9 +433,7 @@ describe("PgUserRepository (real Postgres)", () => {
             personId: ownerId,
             recipeIds: [recipeId],
         });
-        const ownMenuId = (await menuRepository.create(ownMenu, [
-            recipeId,
-        ])) as number;
+        const ownMenuId = await menuRepository.create(ownMenu, [recipeId]);
 
         const othersMenu = Menu.forCreation({
             menuTitle: "Someone else's menu",
@@ -444,9 +443,9 @@ describe("PgUserRepository (real Postgres)", () => {
             personId: otherPersonId,
             recipeIds: [recipeId],
         });
-        const othersMenuId = (await menuRepository.create(othersMenu, [
+        const othersMenuId = await menuRepository.create(othersMenu, [
             recipeId,
-        ])) as number;
+        ]);
 
         await pantryRepository.addIngredients(ownerId, [
             { id: ingredientId, quantity_person_ingradient: 2 },

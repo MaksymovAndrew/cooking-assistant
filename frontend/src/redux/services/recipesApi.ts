@@ -4,7 +4,6 @@ import type {
     RecipeDetails,
     RecipeFilterParams,
     RecipeSearchResultItem,
-    RecipeWithIngredientNames,
     UpdateRecipeRequest,
 } from "types/recipe";
 import type { RecipeStatistics } from "types/stats";
@@ -12,11 +11,7 @@ import type { RecipeStatistics } from "types/stats";
 import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
-import {
-    infiniteListProvidesTags,
-    listProvidesTags,
-    listTag,
-} from "./cacheTags";
+import { infiniteListProvidesTags, listTag } from "./cacheTags";
 import { offsetPagedQuery } from "./infiniteQueryHelpers";
 
 const RECIPE = "Recipe" as const;
@@ -40,10 +35,6 @@ export const recipesApi = baseApi.injectEndpoints({
             ...offsetPagedQuery(API_ROUTES.recipes.byPerson),
             providesTags: (result) => infiniteListProvidesTags(RECIPE, result),
         }),
-        getAllRecipes: build.query<RecipeWithIngredientNames[], null>({
-            query: () => ({ url: API_ROUTES.recipes.list }),
-            providesTags: (result) => listProvidesTags(RECIPE, result),
-        }),
         getRecipeStats: build.query<RecipeStatistics, null>({
             query: () => ({ url: API_ROUTES.recipes.stats }),
             providesTags: [RECIPE_LIST],
@@ -52,7 +43,6 @@ export const recipesApi = baseApi.injectEndpoints({
             query: (id) => ({ url: API_ROUTES.recipes.byId(id) }),
             providesTags: (_result, _error, id) => [{ type: RECIPE, id }],
         }),
-        // the created row; only its id is read, to attach a photo picked before it existed
         createRecipe: build.mutation<{ id: number }, CreateRecipeRequest>({
             query: (data) => ({
                 url: API_ROUTES.recipes.create,
@@ -70,11 +60,11 @@ export const recipesApi = baseApi.injectEndpoints({
                 method: "PUT",
                 data,
             }),
-            // calories_computed can change along with the ingredients, so the calorie budget
-            // and over-budget badges (which read a recipe's current calories) must refetch too
+            // calories follow the ingredients, so calorie badges refetch; so do menus, which show recipes
             invalidatesTags: (_result, _error, { id }) => [
                 { type: RECIPE, id },
                 RECIPE_LIST,
+                { type: "Menu" },
                 "Calories",
             ],
         }),
@@ -83,10 +73,7 @@ export const recipesApi = baseApi.injectEndpoints({
                 url: API_ROUTES.recipes.byId(id),
                 method: "DELETE",
             }),
-            // the backend cascades the delete into every menu_recipe row that referenced this
-            // recipe, so any menu that contained it changes too - a plain { type: "Menu" } tag
-            // (no id) invalidates every cached menu list and every menu detail, since the client
-            // has no way to know in advance which specific menus were affected
+            // the delete cascades into menu_recipe and which menus held it is unknown here, so all refetch
             invalidatesTags: (_result, _error, id) => [
                 { type: RECIPE, id },
                 RECIPE_LIST,
@@ -100,7 +87,6 @@ export const recipesApi = baseApi.injectEndpoints({
 export const {
     useGetRecipesByFiltersInfiniteQuery,
     useGetRecipesByPersonInfiniteQuery,
-    useGetAllRecipesQuery,
     useGetRecipeStatsQuery,
     useGetRecipeByIdQuery,
     useCreateRecipeMutation,

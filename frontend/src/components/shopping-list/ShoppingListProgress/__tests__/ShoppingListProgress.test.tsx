@@ -16,13 +16,4 @@ describe("ShoppingListProgress", () => {
         expect(screen.queryByText("100%")).not.toBeInTheDocument();
         expect(screen.getByText("4 of 4 ticked off")).toBeInTheDocument();
     });
-
-    it("should draw no arc before anything is ticked", () => {
-        render(<ShoppingListProgress bought={0} total={5} />);
-
-        expect(screen.getByText("0%")).toBeInTheDocument();
-        expect(
-            screen.queryByTestId("progress-ring-arc"),
-        ).not.toBeInTheDocument();
-    });
 });

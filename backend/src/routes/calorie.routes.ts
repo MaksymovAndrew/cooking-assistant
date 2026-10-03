@@ -11,8 +11,6 @@ export default function createCalorieRouter(
 ): Router {
     const router = express.Router();
 
-    // the user always comes from the auth cookie, never from the path
-
     router.get(
         ROUTES.calories.intake,
         authenticateToken,

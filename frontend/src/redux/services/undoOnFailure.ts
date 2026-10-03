@@ -1,5 +1,4 @@
-// an optimistic cache edit is rolled back if its request fails; the failure itself is toasted by
-// the global listener, so it is swallowed here
+// the global listener toasts the failure, so it is swallowed here once the edit is undone
 export const undoOnFailure = async (
     patch: { undo: () => void },
     queryFulfilled: Promise<unknown>,

@@ -28,8 +28,7 @@
     &__actions {
         @include mobile-stacked-actions;
 
-        // the parent row wraps this onto its own line on mobile - claim the full line so the
-        // stacked buttons below can actually stretch across it instead of hugging their content
+        // takes the whole wrapped line so the stacked buttons can stretch across it
         flex: 1 1 100%;
 
         @include respond-to(tablet) {

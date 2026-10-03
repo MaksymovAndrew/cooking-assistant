@@ -1,16 +1,17 @@
-import { Languages, Lock, LogOut, SunMoon, User } from "lucide-react";
-import React from "react";
+import { Lock, LogOut, User } from "lucide-react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
 
+import { useMenuArrowKeys } from "hooks/useMenuArrowKeys";
+
 import type { AvatarProps } from "components/ui/Avatar";
 import { Avatar } from "components/ui/Avatar";
-import { LanguageSwitcher } from "components/ui/LanguageSwitcher";
 import { Link } from "components/ui/Link";
-import { ThemeToggle } from "components/ui/ThemeToggle";
 
 import styles from "./AccountMenu.module.scss";
+import { AccountMenuSettings } from "./AccountMenuSettings";
 
 interface AccountMenuPanelProps {
     avatarProps: Omit<AvatarProps, "size">;
@@ -31,9 +32,18 @@ export const AccountMenuPanel: React.FC<AccountMenuPanelProps> = ({
     onLogout,
 }) => {
     const { t } = useTranslation();
+    const menuRef = useRef<HTMLDivElement>(null);
+    const handleKeyDown = useMenuArrowKeys(menuRef);
 
     return (
-        <div role="menu" className={styles["account-menu__panel"]}>
+        <div
+            ref={menuRef}
+            role="menu"
+            tabIndex={-1}
+            aria-label={t("accountMenu.trigger")}
+            onKeyDown={handleKeyDown}
+            className={styles["account-menu__panel"]}
+        >
             <div className={styles["account-menu__header"]}>
                 <Avatar {...avatarProps} size={HEADER_AVATAR_SIZE} />
                 <span className={styles["account-menu__identity"]}>
@@ -66,24 +76,7 @@ export const AccountMenuPanel: React.FC<AccountMenuPanelProps> = ({
                 <Lock size={MENU_ICON_SIZE} aria-hidden="true" />
                 {t("accountMenu.settings")}
             </Link>
-            {/* phones only: from tablet up both controls sit in the header */}
-            <div className={styles["account-menu__setting"]}>
-                <span className={styles["account-menu__setting-label"]}>
-                    <Languages size={MENU_ICON_SIZE} aria-hidden="true" />
-                    {t("accountMenu.language")}
-                </span>
-                <LanguageSwitcher
-                    withIcon={false}
-                    className={styles["account-menu__control"]}
-                />
-            </div>
-            <div className={styles["account-menu__setting"]}>
-                <span className={styles["account-menu__setting-label"]}>
-                    <SunMoon size={MENU_ICON_SIZE} aria-hidden="true" />
-                    {t("accountMenu.theme")}
-                </span>
-                <ThemeToggle className={styles["account-menu__control"]} />
-            </div>
+            <AccountMenuSettings />
             <div className={styles["account-menu__divider"]} />
             <button
                 type="button"

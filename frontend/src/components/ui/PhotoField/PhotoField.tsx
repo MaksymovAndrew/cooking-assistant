@@ -5,6 +5,8 @@ import { ACCEPTED_IMAGE_TYPES } from "constants/media";
 
 import { useFileDrop } from "hooks/useFileDrop";
 
+import { cx } from "utils/cx";
+
 import styles from "./PhotoField.module.scss";
 import { PhotoFieldEmpty } from "./PhotoFieldEmpty";
 import { PhotoFieldFilled } from "./PhotoFieldFilled";
@@ -15,7 +17,6 @@ interface PhotoFieldProps {
     error: string | null;
     onChoose: (file: File) => void;
     onRemove: () => void;
-    // an avatar previews as the round tile it is shown in
     shape?: "cover" | "round";
 }
 
@@ -46,12 +47,10 @@ export const PhotoField: React.FC<PhotoFieldProps> = ({
         removedRef.current = true;
         onRemove();
     };
-    const frameClassName = [
+    const frameClassName = cx(
         styles["photo-field__frame"],
         shape === "round" && styles["photo-field__frame--round"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     const browse = () => inputRef.current?.click();
 

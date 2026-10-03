@@ -1,47 +1,54 @@
 import type { ErrorCode } from "constants/errorCodes";
+import type { ValidationMessage } from "constants/validationMessages";
 
-// carries a code, never display text: errorHandler resolves the copy from the i18n catalog at the HTTP edge, the one
-// place a request's locale can be known. detail is optional request-specific context, such as a zod issue list
+// a code, never display text: only the HTTP edge knows the request's locale
 export class AppError extends Error {
     status: number;
     code: ErrorCode;
-    detail: string | null;
 
-    constructor(code: ErrorCode, status: number, detail: string | null = null) {
-        super(detail ?? code);
+    constructor(code: ErrorCode, status: number) {
+        super(code);
         this.name = this.constructor.name;
         this.status = status;
         this.code = code;
-        this.detail = detail;
     }
 }
 
+export interface ValidationIssue {
+    path: string;
+    message: ValidationMessage;
+    params: Record<string, string | number>;
+}
+
 export class ValidationError extends AppError {
-    constructor(code: ErrorCode, detail: string | null = null) {
-        super(code, 400, detail);
+    issues: readonly ValidationIssue[];
+
+    constructor(code: ErrorCode, issues: readonly ValidationIssue[] = []) {
+        super(code, 400);
+        this.issues = issues;
     }
 }
 
 export class UnauthorizedError extends AppError {
-    constructor(code: ErrorCode, detail: string | null = null) {
-        super(code, 401, detail);
+    constructor(code: ErrorCode) {
+        super(code, 401);
     }
 }
 
 export class ForbiddenError extends AppError {
-    constructor(code: ErrorCode, detail: string | null = null) {
-        super(code, 403, detail);
+    constructor(code: ErrorCode) {
+        super(code, 403);
     }
 }
 
 export class NotFoundError extends AppError {
-    constructor(code: ErrorCode, detail: string | null = null) {
-        super(code, 404, detail);
+    constructor(code: ErrorCode) {
+        super(code, 404);
     }
 }
 
 export class ConflictError extends AppError {
-    constructor(code: ErrorCode, detail: string | null = null) {
-        super(code, 409, detail);
+    constructor(code: ErrorCode) {
+        super(code, 409);
     }
 }

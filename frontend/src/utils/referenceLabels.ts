@@ -2,15 +2,13 @@ import type { TFunction } from "i18next";
 
 import { formatQuantity, roundQuantity } from "utils/roundQuantity";
 
-// recipe types, menu categories and units are seeded by their English name, which the seed also matches rows on, so
-// that name is their key; the stored name is the defaultValue so an unknown row still renders
+// reference rows are keyed by their seeded English name; the stored name is the fallback
 const referenceKey = (name: string): string =>
     name.trim().toLowerCase().replace(/\s+/g, "_");
 
 export const recipeTypeName = (t: TFunction, name: string): string =>
     t(`common:recipeTypes.${referenceKey(name)}.name`, { defaultValue: name });
 
-// a recipe's type is optional (deleting a type empties it), so the label is too
 export const recipeTypeLabel = (
     t: TFunction,
     name: string | null,
@@ -28,7 +26,7 @@ export const recipeTypeDescription = (
 export const menuCategoryName = (t: TFunction, name: string): string =>
     t(`common:menuCategories.${referenceKey(name)}`, { defaultValue: name });
 
-// a count picks the plural form (3 cloves, 5 зубчиков); without one the unit is named on its own, as in a column label
+// a count picks the plural form; without one the unit is named alone, as in a column label
 export const unitName = (
     t: TFunction,
     unit: string,

@@ -26,8 +26,7 @@ function pngChunk(type: string, data: Buffer): Buffer {
     return Buffer.concat([uint32(data.length), body, uint32(crc32(body))]);
 }
 
-// a genuine, valid PNG of 7000x7000 one-bit pixels: a few kilobytes on the wire, 49 megapixels
-// once decoded - the shape of a decompression bomb
+// a valid PNG of a few kilobytes that decodes to 49 megapixels
 function decompressionBomb(): Buffer {
     const side = 7000;
     const rowBytes = Math.ceil(side / 8) + 1;

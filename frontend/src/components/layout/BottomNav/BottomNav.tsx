@@ -14,6 +14,7 @@ import { useAddressBarReflowFix } from "hooks/useAddressBarReflowFix";
 
 import { Link } from "components/ui/Link";
 
+import { cx } from "utils/cx";
 import { isActivePath } from "utils/isActivePath";
 import { stripLocale } from "utils/localePath";
 import { rememberLoginRedirect } from "utils/loginRedirect";
@@ -33,7 +34,11 @@ export const BottomNav: React.FC = () => {
     useAddressBarReflowFix(navRef);
 
     return (
-        <nav ref={navRef} className={styles["bottom-nav"]}>
+        <nav
+            ref={navRef}
+            aria-label={t("nav.tabBarLabel")}
+            className={styles["bottom-nav"]}
+        >
             <div className={styles["bottom-nav__content"]}>
                 {items.map(({ href, labelKey, Icon }) => {
                     const isActive = isActivePath(href, pathname);
@@ -48,12 +53,11 @@ export const BottomNav: React.FC = () => {
                                     ? rememberLoginRedirect
                                     : undefined
                             }
-                            className={[
+                            className={cx(
                                 styles["bottom-nav__item"],
                                 isActive && styles["bottom-nav__item--active"],
-                            ]
-                                .filter(Boolean)
-                                .join(" ")}
+                            )}
+                            aria-current={isActive ? "page" : undefined}
                         >
                             <Icon
                                 size={isActive ? ACTIVE_ICON_SIZE : ICON_SIZE}

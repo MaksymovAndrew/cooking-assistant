@@ -1,7 +1,6 @@
 import type { MediaStorage } from "application/ports/MediaStorage";
 
-// deleting a record deletes its files: the delete itself hands back the keys, and the files are
-// removed only after it is gone, so a failed delete never leaves a record pointing at nothing
+// files go only after their record is deleted, so no record ever points at a missing file
 export default class PhotoCleanup {
     constructor(private mediaStorage: Pick<MediaStorage, "remove">) {}
 

@@ -54,8 +54,7 @@
         gap: var(--s-2);
     }
 
-    // a phone has the bottom bar's own "Log in", and the header has no room for both; scoped
-    // under the group so it outranks the button's own display
+    // phones use the bottom bar's "Log in"; nested to outrank the button's own display
     &__guest-actions &__login {
         display: none;
 

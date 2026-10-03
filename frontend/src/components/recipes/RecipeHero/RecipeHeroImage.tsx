@@ -9,6 +9,7 @@ import styles from "./RecipeHero.module.scss";
 
 interface RecipeHeroImageProps {
     photoSrc: string | null;
+    photoSrcSet: string | null;
     title: string;
     // null for a guest, who gets no heart
     favourite: FavouriteToggle | null;
@@ -16,10 +17,15 @@ interface RecipeHeroImageProps {
 }
 
 const IMAGE_ICON_SIZE = 56;
+// 4:3, full width below desktop and about half the 1280px page beside the ingredients
+const PHOTO_WIDTH = 1200;
+const PHOTO_HEIGHT = 900;
+const PHOTO_SIZES = "(min-width: 1280px) 640px, 100vw";
 const FAVOURITE_ICON_SIZE = 20;
 
 export const RecipeHeroImage: React.FC<RecipeHeroImageProps> = ({
     photoSrc,
+    photoSrcSet,
     title,
     favourite,
     favouriteLabel,
@@ -30,6 +36,10 @@ export const RecipeHeroImage: React.FC<RecipeHeroImageProps> = ({
             <img
                 className={styles["recipe-hero__photo"]}
                 src={photoSrc}
+                srcSet={photoSrcSet ?? undefined}
+                sizes={PHOTO_SIZES}
+                width={PHOTO_WIDTH}
+                height={PHOTO_HEIGHT}
                 alt={title}
                 fetchPriority="high"
             />

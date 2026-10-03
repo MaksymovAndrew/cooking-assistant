@@ -1,10 +1,10 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { deleteRecipe, deleteTag } from "./api";
 import { createRecipeViaForm } from "./forms";
 import { VIEWER_STORAGE_STATE } from "./sharedAccounts";
 
-// private tags: created on a recipe page, kept after a reload, usable as a recipe filter
 test.describe.configure({ mode: "serial" });
 
 let context: BrowserContext;
@@ -19,7 +19,6 @@ test.beforeAll(async ({ browser }) => {
 
     recipeTitle = `Tagged recipe ${stamp}`;
     tagName = `Tag ${stamp}`;
-    // reuses the shared viewer account (registered once in global-setup) instead of registering a fresh one here
     context = await browser.newContext({ storageState: VIEWER_STORAGE_STATE });
     page = await context.newPage();
 
@@ -33,15 +32,13 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    await page.goto(`/recipe/${recipeId}`);
-    await page.getByRole("button", { name: "Delete recipe" }).click();
-    await page
-        .getByRole("dialog")
-        .getByRole("button", { name: "Delete recipe" })
-        .click();
-    await expect(page).toHaveURL(/\/all-recipes$/);
-
-    await context.close();
+    // cleanup: a deleted recipe leaves its tag behind, so both go
+    try {
+        await deleteTag(context.request, tagId);
+        await deleteRecipe(context.request, recipeId);
+    } finally {
+        await context.close();
+    }
 });
 
 const openEditor = async (): Promise<void> => {
@@ -98,7 +95,6 @@ test("should take the tag off the recipe and delete it", async () => {
         "false",
     );
 
-    // cleanup: leave the shared viewer account with no tags of its own
     await page.getByRole("button", { name: `Delete ${tagName}` }).click();
     await page
         .getByRole("dialog")

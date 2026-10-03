@@ -22,7 +22,7 @@ describe("UpdatePurchaseQuantity", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Quantity cannot be empty.",
+            "Required",
         );
         expect(pantryRepository.updatePurchaseQuantity).not.toHaveBeenCalled();
     });
@@ -50,7 +50,7 @@ describe("UpdatePurchaseQuantity", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Quantity must be greater than 0",
+            "Must be greater than 0",
         );
         expect(pantryRepository.updatePurchaseQuantity).not.toHaveBeenCalled();
     });

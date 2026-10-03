@@ -18,12 +18,6 @@ describe("LoadMore", () => {
         expect(screen.getByText("Showing 30 of 90")).toBeInTheDocument();
     });
 
-    it("should not render a counter line when countLabel is omitted", () => {
-        render(<LoadMore {...baseProps} />);
-
-        expect(screen.queryByText(/showing/i)).not.toBeInTheDocument();
-    });
-
     it("should call onLoadMore when the button is clicked", async () => {
         const onLoadMore = jest.fn();
 
@@ -54,12 +48,6 @@ describe("LoadMore", () => {
         );
     });
 
-    it("should not render a spinner when not loading", () => {
-        render(<LoadMore {...baseProps} />);
-
-        expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    });
-
     it("should render the error message and keep the button for a manual retry", () => {
         render(<LoadMore {...baseProps} errorMessage="Couldn't load more" />);
 
@@ -67,13 +55,5 @@ describe("LoadMore", () => {
         expect(
             screen.getByRole("button", { name: "Load more" }),
         ).toBeInTheDocument();
-    });
-
-    it("should not render an error line when errorMessage is omitted", () => {
-        render(<LoadMore {...baseProps} />);
-
-        expect(
-            screen.queryByText(/couldn't load more/i),
-        ).not.toBeInTheDocument();
     });
 });

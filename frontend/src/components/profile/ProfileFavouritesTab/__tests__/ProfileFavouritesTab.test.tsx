@@ -33,8 +33,8 @@ const RECIPE: RecipeSearchResultItem = {
 const MENU: Menu = {
     id: 2,
     title: MENU_TITLE,
-    categoryname: "Lunch",
-    menucontent: "",
+    categoryName: "Lunch",
+    menuContent: "",
     recipe_count: 3,
     isOwner: false,
     isFavourite: true,

@@ -1,0 +1,37 @@
+@use "styles/abstracts" as *;
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-bottom: var(--s-5);
+    color: var(--text-muted);
+    font:
+        500 13px Inter,
+        sans-serif;
+
+    &--desktop-only {
+        display: none;
+
+        @include respond-to(desktop) {
+            display: flex;
+        }
+    }
+
+    &__link {
+        color: var(--text-muted);
+        text-decoration: none;
+
+        @include focus-ring;
+
+        @include on-hover {
+            color: var(--brand-text);
+        }
+    }
+
+    &__current {
+        color: var(--text-2);
+
+        @include truncate;
+    }
+}

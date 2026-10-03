@@ -1,11 +1,10 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { deleteRecipe, removeAvatarPhoto } from "./api";
 import { createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
-// a recipe photo added from the edit form, shown on the recipe page and its card, then removed;
-// and a profile photo uploaded from Edit profile and taken back off
 test.describe.configure({ mode: "serial" });
 
 const PHOTO = {
@@ -37,7 +36,13 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    await context.close();
+    // cleanup: deleting the recipe removes its photo files too
+    try {
+        await deleteRecipe(context.request, recipeId);
+        await removeAvatarPhoto(context.request);
+    } finally {
+        await context.close();
+    }
 });
 
 async function saveRecipeExpecting(method: "PUT" | "DELETE"): Promise<void> {

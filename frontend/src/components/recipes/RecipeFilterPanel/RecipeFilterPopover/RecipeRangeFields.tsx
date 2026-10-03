@@ -12,9 +12,7 @@ interface RecipeRangeFieldsProps {
     onChange: (value: NumericRangeValue) => void;
 }
 
-// debounced like SearchField: instant typing feedback locally, one URL write (the caller wires
-// onChange with { replace: true }) after typing settles - otherwise every keystroke on these
-// free-text number fields pushed its own history entry and fired its own request
+// debounced so each keystroke doesn't push a history entry and fire a request
 export const RecipeRangeFields: React.FC<RecipeRangeFieldsProps> = ({
     value,
     onChange,

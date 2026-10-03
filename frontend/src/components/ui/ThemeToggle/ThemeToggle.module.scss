@@ -24,8 +24,7 @@
     }
 }
 
-// both icons ship in the markup and the applied theme picks one, so the control is
-// correct before React hydrates and never disagrees with server-rendered HTML
+// both icons ship and the theme CSS picks one, so the toggle is right before hydration
 .icon--dark {
     display: var(--show-in-dark);
 }

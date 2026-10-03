@@ -4,7 +4,6 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// "edit" glyph - not a stock lucide icon
 export const EditMark: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

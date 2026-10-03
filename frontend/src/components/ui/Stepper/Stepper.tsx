@@ -37,7 +37,9 @@ export const Stepper: React.FC<StepperProps> = ({
         >
             <Minus size={ICON_SIZE} aria-hidden="true" />
         </button>
-        <span className={styles.stepper__value}>{value}</span>
+        <output aria-live="polite" className={styles.stepper__value}>
+            {value}
+        </output>
         <button
             type="button"
             onClick={() => {

@@ -13,7 +13,6 @@ interface RecipeTagsFilterProps {
     onChange: (next: number[]) => void;
 }
 
-// tags are private, so the section is skipped for a guest and for anyone who has none yet
 export const RecipeTagsFilter: React.FC<RecipeTagsFilterProps> = ({
     value,
     onChange,

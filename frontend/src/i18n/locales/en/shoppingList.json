@@ -28,8 +28,6 @@
         "boughtEmpty": "Ticked items land here."
     },
     "item": {
-        "moveUp": "Move {{name}} up",
-        "moveDown": "Move {{name}} down",
         "remove": "Remove {{name}}"
     },
     "empty": {

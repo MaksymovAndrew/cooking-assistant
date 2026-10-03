@@ -2,6 +2,9 @@ import { AlertTriangle } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppDispatch } from "redux/hooks";
+import { closeModal } from "redux/slices/uiSlice";
+
 import { useDeleteAccountForm } from "hooks/useDeleteAccountForm";
 
 import { LockoutNotice } from "components/forms/auth/LoginForm/LockoutNotice";
@@ -14,8 +17,8 @@ import { PasswordInput } from "components/ui/PasswordInput";
 import styles from "./DeleteAccountModal.module.scss";
 
 interface DeleteAccountModalProps {
+    modalId: string;
     login: string;
-    onClose: () => void;
 }
 
 const ICON_SIZE = 26;
@@ -23,12 +26,14 @@ const PW_FIELD_ID = "delete-account-password";
 const FORM_ID = "delete-account-form";
 
 export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
+    modalId,
     login,
-    onClose,
 }) => {
     const { t } = useTranslation("settings");
-    const form = useDeleteAccountForm(login);
-    // erases the promise (matches ChangePasswordModal) so a fire-and-forget submit needs no void/catch
+    const dispatch = useAppDispatch();
+    const onClose = () => dispatch(closeModal(modalId));
+    const form = useDeleteAccountForm(login, onClose);
+    // typed unknown to erase the promise, so the submit needs no void or catch
     const submitForm = (): unknown => form.handleSubmit();
 
     const heading = (

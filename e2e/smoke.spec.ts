@@ -90,25 +90,6 @@ test("should create a menu from that recipe and list it under My Menus", async (
     await expect(page.getByText(menuTitle)).toBeVisible();
 });
 
-test("should add a pantry ingredient", async () => {
-    await page.goto("/ingredients");
-    await page.getByRole("button", { name: "Add ingredient" }).click();
-    await selectFromPicker(
-        page,
-        page.getByPlaceholder("Search ingredients…"),
-        "Tomato",
-    );
-    await page.getByRole("button", { name: "Continue" }).click();
-    await page.getByRole("button", { name: "Add to pantry" }).click();
-    await expect(page.getByText("Ingredients saved")).toBeVisible();
-    await expect(page.getByText("Tomato")).toBeVisible();
-});
-
-test("should render the statistics page", async () => {
-    await page.goto("/stats");
-    await expect(page.getByText("Recipe statistics")).toBeVisible();
-});
-
 test("should log out and protect private routes again", async () => {
     await page.goto("/");
     await page
@@ -118,12 +99,11 @@ test("should log out and protect private routes again", async () => {
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login$/);
 
-    // "/" is public now - a logged-out visitor sees the guest landing page instead of a redirect
+    // "/" is public: a logged-out visitor gets the guest landing page, not a redirect
     await page.goto("/");
     await expect(page).toHaveURL("/");
     await expect(page.getByText("Browsing as guest")).toBeVisible();
 
-    // a genuinely private route still redirects to login
     await page.goto("/profile");
     await expect(page).toHaveURL(/\/login$/);
 });

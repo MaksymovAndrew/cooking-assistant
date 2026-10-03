@@ -6,13 +6,12 @@
     gap: var(--s-6);
     padding: var(--s-6) var(--s-4);
 
-    // tighter vertical rhythm on desktop so the dashboard fits a laptop viewport without a sliver of scroll
+    // tighter on desktop so the dashboard fits a laptop screen without scrolling
     @include respond-to(desktop) {
         gap: var(--s-5);
         padding: var(--s-5);
     }
 
-    // a rotated phone is too short for the column layout, so it splits into greeting+stats+actions on the left and the recipes/expiring panels on the right
     @include respond-to-short-landscape {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -20,7 +19,7 @@
         gap: var(--s-3);
         padding: var(--s-3) var(--s-4);
 
-        // GreetingHeader, StatStrip, HomeActions - the home-dashboard's 1st/2nd/4th children (3rd is the panels grid below)
+        // 1st/2nd/4th children: GreetingHeader, StatStrip, HomeActions (3rd is the panels grid)
         > :nth-child(1) {
             grid-column: 1;
             grid-row: 1;
@@ -58,8 +57,7 @@
         }
     }
 
-    // stacked layouts drop both wrappers so every panel joins the one grid, which is what lets
-    // the stats banner sit between "expiring soon" and "what's new" without a second render
+    // stacked, the wrappers dissolve into one grid so panels reorder without a second render
     &__main,
     &__rail {
         display: contents;
@@ -79,7 +77,7 @@
         order: 1;
     }
 
-    // both columns end on one line: the recent recipes take the slack on the left, "what's new" on the right
+    // these take the slack so both columns end on one line
     &__main > :first-child,
     &__rail > :last-child {
         @include respond-to(desktop) {
@@ -92,7 +90,7 @@
     }
 
     &__rail {
-        // News is reachable via the bell button in HomeActions here, so the card is dropped to save height
+        // the HomeActions bell covers news here, so the card goes to save height
         @include respond-to-short-landscape {
             > :last-child {
                 display: none;

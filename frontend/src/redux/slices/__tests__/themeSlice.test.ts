@@ -1,11 +1,9 @@
 import { THEME_STORAGE_KEY } from "constants/theme";
 
-import {
-    getInitialThemeMode,
-    setTheme,
-    themeReducer,
-    toggleTheme,
-} from "redux/slices/themeSlice";
+import { getInitialThemeMode, storeThemeChoice } from "redux/slices/themeSlice";
+
+// undefined under jsdom, so restoring it brings back a browser without matchMedia
+const originalMatchMedia = window.matchMedia;
 
 const stubMatchMedia = (matches: boolean): void => {
     window.matchMedia = (query: string): MediaQueryList => ({
@@ -20,8 +18,11 @@ const stubMatchMedia = (matches: boolean): void => {
     });
 };
 
+afterEach(() => {
+    window.matchMedia = originalMatchMedia;
+});
+
 describe("getInitialThemeMode", () => {
-    // must run before any test stubs window.matchMedia, so jsdom's real lack of matchMedia support drives this branch
     it("should return dark when there is no stored preference and no matchMedia support", () => {
         expect(getInitialThemeMode()).toBe("dark");
     });
@@ -52,22 +53,18 @@ describe("getInitialThemeMode", () => {
     });
 });
 
-describe("themeReducer", () => {
-    it("should set the theme to the given mode", () => {
-        const state = themeReducer({ mode: "dark" }, setTheme("light"));
+describe("storeThemeChoice", () => {
+    it("should store an explicit theme", () => {
+        storeThemeChoice("light");
 
-        expect(state.mode).toBe("light");
+        expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
     });
 
-    it("should toggle from dark to light", () => {
-        const state = themeReducer({ mode: "dark" }, toggleTheme());
+    it("should clear the stored theme for the system choice", () => {
+        localStorage.setItem(THEME_STORAGE_KEY, "dark");
 
-        expect(state.mode).toBe("light");
-    });
+        storeThemeChoice("system");
 
-    it("should toggle from light to dark", () => {
-        const state = themeReducer({ mode: "light" }, toggleTheme());
-
-        expect(state.mode).toBe("dark");
+        expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull();
     });
 });

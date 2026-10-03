@@ -2,6 +2,7 @@ import { Info } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { FormPageKey } from "types/formPage";
 import type { RecipeListItem } from "types/recipe";
 
 import type { useMenuForm } from "hooks/useMenuForm";
@@ -10,22 +11,20 @@ import { RecipePicker } from "components/menu/RecipePicker";
 import { SelectedRecipesList } from "components/menu/SelectedRecipesList";
 import { FormCard } from "components/ui/FormCard";
 
-import styles from "./MenuForm.module.scss";
+import { recipeIdsOf } from "utils/menuFormRecipes";
 
-type MenuPageKey = "createMenuPage" | "changeMenuPage";
+import styles from "./MenuForm.module.scss";
 
 interface MenuFormRecipesCardProps {
     form: ReturnType<typeof useMenuForm>;
-    allRecipes: RecipeListItem[];
     selectedRecipes: RecipeListItem[];
-    keyPrefix: MenuPageKey;
+    keyPrefix: FormPageKey<"Menu">;
 }
 
 const HINT_ICON_SIZE = 14;
 
 export const MenuFormRecipesCard: React.FC<MenuFormRecipesCardProps> = ({
     form,
-    allRecipes,
     selectedRecipes,
     keyPrefix,
 }) => {
@@ -45,19 +44,16 @@ export const MenuFormRecipesCard: React.FC<MenuFormRecipesCardProps> = ({
             </div>
 
             <RecipePicker
-                allRecipes={allRecipes}
-                selectedIds={form.selectedRecipes}
+                selectedIds={recipeIdsOf(selectedRecipes)}
                 label={t(`${keyPrefix}.recipesLabel`)}
-                onToggle={(recipe) => {
-                    form.toggleRecipeSelection(recipe.id);
-                }}
+                onToggle={form.toggleRecipeSelection}
             />
 
             {selectedRecipes.length > 0 && (
                 <div className={styles["menu-form__selected"]}>
                     <SelectedRecipesList
                         recipes={selectedRecipes}
-                        onRemove={form.toggleRecipeSelection}
+                        onRemove={form.removeRecipe}
                         onReorder={form.reorderSelectedRecipes}
                     />
                 </div>

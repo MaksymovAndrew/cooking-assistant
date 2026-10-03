@@ -1,12 +1,13 @@
-// build-time: turns catalogData.json into the four frontend catalog.json locale files - only en/ is imported by the running app (see frontend/src/i18n/index.ts), ru/uk/pl are generated and committed ahead of translations shipping
 import { writeFileSync } from "fs";
 import { join } from "path";
+
+import { type Locale, LOCALES } from "constants/locales";
 
 import { ALLERGEN_NAMES } from "./allergenNames";
 import { ALLERGEN_SLUGS, CATEGORY_KEYS } from "./catalog.types";
 import rawCatalogData from "./catalogData.json";
 import { parseCatalogData } from "./catalogDataSchema";
-import { CATEGORY_NAMES, type Locale, LOCALES } from "./catalogVocabulary";
+import { CATEGORY_NAMES } from "./catalogVocabulary";
 
 const catalogData = parseCatalogData(rawCatalogData);
 
@@ -48,7 +49,7 @@ function buildLocaleResource(locale: Locale): {
     for (const entry of catalogData) {
         const name = ingredientNameFor(locale, entry);
 
-        // no draft found for this language - omit the key rather than fabricate a translation; the resolver falls back to the raw DB name until this is filled in
+        // omitted rather than fabricated; the resolver falls back to the raw DB name
         if (name === null) {
             missingIngredients.push(entry.slug);
             continue;

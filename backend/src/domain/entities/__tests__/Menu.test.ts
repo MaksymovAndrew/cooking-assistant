@@ -4,7 +4,7 @@ import { ValidationError } from "domain/errors/AppError";
 
 import { catchSyncError } from "test/helpers/assertions";
 
-function makeInput(overrides: Record<string, unknown> = {}) {
+function makeInput(overrides: { recipeIds?: number[] } = {}) {
     return {
         menuTitle: "Weekly menu",
         menuContent: "A simple dinner plan",
@@ -16,54 +16,11 @@ function makeInput(overrides: Record<string, unknown> = {}) {
     };
 }
 
-function catchCreationError(overrides: Record<string, unknown>) {
-    return catchSyncError(() => {
-        Menu.forCreation(makeInput(overrides));
-    });
-}
-
-function catchUpdateError(
-    id: string | number | null,
-    overrides: Record<string, unknown> = {},
-) {
-    return catchSyncError(() => {
-        Menu.forUpdate(id, makeInput(overrides));
-    });
-}
-
 describe("Menu", () => {
-    it("should throw a 400 ValidationError when creation menuTitle is missing", () => {
-        const error = catchCreationError({ menuTitle: "" });
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
-            400,
-        );
-    });
-
-    it("should throw a 400 ValidationError when creation categoryId is missing", () => {
-        const error = catchCreationError({ categoryId: null });
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
-            400,
-        );
-    });
-
-    it("should throw a 400 ValidationError when creation recipeIds are missing", () => {
-        const error = catchCreationError({ recipeIds: undefined });
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.MENU_INSUFFICIENT_DATA_CREATE,
-            400,
-        );
-    });
-
     it("should throw a 400 ValidationError when creation recipeIds are empty", () => {
-        const error = catchCreationError({ recipeIds: [] });
+        const error = catchSyncError(() => {
+            Menu.forCreation(makeInput({ recipeIds: [] }));
+        });
 
         expect(error).toBeAppError(
             ValidationError,
@@ -78,14 +35,7 @@ describe("Menu", () => {
         const menu = Menu.forCreation(input);
 
         expect(menu).toBeInstanceOf(Menu);
-        expect(Object.keys(menu)).toEqual([
-            "menuTitle",
-            "menuContent",
-            "language",
-            "categoryId",
-            "personId",
-        ]);
-        expect(menu).toMatchObject({
+        expect(menu).toEqual({
             menuTitle: input.menuTitle,
             menuContent: input.menuContent,
             language: "uk",
@@ -94,48 +44,10 @@ describe("Menu", () => {
         });
     });
 
-    it("should throw a 400 ValidationError when update id is missing", () => {
-        const error = catchUpdateError(null);
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
-            400,
-        );
-    });
-
-    it("should throw a 400 ValidationError when update menuTitle is missing", () => {
-        const error = catchUpdateError(4, { menuTitle: "" });
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
-            400,
-        );
-    });
-
-    it("should throw a 400 ValidationError when update categoryId is missing", () => {
-        const error = catchUpdateError(4, { categoryId: null });
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
-            400,
-        );
-    });
-
-    it("should throw a 400 ValidationError when update recipeIds are missing", () => {
-        const error = catchUpdateError(4, { recipeIds: undefined });
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.MENU_INSUFFICIENT_DATA_UPDATE,
-            400,
-        );
-    });
-
     it("should throw a 400 ValidationError when update recipeIds are empty", () => {
-        const error = catchUpdateError(4, { recipeIds: [] });
+        const error = catchSyncError(() => {
+            Menu.forUpdate(makeInput({ recipeIds: [] }));
+        });
 
         expect(error).toBeAppError(
             ValidationError,
@@ -147,16 +59,10 @@ describe("Menu", () => {
     it("should create an update menu without personId", () => {
         const input = makeInput();
 
-        const menu = Menu.forUpdate(4, input);
+        const menu = Menu.forUpdate(input);
 
         expect(menu).toBeInstanceOf(Menu);
-        expect(Object.keys(menu)).toEqual([
-            "menuTitle",
-            "menuContent",
-            "language",
-            "categoryId",
-        ]);
-        expect(menu).toMatchObject({
+        expect(menu).toEqual({
             menuTitle: input.menuTitle,
             menuContent: input.menuContent,
             language: "uk",

@@ -1,40 +1,53 @@
 import { z } from "zod";
 
-import { numberSchema, positiveIntegerSchema } from "./common.schemas";
+import { VALIDATION_MESSAGES } from "constants/validationMessages";
+import type { RecordSource } from "domain/repositories/recordSource";
 
-const EXACTLY_ONE_SOURCE_MESSAGE =
-    "Provide either a recipe or a menu, not both";
+import { positiveIntegerSchema } from "./common.schemas";
+
+export const sourceIdFields = {
+    recipe_id: positiveIntegerSchema().optional(),
+    menu_id: positiveIntegerSchema().optional(),
+};
+
+interface SourceIds {
+    recipe_id?: number;
+    menu_id?: number;
+}
+
+export function singleSource(
+    { recipe_id, menu_id }: SourceIds,
+    ctx: z.RefinementCtx,
+): RecordSource {
+    if (typeof menu_id === "undefined" && typeof recipe_id === "number") {
+        return { recipeId: recipe_id };
+    }
+
+    if (typeof recipe_id === "undefined" && typeof menu_id === "number") {
+        return { menuId: menu_id };
+    }
+
+    ctx.addIssue({
+        code: "custom",
+        message: VALIDATION_MESSAGES.EXACTLY_ONE_SOURCE,
+        path: ["recipe_id"],
+    });
+
+    return z.NEVER;
+}
 
 export const logIntakeSchema = z
-    .object({
-        recipe_id: positiveIntegerSchema("Recipe ID").optional(),
-        menu_id: positiveIntegerSchema("Menu ID").optional(),
-        portions: numberSchema("Portions").positive(
-            "Portions must be greater than 0",
-        ),
-    })
-    .refine(
-        (data) =>
-            (typeof data.recipe_id === "undefined") !==
-            (typeof data.menu_id === "undefined"),
-        { message: EXACTLY_ONE_SOURCE_MESSAGE, path: ["recipe_id"] },
-    );
+    .object({ ...sourceIdFields, portions: z.number().positive() })
+    .transform(({ portions, ...ids }, ctx) => ({
+        source: singleSource(ids, ctx),
+        portions,
+    }));
 
 export const updateCalorieGoalSchema = z.object({
-    calorie_goal: positiveIntegerSchema("Calorie goal").nullable(),
+    calorie_goal: positiveIntegerSchema().nullable(),
 });
 
 export const intakeRangeSchema = z.object({
-    from: z.iso.datetime({
-        error: (issue) =>
-            issue.code === "invalid_type"
-                ? "From must be a string"
-                : "From must be an ISO datetime",
-    }),
-    to: z.iso.datetime({
-        error: (issue) =>
-            issue.code === "invalid_type"
-                ? "To must be a string"
-                : "To must be an ISO datetime",
-    }),
+    from: z.iso.datetime(),
+    to: z.iso.datetime(),
 });

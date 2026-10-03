@@ -6,7 +6,6 @@ interface PersonName {
     login?: string;
 }
 
-// the full name once both parts are set, otherwise the login the account was registered with
 export const personDisplayName = ({
     name,
     surname,

@@ -1,5 +1,4 @@
-// the two things a visitor can favourite; a constant rather than bare strings so call sites stay
-// clear of the literal-string lint rule inside JSX
+// a constant, not bare strings, so JSX call sites stay clear of the literal-string lint rule
 export const FAVOURITE_TARGET = {
     recipe: "recipe",
     menu: "menu",

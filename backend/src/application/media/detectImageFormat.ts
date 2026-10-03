@@ -30,8 +30,7 @@ function isAvif(bytes: Buffer): boolean {
     return hasAscii(bytes, FTYP_OFFSET, "ftyp") && AVIF_BRANDS.has(brand);
 }
 
-// read from the bytes themselves, never the file name or the request's Content-Type; anything
-// else - SVG above all, a script container - is refused before a decoder ever parses it
+// sniffed from the bytes, never the name or Content-Type; SVG, a script container, is refused
 export function detectImageFormat(bytes: Buffer): ImageFormat | null {
     if (bytes.subarray(0, JPEG_SIGNATURE.length).equals(JPEG_SIGNATURE)) {
         return "jpeg";

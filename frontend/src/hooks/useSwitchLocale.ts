@@ -12,8 +12,7 @@ import { loadPage } from "utils/reloadPage";
 
 import { useLocale } from "./useLocale";
 
-// the whole page is loaded again in the new language: its strings, dates and the root layout's
-// lang all come from the server render, so there is nothing to switch in place
+// a full load: the strings, dates and <html lang> all come from the server render
 export const useSwitchLocale = () => {
     const currentLocale = useLocale();
     const isAuthed = useAppSelector(selectIsAuthed);

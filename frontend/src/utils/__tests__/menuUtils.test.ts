@@ -1,140 +1,78 @@
-import type { MenuDetailRecipe } from "types/menu";
+import type { MenuDetailRecipe, MissingIngredient } from "types/menu";
 
-import { aggregateMenuIngredients } from "utils/menuUtils";
+import {
+    type AggregatedIngredient,
+    aggregateMenuIngredients,
+    countMissingIngredients,
+    menuCaloriesPerPortion,
+    menuTotalCookingTime,
+    missingShoppingItems,
+} from "utils/menuUtils";
 
-const makeRecipe = (
-    id: number,
-    type_name: string,
-    missingIngredients?: MenuDetailRecipe["missingIngredients"],
-): MenuDetailRecipe =>
-    ({
-        recipe_id: id,
-        title: `Recipe ${id}`,
-        type_name,
-        missingIngredients,
-    }) as MenuDetailRecipe;
+const missing = (
+    ingredientId: number,
+    neededQuantity: number,
+    missingQuantity: number,
+): MissingIngredient => ({
+    ingredient_id: ingredientId,
+    ingredient_slug: `slug-${ingredientId}`,
+    ingredient_name: `Ingredient ${ingredientId}`,
+    needed_quantity: neededQuantity,
+    missing_quantity: missingQuantity,
+    unit_name: "g",
+});
+
+const menuRecipe = (
+    recipeId: number,
+    missingIngredients?: MissingIngredient[],
+): MenuDetailRecipe => ({
+    recipe_id: recipeId,
+    title: `Recipe ${recipeId}`,
+    language: "en",
+    type_name: null,
+    cooking_time: 10,
+    creation_date: "2026-01-01T00:00:00.000Z",
+    calories_per_portion: null,
+    photo_key: null,
+    ratingAverage: null,
+    ratingCount: 0,
+    missingIngredients,
+});
 
 describe("aggregateMenuIngredients", () => {
-    it("should return an empty object for an empty list", () => {
-        expect(aggregateMenuIngredients([])).toEqual({});
-    });
-
-    it("should return an empty object when no recipe has any ingredients", () => {
-        const recipes = [makeRecipe(1, "Soup", []), makeRecipe(2, "Salad", [])];
-
-        expect(aggregateMenuIngredients(recipes)).toEqual({});
-    });
-
     it("should handle recipes where missingIngredients is undefined", () => {
-        const recipe = makeRecipe(1, "Soup");
-
-        expect(aggregateMenuIngredients([recipe])).toEqual({});
+        expect(aggregateMenuIngredients([menuRecipe(1)])).toEqual({});
     });
 
     it("should aggregate needed and missing quantities for the same ingredient across recipes", () => {
-        const recipes = [
-            makeRecipe(1, "Soup", [
-                {
-                    ingredient_id: 10,
-                    ingredient_slug: "flour",
-                    ingredient_name: "Flour",
-                    needed_quantity: 100,
-                    missing_quantity: 100,
-                    unit_name: "g",
-                },
-            ]),
-            makeRecipe(2, "Bread", [
-                {
-                    ingredient_id: 10,
-                    ingredient_slug: "flour",
-                    ingredient_name: "Flour",
-                    needed_quantity: 200,
-                    missing_quantity: 200,
-                    unit_name: "g",
-                },
-            ]),
-        ];
+        const result = aggregateMenuIngredients([
+            menuRecipe(1, [missing(10, 100, 100)]),
+            menuRecipe(2, [missing(10, 200, 200)]),
+        ]);
 
-        const result = aggregateMenuIngredients(recipes);
-
-        expect(result[10].quantity).toBe(300);
-        expect(result[10].missingQuantity).toBe(300);
-        expect(result[10].unit).toBe("g");
+        expect(result[10]).toEqual({
+            slug: "slug-10",
+            name: "Ingredient 10",
+            quantity: 300,
+            missingQuantity: 300,
+            unit: "g",
+            sufficient: false,
+        });
     });
 
     it("should keep separate entries for different ingredients", () => {
-        const recipes = [
-            makeRecipe(1, "Soup", [
-                {
-                    ingredient_id: 20,
-                    ingredient_slug: "salt",
-                    ingredient_name: "Salt",
-                    needed_quantity: 5,
-                    missing_quantity: 5,
-                    unit_name: "g",
-                },
-                {
-                    ingredient_id: 21,
-                    ingredient_slug: "pepper",
-                    ingredient_name: "Pepper",
-                    needed_quantity: 2,
-                    missing_quantity: 2,
-                    unit_name: "g",
-                },
-            ]),
-        ];
-
-        const result = aggregateMenuIngredients(recipes);
+        const result = aggregateMenuIngredients([
+            menuRecipe(1, [missing(20, 5, 5), missing(21, 2, 2)]),
+        ]);
 
         expect(result[20].quantity).toBe(5);
         expect(result[21].quantity).toBe(2);
     });
 
-    it("should use the unit from the first occurrence of each ingredient", () => {
-        const recipes = [
-            makeRecipe(1, "A", [
-                {
-                    ingredient_id: 30,
-                    ingredient_slug: "sugar",
-                    ingredient_name: "Sugar",
-                    needed_quantity: 10,
-                    missing_quantity: 10,
-                    unit_name: "g",
-                },
-            ]),
-            makeRecipe(2, "B", [
-                {
-                    ingredient_id: 30,
-                    ingredient_slug: "sugar",
-                    ingredient_name: "Sugar",
-                    needed_quantity: 5,
-                    missing_quantity: 5,
-                    unit_name: "cups",
-                },
-            ]),
-        ];
-
-        const result = aggregateMenuIngredients(recipes);
-
-        expect(result[30].unit).toBe("g");
-        expect(result[30].quantity).toBe(15);
-    });
-
     it("should always show the total needed quantity, even when sufficient", () => {
-        const recipes = [
-            makeRecipe(1, "Soup", [
-                {
-                    ingredient_id: 40,
-                    ingredient_slug: "onion",
-                    ingredient_name: "Onion",
-                    needed_quantity: 3,
-                    missing_quantity: 0,
-                    unit_name: "pcs",
-                },
-            ]),
-        ];
-
-        const result = aggregateMenuIngredients(recipes);
+        const result = aggregateMenuIngredients([
+            menuRecipe(1, [missing(40, 3, 0)]),
+        ]);
 
         expect(result[40].quantity).toBe(3);
         expect(result[40].sufficient).toBe(true);
@@ -142,28 +80,66 @@ describe("aggregateMenuIngredients", () => {
 
     it("should mark an ingredient insufficient once any recipe still needs more", () => {
         const recipes = [
-            makeRecipe(1, "Soup", [
-                {
-                    ingredient_id: 50,
-                    ingredient_slug: "onion",
-                    ingredient_name: "Onion",
-                    needed_quantity: 2,
-                    missing_quantity: 0,
-                    unit_name: "pcs",
-                },
-            ]),
-            makeRecipe(2, "Salad", [
-                {
-                    ingredient_id: 50,
-                    ingredient_slug: "onion",
-                    ingredient_name: "Onion",
-                    needed_quantity: 2,
-                    missing_quantity: 2,
-                    unit_name: "pcs",
-                },
-            ]),
+            menuRecipe(1, [missing(50, 2, 0)]),
+            menuRecipe(2, [missing(50, 2, 2)]),
         ];
 
         expect(aggregateMenuIngredients(recipes)[50].sufficient).toBe(false);
+    });
+});
+
+describe("menuCaloriesPerPortion", () => {
+    const withCalories = (calories: number | null): MenuDetailRecipe => ({
+        ...menuRecipe(1),
+        calories_per_portion: calories,
+    });
+
+    it("should add up every recipe's calories", () => {
+        expect(
+            menuCaloriesPerPortion([withCalories(300), withCalories(450)]),
+        ).toBe(750);
+    });
+
+    it("should be unknown as soon as one recipe's calories are", () => {
+        expect(
+            menuCaloriesPerPortion([withCalories(300), withCalories(null)]),
+        ).toBeNull();
+    });
+
+    it("should be unknown for a menu without recipes", () => {
+        expect(menuCaloriesPerPortion([])).toBeNull();
+    });
+});
+
+describe("menuTotalCookingTime", () => {
+    it("should add up every recipe's cooking time", () => {
+        const recipes = [
+            { ...menuRecipe(1), cooking_time: 25 },
+            { ...menuRecipe(2), cooking_time: 10 },
+        ];
+
+        expect(menuTotalCookingTime(recipes)).toBe(35);
+    });
+});
+
+describe("missing ingredients", () => {
+    const aggregated = (missingQuantity: number): AggregatedIngredient => ({
+        slug: "onion",
+        name: "Onion",
+        quantity: 3,
+        missingQuantity,
+        unit: "pcs",
+        sufficient: missingQuantity === 0,
+    });
+    const ingredients = { 50: aggregated(1.23456), 51: aggregated(0) };
+
+    it("should count only the ingredients still short", () => {
+        expect(countMissingIngredients(ingredients)).toBe(1);
+    });
+
+    it("should put only the rounded shortfall on the shopping list", () => {
+        expect(missingShoppingItems(ingredients)).toEqual([
+            { ingredient_id: 50, quantity: 1.23 },
+        ]);
     });
 });

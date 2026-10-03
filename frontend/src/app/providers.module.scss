@@ -1,0 +1,4 @@
+// a hook for inert only: it must not add a box between <body> and the page
+.app-root {
+    display: contents;
+}

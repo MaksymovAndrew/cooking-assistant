@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { useAvoidedIngredients } from "hooks/useAvoidedIngredients";
 
+import { cx } from "utils/cx";
 import { resolveAllergen } from "utils/ingredientName";
 
 import styles from "./MenuMissingIngredientsPanel.module.scss";
@@ -55,7 +56,7 @@ export const MenuAllergens: React.FC<MenuAllergensProps> = ({ allergens }) => {
                     return (
                         <span
                             key={allergen}
-                            className={[
+                            className={cx(
                                 styles[
                                     "menu-missing-ingredients-panel__allergen"
                                 ],
@@ -63,9 +64,7 @@ export const MenuAllergens: React.FC<MenuAllergensProps> = ({ allergens }) => {
                                     styles[
                                         "menu-missing-ingredients-panel__allergen--avoided"
                                     ],
-                            ]
-                                .filter(Boolean)
-                                .join(" ")}
+                            )}
                         >
                             {isAvoided && (
                                 <Ban

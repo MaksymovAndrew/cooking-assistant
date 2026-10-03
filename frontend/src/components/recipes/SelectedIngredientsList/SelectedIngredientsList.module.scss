@@ -5,50 +5,79 @@
     flex-direction: column;
     gap: var(--s-2);
 
+    // a phone gives the name a line of its own, with the controls under it
     &__row {
-        display: flex;
+        display: grid;
+        grid-template-areas:
+            "grip name"
+            "grip controls";
+        grid-template-columns: auto minmax(0, 1fr);
         align-items: center;
-        gap: var(--s-3);
+        gap: var(--s-2) var(--s-3);
         padding: 11px 14px;
         border: 1px solid var(--border);
         border-radius: 10px;
         background: var(--surface-2);
+
+        @include respond-to(tablet) {
+            grid-template-areas: "grip name controls";
+            grid-template-columns: auto minmax(0, 1fr) auto;
+        }
     }
 
     &__grip {
-        flex: none;
+        grid-area: grip;
         color: var(--text-muted);
         cursor: grab;
     }
 
     &__name {
-        @include truncate;
+        @include wrap-anywhere;
 
-        flex: 1;
+        grid-area: name;
         color: var(--text);
         font:
             500 14px Inter,
             sans-serif;
+
+        @include respond-to(tablet) {
+            @include truncate;
+        }
+    }
+
+    &__controls {
+        display: flex;
+        grid-area: controls;
+        align-items: center;
+        gap: var(--s-3);
     }
 
     &__quantity {
         flex: none;
-        width: 66px;
+
+        // five characters such as 0,125, plus the padding and both borders
+        width: calc(5ch + 2 * var(--s-2) + 2px);
         height: 34px;
+        padding: 0 var(--s-2);
         text-align: center;
         font:
             600 16px "Geist Mono",
             monospace;
     }
 
+    // the auto margin keeps the move and remove buttons at the end of a phone's second line
     &__unit {
         flex: none;
-        width: 38px;
-        text-align: center;
+        margin-right: auto;
         color: var(--text-muted);
         font:
             500 12px "Geist Mono",
             monospace;
+
+        @include respond-to(tablet) {
+            width: 38px;
+            text-align: center;
+        }
     }
 
     &__remove {

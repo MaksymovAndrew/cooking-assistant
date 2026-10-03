@@ -151,9 +151,7 @@ module.exports = tseslint.config(
         },
     },
     {
-        // magic numbers belong in named constants (constants/ and config/ are the
-        // sanctioned homes); HTTP status codes are self-documenting and allowed;
-        // scripts/ holds seed data where inline numbers are the content itself
+        // numbers belong in constants/ and config/, and scripts/ seed data is made of them
         files: ["src/**/*.ts"],
         ignores: [
             "src/constants/**",

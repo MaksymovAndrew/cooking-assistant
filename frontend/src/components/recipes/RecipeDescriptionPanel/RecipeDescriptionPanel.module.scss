@@ -29,8 +29,6 @@
         gap: 7px;
         margin-bottom: 11px;
 
-        // the shared &__label class carries a margin-bottom meant for standalone section
-        // headers - inside this flex row it throws off align-items: center against the dot
         .recipe-description-panel__label {
             margin-bottom: 0;
         }
@@ -68,7 +66,7 @@
         gap: 5px;
         border-color: color-mix(in srgb, var(--brand) 45%, transparent);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__sr-only {

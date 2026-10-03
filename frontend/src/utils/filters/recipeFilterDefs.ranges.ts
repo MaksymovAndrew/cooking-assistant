@@ -3,7 +3,6 @@ import type { RecipeFilterParams } from "types/recipe";
 import type { FilterDef } from "./filterDef";
 import { numericRangeFilter } from "./filterDefFactories.range";
 
-// cooking time and calories: the two numeric ranges the recipe list exposes
 export const RECIPE_RANGE_FILTER_DEFS: readonly FilterDef<
     unknown,
     RecipeFilterParams

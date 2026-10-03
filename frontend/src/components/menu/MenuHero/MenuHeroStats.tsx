@@ -7,6 +7,8 @@ import type { RecordRating } from "types/rating";
 import { BookMark } from "components/icons";
 import { RatingStars } from "components/ui/RatingStars";
 
+import { cx } from "utils/cx";
+
 import styles from "./MenuHero.module.scss";
 import { MenuHeroMobileMeta } from "./MenuHeroMobileMeta";
 
@@ -34,12 +36,10 @@ export const MenuHeroStats: React.FC<MenuHeroStatsProps> = ({
     const caloriesOverTooltip = exceedsBudget
         ? t("common:contentCard.overBudgetTooltip")
         : undefined;
-    const caloriesStatClassName = [
+    const caloriesStatClassName = cx(
         styles["menu-hero__stat"],
         exceedsBudget && styles["menu-hero__stat--calorie-over"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <>

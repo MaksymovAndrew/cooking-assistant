@@ -3,6 +3,14 @@ name: cooking-assistant
 # Deployed to /srv/cooking-assistant on the server. No service publishes a host port: the reverse
 # proxy reaches backend/frontend over the shared external `edge` network, and Postgres is reachable
 # only from this project's own network.
+
+# capped json-file logs, so a chatty container cannot fill the disk
+x-logging: &logging
+    driver: json-file
+    options:
+        max-size: 10m
+        max-file: "3"
+
 services:
     postgres:
         image: postgres:18-alpine
@@ -20,6 +28,9 @@ services:
             interval: 10s
             timeout: 5s
             retries: 12
+        # Docker's 64m /dev/shm is too small for parallel queries and sorts
+        shm_size: 256m
+        logging: *logging
         mem_limit: 1g
         cpus: 1.0
 
@@ -29,10 +40,13 @@ services:
         profiles: ["tools"]
         restart: "no"
         env_file: .env
-        command: ["node", "dist/scripts/deploy-db.js"]
+        command: ["node", "--enable-source-maps", "dist/scripts/deploy-db.js"]
         depends_on:
             postgres:
                 condition: service_healthy
+        logging: *logging
+        mem_limit: 640m
+        cpus: 1.0
 
     backend:
         image: ${BACKEND_IMAGE}:${IMAGE_TAG}
@@ -59,6 +73,7 @@ services:
             edge:
                 # explicit alias so another project can also have a service called `backend`
                 aliases: [cooking-backend]
+        logging: *logging
         mem_limit: 640m
         cpus: 1.5
 
@@ -93,6 +108,7 @@ services:
         # 96m was sized for nginx serving static files (8.9 MB in practice). The Node runtime
         # measures ~33 MB idle, but that is before pages fetch and render data, and too low a
         # limit is an OOM-kill loop rather than a slow page. Revisit against production numbers.
+        logging: *logging
         mem_limit: 512m
         cpus: 0.5
 

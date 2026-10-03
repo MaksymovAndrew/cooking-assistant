@@ -23,16 +23,12 @@ export default class LoginUser {
 
     async execute(input: unknown): Promise<{ token: string }> {
         const data = validate(loginUserSchema, input);
-        // same email format check as registration decides whether this identifier is looked up as an email or a username
         const asEmail = emailSchema().safeParse(data.login);
-        // same error for unknown login and wrong password to prevent login enumeration
         const user = asEmail.success
             ? await this.userRepository.findCredentialsByEmail(asEmail.data)
             : await this.userRepository.findByLogin(data.login);
 
-        // when the login doesn't exist, compare against a fixed dummy hash anyway so the response
-        // takes the same time as a wrong-password rejection - otherwise the timing difference alone
-        // (no bcrypt run vs. one) lets an attacker enumerate real logins despite the identical error
+        // an unknown login runs a decoy compare: neither error nor timing may reveal it exists
         const isPasswordValid = await this.passwordHasher.compare(
             data.password,
             user?.password ?? LOGIN_TIMING_DECOY_HASH,

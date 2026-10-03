@@ -12,8 +12,7 @@ import boundaries from "eslint-plugin-boundaries";
 import prettier from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
 
-// shared between the global block and the hardcode-guard block below (a later
-// no-restricted-syntax for the same files would otherwise replace these)
+// shared by both no-restricted-syntax blocks: a later block for the same files replaces the rule
 const preferNullRestrictions = [
     {
         selector:
@@ -27,8 +26,7 @@ const preferNullRestrictions = [
     },
 ];
 
-// repeated wherever no-restricted-imports is re-declared: a later block for the same files
-// replaces the rule outright, silently dropping whatever an earlier block set
+// repeated in every no-restricted-imports block: a later block replaces the rule outright
 const parentImportRestriction = {
     regex: "^\.\./",
     message:
@@ -36,7 +34,6 @@ const parentImportRestriction = {
 };
 
 export default tseslint.config(
-    // build output and Next-generated declarations
     { ignores: ["dist", "coverage", ".next", "next-env.d.ts"] },
     {
         extends: [
@@ -48,8 +45,7 @@ export default tseslint.config(
         languageOptions: {
             globals: globals.browser,
             parserOptions: {
-                // explicit list, not projectService: the root tsconfig.json belongs to
-                // Next and covers app code only, so tests and build configs need naming
+                // not projectService: the root tsconfig.json is Next's and covers app code only
                 project: [
                     "./tsconfig.app.json",
                     "./tsconfig.node.json",
@@ -139,30 +135,20 @@ export default tseslint.config(
                         [
                             "^(?!(?:api|app|assets|components|config|constants|hooks|i18n|redux|test|types|utils)/)@?\\w",
                         ],
-                        // config / constants / types layers
                         ["^(?:config|constants|types)/"],
-                        // api layer
                         ["^api/"],
-                        // redux (state) layer
                         ["^redux/"],
-                        // hooks layer
                         ["^hooks/"],
-                        // components / assets / i18n layers
                         ["^(?:components|assets|i18n)/"],
-                        // utils layer
                         ["^utils/"],
-                        // route tree / test (infra) layers
                         ["^(?:app|test)/"],
-                        // relative same-folder (./)
                         ["^\\."],
                     ],
                 },
             ],
             "simple-import-sort/exports": "error",
             "import/no-unresolved": "error",
-            // forbid ../ parent imports by syntax (bare aliases are required instead);
-            // import/no-relative-parent-imports judges by resolved dir and wrongly flags
-            // co-located tests importing their subject via an alias, so we gate on syntax
+            // by syntax: import/no-relative-parent-imports wrongly flags tests importing their subject by alias
             "no-restricted-imports": [
                 "error",
                 {
@@ -191,8 +177,6 @@ export default tseslint.config(
         },
     },
     {
-        // hardcode guards: API paths live only in api/endpoints.ts, route paths
-        // only in constants/routes.ts - everything else must import them
         files: ["src/**/*.{ts,tsx}"],
         ignores: [
             "src/api/endpoints.ts",
@@ -230,8 +214,7 @@ export default tseslint.config(
         },
     },
     {
-        // navigation goes through the wrappers or the unsaved-changes guard is silently
-        // bypassed: a bare next/link still renders a working link, just an unguarded one
+        // a bare next/link still works, just silently without the unsaved-changes guard
         files: ["src/**/*.{ts,tsx}"],
         ignores: [
             "src/components/ui/Link/Link.tsx",
@@ -261,9 +244,7 @@ export default tseslint.config(
         },
     },
     {
-        // magic numbers belong in named constants (constants/ and config/ are the
-        // sanctioned homes); .tsx is exempt - presentational sizes in JSX props are
-        // not logic, and the design system owns them via tokens
+        // .tsx is exempt: presentational sizes in JSX props are not logic
         files: ["src/**/*.ts"],
         ignores: [
             "src/constants/**",
@@ -304,8 +285,7 @@ export default tseslint.config(
         },
     },
     {
-        // route files legitimately export metadata/viewport alongside the component;
-        // the rule guards Fast Refresh, which does not apply to server components
+        // route files export metadata beside the component; Fast Refresh skips server components
         files: ["src/app/**/*.{ts,tsx}"],
         rules: { "react-refresh/only-export-components": "off" },
     },
@@ -353,8 +333,6 @@ export default tseslint.config(
         rules: { "local/no-complex-condition": "error" },
     },
     {
-        // layer boundaries (warn now, error in R23). default:allow so today's legal
-        // imports are clean; only the two arch concerns below are flagged on violation
         files: ["src/**/*.{ts,tsx}"],
         plugins: { boundaries },
         settings: {
@@ -418,9 +396,6 @@ export default tseslint.config(
         },
     },
     {
-        // the whole app is i18n-disciplined now (3.2): catch new user-visible
-        // literal JSX text and the few attributes users actually read
-        // (placeholder/alt/aria-label/title) before they ship un-translated
         files: [
             "src/app/**/*.{ts,tsx}",
             "src/components/**/*.{ts,tsx}",
@@ -435,10 +410,7 @@ export default tseslint.config(
                 {
                     mode: "jsx-only",
                     "jsx-attributes": {
-                        // the plugin's own defaults, plus two narrowly-scoped
-                        // technical (non-user-visible) props this codebase uses:
-                        // a native <option value="asc"> sort key, and the
-                        // idPrefix building internal id/htmlFor pairs
+                        // plugin defaults plus value (<option> sort keys) and idPrefix (id/htmlFor pairs)
                         exclude: [
                             "className",
                             "styleName",
@@ -457,8 +429,6 @@ export default tseslint.config(
         },
     },
     {
-        // shared layers use named exports + barrels; global enforcement is R23
-        // (hooks/ is excluded for now - it only holds the legacy dead useAuth default export)
         files: [
             "src/components/ui/**/*.{ts,tsx}",
             "src/components/layout/**/*.{ts,tsx}",
@@ -469,7 +439,6 @@ export default tseslint.config(
         },
     },
     {
-        // the logger is the one sanctioned console consumer; everything else logs through it
         files: ["src/config/logger.ts"],
         rules: {
             "no-console": "off",
@@ -487,7 +456,6 @@ export default tseslint.config(
         },
     },
     {
-        // testing-library rules scoped to test files only
         ...testingLibrary.configs["flat/react"],
         files: ["**/__tests__/**/*.{ts,tsx}", "src/test/**/*.{ts,tsx}"],
     },

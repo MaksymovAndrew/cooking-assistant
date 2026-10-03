@@ -23,7 +23,7 @@ import { makeTestStore, renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
 
-// fixed "now" so the range this test pre-dispatches exactly matches what the hook computes itself
+// a fixed "now", so the pre-dispatched range matches the one the hook computes
 const NOW = new Date(2026, 0, 14, 15, 30);
 
 beforeEach(() => {

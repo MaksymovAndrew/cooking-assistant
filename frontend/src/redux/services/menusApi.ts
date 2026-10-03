@@ -3,19 +3,15 @@ import type {
     Menu,
     MenuDetails,
     MenuListParams,
-    MenuWithStats,
     UpdateMenuRequest,
 } from "types/menu";
 import type { PaginatedResult } from "types/pagination";
+import type { MenuStatistics } from "types/stats";
 
 import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
-import {
-    infiniteListProvidesTags,
-    listProvidesTags,
-    listTag,
-} from "./cacheTags";
+import { infiniteListProvidesTags, listTag } from "./cacheTags";
 import { offsetPagedQuery } from "./infiniteQueryHelpers";
 
 const MENU = "Menu" as const;
@@ -41,15 +37,14 @@ export const menusApi = baseApi.injectEndpoints({
             ...offsetPagedQuery(API_ROUTES.menu.byPerson),
             providesTags: (result) => infiniteListProvidesTags(MENU, result),
         }),
-        getAllMenus: build.query<MenuWithStats[], null>({
-            query: () => ({ url: API_ROUTES.menu.allUnpaginated }),
-            providesTags: (result) => listProvidesTags(MENU, result),
+        getMenuStats: build.query<MenuStatistics, null>({
+            query: () => ({ url: API_ROUTES.menu.stats }),
+            providesTags: [MENU_LIST],
         }),
         getMenuById: build.query<MenuDetails, MenuId>({
             query: (id) => ({ url: API_ROUTES.menu.byId(id) }),
             providesTags: (_result, _error, id) => [{ type: MENU, id }],
         }),
-        // the new menu's id, to attach a cover picked before it existed
         createMenu: build.mutation<{ menuId: number }, CreateMenuRequest>({
             query: (data) => ({
                 url: API_ROUTES.menu.create,
@@ -77,9 +72,7 @@ export const menusApi = baseApi.injectEndpoints({
                 url: API_ROUTES.menu.byId(id),
                 method: "DELETE",
             }),
-            // the backend cascades the delete into calorie_intake.menu_id (ON DELETE SET NULL),
-            // so any cached intake log holding an entry logged against this menu goes stale -
-            // same reasoning as recipesApi's deleteRecipe
+            // calorie_intake.menu_id is ON DELETE SET NULL, so cached intake logs go stale
             invalidatesTags: (_result, _error, id) => [
                 { type: MENU, id },
                 MENU_LIST,
@@ -92,7 +85,7 @@ export const menusApi = baseApi.injectEndpoints({
 export const {
     useGetMenusInfiniteQuery,
     useGetMenusByPersonInfiniteQuery,
-    useGetAllMenusQuery,
+    useGetMenuStatsQuery,
     useGetMenuByIdQuery,
     useCreateMenuMutation,
     useUpdateMenuMutation,

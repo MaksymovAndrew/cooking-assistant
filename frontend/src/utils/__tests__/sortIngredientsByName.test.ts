@@ -2,6 +2,8 @@ import i18next from "i18next";
 
 import type { Ingredient } from "types/ingredient";
 
+import { getServerTranslation } from "i18n/server";
+
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 const t = i18next.getFixedT("en");
@@ -19,11 +21,16 @@ const make = (id: number, name: string): Ingredient => ({
 });
 
 describe("sortIngredientsByName", () => {
-    it("should sort ingredients alphabetically by name", () => {
-        const a = make(1, "Banana");
-        const b = make(2, "Apple");
+    it("should sort by the name the viewer reads, not the stored one", async () => {
+        const uk = await getServerTranslation("uk");
+        const apple = make(1, "Apple");
+        const banana = make(2, "Banana");
 
-        expect(sortIngredientsByName([a, b], t, LOCALE)).toEqual([b, a]);
+        // in Ukrainian the banana (Банан) comes before the apple (Яблуко)
+        expect(sortIngredientsByName([apple, banana], uk, "uk")).toEqual([
+            banana,
+            apple,
+        ]);
     });
 
     it("should not mutate the input array", () => {

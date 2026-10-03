@@ -13,7 +13,19 @@ const USER_ID = 5;
 const CURRENT_PASSWORD = "current-secret";
 const NEW_PASSWORD = "new-secret1!";
 const CURRENT_HASH = "hashed-current";
-const NEW_HASH = "hashed-new";
+const STORED_CREDENTIALS = {
+    id: USER_ID,
+    password: CURRENT_HASH,
+    session_version: 0,
+};
+
+function matchesCurrentPassword(plain: string, hash: string) {
+    return Promise.resolve(plain === CURRENT_PASSWORD && hash === CURRENT_HASH);
+}
+
+function hashOf(plain: string) {
+    return Promise.resolve(`hashed:${plain}`);
+}
 
 describe("ChangePassword", () => {
     const makeDeps = () => ({
@@ -28,15 +40,11 @@ describe("ChangePassword", () => {
     it("should hash and set the new password when the current password is correct", async () => {
         const deps = makeDeps();
 
-        deps.userRepository.findCredentialsById.mockResolvedValue({
-            id: USER_ID,
-            password: CURRENT_HASH,
-            session_version: 0,
-        });
-        deps.passwordHasher.compare
-            .mockResolvedValueOnce(true) // current password check
-            .mockResolvedValueOnce(false); // new-password-same-as-current check
-        deps.passwordHasher.hash.mockResolvedValue(NEW_HASH);
+        deps.userRepository.findCredentialsById.mockResolvedValue(
+            STORED_CREDENTIALS,
+        );
+        deps.passwordHasher.compare.mockImplementation(matchesCurrentPassword);
+        deps.passwordHasher.hash.mockImplementation(hashOf);
         deps.userRepository.updatePassword.mockResolvedValue(1);
         deps.tokenService.generate.mockReturnValue("fresh-token");
         const useCase = new ChangePassword(
@@ -52,31 +60,18 @@ describe("ChangePassword", () => {
 
         expect(result).toEqual({ token: "fresh-token" });
         expect(deps.tokenService.generate).toHaveBeenCalledWith(USER_ID, 1);
-        expect(deps.passwordHasher.compare).toHaveBeenNthCalledWith(
-            1,
-            CURRENT_PASSWORD,
-            CURRENT_HASH,
-        );
-        expect(deps.passwordHasher.compare).toHaveBeenNthCalledWith(
-            2,
-            NEW_PASSWORD,
-            CURRENT_HASH,
-        );
-        expect(deps.passwordHasher.hash).toHaveBeenCalledWith(NEW_PASSWORD);
         expect(deps.userRepository.updatePassword).toHaveBeenCalledWith(
             USER_ID,
-            NEW_HASH,
+            `hashed:${NEW_PASSWORD}`,
         );
     });
 
     it("should throw a 400 ValidationError when the new password matches the current password", async () => {
         const deps = makeDeps();
 
-        deps.userRepository.findCredentialsById.mockResolvedValue({
-            id: USER_ID,
-            password: CURRENT_HASH,
-            session_version: 0,
-        });
+        deps.userRepository.findCredentialsById.mockResolvedValue(
+            STORED_CREDENTIALS,
+        );
         deps.passwordHasher.compare.mockResolvedValue(true);
         const useCase = new ChangePassword(
             deps.userRepository,
@@ -103,11 +98,9 @@ describe("ChangePassword", () => {
     it("should throw a 401 UnauthorizedError when the current password is wrong", async () => {
         const deps = makeDeps();
 
-        deps.userRepository.findCredentialsById.mockResolvedValue({
-            id: USER_ID,
-            password: CURRENT_HASH,
-            session_version: 0,
-        });
+        deps.userRepository.findCredentialsById.mockResolvedValue(
+            STORED_CREDENTIALS,
+        );
         deps.passwordHasher.compare.mockResolvedValue(false);
         const useCase = new ChangePassword(
             deps.userRepository,
@@ -155,6 +148,36 @@ describe("ChangePassword", () => {
         expect(deps.passwordHasher.compare).not.toHaveBeenCalled();
     });
 
+    it("should throw a 404 NotFoundError without a new session when the account is deleted before the password is saved", async () => {
+        const deps = makeDeps();
+
+        deps.userRepository.findCredentialsById.mockResolvedValue(
+            STORED_CREDENTIALS,
+        );
+        deps.passwordHasher.compare.mockImplementation(matchesCurrentPassword);
+        deps.passwordHasher.hash.mockImplementation(hashOf);
+        deps.userRepository.updatePassword.mockResolvedValue(null);
+        const useCase = new ChangePassword(
+            deps.userRepository,
+            deps.passwordHasher,
+            deps.tokenService,
+        );
+
+        const error = await catchError(
+            useCase.execute(USER_ID, {
+                currentPassword: CURRENT_PASSWORD,
+                newPassword: NEW_PASSWORD,
+            }),
+        );
+
+        expect(error).toBeAppError(
+            NotFoundError,
+            ERROR_CODES.USER_NOT_FOUND,
+            404,
+        );
+        expect(deps.tokenService.generate).not.toHaveBeenCalled();
+    });
+
     it("should throw a 400 ValidationError for a too-short new password", async () => {
         const deps = makeDeps();
         const useCase = new ChangePassword(
@@ -163,12 +186,19 @@ describe("ChangePassword", () => {
             deps.tokenService,
         );
 
-        await expect(
+        const error = await catchError(
             useCase.execute(USER_ID, {
                 currentPassword: CURRENT_PASSWORD,
                 newPassword: "short",
             }),
-        ).rejects.toThrow();
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "newPassword: Must be at least 8 characters and include a letter, a number and a special character",
+        );
         expect(deps.userRepository.findCredentialsById).not.toHaveBeenCalled();
     });
 });

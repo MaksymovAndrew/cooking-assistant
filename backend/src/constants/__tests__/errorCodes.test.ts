@@ -3,7 +3,7 @@ import path from "path";
 
 import { ERROR_CODES } from "constants/errorCodes";
 
-// the frontend can't import this file directly (separate package), so it keeps its own hand-copied mirror in frontend/src/constants/errorCodes.ts - this guards against that copy silently drifting in either direction
+// the frontend can't import this file, so its hand-copied mirror is checked for drift both ways
 const FRONTEND_ERROR_CODES_PATH = path.resolve(
     __dirname,
     "../../../../frontend/src/constants/errorCodes.ts",

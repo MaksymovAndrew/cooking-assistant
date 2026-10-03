@@ -4,7 +4,6 @@ import type { Ingredient } from "types/ingredient";
 
 const DEFAULT_QUANTITY = 1;
 
-// pick the ingredients first, then walk them one at a time to set quantities
 export const useAddIngredientWizard = (
     allIngredients: Ingredient[],
     selectedIngredients: number[],

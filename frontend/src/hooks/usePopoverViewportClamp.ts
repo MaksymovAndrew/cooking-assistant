@@ -1,17 +1,13 @@
-"use client";
-
 import type { RefObject } from "react";
 import { useLayoutEffect } from "react";
 
 // mirrors the SCSS `&__popover`'s tablet+ `top: calc(100% + 8px)`
 const POPOVER_TOP_GAP_PX = 8;
-// breathing room before the viewport's bottom edge, matches --s-4
+// matches --s-4
 const POPOVER_BOTTOM_MARGIN_PX = 16;
 const POPOVER_MIN_HEIGHT_PX = 160;
 
-// a popover anchored below its trigger (not the true viewport bottom) and opened with the page
-// scroll locked can push its footer past the fold with no way to reach it under a flat max-height -
-// clamp against the space actually left below the trigger
+// with scroll locked, a flat max-height can push the footer out of reach; clamp to the space below
 export const usePopoverViewportClamp = (
     containerRef: RefObject<HTMLElement | null>,
     popoverRef: RefObject<HTMLElement | null>,

@@ -1,7 +1,6 @@
 const isDev = process.env.NODE_ENV !== "production";
 
-// the browser console stays quiet in production, but a server render has no other voice: its
-// output is the container's log, and a swallowed failure there is invisible to everyone
+// a server render's console is the container's log, its only way to report a failure
 const isServer = typeof window === "undefined";
 const reportsProblems = isDev || isServer;
 

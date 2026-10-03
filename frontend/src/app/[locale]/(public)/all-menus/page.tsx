@@ -12,8 +12,7 @@ import { AllMenusView } from "./AllMenusView";
 
 const NAMESPACE = "menu";
 
-// filters live in the query string, and every combination of them is the same list of menus:
-// the canonical URL is the unfiltered one, so search engines index it once
+// every filter combination is the same list, so the canonical URL is the unfiltered one
 export const generateMetadata = async ({
     params,
 }: {

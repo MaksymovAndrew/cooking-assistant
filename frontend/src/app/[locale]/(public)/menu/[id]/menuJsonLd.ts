@@ -5,7 +5,7 @@ import type { MenuDetails } from "types/menu";
 
 import { localizePath } from "utils/localePath";
 
-// schema.org/ItemList: the menu as an ordered list of recipe pages, each carrying its own Recipe
+// links only: each recipe page carries its own Recipe data
 export const menuJsonLd = (
     { menu, recipes }: MenuDetails,
     description: string,

@@ -1,6 +1,8 @@
 import { Star } from "lucide-react";
 import React from "react";
 
+import { cx } from "utils/cx";
+
 import styles from "./StarRatingInput.module.scss";
 
 interface RatingStarProps {
@@ -12,7 +14,6 @@ interface RatingStarProps {
     disabled: boolean;
     onCommit: () => void;
     onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
-    // hover and focus light the stars up to this one without sending anything
     onPreview: (isPreviewing: boolean) => void;
 }
 
@@ -37,12 +38,10 @@ export const RatingStar: React.FC<RatingStarProps> = ({
         aria-label={label}
         tabIndex={isTabStop ? 0 : -1}
         disabled={disabled}
-        className={[
+        className={cx(
             styles["star-rating-input__star"],
             isLit && styles["star-rating-input__star--on"],
-        ]
-            .filter(Boolean)
-            .join(" ")}
+        )}
         onClick={onCommit}
         onKeyDown={onKeyDown}
         onMouseEnter={() => {

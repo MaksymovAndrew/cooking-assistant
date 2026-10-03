@@ -79,8 +79,7 @@ export const ModalRoot = () => {
         }
     };
 
-    // no fallback: a modal is an overlay opened by a deliberate action, and flashing a
-    // placeholder over the page while its chunk arrives reads as a glitch
+    // no fallback: a placeholder flashing over the page while the chunk loads reads as a glitch
     return (
         <Suspense fallback={null}>
             {renderRecordModal(modal, handleClose)}

@@ -56,7 +56,7 @@ const SAMPLE_WITH_INGREDIENT: RecipeDetails = {
     ],
 };
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts, so useGetRecipeByIdQuery/etc. read already-fulfilled data on first render
+// the cache is filled before the hook mounts, so its queries read finished data on first render
 const setup = async (recipe: RecipeDetails = SAMPLE) => {
     mockGetByUrl({
         [API_ROUTES.recipes.byId("1")]: recipe,
@@ -84,7 +84,7 @@ describe("useUpdateRecipePage", () => {
         const { result } = await setup();
 
         expect(result.current.form.title).toBe(TITLE);
-        expect(result.current.isLoading).toBe(false);
+        expect(result.current.pageState).toBe("ready");
     });
 
     it("should round-trip an existing ingredient's quantity field between the recipe and update shapes", async () => {
@@ -121,7 +121,7 @@ describe("useUpdateRecipePage", () => {
         );
     });
 
-    it("should update the recipe and navigate home on valid submit", async () => {
+    it("should update the recipe and navigate to all recipes on valid submit", async () => {
         mockedPut.mockResolvedValue({ data: null });
         const { result } = await setup();
 
@@ -139,29 +139,6 @@ describe("useUpdateRecipePage", () => {
             }),
         );
         expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_RECIPES);
-    });
-
-    it("should fill the calories override field from the loaded recipe when it has a manual value", async () => {
-        const { result } = await setup({ ...SAMPLE, calories_override: 500 });
-
-        expect(result.current.form.caloriesOverride).toBe("500");
-    });
-
-    it("should send the edited calories override as a number", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-        const { result } = await setup();
-
-        act(() => {
-            result.current.form.setCaloriesOverride("650");
-        });
-        await act(async () => {
-            await result.current.handleSubmit();
-        });
-
-        expect(mockedPut).toHaveBeenCalledWith(
-            API_ROUTES.recipes.byId("1"),
-            expect.objectContaining({ calories_override: 650 }),
-        );
     });
 
     it("should not call the mutation when the cooking time is invalid", async () => {

@@ -12,8 +12,8 @@ import {
     PurchaseHistoryModal,
     RestockIngredientModal,
 } from "./ModalRoot.lazy";
+import { renderCookingModal } from "./ModalRoot.renderers.cooking";
 
-// the calorie-feature modals manage their own dispatch/close internally (like DeleteIngredientModal), so they only need the modal itself
 const renderCalorieModal = (modal: ActiveModal | null) => {
     if (modal?.type === MODAL_TYPE.deleteCalorieIntake) {
         return (
@@ -48,11 +48,9 @@ const renderCalorieModal = (modal: ActiveModal | null) => {
         );
     }
 
-    return null;
+    return renderCookingModal(modal);
 };
 
-// app-level modals with no payload of their own - both are enqueued rather than rendered
-// in place, so they queue behind whatever is showing instead of stacking on top of it
 const renderAppModal = (modal: ActiveModal | null) => {
     if (modal?.type === MODAL_TYPE.news) {
         return <NewsModal modalId={modal.id} />;
@@ -65,8 +63,6 @@ const renderAppModal = (modal: ActiveModal | null) => {
     return renderCalorieModal(modal);
 };
 
-// the pantry-page modals (history/restock/delete/expired-notice); the chain continues into the
-// app-level and calorie modals above, so ModalRoot itself only branches on the record modals
 export const renderIngredientModal = (
     modal: ActiveModal | null,
     onCloseHistory: () => void,

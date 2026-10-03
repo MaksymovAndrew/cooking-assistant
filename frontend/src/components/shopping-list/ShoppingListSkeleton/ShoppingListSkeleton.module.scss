@@ -1,10 +1,5 @@
 @use "styles/abstracts" as *;
-
-@keyframes shopping-list-skeleton-pulse {
-    50% {
-        opacity: 0.55;
-    }
-}
+@include pulse-keyframes;
 
 .shopping-list-skeleton {
     padding: var(--s-4);
@@ -21,7 +16,7 @@
     &__line {
         display: block;
         background: var(--surface-2);
-        animation: shopping-list-skeleton-pulse 1.4s var(--ease-in-out) infinite;
+        animation: pulse 1.4s var(--ease-in-out) infinite;
     }
 
     &__heading {

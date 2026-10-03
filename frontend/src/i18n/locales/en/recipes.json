@@ -17,7 +17,7 @@
         "itemsAdded_one": "{{count}} item added",
         "itemsAdded_other": "{{count}} items added",
         "perPortionHint": "Amounts are per portion — they scale automatically.",
-        "reorderHint": "Drag handle to reorder · unit auto-filled from catalog",
+        "reorderHint": "Drag the handle or use the arrows to reorder · unit auto-filled from catalog",
         "summary_one": "{{count}} ingredient · {{hours}} hr : {{minutes}} min",
         "summary_other": "{{count}} ingredients · {{hours}} hr : {{minutes}} min",
         "caloriesOverrideLabel": "Calories per portion",
@@ -137,7 +137,9 @@
         "recipeTypePlaceholder": "Select recipe type",
         "ingredientsLabel": "Ingredients",
         "updateButton": "Save changes",
-        "loading": "Loading…",
+        "notFoundTitle": "This recipe can't be edited",
+        "notFoundDescription": "It may have been deleted, or it belongs to someone else.",
+        "backToRecipes": "Back to recipes",
         "errorCookingTimeFormat": "Enter hours and minutes.",
         "errorCookingTimeInvalid": "Enter a valid cooking time."
     },
@@ -179,6 +181,7 @@
         "metaFallbackDescription_other": "A {{type}} recipe with {{count}} ingredients.",
         "cookingTimeUnavailable": "—",
         "metaFallbackDescriptionUntyped_one": "A recipe with {{count}} ingredient.",
-        "metaFallbackDescriptionUntyped_other": "A recipe with {{count}} ingredients."
+        "metaFallbackDescriptionUntyped_other": "A recipe with {{count}} ingredients.",
+        "cookedIt": "Cooked it"
     }
 }

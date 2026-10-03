@@ -18,7 +18,6 @@ interface RatingStarsProps {
 const STAR_ICON_SIZE = 18;
 const FULL_STAR_PERCENT = 100;
 
-// each star fills by the part of the average that reaches it, so 4.5 draws four and a half
 const starFillPercent = (average: number, starValue: number): number =>
     Math.min(Math.max(average - (starValue - 1), 0), 1) * FULL_STAR_PERCENT;
 

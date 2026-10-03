@@ -5,8 +5,7 @@ import type { RecipeDetails } from "types/recipe";
 
 import { resolveIngredientName } from "utils/ingredientName";
 
-// the browser loads the ingredient catalog after the first paint, and resolveIngredientName falls back to the record's
-// own name until then; a server-rendered record already carrying the translated name looks the same before and after
+// the catalog loads after first paint; a record carrying translated names looks the same before and after
 export const localizeRecipeIngredients = (
     t: TFunction,
     recipe: RecipeDetails,

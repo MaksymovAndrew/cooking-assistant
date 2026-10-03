@@ -1,0 +1,17 @@
+// CSS modules scope keyframe names per file, so a module includes the one it animates with
+
+@mixin spin-keyframes {
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+@mixin pulse-keyframes {
+    @keyframes pulse {
+        50% {
+            opacity: 0.55;
+        }
+    }
+}

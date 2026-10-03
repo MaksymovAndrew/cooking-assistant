@@ -14,7 +14,6 @@ interface SelectedIngredientChipsProps {
     onRemove: (id: number) => void;
 }
 
-// what this batch will add so far, each one removable before it is saved
 export const SelectedIngredientChips: React.FC<
     SelectedIngredientChipsProps
 > = ({ ingredients, onRemove }) => {
@@ -26,17 +25,22 @@ export const SelectedIngredientChips: React.FC<
 
     return (
         <div className={styles["add-ingredient-modal__selected"]}>
-            {ingredients.map((ingredient) => (
-                <Chip
-                    key={ingredient.id}
-                    removable
-                    onRemove={() => {
-                        onRemove(ingredient.id);
-                    }}
-                >
-                    {resolveIngredientName(t, ingredient)}
-                </Chip>
-            ))}
+            {ingredients.map((ingredient) => {
+                const name = resolveIngredientName(t, ingredient);
+
+                return (
+                    <Chip
+                        key={ingredient.id}
+                        removable
+                        name={name}
+                        onRemove={() => {
+                            onRemove(ingredient.id);
+                        }}
+                    >
+                        {name}
+                    </Chip>
+                );
+            })}
         </div>
     );
 };

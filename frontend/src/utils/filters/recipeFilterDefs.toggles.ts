@@ -5,10 +5,9 @@ import type { FilterDef } from "./filterDef";
 import { enumListFilter } from "./filterDefFactories.enum";
 import { booleanFilter } from "./filterDefFactories.scalar";
 
-// shared with links that pre-set the filter before navigating (see PantryRecipesCard)
 export const RECIPE_PANTRY_URL_PARAM = "pantry";
 
-// the on/off refinements of the recipe filter popover, in chip order
+// in chip order
 export const RECIPE_TOGGLE_FILTER_DEFS: readonly FilterDef<
     unknown,
     RecipeFilterParams

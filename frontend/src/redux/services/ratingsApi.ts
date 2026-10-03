@@ -24,8 +24,7 @@ const PATH_BY_TARGET = {
     menu: API_ROUTES.menu.rating,
 } satisfies Record<RatingTarget, (id: number) => string>;
 
-// the record's own tag refetches every cached list that holds it, and the LIST tag re-ranks a
-// rating-sorted list or a top-rated one the record has just entered
+// its own tag refetches lists holding it; LIST re-ranks rating-sorted and top-rated lists
 const invalidateRating = (
     _result: unknown,
     _error: unknown,

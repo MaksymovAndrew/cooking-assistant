@@ -20,7 +20,7 @@
         margin-bottom: var(--s-2);
         border-radius: var(--r-pill);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
 
         @include respond-to(desktop) {
             width: 148px;
@@ -95,7 +95,7 @@
             @include focus-ring;
 
             @include on-hover {
-                color: var(--brand);
+                color: var(--brand-text);
             }
         }
     }

@@ -1,3 +1,5 @@
+import { sumBy } from "utils/sum";
+
 export type CalorieTone = "normal" | "near" | "over";
 
 const NEAR_LIMIT_THRESHOLD = 0.85;
@@ -14,12 +16,11 @@ export interface CalorieSummary {
     isNearLimit: boolean;
 }
 
-// null goal means "no goal set" - consumed is still meaningful (e.g. for a plain "kcal today" stat), everything goal-relative is not
 export const computeCalorieSummary = (
     entries: readonly CalorieSummaryEntry[],
     goal: number | null,
 ): CalorieSummary => {
-    const consumed = entries.reduce((sum, entry) => sum + entry.calories, 0);
+    const consumed = sumBy(entries, (entry) => entry.calories);
 
     if (goal === null) {
         return {

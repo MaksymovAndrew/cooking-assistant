@@ -52,6 +52,7 @@
         "noHistory": "No purchase history available.",
         "closeButton": "Close",
         "editButton": "Edit quantity",
+        "quantityLabel": "Quantity of {{name}} bought {{date}}",
         "deleteButton": "Delete purchase"
     },
     "restockModal": {
@@ -71,5 +72,19 @@
         "discardButton": "Throw out expired",
         "addToListButton": "Add to shopping list",
         "discarded": "Expired purchases thrown out"
+    },
+    "cookedItModal": {
+        "title": "Cooked it",
+        "intro": "These come out of your pantry, oldest purchases first.",
+        "portions": "Portions",
+        "fewerPortions": "Fewer portions",
+        "morePortions": "More portions",
+        "notInPantry": "Not in your pantry - skipped",
+        "partial": "Only {{amount}} left - it will all be used",
+        "nothingToDeduct": "There is nothing here to take from your pantry.",
+        "logCalories": "Also log the calories",
+        "loadingPantry": "Checking your pantry…",
+        "cancel": "Cancel",
+        "confirm": "Cooked it"
     }
 }

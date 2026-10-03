@@ -4,6 +4,7 @@ import { ERROR_CODES } from "constants/errorCodes";
 import type { RegisterErrors, RegisterRequest } from "types/auth";
 
 import {
+    isPasswordTooLong,
     isValidEmail,
     isValidLogin,
     isValidNamePart,
@@ -49,7 +50,9 @@ export const registerFieldErrors = (
     if (!isValidEmail(values.email)) {
         errors.email = t("errors.email");
     }
-    if (!isValidPassword(values.password)) {
+    if (isPasswordTooLong(values.password)) {
+        errors.password = t("errors.passwordTooLong");
+    } else if (!isValidPassword(values.password)) {
         errors.password = t("errors.password");
     }
 
@@ -67,7 +70,6 @@ export const trimmedRegistration = (
     email: values.email.trim(),
 });
 
-// the precise message for a failed registration, code first with a status fallback
 export const registerErrorMessage = (error: unknown, t: TFunction): string => {
     const code = getQueryErrorCode(error);
     const isTakenLogin =

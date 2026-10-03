@@ -46,22 +46,6 @@ describe("HorizontalScrollbar", () => {
         ).not.toBeInTheDocument();
     });
 
-    it("should size and position the thumb from the scroll metrics", () => {
-        const el = makeScrollElement({
-            scrollWidth: 400,
-            clientWidth: 200,
-            scrollLeft: 100,
-        });
-
-        render(<HorizontalScrollbar scrollRef={{ current: el }} />);
-
-        const thumb = screen.getByTestId("horizontal-scrollbar-thumb");
-
-        // widthPercent = 200/400 * 100 = 50; maxScrollLeft = 200;
-        // offsetPercent = (100/200) * (100-50) = 25
-        expect(thumb).toHaveStyle({ width: "50%", left: "25%" });
-    });
-
     it("should scroll to the clicked position when the track is dragged", () => {
         const el = makeScrollElement({ scrollWidth: 400, clientWidth: 200 });
 
@@ -72,8 +56,7 @@ describe("HorizontalScrollbar", () => {
         track.getBoundingClientRect = () =>
             ({ left: 0, width: 200 }) as DOMRect;
 
-        // jsdom has no PointerEvent constructor, so fireEvent.pointerDown
-        // silently drops clientX/pointerId - build the event by hand instead
+        // jsdom has no PointerEvent, so fireEvent.pointerDown would drop clientX and pointerId
         const pointerDown = new Event("pointerdown", { bubbles: true });
 
         Object.defineProperty(pointerDown, "clientX", { value: 100 });

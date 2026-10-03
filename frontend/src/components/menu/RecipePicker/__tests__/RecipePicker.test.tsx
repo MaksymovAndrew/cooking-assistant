@@ -1,7 +1,17 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { PAGE_SIZE } from "constants/pagination";
+import type { RecipeListItem } from "types/recipe";
+
+import { API_ROUTES } from "api/endpoints";
+
 import { RecipePicker } from "components/menu/RecipePicker";
+
+import { byOffset, mockedGet } from "test/apiClientMock";
+import { renderWithRouter } from "test/router";
+
+jest.mock("api/client");
 
 const SEARCH_PLACEHOLDER = "Search recipes…";
 const DEBOUNCE_MS = 300;
@@ -13,180 +23,147 @@ const setupUser = () =>
         },
     });
 
-const RECIPES = [
-    {
-        id: 1,
-        title: "Potato soup",
-        type_name: "Soup",
-        creation_date: "",
-        cooking_time: 30,
-    },
-    {
-        id: 2,
-        title: "Onion tart",
-        type_name: "Baking",
-        creation_date: "",
-        cooking_time: 45,
-    },
-];
+const LOAD_MORE = "Show more recipes";
+
+const recipe = (id: number, title: string): RecipeListItem => ({
+    id,
+    title,
+    type_name: "Soup",
+    creation_date: "",
+    cooking_time: 30,
+});
+
+const POTATO = recipe(1, "Potato soup");
+const PEA = recipe(2, "Pea soup");
+const LATE = recipe(3, "Leek soup");
+
+const serveSoups = () => {
+    mockedGet.mockImplementation((_url: string, config: unknown) =>
+        Promise.resolve({
+            data:
+                byOffset(config) === 0
+                    ? { items: [POTATO, PEA], total: 3 }
+                    : { items: [LATE], total: 3 },
+        }),
+    );
+};
+
+const renderPicker = (selectedIds: number[] = [], onToggle = jest.fn()) =>
+    renderWithRouter(
+        <RecipePicker
+            selectedIds={selectedIds}
+            label="Recipes"
+            onToggle={onToggle}
+        />,
+    );
+
+const search = async (query: string) => {
+    const user = setupUser();
+
+    await user.type(screen.getByPlaceholderText(SEARCH_PLACEHOLDER), query);
+    act(() => {
+        jest.advanceTimersByTime(DEBOUNCE_MS);
+    });
+    // the store batches its updates on a timer of its own
+    await act(async () => {
+        await jest.runOnlyPendingTimersAsync();
+    });
+
+    return user;
+};
 
 describe("RecipePicker", () => {
-    it("should not show any results before typing a search query", () => {
-        render(
-            <RecipePicker
-                allRecipes={RECIPES}
-                selectedIds={[]}
-                label="Recipes"
-                onToggle={jest.fn()}
-            />,
-        );
+    beforeEach(() => {
+        jest.useFakeTimers();
+    });
 
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    it("should not search before a query is typed", () => {
+        renderPicker();
+
+        expect(mockedGet).not.toHaveBeenCalled();
         expect(
             screen.queryByRole("button", { name: /Potato/ }),
         ).not.toBeInTheDocument();
     });
 
-    it("should show matching recipes as the query is typed", async () => {
-        jest.useFakeTimers();
-        const user = setupUser();
+    it("should search the server by name and show what it found", async () => {
+        serveSoups();
+        renderPicker();
 
-        try {
-            render(
-                <RecipePicker
-                    allRecipes={RECIPES}
-                    selectedIds={[]}
-                    label="Recipes"
-                    onToggle={jest.fn()}
-                />,
-            );
+        await search("soup");
 
-            await user.type(
-                screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
-                "pot",
-            );
-            act(() => {
-                jest.advanceTimersByTime(DEBOUNCE_MS);
-            });
-
-            // the matched substring is wrapped in its own <strong>, which the accessible name computation separates with a space (e.g. "Pot ato soup")
-            expect(
-                screen.getByRole("button", { name: /pot/i }),
-            ).toBeInTheDocument();
-            expect(
-                screen.queryByRole("button", { name: /onion/i }),
-            ).not.toBeInTheDocument();
-        } finally {
-            jest.useRealTimers();
-        }
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byFilters, {
+            params: { recipe_name: "soup", limit: PAGE_SIZE, offset: 0 },
+        });
+        expect(
+            screen.getByRole("button", { name: /Potato/ }),
+        ).toBeInTheDocument();
     });
 
-    it("should not show already-selected recipes as matches", async () => {
-        jest.useFakeTimers();
-        const user = setupUser();
+    it("should leave out recipes the menu already holds", async () => {
+        serveSoups();
+        renderPicker([POTATO.id]);
 
-        try {
-            render(
-                <RecipePicker
-                    allRecipes={RECIPES}
-                    selectedIds={[1]}
-                    label="Recipes"
-                    onToggle={jest.fn()}
-                />,
-            );
+        await search("soup");
 
-            await user.type(
-                screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
-                "o",
-            );
-            act(() => {
-                jest.advanceTimersByTime(DEBOUNCE_MS);
-            });
-
-            expect(
-                screen.queryByRole("button", { name: /potato/i }),
-            ).not.toBeInTheDocument();
-            // "O" is highlighted separately from "nion tart", so match the unhighlighted remainder
-            expect(
-                screen.getByRole("button", { name: /nion/i }),
-            ).toBeInTheDocument();
-        } finally {
-            jest.useRealTimers();
-        }
+        expect(
+            screen.queryByRole("button", { name: /Potato/ }),
+        ).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: /Pea/ })).toBeInTheDocument();
     });
 
     it("should show a no-matches message when nothing matches", async () => {
-        jest.useFakeTimers();
-        const user = setupUser();
+        mockedGet.mockResolvedValue({ data: { items: [], total: 0 } });
+        renderPicker();
 
-        try {
-            render(
-                <RecipePicker
-                    allRecipes={RECIPES}
-                    selectedIds={[]}
-                    label="Recipes"
-                    onToggle={jest.fn()}
-                />,
-            );
+        await search("zzz");
 
-            await user.type(
-                screen.getByPlaceholderText(SEARCH_PLACEHOLDER),
-                "zzz",
-            );
-            act(() => {
-                jest.advanceTimersByTime(DEBOUNCE_MS);
-            });
+        expect(screen.getByText("No recipes found")).toBeInTheDocument();
+    });
 
-            expect(screen.getByText("No recipes found")).toBeInTheDocument();
-        } finally {
-            jest.useRealTimers();
-        }
+    it("should not say nothing matches while more pages are left to load", async () => {
+        serveSoups();
+        renderPicker([POTATO.id, PEA.id]);
+
+        await search("soup");
+
+        expect(screen.queryByText("No recipes found")).not.toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: LOAD_MORE }),
+        ).toBeInTheDocument();
+    });
+
+    it("should load the next page of matches on request", async () => {
+        serveSoups();
+        renderPicker();
+
+        const user = await search("soup");
+
+        await user.click(screen.getByRole("button", { name: LOAD_MORE }));
+
+        expect(
+            await screen.findByRole("button", { name: /Leek/ }),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole("button", { name: LOAD_MORE }),
+        ).not.toBeInTheDocument();
     });
 
     it("should call onToggle and clear the query when a result is selected", async () => {
-        jest.useFakeTimers();
-        const user = setupUser();
         const onToggle = jest.fn();
 
-        try {
-            render(
-                <RecipePicker
-                    allRecipes={RECIPES}
-                    selectedIds={[]}
-                    label="Recipes"
-                    onToggle={onToggle}
-                />,
-            );
+        serveSoups();
+        renderPicker([], onToggle);
 
-            const input = screen.getByPlaceholderText(SEARCH_PLACEHOLDER);
+        const user = await search("soup");
 
-            await user.type(input, "pot");
-            act(() => {
-                jest.advanceTimersByTime(DEBOUNCE_MS);
-            });
-            await user.click(screen.getByRole("button", { name: /pot/i }));
+        await user.click(screen.getByRole("button", { name: /Potato/ }));
 
-            expect(onToggle).toHaveBeenCalledWith(RECIPES[0]);
-            expect(input).toHaveValue("");
-        } finally {
-            jest.useRealTimers();
-        }
-    });
-
-    it("should clear the query when the clear button is clicked", async () => {
-        render(
-            <RecipePicker
-                allRecipes={RECIPES}
-                selectedIds={[]}
-                label="Recipes"
-                onToggle={jest.fn()}
-            />,
-        );
-
-        const input = screen.getByPlaceholderText(SEARCH_PLACEHOLDER);
-
-        await userEvent.type(input, "pot");
-        await userEvent.click(screen.getByRole("button", { name: "Clear" }));
-
-        expect(input).toHaveValue("");
+        expect(onToggle).toHaveBeenCalledWith(POTATO);
+        expect(screen.getByPlaceholderText(SEARCH_PLACEHOLDER)).toHaveValue("");
     });
 });

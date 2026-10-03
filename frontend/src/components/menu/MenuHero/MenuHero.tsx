@@ -17,7 +17,7 @@ import { StarRatingInput } from "components/ui/StarRatingInput";
 import { formatKcal } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
 import { formatFullDate } from "utils/dateUtils";
-import { mediaUrl } from "utils/mediaUrl";
+import { mediaSrcSet, mediaUrl } from "utils/mediaUrl";
 import { menuCategoryName } from "utils/referenceLabels";
 
 import styles from "./MenuHero.module.scss";
@@ -31,10 +31,11 @@ interface MenuHeroProps {
 }
 
 const RATING_ICON_SIZE = 13;
+// 16:9, full page width up to 1280px less its gutters
+const COVER_WIDTH = 1200;
+const COVER_HEIGHT = 675;
+const COVER_SIZES = "(min-width: 1280px) 1248px, 100vw";
 
-// title, meta and description only - actions and the ingredients/recipes grid live in
-// MenuDetailsSecondary, which follows this in the page's single title -> meta -> description ->
-// ingredients -> actions -> recipes reading order
 export const MenuHero: React.FC<MenuHeroProps> = ({
     menu,
     totalCookingTime,
@@ -58,7 +59,7 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
 
     const coverSrc = mediaUrl(menu.photo_key, "hero");
     const rating = useRatingControl(RATING_TARGET.menu, menu.id, menu);
-    // a signed-in viewer rates anyone's menu but their own; isFavourite is null only for a guest
+    // isFavourite is null only for a guest
     const canRate = menu.isFavourite !== null && !menu.isOwner;
 
     return (
@@ -67,6 +68,10 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                 <img
                     className={styles["menu-hero__cover"]}
                     src={coverSrc}
+                    srcSet={mediaSrcSet(menu.photo_key) ?? undefined}
+                    sizes={COVER_SIZES}
+                    width={COVER_WIDTH}
+                    height={COVER_HEIGHT}
                     alt={menu.title}
                     fetchPriority="high"
                 />
@@ -79,9 +84,9 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                     >
                         {menu.title}
                     </h1>
-                    {menu.categoryname !== null && (
+                    {menu.categoryName !== null && (
                         <Chip variant="type">
-                            {menuCategoryName(t, menu.categoryname)}
+                            {menuCategoryName(t, menu.categoryName)}
                         </Chip>
                     )}
                     <LanguageBadge language={menu.language} />
@@ -115,12 +120,12 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
                 />
             )}
 
-            {menu.menucontent && (
+            {menu.menuContent && (
                 <p
                     className={styles["menu-hero__description"]}
                     lang={menu.language}
                 >
-                    {menu.menucontent}
+                    {menu.menuContent}
                 </p>
             )}
         </div>

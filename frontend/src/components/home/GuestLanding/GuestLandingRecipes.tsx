@@ -3,7 +3,9 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { MOBILE_MEDIA_QUERY } from "constants/breakpoints";
+import { GUEST_LANDING_RECIPE_COUNT } from "constants/guestLanding";
 import { ROUTES } from "constants/routes";
+import type { RecipeSearchResultItem } from "types/recipe";
 
 import { flattenPages } from "redux/services/infiniteQueryHelpers";
 import { useGetRecipesByFiltersInfiniteQuery } from "redux/services/recipesApi";
@@ -19,18 +21,26 @@ import { LinkButton } from "components/ui/LinkButton";
 import styles from "./GuestLanding.module.scss";
 
 const SEE_ALL_ICON_SIZE = 15;
-const DESKTOP_RECIPE_COUNT = 4;
 const MOBILE_RECIPE_COUNT = 3;
 
-export const GuestLandingRecipes: React.FC = () => {
+interface GuestLandingRecipesProps {
+    // null when the server could not load them
+    recipes: RecipeSearchResultItem[] | null;
+}
+
+export const GuestLandingRecipes: React.FC<GuestLandingRecipesProps> = ({
+    recipes: loaded,
+}) => {
     const { t } = useTranslation("guestLanding");
     const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
-    // same request /all-recipes fires with no filters applied, so it's already cached once a
-    // guest clicks through - the count is trimmed client-side, not by a second endpoint
-    const { data } = useGetRecipesByFiltersInfiniteQuery({});
-    const recipes = flattenPages(data).slice(
+    // the unfiltered /all-recipes request, trimmed here; skipped when the server sent the recipes
+    const { data } = useGetRecipesByFiltersInfiniteQuery(
+        {},
+        { skip: loaded !== null },
+    );
+    const recipes = (loaded ?? flattenPages(data)).slice(
         0,
-        isMobile ? MOBILE_RECIPE_COUNT : DESKTOP_RECIPE_COUNT,
+        isMobile ? MOBILE_RECIPE_COUNT : GUEST_LANDING_RECIPE_COUNT,
     );
 
     return (

@@ -17,7 +17,6 @@ interface RecipeFilterTogglesProps {
     setValue: SetFilterValue<RecipeFilterState>;
 }
 
-// the per-viewer filters need a session, so a guest gets only the rating one
 export const RecipeFilterToggles: React.FC<RecipeFilterTogglesProps> = ({
     filters,
     setValue,

@@ -58,7 +58,7 @@ describe("SetRecipeTags", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "tag_ids: Tag IDs must be unique",
+            "tag_ids: Must not repeat",
         );
         expect(tagRepository.setRecipeTags).not.toHaveBeenCalled();
     });
@@ -78,7 +78,7 @@ describe("SetRecipeTags", () => {
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            `tag_ids: Tag IDs must contain at most ${TAG_LIMITS.MAX_TAGS_PER_RECIPE} items`,
+            `tag_ids: Must have at most ${TAG_LIMITS.MAX_TAGS_PER_RECIPE} items`,
         );
         expect(tagRepository.setRecipeTags).not.toHaveBeenCalled();
     });

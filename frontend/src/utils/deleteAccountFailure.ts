@@ -18,7 +18,7 @@ export interface DeleteAccountFailure {
     seconds?: number;
 }
 
-// t keys are under "settings:deleteAccountModal.errors"
+// the error keys live in the "settings" namespace
 export function resolveDeleteAccountFailure(
     error: unknown,
     lockout: LockoutState,

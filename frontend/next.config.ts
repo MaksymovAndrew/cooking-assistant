@@ -26,7 +26,6 @@ const scssLoadPaths = [srcDir, path.join(rootDir, "node_modules")];
 const themeColors = readThemeColors();
 const isProduction = process.env.NODE_ENV === "production";
 
-// dev-proxy target is overridable via env; defaults to the local backend port
 const apiProxyTarget = process.env.API_INTERNAL_URL ?? "http://localhost:3000";
 
 // the Content-Security-Policy is not here: it carries a per-request nonce, so src/proxy.ts sends it
@@ -42,16 +41,11 @@ const SECURITY_HEADERS = [
 
 const nextConfig: NextConfig = {
     output: "standalone",
-    // wait for generateMetadata before answering instead of streaming it in later. The page
-    // needs that same request anyway (React cache() shares it), so it costs nothing - and it is
-    // half of what makes a missing recipe answer with a real 404. The other half is that no
-    // loading.tsx sits above those routes: either one alone still yields a 200 with a 404 body
+    // awaits generateMetadata so a missing record answers 404; a loading.tsx above would undo it
     htmlLimitedBots: /.*/,
-    // the repository documents its own conventions; a generated per-package copy would
-    // compete with them and be rewritten on every dev run
+    // the repository documents its own conventions; a generated copy would compete with them
     agentRules: false,
-    // this package is the workspace root; without it the sibling lockfiles upstream make
-    // Next guess, and standalone output would trace the wrong tree
+    // without it the lockfiles upstream make Next guess the root and trace the wrong tree
     turbopack: { root: rootDir },
     outputFileTracingRoot: rootDir,
     env: {
@@ -64,9 +58,7 @@ const nextConfig: NextConfig = {
     },
     headers: () =>
         Promise.resolve([{ source: "/:path*", headers: SECURITY_HEADERS }]),
-    // same-origin in dev: the browser sees /api on :8080 and Next forwards it to the
-    // backend, so the auth cookie is first-party without TLS. Deployed, the browser
-    // talks to the API domain directly.
+    // dev only: proxying /api keeps the auth cookie first-party without TLS
     rewrites: () =>
         Promise.resolve(
             isProduction

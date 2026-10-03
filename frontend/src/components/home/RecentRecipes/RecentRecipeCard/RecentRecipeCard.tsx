@@ -14,6 +14,7 @@ import { RecordPhoto } from "components/ui/RecordPhoto";
 
 import { formatKcal, roundCalories } from "utils/calories";
 import { splitCookingTime } from "utils/cookingTimeUtils";
+import { cx } from "utils/cx";
 import { mediaUrl } from "utils/mediaUrl";
 
 import styles from "./RecentRecipeCard.module.scss";
@@ -37,12 +38,10 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
         hours > 0
             ? t("recentRecipes.cookingTimeHoursMinutes", { hours, minutes })
             : t("recentRecipes.cookingTimeMinutesOnly", { minutes });
-    const caloriesClassName = [
+    const caloriesClassName = cx(
         styles["recent-recipe-card__calories"],
         exceedsBudget && styles["recent-recipe-card__calories--over"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <Link

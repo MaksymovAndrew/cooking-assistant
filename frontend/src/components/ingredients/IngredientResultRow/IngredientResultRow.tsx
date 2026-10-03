@@ -6,6 +6,7 @@ import type { Ingredient } from "types/ingredient";
 import { AllergenDot } from "components/ui/AllergenDot";
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
 
+import { cx } from "utils/cx";
 import { resolveIngredientName } from "utils/ingredientName";
 import { unitName } from "utils/referenceLabels";
 
@@ -18,7 +19,6 @@ interface IngredientResultRowProps {
     onSelect: (ingredient: Ingredient) => void;
 }
 
-// a single search/browse result row, shared by the recipe ingredient picker and the pantry add-ingredient modal
 export const IngredientResultRow: React.FC<IngredientResultRowProps> = ({
     ingredient,
     query,
@@ -36,12 +36,10 @@ export const IngredientResultRow: React.FC<IngredientResultRowProps> = ({
                 onClick={() => {
                     onSelect(ingredient);
                 }}
-                className={[
+                className={cx(
                     styles["ingredient-result"],
                     isSelected && styles["ingredient-result--selected"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
+                )}
             >
                 <span className={styles["ingredient-result__name"]}>
                     {query ? (

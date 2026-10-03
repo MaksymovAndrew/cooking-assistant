@@ -45,7 +45,7 @@
             var(--brand-subtle),
             var(--surface-2)
         );
-        color: var(--brand);
+        color: var(--brand-text);
 
         @include respond-to(tablet) {
             width: auto;
@@ -63,7 +63,7 @@
         display: flex;
         flex: 1;
         flex-direction: column;
-        gap: 4px;
+        gap: var(--s-1);
         min-width: 0;
 
         @include respond-to(tablet) {

@@ -6,6 +6,7 @@ import type { Locale } from "constants/locales";
 
 import { useAvoidedIngredients } from "hooks/useAvoidedIngredients";
 
+import { cx } from "utils/cx";
 import { resolveAllergen } from "utils/ingredientName";
 
 import styles from "./RecipeDescriptionPanel.module.scss";
@@ -29,9 +30,9 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
 
     return (
         <div className={styles["recipe-description-panel"]}>
-            <span className={styles["recipe-description-panel__label"]}>
+            <h2 className={styles["recipe-description-panel__label"]}>
                 {t("recipeDetailsPage.description")}
-            </span>
+            </h2>
             <p
                 className={styles["recipe-description-panel__content"]}
                 lang={language}
@@ -48,13 +49,13 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
                         <span
                             className={styles["recipe-description-panel__dot"]}
                         />
-                        <span
+                        <h3
                             className={
                                 styles["recipe-description-panel__label"]
                             }
                         >
                             {t("recipeDetailsPage.allergens")}
-                        </span>
+                        </h3>
                     </div>
                     <div
                         className={
@@ -67,7 +68,7 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
                             return (
                                 <span
                                     key={allergen}
-                                    className={[
+                                    className={cx(
                                         styles[
                                             "recipe-description-panel__allergen"
                                         ],
@@ -75,9 +76,7 @@ export const RecipeDescriptionPanel: React.FC<RecipeDescriptionPanelProps> = ({
                                             styles[
                                                 "recipe-description-panel__allergen--avoided"
                                             ],
-                                    ]
-                                        .filter(Boolean)
-                                        .join(" ")}
+                                    )}
                                 >
                                     {isAvoided && (
                                         <Ban

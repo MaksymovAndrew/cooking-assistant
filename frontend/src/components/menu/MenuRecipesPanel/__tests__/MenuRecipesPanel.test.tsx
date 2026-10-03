@@ -115,7 +115,7 @@ describe("MenuRecipesPanel", () => {
         }
     });
 
-    it("should show an empty state with an add-recipes link for the owner when there are no recipes", () => {
+    it("should tell the owner the recipes were removed and offer to add new ones", () => {
         renderWithRouter(
             <MenuRecipesPanel
                 recipes={[]}
@@ -124,13 +124,18 @@ describe("MenuRecipesPanel", () => {
             />,
         );
 
-        expect(screen.getByText("No recipes yet")).toBeInTheDocument();
+        expect(
+            screen.getByText("The recipes in this menu were removed"),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(/Add new recipes, or delete the menu/),
+        ).toBeInTheDocument();
         expect(
             screen.getByRole("link", { name: /Add recipes/ }),
         ).toHaveAttribute("href", "/change-menu/1");
     });
 
-    it("should show an empty state without an add-recipes link for a visitor", () => {
+    it("should tell a visitor the recipes were removed, without an add-recipes link", () => {
         renderWithRouter(
             <MenuRecipesPanel
                 recipes={[]}
@@ -139,7 +144,9 @@ describe("MenuRecipesPanel", () => {
             />,
         );
 
-        expect(screen.getByText("No recipes yet")).toBeInTheDocument();
+        expect(
+            screen.getByText(/nothing to cook from this menu/),
+        ).toBeInTheDocument();
         expect(
             screen.queryByRole("link", { name: /Add recipes/ }),
         ).not.toBeInTheDocument();

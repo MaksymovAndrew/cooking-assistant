@@ -26,7 +26,6 @@ export interface CookSummary {
     calorieIntake: CalorieIntakeRow | null;
 }
 
-// needs come in the requirements' order; an ingredient the pantry had none of is skipped, not an error
 export function summariseCook(
     requirements: CookRequirement[],
     needed: Map<number, number>,

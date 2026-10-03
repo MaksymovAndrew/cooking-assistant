@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback } from "react";
 
 import { useFilterSearchParams } from "hooks/useFilterSearchParams";
@@ -45,18 +43,14 @@ export interface UseListFiltersResult<TState, TParams> {
     hasActiveFilters: boolean;
 }
 
-// URL is the single source of truth for filter state - values/params/activeFilters
-// are all derived from it on every render, never cached in component or store state.
-// readState returns a plain Record (filterState.ts isn't parameterized by TState -
-// there's nothing in its inputs to infer it from), so the caller-specified TState is
-// applied with one deliberate cast, right here, correct by construction: every key it
-// reads comes from a def that was built for this exact TState (see recipeFilterDefs.ts)
+// the URL is the only filter state: nothing is cached in component or store state
 export function useListFilters<TState extends object, TParams>(
     defs: readonly FilterDef<unknown, TParams>[],
 ): UseListFiltersResult<TState, TParams> {
     const { currentParams, setSearchParams } = useFilterSearchParams();
 
     const rawValues = readState<TParams>(defs, currentParams);
+    // the cast holds: every key comes from a def built for this exact TState
     const values = rawValues as TState;
     const params = buildParams<TParams>(defs, rawValues);
 
@@ -81,9 +75,7 @@ export function useListFilters<TState extends object, TParams>(
         [setRaw],
     );
 
-    // updates several keys in one URL write - setValue() called several times in a row
-    // would each read the same pre-update searchParams from this closure, so only the
-    // last call would actually stick; this merges them all before writing once
+    // one write for several keys: repeated setValue() calls all read the same stale params
     const setValues = useCallback(
         (partial: Partial<TState>, options?: SetFilterValueOptions) => {
             const nextValues = { ...rawValues, ...partial };

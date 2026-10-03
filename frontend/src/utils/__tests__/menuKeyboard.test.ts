@@ -1,4 +1,4 @@
-import { menuKeyTarget } from "utils/menuKeyboard";
+import { menuKeyStep, menuKeyTarget } from "utils/menuKeyboard";
 
 describe("menuKeyTarget", () => {
     it("should move down and wrap to the first item", () => {
@@ -18,5 +18,17 @@ describe("menuKeyTarget", () => {
 
     it("should ignore any other key", () => {
         expect(menuKeyTarget("Tab", 1, 4)).toBeNull();
+    });
+});
+
+describe("menuKeyStep", () => {
+    it("should keep looking upwards for the keys that move up", () => {
+        expect(menuKeyStep("ArrowUp")).toBe(-1);
+        expect(menuKeyStep("End")).toBe(-1);
+    });
+
+    it("should keep looking downwards for the keys that move down", () => {
+        expect(menuKeyStep("ArrowDown")).toBe(1);
+        expect(menuKeyStep("Home")).toBe(1);
     });
 });

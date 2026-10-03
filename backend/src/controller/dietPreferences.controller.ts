@@ -16,7 +16,6 @@ interface DietPreferencesControllerDependencies {
     removeAvoidedIngredient: RemoveAvoidedIngredient;
 }
 
-// every write is an idempotent toggle with nothing to return, so each answers 204
 export default class DietPreferencesController {
     private getDietPreferencesUseCase: GetDietPreferences;
     private addAvoidedAllergenUseCase: AddAvoidedAllergen;

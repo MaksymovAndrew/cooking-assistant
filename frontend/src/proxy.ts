@@ -85,7 +85,7 @@ export const proxy = (request: NextRequest): NextResponse =>
         }),
     );
 
-// the API proxy, build assets, the health probe and any file with an extension are not pages
+// not pages (API, assets, health, icons, any file with an extension): under a locale they would 404
 export const config = {
-    matcher: ["/((?!api/|api$|_next/|health$|.*\\.).*)"],
+    matcher: ["/((?!api/|api$|_next/|health$|icon/|apple-icon$|.*\\.).*)"],
 };

@@ -64,12 +64,14 @@ describe("PurchaseHistoryModal", () => {
             />,
         );
 
+        const rows = await screen.findAllByRole("listitem");
+
         expect(
-            await screen.findByText("Purchase history: Potato"),
+            screen.getByText("Purchase history: Potato"),
         ).toBeInTheDocument();
-        expect(
-            screen.getByRole("button", { name: "Close" }),
-        ).toBeInTheDocument();
+        expect(rows).toHaveLength(1);
+        expect(within(rows[0]).getByText("500")).toBeInTheDocument();
+        expect(within(rows[0]).getByText("g")).toBeInTheDocument();
     });
 
     it("should show an error message when the history fails to load", async () => {
@@ -119,11 +121,29 @@ describe("PurchaseHistoryModal", () => {
         );
     });
 
+    it("should put the saved quantity back when the save fails", async () => {
+        mockedGet.mockResolvedValue({ data: SAMPLE_HISTORY });
+        mockedPut.mockRejectedValue(new Error("offline"));
+
+        renderWithRouter(
+            <PurchaseHistoryModal
+                ingredientId={5}
+                ingredientName="Potato"
+                onClose={jest.fn()}
+            />,
+        );
+
+        const row = (await screen.findAllByRole("listitem"))[0];
+
+        await editRowQuantity(row, "600");
+        await userEvent.keyboard("{Enter}");
+
+        expect(await within(row).findByText("500")).toBeInTheDocument();
+        expect(within(row).queryByText("600")).not.toBeInTheDocument();
+    });
+
     it("should not overwrite an unsaved edit in another row once a Pantry-tag refetch lands", async () => {
-        // the refetch must return content that actually differs from the initial fetch (A's
-        // quantity reflecting the concurrent save below) - RTK Query's structural sharing keeps
-        // the old `data` reference (and this effect never re-fires) when a refetch's content is
-        // identical to what's already cached, which would make this test pass for the wrong reason
+        // the refetch must differ, or RTK Query's structural sharing keeps `data` and the test proves nothing
         mockedGet
             .mockResolvedValueOnce({ data: [HISTORY_A, HISTORY_B] })
             .mockResolvedValue({
@@ -143,8 +163,7 @@ describe("PurchaseHistoryModal", () => {
 
         await editRowQuantity(rowB, "250");
 
-        // simulates another purchase being saved concurrently (e.g. another row, another tab):
-        // invalidates the shared Pantry tag and refetches this modal's still-mounted history query
+        // a concurrent save elsewhere invalidates the Pantry tag and refetches this history
         await store.dispatch(
             userIngredientsApi.endpoints.updatePurchase.initiate({
                 purchaseId: HISTORY_A.id,
@@ -152,8 +171,7 @@ describe("PurchaseHistoryModal", () => {
             }),
         );
 
-        // the refetch triggered by the invalidation above is a detached dispatch, not part of the
-        // mutation promise just awaited - give it a tick to land before asserting the guard held
+        // the refetch is a detached dispatch, not part of the awaited mutation, so give it a tick
         await act(async () => {
             await new Promise((resolve) => setTimeout(resolve, 0));
         });

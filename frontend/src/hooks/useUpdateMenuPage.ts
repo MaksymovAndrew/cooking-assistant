@@ -9,10 +9,12 @@ import {
     useGetMenuByIdQuery,
     useUpdateMenuMutation,
 } from "redux/services/menusApi";
-import { useGetAllRecipesQuery } from "redux/services/recipesApi";
 
 import { useAppRouter } from "hooks/useAppRouter";
 import { useMenuForm } from "hooks/useMenuForm";
+
+import { resolveEditPageState } from "utils/editPageState";
+import { menuRecipeToListItem, recipeIdsOf } from "utils/menuFormRecipes";
 
 export const useUpdateMenuPage = () => {
     const { t } = useTranslation("menu");
@@ -28,8 +30,8 @@ export const useUpdateMenuPage = () => {
     });
     const { setInitialValues } = form;
     const { data: categories = [] } = useGetMenuCategoriesQuery(null);
-    const { data: allRecipes = [] } = useGetAllRecipesQuery(null);
-    const { data: menu, isLoading } = useGetMenuByIdQuery(id);
+    const menuQuery = useGetMenuByIdQuery(id);
+    const menu = menuQuery.data;
     const [updateMenu] = useUpdateMenuMutation();
 
     useEffect(() => {
@@ -42,7 +44,7 @@ export const useUpdateMenuPage = () => {
             menuDescription: menu.menu.menuContent || "",
             language: menu.menu.language,
             selectedCategory: menu.menu.category_id,
-            selectedRecipes: menu.recipes.map((recipe) => recipe.recipe_id),
+            selectedRecipes: menu.recipes.map(menuRecipeToListItem),
             photoKey: menu.menu.photo_key,
         });
     }, [menu, setInitialValues]);
@@ -60,7 +62,7 @@ export const useUpdateMenuPage = () => {
                 menuContent: form.menuDescription,
                 language: form.language,
                 categoryId: form.selectedCategory,
-                recipeIds: form.selectedRecipes,
+                recipeIds: recipeIdsOf(form.selectedRecipes),
             },
         });
 
@@ -71,5 +73,13 @@ export const useUpdateMenuPage = () => {
         }
     };
 
-    return { form, categories, allRecipes, isLoading, handleSubmit };
+    return {
+        form,
+        categories,
+        pageState: resolveEditPageState(menuQuery, menu?.menu.isOwner ?? null),
+        retry: () => {
+            void menuQuery.refetch();
+        },
+        handleSubmit,
+    };
 };

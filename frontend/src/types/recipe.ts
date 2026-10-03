@@ -12,25 +12,19 @@ export interface RecipeListItem {
     cooking_time: number;
 }
 
-// shape returned by GET /api/recipes - the recipe list plus an array_agg of ingredient names
-export interface RecipeWithIngredientNames extends RecipeListItem {
-    ingredients: string[];
-}
-
 export interface RecipeSearchIngredient {
     id: number;
     name: string;
     allergens: string[];
 }
 
-// shape returned by GET /api/recipes-by-filters and /api/recipes-filters-person/:id (different ingredient shape from RecipeWithIngredientNames)
 export interface RecipeSearchResultItem extends RecipeListItem, RecordRating {
     // the language the author wrote it in
     language: Locale;
     ingredients: RecipeSearchIngredient[];
     // COALESCE(calories_override, calories_computed)
     calories_per_portion: number | null;
-    // computed by the backend (r.person_id = current viewer) - the raw person_id itself never leaves the server
+    // computed per viewer; the raw person_id never leaves the server
     isOwner: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite: boolean | null;
@@ -52,7 +46,6 @@ export interface RecipeDetailIngredient extends CatalogIngredientRef {
     calories_per_unit: number | null;
 }
 
-// shape returned by GET /api/recipe/:id (superset of what RecipeDetailsPage + ChangeRecipePage use)
 export interface RecipeDetails extends RecordRating {
     id: number;
     title: string;
@@ -64,7 +57,7 @@ export interface RecipeDetails extends RecordRating {
     type_name: string | null;
     cooking_time: number | null;
     creation_date: string;
-    // computed by the backend (r.person_id = current user) so the client can gate Edit/Delete without decoding the session
+    // computed per viewer; the raw person_id never leaves the server
     isOwner: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite: boolean | null;
@@ -90,7 +83,7 @@ export interface RecipeFilterParams {
     max_cooking_time?: string;
     min_calories?: string;
     max_calories?: string;
-    // omitted (not empty string - the backend enum-validates "asc"/"desc"/"rating") falls back to creation_date DESC server-side
+    // omit rather than send "": the backend enum-validates it; omitted sorts by creation_date DESC
     sort_order?: string;
     top_rated?: boolean;
     in_pantry?: boolean;

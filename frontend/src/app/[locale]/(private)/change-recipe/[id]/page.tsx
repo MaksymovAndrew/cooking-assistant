@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,38 +8,42 @@ import { ROUTES } from "constants/routes";
 import { usePageTitle } from "hooks/usePageTitle";
 import { useUpdateRecipePage } from "hooks/useUpdateRecipePage";
 
+import { EditRecordGate } from "components/forms/EditRecordGate";
 import { RecipeForm } from "components/forms/RecipeForm";
 import { AppShell } from "components/layout/AppShell";
-import { Link } from "components/ui/Link";
+import { Breadcrumb } from "components/ui/Breadcrumb";
 
-import styles from "app/[locale]/(private)/RecipeFormPage.module.scss";
+import styles from "app/[locale]/(private)/FormPage.module.scss";
 
 const ChangeRecipePage: React.FC = () => {
     const { t } = useTranslation("recipes");
-    const { form, allIngredients, allTypes, isLoading, handleSubmit } =
+    const { form, allIngredients, allTypes, pageState, retry, handleSubmit } =
         useUpdateRecipePage();
 
     usePageTitle(t("changeRecipePage.heading"));
 
     return (
         <AppShell skipNotices>
-            <div className={styles["recipe-form-page"]}>
-                <nav
-                    aria-label={t("changeRecipePage.breadcrumb")}
-                    className={styles["recipe-form-page__breadcrumb"]}
-                >
-                    <Link href={ROUTES.allRecipes}>
-                        {t("changeRecipePage.breadcrumbRecipes")}
-                    </Link>
-                    <ChevronRight size={14} aria-hidden="true" />
-                    <span>{t("changeRecipePage.breadcrumbCurrent")}</span>
-                </nav>
-                <h1 className={styles["recipe-form-page__heading"]}>
+            <div className={styles["form-page"]}>
+                <Breadcrumb
+                    label={t("changeRecipePage.breadcrumb")}
+                    parentHref={ROUTES.allRecipes}
+                    parentLabel={t("changeRecipePage.breadcrumbRecipes")}
+                    current={t("changeRecipePage.breadcrumbCurrent")}
+                />
+                <h1 className={styles["form-page__heading"]}>
                     {t("changeRecipePage.heading")}
                 </h1>
-                {isLoading ? (
-                    <p>{t("changeRecipePage.loading")}</p>
-                ) : (
+                <EditRecordGate
+                    state={pageState}
+                    onRetry={retry}
+                    notFoundTitle={t("changeRecipePage.notFoundTitle")}
+                    notFoundDescription={t(
+                        "changeRecipePage.notFoundDescription",
+                    )}
+                    backHref={ROUTES.allRecipes}
+                    backLabel={t("changeRecipePage.backToRecipes")}
+                >
                     <RecipeForm
                         form={form}
                         allIngredients={allIngredients}
@@ -52,7 +55,7 @@ const ChangeRecipePage: React.FC = () => {
                             void handleSubmit();
                         }}
                     />
-                )}
+                </EditRecordGate>
             </div>
         </AppShell>
     );

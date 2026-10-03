@@ -1,20 +1,20 @@
 import React from "react";
 
+import type { MoveDirection } from "types/reorder";
 import type { ShoppingListItem } from "types/shoppingList";
 
 import { flipTarget } from "hooks/useFlipAnimation";
-import type { MoveDirection } from "hooks/useShoppingList";
 
 import { ShoppingListItemRow } from "components/shopping-list/ShoppingListItemRow";
+
+import { cx } from "utils/cx";
 
 import styles from "./ShoppingListSection.module.scss";
 
 interface ShoppingListSectionProps {
-    // identifies the card to the page layout animation
     flipId: string;
     title: string;
     items: ShoppingListItem[];
-    // shown in place of the rows when there are none
     empty: React.ReactNode;
     action?: React.ReactNode;
     className?: string;
@@ -39,9 +39,7 @@ export const ShoppingListSection: React.FC<ShoppingListSectionProps> = ({
     <section
         {...flipTarget(flipId)}
         aria-label={title}
-        className={[styles["shopping-list-section"], className]
-            .filter(Boolean)
-            .join(" ")}
+        className={cx(styles["shopping-list-section"], className)}
     >
         <div className={styles["shopping-list-section__header"]}>
             <h2 className={styles["shopping-list-section__title"]}>{title}</h2>

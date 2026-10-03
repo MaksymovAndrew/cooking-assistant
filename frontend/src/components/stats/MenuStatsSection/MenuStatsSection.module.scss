@@ -10,12 +10,7 @@
             serif;
     }
 
-    // auto-fit at desktop (not a fixed column count) so a tile count that doesn't divide evenly -
-    // e.g. 5 - reflows instead of leaving an empty gap in the last row. Mobile/tablet stay a fixed
-    // 2-column grid (auto-fit would still only fit 2 at that width, so it buys nothing there), so
-    // an odd tile count is handled separately below: the classic "odd item, also last" selector
-    // makes a lone trailing tile span the full row instead of sitting alone beside empty space -
-    // self-healing for any tile count, not hardcoded to 5
+    // an odd last tile spans the 2-column row; from desktop, auto-fit reflows any count
     &__tiles {
         display: grid;
         grid-template-columns: repeat(2, 1fr);

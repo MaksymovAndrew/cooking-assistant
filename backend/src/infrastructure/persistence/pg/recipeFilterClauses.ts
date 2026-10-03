@@ -19,7 +19,7 @@ export const RECIPE_FILTER_CLAUSES: readonly FilterClause<RecipeFilters>[] = [
     whenDefined("ingredient_ids", (builder, ingredientIds) => {
         const ids = ingredientIds.split(",").map(Number);
 
-        // a separate EXISTS (not a WHERE on the outer join) so a match doesn't strip the recipe's other ingredients out of the json_agg below - OR semantics: any id matches
+        // an EXISTS, not a WHERE on the join, so the json_agg keeps the recipe's other ingredients
         builder.add(
             (bind) => `EXISTS (
         SELECT 1 FROM recipe_ingredients ri2

@@ -19,7 +19,6 @@ interface ProfileRecipesTabProps {
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
     fetchNextPage: () => void;
-    // the favourites list reuses this tab with its own empty-state wording
     emptyTitle?: string;
 }
 

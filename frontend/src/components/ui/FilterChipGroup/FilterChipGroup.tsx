@@ -1,3 +1,5 @@
+import { cx } from "utils/cx";
+
 import styles from "./FilterChipGroup.module.scss";
 
 export interface FilterChipOption<T extends string | number = number> {
@@ -11,8 +13,6 @@ export interface FilterChipGroupProps<T extends string | number = number> {
     onChange: (next: T[]) => void;
 }
 
-// multi-select pill row shared by every id-list filter (recipe types, menu categories, ...);
-// owns the add/remove-from-array logic so no popover has to repeat it
 export const FilterChipGroup = <T extends string | number = number>({
     options,
     value,
@@ -36,12 +36,10 @@ export const FilterChipGroup = <T extends string | number = number>({
                                 : [...value, option.id],
                         );
                     }}
-                    className={[
+                    className={cx(
                         styles["filter-chip-group__chip"],
                         selected && styles["filter-chip-group__chip--selected"],
-                    ]
-                        .filter(Boolean)
-                        .join(" ")}
+                    )}
                 >
                     {option.label}
                 </button>

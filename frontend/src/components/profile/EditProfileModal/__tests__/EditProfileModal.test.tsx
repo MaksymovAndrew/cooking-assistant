@@ -5,10 +5,14 @@ import type { CurrentUser } from "types/auth";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
+import { MODAL_TYPE } from "redux/slices/uiSlice";
+
 import { EditProfileModal } from "components/profile/EditProfileModal";
 
 import { mockedPatch, mockedPut } from "test/apiClientMock";
 import { renderWithProviders } from "test/router";
+import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
 
@@ -25,15 +29,30 @@ const CURRENT_USER: CurrentUser = {
     calorie_goal: null,
     locale: "en",
 };
+const MODAL_ID = "m1";
+
+const renderOpen = () =>
+    renderWithProviders(
+        <EditProfileModal modalId={MODAL_ID} currentUser={CURRENT_USER} />,
+        {
+            store: makeTestStore({
+                ui: {
+                    queue: [
+                        {
+                            id: MODAL_ID,
+                            type: MODAL_TYPE.editProfile,
+                            currentUser: CURRENT_USER,
+                        },
+                    ],
+                },
+            }),
+        },
+    );
 
 describe("EditProfileModal", () => {
     it("should prefill the fields and save the updated profile", async () => {
         mockedPatch.mockResolvedValue({ data: null });
-        const onClose = jest.fn();
-
-        renderWithProviders(
-            <EditProfileModal currentUser={CURRENT_USER} onClose={onClose} />,
-        );
+        const { store } = renderOpen();
 
         expect(screen.getByLabelText("Name")).toHaveValue("Claude");
         expect(screen.getByLabelText("Surname")).toHaveValue("Cook");
@@ -48,43 +67,19 @@ describe("EditProfileModal", () => {
             surname: "Cook",
             avatar: "sushi",
         });
-        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
-    it("should submit an edited surname", async () => {
-        mockedPatch.mockResolvedValue({ data: null });
-
-        renderWithProviders(
-            <EditProfileModal currentUser={CURRENT_USER} onClose={jest.fn()} />,
-        );
-
-        await userEvent.clear(screen.getByLabelText("Surname"));
-        await userEvent.type(screen.getByLabelText("Surname"), "Chef");
-        await userEvent.click(screen.getByRole("button", { name: "Save" }));
-
-        expect(mockedPatch).toHaveBeenCalledWith(API_ROUTES.auth.me, {
-            name: "Claude",
-            surname: "Chef",
-            avatar: "tomato",
-        });
-    });
-
-    it("should call onClose when Cancel is clicked", async () => {
-        const onClose = jest.fn();
-
-        renderWithProviders(
-            <EditProfileModal currentUser={CURRENT_USER} onClose={onClose} />,
-        );
+    it("should close the modal when Cancel is clicked", async () => {
+        const { store } = renderOpen();
 
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
-        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should show a required-fields error and not submit when the name is cleared", async () => {
-        renderWithProviders(
-            <EditProfileModal currentUser={CURRENT_USER} onClose={jest.fn()} />,
-        );
+        renderOpen();
 
         await userEvent.clear(screen.getByLabelText("Name"));
         await userEvent.click(screen.getByRole("button", { name: "Save" }));
@@ -98,9 +93,7 @@ describe("EditProfileModal", () => {
     it("should select the no-avatar option and submit avatar as null", async () => {
         mockedPatch.mockResolvedValue({ data: null });
 
-        renderWithProviders(
-            <EditProfileModal currentUser={CURRENT_USER} onClose={jest.fn()} />,
-        );
+        renderOpen();
 
         await userEvent.click(screen.getByRole("radio", { name: "No avatar" }));
         await userEvent.click(screen.getByRole("button", { name: "Save" }));
@@ -119,9 +112,7 @@ describe("EditProfileModal", () => {
         });
         const photo = new File(["image"], "me.png", { type: "image/png" });
 
-        renderWithProviders(
-            <EditProfileModal currentUser={CURRENT_USER} onClose={jest.fn()} />,
-        );
+        renderOpen();
 
         expect(
             screen.queryByText("Your photo is shown instead of the avatar."),

@@ -8,6 +8,7 @@
 
     &__column {
         min-width: 0;
+        container-type: inline-size;
     }
 
     &__column-label {
@@ -28,7 +29,7 @@
         }
 
         &--brand {
-            color: var(--brand);
+            color: var(--brand-text);
         }
 
         &--muted {
@@ -63,10 +64,18 @@
         @include on-hover {
             border-color: var(--brand);
         }
+
+        // a narrow column leaves the name no room beside the value, so the value moves under it
+        @container (width < 240px) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--s-1);
+        }
     }
 
     &__name {
-        @include truncate;
+        @include line-clamp(2);
+        @include wrap-anywhere;
 
         min-width: 0;
         color: var(--text);
@@ -94,7 +103,7 @@
         }
 
         &--brand {
-            color: var(--brand);
+            color: var(--brand-text);
             background: var(--brand-subtle);
         }
 

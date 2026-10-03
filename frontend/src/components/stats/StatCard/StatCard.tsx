@@ -1,5 +1,7 @@
 import React from "react";
 
+import { cx } from "utils/cx";
+
 import styles from "./StatCard.module.scss";
 
 interface StatCardProps {
@@ -8,7 +10,5 @@ interface StatCardProps {
 }
 
 export const StatCard: React.FC<StatCardProps> = ({ children, className }) => (
-    <div className={[styles["stat-card"], className].filter(Boolean).join(" ")}>
-        {children}
-    </div>
+    <div className={cx(styles["stat-card"], className)}>{children}</div>
 );

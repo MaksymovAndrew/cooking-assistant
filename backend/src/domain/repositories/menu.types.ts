@@ -46,13 +46,3 @@ export interface MenuDetail {
     recipes: (MenuRecipeRow & { missingIngredients: MissingIngredient[] })[];
     allergens: string[];
 }
-
-export interface MenuStatsRow {
-    id: number;
-    title: string;
-    categoryName: string;
-    menuContent: string | null;
-    recipe_count: number;
-    total_cooking_time: number;
-    total_calories: number | null;
-}

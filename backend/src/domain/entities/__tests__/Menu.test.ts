@@ -35,14 +35,7 @@ describe("Menu", () => {
         const menu = Menu.forCreation(input);
 
         expect(menu).toBeInstanceOf(Menu);
-        expect(Object.keys(menu)).toEqual([
-            "menuTitle",
-            "menuContent",
-            "language",
-            "categoryId",
-            "personId",
-        ]);
-        expect(menu).toMatchObject({
+        expect(menu).toEqual({
             menuTitle: input.menuTitle,
             menuContent: input.menuContent,
             language: "uk",
@@ -69,13 +62,7 @@ describe("Menu", () => {
         const menu = Menu.forUpdate(input);
 
         expect(menu).toBeInstanceOf(Menu);
-        expect(Object.keys(menu)).toEqual([
-            "menuTitle",
-            "menuContent",
-            "language",
-            "categoryId",
-        ]);
-        expect(menu).toMatchObject({
+        expect(menu).toEqual({
             menuTitle: input.menuTitle,
             menuContent: input.menuContent,
             language: "uk",

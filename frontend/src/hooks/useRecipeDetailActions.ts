@@ -7,7 +7,6 @@ import { useDeleteRecipeHandler } from "./useDeleteRecipeHandler";
 import { useExceedsCalorieBudget } from "./useExceedsCalorieBudget";
 import { useLogIntakeHandler } from "./useLogIntakeHandler";
 
-// the recipe page's action row in one place: what each button does, and whether it shows at all
 export const useRecipeDetailActions = (
     recipe: RecipeDetails,
     portionCount: number,

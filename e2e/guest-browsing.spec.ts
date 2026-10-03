@@ -1,11 +1,10 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { deleteMenu, deleteRecipe } from "./api";
 import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
-// a fully anonymous visitor - the third persona alongside owner/viewer in ownership.spec.ts.
-// covers the guest landing page and confirms browsing stays read-only with no session leaked in
 test.describe.configure({ mode: "serial" });
 
 let ownerContext: BrowserContext;
@@ -22,8 +21,6 @@ test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
     recipeTitle = `Guest browsing recipe ${runId}`;
     menuTitle = `Guest browsing menu ${runId}`;
-    // reuses the shared primary account (registered once in global-setup) as the owner; the
-    // guest context is a fresh, cookie-less browser context - no storageState at all
     ownerContext = await browser.newContext({
         storageState: PRIMARY_STORAGE_STATE,
     });
@@ -46,8 +43,13 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    await ownerContext.close();
-    await guestContext.close();
+    try {
+        await deleteMenu(ownerContext.request, menuId);
+        await deleteRecipe(ownerContext.request, recipeId);
+    } finally {
+        await ownerContext.close();
+        await guestContext.close();
+    }
 });
 
 test("should show the guest landing page at / instead of redirecting to login", async () => {

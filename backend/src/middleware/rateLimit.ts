@@ -16,17 +16,17 @@ import {
 import { ERROR_CODES } from "constants/errorCodes";
 import { AppError } from "domain/errors/AppError";
 
-// routed through errorHandler like every other failure, so a 429 gets the same { error, code } body and log line
+// through errorHandler, so a 429 gets the same { error, code } body as any failure
 const rejectRateLimited: RateLimitOptions["handler"] = (_req, _res, next) => {
     next(new AppError(ERROR_CODES.RATE_LIMITED, 429));
 };
 
-// collapses an IPv6 address to its /56 subnet before use as a rate-limit key, so rotating within one subnet cannot bypass the limit (express-rate-limit v8 requirement)
+// IPv6 collapses to its /56 so rotating within a subnet can't dodge it (express-rate-limit v8)
 function normalizedIp(req: Request): string {
     return req.ip ? ipKeyGenerator(req.ip) : "";
 }
 
-// combines the client IP with a request-body field, so people sharing a network never share one account's quota
+// IP plus the account field, so people sharing a network never share a quota
 function bodyFieldLimiterKey(field: string) {
     return (req: Request): string => {
         const value = (req.body as Record<string, unknown> | undefined)?.[
@@ -40,12 +40,11 @@ function bodyFieldLimiterKey(field: string) {
 export const authLimiterKey = bodyFieldLimiterKey("login");
 export const emailLimiterKey = bodyFieldLimiterKey("email");
 
-// keyed by the authenticated user, not IP - the threat here is a stolen session cookie, not a shared network
+// by user, not IP: the threat is a stolen session cookie, not a shared network
 export function userIdLimiterKey(req: Request): string {
     return req.user ? String(req.user.id) : normalizedIp(req);
 }
 
-// the coarse per-IP backstop's key - deliberately ignores any account identifier
 export function ipLimiterKey(req: Request): string {
     return normalizedIp(req);
 }
@@ -66,22 +65,20 @@ export function createLimiter(
 
 const isTestMode = config.nodeEnv === "test";
 
-// separate instances (own counter each) so testing one endpoint never burns another's quota
+// separate instances, so hammering one endpoint never burns another's quota
 export const loginLimiter = createLimiter(isTestMode, authLimiterKey);
 export const registerLimiter = createLimiter(isTestMode, authLimiterKey);
-// layered under the per-account limiter above so spraying many distinct accounts from one IP still gets capped
+// under the per-account limiter, so spraying many accounts from one IP still gets capped
 export const loginIpLimiter = createLimiter(
     isTestMode,
     ipLimiterKey,
     IP_RATE_LIMIT,
 );
-// REGISTER_IP_RATE_LIMIT (not IP_RATE_LIMIT): a successful registration is itself the abuse case, so it must count
 export const registerIpLimiter = createLimiter(
     isTestMode,
     ipLimiterKey,
     REGISTER_IP_RATE_LIMIT,
 );
-// EMAIL_SEND_RATE_LIMIT (not AUTH_RATE_LIMIT): these endpoints always respond 200, so every request must count
 export const forgotPasswordLimiter = createLimiter(
     isTestMode,
     emailLimiterKey,
@@ -100,9 +97,8 @@ export const signOutEverywhereLimiter = createLimiter(
     isTestMode,
     userIdLimiterKey,
 );
-// destructive endpoint, keyed by the authenticated user like changePasswordLimiter
 export const deleteAccountLimiter = createLimiter(isTestMode, userIdLimiterKey);
-// public token-redemption endpoints: no account/email field to key on, so IP is the only signal available
+// token redemption has no account field to key on, so IP is the only signal
 export const resetPasswordLimiter = createLimiter(
     isTestMode,
     ipLimiterKey,
@@ -120,7 +116,7 @@ export const uploadLimiter = createLimiter(
     UPLOAD_RATE_LIMIT,
 );
 
-// NOT test-bypassed like loginLimiter/registerLimiter - an integration test asserts the live RateLimit-Limit header
+// not test-bypassed: an integration test asserts the live RateLimit-Limit header
 export function createGlobalLimiter(): RequestHandler {
     return rateLimit({ ...GLOBAL_RATE_LIMIT, handler: rejectRateLimited });
 }

@@ -5,15 +5,16 @@ import type {
     MenuFilters,
     MenuSearchRow,
 } from "domain/repositories/menu.filters";
-import type { MenuDetail, MenuStatsRow } from "domain/repositories/menu.types";
+import type { MenuDetail } from "domain/repositories/menu.types";
 import type { MenuRepository } from "domain/repositories/MenuRepository";
+import type { MenuStatisticsDto } from "domain/repositories/menuStats.types";
 import type { PaginatedResult } from "domain/repositories/pagination.types";
 import type { DeletedRecord } from "domain/repositories/PhotoRepository";
 
 import { findMenuByIdWithRecipes } from "./PgMenuRepository.detail";
 import { createMenuInDb, updateMenuInDb } from "./PgMenuRepository.mutations";
 import { findAllMenus, searchPersonMenus } from "./PgMenuRepository.queries";
-import { findAllMenusUnpaginated } from "./PgMenuRepository.stats";
+import { getMenuStats } from "./PgMenuRepository.stats";
 
 export default class PgMenuRepository implements MenuRepository {
     constructor(private pool: Pool) {}
@@ -25,8 +26,8 @@ export default class PgMenuRepository implements MenuRepository {
         return findAllMenus(this.pool, filters, userId);
     }
 
-    async findAllUnpaginated(): Promise<MenuStatsRow[]> {
-        return findAllMenusUnpaginated(this.pool);
+    async getStats(): Promise<MenuStatisticsDto> {
+        return getMenuStats(this.pool);
     }
 
     async create(menu: Menu, recipeIds: number[]): Promise<number> {
@@ -49,7 +50,7 @@ export default class PgMenuRepository implements MenuRepository {
         return findMenuByIdWithRecipes(this.pool, id, personId);
     }
 
-    // one statement: its recipe links, favourites and ratings cascade, and the photo key comes back from the delete itself
+    // RETURNING the photo key: a separate read would let a racing upload orphan its files
     async deleteById(
         id: number,
         personId: number,

@@ -6,17 +6,6 @@ import { BaseModal } from "components/modals/BaseModal";
 const MESSAGE = "Modal content";
 
 describe("BaseModal", () => {
-    it("should render the title and children", () => {
-        render(
-            <BaseModal onClose={jest.fn()} title="Heading">
-                <p>{MESSAGE}</p>
-            </BaseModal>,
-        );
-
-        expect(screen.getByText("Heading")).toBeInTheDocument();
-        expect(screen.getByText(MESSAGE)).toBeInTheDocument();
-    });
-
     it("should set aria-labelledby on the dialog when a title is given", () => {
         render(
             <BaseModal onClose={jest.fn()} title="Heading">
@@ -30,23 +19,33 @@ describe("BaseModal", () => {
         expect(dialog).toHaveAttribute("aria-labelledby", heading.id);
     });
 
-    it("should not set aria-labelledby when no title is given", () => {
+    it("should be named by its label when it shows no title", () => {
         render(
-            <BaseModal onClose={jest.fn()}>
+            <BaseModal onClose={jest.fn()} ariaLabel="Photo preview">
                 <p>{MESSAGE}</p>
             </BaseModal>,
         );
 
-        expect(screen.getByRole("dialog")).not.toHaveAttribute(
-            "aria-labelledby",
+        const dialog = screen.getByRole("dialog", { name: "Photo preview" });
+
+        expect(dialog).not.toHaveAttribute("aria-labelledby");
+    });
+
+    it("should render outside the page that mounts it, so the page can go inert", () => {
+        const { container } = render(
+            <BaseModal onClose={jest.fn()} title="Heading">
+                <p>{MESSAGE}</p>
+            </BaseModal>,
         );
+
+        expect(container).not.toContainElement(screen.getByRole("dialog"));
     });
 
     it("should call onClose when Escape is pressed", async () => {
         const onClose = jest.fn();
 
         render(
-            <BaseModal onClose={onClose}>
+            <BaseModal onClose={onClose} title="Heading">
                 <p>{MESSAGE}</p>
             </BaseModal>,
         );
@@ -60,7 +59,7 @@ describe("BaseModal", () => {
         const onClose = jest.fn();
 
         render(
-            <BaseModal onClose={onClose} closeOnEscape={false}>
+            <BaseModal onClose={onClose} title="Heading" closeOnEscape={false}>
                 <p>{MESSAGE}</p>
             </BaseModal>,
         );
@@ -74,7 +73,7 @@ describe("BaseModal", () => {
         const onClose = jest.fn();
 
         render(
-            <BaseModal onClose={onClose}>
+            <BaseModal onClose={onClose} title="Heading">
                 <p>{MESSAGE}</p>
             </BaseModal>,
         );
@@ -88,7 +87,7 @@ describe("BaseModal", () => {
         const onClose = jest.fn();
 
         render(
-            <BaseModal onClose={onClose}>
+            <BaseModal onClose={onClose} title="Heading">
                 <p>{MESSAGE}</p>
             </BaseModal>,
         );
@@ -102,7 +101,7 @@ describe("BaseModal", () => {
         const onClose = jest.fn();
 
         render(
-            <BaseModal onClose={onClose} closeOnOverlay={false}>
+            <BaseModal onClose={onClose} title="Heading" closeOnOverlay={false}>
                 <p>{MESSAGE}</p>
             </BaseModal>,
         );
@@ -114,7 +113,7 @@ describe("BaseModal", () => {
 
     it("should lock body scroll while mounted and restore it on unmount", () => {
         const { unmount } = render(
-            <BaseModal onClose={jest.fn()}>
+            <BaseModal onClose={jest.fn()} title="Heading">
                 <p>{MESSAGE}</p>
             </BaseModal>,
         );
@@ -124,28 +123,6 @@ describe("BaseModal", () => {
         unmount();
 
         expect(document.body.style.overflow).toBe("");
-    });
-
-    it("should not render a footer when none is given", () => {
-        render(
-            <BaseModal onClose={jest.fn()}>
-                <p>{MESSAGE}</p>
-            </BaseModal>,
-        );
-
-        expect(screen.queryByRole("button")).not.toBeInTheDocument();
-    });
-
-    it("should render the footer outside the scrolling body", () => {
-        render(
-            <BaseModal onClose={jest.fn()} footer={<button>Save</button>}>
-                <p>{MESSAGE}</p>
-            </BaseModal>,
-        );
-
-        expect(
-            screen.getByRole("button", { name: "Save" }),
-        ).toBeInTheDocument();
     });
 
     it("should not render a close button by default", () => {
@@ -174,18 +151,6 @@ describe("BaseModal", () => {
         expect(onClose).toHaveBeenCalledTimes(1);
     });
 
-    it("should not render a drag handle above the mobile breakpoint", () => {
-        render(
-            <BaseModal onClose={jest.fn()}>
-                <p>{MESSAGE}</p>
-            </BaseModal>,
-        );
-
-        expect(
-            screen.queryByRole("button", { name: "Close" }),
-        ).not.toBeInTheDocument();
-    });
-
     describe("on a mobile viewport", () => {
         const originalMatchMedia = window.matchMedia;
 
@@ -210,7 +175,7 @@ describe("BaseModal", () => {
             const onClose = jest.fn();
 
             render(
-                <BaseModal onClose={onClose}>
+                <BaseModal onClose={onClose} title="Heading">
                     <p>{MESSAGE}</p>
                 </BaseModal>,
             );

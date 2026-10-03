@@ -2,8 +2,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
+import type { FormPageKey } from "types/formPage";
 import type { MenuCategory } from "types/menu";
-import type { RecipeListItem } from "types/recipe";
 
 import type { useMenuForm } from "hooks/useMenuForm";
 import { useUnsavedChangesBlocker } from "hooks/useUnsavedChangesBlocker";
@@ -16,13 +16,10 @@ import styles from "./MenuForm.module.scss";
 import { MenuFormFields } from "./MenuFormFields";
 import { MenuFormRecipesCard } from "./MenuFormRecipesCard";
 
-type MenuPageKey = "createMenuPage" | "changeMenuPage";
-
 interface MenuFormProps {
     form: ReturnType<typeof useMenuForm>;
     categories: MenuCategory[];
-    allRecipes: RecipeListItem[];
-    keyPrefix: MenuPageKey;
+    keyPrefix: FormPageKey<"Menu">;
     idPrefix: string;
     submitLabel: string;
     onSubmit: () => void;
@@ -31,28 +28,18 @@ interface MenuFormProps {
 export const MenuForm: React.FC<MenuFormProps> = ({
     form,
     categories,
-    allRecipes,
     keyPrefix,
     idPrefix,
     submitLabel,
     onSubmit,
 }) => {
     const { t } = useTranslation("menu");
-    // catches every way out of a dirty form (Cancel, navbar, breadcrumb, back)
     const blocker = useUnsavedChangesBlocker(form.isDirty, form.isDirtyRef);
 
-    const selectedRecipes: RecipeListItem[] = [];
-
-    form.selectedRecipes.forEach((id) => {
-        const recipe = allRecipes.find((candidate) => candidate.id === id);
-
-        if (recipe) {
-            selectedRecipes.push(recipe);
-        }
-    });
+    const { selectedRecipes, attachForm } = form;
 
     return (
-        <form className={styles["menu-form"]}>
+        <form ref={attachForm} className={styles["menu-form"]}>
             <div className={styles["menu-form__grid"]}>
                 <div className={styles["menu-form__column"]}>
                     <MenuFormFields
@@ -66,7 +53,6 @@ export const MenuForm: React.FC<MenuFormProps> = ({
                 <div className={styles["menu-form__column"]}>
                     <MenuFormRecipesCard
                         form={form}
-                        allRecipes={allRecipes}
                         selectedRecipes={selectedRecipes}
                         keyPrefix={keyPrefix}
                     />

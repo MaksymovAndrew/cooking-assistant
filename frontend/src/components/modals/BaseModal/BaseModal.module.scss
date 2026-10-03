@@ -25,13 +25,11 @@
     z-index: var(--z-modal);
     display: flex;
 
-    // scrollable so a sheet taller than the viewport (e.g. after a landscape rotation) can
-    // always be scrolled to reach its own header - modern browsers fall back center/flex-end
-    // alignment to start alignment automatically once the content overflows
+    // a sheet taller than the viewport scrolls to its header; overflow falls back to start alignment
     overflow-y: auto;
     align-items: flex-end;
     justify-content: center;
-    background: rgb(0 0 0 / 55%);
+    background: var(--scrim);
     backdrop-filter: blur(4px);
     animation: base-modal-overlay-in 200ms ease;
 
@@ -48,8 +46,7 @@
     flex-direction: column;
     width: 100%;
 
-    // svh is the safe, always-visible viewport - vh alone can exceed it (e.g. iOS landscape
-    // with the browser chrome collapsed), pushing the header out of reach
+    // svh with a vh fallback: vh can exceed the visible viewport and push the header out of reach
     max-height: 90vh;
     max-height: 90svh;
     overflow: hidden;
@@ -135,8 +132,6 @@
         }
     }
 
-    // canonical Cancel/primary footer: a row, primary rightmost - wraps only if the buttons
-    // genuinely don't fit side by side, instead of always stacking on mobile
     &__footer {
         display: flex;
         flex: none;
@@ -144,8 +139,7 @@
         gap: var(--s-3);
         padding: var(--s-4) 0 calc(var(--s-4) + env(safe-area-inset-bottom));
 
-        // on a phone sheet the buttons share the width; once a translated label forces a wrap,
-        // each takes a full row with the primary on top instead of hanging off the right edge
+        // a long label wraps the buttons one per row, primary on top, never off the right edge
         flex-wrap: wrap-reverse;
 
         > * {

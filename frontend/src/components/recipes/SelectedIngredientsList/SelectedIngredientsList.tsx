@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
 import type { RecipeFormIngredient } from "types/recipeForm";
+
+import { useDragReorder } from "hooks/useDragReorder";
 
 import { SelectedIngredientRow } from "./SelectedIngredientRow";
 import styles from "./SelectedIngredientsList.module.scss";
@@ -15,33 +17,24 @@ interface SelectedIngredientsListProps {
 export const SelectedIngredientsList: React.FC<
     SelectedIngredientsListProps
 > = ({ ingredients, onQuantityChange, onRemove, onReorder }) => {
-    const [draggedId, setDraggedId] = useState<number | null>(null);
+    const { dragProps, move } = useDragReorder(
+        ingredients.map((ingredient) => ingredient.id),
+        onReorder,
+    );
 
     return (
         <div className={styles["selected-ingredients-list"]}>
-            {ingredients.map((ingredient) => (
+            {ingredients.map((ingredient, index) => (
                 <SelectedIngredientRow
                     key={ingredient.id}
                     ingredient={ingredient}
                     onQuantityChange={onQuantityChange}
                     onRemove={onRemove}
-                    onDragStart={() => {
-                        setDraggedId(ingredient.id);
-                    }}
-                    onDragOver={(e) => {
-                        e.preventDefault();
-                    }}
-                    onDrop={(e) => {
-                        e.preventDefault();
-
-                        if (draggedId !== null) {
-                            onReorder(draggedId, ingredient.id);
-                        }
-
-                        setDraggedId(null);
-                    }}
-                    onDragEnd={() => {
-                        setDraggedId(null);
+                    dragProps={dragProps(ingredient.id)}
+                    isFirst={index === 0}
+                    isLast={index === ingredients.length - 1}
+                    onMove={(direction) => {
+                        move(ingredient.id, direction);
                     }}
                 />
             ))}

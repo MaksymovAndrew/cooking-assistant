@@ -14,10 +14,7 @@ interface NavigationBlockerProviderProps {
     children: ReactNode;
 }
 
-// the framework has no navigation guard of its own, so each way out is closed separately: link
-// clicks through components/ui/Link, programmatic navigation through hooks/useAppRouter, tab close
-// through beforeunload, and the back button through the duplicate history entry below - the browser
-// gives no way to cancel a pop after the fact
+// Next has no navigation guard: Link, useAppRouter, beforeunload and a history entry each block an exit
 export const NavigationBlockerProvider = ({
     children,
 }: NavigationBlockerProviderProps) => {
@@ -32,8 +29,7 @@ export const NavigationBlockerProvider = ({
         [],
     );
 
-    // the duplicate entry appears only once there is something to lose, so merely opening a form
-    // leaves history untouched and its back button keeps working in one press
+    // pushed only once dirty, so a pristine form's back button still works in one press
     const arm = useCallback((isArmed: boolean) => {
         if (isArmed === guardEntryPushed.current) {
             return;
@@ -67,9 +63,7 @@ export const NavigationBlockerProvider = ({
         setPending({ perform });
     }, []);
 
-    // the registry is not cleared here: a navigation that does not actually happen (a push to the
-    // current route, a history step with nowhere to go) would leave the still-mounted form unguarded.
-    // A form that really does leave unregisters itself on unmount
+    // the registry stays: a navigation that never happens would leave the form unguarded
     const proceed = useCallback(() => {
         const run = pending?.perform;
 

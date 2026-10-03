@@ -8,7 +8,7 @@ import { RecipeListView } from "components/recipes/RecipeListView";
 
 import type { RecipeFilterState } from "utils/filters/recipeFilterDefs";
 
-import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
+import { OVER_BUDGET_TOOLTIP, TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 const RECIPE_TITLE = "Borscht";
@@ -96,7 +96,7 @@ describe("RecipeListView", () => {
         expect(screen.getByText(RECIPE_TITLE)).toBeInTheDocument();
     });
 
-    it("should recolor a card whose calories exceed what's left today", () => {
+    it("should flag a card whose calories exceed what's left today", () => {
         const pricierRecipe = {
             ...RECIPES[0],
             calories_per_portion: CALORIES_OVER_BUDGET,
@@ -113,12 +113,12 @@ describe("RecipeListView", () => {
             />,
         );
 
-        expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).toHaveClass(
-            "content-card__meta-item--calorie-over",
+        expect(screen.getByTitle(OVER_BUDGET_TOOLTIP)).toHaveTextContent(
+            CALORIES_OVER_BUDGET_LABEL,
         );
     });
 
-    it("should not recolor a card when there is no calorie goal", () => {
+    it("should not flag a card when there is no calorie goal", () => {
         const pricierRecipe = {
             ...RECIPES[0],
             calories_per_portion: CALORIES_OVER_BUDGET,
@@ -133,9 +133,12 @@ describe("RecipeListView", () => {
             />,
         );
 
-        expect(screen.getByText(CALORIES_OVER_BUDGET_LABEL)).not.toHaveClass(
-            "content-card__meta-item--calorie-over",
-        );
+        expect(
+            screen.getByText(CALORIES_OVER_BUDGET_LABEL),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByTitle(OVER_BUDGET_TOOLTIP),
+        ).not.toBeInTheDocument();
     });
 
     it("should render the translated New recipe button, not a raw i18n key", () => {
@@ -287,27 +290,6 @@ describe("RecipeListView", () => {
         ).toBeInTheDocument();
     });
 
-    it("should call fetchNextPage when the load more button is clicked", async () => {
-        const fetchNextPage = jest.fn();
-
-        renderWithRouter(
-            <RecipeListView
-                {...baseProps}
-                recipes={RECIPES}
-                noRecipes={false}
-                error={null}
-                hasNextPage={true}
-                fetchNextPage={fetchNextPage}
-            />,
-        );
-
-        await userEvent.click(
-            screen.getByRole("button", { name: "Load more" }),
-        );
-
-        expect(fetchNextPage).toHaveBeenCalledTimes(1);
-    });
-
     it("should render the load more error while keeping previously loaded recipes", () => {
         renderWithRouter(
             <RecipeListView
@@ -324,31 +306,25 @@ describe("RecipeListView", () => {
         expect(screen.getByText("Couldn't load more")).toBeInTheDocument();
     });
 
-    it("should mark cards as mine when the mine prop is set", () => {
+    it.each([
+        ["on the viewer's own list", true, RECIPES[0]],
+        [
+            "when the server flags it as owned",
+            false,
+            { ...RECIPES[0], isOwner: true },
+        ],
+    ] as const)("should mark a card as mine %s", (_case, mine, recipe) => {
         renderWithRouter(
             <RecipeListView
                 {...baseProps}
-                recipes={RECIPES}
+                recipes={[recipe]}
                 noRecipes={false}
                 error={null}
-                mine
+                mine={mine}
             />,
         );
 
-        expect(screen.getAllByRole("article")[0]).toHaveClass(MINE_CLASS);
-    });
-
-    it("should mark a card as mine when the server flags it as owned, even without the mine prop", () => {
-        renderWithRouter(
-            <RecipeListView
-                {...baseProps}
-                recipes={[{ ...RECIPES[0], isOwner: true }]}
-                noRecipes={false}
-                error={null}
-            />,
-        );
-
-        expect(screen.getAllByRole("article")[0]).toHaveClass(MINE_CLASS);
+        expect(screen.getByRole("article")).toHaveClass(MINE_CLASS);
     });
 
     it("should not mark another user's card as mine", () => {
@@ -361,7 +337,7 @@ describe("RecipeListView", () => {
             />,
         );
 
-        expect(screen.getAllByRole("article")[0]).not.toHaveClass(MINE_CLASS);
+        expect(screen.getByRole("article")).not.toHaveClass(MINE_CLASS);
     });
 
     it("should show the pantry banner with the result count when the pantry filter is active", () => {

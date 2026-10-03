@@ -20,8 +20,7 @@ const PATH_BY_TARGET = {
     menu: API_ROUTES.menu.favourite,
 } satisfies Record<FavouriteTarget, (id: number) => string>;
 
-// the record's own tag refetches every cached list that holds it, and the LIST tag a favourites-filtered
-// list that doesn't hold it yet
+// its own tag refetches lists holding it; LIST reaches a favourites-filtered list that doesn't yet
 const invalidateFavourite = (
     _result: unknown,
     _error: unknown,

@@ -14,12 +14,18 @@
         top: var(--s-5);
     }
 
+    // a phone puts the portions stepper on its own line, under the title
     &__header {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
         gap: var(--s-3);
         margin-bottom: var(--s-4);
+
+        @include respond-to(tablet) {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
     }
 
     &__title {
@@ -40,6 +46,7 @@
     &__stepper {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 10px;
     }
 
@@ -197,7 +204,7 @@
         margin-top: var(--s-4);
         padding: var(--s-3) var(--s-4);
         border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
-        border-radius: 12px;
+        border-radius: var(--r-md);
         background: color-mix(in srgb, var(--warning) 9%, var(--surface));
     }
 
@@ -229,7 +236,7 @@
     }
 
     &__banner-link {
-        color: var(--brand);
+        color: var(--brand-text);
         font-weight: 600;
         text-decoration: none;
 

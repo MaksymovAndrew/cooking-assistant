@@ -17,8 +17,6 @@ interface RecipeFormValues {
     cookingMinutes: string;
 }
 
-// binds the value-agnostic validation hook to the form's current values, so callers
-// pass only the translated messages
 export const useRecipeFormValidators = (values: RecipeFormValues) => {
     const {
         titleError,
@@ -26,6 +24,7 @@ export const useRecipeFormValidators = (values: RecipeFormValues) => {
         ingredientsError,
         typeError,
         cookingTimeError,
+        attachForm,
         validateCreate: validateCreateValues,
         validateChange: validateChangeValues,
     } = useRecipeFormValidation();
@@ -75,6 +74,7 @@ export const useRecipeFormValidators = (values: RecipeFormValues) => {
         ingredientsError,
         typeError,
         cookingTimeError,
+        attachForm,
         validateCreate,
         validateChange,
     };

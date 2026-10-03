@@ -5,8 +5,10 @@ import { useLocale } from "hooks/useLocale";
 
 import { HorizontalScrollbar } from "components/ui/HorizontalScrollbar";
 
+import { goalLinePercent, historyMaxValue } from "utils/calorieHistory";
 import { formatKcal } from "utils/calories";
 import type { DailyIntakeDay } from "utils/computeDailyIntake";
+import { cx } from "utils/cx";
 
 import styles from "./CalorieHistoryChart.module.scss";
 import { CalorieHistoryColumn } from "./CalorieHistoryColumn";
@@ -19,10 +21,9 @@ interface CalorieHistoryBarsProps {
     daysOnGoal: number;
 }
 
-const PERCENT_MULTIPLIER = 100;
 const DASH = "—";
 
-// always renders the same bars/footer skeleton so the card's height never changes between empty and populated
+// the bars and footer always render, so the card's height never changes when empty
 export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
     days,
     goal,
@@ -34,29 +35,30 @@ export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
     const locale = useLocale();
     const barsRef = useRef<HTMLDivElement>(null);
     const hasHistory = days.some((day) => day.consumed > 0);
+    const isWeek = range === "7";
 
     useEffect(() => {
-        // the row scrolls horizontally - default to showing today, not the oldest day
         if (barsRef.current) {
             barsRef.current.scrollLeft = barsRef.current.scrollWidth;
         }
     }, [range, days]);
 
-    const maxValue = Math.max(goal, ...days.map((day) => day.consumed), 1);
-    const goalLinePercent = hasHistory
-        ? Math.min((goal / maxValue) * PERCENT_MULTIPLIER, PERCENT_MULTIPLIER)
-        : 0;
+    const maxValue = historyMaxValue(goal, days);
+    const goalLineBottom = hasHistory ? goalLinePercent(goal, maxValue) : 0;
 
     return (
         <>
             <div
                 className={styles["calorie-history-chart__goal-line"]}
-                style={{ bottom: `${goalLinePercent}%` }}
+                style={{ bottom: `${goalLineBottom}%` }}
             />
             <div className={styles["calorie-history-chart__bars-wrapper"]}>
                 <div
                     ref={barsRef}
-                    className={styles["calorie-history-chart__bars"]}
+                    className={cx(
+                        styles["calorie-history-chart__bars"],
+                        isWeek && styles["calorie-history-chart__bars--week"],
+                    )}
                 >
                     {days.map((day, index) => (
                         <CalorieHistoryColumn
@@ -66,7 +68,7 @@ export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
                             maxValue={maxValue}
                             isToday={index === days.length - 1}
                             hasHistory={hasHistory}
-                            showLabels={range === "7"}
+                            showLabels={isWeek}
                         />
                     ))}
                 </div>
@@ -76,7 +78,7 @@ export const CalorieHistoryBars: React.FC<CalorieHistoryBarsProps> = ({
                     </p>
                 )}
             </div>
-            <HorizontalScrollbar scrollRef={barsRef} />
+            {!isWeek && <HorizontalScrollbar scrollRef={barsRef} />}
             <div className={styles["calorie-history-chart__footer"]}>
                 <span>
                     {t("dietaryTab.historyGoalLine", {

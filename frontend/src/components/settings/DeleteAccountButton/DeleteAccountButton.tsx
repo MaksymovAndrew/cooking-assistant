@@ -1,7 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { logger } from "config/logger";
+
 import { useHoldToConfirm } from "hooks/useHoldToConfirm";
+
+import { cx } from "utils/cx";
 
 import styles from "./DeleteAccountButton.module.scss";
 
@@ -11,7 +15,7 @@ interface DeleteAccountButtonProps {
 
 const HOLD_DURATION_MS = 500;
 
-// hold-to-confirm to open the delete-account modal, so it can't be triggered by an accidental tap/click; Enter/Space open it immediately for keyboard and screen-reader users, who cannot perform a hold gesture
+// keyboard and screen-reader users can't hold, so Enter and Space open it at once
 export const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({
     onConfirm,
 }) => {
@@ -26,21 +30,16 @@ export const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({
             type="button"
             aria-label={t("deleteAccountButton.label")}
             title={t("deleteAccountButton.holdInstruction")}
-            className={[
+            className={cx(
                 styles["delete-account-button"],
                 isHolding && styles["delete-account-button--holding"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
+            )}
             onPointerDown={(e) => {
-                // best-effort: keeps tracking a finger that slides off the button, but must
-                // never block the hold itself - browsers reject capture for a pointer they
-                // don't consider active (jsdom lacks the API entirely, real browsers can
-                // still throw for it), and the timer starting is what actually matters
+                // best-effort: browsers (and jsdom) can refuse capture, which must not block the hold
                 try {
                     e.currentTarget.setPointerCapture(e.pointerId);
-                } catch {
-                    // ignored - see comment above
+                } catch (error) {
+                    logger.debug("pointer capture refused", error);
                 }
                 start();
             }}
@@ -63,7 +62,6 @@ export const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({
                 }
                 aria-hidden="true"
             />
-            {/* the row's title already says what goes, so the button only names the action */}
             <span className={styles["delete-account-button__label"]}>
                 {t("deleteAccountButton.action")}
             </span>

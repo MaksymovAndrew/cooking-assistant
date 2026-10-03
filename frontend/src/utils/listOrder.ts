@@ -1,5 +1,6 @@
-// a drag-and-drop move: the item at fromIndex lands right before the one at toIndex. The same
-// list comes back untouched for a missing index or a drop onto itself
+import type { MoveDirection } from "types/reorder";
+
+// the item at fromIndex lands right before the one at toIndex
 export const moveBefore = <T>(
     list: T[],
     fromIndex: number,
@@ -13,8 +14,7 @@ export const moveBefore = <T>(
 
     const next = [...list];
     const [moved] = next.splice(fromIndex, 1);
-    // removing `moved` shifts every later index left by one, so a forward move lands one slot
-    // earlier than the target's pre-removal index, or it would overshoot past the drop target
+    // the removal shifts later indexes left, so a forward move inserts one slot earlier
     const insertAt = fromIndex < toIndex ? toIndex - 1 : toIndex;
 
     next.splice(insertAt, 0, moved);
@@ -22,8 +22,25 @@ export const moveBefore = <T>(
     return next;
 };
 
-// adds the value if the list lacks it, removes it if it holds it
 export const toggleValue = <T>(list: T[], value: T): T[] =>
     list.includes(value)
         ? list.filter((entry) => entry !== value)
         : [...list, value];
+
+// as a moveBefore pair: up puts the item before its neighbour, down the neighbour before it
+export const stepMovePair = <T>(
+    list: T[],
+    item: T,
+    direction: MoveDirection,
+): [T, T] | null => {
+    const index = list.indexOf(item);
+    const neighbour = index + direction;
+    const isOutOfRange =
+        index === -1 || neighbour < 0 || neighbour >= list.length;
+
+    if (isOutOfRange) {
+        return null;
+    }
+
+    return direction === -1 ? [item, list[neighbour]] : [list[neighbour], item];
+};

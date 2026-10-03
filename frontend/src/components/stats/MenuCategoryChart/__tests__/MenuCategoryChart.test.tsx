@@ -5,36 +5,38 @@ import { MenuCategoryChart } from "components/stats/MenuCategoryChart";
 
 jest.mock("components/stats/PieChartCard/PieChartCard", () => ({
     __esModule: true,
-    default: ({ data }: { data: { name: string; value: number }[] }) => (
-        <div data-testid="donut-chart">
+    default: ({
+        data,
+        centerLabel,
+    }: {
+        data: { name: string; value: number }[];
+        centerLabel: string;
+    }) => (
+        <div>
             {data.map((d) => (
                 <span key={d.name}>{d.name}</span>
             ))}
+            <span>{centerLabel}</span>
         </div>
     ),
 }));
 
 describe("MenuCategoryChart", () => {
-    it("should render the chart and pass categories to the donut", async () => {
+    it("should name each category and count the menus across all of them in the centre label", async () => {
         render(
             <Suspense fallback={null}>
                 <MenuCategoryChart
-                    categories={[{ categoryName: "Breakfast", menuCount: 3 }]}
+                    categories={[
+                        { categoryName: "Breakfast", menuCount: 1 },
+                        { categoryName: "Dinner", menuCount: 1 },
+                    ]}
                 />
             </Suspense>,
         );
 
-        expect(await screen.findByTestId("donut-chart")).toBeInTheDocument();
+        // one menu per category, so only the summed total makes the label plural
+        expect(await screen.findByText("menus")).toBeInTheDocument();
         expect(screen.getByText("Breakfast")).toBeInTheDocument();
-    });
-
-    it("should render with empty categories without errors", async () => {
-        render(
-            <Suspense fallback={null}>
-                <MenuCategoryChart categories={[]} />
-            </Suspense>,
-        );
-
-        expect(await screen.findByTestId("donut-chart")).toBeInTheDocument();
+        expect(screen.getByText("Dinner")).toBeInTheDocument();
     });
 });

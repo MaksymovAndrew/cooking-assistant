@@ -90,8 +90,8 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-bottom: 4px;
-        color: var(--brand);
+        margin-bottom: var(--s-1);
+        color: var(--brand-text);
 
         .food-preferences__counter {
             margin-left: auto;
@@ -179,7 +179,7 @@
     &__chip--on {
         border-color: var(--brand);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__search {
@@ -242,7 +242,7 @@
     }
 
     &__result-check {
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__result-name {
@@ -263,7 +263,7 @@
     &__no-results {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: var(--s-1);
         margin: 0;
         padding: 18px 8px 6px;
         color: var(--text-2);
@@ -391,7 +391,7 @@
 
         svg {
             flex: none;
-            color: var(--brand);
+            color: var(--brand-text);
         }
     }
 }

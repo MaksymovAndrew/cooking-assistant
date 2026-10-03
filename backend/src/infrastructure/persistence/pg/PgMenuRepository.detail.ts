@@ -49,8 +49,6 @@ export async function findMenuByIdWithRecipes(
         personId,
     );
 
-    // despite the name, this carries every ingredient requirement, not only shortfalls -
-    // fully-stocked ones come back with missing_quantity: 0 so the client can render both states
     const recipesWithDetails = recipes.map((recipe) => ({
         ...recipe,
         missingIngredients: missingByRecipe.get(recipe.recipe_id) ?? [],

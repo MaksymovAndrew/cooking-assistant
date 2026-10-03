@@ -54,18 +54,6 @@ const setupUser = () =>
     });
 
 describe("MenuFilterPanel", () => {
-    it("should render the search input with the given placeholder", () => {
-        setup();
-
-        expect(screen.getByPlaceholderText(/menu title/i)).toBeInTheDocument();
-    });
-
-    it("should not show the popover by default", () => {
-        setup();
-
-        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
-
     it("should open the popover when the Filter trigger is clicked", async () => {
         setup();
 
@@ -74,12 +62,6 @@ describe("MenuFilterPanel", () => {
         await openPanel();
 
         expect(screen.getByRole("dialog")).toBeInTheDocument();
-    });
-
-    it("should show a badge with the given active filter count", () => {
-        setup({}, 1);
-
-        expect(screen.getByText("1")).toBeInTheDocument();
     });
 
     it("should submit the typed search term once the debounce settles", async () => {
@@ -177,16 +159,5 @@ describe("MenuFilterPanel", () => {
             languages: [],
         });
         expect(setValue).not.toHaveBeenCalled();
-    });
-
-    it("should close the popover when the apply button is clicked", async () => {
-        setup();
-
-        await openPanel();
-        await userEvent.click(
-            screen.getByRole("button", { name: "Show 5 menus" }),
-        );
-
-        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
 });

@@ -25,7 +25,6 @@ export const LanguageSwitcherMenu: React.FC<LanguageSwitcherMenuProps> = ({
     const { t } = useTranslation();
     const itemsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
-    // opening from the keyboard lands on the language already in use
     useEffect(() => {
         itemsRef.current[LOCALES.indexOf(current)]?.focus();
     }, [current]);

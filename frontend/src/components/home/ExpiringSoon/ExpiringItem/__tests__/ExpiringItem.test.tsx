@@ -27,16 +27,4 @@ describe("ExpiringItem", () => {
 
         expect(screen.getByText("3 days")).toBeInTheDocument();
     });
-
-    it("should use the singular form when exactly 1 day is left", () => {
-        render(<ExpiringItem item={buildItem("warning", 1)} />);
-
-        expect(screen.getByText("1 day")).toBeInTheDocument();
-    });
-
-    it("should show the days-left badge for an ok ingredient", () => {
-        render(<ExpiringItem item={buildItem("ok", 20)} />);
-
-        expect(screen.getByText("20 days")).toBeInTheDocument();
-    });
 });

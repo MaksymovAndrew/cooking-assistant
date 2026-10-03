@@ -14,7 +14,7 @@ import {
     offsetSchema,
 } from "./query.schemas";
 
-// caps how many ids this filter accepts, since the catalog has hundreds of entries and a search match can surface many
+// bounded: the catalog has hundreds of entries and a search can match many
 const MAX_INGREDIENT_FILTER_IDS = 20;
 
 const optionalPositiveInteger = z.preprocess(
@@ -22,7 +22,6 @@ const optionalPositiveInteger = z.preprocess(
     positiveIntegerSchema().optional(),
 );
 
-// output shape is checked against the domain's RecipeFilters below - the repository interface is typed against that, not against this schema
 export const recipeFiltersSchema = z.object({
     recipe_name: z.string().optional(),
     ingredient_ids: idListStringSchema

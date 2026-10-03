@@ -1,2 +1,2 @@
-// mirrors styles/_breakpoints.scss's $bp-tablet, for the rare case a responsive choice can't be made in CSS alone
+// mirrors $bp-tablet in styles/_breakpoints.scss, for a choice CSS alone can't make
 export const MOBILE_MEDIA_QUERY = "(max-width: 767px)";

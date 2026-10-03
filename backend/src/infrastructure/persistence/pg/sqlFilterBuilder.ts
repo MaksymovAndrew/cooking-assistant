@@ -1,13 +1,11 @@
 export type QueryParam = string | number | boolean | number[] | string[] | null;
 
-// escapes LIKE/ILIKE wildcards in user input so a literal "%"/"_" in a search term is
-// matched literally instead of being treated as a pattern wildcard (backslash is
-// Postgres's default LIKE escape character, so no explicit ESCAPE clause is needed)
+// backslash is Postgres's default LIKE escape, so no ESCAPE clause is needed
 export function escapeLikePattern(value: string): string {
     return value.replace(/[\\%_]/g, "\\$&");
 }
 
-// bind() pushes the value and hands back its placeholder, so indices can never drift out of sync with the params array
+// bind() hands back the placeholder it pushed, so indices can't drift from the params
 export class SqlFilterBuilder {
     private readonly conditions: string[] = [];
     private readonly params: QueryParam[] = [];

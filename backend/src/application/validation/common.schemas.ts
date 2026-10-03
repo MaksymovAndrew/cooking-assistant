@@ -49,5 +49,4 @@ export function hasUniqueItems<T>(
 
 export const UNIQUE_ITEMS = { message: VALIDATION_MESSAGES.UNIQUE };
 
-// the language a recipe or menu is written in, picked by its author
 export const contentLanguageSchema = z.enum(LOCALES);

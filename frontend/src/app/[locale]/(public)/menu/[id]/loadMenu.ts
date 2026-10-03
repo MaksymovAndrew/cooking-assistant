@@ -12,7 +12,7 @@ import { getServerTranslation } from "i18n/server";
 import { localizeMenuIngredients } from "utils/localizeIngredientNames";
 import { isRecordId } from "utils/recordIdParam";
 
-// the metadata and the page both need the menu; cache() makes that one request, in the page's language
+// the metadata and the page both need the menu; cache() makes that one request
 export const loadMenu = cache(
     async (id: string, locale: Locale): Promise<MenuDetails | null> => {
         if (!isRecordId(id)) {

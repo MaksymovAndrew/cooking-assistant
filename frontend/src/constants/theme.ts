@@ -1,5 +1,4 @@
-// localStorage key holding the user's explicit theme choice
 export const THEME_STORAGE_KEY = "theme";
 
-// what renders before the browser has told us anything: the server cannot read storage or the OS preference
+// the server can read neither storage nor the OS preference, so it renders this
 export const DEFAULT_THEME_MODE = "dark";

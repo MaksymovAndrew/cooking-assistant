@@ -20,7 +20,6 @@ import UpdateProfile from "application/use-cases/users/UpdateProfile";
 import UserController from "controller/user.controller";
 import UserSecurityController from "controller/userSecurity.controller";
 
-// split out of composition-root.ts, which hit the file's line-count lint cap once this was inlined
 export interface UserControllers {
     userController: UserController;
     userSecurityController: UserSecurityController;

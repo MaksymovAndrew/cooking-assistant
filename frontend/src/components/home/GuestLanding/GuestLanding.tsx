@@ -1,12 +1,18 @@
 import React from "react";
 
+import type { GuestLandingContent } from "types/guestLanding";
+
 import styles from "./GuestLanding.module.scss";
 import { GuestLandingDiscover } from "./GuestLandingDiscover";
 import { GuestLandingHero } from "./GuestLandingHero";
 
-export const GuestLanding: React.FC = () => (
+interface GuestLandingProps {
+    content: GuestLandingContent;
+}
+
+export const GuestLanding: React.FC<GuestLandingProps> = ({ content }) => (
     <div className={styles["guest-landing"]}>
         <GuestLandingHero />
-        <GuestLandingDiscover />
+        <GuestLandingDiscover content={content} />
     </div>
 );

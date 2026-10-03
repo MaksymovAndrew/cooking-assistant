@@ -6,6 +6,9 @@ import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
 
+import { useAppSelector } from "redux/hooks";
+import { selectIsGuest } from "redux/selectors/viewerSelectors";
+
 import { useAppRouter } from "hooks/useAppRouter";
 import { usePageTitle } from "hooks/usePageTitle";
 
@@ -22,6 +25,8 @@ const BACK_ICON_SIZE = 16;
 const NotFoundPage: React.FC = () => {
     const { t } = useTranslation();
     const router = useAppRouter();
+    // a guest has no pantry, so the home page stands in for it
+    const isGuest = useAppSelector(selectIsGuest);
     const heading = t("notFound.heading");
 
     usePageTitle(heading);
@@ -62,8 +67,8 @@ const NotFoundPage: React.FC = () => {
                         {t("notFound.recipes")}
                     </Link>
                     <span aria-hidden="true">·</span>
-                    <Link href={ROUTES.ingredients}>
-                        {t("notFound.pantry")}
+                    <Link href={isGuest ? ROUTES.home : ROUTES.ingredients}>
+                        {isGuest ? t("notFound.home") : t("notFound.pantry")}
                     </Link>
                     <span aria-hidden="true">·</span>
                     <Link href={ROUTES.allMenus}>{t("notFound.menus")}</Link>

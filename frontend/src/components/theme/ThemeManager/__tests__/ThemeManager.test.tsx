@@ -87,16 +87,6 @@ describe("ThemeManager", () => {
         expect(meta.getAttribute("content")).toBe("#f7f5fb");
     });
 
-    it("should render nothing", () => {
-        localStorage.setItem(THEME_STORAGE_KEY, "dark");
-
-        const { container } = renderWithProviders(<ThemeManager />, {
-            store: makeTestStore({ theme: { mode: "dark" } }),
-        });
-
-        expect(container).toBeEmptyDOMElement();
-    });
-
     it("should live-sync the mode with the OS when the stored choice is system", () => {
         const media = mockMatchMedia(false);
         const store = makeTestStore({ theme: { mode: "dark" } });

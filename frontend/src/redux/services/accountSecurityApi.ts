@@ -9,7 +9,6 @@ import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
 
-// password recovery and change, and email verification - the flows that prove who owns the account
 export const accountSecurityApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         forgotPassword: build.mutation<null, ForgotPasswordRequest>({

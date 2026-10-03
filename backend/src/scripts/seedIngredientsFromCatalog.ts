@@ -15,8 +15,7 @@ interface IngredientSeedRow {
     calories_per_unit: number | null;
 }
 
-// the whole catalog travels as one JSON parameter, so the statement keeps one shape at any size; a row whose
-// values match the catalog is left alone, so a deploy rewrites only what the catalog changed
+// one JSON parameter keeps one statement shape; unchanged rows are left alone
 const UPSERT_INGREDIENTS = `
     INSERT INTO ingredients
         (slug, name, id_unit_measurement, category, allergens, days_to_expire, seasonality, storage_condition, calories_per_unit)
@@ -44,7 +43,7 @@ const UPSERT_INGREDIENTS = `
            EXCLUDED.calories_per_unit)
 `;
 
-// re-run on every deploy: ON CONFLICT (slug) DO UPDATE keeps the catalog in sync with catalogData.json instead of only inserting once
+// runs on every deploy, so an edited catalog entry propagates rather than inserting once
 export async function seedIngredientsFromCatalog(
     client: PoolClient,
 ): Promise<number> {

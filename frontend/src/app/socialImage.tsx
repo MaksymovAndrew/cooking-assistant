@@ -19,9 +19,7 @@ const font = async (
     data: await file,
 });
 
-// each path is a literal so the build traces exactly these files - a path held in a variable
-// makes it trace the whole project into the server bundle. Lora carries the Cyrillic that
-// Fraunces lacks, so a Russian or Ukrainian title stays a serif
+// literal paths, or the build traces the whole project; Lora covers the Cyrillic Fraunces lacks
 const readFonts = () =>
     Promise.all([
         font(

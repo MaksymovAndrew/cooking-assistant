@@ -1,4 +1,4 @@
-// the requester's own tags on the recipe; null for a guest, the same contract as isFavourite
+// null for a guest, the same contract as isFavourite
 export function recipeTagsColumn(
     recipeIdExpression: string,
     userPlaceholder: string,

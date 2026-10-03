@@ -3,7 +3,7 @@ import { ValidationError } from "domain/errors/AppError";
 import type { MenuCategoryRepository } from "domain/repositories/MenuCategoryRepository";
 import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeRepository";
 
-// zod checks only the shape, so a well-formed id nobody has would otherwise fail the foreign key as a 500
+// zod checks only shape: an unknown id would otherwise fail the foreign key as a 500
 export async function assertRecipeTypeExists(
     recipeTypeRepository: Pick<RecipeTypeRepository, "exists">,
     typeId: number | undefined,

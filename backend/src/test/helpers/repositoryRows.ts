@@ -1,17 +1,16 @@
 import type { CatalogIngredient } from "domain/repositories/IngredientRepository";
-import type { MenuDetail, MenuStatsRow } from "domain/repositories/menu.types";
+import type { MenuDetail } from "domain/repositories/menu.types";
+import type { MenuStatisticsDto } from "domain/repositories/menuStats.types";
 import type {
     PantryIngredient,
     PurchaseHistoryEntry,
 } from "domain/repositories/PantryRepository";
 import type {
     RecipeDetailRow,
-    RecipeListRow,
     RecipeRow,
 } from "domain/repositories/recipe.types";
 import type { RecordAuthor } from "domain/repositories/recordAuthor";
 
-// complete repository rows for route tests, so a fake returns what the real repository would
 const CREATED_AT = new Date("2026-01-01T00:00:00.000Z");
 
 const AUTHOR: RecordAuthor = {
@@ -34,21 +33,6 @@ export function recipeRow(overrides: Partial<RecipeRow> = {}): RecipeRow {
         calories_override: null,
         calories_computed: null,
         photo_key: null,
-        ...overrides,
-    };
-}
-
-export function recipeListRow(
-    overrides: Partial<RecipeListRow> = {},
-): RecipeListRow {
-    return {
-        id: 12,
-        title: "Soup",
-        type_id: null,
-        creation_date: CREATED_AT,
-        cooking_time: null,
-        type_name: null,
-        ingredients: [],
         ...overrides,
     };
 }
@@ -82,17 +66,23 @@ export function recipeDetailRow(
     };
 }
 
-export function menuStatsRow(
-    overrides: Partial<MenuStatsRow> = {},
-): MenuStatsRow {
+export function menuStatistics(
+    overrides: Partial<MenuStatisticsDto> = {},
+): MenuStatisticsDto {
     return {
-        id: 9,
-        title: "Weekly menu",
-        categoryName: "Dinner",
-        menuContent: null,
-        recipe_count: 0,
-        total_cooking_time: 0,
-        total_calories: null,
+        menusCount: 0,
+        menuCountByCategory: [],
+        mostUsedCategory: null,
+        averageTotalTime: null,
+        averageRecipesPerMenu: null,
+        averageTotalTimeByCategory: [],
+        fastestMenus: [],
+        slowestMenus: [],
+        mostRecipesMenus: [],
+        leastRecipesMenus: [],
+        averageCaloriesOverall: null,
+        mostCaloricMenus: [],
+        leastCaloricMenus: [],
         ...overrides,
     };
 }

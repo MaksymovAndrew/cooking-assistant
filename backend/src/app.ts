@@ -27,8 +27,7 @@ import createMediaRouter from "routes/media.routes";
 
 import type { Controllers } from "./composition-root";
 
-// req.url is the raw request target: a prober's cache-buster query and a trailing slash are both
-// served by the same route, so neither may slip past the filter
+// req.url is raw: a cache-buster query or trailing slash still reaches the same route
 const isQuietRequest = (req: { url?: string }): boolean => {
     const [pathname = ""] = (req.url ?? "").split("?");
 
@@ -38,7 +37,7 @@ const isQuietRequest = (req: { url?: string }): boolean => {
     );
 };
 
-// a caller's own id is kept so one request can be followed across services; anything odd-looking is replaced
+// a caller's id is kept for cross-service tracing, but only a plain token
 const REQUEST_ID_PATTERN = /^[\w-]{1,64}$/;
 const REQUEST_ID_HEADER = "x-request-id";
 
@@ -64,14 +63,12 @@ export function createApp(controllers: Controllers): Express {
         pinoHttp({
             logger,
             genReqId: requestId,
-            // keep auth tokens and cookies out of logs, the session cookie a sign-in sets included
             redact: [
                 "req.headers.authorization",
                 "req.headers.cookie",
                 'res.headers["set-cookie"]',
             ],
-            // the liveness probe runs every 15s and says nothing; at 3 rotated files of 10 MB it
-            // was crowding out the logs that do
+            // the 15s probe and card images would crowd the 3 x 10 MB rotated logs
             autoLogging: { ignore: isQuietRequest },
         }),
     );
@@ -86,8 +83,7 @@ export function createApp(controllers: Controllers): Express {
     app.use(cookieParser());
 
     app.use(API_PREFIX, createHealthRouter(controllers.healthController));
-    // ahead of the global limiter: a list page asks for a card image per row, and immutable
-    // caching already keeps repeat views off the server
+    // ahead of the global limiter: a page loads an image per card, cached immutably
     app.use(API_PREFIX, createMediaRouter(controllers.mediaController));
     app.use(createGlobalLimiter());
     for (const router of createDomainRouters(controllers)) {

@@ -9,10 +9,11 @@ import { API_ROUTES } from "api/endpoints";
 import { authApi } from "redux/services/authApi";
 import { menusApi } from "redux/services/menusApi";
 import { recipesApi } from "redux/services/recipesApi";
+import type { AppStore } from "redux/store";
 
 import { useProfilePage } from "hooks/useProfilePage";
 
-import { mockGetByUrl } from "test/apiClientMock";
+import { mockedGet, mockGetByUrl } from "test/apiClientMock";
 import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { makeTestStore, renderHookWithRouter } from "test/store";
 
@@ -60,23 +61,18 @@ const RECIPES_PARAMS = {};
 const MENUS_PARAMS = { menu_name: "" };
 const FAVOURITES_PARAMS = { favourites: true };
 
-const setup = async (initialEntries?: string[]) => {
-    mockGetByUrl({
-        [API_ROUTES.auth.me]: CURRENT_USER,
-        [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
-        [API_ROUTES.menu.byPerson]: { items: [MENU], total: 1 },
-        [API_ROUTES.recipes.byFilters]: { items: [RECIPE], total: 1 },
-        [API_ROUTES.menu.list]: { items: [MENU, MENU], total: 2 },
-        [API_ROUTES.calories.intake]: [],
-    });
+const GETS = {
+    [API_ROUTES.auth.me]: CURRENT_USER,
+    [API_ROUTES.recipes.byPerson]: { items: [RECIPE], total: 1 },
+    [API_ROUTES.menu.byPerson]: { items: [MENU], total: 1 },
+    [API_ROUTES.recipes.byFilters]: { items: [RECIPE], total: 1 },
+    [API_ROUTES.menu.list]: { items: [MENU], total: 1 },
+    [API_ROUTES.calories.intake]: [],
+};
 
-    const store = makeTestStore();
-
-    await Promise.all([
+const preloadAllButOwnRecipes = (store: AppStore) =>
+    Promise.all([
         store.dispatch(authApi.endpoints.getMe.initiate(null)),
-        store.dispatch(
-            recipesApi.endpoints.getRecipesByPerson.initiate(RECIPES_PARAMS),
-        ),
         store.dispatch(
             menusApi.endpoints.getMenusByPerson.initiate(MENUS_PARAMS),
         ),
@@ -86,6 +82,18 @@ const setup = async (initialEntries?: string[]) => {
             ),
         ),
         store.dispatch(menusApi.endpoints.getMenus.initiate(FAVOURITES_PARAMS)),
+    ]);
+
+const setup = async (initialEntries?: string[]) => {
+    mockGetByUrl(GETS);
+
+    const store = makeTestStore();
+
+    await Promise.all([
+        preloadAllButOwnRecipes(store),
+        store.dispatch(
+            recipesApi.endpoints.getRecipesByPerson.initiate(RECIPES_PARAMS),
+        ),
     ]);
 
     return renderHookWithRouter(() => useProfilePage(), {
@@ -104,14 +112,6 @@ describe("useProfilePage", () => {
         expect(result.current.menus).toEqual([MENU]);
         expect(result.current.menusCount).toBe(1);
         expect(result.current.kcalToday).toBe(0);
-    });
-
-    it("should count favourite recipes and menus together for the hero", async () => {
-        const { result } = await setup();
-
-        expect(result.current.favouritesCount).toBe(3);
-        expect(result.current.favouriteRecipes.items).toEqual([RECIPE]);
-        expect(result.current.favouriteMenus.total).toBe(2);
     });
 
     it("should default the active tab to recipes and allow switching", async () => {
@@ -136,5 +136,33 @@ describe("useProfilePage", () => {
         const { result } = await setup(["/profile?tab=bogus"]);
 
         expect(result.current.activeTab).toBe("recipes");
+    });
+
+    it("should report the active tab's loading state, with nothing to wait for on the dietary tab", async () => {
+        mockGetByUrl(GETS);
+        const loadByUrl = mockedGet.getMockImplementation();
+
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.recipes.byPerson) {
+                return new Promise(() => undefined);
+            }
+
+            return loadByUrl ? loadByUrl(url) : Promise.reject(new Error(url));
+        });
+        const store = makeTestStore();
+
+        await preloadAllButOwnRecipes(store);
+
+        const { result } = renderHookWithRouter(() => useProfilePage(), {
+            store,
+        });
+
+        expect(result.current.tabStatus.isLoading).toBe(true);
+
+        act(() => {
+            result.current.setActiveTab("dietary");
+        });
+
+        expect(result.current.tabStatus.isLoading).toBe(false);
     });
 });

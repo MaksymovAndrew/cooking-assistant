@@ -8,6 +8,9 @@ import { useAppDispatch } from "redux/hooks";
 import { useRenameTagMutation } from "redux/services/tagsApi";
 import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 
+import { cx } from "utils/cx";
+import { ignoreRejection } from "utils/ignoreRejection";
+
 import { RecipeTagRenameField } from "./RecipeTagRenameField";
 import styles from "./RecipeTagsPanel.module.scss";
 
@@ -20,7 +23,6 @@ interface RecipeTagRowProps {
 const ROW_ICON_SIZE = 14;
 
 // a failed rename is toasted by the global listener, and the row falls back to the stored name
-const ignoreRejection = () => undefined;
 
 export const RecipeTagRow: React.FC<RecipeTagRowProps> = ({
     tag,
@@ -62,12 +64,10 @@ export const RecipeTagRow: React.FC<RecipeTagRowProps> = ({
                 type="button"
                 role="checkbox"
                 aria-checked={isSelected}
-                className={[
+                className={cx(
                     styles["recipe-tags-panel__toggle"],
                     isSelected && styles["recipe-tags-panel__toggle--on"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
+                )}
                 onClick={() => {
                     onToggle(tag.id);
                 }}

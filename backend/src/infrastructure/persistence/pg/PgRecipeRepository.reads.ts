@@ -1,9 +1,6 @@
 import type { Pool } from "pg";
 
-import type {
-    RecipeDetailRow,
-    RecipeListRow,
-} from "domain/repositories/recipe.types";
+import type { RecipeDetailRow } from "domain/repositories/recipe.types";
 
 import { authorColumn } from "./authorColumn";
 import { caloriesPerPortion } from "./calorieColumns";
@@ -13,22 +10,7 @@ import { isOwnerColumn } from "./isOwnerColumn";
 import { ratingColumns } from "./ratingColumns";
 import { recipeTagsColumn } from "./recipeTagsColumn";
 
-// explicit columns - r.* would leak the owner's raw person_id to every caller (this list is not
-// filtered by owner, unlike the search endpoints, which compute an isOwner flag instead)
-export async function findAllRecipes(pool: Pool): Promise<RecipeListRow[]> {
-    const result = await pool.query<RecipeListRow>(
-        `SELECT r.id, r.title, r.type_id, r.creation_date, r.cooking_time,
-                rt.type_name, array_agg(i.name) AS ingredients
-         FROM recipes r
-                LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-                LEFT JOIN ingredients i ON ri.ingredient_id = i.id
-                LEFT JOIN recipe_types rt ON r.type_id = rt.id
-         GROUP BY r.id, rt.type_name`,
-    );
-
-    return result.rows;
-}
-
+// explicit columns: r.* would leak the owner's person_id to every caller
 export async function findRecipeByIdWithIngredients(
     pool: Pool,
     recipeId: number,

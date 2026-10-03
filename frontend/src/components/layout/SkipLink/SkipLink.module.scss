@@ -1,0 +1,28 @@
+@use "styles/abstracts" as *;
+
+.skip-link {
+    @include sr-only;
+
+    &:focus-visible {
+        position: fixed;
+        top: var(--s-2);
+        left: var(--s-2);
+        z-index: var(--z-toast);
+        width: auto;
+        height: auto;
+        margin: 0;
+        padding: var(--s-2) var(--s-4);
+        overflow: visible;
+        clip-path: none;
+        border-radius: var(--r-sm);
+        background: var(--brand);
+        color: var(--on-brand);
+        white-space: nowrap;
+        text-decoration: none;
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+        font:
+            600 14px Inter,
+            sans-serif;
+    }
+}

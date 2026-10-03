@@ -2,6 +2,8 @@ import { Ban } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { cx } from "utils/cx";
+
 import styles from "./AvoidPill.module.scss";
 
 const ICON_SIZE = 11;
@@ -18,12 +20,10 @@ export const AvoidPill: React.FC<AvoidPillProps> = ({ compact = false }) => {
     return (
         <span
             title={t("avoidedRow")}
-            className={[
+            className={cx(
                 styles["avoid-pill"],
                 compact && styles["avoid-pill--compact"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
+            )}
         >
             <Ban size={ICON_SIZE} aria-hidden="true" />
             {compact ? (

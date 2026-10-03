@@ -8,8 +8,7 @@ interface NextLinkMockProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
     onNavigate?: (event: { preventDefault: () => void }) => void;
 }
 
-// stands in for next/link, which needs a real app-router context: same anchor, same onNavigate
-// contract, so the unsaved-changes guard in components/ui/Link is exercised for real
+// keeps next/link's onNavigate contract, so the unsaved-changes guard in ui/Link runs for real
 const NextLinkMock = ({
     href,
     onNavigate,

@@ -10,7 +10,6 @@ import { NavigationBlockerProvider } from "components/layout/NavigationBlocker";
 
 import { setTestLocation } from "test/nextNavigationMock";
 
-// fresh store per test; pass preloadedState to seed slices (session, ui, ...)
 export const makeTestStore = (preloadedState?: Partial<RootState>) =>
     setupStore(preloadedState);
 
@@ -27,7 +26,6 @@ const makeWrapper = (store: AppStore) =>
         });
     };
 
-// renders a hook behind a real Redux Provider and returns the store alongside the render result
 export const renderHookWithStore = <T>(
     callback: () => T,
     store: AppStore = makeTestStore(),
@@ -38,8 +36,6 @@ interface RenderHookWithRouterOptions {
     initialEntries?: string[];
 }
 
-// same as renderHookWithStore, but seeds the URL first, so hooks built on useSearchParams
-// (e.g. useListFilters) read and write real URL state
 export const renderHookWithRouter = <T>(
     callback: () => T,
     {

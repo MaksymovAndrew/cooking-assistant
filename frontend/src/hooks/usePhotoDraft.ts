@@ -18,8 +18,7 @@ export interface PhotoDraftActions {
 
 const EMPTY_DRAFT: Draft = { file: null, previewUrl: null, removed: false };
 
-// a photo picked in a form is only a draft until the form itself is saved, so cancelling it
-// leaves the stored photo untouched
+// only a draft until the form is saved, so cancelling the form leaves the stored photo untouched
 export const usePhotoDraft = (
     initialKey: string | null,
     previewSize: MediaSize,

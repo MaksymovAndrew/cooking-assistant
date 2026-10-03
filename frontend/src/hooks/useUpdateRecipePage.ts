@@ -3,7 +3,6 @@ import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
-import { MINUTES_PER_HOUR } from "constants/time";
 
 import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 import {
@@ -16,7 +15,11 @@ import { useAppRouter } from "hooks/useAppRouter";
 import { useLocale } from "hooks/useLocale";
 import { useRecipeForm } from "hooks/useRecipeForm";
 
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { resolveEditPageState } from "utils/editPageState";
+import {
+    formValuesToUpdateRequest,
+    recipeToFormValues,
+} from "utils/recipeFormValues";
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 export const useUpdateRecipePage = () => {
@@ -28,7 +31,8 @@ export const useUpdateRecipePage = () => {
     const router = useAppRouter();
     const { data: ingredients } = useGetIngredientsQuery(null);
     const { data: allTypes = [] } = useGetRecipeTypesQuery(null);
-    const { data: recipe, isLoading } = useGetRecipeByIdQuery(id);
+    const recipeQuery = useGetRecipeByIdQuery(id);
+    const recipe = recipeQuery.data;
     const [updateRecipe] = useUpdateRecipeMutation();
 
     const allIngredients = useMemo(
@@ -37,33 +41,9 @@ export const useUpdateRecipePage = () => {
     );
 
     useEffect(() => {
-        if (!recipe) {
-            return;
+        if (recipe) {
+            setInitialValues(recipeToFormValues(recipe));
         }
-
-        const { hours, minutes } = splitCookingTime(recipe.cooking_time ?? 0);
-
-        setInitialValues({
-            title: recipe.title,
-            content: recipe.content,
-            language: recipe.language,
-            cookingHours: String(hours),
-            cookingMinutes: String(minutes),
-            selectedTypeId: recipe.type_id,
-            selectedIngredients: recipe.ingredients.map((i) => ({
-                id: i.id,
-                slug: i.slug,
-                name: i.name,
-                quantity: i.quantity_recipe_ingredients,
-                unit_name: i.unit_name,
-                calories_per_unit: i.calories_per_unit,
-            })),
-            caloriesOverride:
-                recipe.calories_override === null
-                    ? ""
-                    : String(recipe.calories_override),
-            photoKey: recipe.photo_key,
-        });
     }, [recipe, setInitialValues]);
 
     const handleSubmit = async () => {
@@ -87,25 +67,7 @@ export const useUpdateRecipePage = () => {
         // a failed mutation is already toasted by the global listener
         const result = await updateRecipe({
             id,
-            data: {
-                title: form.title,
-                content: form.content,
-                language: form.language,
-                type_id: form.selectedTypeId,
-                cooking_time:
-                    Number(form.cookingHours) * MINUTES_PER_HOUR +
-                    Number(form.cookingMinutes),
-                calories_override:
-                    form.caloriesOverride === ""
-                        ? null
-                        : Number(form.caloriesOverride),
-                ingredients: form.selectedIngredients.map(
-                    ({ id: recipeId, quantity }) => ({
-                        id: recipeId,
-                        quantity_recipe_ingredients: quantity,
-                    }),
-                ),
-            },
+            data: formValuesToUpdateRequest(form),
         });
 
         if ("data" in result) {
@@ -115,5 +77,14 @@ export const useUpdateRecipePage = () => {
         }
     };
 
-    return { form, allIngredients, allTypes, isLoading, handleSubmit };
+    return {
+        form,
+        allIngredients,
+        allTypes,
+        pageState: resolveEditPageState(recipeQuery, recipe?.isOwner ?? null),
+        retry: () => {
+            void recipeQuery.refetch();
+        },
+        handleSubmit,
+    };
 };

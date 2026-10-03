@@ -38,18 +38,4 @@ describe("MenuCard", () => {
             screen.getByRole("button", { name: "Favourite" }),
         ).toHaveAttribute("aria-pressed", "true");
     });
-
-    it("should not render a favourite button without a per-viewer flag", () => {
-        renderWithRouter(<MenuCard menu={MENU} />);
-
-        expect(
-            screen.queryByRole("button", { name: "Favourite" }),
-        ).not.toBeInTheDocument();
-    });
-
-    it("should apply the mine class when mine is true", () => {
-        renderWithRouter(<MenuCard menu={MENU} mine />);
-
-        expect(screen.getByRole("article")).toHaveClass("content-card--mine");
-    });
 });

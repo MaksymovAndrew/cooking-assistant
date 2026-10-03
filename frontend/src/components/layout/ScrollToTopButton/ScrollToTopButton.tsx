@@ -2,14 +2,17 @@ import { ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { REDUCED_MOTION_QUERY } from "constants/motion";
+
+import { cx } from "utils/cx";
+
 import styles from "./ScrollToTopButton.module.scss";
 
 const ICON_SIZE = 20;
-// the header is no longer sticky, so this is the way back to it once scrolled past it
 const REVEAL_SCROLL_OFFSET_PX = 240;
 
 const prefersReducedMotion = (): boolean =>
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
 export const ScrollToTopButton = () => {
     const { t } = useTranslation();
@@ -34,19 +37,16 @@ export const ScrollToTopButton = () => {
         });
     };
 
-    // stays mounted while hidden so CSS can fade it in and out smoothly
     return (
         <button
             type="button"
             onClick={handleClick}
             aria-label={t("nav.scrollToTop")}
             aria-hidden={!isVisible}
-            className={[
+            className={cx(
                 styles["scroll-to-top-button"],
                 isVisible && styles["scroll-to-top-button--visible"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
+            )}
         >
             <ArrowUp size={ICON_SIZE} aria-hidden="true" />
         </button>

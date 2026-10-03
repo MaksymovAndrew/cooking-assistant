@@ -2,19 +2,24 @@ import { X } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { cx } from "utils/cx";
+
 import styles from "./Chip.module.scss";
 
 export type ChipVariant =
     "type" | "outline" | "success" | "warning" | "danger" | "numeric";
 
-interface ChipProps {
+// a removable chip names what its remove button takes away
+type ChipRemoval =
+    | { removable?: false; onRemove?: never; name?: never }
+    | { removable: true; onRemove: () => void; name: string };
+
+type ChipProps = ChipRemoval & {
     variant?: ChipVariant;
     icon?: React.ReactNode;
-    removable?: boolean;
-    onRemove?: () => void;
     children: React.ReactNode;
     className?: string;
-}
+};
 
 const VARIANT_CLASS: Record<ChipVariant, string> = {
     type: styles["chip--type"],
@@ -32,14 +37,13 @@ export const Chip: React.FC<ChipProps> = ({
     icon,
     removable = false,
     onRemove,
+    name,
     children,
     className,
 }) => {
     const { t } = useTranslation();
 
-    const classNames = [styles.chip, VARIANT_CLASS[variant], className]
-        .filter(Boolean)
-        .join(" ");
+    const classNames = cx(styles.chip, VARIANT_CLASS[variant], className);
 
     return (
         <span className={classNames}>
@@ -53,7 +57,7 @@ export const Chip: React.FC<ChipProps> = ({
                 <button
                     type="button"
                     onClick={onRemove}
-                    aria-label={t("chip.remove")}
+                    aria-label={t("chip.remove", { name })}
                     className={styles.chip__remove}
                 >
                     <X size={REMOVE_ICON_SIZE} aria-hidden="true" />

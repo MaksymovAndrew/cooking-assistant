@@ -11,14 +11,11 @@ import type { UserRepository } from "domain/repositories/UserRepository";
 type SessionVersions = Pick<UserRepository, "findSessionVersion">;
 
 export interface SessionAuth {
-    // rejects a request without a live session
     authenticateToken: RequestHandler;
-    // lets it through as a guest instead - for reads anyone may make
     optionalAuth: RequestHandler;
 }
 
-// the typ claim must be checked positively: purpose tokens (password-reset, verify-email) are signed
-// with the same secret, so accepting any well-formed { id } would let an emailed link act as a session
+// typ is checked positively: an emailed link shares the secret and must never act as a session
 export function isSessionPayload(
     decoded: string | JwtPayload | undefined,
 ): decoded is JwtPayload & { id: number; sv: number } {
@@ -41,8 +38,7 @@ export function readSessionCookie(req: {
     return req.cookies?.[AUTH_COOKIE_NAME]?.trim() ?? "";
 }
 
-// a valid signature is not enough: the token's session version must still match the account's,
-// which a password change or reset raises - so a stolen cookie dies with the old password
+// the session version must still match, so a stolen cookie dies with the old password
 async function liveSessionUserId(
     token: string,
     sessions: SessionVersions,

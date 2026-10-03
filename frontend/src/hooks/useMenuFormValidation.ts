@@ -2,6 +2,8 @@ import { useCallback, useState } from "react";
 
 import type { MenuFormErrorMessages, MenuFormValues } from "types/menuForm";
 
+import { useFocusFirstInvalid } from "hooks/useFocusFirstInvalid";
+
 export interface MenuFormErrors {
     menuTitleError: string | null;
     menuDescriptionError: string | null;
@@ -18,6 +20,7 @@ export const useMenuFormValidation = (messages: MenuFormErrorMessages) => {
     >(null);
     const [categoryError, setCategoryError] = useState<string | null>(null);
     const [recipesError, setRecipesError] = useState<string | null>(null);
+    const { attachForm, focusFirstInvalid } = useFocusFirstInvalid();
 
     const validate = useCallback(
         (values: Omit<MenuFormValues, "photoKey" | "language">): boolean => {
@@ -51,9 +54,19 @@ export const useMenuFormValidation = (messages: MenuFormErrorMessages) => {
                 setRecipesError(null);
             }
 
+            if (!valid) {
+                focusFirstInvalid();
+            }
+
             return valid;
         },
-        [emptyTitle, emptyDescription, noCategory, noRecipes],
+        [
+            emptyTitle,
+            emptyDescription,
+            noCategory,
+            noRecipes,
+            focusFirstInvalid,
+        ],
     );
 
     const errors: MenuFormErrors = {
@@ -63,5 +76,5 @@ export const useMenuFormValidation = (messages: MenuFormErrorMessages) => {
         recipesError,
     };
 
-    return { errors, validate };
+    return { errors, attachForm, validate };
 };

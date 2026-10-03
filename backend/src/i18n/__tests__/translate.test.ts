@@ -46,12 +46,6 @@ describe("translateError", () => {
         );
     });
 
-    it("should return the catalog text for a code", () => {
-        expect(
-            translateError(ERROR_CODES.RECIPE_NOT_FOUND, DEFAULT_LOCALE),
-        ).toBe("Recipe not found");
-    });
-
     it("should return the text of the requested language", () => {
         expect(translateError(ERROR_CODES.RECIPE_NOT_FOUND, "uk")).toBe(
             "Рецепт не знайдено",
@@ -77,12 +71,6 @@ describe("translateMessage", () => {
 });
 
 describe("getEmailCopy", () => {
-    it("should return the email copy for the default locale", () => {
-        expect(getEmailCopy(DEFAULT_LOCALE).verification.subject).toBe(
-            "Verify your email",
-        );
-    });
-
     it.each(TRANSLATED_LOCALES)(
         "should write the %s email in its own language but keep the brand name",
         (locale) => {

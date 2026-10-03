@@ -23,8 +23,6 @@ export default function createUserIngredientsRouter(
 ): Router {
     const router = express.Router();
 
-    // the user always comes from the auth cookie, never from the path
-
     router.get(
         ROUTES.userIngredients.list,
         authenticateToken,

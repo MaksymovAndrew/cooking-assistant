@@ -10,8 +10,7 @@ interface ApiErrorBody {
 
 const KNOWN_ERROR_CODES = new Set<string>(Object.values(ERROR_CODES));
 
-// the code is the contract and the copy is ours: a known code renders from common.json apiErrors, and the
-// server's English text is only the fallback for a code this build doesn't know yet
+// a known code renders our own copy; the server's English text is only for a code this build doesn't know
 export function getApiErrorMessage(error: unknown): string {
     if (axios.isAxiosError<ApiErrorBody>(error)) {
         const code = error.response?.data.code;
@@ -36,7 +35,6 @@ export function getApiErrorMessage(error: unknown): string {
     return i18next.t("errors.unknown");
 }
 
-// HTTP status for the axios baseQuery; non-axios errors have no status
 export function getApiErrorStatus(error: unknown): number | undefined {
     if (axios.isAxiosError(error)) {
         return error.response?.status;
@@ -45,7 +43,6 @@ export function getApiErrorStatus(error: unknown): number | undefined {
     return undefined;
 }
 
-// the stable machine-readable error code the backend attaches to some 4xx bodies; null when absent
 export function getApiErrorCode(error: unknown): string | null {
     if (axios.isAxiosError<ApiErrorBody>(error)) {
         return error.response?.data.code ?? null;
@@ -57,7 +54,6 @@ export function getApiErrorCode(error: unknown): string | null {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null;
 
-// Retry-After cool-down in seconds (e.g. a 429); null when absent or non-numeric
 export function getApiErrorRetryAfter(error: unknown): number | null {
     if (!axios.isAxiosError(error)) {
         return null;

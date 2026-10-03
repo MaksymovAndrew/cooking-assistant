@@ -6,12 +6,13 @@ import { ROUTES } from "constants/routes";
 import { API_ROUTES } from "api/endpoints";
 
 import { selectActiveModal } from "redux/selectors/uiSelectors";
+import { userIngredientsApi } from "redux/services/userIngredientsApi";
 import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { LogoutConfirmModal } from "components/modals/LogoutConfirmModal";
 
-import { mockedPost } from "test/apiClientMock";
+import { mockedGet, mockedPost } from "test/apiClientMock";
 import { mockNavigate, renderWithProviders } from "test/router";
 import { makeTestStore } from "test/store";
 
@@ -44,8 +45,17 @@ describe("LogoutConfirmModal", () => {
     });
 
     it("should log out, reset the cache, close and navigate to login on confirm", async () => {
+        mockedGet.mockResolvedValue({ data: [] });
         mockedPost.mockResolvedValue({ data: null });
         const { store } = renderOpen();
+        const pantry = store.dispatch(
+            userIngredientsApi.endpoints.getUserIngredients.initiate(null),
+        );
+
+        await pantry;
+        pantry.unsubscribe();
+
+        expect(store.getState().api.queries).not.toEqual({});
 
         await userEvent.click(screen.getByRole("button", { name: "Log out" }));
 
@@ -53,6 +63,8 @@ describe("LogoutConfirmModal", () => {
             API_ROUTES.auth.logout,
             undefined,
         );
+        // the next person on this device must not see the previous one's data
+        expect(store.getState().api.queries).toEqual({});
         expect(selectActiveModal(store.getState())).toBeNull();
         expect(mockNavigate).toHaveBeenCalledWith(ROUTES.login);
     });

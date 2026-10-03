@@ -2,7 +2,7 @@ import type { Pool } from "pg";
 
 import type { SetRecipeTagsOutcome } from "domain/repositories/TagRepository";
 
-// one statement: both writes see the same recipe and ownership checks, so a half-applied set is impossible
+// one statement, so both writes see the same checks and a half-applied set is impossible
 export async function setRecipeTags(
     pool: Pool,
     personId: number,

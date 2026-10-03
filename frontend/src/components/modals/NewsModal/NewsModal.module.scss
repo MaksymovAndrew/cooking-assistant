@@ -16,7 +16,7 @@
         height: 40px;
         border-radius: var(--r-md);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__list {
@@ -63,7 +63,7 @@
     }
 
     &__item-title {
-        margin-bottom: 4px;
+        margin-bottom: var(--s-1);
         color: var(--text);
         font:
             600 15px Inter,

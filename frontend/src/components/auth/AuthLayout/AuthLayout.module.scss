@@ -67,7 +67,7 @@
         border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent);
         border-radius: var(--r-pill);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
         text-decoration: none;
         transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
@@ -109,8 +109,7 @@
         justify-content: center;
         padding: var(--s-7) var(--s-4);
 
-        // below desktop there's no illustration column, so this bleeds against the very top of
-        // the screen - centered instead of top-anchored so it never touches the status bar/notch
+        // centered, not top-anchored: below desktop the panel meets the status bar/notch
         background:
             radial-gradient(
                 ellipse 80% 60% at 50% 50%,
@@ -165,7 +164,7 @@
         border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent);
         border-radius: var(--r-pill);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__brand-text {
@@ -184,6 +183,11 @@
         border-radius: var(--r-lg);
         background: var(--surface);
         box-shadow: var(--e-2);
+
+        // a skip-link target, not a control: focus lands here without a ring
+        &:focus {
+            outline: none;
+        }
     }
 }
 

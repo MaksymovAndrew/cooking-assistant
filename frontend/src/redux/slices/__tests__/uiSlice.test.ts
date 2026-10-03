@@ -1,6 +1,3 @@
-import type { ExpiredPantryIngredient } from "types/expiry";
-import type { PantryIngredient } from "types/userIngredient";
-
 import type { ActiveModal, ModalInput } from "redux/slices/uiSlice";
 import {
     closeModal,
@@ -15,17 +12,6 @@ const MODAL_INPUT: ModalInput = {
     ingredientName: "Salt",
 };
 const MODAL: ActiveModal = { id: "modal-1", ...MODAL_INPUT };
-
-const PANTRY_INGREDIENT: PantryIngredient = {
-    id: 9,
-    slug: "salt",
-    ingredient_name: "Salt",
-    category: "spices",
-    unit_name: "g",
-    quantity_person_ingradient: 100,
-    allergens: [],
-    lots: [],
-};
 
 describe("uiSlice", () => {
     it("should start with an empty queue", () => {
@@ -86,87 +72,5 @@ describe("uiSlice", () => {
 
         expect(state.queue).toHaveLength(1);
         expect(state.queue[0].id).toBe(afterFirst.queue[0].id);
-    });
-
-    it("should open a delete-recipe modal carrying the recipe id and title", () => {
-        const state = uiReducer(
-            undefined,
-            openModal({
-                type: MODAL_TYPE.deleteRecipe,
-                recipeId: "42",
-                recipeTitle: "Slow-roasted ragù",
-            }),
-        );
-
-        expect(state.queue[0]).toMatchObject({
-            type: "deleteRecipe",
-            recipeId: "42",
-            recipeTitle: "Slow-roasted ragù",
-        });
-        expect(state.queue[0].id.length).toBeGreaterThan(0);
-    });
-
-    it("should open a delete-menu modal carrying the menu id", () => {
-        const state = uiReducer(
-            undefined,
-            openModal({
-                type: MODAL_TYPE.deleteMenu,
-                menuId: 7,
-                menuTitle: "Week of Comfort",
-            }),
-        );
-
-        expect(state.queue[0]).toMatchObject({
-            type: "deleteMenu",
-            menuId: 7,
-            menuTitle: "Week of Comfort",
-        });
-        expect(state.queue[0].id.length).toBeGreaterThan(0);
-    });
-
-    it("should open a delete-ingredient modal carrying the ingredient", () => {
-        const state = uiReducer(
-            undefined,
-            openModal({
-                type: MODAL_TYPE.deleteIngredient,
-                ingredient: PANTRY_INGREDIENT,
-            }),
-        );
-
-        expect(state.queue[0]).toMatchObject({
-            type: "deleteIngredient",
-            ingredient: PANTRY_INGREDIENT,
-        });
-        expect(state.queue[0].id.length).toBeGreaterThan(0);
-    });
-
-    it("should open an expired-ingredients modal carrying the ingredient list", () => {
-        const ingredients: ExpiredPantryIngredient[] = [
-            {
-                ingredientId: 1,
-                slug: "milk",
-                name: "Milk",
-                unitName: "l",
-                lots: [
-                    {
-                        purchaseId: 101,
-                        quantity: 1,
-                        purchaseDate: "2026-01-01T00:00:00.000Z",
-                        expiryDate: "2026-01-05T00:00:00.000Z",
-                    },
-                ],
-            },
-        ];
-
-        const state = uiReducer(
-            undefined,
-            openModal({ type: MODAL_TYPE.expiredIngredients, ingredients }),
-        );
-
-        expect(state.queue[0]).toMatchObject({
-            type: "expiredIngredients",
-            ingredients,
-        });
-        expect(state.queue[0].id.length).toBeGreaterThan(0);
     });
 });

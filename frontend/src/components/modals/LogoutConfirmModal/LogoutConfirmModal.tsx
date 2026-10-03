@@ -25,7 +25,7 @@ export const LogoutConfirmModal = ({ modalId }: LogoutConfirmModalProps) => {
     const [error, setError] = useState<string | null>(null);
 
     const handleConfirm = async () => {
-        // success toast is handled by the global listener; a failed logout is excluded there on purpose (no scary app-wide error), so it's surfaced inline here instead
+        // the global listener skips a failed logout on purpose, so its error shows inline here
         const result = await logout(null);
 
         if ("data" in result) {

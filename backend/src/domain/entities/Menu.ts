@@ -13,7 +13,7 @@ export interface MenuInput {
 
 export type MenuUpdateInput = Omit<MenuInput, "personId">;
 
-// the request schema already checks every field; the one rule it leaves to the domain is that a menu has recipes
+// the one rule the request schema leaves to the domain
 function assertHasRecipes(recipeIds: number[], code: ErrorCode): void {
     if (recipeIds.length === 0) {
         throw new ValidationError(code);

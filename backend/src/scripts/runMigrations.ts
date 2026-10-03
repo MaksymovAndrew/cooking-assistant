@@ -6,7 +6,7 @@ import { logger } from "config/logger";
 
 type MigrationDirection = "up" | "down";
 
-// both the standalone migrate entry and the combined deploy-db entry live in dist/scripts/, so ../../migrations resolves to /app/migrations in either bundle
+// both bundled entries live in dist/scripts/, so this resolves to /app/migrations
 const migrationsDir = path.resolve(__dirname, "../../migrations");
 
 const KNOWN_ARGS = new Set(["up", "down", "--fake"]);

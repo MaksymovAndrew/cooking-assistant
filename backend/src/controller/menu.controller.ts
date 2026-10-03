@@ -6,8 +6,8 @@ import { translateMessage } from "i18n/translate";
 import type CreateMenu from "application/use-cases/menus/CreateMenu";
 import type DeleteMenu from "application/use-cases/menus/DeleteMenu";
 import type GetAllMenus from "application/use-cases/menus/GetAllMenus";
-import type GetAllMenusUnpaginated from "application/use-cases/menus/GetAllMenusUnpaginated";
 import type GetMenuById from "application/use-cases/menus/GetMenuById";
+import type GetMenuStats from "application/use-cases/menus/GetMenuStats";
 import type SearchPersonMenus from "application/use-cases/menus/SearchPersonMenus";
 import type UpdateMenu from "application/use-cases/menus/UpdateMenu";
 
@@ -16,39 +16,39 @@ import { getOptionalUserId, getUserId } from "./requestUser";
 
 interface MenuControllerDependencies {
     getAllMenus: GetAllMenus;
-    getAllMenusUnpaginated: GetAllMenusUnpaginated;
     createMenu: CreateMenu;
     getMenuById: GetMenuById;
     updateMenu: UpdateMenu;
     deleteMenu: DeleteMenu;
     searchPersonMenus: SearchPersonMenus;
+    getMenuStats: GetMenuStats;
 }
 
 export default class MenuController {
     private getAllMenusUseCase: GetAllMenus;
-    private getAllMenusUnpaginatedUseCase: GetAllMenusUnpaginated;
     private createMenuUseCase: CreateMenu;
     private getMenuByIdUseCase: GetMenuById;
     private updateMenuUseCase: UpdateMenu;
     private deleteMenuUseCase: DeleteMenu;
     private searchPersonMenusUseCase: SearchPersonMenus;
+    private getMenuStatsUseCase: GetMenuStats;
 
     constructor({
         getAllMenus,
-        getAllMenusUnpaginated,
         createMenu,
         getMenuById,
         updateMenu,
         deleteMenu,
         searchPersonMenus,
+        getMenuStats,
     }: MenuControllerDependencies) {
         this.getAllMenusUseCase = getAllMenus;
-        this.getAllMenusUnpaginatedUseCase = getAllMenusUnpaginated;
         this.createMenuUseCase = createMenu;
         this.getMenuByIdUseCase = getMenuById;
         this.updateMenuUseCase = updateMenu;
         this.deleteMenuUseCase = deleteMenu;
         this.searchPersonMenusUseCase = searchPersonMenus;
+        this.getMenuStatsUseCase = getMenuStats;
     }
 
     getAll: RequestHandler = async (req, res) => {
@@ -60,10 +60,10 @@ export default class MenuController {
         res.status(200).json(menus);
     };
 
-    getAllUnpaginated: RequestHandler = async (_req, res) => {
-        const menus = await this.getAllMenusUnpaginatedUseCase.execute();
+    getStats: RequestHandler = async (_req, res) => {
+        const stats = await this.getMenuStatsUseCase.execute();
 
-        res.status(200).json(menus);
+        res.status(200).json(stats);
     };
 
     create: RequestHandler = async (req, res) => {

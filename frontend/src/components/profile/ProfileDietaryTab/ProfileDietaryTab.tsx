@@ -30,7 +30,7 @@ export const ProfileDietaryTab: React.FC<ProfileDietaryTabProps> = ({
     const form = useCalorieGoalForm(currentUser, () => {
         setJustSaved(true);
     });
-    // erases the promise (matches EditProfileModal) so a fire-and-forget submit needs no void/catch
+    // typed unknown to erase the promise, so the submit needs no void or catch
     const submitForm = (): unknown => {
         setJustSaved(false);
 

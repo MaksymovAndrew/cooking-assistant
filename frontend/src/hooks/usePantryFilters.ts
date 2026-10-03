@@ -17,7 +17,6 @@ interface UsePantryFiltersOptions {
     personIngredients: PantryIngredient[];
 }
 
-// search/category/expiring-soon filtering for the pantry page, kept out of the component to stay under the file's line cap
 export const usePantryFilters = ({
     personIngredients,
 }: UsePantryFiltersOptions) => {
@@ -33,7 +32,7 @@ export const usePantryFilters = ({
         personIngredients,
     );
 
-    // drops a stale category filter (its last item just got deleted) rather than silently matching nothing forever - adjusted during render, not via an effect, since it's already a conditional, idempotent correction
+    // a category whose last item was just deleted is gone; reset during render, not in an effect
     if (
         filters.category &&
         !categories.some((category) => category.key === filters.category)

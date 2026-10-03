@@ -17,8 +17,7 @@ const JPEG_QUALITY = 82;
 sharp.cache(false);
 sharp.concurrency(1);
 
-// a fixed frame crops around the most eye-catching region rather than the plain centre, and
-// may enlarge a small photo: a link preview needs exactly its size
+// a fixed frame may enlarge a small photo: a link preview needs exactly its size
 function encodeVariant(image: sharp.Sharp, spec: ImageVariantSpec) {
     const resized = image.resize({
         width: spec.width,
@@ -33,8 +32,7 @@ function encodeVariant(image: sharp.Sharp, spec: ImageVariantSpec) {
         : resized.webp({ quality: WEBP_QUALITY }).toBuffer();
 }
 
-// every upload is re-encoded from scratch, which is what actually disarms one: a polyglot file,
-// an embedded payload and EXIF/GPS data are all left behind with the original bytes
+// re-encoding is what disarms an upload: polyglots, payloads and EXIF/GPS stay in the original
 export default class SharpImageProcessor implements ImageProcessor {
     // uploads are decoded one at a time, so several at once cannot exhaust the container's memory
     private queue: Promise<unknown> = Promise.resolve();

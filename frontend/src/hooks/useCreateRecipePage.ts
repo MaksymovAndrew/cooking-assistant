@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
-import { MINUTES_PER_HOUR } from "constants/time";
 
 import { useGetIngredientsQuery } from "redux/services/ingredientsApi";
 import { useCreateRecipeMutation } from "redux/services/recipesApi";
@@ -12,6 +11,7 @@ import { useAppRouter } from "hooks/useAppRouter";
 import { useLocale } from "hooks/useLocale";
 import { useRecipeForm } from "hooks/useRecipeForm";
 
+import { formValuesToCreateRequest } from "utils/recipeFormValues";
 import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 export const useCreateRecipePage = () => {
@@ -47,23 +47,7 @@ export const useCreateRecipePage = () => {
         }
 
         // a failed mutation is already toasted by the global listener
-        const result = await createRecipe({
-            title: form.title,
-            content: form.content,
-            language: form.language,
-            ingredients: form.selectedIngredients.map((i) => ({
-                id: i.id,
-                quantity: i.quantity,
-            })),
-            type_id: form.selectedTypeId,
-            cooking_time:
-                Number(form.cookingHours) * MINUTES_PER_HOUR +
-                Number(form.cookingMinutes),
-            calories_override:
-                form.caloriesOverride === ""
-                    ? null
-                    : Number(form.caloriesOverride),
-        });
+        const result = await createRecipe(formValuesToCreateRequest(form));
 
         if (result.data) {
             await form.photo.commit(result.data.id);

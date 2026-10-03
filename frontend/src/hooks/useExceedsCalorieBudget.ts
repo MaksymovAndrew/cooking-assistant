@@ -2,9 +2,7 @@ import { useCalorieBudget } from "hooks/useCalorieBudget";
 
 import { exceedsCalorieBudgetForPortions } from "utils/calories";
 
-// single-item convenience wrapper around useCalorieBudget() for detail pages that render just
-// one hero stat (recipe/menu) - list pages compute the budget once and check many items against
-// it directly instead, so they call useCalorieBudget()/exceedsCalorieBudget() themselves
+// for a single item; a list calls useCalorieBudget() once and checks every item itself
 export const useExceedsCalorieBudget = (
     caloriesPerPortion: number | null,
     portionCount = 1,

@@ -21,7 +21,7 @@ export default class ChangePassword {
         private tokenService: Pick<TokenService, "generate">,
     ) {}
 
-    // the change ends every other session; the one that made it gets a fresh token and stays signed in
+    // ends every other session; the caller gets a fresh token and stays signed in
     async execute(userId: number, input: unknown): Promise<{ token: string }> {
         const data = validate(changePasswordSchema, input);
         const credentials =

@@ -1,7 +1,6 @@
 import type { Ingredient } from "types/ingredient";
 import type { PantryIngredient } from "types/userIngredient";
 
-// what can still be added to the pantry: not already stocked and not already picked in this batch
 export const pantryAddCandidates = (
     allIngredients: Ingredient[],
     pantry: PantryIngredient[],

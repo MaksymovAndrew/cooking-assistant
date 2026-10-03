@@ -4,9 +4,7 @@ import type { RefObject } from "react";
 import { createContext, useContext } from "react";
 
 export interface NavigationBlockerValue {
-    // a guarded form registers its dirtiness here; the returned callback unregisters it
     register: (isDirtyRef: RefObject<boolean>) => () => void;
-    // arms the back-button guard - only while there is something to lose
     arm: (isArmed: boolean) => void;
     hasUnsavedChanges: () => boolean;
     defer: (perform: () => void) => void;

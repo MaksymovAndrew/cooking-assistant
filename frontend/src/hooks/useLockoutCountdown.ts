@@ -5,8 +5,6 @@ import { lockoutDurationMs, type LockoutState } from "utils/loginLockout";
 
 const TICK_INTERVAL_MS = 1000;
 
-// ticks once a second while locked, both to drive a live countdown and to lift the lock the moment
-// it expires; shared by every form that locks itself after repeated wrong passwords
 export const useLockoutCountdown = (
     lockout: LockoutState,
     setLockout: Dispatch<SetStateAction<LockoutState>>,

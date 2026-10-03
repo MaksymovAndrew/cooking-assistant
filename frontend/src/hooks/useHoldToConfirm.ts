@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from "react";
 
-// press-and-hold gesture: onComplete fires only after a full uninterrupted hold; releasing early cancels with no effect
 export const useHoldToConfirm = (
     durationMs: number,
     onComplete: () => void,

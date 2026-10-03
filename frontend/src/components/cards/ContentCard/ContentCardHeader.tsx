@@ -25,7 +25,6 @@ interface ContentCardImageProps {
     favourite: ContentCardFavouriteState | null;
 }
 
-// for grid, this also carries the type chip + favourite button (absolutely positioned over the image); for row, those move into ContentCardRowHeader instead
 export const ContentCardImage: React.FC<ContentCardImageProps> = ({
     isRow,
     imageIcon: ImageIcon,

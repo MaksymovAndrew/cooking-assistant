@@ -2,8 +2,8 @@ import type { ActiveModal } from "redux/slices/uiSlice";
 import { MODAL_TYPE } from "redux/slices/uiSlice";
 
 import { CookedItModal } from "./ModalRoot.lazy";
+import { renderAccountModal } from "./ModalRoot.renderers.account";
 
-// the last link of the renderer chain
 export const renderCookingModal = (modal: ActiveModal | null) => {
     if (modal?.type === MODAL_TYPE.cookedIt) {
         return (
@@ -19,5 +19,5 @@ export const renderCookingModal = (modal: ActiveModal | null) => {
         );
     }
 
-    return null;
+    return renderAccountModal(modal);
 };

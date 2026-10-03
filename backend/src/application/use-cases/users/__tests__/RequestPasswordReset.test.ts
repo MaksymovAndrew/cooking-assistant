@@ -1,8 +1,11 @@
 import { logger } from "config/logger";
+import { ERROR_CODES } from "constants/errorCodes";
 import { DEFAULT_LOCALE } from "constants/locales";
+import { ValidationError } from "domain/errors/AppError";
 
 import RequestPasswordReset from "application/use-cases/users/RequestPasswordReset";
 
+import { catchError } from "test/helpers/assertions";
 import { TEST_FRONTEND_ORIGIN } from "test/helpers/testConstants";
 
 const EMAIL = "user@example.com";
@@ -136,9 +139,16 @@ describe("RequestPasswordReset", () => {
             FRONTEND_ORIGIN,
         );
 
-        await expect(
+        const error = await catchError(
             useCase.execute({ email: "not-an-email" }),
-        ).rejects.toThrow();
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "email: Must be a valid email address",
+        );
         expect(
             deps.userRepository.findPasswordResetCandidateByEmail,
         ).not.toHaveBeenCalled();

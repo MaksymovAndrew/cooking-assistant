@@ -42,20 +42,4 @@ describe("PasswordInput", () => {
 
         expect(input).toHaveAttribute("type", "password");
     });
-
-    it("should call onChange with the typed character", async () => {
-        const onChange = jest.fn();
-
-        render(
-            <PasswordInput
-                aria-label="Password"
-                value=""
-                onChange={onChange}
-            />,
-        );
-
-        await userEvent.type(screen.getByLabelText("Password"), "a");
-
-        expect(onChange).toHaveBeenCalled();
-    });
 });

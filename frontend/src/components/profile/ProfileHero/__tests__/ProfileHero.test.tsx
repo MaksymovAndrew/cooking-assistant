@@ -76,29 +76,6 @@ describe("ProfileHero", () => {
         expect(screen.queryByText(/^Joined/)).not.toBeInTheDocument();
     });
 
-    it("should call onEditProfile when the Edit profile button is clicked", async () => {
-        const onEditProfile = jest.fn();
-
-        render(
-            <ProfileHero
-                name="Claude"
-                surname="Cook"
-                recipesCount={0}
-                menusCount={0}
-                favouritesCount={0}
-                kcalToday={0}
-                onLogout={jest.fn()}
-                onEditProfile={onEditProfile}
-            />,
-        );
-
-        await userEvent.click(
-            screen.getByRole("button", { name: "Edit profile" }),
-        );
-
-        expect(onEditProfile).toHaveBeenCalledTimes(1);
-    });
-
     it("should call onLogout when the mobile logout button is clicked", async () => {
         const onLogout = jest.fn();
 

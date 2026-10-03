@@ -1,13 +1,12 @@
 import { formatNumber } from "utils/intlFormat";
+import { sumBy } from "utils/sum";
 
 export const roundCalories = (calories: number): number => Math.round(calories);
 
-// the fraction of a goal ring's circumference to draw - clamped at a full ring rather than drawn
-// past 100%, so going further over the goal doesn't need a longer arc to read as "over"
+// clamped at a full ring: going further over needs no longer arc to read as "over"
 export const calorieRingFraction = (consumed: number, goal: number): number =>
     goal > 0 ? Math.min(consumed / goal, 1) : 0;
 
-// thousands-separated the page language's way (e.g. "1,180", "1 180")
 export const formatKcal = (calories: number, locale: string): string =>
     formatNumber(calories, locale);
 
@@ -16,14 +15,11 @@ const COMPACT_KCAL_OPTIONS: Intl.NumberFormatOptions = {
     maximumFractionDigits: 0,
 };
 
-// abbreviated for tight spaces (e.g. "13k" instead of "13,333") - lowercased since Intl's compact
-// suffix is uppercase ("13K") and the app's own kcal figures read lowercase everywhere else
+// lowercased: Intl's compact suffix reads "13K", while the app's kcal figures read lowercase
 export const formatKcalCompact = (calories: number, locale: string): string =>
     formatNumber(calories, locale, COMPACT_KCAL_OPTIONS).toLowerCase();
 
-// rounds the per-portion value first, then multiplies by the portion count - keeps a
-// multi-portion total a clean multiple of what's shown per portion, instead of drifting from
-// independently rounding the scaled raw value (e.g. 22/portion * 2 must read 44, not 43)
+// rounded first, so the total stays a multiple of the per-portion figure shown
 export const scaleCaloriesForPortions = (
     caloriesPerPortion: number,
     portionCount: number,
@@ -44,8 +40,6 @@ export const exceedsCalorieBudget = (
     return caloriesPerPortion > remaining;
 };
 
-// same as exceedsCalorieBudget, but for however many portions are actually selected (a recipe
-// detail page scales per-portion calories by a stepper, unlike a list card which only ever shows one portion)
 export const exceedsCalorieBudgetForPortions = (
     caloriesPerPortion: number | null,
     portionCount: number,
@@ -65,14 +59,12 @@ export interface CalorieIngredient {
     calories_per_unit: number | null;
 }
 
-// mirrors the backend's SUM(quantity * calories_per_unit) (PgRecipeRepository.mutations.ts) -
-// an ingredient without a catalog calorie value contributes nothing, the same way a NULL term
-// drops out of a SQL SUM instead of nulling out the whole total
+// mirrors the backend's SQL SUM, where a NULL term drops out instead of nulling the total
 export const sumIngredientCalories = (
     ingredients: readonly CalorieIngredient[],
 ): number =>
-    ingredients.reduce(
-        (total, ingredient) =>
-            total + (ingredient.calories_per_unit ?? 0) * ingredient.quantity,
-        0,
+    sumBy(
+        ingredients,
+        (ingredient) =>
+            (ingredient.calories_per_unit ?? 0) * ingredient.quantity,
     );

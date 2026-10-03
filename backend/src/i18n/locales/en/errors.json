@@ -18,9 +18,7 @@
 
     "recipe/not_found": "Recipe not found",
     "recipe/ingredients_empty": "Ingredients cannot be empty",
-    "recipe/ingredients_missing_id": "All ingredients must have id",
     "recipe/ingredients_not_exist": "One or more ingredients do not exist",
-    "recipe/title_content_empty": "Title and content cannot be empty",
     "recipe/in_pantry_requires_login": "Log in to filter recipes by pantry contents",
     "recipe/type_not_exist": "That recipe type does not exist",
 

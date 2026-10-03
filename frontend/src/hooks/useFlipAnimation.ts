@@ -1,23 +1,22 @@
 import type { RefObject } from "react";
 import { useLayoutEffect, useRef } from "react";
 
+import { REDUCED_MOTION_QUERY } from "constants/motion";
+
 export const FLIP_ID_ATTRIBUTE = "data-flip-id";
 
-// spread onto an element to put it under the animation: {...flipTarget("item-3")}
 export const flipTarget = (id: string) => ({ [FLIP_ID_ATTRIBUTE]: id });
 
 const MOVE_DURATION_MS = 280;
 const ENTER_DURATION_MS = 220;
 const EASING = "cubic-bezier(0.2, 0.8, 0.2, 1)";
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 interface Point {
     x: number;
     y: number;
 }
 
-// page coordinates, so a scroll between two renders doesn't read as movement; null for an element
-// that isn't laid out (display: none), whose empty box sits at the page origin and would fly in from there
+// page coordinates, so a scroll isn't movement; null when not laid out, or it flies in from 0,0
 const pagePosition = (element: HTMLElement): Point | null => {
     const rect = element.getBoundingClientRect();
 
@@ -33,9 +32,7 @@ const prefersReducedMotion = (): boolean =>
     typeof window.matchMedia === "function" &&
     window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
-// FLIP: every element marked with data-flip-id inside the container glides from where it was drawn
-// last time to where it is now - reorders, moves between lists and the gap a removal leaves. An id
-// seen for the first time fades in, unless nothing was on screen before - the list's first load
+// a new id fades in, except on the list's first load, when nothing was on screen before
 export const useFlipAnimation = (
     containerRef: RefObject<HTMLElement | null>,
     layoutKey: string,

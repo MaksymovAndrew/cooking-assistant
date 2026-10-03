@@ -13,8 +13,7 @@ svg {
     align-items: center;
 }
 
-// design-system spec: thin, semi-transparent pill thumb, transparent track -
-// never a bulky native bar overlaying content (see Design System.dc.html)
+// design-system spec: a thin pill thumb, never a bulky native bar over the content
 * {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--text-muted) 45%, transparent)
@@ -32,7 +31,7 @@ svg {
 
 ::-webkit-scrollbar-thumb {
     background-color: color-mix(in srgb, var(--text-muted) 45%, transparent);
-    border-radius: 999px;
+    border-radius: var(--r-pill);
 
     @include mixins.on-hover {
         background-color: color-mix(
@@ -58,14 +57,12 @@ code {
         source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-// the page background must live on <html>/<body> so the browser chrome
-// (overscroll rubber-band, Safari's translucent bottom bar) picks up the theme
+// on <html>/<body> so the overscroll area and Safari's bottom bar pick up the theme
 html,
 body {
     background-color: var(--bg);
 }
 
-// respects the OS "reduce motion" accessibility setting
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

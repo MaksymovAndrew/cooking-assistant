@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// shared by the schema defaults and the production guard so the "insecure default" check can never drift from the value it is guarding against
 export const DEFAULT_DB_USER = "postgres";
 export const DEFAULT_DB_PASSWORD = "12345678";
 
@@ -60,7 +59,7 @@ export const envSchema = z.object({
     DB_HOST: envStringSchema("localhost"),
     DB_PORT: envNumberSchema(5432),
     DB_NAME: envStringSchema("cooking_helper"),
-    // SSL is on by default in production; rejectUnauthorized can be turned off for managed Postgres that presents a private/self-signed CA (e.g. Azure)
+    // SSL defaults on in production; a private-CA managed Postgres needs rejectUnauthorized off
     DB_SSL: envOptionalBooleanSchema,
     DB_SSL_REJECT_UNAUTHORIZED: envBooleanSchema(true),
     TRUST_PROXY_HOPS: envOptionalHopsSchema,
@@ -76,10 +75,8 @@ export const envSchema = z.object({
         emptyToUndefined,
         z.string().min(32, "must be at least 32 characters").optional(),
     ),
-    // both optional - absence picks LoggingEmailService over ResendEmailService (see composition-root.ts)
     RESEND_API_KEY: z.preprocess(emptyToUndefined, z.string().optional()),
     EMAIL_FROM: z.preprocess(emptyToUndefined, z.string().optional()),
-    // uploaded images; relative paths resolve against the working directory
     MEDIA_DIR: envStringSchema("uploads"),
     LOG_LEVEL: z
         .preprocess(

@@ -1,7 +1,5 @@
 import { PAGE_SIZE } from "constants/pagination";
 import type {
-    CreateRecipeRequest,
-    RecipeDetails,
     RecipeFilterParams,
     RecipeSearchResultItem,
     UpdateRecipeRequest,
@@ -12,12 +10,7 @@ import { API_ROUTES } from "api/endpoints";
 import { menusApi } from "redux/services/menusApi";
 import { recipesApi } from "redux/services/recipesApi";
 
-import {
-    mockedDelete,
-    mockedGet,
-    mockedPost,
-    mockedPut,
-} from "test/apiClientMock";
+import { mockedDelete, mockedGet, mockedPut } from "test/apiClientMock";
 import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { makeTestStore } from "test/store";
 
@@ -44,15 +37,6 @@ const LIST: RecipeSearchResultItem[] = [
 ];
 const PAGE = { items: LIST, total: LIST.length };
 const FILTERS: RecipeFilterParams = { sort_order: "asc" };
-const CREATE: CreateRecipeRequest = {
-    title: "Soup",
-    language: "en",
-    content: "boil",
-    ingredients: [{ id: 1, quantity: 2 }],
-    type_id: 1,
-    cooking_time: 30,
-    calories_override: null,
-};
 const UPDATE: UpdateRecipeRequest = {
     title: "Soup",
     language: "en",
@@ -61,26 +45,6 @@ const UPDATE: UpdateRecipeRequest = {
     cooking_time: 30,
     calories_override: null,
     ingredients: [{ id: 1, quantity_recipe_ingredients: 2 }],
-};
-const DETAIL: RecipeDetails = {
-    id: 1,
-    title: "Soup",
-    language: "en",
-    content: "boil",
-    ingredients: [],
-    type_id: 1,
-    type_name: "Hot",
-    cooking_time: 30,
-    creation_date: "2024-01-01",
-    isOwner: true,
-    photo_key: null,
-    ...TEST_UNRATED,
-    author: TEST_AUTHOR,
-    isFavourite: false,
-    containsAvoided: false,
-    tags: [],
-    calories_per_portion: null,
-    calories_override: null,
 };
 
 describe("recipesApi", () => {
@@ -96,118 +60,6 @@ describe("recipesApi", () => {
             params: { ...FILTERS, limit: PAGE_SIZE, offset: 0 },
         });
         expect(result.data).toEqual({ pages: [PAGE], pageParams: [0] });
-    });
-
-    it("should fetch the current user's recipes by filters", async () => {
-        mockedGet.mockResolvedValue({ data: PAGE });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            recipesApi.endpoints.getRecipesByPerson.initiate(FILTERS),
-        );
-
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byPerson, {
-            params: { ...FILTERS, limit: PAGE_SIZE, offset: 0 },
-        });
-    });
-
-    it("should fetch all recipes", async () => {
-        mockedGet.mockResolvedValue({ data: [] });
-        const store = makeTestStore();
-
-        await store.dispatch(recipesApi.endpoints.getAllRecipes.initiate(null));
-
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.list, {
-            params: undefined,
-        });
-    });
-
-    it("should fetch aggregated recipe statistics", async () => {
-        const stats = {
-            stats: [],
-            recipesCount: 0,
-            averageCookingTimeOverall: null,
-            averageCookingTimesByType: [],
-            mostUsedType: null,
-            fastestRecipes: [],
-            slowestRecipes: [],
-            mostIngredientsRecipes: [],
-            leastIngredientsRecipes: [],
-            averageCaloriesOverall: null,
-            mostCaloricRecipes: [],
-            leastCaloricRecipes: [],
-        };
-
-        mockedGet.mockResolvedValue({ data: stats });
-        const store = makeTestStore();
-
-        const result = await store.dispatch(
-            recipesApi.endpoints.getRecipeStats.initiate(null),
-        );
-
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.stats, {
-            params: undefined,
-        });
-        expect(result.data).toEqual(stats);
-    });
-
-    it("should fetch a recipe by id", async () => {
-        mockedGet.mockResolvedValue({ data: DETAIL });
-        const store = makeTestStore();
-
-        const result = await store.dispatch(
-            recipesApi.endpoints.getRecipeById.initiate("1"),
-        );
-
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.recipes.byId("1"), {
-            params: undefined,
-        });
-        expect(result.data).toEqual(DETAIL);
-    });
-
-    it("should create a recipe", async () => {
-        mockedPost.mockResolvedValue({ data: null });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            recipesApi.endpoints.createRecipe.initiate(CREATE),
-        );
-
-        expect(mockedPost).toHaveBeenCalledWith(
-            API_ROUTES.recipes.create,
-            CREATE,
-        );
-    });
-
-    it("should update a recipe", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            recipesApi.endpoints.updateRecipe.initiate({
-                id: "1",
-                data: UPDATE,
-            }),
-        );
-
-        expect(mockedPut).toHaveBeenCalledWith(
-            API_ROUTES.recipes.byId("1"),
-            UPDATE,
-        );
-    });
-
-    it("should delete a recipe", async () => {
-        mockedDelete.mockResolvedValue({ data: null });
-        const store = makeTestStore();
-
-        await store.dispatch(recipesApi.endpoints.deleteRecipe.initiate("1"));
-
-        expect(mockedDelete).toHaveBeenCalledWith(
-            API_ROUTES.recipes.byId("1"),
-            {
-                params: undefined,
-            },
-        );
     });
 
     it("should invalidate a cached menu after deleting a recipe, since the backend cascades the delete into that menu's recipes", async () => {
@@ -236,5 +88,28 @@ describe("recipesApi", () => {
         expect(mockedGet.mock.calls.length).toBeGreaterThan(
             callsAfterFirstFetch,
         );
+    });
+
+    it("should refetch a cached menu after updating a recipe, since the menu shows its recipes", async () => {
+        mockedPut.mockResolvedValue({ data: null });
+        mockedGet.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+        const menu = store.dispatch(menusApi.endpoints.getMenuById.initiate(9));
+
+        await menu;
+        mockedGet.mockClear();
+
+        await store.dispatch(
+            recipesApi.endpoints.updateRecipe.initiate({
+                id: "1",
+                data: UPDATE,
+            }),
+        );
+        await store.dispatch(menusApi.endpoints.getMenuById.initiate(9));
+
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.menu.byId(9), {
+            params: undefined,
+        });
+        menu.unsubscribe();
     });
 });

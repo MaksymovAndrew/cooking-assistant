@@ -14,8 +14,7 @@
     &__message {
         @include truncate;
 
-        // an explicit basis (not auto) keeps the wrap decision based on this floor, not on
-        // the full unwrapped text width nowrap reports as the "natural" size
+        // an explicit basis: with auto, nowrap would base the wrap on the full text width
         flex: 1 1 140px;
         min-width: 140px;
         margin: 0;
@@ -23,7 +22,6 @@
             500 13px Inter,
             sans-serif;
 
-        // tablet+ has room for the full sentence on one row - no need to truncate
         @include respond-to(tablet) {
             white-space: normal;
             flex: 1 1 auto;
@@ -38,7 +36,6 @@
         justify-content: center;
         gap: var(--s-2);
 
-        // tablet+ keeps the compact single-row layout instead of a full-width centered block
         @include respond-to(tablet) {
             flex: none;
             justify-content: flex-start;

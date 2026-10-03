@@ -3,13 +3,12 @@ import { createAction, createSlice, nanoid } from "@reduxjs/toolkit";
 
 export type NotificationType = "success" | "error" | "info";
 
-// a follow-up destination shown under the message, e.g. the list something was just added to
 export interface NotificationLink {
     href: string;
     label: string;
 }
 
-// a one-press follow-up, kept as plain data so the store stays serialisable; the middleware runs it
+// plain data so the store stays serialisable; the middleware runs it
 export interface NotificationAction {
     kind: "undoCooking";
     consumptionId: number;
@@ -24,7 +23,6 @@ export interface Notification {
     action: NotificationAction | null;
 }
 
-// what a caller provides; the id is generated in the action `prepare` step
 export interface NotificationInput {
     type: NotificationType;
     message: string;
@@ -43,8 +41,7 @@ const notificationsSlice = createSlice({
     initialState,
     reducers: {
         addNotification: {
-            // a repeat replaces the visible copy: several requests failing at once (e.g. the server going down
-            // mid-session) still show one toast, and a confirmation repeated while on screen shows again in full
+            // a repeat replaces the visible copy, so many requests failing at once still show one toast
             reducer: (state, action: PayloadAction<Notification>) => {
                 state.items = state.items.filter(
                     (item) =>

@@ -25,8 +25,7 @@ function sanitizedBound(raw: string): number | null {
     return isPositiveInteger ? parsed : null;
 }
 
-// the bounds the request actually carries; an inverted range can't be satisfied by either bound
-// alone, so the upper one is dropped
+// an inverted range can never match, so its upper bound is dropped
 function appliedBounds(value: NumericRangeValue): {
     min: number | null;
     max: number | null;
@@ -48,7 +47,6 @@ function appliedValue(value: NumericRangeValue): NumericRangeValue {
     };
 }
 
-// urlParam is a prefix: the two URL keys are `${urlParam}_min`/`${urlParam}_max`
 export function numericRangeFilter<TParams>({
     key,
     urlParam,

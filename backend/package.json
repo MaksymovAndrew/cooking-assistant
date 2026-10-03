@@ -33,8 +33,11 @@
         "js-yaml@4": "^4.3.1"
     },
     "keywords": [],
-    "author": "",
     "license": "AGPL-3.0-or-later",
+    "contributors": [
+        "Andrew Maksymov",
+        "Milana Pershyna"
+    ],
     "description": "",
     "dependencies": {
         "bcryptjs": "^3.0.3",

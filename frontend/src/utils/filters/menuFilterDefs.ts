@@ -17,7 +17,6 @@ export interface MenuFilterState {
     languages: Locale[];
 }
 
-// shared with links that pre-set the filter before navigating (see GuestLandingMenuFilters)
 export const MENU_CATEGORY_URL_PARAM = "cats";
 
 export const MENU_FILTER_DEFS: readonly FilterDef<unknown, MenuListParams>[] = [

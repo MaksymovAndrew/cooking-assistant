@@ -1,10 +1,13 @@
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import type { RecipeListItem } from "types/recipe";
 
+import { useDragReorder } from "hooks/useDragReorder";
+
 import { GripMark } from "components/icons";
+import { MoveButtons } from "components/ui/MoveButtons";
 
 import { recipeTypeLabel } from "utils/referenceLabels";
 
@@ -25,32 +28,17 @@ export const SelectedRecipesList: React.FC<SelectedRecipesListProps> = ({
     onReorder,
 }) => {
     const { t } = useTranslation();
-    const [draggedId, setDraggedId] = useState<number | null>(null);
+    const { dragProps, move } = useDragReorder(
+        recipes.map((recipe) => recipe.id),
+        onReorder,
+    );
 
     return (
         <div className={styles["selected-recipes-list"]}>
-            {recipes.map((recipe) => (
+            {recipes.map((recipe, index) => (
                 <div
                     key={recipe.id}
-                    draggable
-                    onDragStart={() => {
-                        setDraggedId(recipe.id);
-                    }}
-                    onDragOver={(e) => {
-                        e.preventDefault();
-                    }}
-                    onDrop={(e) => {
-                        e.preventDefault();
-
-                        if (draggedId !== null) {
-                            onReorder(draggedId, recipe.id);
-                        }
-
-                        setDraggedId(null);
-                    }}
-                    onDragEnd={() => {
-                        setDraggedId(null);
-                    }}
+                    {...dragProps(recipe.id)}
                     className={styles["selected-recipes-list__row"]}
                 >
                     <GripMark
@@ -60,19 +48,31 @@ export const SelectedRecipesList: React.FC<SelectedRecipesListProps> = ({
                     <span className={styles["selected-recipes-list__name"]}>
                         {recipe.title}
                     </span>
-                    <span className={styles["selected-recipes-list__type"]}>
-                        {recipeTypeLabel(t, recipe.type_name)}
-                    </span>
-                    <button
-                        type="button"
-                        aria-label={t("chip.remove")}
-                        onClick={() => {
-                            onRemove(recipe.id);
-                        }}
-                        className={styles["selected-recipes-list__remove"]}
-                    >
-                        <X size={REMOVE_ICON_SIZE} aria-hidden="true" />
-                    </button>
+                    <div className={styles["selected-recipes-list__controls"]}>
+                        <span className={styles["selected-recipes-list__type"]}>
+                            {recipeTypeLabel(t, recipe.type_name)}
+                        </span>
+                        <MoveButtons
+                            name={recipe.title}
+                            isFirst={index === 0}
+                            isLast={index === recipes.length - 1}
+                            onMove={(direction) => {
+                                move(recipe.id, direction);
+                            }}
+                        />
+                        <button
+                            type="button"
+                            aria-label={t("chip.remove", {
+                                name: recipe.title,
+                            })}
+                            onClick={() => {
+                                onRemove(recipe.id);
+                            }}
+                            className={styles["selected-recipes-list__remove"]}
+                        >
+                            <X size={REMOVE_ICON_SIZE} aria-hidden="true" />
+                        </button>
+                    </div>
                 </div>
             ))}
         </div>

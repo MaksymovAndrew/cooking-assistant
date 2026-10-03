@@ -17,7 +17,6 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-// the keys, checks and cascades the 5.0 schema migration added, and the transaction helper built on them
 describe("schema hardening (real Postgres)", () => {
     let pool: Pool;
     let categoryId: number;

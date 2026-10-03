@@ -9,6 +9,7 @@ import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 import { useLocale } from "hooks/useLocale";
 
 import { formatKcal } from "utils/calories";
+import { sumBy } from "utils/sum";
 
 import styles from "./CalorieJournal.module.scss";
 import { CalorieJournalRow } from "./CalorieJournalRow";
@@ -21,7 +22,7 @@ export const CalorieJournal: React.FC<CalorieJournalProps> = ({ entries }) => {
     const { t } = useTranslation("calories");
     const locale = useLocale();
     const dispatch = useAppDispatch();
-    const total = entries.reduce((sum, entry) => sum + entry.calories, 0);
+    const total = sumBy(entries, (entry) => entry.calories);
 
     const openDeleteModal = (entry: CalorieIntakeItem) => {
         dispatch(

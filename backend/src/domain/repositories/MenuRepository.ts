@@ -1,7 +1,8 @@
 import type { Menu } from "domain/entities/Menu";
 
 import type { MenuFilters, MenuSearchRow } from "./menu.filters";
-import type { MenuDetail, MenuStatsRow } from "./menu.types";
+import type { MenuDetail } from "./menu.types";
+import type { MenuStatisticsDto } from "./menuStats.types";
 import type { PaginatedResult } from "./pagination.types";
 import type { DeletedRecord } from "./PhotoRepository";
 
@@ -10,8 +11,7 @@ export interface MenuRepository {
         filters: MenuFilters,
         userId: number | null,
     ): Promise<PaginatedResult<MenuSearchRow>>;
-    findAllUnpaginated(): Promise<MenuStatsRow[]>;
-    // the new menu's id
+    getStats(): Promise<MenuStatisticsDto>;
     create(menu: Menu, recipeIds: number[]): Promise<number>;
     findByIdWithRecipes(
         id: number,

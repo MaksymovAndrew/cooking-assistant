@@ -5,6 +5,8 @@ import buttonStyles from "components/ui/Button/Button.module.scss";
 import type { LinkProps } from "components/ui/Link";
 import { Link } from "components/ui/Link";
 
+import { cx } from "utils/cx";
+
 interface LinkButtonProps extends LinkProps {
     variant?: ButtonVariant;
     size?: ButtonSize;
@@ -24,7 +26,7 @@ const SIZE_CLASS: Record<ButtonSize, string> = {
     lg: buttonStyles["button--lg"],
 };
 
-// a navigation link styled like Button - kept as an <a> under the hood so right-click/open-in-new-tab keep working, unlike a button + onClick(navigate)
+// a real <a> styled as a Button, so open-in-new-tab keeps working
 export const LinkButton: React.FC<LinkButtonProps> = ({
     variant = "primary",
     size = "md",
@@ -32,14 +34,12 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
     children,
     ...rest
 }) => {
-    const classNames = [
+    const classNames = cx(
         buttonStyles.button,
         VARIANT_CLASS[variant],
         SIZE_CLASS[size],
         className,
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <Link className={classNames} {...rest}>

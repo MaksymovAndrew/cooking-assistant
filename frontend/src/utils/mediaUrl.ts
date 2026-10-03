@@ -15,8 +15,17 @@ const PATH_BY_SIZE = {
 
 export type MediaSize = keyof typeof PATH_BY_SIZE;
 
-// null for a record without a photo, so a caller can hand the result straight to an image slot
 export const mediaUrl = (
     key: string | null | undefined,
     size: MediaSize,
 ): string | null => (key ? `${API_BASE_URL}${PATH_BY_SIZE[size](key)}` : null);
+
+export const mediaSrcSet = (key: string | null | undefined): string | null =>
+    key
+        ? [CARD_WIDTH, HERO_WIDTH]
+              .map(
+                  (width) =>
+                      `${API_BASE_URL}${API_ROUTES.media.file(key, width)} ${String(width)}w`,
+              )
+              .join(", ")
+        : null;

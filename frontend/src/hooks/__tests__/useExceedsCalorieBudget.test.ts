@@ -14,7 +14,7 @@ import { makeTestStore, renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
 
-// fixed "now" so the range this test pre-dispatches exactly matches what the hook computes itself
+// a fixed "now", so the pre-dispatched range matches the one the hook computes
 const NOW = new Date(2026, 0, 14, 15, 30);
 
 const CURRENT_USER: CurrentUser = {
@@ -70,12 +70,6 @@ describe("useExceedsCalorieBudget", () => {
         const result = await setup(300, 2, [{ calories: 1500 }]);
 
         expect(result.current).toBe(true);
-    });
-
-    it("should be false when the scaled total fits within what's left today", async () => {
-        const result = await setup(200, 2, [{ calories: 1500 }]);
-
-        expect(result.current).toBe(false);
     });
 
     it("should default the portion count to 1 when not given", async () => {

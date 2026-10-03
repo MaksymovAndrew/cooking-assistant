@@ -30,7 +30,6 @@ interface RecipeCardIngredient {
 interface RecipeCardRecipe {
     id: number;
     title: string;
-    // absent from lists that predate the content language
     language?: Locale;
     type_name: string | null;
     cooking_time: number;

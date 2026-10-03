@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import type { ExpiringIngredient } from "types/expiry";
 
+import { cx } from "utils/cx";
 import { resolveIngredientName } from "utils/ingredientName";
 
 import styles from "./ExpiringItem.module.scss";
@@ -20,9 +21,10 @@ export const ExpiringItem: React.FC<ExpiringItemProps> = ({ item }) => {
             ? t("expiringSoon.expired")
             : t("expiringSoon.daysLeft", { count: days });
 
-    const rowClass = [styles["expiring-item"], styles[`expiring-item--${tone}`]]
-        .filter(Boolean)
-        .join(" ");
+    const rowClass = cx(
+        styles["expiring-item"],
+        styles[`expiring-item--${tone}`],
+    );
 
     return (
         <div className={rowClass}>

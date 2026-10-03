@@ -25,7 +25,7 @@ function getForgotPasswordErrorMessage(error: unknown, t: TFunction): string {
     return t("errors.forgotPasswordFailed");
 }
 
-// always transitions to submitted on success - the backend gives the same generic response either way
+// the backend answers the same either way (anti-enumeration), so success always means submitted
 export const useForgotPasswordForm = () => {
     const { t } = useTranslation("auth");
     const [forgotPassword] = useForgotPasswordMutation();

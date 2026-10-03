@@ -9,6 +9,8 @@ import { PROFILE_TAB } from "hooks/useProfilePage";
 
 import { Link } from "components/ui/Link";
 
+import { cx } from "utils/cx";
+
 import styles from "./ProfileTabs.module.scss";
 
 interface ProfileTabsProps {
@@ -44,12 +46,10 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
                     onClick={() => {
                         onChange(tab);
                     }}
-                    className={[
+                    className={cx(
                         styles["profile-tabs__tab"],
                         activeTab === tab && styles["profile-tabs__tab--on"],
-                    ]
-                        .filter(Boolean)
-                        .join(" ")}
+                    )}
                 >
                     {t(labelKey)}
                 </button>

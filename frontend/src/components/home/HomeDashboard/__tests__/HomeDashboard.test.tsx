@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { RecipeWithIngredientNames } from "types/recipe";
+import type { RecipeListItem } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
 
@@ -14,13 +14,12 @@ import { renderWithProviders } from "test/router";
 
 jest.mock("api/client");
 
-const RECIPE: RecipeWithIngredientNames = {
+const RECIPE: RecipeListItem = {
     id: 1,
     title: "Borscht",
     type_name: "Soup",
     creation_date: "2024-01-01",
     cooking_time: 60,
-    ingredients: ["beet"],
 };
 
 // the person list is a search result, which also carries the rating totals

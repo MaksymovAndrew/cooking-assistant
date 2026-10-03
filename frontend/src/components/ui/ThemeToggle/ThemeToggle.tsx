@@ -8,6 +8,8 @@ import { MODAL_TYPE, openModal } from "redux/slices/uiSlice";
 import { useIsHydrated } from "hooks/useIsHydrated";
 import { useTheme } from "hooks/useTheme";
 
+import { cx } from "utils/cx";
+
 import styles from "./ThemeToggle.module.scss";
 
 const ICON_SIZE = 17;
@@ -38,9 +40,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
             onClick={handleClick}
             disabled={!isHydrated}
             aria-label={t("theme.toggleLabel")}
-            className={[styles["theme-toggle"], className]
-                .filter(Boolean)
-                .join(" ")}
+            className={cx(styles["theme-toggle"], className)}
         >
             <Moon
                 size={ICON_SIZE}

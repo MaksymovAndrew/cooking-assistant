@@ -1,10 +1,10 @@
 import type { BrowserContext, Locator, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { deleteRecipe } from "./api";
 import { createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE, VIEWER_STORAGE_STATE } from "./sharedAccounts";
 
-// another user rates a recipe, changes the vote and takes it back; the owner and a guest get no stars
 test.describe.configure({ mode: "serial" });
 
 const YOUR_RATING = "Your rating";
@@ -35,8 +35,13 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    await ownerContext.close();
-    await viewerContext.close();
+    // cleanup: deleting the recipe takes the viewer's vote with it
+    try {
+        await deleteRecipe(ownerContext.request, recipeId);
+    } finally {
+        await ownerContext.close();
+        await viewerContext.close();
+    }
 });
 
 async function vote(

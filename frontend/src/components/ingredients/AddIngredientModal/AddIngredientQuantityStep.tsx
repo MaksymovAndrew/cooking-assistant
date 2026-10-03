@@ -26,13 +26,12 @@ export const AddIngredientQuantityStep: React.FC<
     AddIngredientQuantityStepProps
 > = ({ ingredient, quantity, stepNumber, stepCount, onQuantityChange }) => {
     const { t } = useTranslation("ingredients");
-    // lets the field go empty while typing (e.g. clearing "1" before typing "5") instead of
-    // snapping back on every keystroke, same pattern as PurchaseItem's quantity editor
     const editableQuantity = useEditableQuantity(
         quantity,
         onQuantityChange,
         MIN_QUANTITY,
     );
+    const name = resolveIngredientName(t, ingredient);
 
     return (
         <div className={styles["add-ingredient-modal__quantity-step"]}>
@@ -43,10 +42,11 @@ export const AddIngredientQuantityStep: React.FC<
                 })}
             </span>
             <span className={styles["add-ingredient-modal__quantity-name"]}>
-                {resolveIngredientName(t, ingredient)}
+                {name}
             </span>
             <div className={styles["add-ingredient-modal__quantity-input"]}>
                 <NumberInput
+                    aria-label={t("common:chip.quantity", { name })}
                     min={MIN_QUANTITY}
                     value={editableQuantity.text}
                     onChange={editableQuantity.onChange}

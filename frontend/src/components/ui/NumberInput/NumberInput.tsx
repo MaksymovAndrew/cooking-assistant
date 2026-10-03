@@ -1,5 +1,9 @@
 import React from "react";
 
+import { useFormFieldAria } from "components/ui/FormField";
+
+import { cx } from "utils/cx";
+
 import styles from "./NumberInput.module.scss";
 
 interface NumberInputProps extends Omit<
@@ -11,16 +15,21 @@ interface NumberInputProps extends Omit<
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
     ({ hasError = false, className, ...rest }, ref) => {
-        const classNames = [
+        const fieldAria = useFormFieldAria(rest);
+        const classNames = cx(
             styles["number-input"],
             hasError && styles["number-input--error"],
             className,
-        ]
-            .filter(Boolean)
-            .join(" ");
+        );
 
         return (
-            <input ref={ref} type="number" className={classNames} {...rest} />
+            <input
+                ref={ref}
+                type="number"
+                className={classNames}
+                {...rest}
+                {...fieldAria}
+            />
         );
     },
 );

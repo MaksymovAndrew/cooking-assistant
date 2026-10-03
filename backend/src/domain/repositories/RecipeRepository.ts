@@ -3,12 +3,11 @@ import type { Recipe } from "domain/entities/Recipe";
 import type { PaginatedResult } from "./pagination.types";
 import type { DeletedRecord } from "./PhotoRepository";
 import type { RecipeFilters, RecipeSearchRow } from "./recipe.filters";
-import type { RecipeDetailRow, RecipeListRow, RecipeRow } from "./recipe.types";
+import type { RecipeDetailRow, RecipeRow } from "./recipe.types";
 import type { RecipeStatisticsDto } from "./recipeStats.types";
 
 export interface RecipeRepository {
     create(recipe: Recipe): Promise<RecipeRow>;
-    findAllWithIngredients(): Promise<RecipeListRow[]>;
     findByIdWithIngredients(
         id: number,
         currentUserId: number | null,

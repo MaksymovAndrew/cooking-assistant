@@ -6,11 +6,7 @@ import type { RecipeStatisticsDto } from "domain/repositories/recipeStats.types"
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
-import {
-    recipeDetailRow,
-    recipeListRow,
-    recipeRow,
-} from "test/helpers/repositoryRows";
+import { recipeDetailRow, recipeRow } from "test/helpers/repositoryRows";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const RECIPE_TITLE = "Tomato soup";
@@ -53,14 +49,6 @@ function makeRecipeBody() {
 }
 
 describe("recipe routes", () => {
-    it("should return 401 without a token", async () => {
-        const { app } = buildTestApp();
-
-        const res = await request(app).get("/api/recipes");
-
-        expect(res.status).toBe(401);
-    });
-
     it.each([
         ["post", "/api/recipe"],
         ["put", RECIPE_12_PATH],
@@ -146,38 +134,6 @@ describe("recipe routes", () => {
         });
     });
 
-    it("should return recipes for an authenticated request", async () => {
-        const { app, deps } = buildTestApp();
-        const recipes = [recipeListRow({ title: RECIPE_TITLE })];
-
-        deps.recipeRepository.findAllWithIngredients.mockResolvedValue(recipes);
-
-        const res = await request(app)
-            .get("/api/recipes")
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(200);
-        expect(res.body).toMatchObject([{ id: 12, title: RECIPE_TITLE }]);
-    });
-
-    it("should return one recipe with ingredients", async () => {
-        const { app, deps } = buildTestApp();
-        const recipe = recipeDetailRow({ title: RECIPE_TITLE });
-
-        deps.recipeRepository.findByIdWithIngredients.mockResolvedValue(recipe);
-
-        const res = await request(app)
-            .get(RECIPE_12_PATH)
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(200);
-        expect(res.body).toMatchObject({
-            id: 12,
-            title: RECIPE_TITLE,
-            ingredients: [],
-        });
-    });
-
     it("should update a recipe owned by the authenticated user", async () => {
         const { app, deps } = buildTestApp();
         const updatedRecipe = recipeRow({ title: RECIPE_TITLE });
@@ -225,24 +181,6 @@ describe("recipe routes", () => {
             message: translateMessage("recipeDeleted", DEFAULT_LOCALE),
         });
         expect(deps.recipeRepository.deleteById).toHaveBeenCalledWith(12, 7);
-    });
-
-    it("should search recipes by filters", async () => {
-        const { app, deps } = buildTestApp();
-        const paginated = {
-            items: [{ id: 12, title: RECIPE_TITLE, ...RECIPE_ROW_EXTRAS }],
-            total: 1,
-        };
-
-        deps.recipeRepository.search.mockResolvedValue(paginated);
-
-        const res = await request(app)
-            .get("/api/recipes-by-filters?ingredient_ids=3")
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(200);
-        // creation_date round-trips through res.json() as an ISO string, not a Date instance
-        expect(res.body).toEqual(JSON.parse(JSON.stringify(paginated)));
     });
 
     it("should pass limit and offset through to the repository", async () => {
@@ -343,11 +281,14 @@ describe("recipe routes", () => {
         });
     });
 
-    it("should return recipe stats", async () => {
+    it("should return recipe stats with the recipes without a type as a null bucket", async () => {
         const { app, deps } = buildTestApp();
         const stats: RecipeStatisticsDto = {
-            stats: [{ typeName: "Soup", count: 1 }],
-            recipesCount: 1,
+            stats: [
+                { typeName: "Soup", count: 1 },
+                { typeName: null, count: 1 },
+            ],
+            recipesCount: 2,
             averageCookingTimeOverall: 30,
             averageCookingTimesByType: [
                 { typeName: "Soup", averageCookingTime: 30 },

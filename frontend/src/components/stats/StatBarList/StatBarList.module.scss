@@ -1,7 +1,6 @@
 @use "styles/abstracts" as *;
 
-// a card beside a taller donut stretches to its height, so the few rows spread over it rather than
-// huddling at the top of an otherwise empty card
+// spreads the few rows over a card stretched to the donut's height
 .stat-bar-list {
     display: flex;
     flex: 1;

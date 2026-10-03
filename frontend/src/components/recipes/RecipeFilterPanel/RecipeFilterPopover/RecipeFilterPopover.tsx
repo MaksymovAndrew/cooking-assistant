@@ -26,8 +26,6 @@ interface RecipeFilterPopoverProps {
     setValue: SetFilterValue<RecipeFilterState>;
     types: RecipeTypeSummary[];
     ingredients: Ingredient[];
-    // bumped by RecipeFilterPanel's "Reset filters" - remounts the cooking-time fields so a
-    // pending, still-debouncing edit can't commit after the reset (see RecipeFilterPanel)
     fieldsResetKey?: number;
 }
 

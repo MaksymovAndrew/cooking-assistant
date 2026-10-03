@@ -52,6 +52,7 @@
         "noHistory": "No purchase history available.",
         "closeButton": "Close",
         "editButton": "Edit quantity",
+        "quantityLabel": "Quantity of {{name}} bought {{date}}",
         "deleteButton": "Delete purchase"
     },
     "restockModal": {

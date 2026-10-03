@@ -1,7 +1,6 @@
 @use "styles/abstracts" as *;
 
 .profile-menus-tab {
-    // mobile: a stack of compact row cards; tablet+ switches to a grid of full grid-style cards
     &__grid {
         display: flex;
         flex-direction: column;

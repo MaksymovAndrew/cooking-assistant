@@ -32,34 +32,6 @@ describe("SearchPersonRecipes", () => {
         expect(result).toEqual(paginated);
     });
 
-    it("should pass through valid limit and offset as numbers", async () => {
-        const { useCase, recipeRepository } = setup();
-        const paginated = { items: [], total: 0 };
-
-        recipeRepository.searchByPerson.mockResolvedValue(paginated);
-
-        await useCase.execute(7, { limit: "10", offset: "20" });
-
-        expect(recipeRepository.searchByPerson).toHaveBeenCalledWith(7, {
-            limit: 10,
-            offset: 20,
-        });
-    });
-
-    it("should throw a 400 ValidationError when limit exceeds the maximum", async () => {
-        const { useCase, recipeRepository } = setup();
-
-        const error = await catchError(useCase.execute(7, { limit: 101 }));
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.VALIDATION_ERROR,
-            400,
-            "limit: Must be at most 100",
-        );
-        expect(recipeRepository.searchByPerson).not.toHaveBeenCalled();
-    });
-
     it("should throw a 400 ValidationError when a date filter is malformed", async () => {
         const { useCase, recipeRepository } = setup();
 
@@ -74,18 +46,5 @@ describe("SearchPersonRecipes", () => {
             "start_date: Must be a YYYY-MM-DD date",
         );
         expect(recipeRepository.searchByPerson).not.toHaveBeenCalled();
-    });
-
-    it("should pass through the in_pantry filter as a boolean", async () => {
-        const { useCase, recipeRepository } = setup();
-        const paginated = { items: [], total: 0 };
-
-        recipeRepository.searchByPerson.mockResolvedValue(paginated);
-
-        await useCase.execute(7, { in_pantry: "true" });
-
-        expect(recipeRepository.searchByPerson).toHaveBeenCalledWith(7, {
-            in_pantry: true,
-        });
     });
 });

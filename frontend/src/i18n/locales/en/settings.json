@@ -46,6 +46,7 @@
             "allFieldsRequired": "Please fill in all fields.",
             "currentPasswordIncorrect": "Current password is incorrect.",
             "passwordInvalid": "Password must be at least 8 characters and include a letter, a number, and a special character.",
+            "passwordTooLong": "Password is too long. Use at most 72 Latin letters, or 36 Cyrillic ones.",
             "passwordsDoNotMatch": "New passwords do not match.",
             "newPasswordSameAsCurrent": "New password must be different from your current password.",
             "genericError": "Something went wrong. Please try again."

@@ -5,6 +5,8 @@ import { useFavouriteToggle } from "hooks/useFavouriteToggle";
 
 import { FavouriteButton } from "components/ui/FavouriteButton";
 
+import { cx } from "utils/cx";
+
 import styles from "./ContentCard.module.scss";
 import type { ContentCardFavouriteState } from "./ContentCard.types";
 
@@ -29,12 +31,10 @@ export const ContentCardFavourite: React.FC<ContentCardFavouriteProps> = ({
             favourite={favourite}
             label={t("contentCard.favourite")}
             iconSize={HEART_ICON_SIZE}
-            className={[
+            className={cx(
                 styles["content-card__favourite"],
                 isRow && styles["content-card__favourite--row"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
+            )}
         />
     );
 };

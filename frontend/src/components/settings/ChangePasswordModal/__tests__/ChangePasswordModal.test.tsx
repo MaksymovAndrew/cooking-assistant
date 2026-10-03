@@ -5,15 +5,27 @@ import { ERROR_CODES } from "constants/errorCodes";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
+import { MODAL_TYPE } from "redux/slices/uiSlice";
+
 import { ChangePasswordModal } from "components/settings/ChangePasswordModal";
 
 import { mockedPost } from "test/apiClientMock";
 import { renderWithProviders } from "test/router";
+import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
 
 const CURRENT_PASSWORD = "old-secret";
 const NEW_PASSWORD = "new-secret1!";
+const MODAL_ID = "m1";
+
+const renderOpen = () =>
+    renderWithProviders(<ChangePasswordModal modalId={MODAL_ID} />, {
+        store: makeTestStore({
+            ui: { queue: [{ id: MODAL_ID, type: MODAL_TYPE.changePassword }] },
+        }),
+    });
 
 const fillAndSave = async (newPassword = NEW_PASSWORD) => {
     await userEvent.type(
@@ -33,10 +45,7 @@ const fillAndSave = async (newPassword = NEW_PASSWORD) => {
 describe("ChangePasswordModal", () => {
     it("should change the password, notify and close on success", async () => {
         mockedPost.mockResolvedValue({ data: null });
-        const onClose = jest.fn();
-        const { store } = renderWithProviders(
-            <ChangePasswordModal onClose={onClose} />,
-        );
+        const { store } = renderOpen();
 
         await fillAndSave();
 
@@ -50,31 +59,29 @@ describe("ChangePasswordModal", () => {
                 message: "Password changed",
             }),
         ]);
-        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should disable the submit button while the request is in flight", async () => {
         mockedPost.mockReturnValue(new Promise(() => undefined));
 
-        renderWithProviders(<ChangePasswordModal onClose={jest.fn()} />);
+        renderOpen();
 
         await fillAndSave();
 
         expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
     });
 
-    it("should call onClose when Cancel is clicked", async () => {
-        const onClose = jest.fn();
-
-        renderWithProviders(<ChangePasswordModal onClose={onClose} />);
+    it("should close the modal when Cancel is clicked", async () => {
+        const { store } = renderOpen();
 
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
-        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should show a required-fields error and not submit when a field is empty", async () => {
-        renderWithProviders(<ChangePasswordModal onClose={jest.fn()} />);
+        renderOpen();
 
         await userEvent.click(
             screen.getByRole("button", { name: "Save password" }),
@@ -87,7 +94,7 @@ describe("ChangePasswordModal", () => {
     });
 
     it("should show a mismatch error and not submit when passwords differ", async () => {
-        renderWithProviders(<ChangePasswordModal onClose={jest.fn()} />);
+        renderOpen();
 
         await fillAndSave("different-secret");
 
@@ -109,15 +116,13 @@ describe("ChangePasswordModal", () => {
             },
             message: "Request failed",
         });
-        const onClose = jest.fn();
-
-        renderWithProviders(<ChangePasswordModal onClose={onClose} />);
+        const { store } = renderOpen();
 
         await fillAndSave();
 
         expect(
             screen.getByText("Current password is incorrect."),
         ).toBeInTheDocument();
-        expect(onClose).not.toHaveBeenCalled();
+        expect(selectActiveModal(store.getState())?.id).toBe(MODAL_ID);
     });
 });

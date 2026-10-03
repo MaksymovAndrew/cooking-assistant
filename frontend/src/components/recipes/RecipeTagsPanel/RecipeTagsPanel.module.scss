@@ -8,7 +8,7 @@
         align-items: center;
         gap: 7px;
         margin-bottom: 11px;
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__label {
@@ -26,7 +26,7 @@
         border: none;
         border-radius: var(--r-sm);
         background: none;
-        color: var(--brand);
+        color: var(--brand-text);
         font:
             600 12px Inter,
             sans-serif;
@@ -56,7 +56,7 @@
         border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border));
         border-radius: var(--r-pill);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
         font:
             600 12px Inter,
             sans-serif;
@@ -78,8 +78,7 @@
         padding-top: var(--s-4);
         border-top: 1px solid var(--border);
 
-        // the floating scroll-to-top button sits over this corner below desktop; the room lets
-        // the last row scroll clear of it
+        // room for the last row to scroll clear of the floating scroll-to-top button
         padding-bottom: 56px;
 
         @include respond-to(desktop) {
@@ -103,7 +102,7 @@
         border: 1px solid var(--border);
         border-radius: var(--r-sm);
         background: var(--surface-2);
-        color: var(--brand);
+        color: var(--brand-text);
         cursor: pointer;
         transition: border-color var(--dur-fast) var(--ease-out);
 
@@ -166,7 +165,7 @@
     &__toggle--on {
         border-color: var(--brand);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__action {
@@ -186,7 +185,7 @@
         @include focus-ring;
 
         @include on-hover {
-            color: var(--brand);
+            color: var(--brand-text);
         }
     }
 }

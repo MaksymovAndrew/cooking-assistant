@@ -3,8 +3,7 @@ import path from "path";
 
 import { LOCALES } from "constants/locales";
 
-// the frontend routes pages under these codes and sends one as Accept-Language, so a language only one side knows either
-// gets English errors and emails or is refused when the account saves it
+// a language only one side knows falls back to English, or is refused when an account saves it
 const FRONTEND_LOCALES_PATH = path.resolve(
     __dirname,
     "../../../../frontend/src/constants/locales.ts",

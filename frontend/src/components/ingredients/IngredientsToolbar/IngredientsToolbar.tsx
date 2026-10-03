@@ -6,6 +6,8 @@ import type { IngredientCategoryOption } from "hooks/useIngredientCategories";
 import { SearchField } from "components/ui/SearchField";
 import { Select } from "components/ui/Select";
 
+import { cx } from "utils/cx";
+
 import styles from "./IngredientsToolbar.module.scss";
 
 interface IngredientsToolbarProps {
@@ -60,13 +62,12 @@ export const IngredientsToolbar: React.FC<IngredientsToolbarProps> = ({
                 <button
                     type="button"
                     onClick={onToggleExpiringSoon}
-                    className={[
+                    aria-pressed={expiringSoonOnly}
+                    className={cx(
                         styles["ingredients-toolbar__filter-pill"],
                         expiringSoonOnly &&
                             styles["ingredients-toolbar__filter-pill--active"],
-                    ]
-                        .filter(Boolean)
-                        .join(" ")}
+                    )}
                 >
                     {t("page.expiringSoonFilter", { count: expiringSoonCount })}
                 </button>

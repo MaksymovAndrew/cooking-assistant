@@ -13,13 +13,10 @@ interface RatingSummaryProps {
     count: number;
     iconSize: number;
     className: string;
-    // a card too small for the count shows the average alone
     showCount?: boolean;
-    // a card too small for "No ratings yet" shows nothing until the first vote
     hideWhenEmpty?: boolean;
 }
 
-// the one-line star, average and count every card and hero header prints
 export const RatingSummary: React.FC<RatingSummaryProps> = ({
     average,
     count,

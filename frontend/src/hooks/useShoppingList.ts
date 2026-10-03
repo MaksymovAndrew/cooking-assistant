@@ -1,3 +1,4 @@
+import type { MoveDirection } from "types/reorder";
 import type { ShoppingListItem } from "types/shoppingList";
 
 import {
@@ -9,12 +10,11 @@ import {
     useSetShoppingListItemCheckedMutation,
 } from "redux/services/shoppingListApi";
 
-export type MoveDirection = -1 | 1;
+import { ignoreRejection } from "utils/ignoreRejection";
 
 const NO_ITEMS: ShoppingListItem[] = [];
 
-// failures surface through the global error toast, so the handlers only swallow the rejected promise
-const ignoreRejection = () => undefined;
+// failures are toasted globally, so the handlers only swallow the rejected promise
 
 export const useShoppingList = () => {
     const {

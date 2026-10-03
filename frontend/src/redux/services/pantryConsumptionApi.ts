@@ -5,8 +5,7 @@ import { API_ROUTES } from "api/endpoints";
 import { baseApi } from "./baseApi";
 import { listTag } from "./cacheTags";
 
-// cooking and its undo move pantry stock, the "in my pantry" recipe filter, a menu's missing
-// ingredients and possibly the calorie diary all at once
+// cooking moves stock, the pantry recipe filter, menus' missing ingredients and maybe the calorie diary
 const COOKING_INVALIDATES = [
     "Pantry",
     listTag("Recipe"),

@@ -7,8 +7,7 @@ import { readImageBody } from "middleware/imageUpload";
 import type { SessionAuth } from "middleware/jwtMiddleware";
 import { uploadLimiter } from "middleware/rateLimit";
 
-// authentication and the quota run before the body is read, so an anonymous or throttled client
-// never gets to stream ten megabytes at us
+// auth and the limiter run first, so an anonymous or throttled client never streams 10 MB
 export default function createPhotoRouter(
     photoController: PhotoController,
     { authenticateToken }: SessionAuth,

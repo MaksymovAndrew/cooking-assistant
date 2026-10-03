@@ -50,7 +50,7 @@ function toErrorBody(err: unknown, status: number, locale: Locale): ErrorBody {
         };
     }
 
-    // a framework 4xx (malformed JSON, oversized body) has no code of its own, and its text is not ours to show
+    // a framework 4xx (broken JSON, oversized body) has no code, and its text is not ours to show
     const code =
         err instanceof AppError ? err.code : frameworkErrorCode(status);
 
@@ -61,8 +61,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     const status = getErrorStatus(err);
     const body = toErrorBody(err, status, requestLocale(req));
 
-    // a 4xx is the client's mistake, not an incident: one compact warn line with no stack, so bots
-    // probing unknown routes can't crowd the rotated logs - only a 5xx is logged in full
+    // a 4xx is one compact warn line, so bots probing unknown routes can't crowd the logs
     if (status >= SERVER_ERROR_STATUS) {
         logger.error(err);
     } else {

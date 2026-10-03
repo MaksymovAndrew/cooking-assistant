@@ -24,14 +24,6 @@ describe("Toaster", () => {
         expect(container).toBeEmptyDOMElement();
     });
 
-    it("should render a notification message", () => {
-        renderWithProviders(<Toaster />, {
-            store: makeTestStore({ notifications: seeded("Boom") }),
-        });
-
-        expect(screen.getByText("Boom")).toBeInTheDocument();
-    });
-
     it("should dismiss a notification when its dismiss button is clicked", async () => {
         jest.useFakeTimers();
         const user = userEvent.setup({

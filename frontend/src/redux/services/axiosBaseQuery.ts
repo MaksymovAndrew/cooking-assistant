@@ -37,7 +37,6 @@ interface RunRequestArgs {
     params?: unknown;
 }
 
-// keyed by HttpMethod so the map stays exhaustive - adding a verb fails to compile until handled here
 const requestByMethod = {
     GET: ({ url, params }: RunRequestArgs) =>
         apiClient.get<unknown>(url, { params }),
@@ -51,7 +50,6 @@ const requestByMethod = {
 
 const runRequest = (args: RunRequestArgs) => requestByMethod[args.method](args);
 
-// RTK Query baseQuery on top of apiClient: success -> { data }, failure -> { error: { status, data } } with a user-facing message from getApiErrorMessage
 export const axiosBaseQuery =
     (): AxiosBaseQueryFn =>
     async ({ url, method = "GET", data, params }) => {

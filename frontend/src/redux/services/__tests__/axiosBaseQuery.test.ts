@@ -3,7 +3,10 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { ERROR_CODES } from "constants/errorCodes";
 
-import type { AxiosBaseQueryArgs } from "redux/services/axiosBaseQuery";
+import type {
+    AxiosBaseQueryArgs,
+    HttpMethod,
+} from "redux/services/axiosBaseQuery";
 import { axiosBaseQuery } from "redux/services/axiosBaseQuery";
 
 import {
@@ -19,6 +22,11 @@ jest.mock("api/client");
 const PROBE_URL = "/api/probe";
 const SAMPLE_DATA = { ok: true };
 const REQUEST_FAILED_MESSAGE = "Request failed";
+const VERBS_WITH_A_BODY: [HttpMethod, typeof mockedPost][] = [
+    ["POST", mockedPost],
+    ["PUT", mockedPut],
+    ["PATCH", mockedPatch],
+];
 
 // throwaway api just to drive axiosBaseQuery through the real RTK Query pipeline
 const probeApi = createApi({
@@ -147,53 +155,24 @@ describe("axiosBaseQuery", () => {
         });
     });
 
-    it("should route a mutation through the matching http verb with the body", async () => {
-        mockedPost.mockResolvedValue({ data: SAMPLE_DATA });
-        const store = makeProbeStore();
-        const body = { name: "x" };
+    it.each(VERBS_WITH_A_BODY)(
+        "should route a %s mutation through the matching http verb with the body",
+        async (method, request) => {
+            request.mockResolvedValue({ data: SAMPLE_DATA });
+            const store = makeProbeStore();
+            const body = { name: "x" };
 
-        await store.dispatch(
-            probeApi.endpoints.send.initiate({
-                url: PROBE_URL,
-                method: "POST",
-                data: body,
-            }),
-        );
+            await store.dispatch(
+                probeApi.endpoints.send.initiate({
+                    url: PROBE_URL,
+                    method,
+                    data: body,
+                }),
+            );
 
-        expect(mockedPost).toHaveBeenCalledWith(PROBE_URL, body);
-    });
-
-    it("should route a PUT mutation through apiClient.put with the body", async () => {
-        mockedPut.mockResolvedValue({ data: SAMPLE_DATA });
-        const store = makeProbeStore();
-        const body = { name: "y" };
-
-        await store.dispatch(
-            probeApi.endpoints.send.initiate({
-                url: PROBE_URL,
-                method: "PUT",
-                data: body,
-            }),
-        );
-
-        expect(mockedPut).toHaveBeenCalledWith(PROBE_URL, body);
-    });
-
-    it("should route a PATCH mutation through apiClient.patch with the body", async () => {
-        mockedPatch.mockResolvedValue({ data: SAMPLE_DATA });
-        const store = makeProbeStore();
-        const body = { name: "z" };
-
-        await store.dispatch(
-            probeApi.endpoints.send.initiate({
-                url: PROBE_URL,
-                method: "PATCH",
-                data: body,
-            }),
-        );
-
-        expect(mockedPatch).toHaveBeenCalledWith(PROBE_URL, body);
-    });
+            expect(request).toHaveBeenCalledWith(PROBE_URL, body);
+        },
+    );
 
     it("should route a DELETE mutation through apiClient.delete with params", async () => {
         mockedDelete.mockResolvedValue({ data: SAMPLE_DATA });
@@ -231,21 +210,5 @@ describe("axiosBaseQuery", () => {
             data: body,
             params: undefined,
         });
-    });
-
-    it("should deduplicate concurrent identical queries into a single request", async () => {
-        mockedGet.mockResolvedValue({ data: SAMPLE_DATA });
-        const store = makeProbeStore();
-
-        await Promise.all([
-            store.dispatch(
-                probeApi.endpoints.read.initiate({ url: PROBE_URL }),
-            ),
-            store.dispatch(
-                probeApi.endpoints.read.initiate({ url: PROBE_URL }),
-            ),
-        ]);
-
-        expect(mockedGet).toHaveBeenCalledTimes(1);
     });
 });

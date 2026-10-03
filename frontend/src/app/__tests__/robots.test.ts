@@ -25,6 +25,21 @@ describe("robots", () => {
         expect(disallow).not.toContain("/uk/all-recipes");
     });
 
+    it("should keep crawlers away from the emailed one-time links in every language", () => {
+        const { disallow } = robots().rules as { disallow: string[] };
+
+        expect(disallow).toEqual(
+            expect.arrayContaining([
+                "/reset-password",
+                "/verify-email",
+                "/pl/reset-password",
+                "/uk/verify-email",
+            ]),
+        );
+        expect(disallow).not.toContain("/login");
+        expect(disallow).not.toContain("/ru/registration");
+    });
+
     it("should leave the public pages open", () => {
         const rules = robots().rules as { allow: string; disallow: string[] };
 

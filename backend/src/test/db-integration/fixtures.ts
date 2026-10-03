@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { Pool } from "pg";
 
-// unique names per call so tests never need to truncate shared tables between each other; a UUID stays collision-free across parallel Jest workers
+// unique per call, even across parallel Jest workers, so tests never truncate shared tables
 function unique(prefix: string): string {
     return `${prefix}-${randomUUID()}`;
 }

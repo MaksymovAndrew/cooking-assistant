@@ -14,7 +14,7 @@ import { makeTestStore, renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
 
-// fixed "now" so the range this test pre-dispatches exactly matches what the hook computes itself
+// a fixed "now", so the pre-dispatched range matches the one the hook computes
 const NOW = new Date(2026, 0, 14, 15, 30);
 
 const CURRENT_USER: CurrentUser = {
@@ -77,8 +77,7 @@ describe("useCalorieBudget", () => {
     });
 
     it("should skip the calorie-intake request and report an empty budget for a guest", () => {
-        // /api/me also 401s for a guest - a real axios error, so it doesn't clobber the seeded
-        // "guest" status back to "error" via the getMe.matchRejected matcher (see sessionSlice)
+        // a real 401 error, so getMe's rejection keeps the seeded "guest" status (see sessionSlice)
         mockedGet.mockRejectedValue(makeAxiosError(401, "Unauthorized"));
         const store = makeTestStore({ session: { status: "guest" } });
 

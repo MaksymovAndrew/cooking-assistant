@@ -3,8 +3,7 @@ import { expect, test } from "@playwright/test";
 
 import { gotoPublicForm } from "./forms";
 
-// registers its own account: the password change it makes would end the shared accounts' sessions
-// and take every other spec down with them
+// registers its own account: its password change would end the shared sessions every other spec uses
 test.describe.configure({ mode: "serial" });
 
 const NAME = "Revoke";

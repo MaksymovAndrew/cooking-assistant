@@ -24,9 +24,7 @@ export async function insertRecipeIngredients(
     );
 }
 
-// keeps calories_computed in sync with the ingredients just written, so lists/filters can read
-// it as a plain column instead of aggregating recipe_ingredients on every query; RETURNING here
-// (not on the earlier INSERT/UPDATE) is what makes the row handed back to the caller accurate
+// denormalized for lists and filters; RETURNING here, after the recompute, keeps the row accurate
 export async function recomputeRecipeCalories(
     client: PoolClient,
     recipeId: number,

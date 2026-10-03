@@ -1,4 +1,4 @@
-// dev-time only: builds catalogData.json from catalogMap against local nutrition/translation dumps (paths as argv, not committed) - run without args for usage
+// dev-only: builds catalogData.json from local, uncommitted dumps; run without args for usage
 import rawCatalogMap from "./catalogMap.json";
 import { parseCatalogMap } from "./catalogMapSchema";
 import { loadEnergyByFdcId, loadFoodDescriptions } from "./nutritionSource";
@@ -64,7 +64,6 @@ function buildCatalogData(
         ),
     );
 
-    // the generated catalog goes to stdout (see main()), so the coverage report goes to stderr
     reportCoverage(data, implausibleSlugs);
 
     return data;

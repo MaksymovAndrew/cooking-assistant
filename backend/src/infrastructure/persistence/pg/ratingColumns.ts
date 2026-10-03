@@ -4,8 +4,7 @@ import type { RatingTarget } from "domain/repositories/RatingRepository";
 import { RATING_TABLES } from "./ratingTables";
 import type { SqlFilterBuilder } from "./sqlFilterBuilder";
 
-// the average is derived from the running totals, never stored: null for an unrated record, not a fake 0.
-// Unrounded, so a page can shift it exactly the moment the viewer votes; the client rounds for display
+// null when unrated, not a fake 0; unrounded so a page can shift it exactly on a vote
 export function ratingSummaryColumns(tableAlias: string): string {
     return `${tableAlias}.rating_sum::float8 / NULLIF(${tableAlias}.rating_count, 0) AS "ratingAverage",
             ${tableAlias}.rating_count AS "ratingCount"`;
@@ -28,7 +27,7 @@ export function ratingColumns(
 
 const { PRIOR_VOTES, PRIOR_MEAN } = RATING_SORT_PRIOR;
 
-// the Bayesian average (sum + m*C) / (count + m); the vote count breaks ties between equal scores
+// the Bayesian average (sum + m*C) / (count + m)
 export function ratingSortOrder(tableAlias: string): string {
     return `(${tableAlias}.rating_sum + ${PRIOR_VOTES * PRIOR_MEAN})::numeric / (${tableAlias}.rating_count + ${PRIOR_VOTES}) DESC, ${tableAlias}.rating_count DESC`;
 }
@@ -37,7 +36,6 @@ interface TopRatedFilter {
     top_rated?: boolean;
 }
 
-// shared by the recipe and menu registries; compares the same plain average a card shows
 export function topRatedFilterClause(tableAlias: string) {
     return {
         applies: (filters: TopRatedFilter) => filters.top_rated === true,

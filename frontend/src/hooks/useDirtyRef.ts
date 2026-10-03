@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 
-// ref mirror of a form's isDirty for the navigation blocker: markClean() flips it synchronously, so navigate() right after a successful save is not blocked
+// markClean() flips it synchronously, so a navigation right after a save is not blocked
 export const useDirtyRef = (isDirty: boolean) => {
     const isDirtyRef = useRef(isDirty);
 

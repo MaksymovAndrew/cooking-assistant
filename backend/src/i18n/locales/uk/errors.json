@@ -18,9 +18,7 @@
 
     "recipe/not_found": "Рецепт не знайдено",
     "recipe/ingredients_empty": "Додайте хоча б один інгредієнт",
-    "recipe/ingredients_missing_id": "Кожен інгредієнт потрібно вибрати зі списку",
     "recipe/ingredients_not_exist": "Одного чи кількох інгредієнтів більше немає",
-    "recipe/title_content_empty": "Потрібні назва й опис",
     "recipe/in_pantry_requires_login": "Увійдіть, щоб шукати рецепти за своїми продуктами",
     "recipe/type_not_exist": "Такого типу рецепта немає",
 

@@ -12,7 +12,6 @@ interface LoadMoreProps {
     errorMessage?: string;
 }
 
-// click-to-load-next-page only - no auto-scroll/observer
 export const LoadMore: React.FC<LoadMoreProps> = ({
     hasMore,
     isLoading,

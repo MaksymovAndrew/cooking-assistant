@@ -28,8 +28,6 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
         }
 
         redirectedRef.current = true;
-        // records where the guest was trying to go, so a successful login returns them there
-        // instead of dropping them on the home dashboard - see utils/loginRedirect
         rememberLoginRedirect();
         router.replace(ROUTES.login);
     }, [isGuest, router]);

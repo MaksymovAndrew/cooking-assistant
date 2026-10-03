@@ -20,7 +20,6 @@ interface AddIngredientDropdownProps {
     onSelect: (ingredient: Ingredient) => void;
 }
 
-// the search-box dropdown: category browse/back panel, plus the search/drilled-in results list
 export const AddIngredientDropdown: React.FC<AddIngredientDropdownProps> = ({
     trimmedQuery,
     activeCategory,

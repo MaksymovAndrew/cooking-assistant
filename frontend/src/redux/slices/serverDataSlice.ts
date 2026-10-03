@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// a write that changes what a server-rendered page shows bumps this; the page re-renders on the server
-// when it sees the bump, since such a page has no RTK Query cache entry to invalidate
+// bumped by writes that change a server-rendered page, which has no RTK Query cache to invalidate
 interface ServerDataState {
     version: number;
 }

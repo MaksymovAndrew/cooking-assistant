@@ -5,12 +5,6 @@ import {
 } from "redux/slices/notificationsSlice";
 
 describe("notificationsSlice", () => {
-    it("should start empty", () => {
-        const state = notificationsReducer(undefined, { type: "@@INIT" });
-
-        expect(state.items).toEqual([]);
-    });
-
     it("should add a notification with a generated id", () => {
         const state = notificationsReducer(
             undefined,

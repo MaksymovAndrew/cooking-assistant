@@ -1,10 +1,11 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { deleteMenu, deleteRecipe } from "./api";
 import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE, VIEWER_STORAGE_STATE } from "./sharedAccounts";
 
-// recipes and menus are a shared cookbook (public read) but only their owner can edit/delete them - verifies both the UI gating and the server-side 404
+// only the page is checked here; the server's 404 is pinned by the route and repository tests
 test.describe.configure({ mode: "serial" });
 
 let ownerContext: BrowserContext;
@@ -21,7 +22,6 @@ test.beforeAll(async ({ browser }) => {
     runId = Date.now().toString(36);
     recipeTitle = `Ownership recipe ${runId}`;
     menuTitle = `Ownership menu ${runId}`;
-    // reuses the shared primary/viewer accounts (registered once in global-setup) instead of registering fresh ones here - keeps the suite's total auth calls low
     ownerContext = await browser.newContext({
         storageState: PRIMARY_STORAGE_STATE,
     });
@@ -46,8 +46,13 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    await ownerContext.close();
-    await viewerContext.close();
+    try {
+        await deleteMenu(ownerContext.request, menuId);
+        await deleteRecipe(ownerContext.request, recipeId);
+    } finally {
+        await ownerContext.close();
+        await viewerContext.close();
+    }
 });
 
 test("should let another user view the recipe but hide owner-only controls", async () => {
@@ -76,59 +81,32 @@ test("should let another user view the menu but hide owner-only controls", async
     ).toHaveCount(0);
 });
 
-async function loadUntilVisible(page: Page, text: string): Promise<void> {
-    await expect(async () => {
-        const loadMore = page.getByRole("button", { name: "Load more" });
-        if (await loadMore.isVisible().catch(() => false)) {
-            await loadMore.click();
-        }
-        await expect(page.getByText(text)).toBeVisible({ timeout: 1000 });
-    }).toPass({ timeout: 30_000 });
-}
-
 test("should list the recipe and menu in the shared public listings", async () => {
-    // sorted by cooking time by default (not newest-first), so a freshly created item can land on any page once the list has grown large
-    await viewerPage.goto("/all-recipes");
-    await loadUntilVisible(viewerPage, recipeTitle);
-    await expect(viewerPage.getByText(recipeTitle)).toBeVisible();
+    await viewerPage.goto(`/all-recipes?q=${encodeURIComponent(recipeTitle)}`);
+    await expect(
+        viewerPage.getByRole("article").filter({ hasText: recipeTitle }),
+    ).toBeVisible();
 
-    await viewerPage.goto("/all-menus");
-    await loadUntilVisible(viewerPage, menuTitle);
-    await expect(viewerPage.getByText(menuTitle)).toBeVisible();
+    await viewerPage.goto(`/all-menus?q=${encodeURIComponent(menuTitle)}`);
+    await expect(
+        viewerPage.getByRole("article").filter({ hasText: menuTitle }),
+    ).toBeVisible();
 });
 
-test("should refuse a non-owner's recipe update on the server", async () => {
+test("should refuse a non-owner's recipe update on the page", async () => {
     await viewerPage.goto(`/change-recipe/${recipeId}`);
-    await expect(viewerPage.getByLabel("Title")).toHaveValue(recipeTitle);
-
-    const [response] = await Promise.all([
-        viewerPage.waitForResponse(
-            (res) =>
-                res.url().includes(`/api/recipe/${recipeId}`) &&
-                res.request().method() === "PUT",
-        ),
-        viewerPage.getByRole("button", { name: "Save changes" }).click(),
-    ]);
-
-    expect(response.status()).toBe(404);
-    await expect(viewerPage).toHaveURL(
-        new RegExp(`/change-recipe/${recipeId}$`),
-    );
+    await expect(
+        viewerPage.getByRole("heading", {
+            name: "This recipe can't be edited",
+        }),
+    ).toBeVisible();
+    await expect(viewerPage.getByLabel("Title")).toHaveCount(0);
 });
 
-test("should refuse a non-owner's menu update on the server", async () => {
+test("should refuse a non-owner's menu update on the page", async () => {
     await viewerPage.goto(`/change-menu/${menuId}`);
-    await expect(viewerPage.getByLabel("Menu title")).toHaveValue(menuTitle);
-
-    const [response] = await Promise.all([
-        viewerPage.waitForResponse(
-            (res) =>
-                res.url().includes(`/api/menu/${menuId}`) &&
-                res.request().method() === "PUT",
-        ),
-        viewerPage.getByRole("button", { name: "Save changes" }).click(),
-    ]);
-
-    expect(response.status()).toBe(404);
-    await expect(viewerPage).toHaveURL(new RegExp(`/change-menu/${menuId}$`));
+    await expect(
+        viewerPage.getByRole("heading", { name: "This menu can't be edited" }),
+    ).toBeVisible();
+    await expect(viewerPage.getByLabel("Menu title")).toHaveCount(0);
 });

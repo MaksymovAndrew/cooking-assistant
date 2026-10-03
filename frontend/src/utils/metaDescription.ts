@@ -1,8 +1,6 @@
 const MAX_LENGTH = 160;
 const ELLIPSIS = "\u2026";
 
-// user-written text goes straight into <meta name="description"> and every link preview:
-// collapse the line breaks a textarea allows, and cut on a word boundary rather than mid-word
 export const toMetaDescription = (text: string, fallback: string): string => {
     const collapsed = text.replace(/\s+/g, " ").trim();
 

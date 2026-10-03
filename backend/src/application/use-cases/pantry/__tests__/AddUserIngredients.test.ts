@@ -82,20 +82,6 @@ describe("AddUserIngredients", () => {
         expect(pantryRepository.addIngredients).not.toHaveBeenCalled();
     });
 
-    it("should add user ingredients when ingredients are an array", async () => {
-        const { useCase, pantryRepository, ingredientRepository } = setup();
-        const ingredients = [{ id: 3, quantity_person_ingradient: 2 }];
-
-        ingredientRepository.findExistingIds.mockResolvedValue([3]);
-
-        await useCase.execute(7, ingredients);
-
-        expect(pantryRepository.addIngredients).toHaveBeenCalledWith(
-            7,
-            ingredients,
-        );
-    });
-
     it("should throw a 400 ValidationError when an ingredient id does not exist", async () => {
         const { useCase, pantryRepository, ingredientRepository } = setup();
 

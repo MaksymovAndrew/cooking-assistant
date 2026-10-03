@@ -6,6 +6,8 @@ import type { Ingredient } from "types/ingredient";
 
 import { FormCard } from "components/ui/FormCard";
 
+import { cx } from "utils/cx";
+
 import { AvoidedIngredientChips } from "./AvoidedIngredientChips";
 import { AvoidIngredientSearch } from "./AvoidIngredientSearch";
 import styles from "./FoodPreferences.module.scss";
@@ -59,13 +61,11 @@ export const AvoidIngredientsCard: React.FC<AvoidIngredientsCardProps> = ({
             />
             <p
                 role="status"
-                className={[
+                className={cx(
                     styles["food-preferences__saved"],
                     isSavedVisible &&
                         styles["food-preferences__saved--visible"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
+                )}
             >
                 <Check size={SAVED_ICON_SIZE} aria-hidden="true" />
                 {isSavedVisible && t("ingredients.saved")}

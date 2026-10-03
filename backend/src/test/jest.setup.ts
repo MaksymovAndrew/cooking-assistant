@@ -6,7 +6,6 @@ process.env.JWT_SECRET_KEY ??= "test-secret-test-secret-test-secret";
 
 type ErrorClass = abstract new (...args: never[]) => Error;
 
-// the English text a validation error renders to, or null for any other error
 function renderedDetail(received: unknown): string | null {
     return received instanceof ValidationError && received.issues.length > 0
         ? translateValidationIssues(received.issues, "en")

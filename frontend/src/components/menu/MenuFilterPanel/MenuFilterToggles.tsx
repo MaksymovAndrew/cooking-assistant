@@ -11,7 +11,6 @@ import type { MenuFilterState } from "utils/filters/menuFilterDefs";
 interface MenuFilterTogglesProps {
     filters: MenuFilterState;
     setValue: SetFilterValue<MenuFilterState>;
-    // favourites need a signed-in viewer; the rating toggles are open to guests
     canFavourite: boolean;
 }
 

@@ -17,8 +17,7 @@ UPDATE recipes SET cooking_time = NULL WHERE cooking_time <= 0;
 UPDATE person SET calorie_goal = NULL WHERE calorie_goal <= 0;
 DELETE FROM calorie_intake WHERE portions <= 0;
 
--- databases restored from older dumps carry differently named, non-cascading copies of these keys,
--- so every foreign key on the two tables goes and the canonical set comes back
+-- older dumps carry these keys under other names and without cascades, so all of them are rebuilt
 DO $$
 DECLARE
     fk record;
@@ -32,13 +31,13 @@ BEGIN
     END LOOP;
 END $$;
 
--- a menu goes with its owner, and a recipe deleted by its author leaves the menus that held it
 ALTER TABLE menu
     ALTER COLUMN person_id SET NOT NULL,
     ALTER COLUMN category_id SET NOT NULL,
     ADD CONSTRAINT menu_person_id_fkey FOREIGN KEY (person_id) REFERENCES person (id) ON DELETE CASCADE,
     ADD CONSTRAINT menu_category_id_fkey FOREIGN KEY (category_id) REFERENCES menu_category (menu_category_id) ON DELETE RESTRICT;
 
+-- a recipe deleted by its author leaves the menus that held it
 ALTER TABLE menu_recipe
     ALTER COLUMN menu_id SET NOT NULL,
     ALTER COLUMN recipe_id SET NOT NULL,
@@ -56,7 +55,7 @@ ALTER TABLE recipes ADD CONSTRAINT recipes_cooking_time_check CHECK (cooking_tim
 ALTER TABLE person ADD CONSTRAINT person_calorie_goal_check CHECK (calorie_goal > 0);
 ALTER TABLE calorie_intake ADD CONSTRAINT calorie_intake_portions_check CHECK (portions > 0);
 
--- the seed already looks reference rows up by name; now the database guarantees one row per name
+-- the seed looks reference rows up by name, so each name must be unique
 ALTER TABLE recipe_types ADD CONSTRAINT recipe_types_type_name_key UNIQUE (type_name);
 ALTER TABLE menu_category ADD CONSTRAINT menu_category_category_name_key UNIQUE (category_name);
 ALTER TABLE unit_measurement ADD CONSTRAINT unit_measurement_unit_name_key UNIQUE (unit_name);
@@ -70,8 +69,7 @@ CREATE INDEX idx_menu_creation_date ON menu (creation_date DESC, menu_id DESC);
 CREATE INDEX idx_recipes_creation_date ON recipes (creation_date DESC, id DESC);
 CREATE INDEX idx_recipes_cooking_time ON recipes (cooking_time);
 
--- the image's libc locale sorts by byte value, putting "Zupa" before "apple" and Cyrillic in the wrong
--- order; the ICU root collation sorts every alphabet the app speaks, and equality stays exact
+-- alpine's libc sorts by byte value ("Zupa" before "apple"); ICU sorts every alphabet, equality stays exact
 ALTER TABLE recipes ALTER COLUMN title TYPE VARCHAR(255) COLLATE "und-x-icu";
 ALTER TABLE menu ALTER COLUMN menu_title TYPE VARCHAR(100) COLLATE "und-x-icu";
 ALTER TABLE ingredients ALTER COLUMN name TYPE VARCHAR(255) COLLATE "und-x-icu";

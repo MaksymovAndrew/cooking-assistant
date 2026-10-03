@@ -28,8 +28,6 @@ interface LotRow {
     purchase_date: Date;
 }
 
-// targets the FIFO lot arithmetic, the lot snapshot that lets undo recreate a used-up lot, and the
-// calorie entry written in the same transaction - none of it is visible to mocked unit tests
 describe("PgPantryConsumptionRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgPantryConsumptionRepository;

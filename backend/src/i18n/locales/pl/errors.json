@@ -18,9 +18,7 @@
 
     "recipe/not_found": "Nie znaleziono przepisu",
     "recipe/ingredients_empty": "Dodaj co najmniej jeden składnik",
-    "recipe/ingredients_missing_id": "Każdy składnik wybierz z listy",
     "recipe/ingredients_not_exist": "Co najmniej jeden składnik już nie istnieje",
-    "recipe/title_content_empty": "Podaj tytuł i opis",
     "recipe/in_pantry_requires_login": "Zaloguj się, aby szukać przepisów według zawartości spiżarni",
     "recipe/type_not_exist": "Taki typ przepisu nie istnieje",
 

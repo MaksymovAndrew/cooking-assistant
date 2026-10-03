@@ -4,12 +4,11 @@ export interface PhotoSwap {
     previousKey: string | null;
 }
 
-// the delete hands back the photo it held, read under the same lock, so an upload racing it cannot orphan a file
+// read under the delete's own lock, so an upload racing it cannot orphan a file
 export interface DeletedRecord {
     photoKey: string | null;
 }
 
-// how many photos the account holds across every target, and whether this record already has one
 export interface PhotoUsage {
     count: number;
     targetHasPhoto: boolean;
@@ -21,7 +20,7 @@ export interface PhotoRepository {
         target: PhotoTarget,
         targetId: number,
     ): Promise<PhotoUsage>;
-    // null when the record doesn't exist or belongs to someone else, so the caller answers 404
+    // null when the record doesn't exist or belongs to someone else
     replace(
         personId: number,
         target: PhotoTarget,

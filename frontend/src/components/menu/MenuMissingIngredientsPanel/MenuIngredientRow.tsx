@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { useLocale } from "hooks/useLocale";
 
+import { cx } from "utils/cx";
 import { resolveIngredientName } from "utils/ingredientName";
 import type { AggregatedIngredient } from "utils/menuUtils";
 import { quantityWithUnit } from "utils/referenceLabels";
@@ -24,13 +25,11 @@ export const MenuIngredientRow: React.FC<MenuIngredientRowProps> = ({
 
     return (
         <li
-            className={[
+            className={cx(
                 styles["menu-missing-ingredients-panel__row"],
                 !sufficient &&
                     styles["menu-missing-ingredients-panel__row--missing"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
+            )}
         >
             {sufficient ? (
                 <Check

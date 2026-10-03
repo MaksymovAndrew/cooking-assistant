@@ -9,7 +9,6 @@ import type {
 } from "domain/repositories/recipe.filters";
 import type {
     RecipeDetailRow,
-    RecipeListRow,
     RecipeRow,
 } from "domain/repositories/recipe.types";
 import type { RecipeRepository } from "domain/repositories/RecipeRepository";
@@ -20,10 +19,7 @@ import {
     createRecipeInDb,
     updateRecipeInDb,
 } from "./PgRecipeRepository.mutations";
-import {
-    findAllRecipes,
-    findRecipeByIdWithIngredients,
-} from "./PgRecipeRepository.reads";
+import { findRecipeByIdWithIngredients } from "./PgRecipeRepository.reads";
 import {
     searchPersonRecipes,
     searchRecipes,
@@ -39,10 +35,6 @@ export default class PgRecipeRepository implements RecipeRepository {
 
     async create(recipe: Recipe): Promise<RecipeRow> {
         return createRecipeInDb(this.pool, recipe);
-    }
-
-    async findAllWithIngredients(): Promise<RecipeListRow[]> {
-        return findAllRecipes(this.pool);
     }
 
     async findByIdWithIngredients(

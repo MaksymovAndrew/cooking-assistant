@@ -12,6 +12,9 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
+// longer than any other test's recipe takes, so it always tops the slowest recipes
+const LONGEST_COOKING_TIME = 100_000;
+
 describe("PgRecipeRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgRecipeRepository;
@@ -270,23 +273,6 @@ describe("PgRecipeRepository (real Postgres)", () => {
         expect(afterDelete).toBeNull();
     });
 
-    it("should not leak person_id on the rows returned by findAllWithIngredients", async () => {
-        const ingredientId = await createIngredient(pool, unitId);
-        const recipe = Recipe.forCreation({
-            title: "Leak check",
-            content: "Should not expose its owner.",
-            language: "en",
-            person_id: ownerId,
-            ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
-        });
-
-        await repository.create(recipe);
-        const rows = await repository.findAllWithIngredients();
-        const mine = rows.find((row) => row.title === "Leak check");
-
-        expect(mine).not.toHaveProperty("person_id");
-    });
-
     it("should aggregate recipe stats without leaking person_id and reflect this recipe's own numbers", async () => {
         const STATS_CHECK_TITLE = "Stats aggregate check";
         const highCalorieIngredient = await createIngredient(
@@ -309,26 +295,110 @@ describe("PgRecipeRepository (real Postgres)", () => {
             ],
         });
 
-        await repository.create(recipe);
+        const created = await repository.create(recipe);
         const stats = await repository.getStats();
 
-        expect(stats).not.toHaveProperty("person_id");
+        // exact, so a leaked person_id or any other extra column fails
+        expect(stats.fastestRecipes.find((r) => r.id === created.id)).toEqual({
+            id: created.id,
+            title: STATS_CHECK_TITLE,
+            cookingTime: 1,
+        });
         expect(
-            stats.fastestRecipes.find((r) => r.title === STATS_CHECK_TITLE),
-        ).toEqual(
-            expect.objectContaining({
-                title: STATS_CHECK_TITLE,
-                cookingTime: 1,
+            stats.mostCaloricRecipes.find((r) => r.id === created.id),
+        ).toEqual({
+            id: created.id,
+            title: STATS_CHECK_TITLE,
+            caloriesPerPortion: 100_000,
+        });
+    });
+
+    it("should leave a recipe with no cooking time out of the slowest recipes and the averages by type", async () => {
+        const SLOWEST_TITLE = "Slowest dish";
+        const ingredientId = await createIngredient(pool, unitId);
+        const untimedTypeId = await createRecipeType(pool);
+        const ingredients = [
+            { id: ingredientId, quantity_recipe_ingredients: 1 },
+        ];
+        const slowest = await repository.create(
+            Recipe.forCreation({
+                title: SLOWEST_TITLE,
+                content: "Takes longer than anything else.",
+                language: "en",
+                person_id: ownerId,
+                cooking_time: LONGEST_COOKING_TIME,
+                ingredients,
             }),
         );
-        expect(
-            stats.mostCaloricRecipes.find((r) => r.title === STATS_CHECK_TITLE),
-        ).toEqual(
-            expect.objectContaining({
-                title: STATS_CHECK_TITLE,
-                caloriesPerPortion: 100_000,
+
+        await repository.create(
+            Recipe.forCreation({
+                title: "Untimed dish",
+                content: "No cooking time given.",
+                language: "en",
+                person_id: ownerId,
+                type_id: untimedTypeId,
+                ingredients,
             }),
         );
+        const stats = await repository.getStats();
+
+        expect(stats.slowestRecipes[0]).toEqual({
+            id: slowest.id,
+            title: SLOWEST_TITLE,
+            cookingTime: LONGEST_COOKING_TIME,
+        });
+        expect(
+            stats.averageCookingTimesByType.map(
+                (entry) => entry.averageCookingTime,
+            ),
+        ).not.toContain(null);
+    });
+
+    it("should gather the recipes without a type into a last bucket of their own, so the distribution adds up to the recipe count", async () => {
+        const ingredientId = await createIngredient(pool, unitId);
+        const typeId = await createRecipeType(pool);
+        const ingredients = [
+            { id: ingredientId, quantity_recipe_ingredients: 1 },
+        ];
+
+        await repository.create(
+            Recipe.forCreation({
+                title: "Typed dish",
+                content: "Has a type.",
+                language: "en",
+                person_id: ownerId,
+                type_id: typeId,
+                cooking_time: 10,
+                ingredients,
+            }),
+        );
+        await repository.create(
+            Recipe.forCreation({
+                title: "Untyped dish",
+                content: "Has no type.",
+                language: "en",
+                person_id: ownerId,
+                cooking_time: 10,
+                ingredients,
+            }),
+        );
+        const stats = await repository.getStats();
+        const distributed = stats.stats.reduce(
+            (sum, bucket) => sum + bucket.count,
+            0,
+        );
+        const untyped = stats.stats.at(-1);
+
+        expect(distributed).toBe(stats.recipesCount);
+        expect(untyped?.typeName).toBeNull();
+        expect(untyped?.count).toBeGreaterThanOrEqual(1);
+        // last whatever its size, so a real type is still the most used one
+        expect(stats.mostUsedType).toEqual(stats.stats[0]);
+        expect(stats.stats[0].typeName).not.toBeNull();
+        expect(
+            stats.averageCookingTimesByType.map((entry) => entry.typeName),
+        ).not.toContain(null);
     });
 
     it("should only return ids that actually exist", async () => {

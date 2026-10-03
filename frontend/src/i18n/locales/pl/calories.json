@@ -43,7 +43,8 @@
         "streakBest": "Rekord: {{count}}",
         "avgLabel": "Średnio {{count}} dziennie",
         "daysOnGoalLabel": "W granicach celu {{onGoal}} z {{total}}",
-        "todayLabel": "Dzisiaj"
+        "todayLabel": "Dzisiaj",
+        "barLabel": "{{day}}: {{kcal}} kcal"
     },
     "homeTile": {
         "label": "Kcal dzisiaj",

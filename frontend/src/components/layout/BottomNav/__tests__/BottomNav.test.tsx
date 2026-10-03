@@ -7,6 +7,14 @@ import { renderWithProviders, renderWithRouter } from "test/router";
 import { makeTestStore } from "test/store";
 
 describe("BottomNav", () => {
+    it("should label the landmark apart from the header navigation", () => {
+        renderWithRouter(<BottomNav />);
+
+        expect(
+            screen.getByRole("navigation", { name: "Tab bar" }),
+        ).toBeInTheDocument();
+    });
+
     it("should render all 5 tabs in the Shopping, Menus, Recipes, Ingredients, Profile order", () => {
         renderWithRouter(<BottomNav />);
 
@@ -15,14 +23,15 @@ describe("BottomNav", () => {
         ).toEqual(["Shopping", "Menus", "Recipes", "Ingredients", "Profile"]);
     });
 
-    it("should mark the tab matching the current route as active", () => {
+    it("should mark the tab matching the current route as the current page", () => {
         renderWithRouter(<BottomNav />, ["/shopping-list"]);
 
-        expect(screen.getByRole("link", { name: /Shopping/ })).toHaveClass(
-            "bottom-nav__item--active",
+        expect(screen.getByRole("link", { name: /Shopping/ })).toHaveAttribute(
+            "aria-current",
+            "page",
         );
-        expect(screen.getByRole("link", { name: /Menus/ })).not.toHaveClass(
-            "bottom-nav__item--active",
+        expect(screen.getByRole("link", { name: /Menus/ })).not.toHaveAttribute(
+            "aria-current",
         );
     });
 

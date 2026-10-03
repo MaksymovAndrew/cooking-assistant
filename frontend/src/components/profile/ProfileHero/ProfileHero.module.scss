@@ -42,7 +42,7 @@
             sans-serif;
     }
 
-    // icon-only logout next to the name - mobile only, the tabs row carries a labeled Logout button from tablet up
+    // phones only: from tablet up the tabs row carries a labeled logout
     &__mobile-logout {
         display: flex;
         flex: none;
@@ -115,8 +115,6 @@
             sans-serif;
     }
 
-    // now that Edit profile is a real action (not the old disabled placeholder), it needs to
-    // stay reachable on mobile too - full width there so it doesn't compete with the stats grid
     &__actions {
         display: flex;
         flex-basis: 100%;

@@ -19,10 +19,9 @@ interface MenuSearchQueryRow extends MenuSearchRow {
     total_count: number;
 }
 
-// shared by both paginated list queries: menu_recipe joined for the per-menu recipe count needs this GROUP BY over every non-aggregated selected column
 const MENU_LIST_GROUP_BY = ` GROUP BY m.menu_id, mc.category_name`;
 
-// newest first; menu_id is the primary key, so it settles ties deterministically
+// menu_id breaks ties, so OFFSET pages never repeat or skip a menu
 export const MENU_ORDER_BY = ` ORDER BY m.creation_date DESC, m.menu_id DESC`;
 
 function buildMenuListSelect(ownerPlaceholder: string): string {
@@ -48,7 +47,6 @@ function buildMenuListSelect(ownerPlaceholder: string): string {
     `;
 }
 
-// shared tail of both menu list queries: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed
 async function runMenuSearch(
     pool: Pool,
     builder: SqlFilterBuilder,

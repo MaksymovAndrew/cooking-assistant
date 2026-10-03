@@ -5,9 +5,7 @@ import type { CurrentUser } from "types/auth";
 
 import { useUpdateCalorieGoalMutation } from "redux/services/caloriesApi";
 
-// mirrors the backend's positiveIntegerSchema (calorie.schemas.ts) so a decimal like "2500.5"
-// fails client-side with the specific "Enter a valid calorie goal" message, instead of round-tripping
-// to the backend and surfacing as the unrelated generic "Something went wrong" error
+// mirrors the backend's positiveIntegerSchema, so a decimal fails here with the specific message
 const parseOptionalPositiveInteger = (value: string): number | null | false => {
     if (value.trim() === "") {
         return null;

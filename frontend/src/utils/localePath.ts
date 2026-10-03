@@ -9,7 +9,6 @@ interface SplitPath {
 const SEGMENT_END = /[/?#]/;
 const ROOT_PATH = /^\/(?:[?#]|$)/;
 
-// the first path segment, and whatever follows it
 const leadingSegment = (href: string): [string, string] => {
     if (!href.startsWith("/")) {
         return ["", href];
@@ -31,15 +30,13 @@ export const splitLocale = (href: string): SplitPath => {
     return { locale: first, path: rest.startsWith("/") ? rest : `/${rest}` };
 };
 
-// the route a pathname addresses, whatever language it is shown in
 export const stripLocale = (pathname: string): string =>
     splitLocale(pathname).path;
 
 export const localeOfPath = (pathname: string): Locale =>
     splitLocale(pathname).locale ?? DEFAULT_LOCALE;
 
-// the default language keeps the bare path, so every address that existed before stays valid; a path
-// that already names its language is left as it is
+// the default language keeps the bare path, so every older address stays valid
 export const localizePath = (href: string, locale: Locale): string => {
     const isAppPath = href.startsWith("/") && !href.startsWith("//");
     const isLocalizable =
@@ -56,7 +53,6 @@ export const localizePath = (href: string, locale: Locale): string => {
         : `/${locale}${href}`;
 };
 
-// the same page, query and all, in another language
 export const switchLocaleHref = (
     { pathname, search, hash }: Pick<Location, "pathname" | "search" | "hash">,
     locale: Locale,

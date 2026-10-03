@@ -11,7 +11,6 @@ import {
     UNIQUE_ITEMS,
 } from "./common.schemas";
 
-// both quantity field names are accepted and unified into quantity_recipe_ingredients
 const recipeIngredientSchema = z
     .object({
         id: positiveIntegerSchema(),
@@ -38,7 +37,7 @@ export const createRecipeSchema = z.object({
         ),
     type_id: positiveIntegerSchema().optional(),
     cooking_time: positiveIntegerSchema().optional(),
-    // manual per-portion calorie value; null clears it back to the computed total
+    // per portion; null clears it back to the computed total
     calories_override: z.number().nonnegative().nullable().optional(),
 });
 

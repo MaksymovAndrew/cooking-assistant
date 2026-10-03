@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,10 +16,10 @@ import { useRefreshOnServerData } from "hooks/useRefreshOnServerData";
 
 import { AppShell } from "components/layout/AppShell";
 import { MenuHero } from "components/menu/MenuHero";
-import { Link } from "components/ui/Link";
+import { Breadcrumb } from "components/ui/Breadcrumb";
 
 import { menuCookRequirements } from "utils/cookPreview";
-import { menuCaloriesPerPortion } from "utils/menuUtils";
+import { menuCaloriesPerPortion, menuTotalCookingTime } from "utils/menuUtils";
 
 import { MenuDetailsSecondary } from "./MenuDetailsSecondary";
 import styles from "./MenuDetailsView.module.scss";
@@ -29,8 +28,7 @@ interface MenuDetailsViewProps {
     menu: MenuDetails;
 }
 
-// the menu itself arrives from the server render; only what depends on the viewer's own
-// browser - their pantry, their calorie budget, the delete modal - lives here
+// the menu comes from the server render; only what depends on the viewer lives here
 export const MenuDetailsView: React.FC<MenuDetailsViewProps> = ({ menu }) => {
     const { t } = useTranslation("menu");
     const dispatch = useAppDispatch();
@@ -51,27 +49,20 @@ export const MenuDetailsView: React.FC<MenuDetailsViewProps> = ({ menu }) => {
 
     // the missing-ingredients panel was computed by the server render
     useRefreshOnServerData();
-    const totalCookingTime = menu.recipes.reduce(
-        (total, recipe) => total + recipe.cooking_time,
-        0,
-    );
 
     return (
-        <AppShell mobileBackTo={ROUTES.allMenus} mobileTitle={menu.menu.title}>
+        <AppShell mobileBackTo={ROUTES.allMenus}>
             <div className={styles["menu-details-page"]}>
-                <nav
-                    aria-label={t("menuDetailsPage.breadcrumb")}
-                    className={styles["menu-details-page__breadcrumb"]}
-                >
-                    <Link href={ROUTES.allMenus}>
-                        {t("menuDetailsPage.breadcrumbMenus")}
-                    </Link>
-                    <ChevronRight size={14} aria-hidden="true" />
-                    <span>{menu.menu.title}</span>
-                </nav>
+                <Breadcrumb
+                    label={t("menuDetailsPage.breadcrumb")}
+                    parentHref={ROUTES.allMenus}
+                    parentLabel={t("menuDetailsPage.breadcrumbMenus")}
+                    current={menu.menu.title}
+                    desktopOnly
+                />
                 <MenuHero
                     menu={menu.menu}
-                    totalCookingTime={totalCookingTime}
+                    totalCookingTime={menuTotalCookingTime(menu.recipes)}
                     recipeCount={menu.recipes.length}
                     caloriesPerPortion={menuCalories}
                     exceedsBudget={exceedsBudget}

@@ -1,10 +1,10 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { deleteMenu, deleteRecipe } from "./api";
 import { createMenuViaForm, createRecipeViaForm } from "./forms";
 import { VIEWER_STORAGE_STATE } from "./sharedAccounts";
 
-// a recipe and a menu written in another language: the badge on cards and pages, the list filter, the edit form
 test.describe.configure({ mode: "serial" });
 
 let context: BrowserContext;
@@ -39,23 +39,12 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    await page.goto(`/menu/${menuId}`);
-    await page.getByRole("button", { name: "Delete menu" }).click();
-    await page
-        .getByRole("dialog")
-        .getByRole("button", { name: "Delete menu" })
-        .click();
-    await expect(page).toHaveURL(/\/all-menus$/);
-
-    await page.goto(`/recipe/${recipeId}`);
-    await page.getByRole("button", { name: "Delete recipe" }).click();
-    await page
-        .getByRole("dialog")
-        .getByRole("button", { name: "Delete recipe" })
-        .click();
-    await expect(page).toHaveURL(/\/all-recipes$/);
-
-    await context.close();
+    try {
+        await deleteMenu(context.request, menuId);
+        await deleteRecipe(context.request, recipeId);
+    } finally {
+        await context.close();
+    }
 });
 
 test("should mark the recipe's language on its card and its page", async () => {

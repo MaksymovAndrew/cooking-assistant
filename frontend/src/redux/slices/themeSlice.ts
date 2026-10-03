@@ -5,7 +5,7 @@ import { DEFAULT_THEME_MODE, THEME_STORAGE_KEY } from "constants/theme";
 
 export type ThemeMode = "dark" | "light";
 
-// "system" isn't a renderable mode itself - it means "no stored override, resolve from prefers-color-scheme"
+// "system" is no stored override: the mode resolves from prefers-color-scheme
 export type ThemeChoice = ThemeMode | "system";
 
 const prefersLightScheme = (): boolean =>
@@ -23,18 +23,27 @@ export const getInitialThemeMode = (): ThemeMode => {
     return prefersLightScheme() ? "light" : "dark";
 };
 
-// the Settings segmented control's active option - "system" when nothing is stored, regardless of what that currently resolves to
 export const getStoredThemeChoice = (): ThemeChoice => {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
 
     return stored === "dark" || stored === "light" ? stored : "system";
 };
 
+export const storeThemeChoice = (choice: ThemeChoice): void => {
+    if (choice === "system") {
+        localStorage.removeItem(THEME_STORAGE_KEY);
+
+        return;
+    }
+
+    localStorage.setItem(THEME_STORAGE_KEY, choice);
+};
+
 interface ThemeState {
     mode: ThemeMode;
 }
 
-// resolved by the browser and handed to the store as preloaded state; see the app providers
+// the browser's mode arrives as preloaded state from createStore
 const initialState: ThemeState = { mode: DEFAULT_THEME_MODE };
 
 const themeSlice = createSlice({
@@ -44,11 +53,8 @@ const themeSlice = createSlice({
         setTheme: (state, action: PayloadAction<ThemeMode>) => {
             state.mode = action.payload;
         },
-        toggleTheme: (state) => {
-            state.mode = state.mode === "dark" ? "light" : "dark";
-        },
     },
 });
 
-export const { setTheme, toggleTheme } = themeSlice.actions;
+export const { setTheme } = themeSlice.actions;
 export const themeReducer = themeSlice.reducer;

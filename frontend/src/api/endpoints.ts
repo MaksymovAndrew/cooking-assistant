@@ -14,7 +14,6 @@ export const API_ROUTES = {
         confirmEmail: "/api/confirm-email",
     },
     recipes: {
-        list: "/api/recipes",
         byFilters: "/api/recipes-by-filters",
         byPerson: "/api/recipes-filters-person",
         create: "/api/recipe",
@@ -44,7 +43,7 @@ export const API_ROUTES = {
     },
     menu: {
         list: "/api/menu",
-        allUnpaginated: "/api/menus",
+        stats: "/api/menus-stats",
         create: "/api/create-menu",
         byId: (id: string | number) => `/api/menu/${id}`,
         favourite: (id: string | number) => `/api/menu/${id}/favourite`,

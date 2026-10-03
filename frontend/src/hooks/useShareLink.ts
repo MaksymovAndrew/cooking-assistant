@@ -5,7 +5,7 @@ import { addNotification } from "redux/slices/notificationsSlice";
 
 import { shareLink } from "utils/shareLink";
 
-// shares the page being read; the address drops any query so a filtered view isn't what travels
+// the query is dropped, so a filtered view isn't what travels
 export const useShareLink = () => {
     const { t } = useTranslation("common");
     const dispatch = useAppDispatch();

@@ -42,7 +42,7 @@ function buildBaseRecipeSelect(ownerPlaceholder: string): string {
       `;
 }
 
-// every branch ends with the ", id" tie-breaker so OFFSET pagination never duplicates or skips rows
+// every branch ends on an id tie-breaker, so OFFSET pages never repeat or skip a row
 function buildRecipeOrderBy(sortOrder?: RecipeFilters["sort_order"]): string {
     if (sortOrder === "rating") {
         return ` ORDER BY ${ratingSortOrder("r")}, r.id DESC`;
@@ -52,12 +52,10 @@ function buildRecipeOrderBy(sortOrder?: RecipeFilters["sort_order"]): string {
         return ` ORDER BY r.cooking_time ${sortOrder === "asc" ? "ASC" : "DESC"}, r.id DESC`;
     }
 
-    // for a signed-in viewer: favourites first, anything they avoid last (favourites among those still lead);
-    // both flags are null for a guest, so the date order is untouched
+    // favourites first, avoided last; both flags are null for a guest, leaving the date order
     return ` ORDER BY "containsAvoided" ASC, "isFavourite" DESC, r.creation_date DESC, r.id DESC`;
 }
 
-// shared tail of both searches: filters, grouping, ordering, and pagination applied on top of the caller's WHERE seed
 async function runRecipeSearch(
     pool: Pool,
     builder: SqlFilterBuilder,

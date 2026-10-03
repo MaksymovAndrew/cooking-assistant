@@ -16,8 +16,7 @@ export interface ViewerCapabilities {
     canTag: boolean;
 }
 
-// components ask "can I?", not "am I logged in?" - every capability maps to isAuthed today, but
-// this is the one place a future partial-permission tier changes instead of every call site
+// components ask "can I?", not "am I logged in?", so a finer permission tier changes only this
 export const selectViewerCapabilities = createSelector(
     selectIsAuthed,
     (isAuthed): ViewerCapabilities => ({

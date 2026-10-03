@@ -20,7 +20,8 @@
         "loading": "Saving…"
     },
     "chip": {
-        "remove": "Remove"
+        "remove": "Remove {{name}}",
+        "quantity": "Quantity of {{name}}"
     },
     "passwordInput": {
         "show": "Show password",
@@ -67,7 +68,10 @@
         "logout": "Log out",
         "login": "Log in",
         "register": "Sign up",
-        "scrollToTop": "Scroll to top"
+        "scrollToTop": "Scroll to top",
+        "skipToContent": "Skip to content",
+        "mainLabel": "Main",
+        "tabBarLabel": "Tab bar"
     },
     "theme": {
         "toggleLabel": "Toggle theme"
@@ -82,6 +86,7 @@
         "backToRecipes": "Back to recipes",
         "recipes": "Recipes",
         "pantry": "Pantry",
+        "home": "Home",
         "menus": "Menus"
     },
     "errors": {
@@ -105,9 +110,7 @@
         "auth/new_password_same_as_current": "Your new password must be different from the current one.",
         "recipe/not_found": "This recipe doesn't exist or has been removed.",
         "recipe/ingredients_empty": "Add at least one ingredient.",
-        "recipe/ingredients_missing_id": "Choose every ingredient from the list.",
         "recipe/ingredients_not_exist": "One or more ingredients no longer exist.",
-        "recipe/title_content_empty": "Add a title and a description.",
         "recipe/in_pantry_requires_login": "Log in to filter recipes by what's in your pantry.",
         "recipe/type_not_exist": "That recipe type no longer exists. Pick another one.",
         "menu/not_found": "This menu doesn't exist or has been removed.",
@@ -140,6 +143,7 @@
     },
     "errorState": {
         "title": "Something went wrong",
+        "loadFailed": "We couldn't load this. Check your connection and try again.",
         "retry": "Try again"
     },
     "notifications": {
@@ -289,5 +293,12 @@
         "filterLabel": "Language",
         "filterChip_one": "{{count}} language",
         "filterChip_other": "{{count}} languages"
+    },
+    "contentSkeleton": {
+        "loading": "Loading…"
+    },
+    "moveButtons": {
+        "up": "Move {{name}} up",
+        "down": "Move {{name}} down"
     }
 }

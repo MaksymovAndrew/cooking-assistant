@@ -1,4 +1,3 @@
-// true when any ingredient of the recipe is on the person's avoid list, directly or through one of its allergens
 export function containsAvoidedCondition(
     recipeIdExpression: string,
     userPlaceholder: string,
@@ -20,7 +19,7 @@ export function containsAvoidedCondition(
     )`;
 }
 
-// null for an anonymous requester, the same contract as isFavourite
+// null for a guest, the same contract as isFavourite
 export function containsAvoidedColumn(
     recipeIdExpression: string,
     userPlaceholder: string,

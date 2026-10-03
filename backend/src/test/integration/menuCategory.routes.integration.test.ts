@@ -1,10 +1,6 @@
 import request from "supertest";
 
-import { ERROR_CODES } from "constants/errorCodes";
-import { ValidationError } from "domain/errors/AppError";
-
-import { errorBody } from "test/helpers/errorBody";
-import { authCookie, buildTestApp } from "test/helpers/testApp";
+import { buildTestApp } from "test/helpers/testApp";
 
 const MENU_CATEGORIES_PATH = "/api/menu-categories";
 
@@ -25,40 +21,5 @@ describe("menu category routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual(categories);
-    });
-
-    it("should return menu categories", async () => {
-        const { app, deps } = buildTestApp();
-        const categories = [
-            {
-                menu_category_id: 2,
-                category_name: "Dinner",
-                category_description: null,
-            },
-        ];
-
-        deps.menuCategoryRepository.findAll.mockResolvedValue(categories);
-
-        const res = await request(app)
-            .get(MENU_CATEGORIES_PATH)
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual(categories);
-    });
-
-    it("should map a domain error to an error response", async () => {
-        const { app, deps } = buildTestApp();
-
-        deps.menuCategoryRepository.findAll.mockRejectedValue(
-            new ValidationError(ERROR_CODES.VALIDATION_ERROR),
-        );
-
-        const res = await request(app)
-            .get(MENU_CATEGORIES_PATH)
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual(errorBody(ERROR_CODES.VALIDATION_ERROR));
     });
 });

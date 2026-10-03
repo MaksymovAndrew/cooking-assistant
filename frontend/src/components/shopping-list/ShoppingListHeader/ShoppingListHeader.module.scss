@@ -44,9 +44,8 @@
         }
     }
 
-    // a plain brand line on phones, a pill from tablet up
     &__to-buy {
-        color: var(--brand);
+        color: var(--brand-text);
         letter-spacing: 0.04em;
         font:
             600 12px "Geist Mono",

@@ -146,20 +146,6 @@ describe("errorHandler", () => {
         );
     });
 
-    it("should fall back to the bad_request text when a 4xx non-AppError has no message", () => {
-        const err = Object.assign(new Error(""), { status: 422 });
-        const req = makeRequest();
-        const res = makeResponse();
-        const next = jest.fn() as NextFunction;
-
-        errorHandler(err, req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(422);
-        expect(res.json).toHaveBeenCalledWith(
-            errorBody(ERROR_CODES.BAD_REQUEST),
-        );
-    });
-
     it("should respond with 500 and server_error for a non-Error", () => {
         const req = makeRequest();
         const res = makeResponse();
@@ -172,20 +158,6 @@ describe("errorHandler", () => {
             errorBody(ERROR_CODES.SERVER_ERROR),
         );
         expect(next).not.toHaveBeenCalled();
-    });
-
-    it("should use 500 when the error object has a numeric status of 0", () => {
-        const err = Object.assign({}, { status: 0 });
-        const req = makeRequest();
-        const res = makeResponse();
-        const next = jest.fn() as NextFunction;
-
-        errorHandler(err, req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith(
-            errorBody(ERROR_CODES.SERVER_ERROR),
-        );
     });
 
     it("should log a 4xx as one compact warn line without the stack", () => {

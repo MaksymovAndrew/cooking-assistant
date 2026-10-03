@@ -13,7 +13,6 @@ export interface MediaFile {
 export default class GetMediaFile {
     constructor(private mediaStorage: Pick<MediaStorage, "locate">) {}
 
-    // any name outside the generated pattern is simply "not found": it never reaches the storage
     async execute(fileName: string): Promise<MediaFile> {
         const variant = variantOfFileName(fileName);
         const path = variant ? await this.mediaStorage.locate(fileName) : null;

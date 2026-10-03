@@ -30,8 +30,7 @@ interface Catalog {
     validation: Record<ValidationMessage, string>;
 }
 
-// en is the reference locale: its files define the keys, and a new locale is one LOCALES entry plus one folder and
-// one entry here - satisfies turns a missing locale, or a missing key in any locale, into a compile error
+// en defines the keys; satisfies makes a missing locale or key a compile error
 const CATALOGS = {
     en: {
         errors: enErrors,

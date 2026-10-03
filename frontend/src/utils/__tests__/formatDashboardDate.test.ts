@@ -1,16 +1,15 @@
 import { formatDashboardDate } from "utils/formatDashboardDate";
 
-const LOCALE = "en";
-
 describe("formatDashboardDate", () => {
-    it("should format the date as a short weekday, month, day and year", () => {
-        const result = formatDashboardDate(
-            new Date("2026-06-30T12:00:00Z"),
-            LOCALE,
-        );
+    it("should name the viewer's own day with its weekday, in the page's language", () => {
+        // just past local midnight, when the UTC day is still the previous one east of Greenwich
+        const justPastMidnight = new Date(2026, 5, 30, 0, 5);
 
-        expect(result).toContain("2026");
-        expect(result).toContain("Jun");
-        expect(result).toContain("30");
+        expect(formatDashboardDate(justPastMidnight, "en")).toBe(
+            "Tue, Jun 30, 2026",
+        );
+        expect(formatDashboardDate(justPastMidnight, "pl")).toBe(
+            "wt., 30 cze 2026",
+        );
     });
 });

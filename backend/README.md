@@ -505,7 +505,6 @@ header. Routes that act on "the current user" take the id from the cookie, not f
 | Method | Path                      | Purpose                                                                                            |
 | ------ | ------------------------- | -------------------------------------------------------------------------------------------------- |
 | POST   | `/recipe`                 | Create a recipe with ingredients                                                                   |
-| GET    | `/recipes`                | List all recipes (joined with type + ingredients)                                                  |
 | GET    | `/recipe/:id`             | Single recipe with ingredients                                                                     |
 | PUT    | `/recipe/:id`             | Update a recipe                                                                                    |
 | DELETE | `/recipe/:id`             | Delete a recipe                                                                                    |
@@ -542,12 +541,15 @@ voted). A rating for a record that does not exist answers `404`, one on the requ
 five-star vote can't outrank fifty votes averaging 4.8. Rating writes live in
 [src/routes/rating.routes.ts](src/routes/rating.routes.ts).
 
-`GET /recipes` and `GET /recipes-stats` both use explicit columns rather than `SELECT r.*`, so
-neither ships a recipe's raw owner `person_id` to the client - the same rule the list/search
-endpoints already followed. `/recipes-stats` computes every aggregate (type distribution, cooking
-time and calorie extremes/averages, most-used type) in SQL across every recipe, not just the
-current user's - the statistics page reads it directly instead of downloading the whole recipe
-table and aggregating client-side.
+`GET /recipes-stats` and `GET /menus-stats` compute every aggregate (type or category distribution,
+cooking time, recipe count and calorie extremes/averages, the most used type or category) in one SQL
+statement each, across every record, not just the current user's, with explicit columns so no owner
+`person_id` reaches the client. The statistics page reads them directly. Every recipe and menu list is
+paginated (`limit`/`offset`, `limit` at most 100) - no endpoint returns every recipe or menu, and the
+menu form's recipe picker searches `/recipes-by-filters` page by page. A menu's calorie total is
+`null` once any of its recipes has none, so it is left out of the calorie extremes rather than
+undercounted. A recipe with no cooking time is likewise left out of the cooking time extremes, and a
+recipe type none of whose recipes has one gets no average cooking time.
 
 ### Recipe types ([src/routes/type.routes.ts](src/routes/type.routes.ts))
 
@@ -576,7 +578,7 @@ table and aggregating client-side.
 | Method | Path                   | Purpose                                                                     |
 | ------ | ---------------------- | --------------------------------------------------------------------------- |
 | GET    | `/menu`                | All menus, paginated (category, favourites and rating filters, rating sort) |
-| GET    | `/menus`               | All menus, unpaginated (home dashboard + stats page)                        |
+| GET    | `/menus-stats`         | Aggregated menu stats for the statistics page                               |
 | POST   | `/create-menu`         | Create a menu with recipes                                                  |
 | GET    | `/menu/:id`            | Menu details + recipes                                                      |
 | PUT    | `/menu/:id`            | Update a menu                                                               |

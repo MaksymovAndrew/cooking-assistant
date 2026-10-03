@@ -6,7 +6,6 @@ module.exports = {
     testMatch: ["**/db-integration/**/*.test.ts"],
     globalSetup: "<rootDir>/src/test/db-integration/globalSetup.ts",
     globalTeardown: "<rootDir>/src/test/db-integration/globalTeardown.ts",
-    setupFilesAfterEnv: [],
     collectCoverage: false,
     coverageThreshold: undefined,
 };

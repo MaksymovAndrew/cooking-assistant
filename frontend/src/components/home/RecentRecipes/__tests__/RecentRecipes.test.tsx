@@ -4,7 +4,7 @@ import type { RecipeSearchResultItem } from "types/recipe";
 
 import { RecentRecipes } from "components/home/RecentRecipes";
 
-import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
+import { OVER_BUDGET_TOOLTIP, TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 const RECIPE: RecipeSearchResultItem = {
@@ -56,7 +56,7 @@ describe("RecentRecipes", () => {
         ).toHaveAttribute("href", "/add-recipe");
     });
 
-    it("should recolor a card whose calories exceed what's left today", () => {
+    it("should flag a card whose calories exceed what's left today", () => {
         renderWithRouter(
             <RecentRecipes
                 recipes={[{ ...RECIPE, calories_per_portion: 700 }]}
@@ -65,12 +65,12 @@ describe("RecentRecipes", () => {
             />,
         );
 
-        expect(screen.getByText("700 kcal")).toHaveClass(
-            "recent-recipe-card__calories--over",
+        expect(screen.getByTitle(OVER_BUDGET_TOOLTIP)).toHaveTextContent(
+            "700 kcal",
         );
     });
 
-    it("should not recolor a card when there is no calorie goal", () => {
+    it("should not flag a card when there is no calorie goal", () => {
         renderWithRouter(
             <RecentRecipes
                 recipes={[{ ...RECIPE, calories_per_portion: 700 }]}
@@ -79,8 +79,9 @@ describe("RecentRecipes", () => {
             />,
         );
 
-        expect(screen.getByText("700 kcal")).not.toHaveClass(
-            "recent-recipe-card__calories--over",
-        );
+        expect(screen.getByText("700 kcal")).toBeInTheDocument();
+        expect(
+            screen.queryByTitle(OVER_BUDGET_TOOLTIP),
+        ).not.toBeInTheDocument();
     });
 });

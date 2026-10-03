@@ -1,7 +1,7 @@
 import request from "supertest";
 
 import { catalogIngredient } from "test/helpers/repositoryRows";
-import { authCookie, buildTestApp } from "test/helpers/testApp";
+import { buildTestApp } from "test/helpers/testApp";
 
 const INGREDIENTS_PATH = "/api/ingredients";
 
@@ -13,20 +13,6 @@ describe("ingredient routes", () => {
         deps.ingredientRepository.findAll.mockResolvedValue(ingredients);
 
         const res = await request(app).get(INGREDIENTS_PATH);
-
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual(ingredients);
-    });
-
-    it("should return all known ingredients", async () => {
-        const { app, deps } = buildTestApp();
-        const ingredients = [catalogIngredient()];
-
-        deps.ingredientRepository.findAll.mockResolvedValue(ingredients);
-
-        const res = await request(app)
-            .get(INGREDIENTS_PATH)
-            .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual(ingredients);

@@ -24,7 +24,7 @@ function meetsPasswordRequirements(value: string): boolean {
     );
 }
 
-// trimmed, format-checked, and lowercased so "Test@x.com" and "test@x.com" are the same account
+// lowercased so "Test@x.com" and "test@x.com" are one account
 export function emailSchema() {
     return z
         .string()
@@ -84,7 +84,6 @@ export const confirmEmailSchema = z.object({
     token: nonEmptyStringSchema(),
 });
 
-// avatar is a preset key or null (no avatar); an unknown string is rejected
 export const updateProfileSchema = z.object({
     name: personTextSchema,
     surname: personTextSchema,

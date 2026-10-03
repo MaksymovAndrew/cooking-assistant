@@ -21,8 +21,7 @@ export interface PantryIngredient {
     days_to_expire: number | null;
     seasonality: string | null;
     storage_condition: string | null;
-    // the oldest (soonest-expiring) lot's date - MIN(ingredient_purchases.purchase_date), not
-    // person_ingredients.purchase_date, which a top-up resets and would wrongly "refresh" older stock
+    // the oldest lot's date: person_ingredients.purchase_date resets on a top-up
     purchase_date: Date | null;
     lots: PantryLot[];
     calories_per_unit: number | null;
@@ -42,7 +41,6 @@ export interface PantryRepository {
         userId: number,
         items: PantryIngredientInput[],
     ): Promise<void>;
-    // false when the person has no such ingredient
     deleteIngredient(userId: number, ingredientId: number): Promise<boolean>;
     // false when the purchase is not the person's
     updatePurchaseQuantity(

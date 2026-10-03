@@ -13,10 +13,7 @@ const PAD_WIDTH = 2;
 const toLocalDateKey = (date: Date): string =>
     `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(PAD_WIDTH, "0")}-${String(date.getDate()).padStart(PAD_WIDTH, "0")}`;
 
-// buckets the last `days` local calendar days (oldest first, today last), independent of how the
-// entries are ordered or which timezone `eaten_at` was written in on the server. todayKey is
-// threaded in explicitly (see utils/calorieDateRange.ts) rather than calling Date.now() only
-// internally, so a caller memoizing on todayKey has a real dependency, not a hidden one
+// local days, whatever timezone eaten_at was written in; todayKey keeps a memo dependency honest
 export const computeDailyIntake = (
     entries: readonly DailyIntakeEntry[],
     days: number,
@@ -48,13 +45,11 @@ export const computeDailyIntake = (
     return buckets;
 };
 
-// a day counts as "in budget" only once something was actually logged - an empty day (0 consumed)
-// isn't a win, it's no data
+// an empty day is no data, not a win
 export const isDayInBudget = (day: DailyIntakeDay, goal: number): boolean =>
     day.consumed > 0 && day.consumed <= goal;
 
-// counts consecutive in-budget days ending yesterday, not today - today is still in progress, so
-// including it would make the streak flicker back to 0 every morning before the first entry lands
+// ends yesterday: today is in progress and would reset the streak every morning
 export const computeStreak = (
     days: readonly DailyIntakeDay[],
     goal: number | null,
@@ -76,9 +71,7 @@ export const computeStreak = (
     return streak;
 };
 
-// longest in-budget run within the fetched window (not a lifetime record - bounded by the 7/30-day
-// history query); excludes today for the same reason computeStreak does - today isn't over yet, so
-// counting it here would let a still-in-progress day briefly claim a new best before it's earned
+// within the fetched window only, and without today, which isn't over yet
 export const computeBestStreak = (
     days: readonly DailyIntakeDay[],
     goal: number | null,

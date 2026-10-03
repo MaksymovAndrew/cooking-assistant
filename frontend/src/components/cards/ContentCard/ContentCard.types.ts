@@ -11,14 +11,12 @@ export type ContentCardIcon = React.ComponentType<{
     "aria-hidden"?: boolean | "true" | "false";
 }>;
 
-// a non-inline constant so callers never need a bare "calorieOver" string literal
-// (eslint's i18next/no-literal-string flags string literals inside JSX attribute expressions)
+// a constant because i18next/no-literal-string flags a bare literal in a JSX attribute
 export const META_ITEM_TONE_CALORIE_OVER = "calorieOver" as const;
 
 export interface ContentCardMetaItem {
     icon: ContentCardIcon;
     label: string;
-    // recolors this one meta item (icon + text) - currently only the calorie-over-budget cue
     tone?: typeof META_ITEM_TONE_CALORIE_OVER;
     title?: string;
 }

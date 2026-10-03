@@ -7,11 +7,12 @@
     gap: var(--s-3);
     margin-bottom: var(--s-5);
 
-    &__search {
+    // nested to outrank the fields' own rules: a lazy modal chunk can load their stylesheets again later
+    & &__search {
         min-width: 220px;
     }
 
-    &__category-select {
+    & &__category-select {
         flex: none;
         width: auto;
         min-width: 180px;

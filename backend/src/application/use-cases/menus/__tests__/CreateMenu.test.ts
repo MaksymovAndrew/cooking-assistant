@@ -68,18 +68,6 @@ describe("CreateMenu", () => {
         expect(result).toEqual(createdMenu);
     });
 
-    it("should create a menu from a public recipe owned by another user", async () => {
-        const { useCase, menuRepository, recipeRepository } = setup();
-        const input = makeInput();
-
-        recipeRepository.findExistingIds.mockResolvedValue(input.recipeIds);
-        menuRepository.create.mockResolvedValue({ id: 9 });
-
-        await useCase.execute(input);
-
-        expect(menuRepository.create).toHaveBeenCalled();
-    });
-
     it("should throw a 400 ValidationError when a recipe does not exist", async () => {
         const { useCase, menuRepository, recipeRepository } = setup();
 

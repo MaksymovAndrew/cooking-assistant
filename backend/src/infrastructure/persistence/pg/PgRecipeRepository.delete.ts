@@ -2,8 +2,7 @@ import type { Pool } from "pg";
 
 import type { DeletedRecord } from "domain/repositories/PhotoRepository";
 
-// one statement: its ingredients, menu links, favourites, ratings and tags cascade, and the photo key comes back
-// from the delete itself - read in a separate query, an upload landing in between would orphan its files
+// RETURNING the photo key: a separate read would let a racing upload orphan its files
 export async function deleteRecipeById(
     pool: Pool,
     recipeId: number,

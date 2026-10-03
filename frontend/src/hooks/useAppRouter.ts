@@ -1,5 +1,3 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
@@ -10,17 +8,14 @@ import { localizePath } from "utils/localePath";
 import { useLocale } from "./useLocale";
 
 export interface AppRouter {
-    // both report whether the navigation actually started: it is deferred, and may be dropped
-    // altogether, when a form holds unsaved changes
+    // false when an unsaved-changes guard deferred the navigation, which may then be dropped
     push: (href: string) => boolean;
     replace: (href: string) => boolean;
-    // re-renders the current page on the server; nothing is left behind, so no unsaved-changes guard
+    // re-renders in place, leaving nothing behind, so it needs no unsaved-changes guard
     refresh: () => void;
 }
 
-// the only way pages and hooks navigate programmatically: next/router itself cannot be
-// intercepted, so every push/replace is routed through the unsaved-changes guard here - and a path
-// from constants/routes is taken to the page's own language
+// Next's router cannot be intercepted: every push/replace passes the unsaved-changes guard here
 export const useAppRouter = (): AppRouter => {
     const router = useRouter();
     const locale = useLocale();

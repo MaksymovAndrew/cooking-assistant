@@ -1,0 +1,2 @@
+export const GUEST_LANDING_RECIPE_COUNT = 4;
+export const GUEST_LANDING_MENU_COUNT = 4;

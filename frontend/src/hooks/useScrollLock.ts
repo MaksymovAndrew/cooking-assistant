@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 
-// module-level so overlapping locks compose: only the first captures prior state, only the last restores it
+// module-level, so overlapping locks compose: the first saves the state, the last restores it
 let lockCount = 0;
 let lockedScrollY = 0;
 let previousStyle = { position: "", top: "", width: "", overflow: "" };
 
-// plain overflow:hidden doesn't lock scroll on iOS Safari - pinning body to its current
-// scroll offset does, and restoring scrollTo on unmount keeps the page position
+// overflow: hidden alone doesn't lock scroll on iOS Safari; pinning the body at its offset does
 export const useScrollLock = (locked: boolean): void => {
     useEffect(() => {
         if (!locked) {

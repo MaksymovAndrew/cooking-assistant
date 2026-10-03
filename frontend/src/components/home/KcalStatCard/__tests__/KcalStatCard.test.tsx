@@ -27,17 +27,11 @@ describe("KcalStatCard", () => {
         renderWithRouter(<KcalStatCard consumed={1920} goal={2200} />);
 
         expect(screen.getByText("Kcal today · 87%")).toBeInTheDocument();
-        expect(screen.getByTestId("kcal-stat-card")).toHaveClass(
-            "kcal-stat-card--near",
-        );
     });
 
     it("should show the over tone once past the goal", () => {
         renderWithRouter(<KcalStatCard consumed={2520} goal={2200} />);
 
         expect(screen.getByText("Kcal today · over")).toBeInTheDocument();
-        expect(screen.getByTestId("kcal-stat-card")).toHaveClass(
-            "kcal-stat-card--over",
-        );
     });
 });

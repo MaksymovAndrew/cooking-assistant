@@ -1,7 +1,6 @@
 @use "styles/abstracts" as *;
 
-// one DOM order - add, to buy, bought - laid out by area: stacked on phones and tablets, the bought
-// list in a side rail on desktop, and beside the list on a short landscape phone
+// one DOM order (add, to buy, bought) at every width; only the grid areas move
 .shopping-list-page {
     max-width: 1160px;
     margin: 0 auto;

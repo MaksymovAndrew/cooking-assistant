@@ -17,7 +17,7 @@ export interface RecipeFormInitialValues {
     cookingMinutes: string;
     selectedTypeId: number | null;
     selectedIngredients: RecipeFormIngredient[];
-    // text state, empty means "compute automatically"; matches cookingHours/cookingMinutes's convention of staying a string until submit
+    // text until submit, like the cooking time; empty means "compute automatically"
     caloriesOverride: string;
     photoKey: string | null;
 }

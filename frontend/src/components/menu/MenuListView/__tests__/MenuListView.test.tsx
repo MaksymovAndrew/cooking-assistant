@@ -175,27 +175,6 @@ describe("MenuListView", () => {
         ).toBeInTheDocument();
     });
 
-    it("should call fetchNextPage when the load more button is clicked", async () => {
-        const fetchNextPage = jest.fn();
-
-        renderWithRouter(
-            <MenuListView
-                {...baseProps}
-                menus={MENUS}
-                noMenus={false}
-                error={null}
-                hasNextPage={true}
-                fetchNextPage={fetchNextPage}
-            />,
-        );
-
-        await userEvent.click(
-            screen.getByRole("button", { name: "Load more" }),
-        );
-
-        expect(fetchNextPage).toHaveBeenCalledTimes(1);
-    });
-
     it("should render the load more error while keeping previously loaded menus", () => {
         renderWithRouter(
             <MenuListView
@@ -212,31 +191,25 @@ describe("MenuListView", () => {
         expect(screen.getByText("Couldn't load more")).toBeInTheDocument();
     });
 
-    it("should mark cards as mine when the mine prop is set", () => {
+    it.each([
+        ["on the viewer's own list", true, MENUS[0]],
+        [
+            "when the server flags it as owned",
+            false,
+            { ...MENUS[0], isOwner: true },
+        ],
+    ] as const)("should mark a card as mine %s", (_case, mine, menu) => {
         renderWithRouter(
             <MenuListView
                 {...baseProps}
-                menus={MENUS}
+                menus={[menu]}
                 noMenus={false}
                 error={null}
-                mine
+                mine={mine}
             />,
         );
 
-        expect(screen.getAllByRole("article")[0]).toHaveClass(MINE_CLASS);
-    });
-
-    it("should mark a card as mine when the server flags it as owned, even without the mine prop", () => {
-        renderWithRouter(
-            <MenuListView
-                {...baseProps}
-                menus={[{ ...MENUS[0], isOwner: true }]}
-                noMenus={false}
-                error={null}
-            />,
-        );
-
-        expect(screen.getAllByRole("article")[0]).toHaveClass(MINE_CLASS);
+        expect(screen.getByRole("article")).toHaveClass(MINE_CLASS);
     });
 
     it("should not mark another user's card as mine", () => {
@@ -249,6 +222,6 @@ describe("MenuListView", () => {
             />,
         );
 
-        expect(screen.getAllByRole("article")[0]).not.toHaveClass(MINE_CLASS);
+        expect(screen.getByRole("article")).not.toHaveClass(MINE_CLASS);
     });
 });

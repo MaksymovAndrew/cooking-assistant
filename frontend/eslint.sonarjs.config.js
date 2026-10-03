@@ -24,7 +24,7 @@ export default [
         },
     },
     {
-        // test fixtures use fake credentials by design (mirrors backend/eslint.sonarjs.config.js)
+        // test fixtures use fake credentials by design
         files: ["**/__tests__/**/*.{ts,tsx}", "**/*.test.{ts,tsx}"],
         rules: {
             "sonarjs/no-hardcoded-passwords": "off",

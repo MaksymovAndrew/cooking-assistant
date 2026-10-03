@@ -44,7 +44,6 @@ export const AvoidIngredientSearch: React.FC<AvoidIngredientSearchProps> = ({
     useClickOutside(searchRef, closeResults, hasQuery);
     useEscapeKey(closeResults, hasQuery);
 
-    // back to an empty field with the cursor in it, ready for the next ingredient
     const handleSelect = (ingredient: Ingredient) => {
         onSelect(ingredient);
         setQuery("");

@@ -5,34 +5,57 @@
     flex-direction: column;
     gap: var(--s-2);
 
+    // a phone gives the title a line of its own, with the controls under it
     &__row {
-        display: flex;
+        display: grid;
+        grid-template-areas:
+            "grip name"
+            "grip controls";
+        grid-template-columns: auto minmax(0, 1fr);
         align-items: center;
-        gap: var(--s-3);
+        gap: var(--s-2) var(--s-3);
         padding: 11px 14px;
         border: 1px solid var(--border);
         border-radius: 10px;
         background: var(--surface-2);
+
+        @include respond-to(tablet) {
+            grid-template-areas: "grip name controls";
+            grid-template-columns: auto minmax(0, 1fr) auto;
+        }
     }
 
     &__grip {
-        flex: none;
+        grid-area: grip;
         color: var(--text-muted);
         cursor: grab;
     }
 
     &__name {
-        @include truncate;
+        @include wrap-anywhere;
 
-        flex: 1;
+        grid-area: name;
         color: var(--text);
         font:
             500 14px Inter,
             sans-serif;
+
+        @include respond-to(tablet) {
+            @include truncate;
+        }
     }
 
+    &__controls {
+        display: flex;
+        grid-area: controls;
+        align-items: center;
+        gap: var(--s-3);
+    }
+
+    // the auto margin keeps the move and remove buttons at the end of a phone's second line
     &__type {
         flex: none;
+        margin-right: auto;
         padding: 2px 8px;
         border-radius: 6px;
         background: var(--surface);

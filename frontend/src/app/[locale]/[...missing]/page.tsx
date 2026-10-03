@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 
-// the layout sits in a dynamic segment, so an address no route claims is caught here to render the
-// app's own 404 inside it
+// catches any address no route claims, so the 404 renders inside the [locale] layout
 const MissingPage = () => notFound();
 
 export default MissingPage;

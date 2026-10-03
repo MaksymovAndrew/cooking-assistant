@@ -41,7 +41,8 @@
         "streakBest": "Best {{count}} days",
         "avgLabel": "Daily average {{count}}",
         "daysOnGoalLabel": "Days on goal {{onGoal}}/{{total}}",
-        "todayLabel": "Today"
+        "todayLabel": "Today",
+        "barLabel": "{{day}}: {{kcal}} kcal"
     },
     "homeTile": {
         "label": "Kcal today",

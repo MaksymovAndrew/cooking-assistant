@@ -20,7 +20,7 @@ export function addIngredients(
         "person_not_found",
         async (client) => {
             const merged = await client.query<{ ingredient_id: number }>(
-                // unticking a bought item can leave two unchecked rows of one ingredient; only the first takes the amount
+                // unticking can leave duplicate unchecked rows; only the first takes the amount
                 `UPDATE shopping_list_items s
              SET quantity = COALESCE(s.quantity + input.quantity, s.quantity, input.quantity)
              FROM unnest($2::int[], $3::float8[]) AS input(ingredient_id, quantity)

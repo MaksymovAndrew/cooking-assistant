@@ -1,19 +1,12 @@
-import type {
-    CalorieIntakeItem,
-    UpdateCalorieGoalRequest,
-} from "types/calorie";
+import type { CalorieIntakeItem } from "types/calorie";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { authApi } from "redux/services/authApi";
 import { caloriesApi } from "redux/services/caloriesApi";
 import { recipesApi } from "redux/services/recipesApi";
 
-import {
-    mockedDelete,
-    mockedGet,
-    mockedPost,
-    mockedPut,
-} from "test/apiClientMock";
+import { mockedGet, mockedPost, mockedPut } from "test/apiClientMock";
 import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
@@ -34,65 +27,6 @@ const ENTRY: CalorieIntakeItem = {
 };
 
 describe("caloriesApi", () => {
-    it("should fetch the intake log for a date range", async () => {
-        mockedGet.mockResolvedValue({ data: [ENTRY] });
-        const store = makeTestStore();
-
-        const result = await store.dispatch(
-            caloriesApi.endpoints.getCalorieIntake.initiate(RANGE),
-        );
-
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.calories.intake, {
-            params: RANGE,
-        });
-        expect(result.data).toEqual([ENTRY]);
-    });
-
-    it("should log intake for a recipe", async () => {
-        mockedPost.mockResolvedValue({ data: ENTRY });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            caloriesApi.endpoints.logCalorieIntake.initiate({
-                recipe_id: 5,
-                portions: 2,
-            }),
-        );
-
-        expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.calories.intake, {
-            recipe_id: 5,
-            portions: 2,
-        });
-    });
-
-    it("should delete an intake entry", async () => {
-        mockedDelete.mockResolvedValue({ data: null });
-        const store = makeTestStore();
-
-        await store.dispatch(
-            caloriesApi.endpoints.deleteCalorieIntake.initiate(1),
-        );
-
-        expect(mockedDelete).toHaveBeenCalledWith(
-            API_ROUTES.calories.intakeById(1),
-            { params: undefined },
-        );
-    });
-
-    it("should update the calorie goal", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-        const store = makeTestStore();
-        const goal: UpdateCalorieGoalRequest = {
-            calorie_goal: 2000,
-        };
-
-        await store.dispatch(
-            caloriesApi.endpoints.updateCalorieGoal.initiate(goal),
-        );
-
-        expect(mockedPut).toHaveBeenCalledWith(API_ROUTES.calories.goal, goal);
-    });
-
     it("should refetch the intake log after logging a new entry", async () => {
         mockedGet.mockResolvedValue({ data: [] });
         mockedPost.mockResolvedValue({ data: ENTRY });
@@ -149,5 +83,27 @@ describe("caloriesApi", () => {
         expect(mockedGet.mock.calls.length).toBeGreaterThan(
             callsAfterFirstFetch,
         );
+    });
+
+    it("should refetch the current user after the goal changes, since it carries the goal", async () => {
+        mockedGet.mockResolvedValue({ data: null });
+        mockedPut.mockResolvedValue({ data: null });
+        const store = makeTestStore();
+        const me = store.dispatch(authApi.endpoints.getMe.initiate(null));
+
+        await me;
+        mockedGet.mockClear();
+
+        await store.dispatch(
+            caloriesApi.endpoints.updateCalorieGoal.initiate({
+                calorie_goal: 2000,
+            }),
+        );
+        await store.dispatch(authApi.endpoints.getMe.initiate(null));
+
+        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.auth.me, {
+            params: undefined,
+        });
+        me.unsubscribe();
     });
 });

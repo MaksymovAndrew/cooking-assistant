@@ -1,6 +1,4 @@
-// runs a package's own CLI from backend/ or frontend/ without a shell, so paths such as
-// app/[locale]/(public)/... reach the tool verbatim on every OS; ESLint flat config is resolved by cwd
-// usage: node scripts/run-tool.mjs <package dir> <tool> [args...]
+// no shell, so [locale] and (public) paths arrive verbatim; ESLint resolves its config from the cwd
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";

@@ -57,7 +57,7 @@ const BOUGHT_HEADING = "Bought";
 const sectionOf = (heading: string): HTMLElement =>
     screen.getByRole("region", { name: heading });
 
-// a copy per response, since the cache freezes what it stores and a test may still change the server list
+// a copy per response: the cache freezes what it stores, and a test may still change the list
 const setup = (items: ShoppingListItem[] = [MILK, FLOUR, BREAD]) => {
     mockedGet.mockImplementation((url: string) =>
         url === API_ROUTES.shoppingList.list

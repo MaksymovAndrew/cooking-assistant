@@ -11,7 +11,7 @@ export type AvoidIngredientOutcome =
 
 export interface DietPreferencesRepository {
     findByPerson(personId: number): Promise<DietPreferences>;
-    // false when the person no longer exists, so the caller answers 404 instead of a foreign-key 500
+    // false when the person no longer exists: a 404 instead of a foreign-key 500
     addAllergen(personId: number, allergen: AllergenSlug): Promise<boolean>;
     removeAllergen(personId: number, allergen: AllergenSlug): Promise<void>;
     addIngredient(

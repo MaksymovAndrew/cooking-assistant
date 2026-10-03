@@ -3,6 +3,8 @@ import type { CookRequirement } from "types/pantryConsumption";
 import type { RecipeDetailIngredient } from "types/recipe";
 import type { UserIngredient } from "types/userIngredient";
 
+import { sumBy } from "utils/sum";
+
 export type CookPreviewStatus = "full" | "partial" | "missing";
 
 export interface CookPreviewLine extends CookRequirement {
@@ -60,12 +62,7 @@ export const menuCookRequirements = (
 
 // cooking takes from the purchase lots, so that is what counts as available
 const availableIn = (pantryItem: UserIngredient | undefined): number =>
-    toThousandths(
-        (pantryItem?.lots ?? []).reduce(
-            (total, lot) => total + lot.quantity,
-            0,
-        ),
-    );
+    toThousandths(sumBy(pantryItem?.lots ?? [], (lot) => lot.quantity));
 
 const statusOf = (needed: number, available: number): CookPreviewStatus => {
     if (available <= 0) {

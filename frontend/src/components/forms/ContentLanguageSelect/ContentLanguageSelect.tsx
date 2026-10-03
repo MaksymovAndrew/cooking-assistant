@@ -17,7 +17,6 @@ interface ContentLanguageSelectProps {
     onChange: (language: Locale) => void;
 }
 
-// the language a recipe or menu is written in - readers filter by it, and its badge shows on the card
 export const ContentLanguageSelect: React.FC<ContentLanguageSelectProps> = ({
     id,
     label,

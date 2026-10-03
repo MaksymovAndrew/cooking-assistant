@@ -16,8 +16,6 @@ import styles from "./GuestLandingFilters.module.scss";
 
 const SEARCH_ICON_SIZE = 18;
 
-// each chip links straight to /all-menus with the category already in the URL - mirrors
-// GuestLandingRecipeFilters, one source of truth for filtering
 export const GuestLandingMenuFilters: React.FC = () => {
     const { t } = useTranslation("guestLanding");
     const { data: categories = [] } = useGetMenuCategoriesQuery(null);

@@ -5,9 +5,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: var(--s-3);
 
-    // 5 tiles (no calorie goal set yet) vs 6 (goal set - Kcal today + Kcal left both show) - an
-    // odd count leaves the last tile alone in a 2-column grid, so let it span the full row; an
-    // even count already divides cleanly and this selector simply doesn't match
+    // 5 tiles without a calorie goal, 6 with one; an odd last tile spans the row
     > :nth-child(odd):last-child {
         grid-column: 1 / -1;
     }
@@ -18,8 +16,7 @@
     }
 
     @include respond-to(desktop) {
-        // auto-fit (not a fixed column count) so 5 or 6 tiles both reflow into one full row
-        // instead of a fixed 5-column grid leaving a 6th tile orphaned on its own row
+        // auto-fit puts 5 or 6 tiles on one full row
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 
         > :nth-child(odd):last-child {
@@ -27,7 +24,6 @@
         }
     }
 
-    // a rotated phone stays 2x2 - the 4-across tablet layout doesn't fit the narrow left column of the landscape split
     @include respond-to-short-landscape {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--s-2);

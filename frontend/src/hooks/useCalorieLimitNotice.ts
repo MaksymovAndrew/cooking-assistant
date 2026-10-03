@@ -20,12 +20,11 @@ import {
 import { computeCalorieSummary } from "utils/computeCalorieSummary";
 
 interface UseCalorieLimitNoticeOptions {
-    // "not ready yet", not "consumed" - the once-per-day notice can still fire later on a route that doesn't skip it
+    // "not yet", not "used up": the notice can still fire later on a route that doesn't skip it
     skip?: boolean;
 }
 
-// once per (user, calendar day): opens the shared modal the first time today's intake crosses
-// the goal, persisted in localStorage so it survives reloads/restarts, not just this tab session
+// once per user and calendar day, kept in localStorage so a reload doesn't show it again
 export const useCalorieLimitNotice = ({
     skip: skipOption = false,
 }: UseCalorieLimitNoticeOptions = {}): void => {
@@ -40,8 +39,7 @@ export const useCalorieLimitNotice = ({
     const goal = currentUser?.calorie_goal ?? null;
     const summary = computeCalorieSummary(entries, goal);
     const activeModal = useAppSelector(selectActiveModal);
-    // stores the day it last fired for, not just a boolean - so a tab left open across midnight
-    // re-arms for the new day instead of staying silenced by yesterday's firing
+    // a day, not a boolean, so a tab left open past midnight re-arms for the new day
     const firedForDay = useRef<string | null>(null);
     const enqueued = useRef<{ id: string; userId: number; day: string } | null>(
         null,
@@ -86,8 +84,7 @@ export const useCalorieLimitNotice = ({
         dispatch,
     ]);
 
-    // marks on presentation, not on enqueue - a notice still waiting behind another modal
-    // would otherwise be silenced for the whole day before it was ever seen
+    // marked when shown, not when queued, or a notice waiting behind another modal is never seen
     useEffect(() => {
         const pending = enqueued.current;
 

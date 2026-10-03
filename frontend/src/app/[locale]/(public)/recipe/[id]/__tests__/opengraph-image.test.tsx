@@ -5,9 +5,7 @@ import type { RecipeDetails } from "types/recipe";
 
 import { fetchPublic } from "api/server";
 
-import RecipeSocialImage, {
-    generateImageMetadata,
-} from "app/[locale]/(public)/recipe/[id]/opengraph-image";
+import RecipeSocialImage from "app/[locale]/(public)/recipe/[id]/opengraph-image";
 import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 
 jest.mock("api/server", () => ({ fetchPublic: jest.fn() }));
@@ -47,19 +45,6 @@ const renderCard = () => {
 };
 
 describe("recipe preview image", () => {
-    it("should declare one card with its size and type", async () => {
-        const [entry] = await generateImageMetadata({
-            params: { locale: "en" },
-        });
-
-        expect(entry).toEqual(
-            expect.objectContaining({
-                size: { width: 1200, height: 630 },
-                contentType: "image/png",
-            }),
-        );
-    });
-
     it("should show the recipe with its type, author and facts", async () => {
         mockedFetch.mockResolvedValue(SAMPLE);
 

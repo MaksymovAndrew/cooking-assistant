@@ -18,8 +18,6 @@ import { MenuListResults } from "./MenuListResults";
 import styles from "./MenuListView.module.scss";
 
 interface MenuListViewProps extends MenuFilterPanelProps, MenuListResultsProps {
-    // the full reset, used by MenuActiveFilters ("Clear all") and the empty state -
-    // MenuFilterPanel now owns a narrower reset scoped to just its own popover fields
     resetFilters: () => void;
     heading: string;
     subtitle: string;
@@ -44,8 +42,7 @@ export const MenuListView: React.FC<MenuListViewProps> = ({
     ...results
 }) => {
     const { t } = useTranslation();
-    // bumped on every full reset so SearchField remounts and drops any pending, uncommitted
-    // debounce - see the matching comment in RecipeListView for the full failure scenario
+    // remount SearchField on reset, or a pending debounce re-applies the search just cleared
     const [searchResetKey, setSearchResetKey] = useState(0);
 
     const handleResetFilters = () => {

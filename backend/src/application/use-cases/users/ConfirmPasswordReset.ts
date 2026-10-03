@@ -19,7 +19,7 @@ export default class ConfirmPasswordReset {
 
     async execute(input: unknown): Promise<void> {
         const data = validate(resetPasswordSchema, input);
-        // two verify calls are unavoidable - the binding fingerprint needs the current password hash, which requires the id this first call resolves
+        // checked twice: the binding hash is looked up by the id this first check yields
         const claimedUserId = this.tokenService.verifyPurposeToken(
             data.token,
             "password-reset",

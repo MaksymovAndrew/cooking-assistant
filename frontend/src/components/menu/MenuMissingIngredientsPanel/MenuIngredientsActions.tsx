@@ -9,8 +9,10 @@ import { useIsHydrated } from "hooks/useIsHydrated";
 import { BasketAddMark } from "components/icons";
 import { Link } from "components/ui/Link";
 
-import type { AggregatedIngredient } from "utils/menuUtils";
-import { roundQuantity } from "utils/roundQuantity";
+import {
+    type AggregatedIngredient,
+    missingShoppingItems,
+} from "utils/menuUtils";
 
 import styles from "./MenuMissingIngredientsPanel.module.scss";
 
@@ -27,13 +29,7 @@ export const MenuIngredientsActions: React.FC<MenuIngredientsActionsProps> = ({
     const { t: tShoppingList } = useTranslation("shoppingList");
     const isHydrated = useIsHydrated();
     const { add, isAdding } = useAddToShoppingList();
-    // only the shortfall goes on the list, not the whole amount the menu needs
-    const missingItems = Object.entries(ingredients)
-        .filter(([, ingredient]) => !ingredient.sufficient)
-        .map(([id, ingredient]) => ({
-            ingredient_id: Number(id),
-            quantity: roundQuantity(ingredient.missingQuantity),
-        }));
+    const missingItems = missingShoppingItems(ingredients);
 
     return (
         <div className={styles["menu-missing-ingredients-panel__actions"]}>

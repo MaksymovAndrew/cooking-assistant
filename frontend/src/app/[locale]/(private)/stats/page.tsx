@@ -6,9 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "constants/routes";
 
-import { useAppSelector } from "redux/hooks";
-import { selectMenuStatistics } from "redux/selectors/statisticsSelectors";
-import { useGetAllMenusQuery } from "redux/services/menusApi";
+import { useGetMenuStatsQuery } from "redux/services/menusApi";
 import { useGetRecipeStatsQuery } from "redux/services/recipesApi";
 
 import { usePageTitle } from "hooks/usePageTitle";
@@ -25,10 +23,10 @@ import styles from "./page.module.scss";
 
 const StatsPage: React.FC = () => {
     const { t } = useTranslation("stats");
-    const menus = useGetAllMenusQuery(null);
+    const menus = useGetMenuStatsQuery(null);
     const recipes = useGetRecipeStatsQuery(null);
-    const menuStats = useAppSelector(selectMenuStatistics);
     const recipeStats = recipes.data;
+    const menuStats = menus.data;
 
     usePageTitle(t("common:nav.stats"));
 
@@ -49,7 +47,7 @@ const StatsPage: React.FC = () => {
             );
         }
 
-        if (!recipeStats || !menus.data) {
+        if (!recipeStats || !menuStats) {
             return <StatsSkeleton />;
         }
 
@@ -81,7 +79,13 @@ const StatsPage: React.FC = () => {
 
     return (
         <AppShell>
-            <div className={styles["stats-page"]}>{renderContent()}</div>
+            <div className={styles["stats-page"]}>
+                {/* one page heading in every state; the sections carry the visible ones */}
+                <h1 className={styles["stats-page__heading"]}>
+                    {t("statsPage.heading")}
+                </h1>
+                {renderContent()}
+            </div>
         </AppShell>
     );
 };

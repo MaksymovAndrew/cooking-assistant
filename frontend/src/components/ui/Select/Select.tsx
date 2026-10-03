@@ -1,6 +1,10 @@
 import { ChevronDown } from "lucide-react";
 import React from "react";
 
+import { useFormFieldAria } from "components/ui/FormField";
+
+import { cx } from "utils/cx";
+
 import styles from "./Select.module.scss";
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
@@ -15,17 +19,16 @@ export const Select: React.FC<SelectProps> = ({
     children,
     ...rest
 }) => {
-    const classNames = [
+    const fieldAria = useFormFieldAria(rest);
+    const classNames = cx(
         styles.select,
         hasError && styles["select--error"],
         className,
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <div className={styles["select-wrapper"]}>
-            <select className={classNames} {...rest}>
+            <select className={classNames} {...rest} {...fieldAria}>
                 {children}
             </select>
             <ChevronDown

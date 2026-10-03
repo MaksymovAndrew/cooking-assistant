@@ -15,8 +15,7 @@ import { localizePath, stripLocale } from "utils/localePath";
 import { takeLoginRedirect } from "utils/loginRedirect";
 import { loadPage } from "utils/reloadPage";
 
-// where a fresh sign-in lands. The address bar and the account must agree on a language: a
-// choice made on this device wins and is saved to the account; without one, the account's is used
+// a language chosen on this device wins and is saved; without one, the account's is used
 export const useFinishLogin = () => {
     const router = useAppRouter();
     const locale = useLocale();
@@ -24,8 +23,6 @@ export const useFinishLogin = () => {
     const [saveLocale] = useSetLocaleMutation();
 
     return useCallback(async () => {
-        // the page the user was trying to reach (a private route, a guest-only "Log in" CTA)
-        // rather than always the home dashboard
         const target = takeLoginRedirect() ?? ROUTES.home;
         const chosen = readLocaleCookie();
 

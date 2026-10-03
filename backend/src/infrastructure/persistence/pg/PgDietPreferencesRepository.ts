@@ -23,7 +23,7 @@ export default class PgDietPreferencesRepository implements DietPreferencesRepos
         return result.rows[0];
     }
 
-    // one statement, so the existence check and the insert share a snapshot; a repeat add is a no-op
+    // one statement, so the existence check and the insert share a snapshot
     async addAllergen(
         personId: number,
         allergen: AllergenSlug,

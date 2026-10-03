@@ -5,8 +5,7 @@ import { selectServerDataVersion } from "redux/selectors/serverDataSelectors";
 
 import { useAppRouter } from "./useAppRouter";
 
-// for a page whose per-viewer data comes from the server render: a write elsewhere (a toast's undo,
-// a modal) bumps the version, and the page asks the server for a fresh render
+// a write elsewhere (a toast's undo, a modal) bumps the version; the server then re-renders the page
 export const useRefreshOnServerData = (): void => {
     const version = useAppSelector(selectServerDataVersion);
     const { refresh } = useAppRouter();

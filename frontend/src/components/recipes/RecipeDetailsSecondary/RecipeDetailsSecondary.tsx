@@ -29,7 +29,6 @@ interface RecipeDetailsSecondaryProps {
     tags: Tag[] | null;
 }
 
-// the ingredients + description panels, split out of RecipeDetailsPage to keep the page under the pages/ max-lines cap
 export const RecipeDetailsSecondary: React.FC<RecipeDetailsSecondaryProps> = ({
     ingredientsAreaClassName,
     descriptionAreaClassName,

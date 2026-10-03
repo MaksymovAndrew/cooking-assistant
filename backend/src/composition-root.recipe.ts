@@ -5,7 +5,6 @@ import type { RecipeTypeRepository } from "domain/repositories/RecipeTypeReposit
 import type PhotoCleanup from "application/media/PhotoCleanup";
 import CreateRecipe from "application/use-cases/recipes/CreateRecipe";
 import DeleteRecipe from "application/use-cases/recipes/DeleteRecipe";
-import GetAllRecipes from "application/use-cases/recipes/GetAllRecipes";
 import GetRecipeById from "application/use-cases/recipes/GetRecipeById";
 import GetRecipeStats from "application/use-cases/recipes/GetRecipeStats";
 import SearchPersonRecipes from "application/use-cases/recipes/SearchPersonRecipes";
@@ -15,7 +14,6 @@ import UpdateRecipe from "application/use-cases/recipes/UpdateRecipe";
 import RecipeController from "controller/recipe.controller";
 import RecipeSearchController from "controller/recipeSearch.controller";
 
-// split out of composition-root.ts, which hit the file's line-count lint cap once this was inlined
 export interface RecipeControllerDeps {
     recipeRepository: RecipeRepository;
     ingredientRepository: IngredientRepository;
@@ -50,7 +48,6 @@ export function buildRecipeControllers({
             deleteRecipe: new DeleteRecipe(recipeRepository, photoCleanup),
         }),
         recipeSearchController: new RecipeSearchController({
-            getAllRecipes: new GetAllRecipes(recipeRepository),
             searchRecipes: new SearchRecipes(recipeRepository),
             searchPersonRecipes: new SearchPersonRecipes(recipeRepository),
             getRecipeStats: new GetRecipeStats(recipeRepository),

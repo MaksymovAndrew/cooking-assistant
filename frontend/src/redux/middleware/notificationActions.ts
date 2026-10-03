@@ -22,7 +22,6 @@ const RUNNERS: Record<NotificationAction["kind"], ActionRunner> = {
     },
 };
 
-// a toast only names its follow-up; the request behind it is made here, outside any component
 export const registerNotificationActions = (
     listener: ListenerMiddlewareInstance,
 ) => {

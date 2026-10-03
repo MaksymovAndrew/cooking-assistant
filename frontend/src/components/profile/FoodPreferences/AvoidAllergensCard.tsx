@@ -6,6 +6,7 @@ import { ALLERGEN_SLUGS, type AllergenSlug } from "constants/allergens";
 
 import { FormCard } from "components/ui/FormCard";
 
+import { cx } from "utils/cx";
 import { resolveAllergen } from "utils/ingredientName";
 
 import styles from "./FoodPreferences.module.scss";
@@ -59,12 +60,10 @@ export const AvoidAllergensCard: React.FC<AvoidAllergensCardProps> = ({
                             onClick={() => {
                                 onToggle(slug);
                             }}
-                            className={[
+                            className={cx(
                                 styles["food-preferences__chip"],
                                 isOn && styles["food-preferences__chip--on"],
-                            ]
-                                .filter(Boolean)
-                                .join(" ")}
+                            )}
                         >
                             {isOn && (
                                 <Check

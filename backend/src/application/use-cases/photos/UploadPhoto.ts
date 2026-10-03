@@ -31,7 +31,7 @@ export default class UploadPhoto {
         private target: PhotoTarget,
     ) {}
 
-    // the files are written before the record points at them, so a record never names a missing file
+    // files are written before the record points at them, so it never names a missing file
     async execute(
         personId: string | number,
         targetId: string | number,

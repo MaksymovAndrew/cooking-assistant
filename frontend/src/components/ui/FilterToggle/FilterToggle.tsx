@@ -18,7 +18,6 @@ interface FilterToggleProps {
 
 const ICON_SIZE = 20;
 
-// a labelled on/off filter row inside a filter popover (pantry, favourites)
 export const FilterToggle: React.FC<FilterToggleProps> = ({
     icon: Icon,
     label,

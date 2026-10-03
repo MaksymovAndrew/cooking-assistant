@@ -2,6 +2,11 @@
     "title": "Co nowego",
     "newCount": "Nowe: {{total}}",
     "items": {
+        "cookedIt": {
+            "date": "2026-10-03",
+            "title": "Ugotowane? Spiżarnia sama to policzy",
+            "description": "Dotknij „Ugotowane” na stronie przepisu albo jadłospisu, a jego składniki zejdą ze spiżarni, zaczynając od najstarszych zakupów. Jeśli dotkniesz za wcześnie, pomoże przycisk „Cofnij”, a kalorie od razu zapiszesz w dzienniku. Aplikacja jest też wygodniejsza w obsłudze z klawiatury i z czytnikiem ekranu, tekst jest czytelniejszy, a do tego zainstalujesz ją teraz na ekranie głównym."
+        },
         "shareAndPantry": {
             "date": "2026-09-28",
             "title": "Udostępniaj przepisy, porządkuj spiżarnię",

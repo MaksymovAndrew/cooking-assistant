@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import type { useFileDrop } from "hooks/useFileDrop";
 import { useIsHydrated } from "hooks/useIsHydrated";
 
+import { cx } from "utils/cx";
+
 import styles from "./PhotoField.module.scss";
 
 const PLACEHOLDER_ICON_SIZE = 28;
@@ -17,7 +19,6 @@ interface PhotoFieldEmptyProps {
     onBrowse: () => void;
 }
 
-// the whole frame is one button: a click opens the file picker, a dropped file lands on it
 export const PhotoFieldEmpty: React.FC<PhotoFieldEmptyProps> = ({
     buttonRef,
     frameClassName,
@@ -32,13 +33,11 @@ export const PhotoFieldEmpty: React.FC<PhotoFieldEmptyProps> = ({
         <button
             ref={buttonRef}
             type="button"
-            className={[
+            className={cx(
                 frameClassName,
                 styles["photo-field__dropzone"],
                 drop.isDragging && styles["photo-field__dropzone--active"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
+            )}
             aria-describedby={hintId}
             disabled={!isHydrated}
             onClick={onBrowse}

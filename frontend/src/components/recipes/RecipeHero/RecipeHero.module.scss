@@ -15,7 +15,7 @@
             var(--brand-subtle),
             var(--surface-2)
         );
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__image-icon {
@@ -55,6 +55,20 @@
         margin-bottom: var(--s-3);
     }
 
+    &__rating-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--text-2);
+        font:
+            500 12px "Geist Mono",
+            monospace;
+
+        @include respond-to(tablet) {
+            display: none;
+        }
+    }
+
     &__title {
         @include wrap-anywhere;
 
@@ -82,7 +96,6 @@
         }
     }
 
-    // mobile shows a compact, unlabeled time+portions row only (no date, no rating) - the labeled 4-up meta grid is tablet+ only
     &__stat--secondary {
         display: none;
 
@@ -118,7 +131,7 @@
         svg {
             width: 15px;
             height: 15px;
-            color: var(--brand);
+            color: var(--brand-text);
         }
 
         @include respond-to(tablet) {
@@ -144,7 +157,6 @@
             monospace;
     }
 
-    // recolors both the icon+value line and the "total for N portions" line together
     &__stat--calorie-over {
         .recipe-hero__stat-value {
             color: var(--calorie-over);
@@ -167,7 +179,6 @@
         margin-bottom: var(--s-6);
     }
 
-    // just reproduces __actions' margin - HeroVisitorActions' own sizing lives in its own module
     &__visitor-actions-wrap {
         margin-bottom: var(--s-6);
     }

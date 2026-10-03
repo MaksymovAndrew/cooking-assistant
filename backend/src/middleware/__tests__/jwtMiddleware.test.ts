@@ -118,12 +118,20 @@ describe("jwtMiddleware", () => {
     it.each([
         ["the token is malformed", "broken-token"],
         [
-            "the token is expired",
-            jwt.sign({ id: 7, typ: SESSION_TOKEN_TYPE, sv: 3 }, "x", {
-                expiresIn: -1,
-            }),
+            "the token is signed with another secret",
+            jwt.sign(
+                { id: 7, typ: SESSION_TOKEN_TYPE, sv: SESSION_VERSION },
+                "another-secret",
+            ),
         ],
-        ["the payload is a string", jwt.sign("string-payload", "x")],
+        [
+            "the token is expired",
+            jwt.sign(
+                { id: 7, typ: SESSION_TOKEN_TYPE, sv: SESSION_VERSION },
+                testSecret,
+                { expiresIn: -1 },
+            ),
+        ],
     ])(
         "should reject an unreadable token with a 403 when %s",
         async (_case, token) => {
@@ -167,7 +175,7 @@ describe("jwtMiddleware", () => {
         },
     );
 
-    // purpose tokens are signed with the same secret, so only the typ claim keeps an emailed link from acting as a session
+    // purpose tokens share the secret, so only the typ claim keeps an emailed link from acting as a session
     it.each(["password-reset", "verify-email"])(
         "should reject with a 403 when a %s purpose token is sent as the session cookie",
         async (purpose) => {
@@ -185,6 +193,24 @@ describe("jwtMiddleware", () => {
             expect(req.user).toBeUndefined();
         },
     );
+
+    it("should reject with a 403 a correctly signed token whose payload is a plain string", async () => {
+        const auth = makeAuth();
+        const req = makeRequest({
+            authToken: jwt.sign("string-payload", testSecret),
+        });
+        const next = makeNext();
+
+        await auth.authenticateToken(req, res, next);
+
+        expect(passedError(next)).toBeAppError(
+            ForbiddenError,
+            ERROR_CODES.SESSION_EXPIRED,
+            403,
+        );
+        expect(req.user).toBeUndefined();
+        expect(auth.findSessionVersion).not.toHaveBeenCalled();
+    });
 
     it("should fail with a plain configuration Error when the JWT secret is missing", async () => {
         const token = sessionToken();

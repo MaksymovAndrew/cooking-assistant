@@ -4,7 +4,6 @@ import type { IconProps } from "components/icons";
 
 const DEFAULT_SIZE = 40;
 
-// Donburi preset avatar - ramen/donburi bowl, natural-colour variant (Claude Design handoff)
 export const RamenBowlAvatar: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

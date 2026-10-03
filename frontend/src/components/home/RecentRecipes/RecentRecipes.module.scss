@@ -20,14 +20,14 @@
     }
 
     &__view-all {
-        color: var(--brand);
+        color: var(--brand-text);
         text-decoration: none;
         font:
             600 13px Inter,
             sans-serif;
     }
 
-    // fetched at the desktop count (9) and cropped down via nth-child, so there's only ever one request regardless of breakpoint
+    // fetched at the desktop count and cropped here, so one request serves every breakpoint
     &__grid {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
@@ -57,7 +57,6 @@
             }
         }
 
-        // a rotated phone: back to a single column of compact rows, only 2
         @include respond-to-short-landscape {
             grid-template-columns: minmax(0, 1fr);
             gap: var(--s-2);

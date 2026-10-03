@@ -51,7 +51,7 @@
         height: 104px;
         border-radius: var(--r-pill);
         background: var(--brand-subtle);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__empty-title {
@@ -75,7 +75,7 @@
         display: flex;
         align-items: center;
         gap: var(--s-2);
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     &__card-title {
@@ -104,9 +104,6 @@
         display: grid;
         grid-template-columns: 1fr;
         gap: var(--s-4);
-
-        // a single field (daily goal) - no side-by-side layout needed since the per-meal limit
-        // field was retired in favor of this one goal
         max-width: 280px;
     }
 

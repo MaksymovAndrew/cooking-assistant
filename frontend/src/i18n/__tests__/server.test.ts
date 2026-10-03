@@ -3,6 +3,7 @@ import { RESOURCES } from "i18n/resources";
 import { getServerTranslation } from "i18n/server";
 
 const APP_NAME = "Cooking Assistant";
+const RECIPES_KEY = "nav.recipes";
 
 describe("getServerTranslation", () => {
     it("should translate keys from the default namespace", async () => {
@@ -20,7 +21,7 @@ describe("getServerTranslation", () => {
     it("should translate in the language it is given", async () => {
         const t = await getServerTranslation("uk");
 
-        expect(t("nav.recipes")).toBe("Рецепти");
+        expect(t(RECIPES_KEY)).toBe("Рецепти");
     });
 
     it("should translate ingredient names without handing them to the page", async () => {
@@ -32,11 +33,13 @@ describe("getServerTranslation", () => {
         expect(RESOURCES.pl.catalog).not.toHaveProperty("ingredient");
     });
 
-    it("should not share state between instances", async () => {
-        const common = await getServerTranslation("en");
-        const auth = await getServerTranslation("en", "auth");
+    it("should keep each request in its own language when two resolve at once", async () => {
+        const [english, ukrainian] = await Promise.all([
+            getServerTranslation("en"),
+            getServerTranslation("uk"),
+        ]);
 
-        expect(common("appName")).toBe(APP_NAME);
-        expect(auth("loginPage.heading")).toBe("Welcome back");
+        expect(english(RECIPES_KEY)).toBe("Recipes");
+        expect(ukrainian(RECIPES_KEY)).toBe("Рецепти");
     });
 });

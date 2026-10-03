@@ -9,7 +9,7 @@ import { RecipeActiveFilters } from "components/recipes/RecipeActiveFilters";
 
 import { RECIPE_FILTER_DEFS } from "utils/filters/recipeFilterDefs";
 
-const [SEARCH_DEF, TYPES_DEF, INGREDIENTS_DEF] = RECIPE_FILTER_DEFS;
+const [, , INGREDIENTS_DEF] = RECIPE_FILTER_DEFS;
 
 const makeEntry = (
     def: (typeof RECIPE_FILTER_DEFS)[number],
@@ -29,34 +29,6 @@ describe("RecipeActiveFilters", () => {
         );
 
         expect(screen.getByText("3 recipes")).toBeInTheDocument();
-    });
-
-    it("should show a removable chip for an active search query", () => {
-        render(
-            <RecipeActiveFilters
-                total={3}
-                activeFilters={[makeEntry(SEARCH_DEF, "borscht")]}
-                hasActiveFilters
-                resetFilters={jest.fn()}
-            />,
-        );
-
-        expect(screen.getByText("“borscht”")).toBeInTheDocument();
-    });
-
-    it("should show a removable chip summarizing the selected types", () => {
-        const remove = jest.fn();
-
-        render(
-            <RecipeActiveFilters
-                total={3}
-                activeFilters={[makeEntry(TYPES_DEF, [1, 2], remove)]}
-                hasActiveFilters
-                resetFilters={jest.fn()}
-            />,
-        );
-
-        expect(screen.getByText("2 types")).toBeInTheDocument();
     });
 
     it("should show a removable chip summarizing the selected ingredients", async () => {

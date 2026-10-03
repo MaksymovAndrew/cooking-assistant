@@ -23,8 +23,7 @@ export interface RecipeFilterPanelProps {
     ingredients: Ingredient[];
     searchPlaceholder: string;
     total: number;
-    // bumped by the caller on a full reset ("Clear all") - remounts SearchField so it can't
-    // commit a debounce that was still pending when the reset happened (see RecipeListView)
+    // bumped on "Clear all" to remount SearchField and drop a pending debounce
     searchResetKey?: number;
 }
 
@@ -41,15 +40,10 @@ export const RecipeFilterPanel: React.FC<RecipeFilterPanelProps> = ({
 }) => {
     const { t } = useTranslation("recipes");
     const showResultsLabel = t("filterPanel.showResults", { count: total });
-    // bumped alongside resetPanelFields, remounts the cooking-time inputs so a pending, still-
-    // debouncing edit can't commit after "Reset filters" - the field's own value can already be
-    // "" pre-reset (nothing typed has committed yet), so the prop alone wouldn't change
+    // remounts the range fields on reset so a still-debouncing edit can't commit after it
     const [popoverResetKey, setPopoverResetKey] = useState(0);
 
-    // resets only the fields the popover itself controls, leaving the search box (rendered
-    // outside the popover) untouched - resetFilters is the full reset, used by "Clear all".
-    // one setValues() call, not several setValue() calls - each of those would read the
-    // same pre-reset URL state from this closure, so only the last one would actually stick
+    // one setValues call: separate setValue calls would each read the same pre-reset URL
     const resetPanelFields = () => {
         setValues({
             types: [],

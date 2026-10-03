@@ -5,7 +5,7 @@ export interface TransactionOutcome<T> {
     result: T;
 }
 
-// work decides whether to commit, so an expected miss ("not yours", "not found") rolls back without a throw
+// work decides whether to commit, so an expected miss rolls back without a throw
 export async function withTransaction<T>(
     pool: Pool,
     work: (client: PoolClient) => Promise<TransactionOutcome<T>>,
@@ -21,7 +21,7 @@ export async function withTransaction<T>(
 
         return result;
     } catch (error) {
-        // a failed ROLLBACK means the connection itself is gone: drop it from the pool and keep the original error
+        // a failed ROLLBACK means a dead connection: drop it and keep the original error
         await client.query("ROLLBACK").catch(() => {
             destroyClient = true;
         });

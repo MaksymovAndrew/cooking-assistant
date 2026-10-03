@@ -14,16 +14,4 @@ describe("not found routes", () => {
         expect(res.status).toBe(404);
         expect(res.body).toEqual(errorBody(ERROR_CODES.NOT_FOUND));
     });
-
-    it("should return a 400 error when register input is invalid", async () => {
-        const { app } = buildTestApp();
-
-        const res = await request(app).post("/api/register").send({});
-
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({
-            error: "name: Required; surname: Required; login: Required; email: Required; password: Required",
-            code: ERROR_CODES.VALIDATION_ERROR,
-        });
-    });
 });

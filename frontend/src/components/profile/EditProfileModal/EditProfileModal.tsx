@@ -3,6 +3,9 @@ import { useTranslation } from "react-i18next";
 
 import type { CurrentUser } from "types/auth";
 
+import { useAppDispatch } from "redux/hooks";
+import { closeModal } from "redux/slices/uiSlice";
+
 import { useEditProfileForm } from "hooks/useEditProfileForm";
 
 import { BaseModal } from "components/modals/BaseModal";
@@ -17,8 +20,8 @@ import { EditProfileAvatarFields } from "./EditProfileAvatarFields";
 import styles from "./EditProfileModal.module.scss";
 
 interface EditProfileModalProps {
-    currentUser?: CurrentUser | null;
-    onClose: () => void;
+    modalId: string;
+    currentUser: CurrentUser;
 }
 
 const NAME_ID = "edit-profile-name";
@@ -26,12 +29,14 @@ const SURNAME_ID = "edit-profile-surname";
 const FORM_ID = "edit-profile-form";
 
 export const EditProfileModal: React.FC<EditProfileModalProps> = ({
+    modalId,
     currentUser,
-    onClose,
 }) => {
     const { t } = useTranslation("profile");
+    const dispatch = useAppDispatch();
+    const onClose = () => dispatch(closeModal(modalId));
     const form = useEditProfileForm(currentUser, onClose);
-    // erases the promise (matches ChangePasswordModal) so a fire-and-forget submit needs no void/catch
+    // typed unknown to erase the promise, so the submit needs no void or catch
     const submitForm = (): unknown => form.handleSubmit();
     const initials =
         form.name && form.surname

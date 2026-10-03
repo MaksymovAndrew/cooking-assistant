@@ -1,6 +1,5 @@
 @use "styles/abstracts" as *;
 
-// an icon square on phones, a labelled button from tablet up - the same rhythm as the owner row
 .share-button {
     display: inline-flex;
     flex: none;
@@ -21,7 +20,7 @@
 
     svg {
         flex: none;
-        color: var(--brand);
+        color: var(--brand-text);
     }
 
     @include focus-ring;

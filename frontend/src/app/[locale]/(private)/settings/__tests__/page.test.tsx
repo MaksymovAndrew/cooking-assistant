@@ -2,94 +2,143 @@ import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { THEME_STORAGE_KEY } from "constants/theme";
+import type { CurrentUser } from "types/auth";
 
 import { API_ROUTES } from "api/endpoints";
 
-import { selectActiveModal } from "redux/selectors/uiSelectors";
-import { MODAL_TYPE } from "redux/slices/uiSlice";
+import { ModalRoot } from "components/modals";
 
 import SettingsPage from "app/[locale]/(private)/settings/page";
-import { mockGetByUrl } from "test/apiClientMock";
+import { mockedGet, mockGetByUrl } from "test/apiClientMock";
 import { renderWithProviders } from "test/router";
 
 jest.mock("api/client");
 
+const HOLD_MS = 500;
+const LIGHT_THEME_DIALOG = "Switch to light theme?";
+const CURRENT_USER: CurrentUser = {
+    id: 1,
+    name: "Claude",
+    surname: "Cook",
+    login: "claude",
+    created_at: "2025-06-15T00:00:00.000Z",
+    email: "claude@example.com",
+    email_verified_at: null,
+    avatar: null,
+    avatar_photo_key: null,
+    calorie_goal: null,
+    locale: "en",
+};
+
+const renderPage = () =>
+    renderWithProviders(
+        <>
+            <SettingsPage />
+            <ModalRoot />
+        </>,
+    );
+
 const setup = () => {
     mockGetByUrl({ [API_ROUTES.auth.me]: null });
 
-    return renderWithProviders(<SettingsPage />);
+    return renderPage();
 };
 
 describe("SettingsPage", () => {
-    it("should render the settings heading", () => {
+    it("should ask before switching to a different theme", async () => {
         setup();
-
-        expect(
-            screen.getByRole("heading", { name: "Settings" }),
-        ).toBeInTheDocument();
-    });
-
-    it("should open the theme-change confirmation when a different theme is selected", async () => {
-        const { store } = setup();
 
         await userEvent.click(screen.getByRole("radio", { name: "Light" }));
 
-        expect(selectActiveModal(store.getState())?.type).toBe(
-            MODAL_TYPE.themeChange,
-        );
+        expect(
+            await screen.findByRole("dialog", { name: LIGHT_THEME_DIALOG }),
+        ).toBeInTheDocument();
     });
 
     it("should not open a confirmation when the current theme is re-selected", async () => {
         localStorage.setItem(THEME_STORAGE_KEY, "dark");
-
-        const { store } = setup();
+        setup();
 
         await userEvent.click(screen.getByRole("radio", { name: "Dark" }));
+        await userEvent.click(screen.getByRole("radio", { name: "Light" }));
 
-        expect(selectActiveModal(store.getState())).toBeNull();
+        // a dialog queued by the first click would be showing in place of this one
+        expect(
+            await screen.findByRole("dialog", { name: LIGHT_THEME_DIALOG }),
+        ).toBeInTheDocument();
     });
 
-    it("should open and close the change-password modal", async () => {
+    it("should show a loading state until the account arrives", async () => {
         setup();
 
-        await userEvent.click(screen.getByRole("button", { name: "Change…" }));
-
+        expect(screen.getByRole("status", { name: "Loading…" })).toBeVisible();
         expect(
-            screen.getByRole("heading", { name: "Change password" }),
+            await screen.findByRole("button", { name: "Change…" }),
         ).toBeInTheDocument();
-
-        await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
-
-        expect(
-            screen.queryByRole("heading", { name: "Change password" }),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByRole("status", { name: "Loading…" })).toBeNull();
     });
 
-    it("should queue the sign-out-everywhere confirmation", async () => {
-        const { store } = setup();
+    it("should show an error with a retry when the account cannot be loaded", async () => {
+        mockGetByUrl({ [API_ROUTES.auth.me]: CURRENT_USER });
+        mockedGet.mockRejectedValueOnce(new Error("offline"));
+
+        renderPage();
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Sign out…" }),
+            await screen.findByRole("button", { name: "Try again" }),
         );
 
-        expect(selectActiveModal(store.getState())?.type).toBe(
-            MODAL_TYPE.signOutEverywhere,
-        );
+        expect(await screen.findByText(CURRENT_USER.email)).toBeInTheDocument();
     });
 
-    it("should open the delete-account modal after holding the delete button", () => {
-        jest.useFakeTimers();
+    it("should open the change-password dialog", async () => {
         setup();
 
-        const button = screen.getByRole("button", { name: "Delete account" });
+        await userEvent.click(
+            await screen.findByRole("button", { name: "Change…" }),
+        );
 
-        fireEvent.pointerDown(button, { pointerId: 1 });
-        act(() => {
-            jest.advanceTimersByTime(500);
-        });
-        fireEvent.pointerUp(button, { pointerId: 1 });
+        expect(
+            await screen.findByRole("dialog", { name: "Change password" }),
+        ).toBeInTheDocument();
+    });
 
-        expect(screen.getByText("Delete account?")).toBeInTheDocument();
-        jest.useRealTimers();
+    it("should ask before signing out on other devices", async () => {
+        setup();
+
+        await userEvent.click(
+            await screen.findByRole("button", { name: "Sign out…" }),
+        );
+
+        expect(
+            await screen.findByRole("dialog", {
+                name: "Sign out on other devices",
+            }),
+        ).toBeInTheDocument();
+    });
+
+    it("should open the delete-account dialog after holding the delete button", async () => {
+        jest.useFakeTimers();
+
+        try {
+            mockGetByUrl({ [API_ROUTES.auth.me]: CURRENT_USER });
+            renderPage();
+
+            const button = await screen.findByRole("button", {
+                name: "Delete account",
+            });
+
+            fireEvent.pointerDown(button, { pointerId: 1 });
+            act(() => {
+                jest.advanceTimersByTime(HOLD_MS);
+            });
+            fireEvent.pointerUp(button, { pointerId: 1 });
+
+            expect(
+                await screen.findByRole("dialog", { name: "Delete account?" }),
+            ).toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 });

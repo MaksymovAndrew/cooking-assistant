@@ -10,7 +10,7 @@ import { FAVOURITE_TABLES } from "./favouriteTables";
 export default class PgFavouriteRepository implements FavouriteRepository {
     constructor(private pool: Pool) {}
 
-    // one statement, so the existence check and the insert share a snapshot; a repeat add is a no-op
+    // one statement, so the existence check and the insert share a snapshot
     async add(
         personId: number,
         target: FavouriteTarget,

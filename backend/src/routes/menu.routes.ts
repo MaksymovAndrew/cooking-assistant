@@ -13,11 +13,7 @@ export default function createMenuRouter(
 
     router.get(ROUTES.menu.list, optionalAuth, menuController.getAll);
 
-    router.get(
-        ROUTES.menu.allUnpaginated,
-        authenticateToken,
-        menuController.getAllUnpaginated,
-    );
+    router.get(ROUTES.menu.stats, authenticateToken, menuController.getStats);
 
     router.post(ROUTES.menu.create, authenticateToken, menuController.create);
 

@@ -9,7 +9,7 @@ const MISSING_PERSON: CreateTagResult = {
     tag: null,
 };
 
-// the count and the insert run under the owner's row lock, so two requests can't both slip past the limit
+// count and insert share the owner's row lock, so two requests can't both pass the limit
 export function createTag(
     pool: Pool,
     personId: number,

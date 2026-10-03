@@ -12,8 +12,6 @@ import { PHOTO_TABLES } from "infrastructure/persistence/pg/photoTables";
 import { createMenuCategory, createPerson, unique } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-// targets the returned previous key (the file an upload displaced), the owner check that turns
-// someone else's record into a 404, and the keys each delete hands back for file cleanup
 describe("PgPhotoRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgPhotoRepository;

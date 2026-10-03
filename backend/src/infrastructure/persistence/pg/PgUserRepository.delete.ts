@@ -12,8 +12,7 @@ async function deletedKeys(
     return result.rows.flatMap((row) => (row.key ? [row.key] : []));
 }
 
-// everything the person owns cascades from the person row; menus and recipes are deleted first only
-// to collect their photo keys, so the files can go once the transaction commits
+// menus and recipes would cascade; deleting them first collects their photo keys
 export function deleteUser(pool: Pool, id: number): Promise<string[]> {
     return withTransaction(pool, async (client) => {
         const menuKeys = await deletedKeys(

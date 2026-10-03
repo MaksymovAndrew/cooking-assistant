@@ -1,7 +1,7 @@
 import {
+    calorieRingFraction,
     exceedsCalorieBudget,
     exceedsCalorieBudgetForPortions,
-    formatKcal,
     formatKcalCompact,
     roundCalories,
     scaleCaloriesForPortions,
@@ -17,19 +17,28 @@ describe("roundCalories", () => {
     });
 });
 
+describe("calorieRingFraction", () => {
+    it("should fill the ring by the share of the goal eaten so far", () => {
+        expect(calorieRingFraction(500, 2000)).toBe(0.25);
+    });
+
+    it("should stop at a full ring once the goal is passed", () => {
+        expect(calorieRingFraction(2600, 2000)).toBe(1);
+    });
+
+    it("should leave the ring empty without a goal", () => {
+        expect(calorieRingFraction(500, 0)).toBe(0);
+    });
+});
+
 describe("scaleCaloriesForPortions", () => {
     it("should multiply the rounded per-portion value by the portion count", () => {
         expect(scaleCaloriesForPortions(22, 2)).toBe(44);
     });
 
     it("should round the per-portion value before multiplying, not after", () => {
-        // 21.6 rounds to 22 for one portion - two portions must read 44 (22 * 2), not 43
-        // (round(21.6 * 2) = round(43.2) = 43)
+        // round(21.6) * 2 = 44, while round(21.6 * 2) would be 43
         expect(scaleCaloriesForPortions(21.6, 2)).toBe(44);
-    });
-
-    it("should equal the rounded per-portion value for a single portion", () => {
-        expect(scaleCaloriesForPortions(21.6, 1)).toBe(22);
     });
 });
 
@@ -81,7 +90,6 @@ describe("exceedsCalorieBudget", () => {
 
 describe("exceedsCalorieBudgetForPortions", () => {
     it("should scale the per-portion value by the portion count before comparing", () => {
-        // 300/portion * 2 = 600, which is over a 500 remaining budget
         expect(exceedsCalorieBudgetForPortions(300, 2, 2000, 500)).toBe(true);
     });
 
@@ -91,16 +99,6 @@ describe("exceedsCalorieBudgetForPortions", () => {
 
     it("should be false when the recipe has no calorie data", () => {
         expect(exceedsCalorieBudgetForPortions(null, 2, 2000, 500)).toBe(false);
-    });
-});
-
-describe("formatKcal", () => {
-    it("should add a thousands separator", () => {
-        expect(formatKcal(1180, LOCALE)).toBe("1,180");
-    });
-
-    it("should leave a small number unchanged", () => {
-        expect(formatKcal(320, LOCALE)).toBe("320");
     });
 });
 

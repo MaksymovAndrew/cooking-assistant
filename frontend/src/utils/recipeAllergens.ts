@@ -1,6 +1,5 @@
 import type { RecipeDetailIngredient } from "types/recipe";
 
-// dedupes a flat list of allergen slugs
 export const filterAllergens = (allergens: string[]): string[] =>
     Array.from(new Set(allergens));
 

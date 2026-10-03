@@ -10,20 +10,23 @@ import { useIngredientCatalog } from "hooks/useIngredientCatalog";
 import { usePageTitle } from "hooks/usePageTitle";
 import { usePantryFilters } from "hooks/usePantryFilters";
 
-import { AddIngredientModal } from "components/ingredients/AddIngredientModal";
 import { IngredientGrid } from "components/ingredients/IngredientGrid";
 import { IngredientsPageHeader } from "components/ingredients/IngredientsPageHeader";
 import { IngredientsToolbar } from "components/ingredients/IngredientsToolbar";
 import { AppShell } from "components/layout/AppShell";
+import { AsyncContent } from "components/ui/AsyncContent";
 
 import { resolvePantryIngredientName } from "utils/ingredientName";
 
 import styles from "./page.module.scss";
 
+const SKELETON_ROWS = 6;
+
 const IngredientsPage: React.FC = () => {
     const { t } = useTranslation("ingredients");
     const dispatch = useAppDispatch();
     const catalog = useIngredientCatalog();
+    const isPantryReady = !catalog.isLoading && !catalog.isError;
 
     usePageTitle(t("heading"));
     const filters = usePantryFilters({
@@ -34,8 +37,12 @@ const IngredientsPage: React.FC = () => {
         <AppShell>
             <div className={styles["ingredients-page"]}>
                 <IngredientsPageHeader
-                    count={catalog.personIngredients.length}
-                    onAddIngredient={catalog.handleOpenAddModal}
+                    count={
+                        isPantryReady ? catalog.personIngredients.length : null
+                    }
+                    onAddIngredient={() => {
+                        dispatch(openModal({ type: MODAL_TYPE.addIngredient }));
+                    }}
                 />
 
                 <IngredientsToolbar
@@ -51,54 +58,46 @@ const IngredientsPage: React.FC = () => {
                     onCategoryFilterChange={filters.setCategoryFilter}
                 />
 
-                <IngredientGrid
-                    ingredients={filters.visibleIngredients}
-                    emptyMessage={filters.emptyMessage}
-                    onOpenHistory={(ingredient) => {
-                        dispatch(
-                            openModal({
-                                type: MODAL_TYPE.ingredientHistory,
-                                ingredientId: ingredient.id,
-                                ingredientName: resolvePantryIngredientName(
-                                    t,
+                <AsyncContent
+                    isLoading={catalog.isLoading}
+                    isError={catalog.isError}
+                    onRetry={catalog.retry}
+                    rows={SKELETON_ROWS}
+                >
+                    <IngredientGrid
+                        ingredients={filters.visibleIngredients}
+                        emptyMessage={filters.emptyMessage}
+                        onOpenHistory={(ingredient) => {
+                            dispatch(
+                                openModal({
+                                    type: MODAL_TYPE.ingredientHistory,
+                                    ingredientId: ingredient.id,
+                                    ingredientName: resolvePantryIngredientName(
+                                        t,
+                                        ingredient,
+                                    ),
+                                }),
+                            );
+                        }}
+                        onRestock={(ingredient) => {
+                            dispatch(
+                                openModal({
+                                    type: MODAL_TYPE.restockIngredient,
                                     ingredient,
-                                ),
-                            }),
-                        );
-                    }}
-                    onRestock={(ingredient) => {
-                        dispatch(
-                            openModal({
-                                type: MODAL_TYPE.restockIngredient,
-                                ingredient,
-                            }),
-                        );
-                    }}
-                    onDelete={(ingredient) => {
-                        dispatch(
-                            openModal({
-                                type: MODAL_TYPE.deleteIngredient,
-                                ingredient,
-                            }),
-                        );
-                    }}
-                />
+                                }),
+                            );
+                        }}
+                        onDelete={(ingredient) => {
+                            dispatch(
+                                openModal({
+                                    type: MODAL_TYPE.deleteIngredient,
+                                    ingredient,
+                                }),
+                            );
+                        }}
+                    />
+                </AsyncContent>
             </div>
-
-            {catalog.isAdding && (
-                <AddIngredientModal
-                    allIngredients={catalog.allIngredients}
-                    personIngredients={catalog.personIngredients}
-                    selectedIngredients={catalog.selectedIngredients}
-                    onToggle={catalog.toggleIngredientSelection}
-                    onConfirm={(quantities) => {
-                        catalog
-                            .handleConfirmAddIngredients(quantities)
-                            .catch(() => undefined);
-                    }}
-                    onClose={catalog.handleCancelAdd}
-                />
-            )}
         </AppShell>
     );
 };

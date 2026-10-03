@@ -10,8 +10,8 @@ import { API_ROUTES } from "api/endpoints";
 import { baseApi } from "./baseApi";
 import { listTag } from "./cacheTags";
 
-// pantry writes invalidate both the shared Pantry tag and the recipe list tag, since the recipe list's "in my pantry" filter depends on pantry contents
-const PANTRY_INVALIDATES = ["Pantry", listTag("Recipe")] as const;
+// the "in my pantry" recipe filter and menus' missing ingredients both read the pantry
+const PANTRY_INVALIDATES = ["Pantry", listTag("Recipe"), "Menu"] as const;
 
 export const userIngredientsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({

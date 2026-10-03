@@ -10,16 +10,12 @@ import {
     writeLastSeenDate,
 } from "utils/newsReadState";
 
-// tracks which news items the user hasn't opened the popup since - unlike a static "is this from the latest release" flag, the badge actually clears
 export const useNewsBadge = () => {
     const isHydrated = useIsHydrated();
     const { t } = useTranslation();
     const [storedDate, setStoredDate] = useState<string | null>(null);
 
-    // what the user has already seen is a browser-only fact, and the server renders this page
-    // now: reading it any earlier would both crash the render and make the first client render
-    // disagree. Adjusted during render, not in an effect, so the badge appears once instead of
-    // flashing on and off
+    // the seen date is browser-only: read once hydrated, during render so the badge doesn't flash
     if (isHydrated && storedDate === null) {
         setStoredDate(readLastSeenDate(t));
     }

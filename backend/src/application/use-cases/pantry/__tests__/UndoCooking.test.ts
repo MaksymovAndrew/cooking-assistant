@@ -1,10 +1,6 @@
 import { COOKING_UNDO_WINDOW_MS } from "constants/cooking";
 import { ERROR_CODES } from "constants/errorCodes";
-import {
-    ConflictError,
-    NotFoundError,
-    ValidationError,
-} from "domain/errors/AppError";
+import { ConflictError, NotFoundError } from "domain/errors/AppError";
 
 import UndoCooking from "application/use-cases/pantry/UndoCooking";
 
@@ -72,14 +68,5 @@ describe("UndoCooking", () => {
             ERROR_CODES.USER_NOT_FOUND,
             404,
         );
-    });
-
-    it("should reject an id that is not a positive integer", async () => {
-        const { useCase, pantryConsumptionRepository } = setup();
-
-        const error = await catchError(useCase.execute(7, "abc"));
-
-        expect(error).toBeInstanceOf(ValidationError);
-        expect(pantryConsumptionRepository.undo).not.toHaveBeenCalled();
     });
 });

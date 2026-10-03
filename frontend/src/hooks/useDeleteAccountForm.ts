@@ -16,7 +16,7 @@ import {
     writeLockout,
 } from "utils/loginLockout";
 
-export const useDeleteAccountForm = (login: string) => {
+export const useDeleteAccountForm = (login: string, onDeleted: () => void) => {
     const { t } = useTranslation("settings");
     const router = useAppRouter();
     const [deleteAccount, { isLoading: isSubmitting }] =
@@ -47,6 +47,7 @@ export const useDeleteAccountForm = (login: string) => {
 
         if ("data" in result) {
             clearLockout(login, DELETE_ACCOUNT_STORAGE_KEY_PREFIX);
+            onDeleted();
             router.push(ROUTES.login);
 
             return;
@@ -64,7 +65,16 @@ export const useDeleteAccountForm = (login: string) => {
         }
 
         setError(t(failure.errorKey, { seconds: failure.seconds }));
-    }, [deleteAccount, isLocked, lockout, login, router, password, t]);
+    }, [
+        deleteAccount,
+        isLocked,
+        lockout,
+        login,
+        onDeleted,
+        router,
+        password,
+        t,
+    ]);
 
     return {
         password,

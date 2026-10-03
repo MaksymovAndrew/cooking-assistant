@@ -6,7 +6,6 @@ interface SessionVersionRow {
     session_version: number;
 }
 
-// each answers the new session version, or null when the person is gone
 async function sessionVersion(
     pool: Pool,
     sql: string,

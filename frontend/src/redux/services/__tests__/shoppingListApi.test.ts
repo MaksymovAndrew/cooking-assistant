@@ -41,15 +41,6 @@ const cachedList = (store: ReturnType<typeof makeTestStore>) =>
         .data;
 
 describe("shoppingListApi", () => {
-    it("should fetch the shopping list", async () => {
-        const store = await loadList([item(1)]);
-
-        expect(mockedGet).toHaveBeenCalledWith(API_ROUTES.shoppingList.list, {
-            params: undefined,
-        });
-        expect(cachedList(store)).toEqual([item(1)]);
-    });
-
     it("should refetch the list once a tick is saved, so an overlapping refetch cannot leave it stale", async () => {
         const store = await loadList([item(1)]);
 

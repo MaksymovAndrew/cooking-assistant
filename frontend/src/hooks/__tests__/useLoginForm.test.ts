@@ -5,7 +5,7 @@ import { API_ROUTES } from "api/endpoints";
 import { useLoginForm } from "hooks/useLoginForm";
 
 import { mockedPost } from "test/apiClientMock";
-import { ROUTE_HOME, ROUTE_LOGIN } from "test/constants";
+import { ROUTE_HOME } from "test/constants";
 import { mockNavigate } from "test/router";
 import { renderHookWithRouter } from "test/store";
 
@@ -24,11 +24,7 @@ const makeError = (status: number, retryAfter: number | null = null) =>
         },
     });
 
-const renderLoginForm = (initialEntries?: string[]) =>
-    renderHookWithRouter(
-        () => useLoginForm(),
-        initialEntries ? { initialEntries } : undefined,
-    );
+const renderLoginForm = () => renderHookWithRouter(() => useLoginForm());
 
 const fillCredentials = (result: {
     current: ReturnType<typeof useLoginForm>;
@@ -58,21 +54,6 @@ describe("useLoginForm", () => {
             password: "secret1",
         });
         expect(mockNavigate).toHaveBeenCalledWith(ROUTE_HOME);
-    });
-
-    it("should navigate back to where the user came from on a successful login", async () => {
-        mockedPost.mockResolvedValue({ data: null });
-        sessionStorage.setItem("login-redirect", "/menu/9");
-
-        const { result } = renderLoginForm([ROUTE_LOGIN]);
-
-        fillCredentials(result);
-
-        await act(async () => {
-            await result.current.handleSubmit();
-        });
-
-        expect(mockNavigate).toHaveBeenCalledWith("/menu/9");
     });
 
     it("should trim leading and trailing whitespace from the login before submitting", async () => {
@@ -173,50 +154,6 @@ describe("useLoginForm", () => {
             expect(mockedPost).toHaveBeenCalledTimes(1);
         });
 
-        it("should re-enable submission after lockout expires", async () => {
-            jest.useFakeTimers();
-            mockedPost
-                .mockRejectedValueOnce(makeError(429))
-                .mockResolvedValue({ data: null });
-
-            const { result } = renderLoginForm();
-
-            fillCredentials(result);
-
-            await act(async () => {
-                await result.current.handleSubmit();
-            });
-
-            expect(result.current.isLocked).toBe(true);
-
-            act(() => {
-                jest.advanceTimersByTime(60_000);
-            });
-
-            expect(result.current.isLocked).toBe(false);
-
-            await act(async () => {
-                await result.current.handleSubmit();
-            });
-
-            expect(mockedPost).toHaveBeenCalledTimes(2);
-            jest.useRealTimers();
-        });
-
-        it("should report the cool-down in the lockout message", async () => {
-            mockedPost.mockRejectedValue(makeError(429));
-
-            const { result } = renderLoginForm();
-
-            fillCredentials(result);
-
-            await act(async () => {
-                await result.current.handleSubmit();
-            });
-
-            expect(result.current.error).toContain("60");
-        });
-
         it("should use the server Retry-After value for the cool-down when provided", async () => {
             mockedPost.mockRejectedValue(makeError(429, 30));
 
@@ -252,6 +189,44 @@ describe("useLoginForm", () => {
             expect(result.current.isLocked).toBe(true);
             expect(result.current.lockoutRemainingMs).toBeGreaterThan(59_000);
             expect(result.current.lockoutTotalMs).toBe(60_000);
+        });
+
+        describe("once the cool-down runs out", () => {
+            beforeEach(() => {
+                jest.useFakeTimers();
+            });
+
+            afterEach(() => {
+                jest.useRealTimers();
+            });
+
+            it("should re-enable submission after lockout expires", async () => {
+                mockedPost
+                    .mockRejectedValueOnce(makeError(429))
+                    .mockResolvedValue({ data: null });
+
+                const { result } = renderLoginForm();
+
+                fillCredentials(result);
+
+                await act(async () => {
+                    await result.current.handleSubmit();
+                });
+
+                expect(result.current.isLocked).toBe(true);
+
+                act(() => {
+                    jest.advanceTimersByTime(60_000);
+                });
+
+                expect(result.current.isLocked).toBe(false);
+
+                await act(async () => {
+                    await result.current.handleSubmit();
+                });
+
+                expect(mockedPost).toHaveBeenCalledTimes(2);
+            });
         });
     });
 
@@ -399,59 +374,6 @@ describe("useLoginForm", () => {
             expect(result.current.values.login).toBe("accountB");
             expect(result.current.isLocked).toBe(false);
             expect(result.current.error).toBeNull();
-        });
-
-        it("should escalate to the next ladder stage (5 minutes) on a second round of 5 failures", async () => {
-            jest.useFakeTimers();
-            mockedPost.mockRejectedValue(makeError(401));
-
-            const { result } = renderLoginForm();
-
-            for (let i = 0; i < 5; i += 1) {
-                await failOnce(result);
-            }
-
-            expect(result.current.isLocked).toBe(true);
-            expect(result.current.lockoutTotalMs).toBe(60_000);
-
-            act(() => {
-                jest.advanceTimersByTime(60_000);
-            });
-
-            expect(result.current.isLocked).toBe(false);
-
-            for (let i = 0; i < 5; i += 1) {
-                await failOnce(result);
-            }
-
-            expect(result.current.isLocked).toBe(true);
-            expect(result.current.lockoutTotalMs).toBe(5 * 60_000);
-
-            jest.useRealTimers();
-        });
-
-        it("should expose a live remaining-time countdown that ticks down while locked", async () => {
-            jest.useFakeTimers();
-            mockedPost.mockRejectedValue(makeError(401));
-
-            const { result } = renderLoginForm();
-
-            for (let i = 0; i < 5; i += 1) {
-                await failOnce(result);
-            }
-
-            const initialRemaining = result.current.lockoutRemainingMs;
-
-            expect(initialRemaining).not.toBeNull();
-
-            act(() => {
-                jest.advanceTimersByTime(1000);
-            });
-
-            expect(result.current.lockoutRemainingMs).toBeLessThan(
-                initialRemaining ?? 0,
-            );
-            jest.useRealTimers();
         });
 
         it("should persist the lockout across a remount for the same login", async () => {

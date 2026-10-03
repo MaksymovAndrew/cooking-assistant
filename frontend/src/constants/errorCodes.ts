@@ -1,4 +1,4 @@
-// mirrors backend/src/constants/errorCodes.ts one to one - a backend test fails the build if the two drift apart
+// mirrors backend/src/constants/errorCodes.ts; a backend test fails if the two drift apart
 export const ERROR_CODES = {
     BAD_REQUEST: "bad_request",
     PAYLOAD_TOO_LARGE: "payload_too_large",
@@ -19,9 +19,7 @@ export const ERROR_CODES = {
 
     RECIPE_NOT_FOUND: "recipe/not_found",
     RECIPE_INGREDIENTS_EMPTY: "recipe/ingredients_empty",
-    RECIPE_INGREDIENTS_NO_ID: "recipe/ingredients_missing_id",
     RECIPE_INGREDIENTS_NOT_EXIST: "recipe/ingredients_not_exist",
-    RECIPE_TITLE_CONTENT_EMPTY: "recipe/title_content_empty",
     RECIPE_IN_PANTRY_REQUIRES_LOGIN: "recipe/in_pantry_requires_login",
     RECIPE_TYPE_NOT_EXIST: "recipe/type_not_exist",
 

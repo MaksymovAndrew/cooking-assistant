@@ -24,7 +24,7 @@ export function updatePurchaseQuantity(
             return rolledBack(false);
         }
 
-        // apply the purchase edit as a delta on the pantry stock so prior consumption is preserved (recomputing as SUM of purchases would lose it)
+        // a delta, not a SUM of purchases, so stock already consumed stays consumed
         const { quantity: oldQuantity, ingredient_id: ingredientId } =
             purchase.rows[0];
         const delta = quantity - oldQuantity;
@@ -61,8 +61,7 @@ async function removeEmptiedRows(
     );
 }
 
-// the lots leave the stock with them; an ingredient's last lot takes its pantry row along, like
-// deleting the item. Answers how many of the given purchases were the user's and are now gone
+// an ingredient's last lot takes its pantry row along, like deleting the item
 export function deletePurchases(
     pool: Pool,
     userId: number,

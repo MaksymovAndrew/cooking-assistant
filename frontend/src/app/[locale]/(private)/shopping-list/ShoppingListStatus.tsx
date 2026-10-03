@@ -14,7 +14,6 @@ interface ShoppingListStatusProps {
     onRetry: () => void;
 }
 
-// whatever stands in for the list when there is none to show
 export const ShoppingListStatus: React.FC<ShoppingListStatusProps> = ({
     isError,
     isLoading,

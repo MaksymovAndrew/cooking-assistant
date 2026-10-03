@@ -8,7 +8,6 @@ import { useShareLink } from "hooks/useShareLink";
 import styles from "./ShareButton.module.scss";
 
 interface ShareButtonProps {
-    // what the share sheet shows beside the link
     title: string;
     iconSize: number;
 }

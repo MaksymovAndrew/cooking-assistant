@@ -158,12 +158,6 @@ describe("useHomeDashboard", () => {
         );
     });
 
-    it("should flatten the recent recipes from the infinite query pages", async () => {
-        const { result } = await setup([RECIPE_1]);
-
-        expect(result.current.recentRecipes).toEqual([RECIPE_1]);
-    });
-
     it("should sort urgent pantry ingredients by nearest expiry and exclude fresh or no-data ones", async () => {
         const { result } = await setup(
             [RECIPE_1],

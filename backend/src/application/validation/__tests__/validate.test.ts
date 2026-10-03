@@ -15,7 +15,6 @@ function rejection(schema: z.ZodType, input: unknown): unknown {
     });
 }
 
-// the English text the error renders to at the HTTP edge
 function detailOf(schema: z.ZodType, input: unknown): string | null {
     const error = rejection(schema, input);
 

@@ -27,11 +27,10 @@ function shutdown(signal: string, exitCode = 0) {
         });
     });
 
-    // force-exit if connections do not drain in time
     setTimeout(() => process.exit(1), SHUTDOWN_FORCE_EXIT_MS).unref();
 }
 
-// a stray rejection or throw leaves the process in an unknown state: log it and let the container restart it
+// state is unknown after a stray rejection or throw: exit and let the container restart
 process.on("unhandledRejection", (reason: unknown) => {
     logger.fatal({ err: reason }, "unhandled promise rejection");
     shutdown("unhandledRejection", 1);

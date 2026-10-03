@@ -27,8 +27,6 @@ interface AddIngredientPickerStepProps {
 
 const MAX_RESULTS = 8;
 
-// the "pick ingredients" step of AddIngredientModal - search/category browsing plus the
-// removable chips for what's selected so far
 export const AddIngredientPickerStep: React.FC<
     AddIngredientPickerStepProps
 > = ({
@@ -70,8 +68,7 @@ export const AddIngredientPickerStep: React.FC<
         setQuery("");
     };
 
-    // reopens the dropdown on typing after it's been dismissed with Escape - Escape doesn't blur the
-    // input, so onFocus alone never fires again and results would stay hidden until a manual re-click
+    // closing on Escape doesn't blur the input, so typing has to reopen the dropdown
     const handleQueryChange = (value: string) => {
         setQuery(value);
         onOpenChange(true);

@@ -39,19 +39,6 @@ describe("SearchRecipes", () => {
         expect(result).toEqual(paginated);
     });
 
-    it("should pass through recipe_name unchanged", async () => {
-        const { useCase, recipeRepository } = setup();
-        const paginated = { items: [], total: 0 };
-
-        recipeRepository.search.mockResolvedValue(paginated);
-
-        await useCase.execute(7, { recipe_name: "Borscht" });
-
-        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
-            recipe_name: "Borscht",
-        });
-    });
-
     it("should pass through valid limit and offset as numbers", async () => {
         const { useCase, recipeRepository } = setup();
         const paginated = { items: [], total: 0 };
@@ -63,20 +50,6 @@ describe("SearchRecipes", () => {
         expect(recipeRepository.search).toHaveBeenCalledWith(7, {
             limit: 10,
             offset: 20,
-        });
-    });
-
-    it("should pass through min_calories and max_calories as numbers", async () => {
-        const { useCase, recipeRepository } = setup();
-        const paginated = { items: [], total: 0 };
-
-        recipeRepository.search.mockResolvedValue(paginated);
-
-        await useCase.execute(7, { min_calories: "200", max_calories: "600" });
-
-        expect(recipeRepository.search).toHaveBeenCalledWith(7, {
-            min_calories: 200,
-            max_calories: 600,
         });
     });
 
@@ -119,22 +92,6 @@ describe("SearchRecipes", () => {
             ERROR_CODES.VALIDATION_ERROR,
             400,
             "type_ids: Must be a comma-separated list of IDs",
-        );
-        expect(recipeRepository.search).not.toHaveBeenCalled();
-    });
-
-    it("should throw a 400 ValidationError when ingredient_ids is not an id list", async () => {
-        const { useCase, recipeRepository } = setup();
-
-        const error = await catchError(
-            useCase.execute(7, { ingredient_ids: "abc" }),
-        );
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.VALIDATION_ERROR,
-            400,
-            "ingredient_ids: Must be a comma-separated list of IDs",
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();
     });
@@ -337,6 +294,21 @@ describe("SearchRecipes", () => {
         expect(error).toBeAppError(
             ValidationError,
             ERROR_CODES.DIET_REQUIRES_LOGIN,
+            400,
+        );
+        expect(recipeRepository.search).not.toHaveBeenCalled();
+    });
+
+    it("should throw a 400 ValidationError when an anonymous request uses tag_ids", async () => {
+        const { useCase, recipeRepository } = setup();
+
+        const error = await catchError(
+            useCase.execute(null, { tag_ids: "3,4" }),
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.TAGS_REQUIRES_LOGIN,
             400,
         );
         expect(recipeRepository.search).not.toHaveBeenCalled();

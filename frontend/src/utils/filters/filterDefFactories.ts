@@ -21,9 +21,6 @@ interface TextFilterConfig<TParams> {
     chipLabel?: (value: string, t: TFunction) => string;
 }
 
-// param is optional because a text filter's meaning is page-specific: menus map the
-// text straight onto a "name contains" param, recipes first resolve it to ingredient
-// ids against the catalog and fold that in themselves
 export function textFilter<TParams>({
     key,
     urlParam,

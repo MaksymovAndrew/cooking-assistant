@@ -35,7 +35,6 @@ export const updateMenuSchema = createMenuSchema.omit({
     personId: true,
 });
 
-// output shape is checked against the domain's MenuFilters below - the repository interface is typed against that, not against this schema
 export const menuFiltersSchema = z.object({
     menu_name: z.string().optional(),
     category_ids: idListStringSchema.optional(),

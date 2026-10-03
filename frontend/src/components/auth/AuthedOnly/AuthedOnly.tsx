@@ -9,8 +9,6 @@ interface AuthedOnlyProps {
     fallback?: ReactNode;
 }
 
-// keeps auth-branching out of leaf components: render logged-in-only UI without an isAuthed
-// check at every call site
 export const AuthedOnly: React.FC<AuthedOnlyProps> = ({
     children,
     fallback = null,

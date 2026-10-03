@@ -23,8 +23,6 @@ interface Totals {
     rating_count: number;
 }
 
-// targets the running totals the vote-table triggers keep (including through a cascade), the per-viewer
-// read columns, the rating sort and filter, and the CASCADE foreign keys
 describe("PgRatingRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgRatingRepository;

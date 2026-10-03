@@ -94,6 +94,29 @@ describe("useResetPasswordForm", () => {
         );
     });
 
+    it("should reject a password over 72 bytes without submitting", async () => {
+        withToken(TOKEN);
+
+        const { result } = renderResetPasswordForm();
+        const tooLong = `${"ж".repeat(37)}1!`;
+
+        act(() => {
+            result.current.setNewPassword(tooLong);
+        });
+        act(() => {
+            result.current.setConfirmPassword(tooLong);
+        });
+
+        await act(async () => {
+            await result.current.handleSubmit();
+        });
+
+        expect(mockedPost).not.toHaveBeenCalled();
+        expect(result.current.error).toBe(
+            "Password is too long. Use at most 72 Latin letters, or 36 Cyrillic ones.",
+        );
+    });
+
     it("should reject mismatched passwords without submitting", async () => {
         withToken(TOKEN);
 

@@ -3,7 +3,6 @@ import i18next from "i18next";
 import { ERROR_CODES } from "constants/errorCodes";
 
 import {
-    EMPTY_REGISTER_FORM,
     hasEmptyRegisterField,
     registerErrorMessage,
     registerFieldErrors,
@@ -28,15 +27,23 @@ describe("hasEmptyRegisterField", () => {
     it("should pass a fully filled form", () => {
         expect(hasEmptyRegisterField(VALID)).toBe(false);
     });
-
-    it("should flag the untouched form", () => {
-        expect(hasEmptyRegisterField(EMPTY_REGISTER_FORM)).toBe(true);
-    });
 });
 
 describe("registerFieldErrors", () => {
     it("should report nothing for valid values", () => {
         expect(registerFieldErrors(VALID, t)).toEqual({});
+    });
+
+    it("should say a password over 72 bytes is too long", () => {
+        expect(
+            registerFieldErrors(
+                { ...VALID, password: `${"ж".repeat(37)}1!` },
+                t,
+            ),
+        ).toEqual({
+            password:
+                "Password is too long. Use at most 72 Latin letters, or 36 Cyrillic ones.",
+        });
     });
 
     it("should report only the field that fails", () => {
@@ -71,6 +78,26 @@ describe("registerErrorMessage", () => {
     it("should treat any other conflict as a taken login", () => {
         expect(registerErrorMessage({ status: 409, data: "taken" }, t)).toBe(
             t("errors.userExists"),
+        );
+    });
+
+    it("should ask to wait out the server's cool-down when rate limited", () => {
+        expect(
+            registerErrorMessage(
+                {
+                    status: 429,
+                    data: "slow down",
+                    code: ERROR_CODES.RATE_LIMITED,
+                    retryAfter: 30,
+                },
+                t,
+            ),
+        ).toBe("Too many registration attempts. Please wait 30 seconds.");
+    });
+
+    it("should blame the server, not the details, for a 5xx", () => {
+        expect(registerErrorMessage({ status: 503, data: "down" }, t)).toBe(
+            t("errors.serverError"),
         );
     });
 

@@ -8,8 +8,10 @@ jest.mock("api/server", () => ({ fetchPublic: jest.fn() }));
 
 const mockedFetch = fetchPublic as jest.MockedFunction<typeof fetchPublic>;
 
+const CREATED = "2025-03-14T00:00:00.000Z";
+
 const page = (ids: number[], total: number) => ({
-    items: ids.map((id) => ({ id })),
+    items: ids.map((id) => ({ id, creation_date: CREATED })),
     total,
 });
 
@@ -26,7 +28,7 @@ const respondWith = (
 
 const SITE = "http://localhost:8080";
 
-// the default-language address of every page, which is the one without a prefix
+// default-language addresses only: those carry no prefix
 const urls = async (): Promise<string[]> =>
     (await sitemap())
         .map((entry) => entry.url)
@@ -88,6 +90,18 @@ describe("sitemap", () => {
             uk: `${SITE}/uk/recipe/1`,
         });
         expect(entries.map((entry) => entry.url)).toContain(`${SITE}/uk`);
+    });
+
+    it("should date each record by its publication and leave the browse pages undated", async () => {
+        respondWith({ "/api/menu": page([3], 1) });
+
+        const entries = await sitemap();
+        const dateOf = (url: string) =>
+            entries.find((entry) => entry.url === url)?.lastModified;
+
+        expect(dateOf(`${SITE}/menu/3`)).toBe(CREATED);
+        expect(dateOf(`${SITE}/pl/menu/3`)).toBe(CREATED);
+        expect(dateOf(`${SITE}/all-menus`)).toBeUndefined();
     });
 
     it("should stop when the api answers with nothing", async () => {

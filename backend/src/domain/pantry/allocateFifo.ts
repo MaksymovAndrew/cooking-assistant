@@ -14,14 +14,14 @@ export interface FifoAllocation {
     shortfall: number;
 }
 
-// three decimals, the precision the pantry filter compares at, so float noise never leaves a 0.0000001 lot behind
+// the pantry filter's precision, so float noise never leaves a 0.0000001 lot behind
 const QUANTITY_SCALE = 1000;
 
 export function roundQuantity(value: number): number {
     return Math.round(value * QUANTITY_SCALE) / QUANTITY_SCALE;
 }
 
-// lots must arrive oldest first; the oldest stock is used up before a newer lot is touched
+// lots must arrive oldest first
 export function allocateFifo(
     lots: PantryLot[],
     needed: number,
@@ -64,7 +64,7 @@ export interface IngredientDeduction extends LotDeduction {
     ingredient_id: number;
 }
 
-// lots must arrive oldest first; an ingredient with no lots is simply left out of the result
+// lots must arrive oldest first
 export function allocateNeeds(
     needs: IngredientNeed[],
     lots: IngredientLot[],

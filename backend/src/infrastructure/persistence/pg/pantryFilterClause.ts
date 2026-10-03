@@ -10,15 +10,14 @@ export const pantryFilterClause = {
         _filters: RecipeFilters,
         context: ClauseContext,
     ) => {
-        // SearchRecipes already rejects in_pantry for a null (guest) requester before the query
-        // is built - this re-check only narrows userId to number for the bind() call below
+        // guests are rejected before the query is built - this only narrows userId for bind()
         const { userId } = context;
 
         if (userId === null) {
             return;
         }
 
-        // a recipe qualifies only if the pantry covers every ingredient in sufficient quantity (ROUND avoids float noise, see PgPantryRepository.queries.ts); the second EXISTS rules out ingredient-less recipes, which would pass the NOT EXISTS trivially otherwise
+        // ROUND avoids float noise; the EXISTS keeps ingredient-less recipes from passing vacuously
         builder.add(
             (bind) => `NOT EXISTS (
         SELECT 1 FROM recipe_ingredients ri2

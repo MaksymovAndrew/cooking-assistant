@@ -1,4 +1,4 @@
-// hand-written translations for the closed vocabularies (categories, allergens) - unlike ingredient names these never come from the translation source, cross-checked against catalog.types.ts's key lists at generation time
+// hand-written: the category list is closed, so it never comes from the translation source
 import type { Locale } from "constants/locales";
 
 import type { CATEGORY_KEYS } from "./catalog.types";

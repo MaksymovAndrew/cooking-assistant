@@ -6,15 +6,38 @@ import { ROUTES } from "constants/routes";
 
 import { API_ROUTES } from "api/endpoints";
 
+import { selectActiveModal } from "redux/selectors/uiSelectors";
+import { MODAL_TYPE } from "redux/slices/uiSlice";
+
 import { DeleteAccountModal } from "components/settings/DeleteAccountModal";
 
 import { mockedDelete } from "test/apiClientMock";
 import { mockNavigate, renderWithProviders } from "test/router";
+import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
 
 const LOGIN = "claude";
 const DELETE_ACCOUNT = "Delete account";
+const MODAL_ID = "m1";
+
+const renderOpen = () =>
+    renderWithProviders(
+        <DeleteAccountModal modalId={MODAL_ID} login={LOGIN} />,
+        {
+            store: makeTestStore({
+                ui: {
+                    queue: [
+                        {
+                            id: MODAL_ID,
+                            type: MODAL_TYPE.deleteAccount,
+                            login: LOGIN,
+                        },
+                    ],
+                },
+            }),
+        },
+    );
 
 const fillAndSubmit = async (password = "secret1!") => {
     await userEvent.type(screen.getByLabelText("Password"), password);
@@ -22,32 +45,18 @@ const fillAndSubmit = async (password = "secret1!") => {
 };
 
 describe("DeleteAccountModal", () => {
-    it("should render the warning title and message", () => {
-        renderWithProviders(
-            <DeleteAccountModal login={LOGIN} onClose={jest.fn()} />,
-        );
-
-        expect(screen.getByText("Delete account?")).toBeInTheDocument();
-    });
-
-    it("should call onClose when Cancel is clicked", async () => {
-        const onClose = jest.fn();
-
-        renderWithProviders(
-            <DeleteAccountModal login={LOGIN} onClose={onClose} />,
-        );
+    it("should close the modal when Cancel is clicked", async () => {
+        const { store } = renderOpen();
 
         await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
-        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(selectActiveModal(store.getState())).toBeNull();
     });
 
     it("should delete the account and navigate to login on success", async () => {
         mockedDelete.mockResolvedValue({ data: null });
 
-        renderWithProviders(
-            <DeleteAccountModal login={LOGIN} onClose={jest.fn()} />,
-        );
+        renderOpen();
 
         await fillAndSubmit("secret1!");
 
@@ -71,9 +80,7 @@ describe("DeleteAccountModal", () => {
             message: "Request failed",
         });
 
-        renderWithProviders(
-            <DeleteAccountModal login={LOGIN} onClose={jest.fn()} />,
-        );
+        renderOpen();
 
         await fillAndSubmit("wrong-password");
 
@@ -82,9 +89,7 @@ describe("DeleteAccountModal", () => {
     });
 
     it("should show a required-password error and not submit when the field is empty", async () => {
-        renderWithProviders(
-            <DeleteAccountModal login={LOGIN} onClose={jest.fn()} />,
-        );
+        renderOpen();
 
         await userEvent.click(
             screen.getByRole("button", { name: DELETE_ACCOUNT }),
@@ -109,9 +114,7 @@ describe("DeleteAccountModal", () => {
             message: "Request failed",
         });
 
-        renderWithProviders(
-            <DeleteAccountModal login={LOGIN} onClose={jest.fn()} />,
-        );
+        renderOpen();
 
         for (let i = 0; i < 5; i += 1) {
             await fillAndSubmit("wrong-password");

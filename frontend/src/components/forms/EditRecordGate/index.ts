@@ -1,0 +1,1 @@
+export { EditRecordGate } from "./EditRecordGate";

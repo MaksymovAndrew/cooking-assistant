@@ -34,12 +34,4 @@ describe("OfflineModal", () => {
 
         expect(selectActiveModal(store.getState())).toBeNull();
     });
-
-    it("should close the modal when the overlay is clicked", async () => {
-        const { store } = renderOpen();
-
-        await userEvent.click(screen.getByRole("presentation"));
-
-        expect(selectActiveModal(store.getState())).toBeNull();
-    });
 });

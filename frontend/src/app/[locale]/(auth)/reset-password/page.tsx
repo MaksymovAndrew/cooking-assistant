@@ -37,6 +37,7 @@ const ResetPasswordPage: React.FC = () => {
             {form.tokenInvalid ? (
                 <EmptyState
                     icon={AlertTriangle}
+                    titleAs="h1"
                     title={t("resetPasswordPage.invalidHeading")}
                     description={t("resetPasswordPage.invalidMessage")}
                     action={

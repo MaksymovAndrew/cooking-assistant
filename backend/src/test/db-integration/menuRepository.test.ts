@@ -15,6 +15,9 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
+// far more recipes than any other test's menu, so it always tops the recipe-count extremes
+const LARGE_MENU_CALORIES = Array.from({ length: 50 }, () => 10);
+
 describe("PgMenuRepository (real Postgres)", () => {
     let pool: Pool;
     let menuRepository: PgMenuRepository;
@@ -280,6 +283,7 @@ describe("PgMenuRepository (real Postgres)", () => {
             content: "For stats tests.",
             language: "en",
             person_id: ownerId,
+            cooking_time: 2,
             ingredients: [{ id: ingredientId, quantity_recipe_ingredients: 1 }],
         });
         const created = (await recipeRepository.create(recipe)) as {
@@ -289,48 +293,54 @@ describe("PgMenuRepository (real Postgres)", () => {
         return created.id;
     }
 
-    it("should sum total_calories across a menu's recipes when all of them have calorie data", async () => {
-        const recipeAId = await createRecipeWithCalories(10);
-        const recipeBId = await createRecipeWithCalories(50);
+    async function createMenuOfRecipes(
+        menuTitle: string,
+        calories: (number | null)[],
+    ): Promise<number> {
+        const recipeIds = await Promise.all(
+            calories.map((value) => createRecipeWithCalories(value)),
+        );
         const menu = Menu.forCreation({
-            menuTitle: "Stats calorie check - complete",
+            menuTitle,
             menuContent: "Notes.",
             language: "en",
             categoryId,
             personId: ownerId,
-            recipeIds: [recipeAId, recipeBId],
+            recipeIds,
         });
 
-        await menuRepository.create(menu, [recipeAId, recipeBId]);
-        const rows = await menuRepository.findAllUnpaginated();
-        const mine = rows.find(
-            (row) => row.title === "Stats calorie check - complete",
+        return menuRepository.create(menu, recipeIds);
+    }
+
+    it("should sum a menu's calories, recipes and cooking time into its statistics", async () => {
+        const menuId = await createMenuOfRecipes(
+            "Stats sum check",
+            LARGE_MENU_CALORIES,
         );
 
-        expect(mine?.total_calories).toBe(60);
+        const stats = await menuRepository.getStats();
+
+        expect(
+            stats.mostRecipesMenus.find((entry) => entry.id === menuId),
+        ).toMatchObject({
+            recipe_count: 50,
+            total_calories: 500,
+            total_cooking_time: 100,
+        });
     });
 
-    it("should report total_calories as null (not an undercounted number) when one of the menu's recipes has no calorie data", async () => {
-        const recipeWithCaloriesId = await createRecipeWithCalories(10);
-        const recipeWithoutCaloriesId = await createRecipeWithCalories(null);
-        const menu = Menu.forCreation({
-            menuTitle: "Stats calorie check - incomplete",
-            menuContent: "Notes.",
-            language: "en",
-            categoryId,
-            personId: ownerId,
-            recipeIds: [recipeWithCaloriesId, recipeWithoutCaloriesId],
-        });
-
-        await menuRepository.create(menu, [
-            recipeWithCaloriesId,
-            recipeWithoutCaloriesId,
+    it("should report a menu's calories as null and keep it out of the calorie extremes when one recipe has none", async () => {
+        const menuId = await createMenuOfRecipes("Stats gap check", [
+            ...LARGE_MENU_CALORIES,
+            null,
         ]);
-        const rows = await menuRepository.findAllUnpaginated();
-        const mine = rows.find(
-            (row) => row.title === "Stats calorie check - incomplete",
-        );
 
-        expect(mine?.total_calories).toBeNull();
+        const stats = await menuRepository.getStats();
+        const caloric = [...stats.mostCaloricMenus, ...stats.leastCaloricMenus];
+
+        expect(
+            stats.mostRecipesMenus.find((entry) => entry.id === menuId),
+        ).toMatchObject({ recipe_count: 51, total_calories: null });
+        expect(caloric.some((entry) => entry.id === menuId)).toBe(false);
     });
 });

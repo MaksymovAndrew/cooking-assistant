@@ -22,7 +22,6 @@ export interface ReferenceControllers {
     menuCategoryController: MenuCategoryController;
 }
 
-// the read-only catalog lists; split out of composition-root.ts to keep it under the line-count lint cap
 export function buildReferenceControllers({
     ingredientRepository,
     recipeTypeRepository,

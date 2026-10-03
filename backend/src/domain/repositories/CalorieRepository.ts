@@ -21,7 +21,6 @@ export interface CalorieGoal {
     calorie_goal: number | null;
 }
 
-// title/calories as they exist right now - the source for a fresh intake log snapshot, not the snapshot itself
 export interface CalorieSourceInfo {
     title: string;
     calories: number | null;

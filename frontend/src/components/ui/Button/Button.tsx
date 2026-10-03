@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { useIsHydrated } from "hooks/useIsHydrated";
 
+import { cx } from "utils/cx";
+
 import styles from "./Button.module.scss";
 
 export type ButtonVariant =
@@ -47,7 +49,7 @@ const buildClassName = ({
     isAwaitingHydration,
     className,
 }: ButtonClassNameInput): string =>
-    [
+    cx(
         styles.button,
         VARIANT_CLASS[variant],
         SIZE_CLASS[size],
@@ -55,9 +57,7 @@ const buildClassName = ({
         loading && styles["button--loading"],
         isAwaitingHydration && styles["button--awaiting-hydration"],
         className,
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
 export const Button: React.FC<ButtonProps> = ({
     variant = "primary",
@@ -72,10 +72,7 @@ export const Button: React.FC<ButtonProps> = ({
     ...rest
 }) => {
     const { t } = useTranslation();
-    // the server sends fully clickable markup before React hydrates. A submit landing then is a
-    // native browser submit, which puts every field - passwords included - into the URL; a click
-    // handler does not exist yet at all, so the press is swallowed and the button lies about being
-    // ready. Either way the control is not usable until hydration, so it says so
+    // before hydration a submit is native and puts passwords in the URL, and a click does nothing
     const isHydrated = useIsHydrated();
     const needsHydration = type === "submit" || Boolean(onClick);
     const isAwaitingHydration = !isHydrated && needsHydration;

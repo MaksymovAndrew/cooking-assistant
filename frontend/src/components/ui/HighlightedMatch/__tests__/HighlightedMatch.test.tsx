@@ -16,7 +16,7 @@ describe("HighlightedMatch", () => {
         render(<HighlightedMatch text="Potato" query="zzz" />);
 
         expect(
-            screen.queryByText("", { selector: "strong" }),
+            screen.queryByText("Potato", { selector: "strong" }),
         ).not.toBeInTheDocument();
         expect(screen.getByText("Potato")).toBeInTheDocument();
     });

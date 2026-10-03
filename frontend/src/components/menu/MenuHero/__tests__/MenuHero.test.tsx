@@ -4,12 +4,11 @@ import type { MenuDetails } from "types/menu";
 
 import { MenuHero } from "components/menu/MenuHero";
 
-import { TEST_AUTHOR, TEST_UNRATED } from "test/constants";
+import { OVER_BUDGET_TOOLTIP, TEST_AUTHOR, TEST_UNRATED } from "test/constants";
 import { renderWithRouter } from "test/router";
 
 const MENU_TITLE = "Sunday dinners";
 const CALORIES_LABEL = "620 kcal";
-const OVER_BUDGET_TOOLTIP = "Exceeds your remaining calories for today";
 
 const BASE_MENU: MenuDetails["menu"] = {
     creation_date: "2026-01-01T00:00:00.000Z",
@@ -60,18 +59,12 @@ describe("MenuHero", () => {
         expect(screen.getAllByText(CALORIES_LABEL)).toHaveLength(2);
     });
 
-    it("should recolor both calorie stats when exceedsBudget is true", () => {
+    it("should flag both calorie stats as over budget when exceedsBudget is true", () => {
         renderWithRouter(
             <MenuHero {...baseProps} caloriesPerPortion={620} exceedsBudget />,
         );
 
-        const [tabletStat, mobileStat] =
-            screen.getAllByTitle(OVER_BUDGET_TOOLTIP);
-
-        expect(tabletStat).toHaveClass("menu-hero__stat--calorie-over");
-        expect(mobileStat).toHaveClass(
-            "menu-hero__mobile-meta-item--calorie-over",
-        );
+        expect(screen.getAllByTitle(OVER_BUDGET_TOOLTIP)).toHaveLength(2);
     });
 
     it("should not recolor the calorie stats by default", () => {
@@ -146,11 +139,5 @@ describe("MenuHero", () => {
         );
 
         expect(screen.getByAltText(MENU_TITLE)).toBeInTheDocument();
-    });
-
-    it("should credit the author by first name and surname initial", () => {
-        renderWithRouter(<MenuHero {...baseProps} />);
-
-        expect(screen.getByText("by Test U.")).toBeInTheDocument();
     });
 });

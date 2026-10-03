@@ -2,6 +2,11 @@
     "title": "What's new",
     "newCount": "{{total}} new",
     "items": {
+        "cookedIt": {
+            "date": "2026-10-03",
+            "title": "Cooked it? Your pantry keeps count",
+            "description": "Tap \"Cooked it\" on a recipe or menu page and its ingredients come out of your pantry, oldest purchases first. If you tapped too soon, there is an Undo button, and the calories can go into your log at the same time. The app is also easier to use with a keyboard or a screen reader, its text is clearer, and you can now install it on your home screen."
+        },
         "shareAndPantry": {
             "date": "2026-09-28",
             "title": "Share a recipe, tidy the pantry",

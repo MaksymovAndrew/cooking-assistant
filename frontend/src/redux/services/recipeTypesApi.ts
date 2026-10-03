@@ -4,7 +4,6 @@ import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
 
-// recipe types are read-only reference data; one cache entry per distinct query arg (full list vs filtered by ids), shared across every page that asks for it
 export const recipeTypesApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getRecipeTypes: build.query<

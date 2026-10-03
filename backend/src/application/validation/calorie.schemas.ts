@@ -15,7 +15,6 @@ interface SourceIds {
     menu_id?: number;
 }
 
-// names the one source, so a use case never meets the "both" or "neither" case zod already ruled out
 export function singleSource(
     { recipe_id, menu_id }: SourceIds,
     ctx: z.RefinementCtx,

@@ -1,4 +1,5 @@
 import {
+    isPasswordTooLong,
     isValidEmail,
     isValidLogin,
     isValidNamePart,
@@ -86,6 +87,21 @@ describe("isValidEmail", () => {
 
     it("should reject an empty value", () => {
         expect(isValidEmail("")).toBe(false);
+    });
+});
+
+describe("isPasswordTooLong", () => {
+    it("should allow exactly 72 bytes", () => {
+        expect(isPasswordTooLong("a".repeat(72))).toBe(false);
+    });
+
+    it("should refuse 73 bytes", () => {
+        expect(isPasswordTooLong("a".repeat(73))).toBe(true);
+    });
+
+    it("should count a Cyrillic letter as two bytes, not one character", () => {
+        expect(isPasswordTooLong("ж".repeat(36))).toBe(false);
+        expect(isPasswordTooLong("ж".repeat(37))).toBe(true);
     });
 });
 

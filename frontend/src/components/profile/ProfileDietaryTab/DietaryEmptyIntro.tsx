@@ -6,7 +6,6 @@ import styles from "./ProfileDietaryTab.module.scss";
 
 const EMPTY_ICON_SIZE = 40;
 
-// what the tab says before a calorie goal is set, above the goal form
 export const DietaryEmptyIntro: React.FC = () => {
     const { t } = useTranslation("calories");
 

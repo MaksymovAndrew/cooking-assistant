@@ -9,7 +9,7 @@ export default function createHealthRouter(
 ): Router {
     const router = express.Router();
 
-    // liveness probe, no auth; it also asks the database, since a backend that cannot reach it serves nothing
+    // no auth; it asks the database too, since a backend that cannot reach it serves nothing
     router.get(ROUTES.health, healthController.check);
 
     return router;

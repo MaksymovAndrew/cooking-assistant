@@ -11,7 +11,6 @@ interface ShoppingListNoticeProps {
 
 const ICON_SIZE = 18;
 
-// the calm in-card message a section shows instead of rows: "everything is bought", "nothing ticked yet"
 export const ShoppingListNotice: React.FC<ShoppingListNoticeProps> = ({
     title,
     description,

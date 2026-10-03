@@ -18,6 +18,10 @@
         color: var(--danger);
     }
 
+    &__sr-only {
+        @include sr-only;
+    }
+
     &__quantity-group {
         display: flex;
         align-items: center;

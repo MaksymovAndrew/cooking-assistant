@@ -5,6 +5,7 @@ import type { MenuCategoryStat } from "types/stats";
 import { LazyPieChart } from "components/stats/LazyPieChart";
 
 import { menuCategoryName } from "utils/referenceLabels";
+import { sumBy } from "utils/sum";
 
 interface MenuCategoryChartProps {
     categories: MenuCategoryStat[];
@@ -16,7 +17,7 @@ export const MenuCategoryChart = ({ categories }: MenuCategoryChartProps) => {
         name: menuCategoryName(t, c.categoryName),
         value: c.menuCount,
     }));
-    const total = data.reduce((sum, entry) => sum + entry.value, 0);
+    const total = sumBy(data, (entry) => entry.value);
 
     return (
         <LazyPieChart

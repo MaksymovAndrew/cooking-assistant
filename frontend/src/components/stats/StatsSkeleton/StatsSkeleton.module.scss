@@ -1,10 +1,5 @@
 @use "styles/abstracts" as *;
-
-@keyframes stats-skeleton-pulse {
-    50% {
-        opacity: 0.55;
-    }
-}
+@include pulse-keyframes;
 
 .stats-skeleton {
     display: flex;
@@ -17,7 +12,7 @@
         display: block;
         border-radius: var(--r-md);
         background: var(--surface-2);
-        animation: stats-skeleton-pulse 1.4s var(--ease-in-out) infinite;
+        animation: pulse 1.4s var(--ease-in-out) infinite;
     }
 
     &__heading {

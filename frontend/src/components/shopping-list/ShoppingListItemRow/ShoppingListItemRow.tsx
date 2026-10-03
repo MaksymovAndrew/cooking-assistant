@@ -1,14 +1,16 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { MoveDirection } from "types/reorder";
 import type { ShoppingListItem } from "types/shoppingList";
 
 import { flipTarget } from "hooks/useFlipAnimation";
 import { useLocale } from "hooks/useLocale";
-import type { MoveDirection } from "hooks/useShoppingList";
 
 import { TrashMark } from "components/icons";
+import { MoveButtons } from "components/ui/MoveButtons";
 
+import { cx } from "utils/cx";
 import {
     shoppingListItemName,
     shoppingListItemQuantity,
@@ -16,7 +18,6 @@ import {
 
 import { ShoppingListCheckbox } from "./ShoppingListCheckbox";
 import styles from "./ShoppingListItemRow.module.scss";
-import { ShoppingListMoveButtons } from "./ShoppingListMoveButtons";
 
 interface ShoppingListItemRowProps {
     item: ShoppingListItem;
@@ -47,12 +48,10 @@ export const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
     return (
         <li
             {...flipTarget(`item-${item.id}`)}
-            className={[
+            className={cx(
                 styles["shopping-list-item-row"],
                 item.checked && styles["shopping-list-item-row--checked"],
-            ]
-                .filter(Boolean)
-                .join(" ")}
+            )}
         >
             <ShoppingListCheckbox
                 id={checkboxId}
@@ -87,8 +86,11 @@ export const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
             </label>
             <div className={styles["shopping-list-item-row__actions"]}>
                 {onMove && (
-                    <ShoppingListMoveButtons
+                    <MoveButtons
                         name={name}
+                        buttonClassName={
+                            styles["shopping-list-item-row__move-button"]
+                        }
                         isFirst={isFirst}
                         isLast={isLast}
                         onMove={(direction) => {

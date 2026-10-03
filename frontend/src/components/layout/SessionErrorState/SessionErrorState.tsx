@@ -7,7 +7,6 @@ import { reloadPage } from "utils/reloadPage";
 
 import styles from "./SessionErrorState.module.scss";
 
-// the one outcome HomeRoute and PrivateRoute render identically: the session check itself failed
 export const SessionErrorState: React.FC = () => {
     const { t } = useTranslation();
 

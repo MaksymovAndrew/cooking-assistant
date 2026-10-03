@@ -25,7 +25,6 @@ import JwtTokenService from "infrastructure/security/JwtTokenService";
 import type { RepositoryDeps } from "./composition-root";
 import pool from "./db";
 
-// the real adapters behind every port; buildControllers itself stays free of them so tests can pass fakes
 export function createPgDeps(): RepositoryDeps {
     return {
         databaseProbe: new PgDatabaseProbe(pool),

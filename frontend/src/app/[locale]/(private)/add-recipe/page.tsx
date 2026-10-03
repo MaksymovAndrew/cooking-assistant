@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,9 +10,9 @@ import { usePageTitle } from "hooks/usePageTitle";
 
 import { RecipeForm } from "components/forms/RecipeForm";
 import { AppShell } from "components/layout/AppShell";
-import { Link } from "components/ui/Link";
+import { Breadcrumb } from "components/ui/Breadcrumb";
 
-import styles from "app/[locale]/(private)/RecipeFormPage.module.scss";
+import styles from "app/[locale]/(private)/FormPage.module.scss";
 
 const CreateRecipePage: React.FC = () => {
     const { t } = useTranslation("recipes");
@@ -24,18 +23,14 @@ const CreateRecipePage: React.FC = () => {
 
     return (
         <AppShell skipNotices>
-            <div className={styles["recipe-form-page"]}>
-                <nav
-                    aria-label={t("createRecipePage.breadcrumb")}
-                    className={styles["recipe-form-page__breadcrumb"]}
-                >
-                    <Link href={ROUTES.allRecipes}>
-                        {t("createRecipePage.breadcrumbRecipes")}
-                    </Link>
-                    <ChevronRight size={14} aria-hidden="true" />
-                    <span>{t("createRecipePage.breadcrumbCurrent")}</span>
-                </nav>
-                <h1 className={styles["recipe-form-page__heading"]}>
+            <div className={styles["form-page"]}>
+                <Breadcrumb
+                    label={t("createRecipePage.breadcrumb")}
+                    parentHref={ROUTES.allRecipes}
+                    parentLabel={t("createRecipePage.breadcrumbRecipes")}
+                    current={t("createRecipePage.breadcrumbCurrent")}
+                />
+                <h1 className={styles["form-page__heading"]}>
                     {t("createRecipePage.heading")}
                 </h1>
                 <RecipeForm

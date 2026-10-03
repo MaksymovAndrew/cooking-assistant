@@ -31,7 +31,6 @@ const copyLink = async (
     }
 };
 
-// the system share sheet where there is one, the clipboard otherwise
 export const shareLink = async (
     target: ShareTarget,
     capabilities: ShareCapabilities,

@@ -6,6 +6,8 @@ import { ROUTES } from "constants/routes";
 import { BarChartMark } from "components/icons";
 import { LinkButton } from "components/ui/LinkButton";
 
+import { cx } from "utils/cx";
+
 import styles from "./CookbookStatsBanner.module.scss";
 
 interface CookbookStatsBannerProps {
@@ -14,19 +16,14 @@ interface CookbookStatsBannerProps {
 
 const ICON_SIZE = 22;
 
-// the stats page counts every recipe in the app, not the viewer's own, so it sits here rather
-// than among the personal tabs on the profile
+// app-wide stats, not the viewer's own, so they live here rather than on the profile
 export const CookbookStatsBanner: React.FC<CookbookStatsBannerProps> = ({
     className,
 }) => {
     const { t } = useTranslation("home");
 
     return (
-        <section
-            className={[styles["cookbook-stats-banner"], className]
-                .filter(Boolean)
-                .join(" ")}
-        >
+        <section className={cx(styles["cookbook-stats-banner"], className)}>
             <span className={styles["cookbook-stats-banner__icon"]}>
                 <BarChartMark size={ICON_SIZE} aria-hidden="true" />
             </span>

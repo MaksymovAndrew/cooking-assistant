@@ -17,19 +17,14 @@ interface RecipeListGate {
     isPantryEmpty: boolean;
 }
 
-// decides what the list may actually ask the server for: a guest cannot use the
-// viewer-only filters, and an empty pantry makes the in_pantry list pointless
 export const useRecipeListGate = (
     filters: RecipeFilterState,
     params: RecipeFilterParams,
 ): RecipeListGate => {
-    // skipped until the session is confirmed authed - not just "not yet known to be a guest" -
-    // so this list stays reachable without a 401 tripping the global auth redirect on a page
-    // that's public now, including during the initial checking window
     const { isAuthed, isAwaitingSession } = useViewerFilterGate(
         hasViewerOnlyFilter(filters),
     );
-    // already fetched by the pantry page/home dashboard - a cache read, not a new request
+    // skipped until authed: a 401 during the session check would trip the global auth redirect
     const {
         data: pantry = [],
         isLoading: isPantryLoading,
@@ -42,10 +37,7 @@ export const useRecipeListGate = (
         isPantryUninitialized,
     );
 
-    // a guest can't use in_pantry, favourites, hide_avoided or tag_ids (the controls that set them are hidden for them) - if one is still set
-    // in the URL (a stale bookmark, or a session that expired mid-visit), isPantryUninitialized
-    // never resolves since the pantry query itself stays skipped, so drop the filter here too
-    // instead of sending a request the backend rejects with a 400
+    // dropped for a guest: the skipped pantry query can't gate them, and the backend answers a 400
     const queryParams = isAuthed
         ? params
         : {

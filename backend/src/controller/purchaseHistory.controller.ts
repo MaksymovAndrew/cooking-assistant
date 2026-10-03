@@ -18,7 +18,6 @@ interface PurchaseHistoryControllerDependencies {
     discardPurchases: DiscardPurchases;
 }
 
-// the lots behind each pantry item: what was bought when, and corrections to it
 export default class PurchaseHistoryController {
     private updatePurchaseQuantityUseCase: UpdatePurchaseQuantity;
     private getPurchaseHistoryUseCase: GetPurchaseHistory;

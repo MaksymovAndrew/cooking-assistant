@@ -16,8 +16,6 @@ import {
 } from "./fixtures";
 import { createTestPool } from "./testPool";
 
-// targets recompute-on-write, the calories_override COALESCE, the menu LEFT JOIN sum, and the
-// ownership-scoped delete/goal update - all invisible to mocked-repository unit tests
 describe("PgCalorieRepository (real Postgres)", () => {
     let pool: Pool;
     let repository: PgCalorieRepository;

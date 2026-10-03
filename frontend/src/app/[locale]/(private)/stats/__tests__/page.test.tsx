@@ -1,8 +1,7 @@
 import { screen } from "@testing-library/react";
 
 import { ROUTES } from "constants/routes";
-import type { MenuWithStats } from "types/menu";
-import type { RecipeStatistics } from "types/stats";
+import type { MenuStatistics, RecipeStatistics } from "types/stats";
 
 import { API_ROUTES } from "api/endpoints";
 
@@ -36,27 +35,41 @@ const RECIPE_STATS: RecipeStatistics = {
     mostCaloricRecipes: [],
     leastCaloricRecipes: [],
 };
-const SAMPLE_MENUS: MenuWithStats[] = [
-    {
-        id: 1,
-        title: "Weekday menu",
-        categoryName: CATEGORY_NAME,
-        menuContent: "",
-        recipe_count: 3,
-        total_cooking_time: 120,
-        total_calories: null,
-    },
-];
+const MENU = {
+    id: 1,
+    title: "Weekday menu",
+    categoryName: CATEGORY_NAME,
+    recipe_count: 3,
+    total_cooking_time: 120,
+    total_calories: null,
+};
+const MENU_STATS: MenuStatistics = {
+    menusCount: 1,
+    menuCountByCategory: [{ categoryName: CATEGORY_NAME, menuCount: 1 }],
+    mostUsedCategory: { categoryName: CATEGORY_NAME, menuCount: 1 },
+    averageTotalTime: 120,
+    averageRecipesPerMenu: 3,
+    averageTotalTimeByCategory: [
+        { categoryName: CATEGORY_NAME, averageTotalTime: 120 },
+    ],
+    fastestMenus: [MENU],
+    slowestMenus: [MENU],
+    mostRecipesMenus: [MENU],
+    leastRecipesMenus: [MENU],
+    averageCaloriesOverall: null,
+    mostCaloricMenus: [],
+    leastCaloricMenus: [],
+};
 
 const stubData = () => {
     mockGetByUrl({
         [API_ROUTES.recipes.stats]: RECIPE_STATS,
-        [API_ROUTES.menu.allUnpaginated]: SAMPLE_MENUS,
+        [API_ROUTES.menu.stats]: MENU_STATS,
     });
 };
 
 describe("StatsPage", () => {
-    it("should render both section headings", async () => {
+    it("should show the recipe and menu statistics once both load", async () => {
         stubData();
 
         renderWithRouter(<StatsPage />);
@@ -65,28 +78,7 @@ describe("StatsPage", () => {
             await screen.findByText("Recipe statistics"),
         ).toBeInTheDocument();
         expect(screen.getByText("Menu statistics")).toBeInTheDocument();
-    });
-
-    it("should render the recipe quick-stat tiles", async () => {
-        stubData();
-
-        renderWithRouter(<StatsPage />);
-
-        expect((await screen.findAllByText(TYPE_NAME)).length).toBeGreaterThan(
-            0,
-        );
-        expect(screen.getByText("Total recipes")).toBeInTheDocument();
-    });
-
-    it("should render the menu quick-stat tiles", async () => {
-        stubData();
-
-        renderWithRouter(<StatsPage />);
-
-        expect(
-            (await screen.findAllByText(CATEGORY_NAME)).length,
-        ).toBeGreaterThan(0);
-        expect(screen.getAllByText("Total menus").length).toBeGreaterThan(0);
+        expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     });
 
     it("should hold the page's shape while the numbers load", () => {
@@ -97,12 +89,13 @@ describe("StatsPage", () => {
         expect(
             screen.getByRole("status", { name: "Loading statistics…" }),
         ).toBeInTheDocument();
+        expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     });
 
     it("should offer to add a recipe when there is nothing to count", async () => {
         mockGetByUrl({
             [API_ROUTES.recipes.stats]: { ...RECIPE_STATS, recipesCount: 0 },
-            [API_ROUTES.menu.allUnpaginated]: [],
+            [API_ROUTES.menu.stats]: { ...MENU_STATS, menusCount: 0 },
         });
 
         renderWithRouter(<StatsPage />);
@@ -113,6 +106,7 @@ describe("StatsPage", () => {
         expect(
             screen.getByRole("link", { name: "Add a recipe" }),
         ).toHaveAttribute("href", ROUTES.addRecipe);
+        expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     });
 
     it("should show the error state when the menus fail to load", async () => {
@@ -123,5 +117,6 @@ describe("StatsPage", () => {
         expect(
             await screen.findByText("Error: Error fetching statistics"),
         ).toBeInTheDocument();
+        expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     });
 });

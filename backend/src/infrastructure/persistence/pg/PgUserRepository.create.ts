@@ -4,7 +4,6 @@ import type { NewUser } from "domain/repositories/UserRepository";
 
 import { uniqueViolationError } from "./PgUserRepository.errors";
 
-// a taken login or email surfaces as its own 409 code, decided by the constraint Postgres reports
 export async function createUser(
     pool: Pool,
     { name, surname, login, password, email, locale }: NewUser,

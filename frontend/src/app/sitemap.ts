@@ -10,29 +10,31 @@ import { fetchPublic } from "api/server";
 
 import { localizePath } from "utils/localePath";
 
-// the API caps a page at 100 rows, so the whole public catalogue is a handful of requests -
-// rebuilt hourly rather than on every crawler visit
+// the API caps a page at 100 rows
 const PAGE_LIMIT = 100;
 const REVALIDATE_SECONDS = 3600;
 
-// built on request, not at build time: the catalogue is live data, and the image is built
-// where the API is not reachable at all. The fetches below still hold their answers for an
-// hour, so repeated crawls cost nothing
+// per request: the Docker build cannot reach the API; the fetches still cache for an hour
 export const dynamic = "force-dynamic";
 
 const pageQuery = (offset: number): string =>
     `?limit=${String(PAGE_LIMIT)}&offset=${String(offset)}`;
 
-// both public lists expose an id and nothing else is needed to build a link
 interface Listed {
     id: number;
+    creation_date: string;
 }
 
-const loadPaths = async (
+interface Listing {
+    path: string;
+    lastModified: string | null;
+}
+
+const loadListings = async (
     endpoint: string,
-    toPath: (item: Listed) => string,
-): Promise<string[]> => {
-    const paths: string[] = [];
+    toPath: (id: number) => string,
+): Promise<Listing[]> => {
+    const listings: Listing[] = [];
     let offset = 0;
     let hasMore = true;
 
@@ -43,16 +45,24 @@ const loadPaths = async (
         );
         const items = page?.items ?? [];
 
-        paths.push(...items.map(toPath));
+        listings.push(
+            ...items.map((item) => ({
+                path: toPath(item.id),
+                lastModified: item.creation_date,
+            })),
+        );
         offset += PAGE_LIMIT;
         hasMore = items.length > 0 && offset < (page?.total ?? 0);
     }
 
-    return paths;
+    return listings;
 };
 
-// every language version is listed, and each names the others, so each is indexed in its own right
-const languageVersions = (path: string): MetadataRoute.Sitemap => {
+// each language version names the others, so each is indexed in its own right
+const languageVersions = ({
+    path,
+    lastModified,
+}: Listing): MetadataRoute.Sitemap => {
     const languages = Object.fromEntries(
         LOCALES.map((locale) => [
             locale,
@@ -62,27 +72,23 @@ const languageVersions = (path: string): MetadataRoute.Sitemap => {
 
     return LOCALES.map((locale) => ({
         url: languages[locale],
+        ...(lastModified === null ? {} : { lastModified }),
         alternates: { languages },
     }));
 };
 
-// listed without a session, so nothing here can be personalised: the private area has no
-// public URL to offer and never appears
+// built without a session: the private area has no public URL and never appears
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     const [recipes, menus] = await Promise.all([
-        loadPaths(API_ROUTES.recipes.byFilters, (recipe) =>
-            recipeDetailsPath(recipe.id),
-        ),
-        loadPaths(API_ROUTES.menu.list, (menu) => menuDetailsPath(menu.id)),
+        loadListings(API_ROUTES.recipes.byFilters, recipeDetailsPath),
+        loadListings(API_ROUTES.menu.list, menuDetailsPath),
     ]);
+    // the browse pages change with every new record, so they carry no single date
+    const browsePages = [ROUTES.home, ROUTES.allRecipes, ROUTES.allMenus].map(
+        (path) => ({ path, lastModified: null }),
+    );
 
-    return [
-        ROUTES.home,
-        ROUTES.allRecipes,
-        ROUTES.allMenus,
-        ...recipes,
-        ...menus,
-    ].flatMap(languageVersions);
+    return [...browsePages, ...recipes, ...menus].flatMap(languageVersions);
 };
 
 export default sitemap;

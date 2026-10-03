@@ -41,10 +41,9 @@ export const menuDetailsPath = (id: string | number): string =>
 export const changeMenuPath = (id: string | number): string =>
     withId(ROUTES.changeMenu, id);
 
-// deep-links into the Dietary tab of the profile page - kept in sync with the "dietary" tab id read in useProfilePage.ts
+// keep "dietary" in sync with the tab id useProfilePage.ts reads
 export const profileDietaryPath = (): string => `${ROUTES.profile}?tab=dietary`;
 
-// the sign-in flow itself: never a destination to return to after logging in
 export const AUTH_PATHS: string[] = [
     ROUTES.login,
     ROUTES.registration,
@@ -53,8 +52,13 @@ export const AUTH_PATHS: string[] = [
     ROUTES.verifyEmail,
 ];
 
-// route patterns (":id" and all), not literal paths - matched against the current location with
-// matchRoutePattern, since a dynamic segment never equals its own pattern string
+// opened from emailed one-time links, whose token must never be indexed
+export const UNINDEXED_AUTH_PATHS: string[] = [
+    ROUTES.resetPassword,
+    ROUTES.verifyEmail,
+];
+
+// patterns, not paths: compare them through matchRoutePattern
 export const PUBLIC_PATHS: string[] = [
     ROUTES.home,
     ROUTES.login,
@@ -68,8 +72,7 @@ export const PUBLIC_PATHS: string[] = [
     ROUTES.menuDetails,
 ];
 
-// crawler-facing form of the private area: a robots rule matches a path prefix, not a route
-// pattern, so ":id" is dropped rather than matched literally
+// robots rules match path prefixes, not patterns, so ":id" is dropped
 export const PRIVATE_PATH_PREFIXES: string[] = Object.values(ROUTES)
     .filter((path) => !PUBLIC_PATHS.includes(path))
     .map((path) => path.replace(":id", ""));

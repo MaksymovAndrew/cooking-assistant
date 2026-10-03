@@ -1,9 +1,13 @@
 import type { PieSectorShapeProps } from "recharts";
 import { Pie, PieChart as RechartsPieChart, Sector, Tooltip } from "recharts";
 
+import { REDUCED_MOTION_QUERY } from "constants/motion";
+
 import { useMediaQuery } from "hooks/useMediaQuery";
 
-import { getChartColor } from "./chartColors";
+import { sumBy } from "utils/sum";
+
+import { datumColors } from "./chartColors";
 import {
     PIE_CURSOR,
     PIE_DATA_KEY,
@@ -13,10 +17,13 @@ import {
     TOOLTIP_WRAPPER_STYLE,
 } from "./chartStyles";
 import styles from "./PieChartCard.module.scss";
+import { PieChartLegend } from "./PieChartLegend";
 
 export interface PieChartDatum {
     name: string;
     value: number;
+    // in place of the palette colour its position would get
+    color?: string;
 }
 
 interface PieChartCardProps {
@@ -24,18 +31,15 @@ interface PieChartCardProps {
     centerLabel: string;
 }
 
-// Cell is deprecated in recharts 3 in favor of a custom shape per sector - https://recharts.github.io/en-US/guide/cell
-const PieSlice = (props: PieSectorShapeProps) => (
-    <Sector {...props} fill={getChartColor(props.index)} />
-);
-
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-
 const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
-    const total = data.reduce((sum, d) => sum + d.value, 0);
-    // recharts drives this itself (not CSS), so the blanket prefers-reduced-motion rule in
-    // global.scss can't reach it - it has to be gated here explicitly
+    const total = sumBy(data, (d) => d.value);
+    const colors = datumColors(data);
+    // recharts animates in JS, beyond the reach of the global reduced-motion CSS rule
     const prefersReducedMotion = useMediaQuery(REDUCED_MOTION_QUERY);
+    // Cell is deprecated in recharts 3 in favor of a custom shape per sector - https://recharts.github.io/en-US/guide/cell
+    const renderSlice = (props: PieSectorShapeProps) => (
+        <Sector {...props} fill={colors[props.index]} />
+    );
 
     return (
         <div className={styles["pie-chart-card"]}>
@@ -64,7 +68,7 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                         strokeWidth={0}
                         cursor={PIE_CURSOR}
                         isAnimationActive={!prefersReducedMotion}
-                        shape={PieSlice}
+                        shape={renderSlice}
                     />
                     <Tooltip
                         contentStyle={TOOLTIP_CONTENT_STYLE}
@@ -83,27 +87,7 @@ const PieChartCard = ({ data, centerLabel }: PieChartCardProps) => {
                     </span>
                 </div>
             </div>
-            <div className={styles["pie-chart-card__legend"]}>
-                {data.map((entry, index) => (
-                    <div
-                        key={entry.name}
-                        className={styles["pie-chart-card__legend-item"]}
-                    >
-                        <span
-                            className={styles["pie-chart-card__legend-dot"]}
-                            style={{ backgroundColor: getChartColor(index) }}
-                        />
-                        <span className={styles["pie-chart-card__legend-name"]}>
-                            {entry.name}
-                        </span>
-                        <span
-                            className={styles["pie-chart-card__legend-value"]}
-                        >
-                            {entry.value}
-                        </span>
-                    </div>
-                ))}
-            </div>
+            <PieChartLegend data={data} colors={colors} />
         </div>
     );
 };

@@ -38,7 +38,13 @@ export const PhotoFieldFilled: React.FC<PhotoFieldFilledProps> = ({
             )}
             {...drop.dropHandlers}
         >
-            <img className={styles["photo-field__image"]} src={src} alt={alt} />
+            <img
+                className={styles["photo-field__image"]}
+                src={src}
+                alt={alt}
+                loading="lazy"
+                decoding="async"
+            />
             <div className={styles["photo-field__overlay-actions"]}>
                 <button
                     type="button"

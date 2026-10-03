@@ -1,6 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// locally reuses an already-running `npm start`; CI always starts fresh
 const FRONTEND_URL = "http://localhost:8080";
 const BACKEND_HEALTH_URL = "http://localhost:3000/api/health";
 const SERVER_START_TIMEOUT_MS = 120_000;
@@ -15,6 +14,7 @@ export default defineConfig({
     reporter: [["list"]],
     use: {
         baseURL: FRONTEND_URL,
+        locale: "en-US",
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
     },

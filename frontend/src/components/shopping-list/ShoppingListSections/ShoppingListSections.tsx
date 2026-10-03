@@ -1,13 +1,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import type { MoveDirection } from "types/reorder";
 import type { ShoppingListItem } from "types/shoppingList";
-
-import type { MoveDirection } from "hooks/useShoppingList";
 
 import { ShoppingListNotice } from "components/shopping-list/ShoppingListNotice";
 import { ShoppingListSection } from "components/shopping-list/ShoppingListSection";
 import { Button } from "components/ui/Button";
+
+import { cx } from "utils/cx";
 
 import styles from "./ShoppingListSections.module.scss";
 
@@ -15,7 +16,6 @@ interface ShoppingListSectionsProps {
     toBuy: ShoppingListItem[];
     bought: ShoppingListItem[];
     isClearing: boolean;
-    // the page places each section in its own grid area
     toBuyClassName: string;
     boughtClassName: string;
     onToggle: (item: ShoppingListItem) => void;
@@ -76,13 +76,11 @@ export const ShoppingListSections: React.FC<ShoppingListSectionsProps> = ({
                         </Button>
                     )
                 }
-                className={[
+                className={cx(
                     boughtClassName,
                     bought.length === 0 &&
                         styles["shopping-list-sections__bought--empty"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
+                )}
                 onToggle={onToggle}
                 onRemove={onRemove}
                 onMove={null}

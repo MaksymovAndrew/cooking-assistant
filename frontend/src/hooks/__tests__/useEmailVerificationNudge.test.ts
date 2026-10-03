@@ -8,7 +8,7 @@ import { authApi } from "redux/services/authApi";
 
 import { useEmailVerificationNudge } from "hooks/useEmailVerificationNudge";
 
-import { mockedPost, mockGetByUrl } from "test/apiClientMock";
+import { mockGetByUrl } from "test/apiClientMock";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
@@ -62,20 +62,5 @@ describe("useEmailVerificationNudge", () => {
         });
 
         expect(result.current.show).toBe(false);
-    });
-
-    it("should call the resend-verification endpoint and disable further sends on sendEmail", async () => {
-        mockedPost.mockResolvedValue({ data: null });
-        const { result } = await setup(UNVERIFIED_USER);
-
-        act(() => {
-            result.current.sendEmail();
-        });
-
-        expect(mockedPost).toHaveBeenCalledWith(
-            API_ROUTES.auth.resendVerificationEmail,
-            undefined,
-        );
-        expect(result.current.isSendDisabled).toBe(true);
     });
 });

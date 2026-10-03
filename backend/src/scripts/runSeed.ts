@@ -11,7 +11,7 @@ import {
 
 import { seedIngredientsFromCatalog } from "./seedIngredientsFromCatalog";
 
-// idempotent reference + sample data; safe to re-run (guards against existing rows)
+// must stay idempotent: the seed runs on every deploy
 const seedUnitMeasurements = `
     INSERT INTO unit_measurement (unit_name, coefficient)
     SELECT v.unit_name, v.coefficient
@@ -52,8 +52,7 @@ const seedRecipeTypes = `
     );
 `;
 
-// re-syncs a recipe's stored calorie total with the catalog values the step above just upserted,
-// touching only the recipes whose total actually moved
+// catalog calorie values may have just changed; only totals that moved are rewritten
 const recomputeRecipeCalories = `
     UPDATE recipes r SET calories_computed = ${computedRecipeCalories("r.id")}
     WHERE r.calories_computed IS DISTINCT FROM ${computedRecipeCalories("r.id")};

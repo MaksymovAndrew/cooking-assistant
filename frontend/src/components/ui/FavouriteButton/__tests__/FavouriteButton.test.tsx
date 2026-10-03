@@ -13,7 +13,7 @@ const makeFavourite = (isFavourite: boolean, isDisabled = false) => ({
 
 describe("FavouriteButton", () => {
     it("should expose the favourite state through aria-pressed", () => {
-        render(
+        const { rerender } = render(
             <FavouriteButton
                 favourite={makeFavourite(true)}
                 label={LABEL}
@@ -26,14 +26,8 @@ describe("FavouriteButton", () => {
             "aria-pressed",
             "true",
         );
-        expect(screen.getByRole("button", { name: LABEL })).toHaveClass(
-            "hero",
-            "favourite-button--active",
-        );
-    });
 
-    it("should not mark an unfavourited button as active", () => {
-        render(
+        rerender(
             <FavouriteButton
                 favourite={makeFavourite(false)}
                 label={LABEL}
@@ -45,9 +39,6 @@ describe("FavouriteButton", () => {
         expect(screen.getByRole("button", { name: LABEL })).toHaveAttribute(
             "aria-pressed",
             "false",
-        );
-        expect(screen.getByRole("button", { name: LABEL })).not.toHaveClass(
-            "favourite-button--active",
         );
     });
 

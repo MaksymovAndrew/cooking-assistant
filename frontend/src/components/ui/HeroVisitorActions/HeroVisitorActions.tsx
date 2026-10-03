@@ -15,8 +15,7 @@ import { rememberLoginRedirect } from "utils/loginRedirect";
 import styles from "./HeroVisitorActions.module.scss";
 
 interface HeroVisitorActionsProps {
-    // null for an anonymous viewer - the caller reads it off the server-rendered record, not the client
-    // session, so the page never flashes the guest CTA at someone who is signed in
+    // null for a guest; read off the server-rendered record, not the session, so the CTA never flashes
     favourite: FavouriteToggle | null;
     favouriteLabel: string;
     shareTitle: string;
@@ -29,7 +28,6 @@ interface HeroVisitorActionsProps {
 
 const ICON_SIZE = 20;
 
-// non-owner branch of RecipeHero/MenuHero's action row; copy is caller-provided to stay domain-agnostic
 export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
     favourite,
     favouriteLabel,

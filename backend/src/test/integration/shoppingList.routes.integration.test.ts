@@ -103,6 +103,22 @@ describe("shopping list routes", () => {
         );
     });
 
+    it("should delete an item", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.shoppingListRepository.deleteItem.mockResolvedValue(true);
+
+        const res = await request(app)
+            .delete(`${LIST_PATH}/3`)
+            .set("Cookie", authCookie(7));
+
+        expect(res.status).toBe(204);
+        expect(deps.shoppingListRepository.deleteItem).toHaveBeenCalledWith(
+            7,
+            3,
+        );
+    });
+
     it("should map a missing item to a 404 response", async () => {
         const { app, deps } = buildTestApp();
 
@@ -132,6 +148,23 @@ describe("shopping list routes", () => {
             7,
         );
         expect(deps.shoppingListRepository.deleteItem).not.toHaveBeenCalled();
+    });
+
+    it("should save the items in the order sent", async () => {
+        const { app, deps } = buildTestApp();
+
+        deps.shoppingListRepository.reorder.mockResolvedValue(true);
+
+        const res = await request(app)
+            .put(`${LIST_PATH}/order`)
+            .set("Cookie", authCookie(7))
+            .send({ ids: [3, 1, 2] });
+
+        expect(res.status).toBe(204);
+        expect(deps.shoppingListRepository.reorder).toHaveBeenCalledWith(
+            7,
+            [3, 1, 2],
+        );
     });
 
     it("should map a stale order to a 409 response", async () => {

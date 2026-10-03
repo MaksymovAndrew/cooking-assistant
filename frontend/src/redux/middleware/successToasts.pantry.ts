@@ -5,8 +5,7 @@ import { pantryConsumptionApi } from "redux/services/pantryConsumptionApi";
 import { addNotification } from "redux/slices/notificationsSlice";
 import { markServerDataStale } from "redux/slices/serverDataSlice";
 
-// cooking stays on the page, so it gets a toast - one that carries the undo - and both directions
-// bump the server-data version for the pages whose pantry state was rendered on the server
+// both directions mark server-rendered pantry state stale: those pages have no cache to refetch
 export const registerPantryToasts = (listener: ListenerMiddlewareInstance) => {
     listener.startListening({
         matcher: pantryConsumptionApi.endpoints.cookRecord.matchFulfilled,

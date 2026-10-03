@@ -69,8 +69,7 @@ describe("optionalAuth", () => {
         expect(next).toHaveBeenCalledWith();
     });
 
-    // purpose tokens must stay rejected here too, same as authenticateToken - otherwise an emailed
-    // reset/verify link would silently authenticate a guest browsing session as that user
+    // purpose tokens stay rejected here too, or an emailed link would sign the guest in as that user
     it.each(["password-reset", "verify-email"])(
         "should continue as a guest when a %s purpose token is sent",
         async (purpose) => {

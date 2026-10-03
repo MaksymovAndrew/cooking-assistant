@@ -21,7 +21,7 @@
         @include focus-ring;
 
         @include on-hover {
-            color: var(--brand);
+            color: var(--brand-text);
         }
     }
 }

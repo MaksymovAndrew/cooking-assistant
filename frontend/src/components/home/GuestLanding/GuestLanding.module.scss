@@ -41,7 +41,7 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        color: var(--brand);
+        color: var(--brand-text);
         white-space: nowrap;
         text-decoration: none;
         font:
@@ -55,8 +55,7 @@
         }
     }
 
-    // both grids stay 2-up from tablet - the discover layout halves this column's width again
-    // at desktop, so a wider grid would cram the cards rather than give them more room
+    // 2-up on desktop too: the discover layout halves this column's width there
     &__recipe-grid {
         display: flex;
         flex-direction: column;

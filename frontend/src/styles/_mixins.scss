@@ -13,7 +13,6 @@
     border-radius: var(--r-md);
 }
 
-// keeps content in the accessibility tree (label text, etc.) without taking visual space
 @mixin sr-only {
     position: absolute;
     width: 1px;
@@ -32,12 +31,11 @@
     white-space: nowrap;
 }
 
-// for headings/prose that wrap normally but must not push the page wide when the text has no spaces (a pasted URL, a long ingredient name)
+// lets text without spaces (a pasted URL) wrap instead of pushing the page wide
 @mixin wrap-anywhere {
     overflow-wrap: break-word;
 }
 
-// multi-line ellipsis - use for descriptions that must not grow unbounded
 @mixin line-clamp($lines) {
     display: -webkit-box;
     overflow: hidden;
@@ -51,7 +49,7 @@
     }
 }
 
-// hover styles only on devices that can actually hover; on touch screens a tap would otherwise leave the style stuck until the next tap elsewhere
+// on touch screens a tap would leave a hover style stuck until the next tap elsewhere
 @mixin on-hover {
     @media (hover: hover) {
         &:hover {
@@ -60,8 +58,7 @@
     }
 }
 
-// a Cancel/primary action pair: full-width and stacked (primary on top) on mobile so both are
-// easy to tap; a right-aligned, primary-rightmost, compact row from tablet up
+// a Cancel/primary pair: stacked full-width on mobile so both are easy to tap, a row from tablet up
 @mixin mobile-stacked-actions {
     display: flex;
     flex-direction: column-reverse;
@@ -81,5 +78,20 @@
         @include breakpoints.respond-to(tablet) {
             width: auto;
         }
+    }
+}
+
+@mixin input-focus-ring {
+    &:focus {
+        outline: none;
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px var(--brand-subtle);
+    }
+}
+
+@mixin input-focus-ring-invalid {
+    &:focus {
+        border-color: var(--danger);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 14%, transparent);
     }
 }

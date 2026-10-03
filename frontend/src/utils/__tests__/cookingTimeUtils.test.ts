@@ -2,6 +2,7 @@ import i18next from "i18next";
 
 import {
     formatCompactDuration,
+    formatRecipeDuration,
     isoDuration,
     splitCookingTime,
 } from "utils/cookingTimeUtils";
@@ -21,6 +22,18 @@ describe("splitCookingTime", () => {
 
     it("should handle zero", () => {
         expect(splitCookingTime(0)).toEqual({ hours: 0, minutes: 0 });
+    });
+});
+
+describe("formatRecipeDuration", () => {
+    const t = i18next.getFixedT(null, "recipes");
+
+    it("should name the hours and minutes from an hour on", () => {
+        expect(formatRecipeDuration(t, 90)).toBe("1 hr 30 min");
+    });
+
+    it("should name only the minutes under an hour", () => {
+        expect(formatRecipeDuration(t, 59)).toBe("59 min");
     });
 });
 

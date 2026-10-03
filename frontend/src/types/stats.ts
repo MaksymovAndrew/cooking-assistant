@@ -1,5 +1,3 @@
-import type { MenuWithStats } from "types/menu";
-
 export interface AverageCookingTime {
     typeName: string;
     averageCookingTime: number;
@@ -12,6 +10,12 @@ export interface MenuCategoryStat {
 
 export interface RecipeTypeStat {
     typeName: string;
+    count: number;
+}
+
+// typeName null gathers the recipes without a type, so the buckets add up to recipesCount
+export interface RecipeTypeBucket {
+    typeName: string | null;
     count: number;
 }
 
@@ -38,9 +42,9 @@ export interface RecipeCalorieEntry {
     caloriesPerPortion: number;
 }
 
-// shape returned by GET /api/recipes-stats - computed server-side across every recipe, not just the current user's
+// across every recipe, not just the viewer's
 export interface RecipeStatistics {
-    stats: RecipeTypeStat[];
+    stats: RecipeTypeBucket[];
     recipesCount: number;
     averageCookingTimeOverall: number | null;
     averageCookingTimesByType: AverageCookingTime[];
@@ -54,8 +58,19 @@ export interface RecipeStatistics {
     leastCaloricRecipes: RecipeCalorieEntry[];
 }
 
-export type MenuWithCalories = MenuWithStats & { total_calories: number };
+export interface MenuStatsEntry {
+    id: number;
+    title: string;
+    categoryName: string;
+    recipe_count: number;
+    total_cooking_time: number;
+    // null once any of the menu's recipes has no calories
+    total_calories: number | null;
+}
 
+export type MenuWithCalories = MenuStatsEntry & { total_calories: number };
+
+// across every menu, not just the viewer's
 export interface MenuStatistics {
     menusCount: number;
     menuCountByCategory: MenuCategoryStat[];
@@ -63,10 +78,10 @@ export interface MenuStatistics {
     averageTotalTime: number | null;
     averageRecipesPerMenu: number | null;
     averageTotalTimeByCategory: AverageTimeByCategory[];
-    fastestMenus: MenuWithStats[];
-    slowestMenus: MenuWithStats[];
-    mostRecipesMenus: MenuWithStats[];
-    leastRecipesMenus: MenuWithStats[];
+    fastestMenus: MenuStatsEntry[];
+    slowestMenus: MenuStatsEntry[];
+    mostRecipesMenus: MenuStatsEntry[];
+    leastRecipesMenus: MenuStatsEntry[];
     averageCaloriesOverall: number | null;
     mostCaloricMenus: MenuWithCalories[];
     leastCaloricMenus: MenuWithCalories[];

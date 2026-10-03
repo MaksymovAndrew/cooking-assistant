@@ -1,9 +1,10 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { removeShoppingItemsNamed } from "./api";
 import { PRIMARY_STORAGE_STATE } from "./sharedAccounts";
 
-// add, tick off, reorder and clear on the real API - the page's optimistic updates must agree with what the server stored
+// the reloads check the page's optimistic updates against what the server stored
 test.describe.configure({ mode: "serial" });
 
 let context: BrowserContext;
@@ -23,7 +24,12 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    await context.close();
+    // cleanup: the last case removes both items, but a failed run must not leave them on the shared list
+    try {
+        await removeShoppingItemsNamed(context.request, [FIRST, SECOND]);
+    } finally {
+        await context.close();
+    }
 });
 
 test("should add two items with a note", async () => {

@@ -50,7 +50,7 @@ export interface ShoppingListRepository {
     deleteChecked(personId: number): Promise<void>;
     // false when ids aren't exactly the person's current items, e.g. a stale client
     reorder(personId: number, ids: number[]): Promise<boolean>;
-    // merges into an unchecked item of the same ingredient; nothing is added when the new items wouldn't fit
+    // merges into an unchecked item of the same ingredient; all or nothing at the limit
     addIngredients(
         personId: number,
         items: ShoppingListIngredientInput[],

@@ -4,7 +4,6 @@ export interface ClauseContext {
     userId: number | null;
 }
 
-// one entry of a list's filter registry: applies() gates it, apply() writes its condition
 export interface FilterClause<Filters> {
     applies: (filters: Filters) => boolean;
     apply: (
@@ -14,7 +13,6 @@ export interface FilterClause<Filters> {
     ) => void;
 }
 
-// the common case, a clause on one optional field: apply gets the value already narrowed
 export function whenDefined<Filters, Key extends keyof Filters>(
     key: Key,
     add: (

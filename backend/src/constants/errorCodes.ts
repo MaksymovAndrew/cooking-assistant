@@ -1,6 +1,4 @@
-// the stable, client-facing contract for every error: the frontend switches on these and renders its own copy,
-// while backend/src/i18n holds the server-side text. Lowercase/namespaced values, not a screaming-case echo of
-// the key, so sonarjs doesn't mistake one for a hardcoded secret
+// the client contract; lowercase values so sonarjs never mistakes one for a hardcoded secret
 export const ERROR_CODES = {
     BAD_REQUEST: "bad_request",
     PAYLOAD_TOO_LARGE: "payload_too_large",
@@ -21,9 +19,7 @@ export const ERROR_CODES = {
 
     RECIPE_NOT_FOUND: "recipe/not_found",
     RECIPE_INGREDIENTS_EMPTY: "recipe/ingredients_empty",
-    RECIPE_INGREDIENTS_NO_ID: "recipe/ingredients_missing_id",
     RECIPE_INGREDIENTS_NOT_EXIST: "recipe/ingredients_not_exist",
-    RECIPE_TITLE_CONTENT_EMPTY: "recipe/title_content_empty",
     RECIPE_IN_PANTRY_REQUIRES_LOGIN: "recipe/in_pantry_requires_login",
     RECIPE_TYPE_NOT_EXIST: "recipe/type_not_exist",
 

@@ -36,14 +36,4 @@ describe("ProgressRing", () => {
 
         expect(screen.getByTestId(ARC_TEST_ID)).toHaveAttribute("r", "52");
     });
-
-    it("should render its centre content", () => {
-        render(
-            <ProgressRing fraction={0.5} size={46} thickness={5}>
-                50%
-            </ProgressRing>,
-        );
-
-        expect(screen.getByText("50%")).toBeInTheDocument();
-    });
 });

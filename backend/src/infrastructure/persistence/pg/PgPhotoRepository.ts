@@ -39,8 +39,7 @@ export default class PgPhotoRepository implements PhotoRepository {
         return { count: row.count, targetHasPhoto: row.target_has_photo };
     }
 
-    // the locked subquery hands back the key being replaced, so two uploads racing for one record
-    // each learn exactly which file they displaced
+    // the locked subquery lets racing uploads each learn exactly which file they displaced
     async replace(
         personId: number,
         target: PhotoTarget,

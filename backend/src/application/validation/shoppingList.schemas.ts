@@ -12,7 +12,6 @@ import {
 
 const { MAX_ITEMS, MAX_NAME_LENGTH, MAX_NOTE_LENGTH } = SHOPPING_LIST_LIMITS;
 
-// a blank note means "no note", so it is stored as null rather than an empty string
 const noteSchema = z
     .string()
     .trim()

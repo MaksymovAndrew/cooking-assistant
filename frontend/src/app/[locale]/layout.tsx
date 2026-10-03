@@ -15,7 +15,7 @@ import { getServerTranslation } from "i18n/server";
 import { NONCE_HEADER } from "utils/contentSecurityPolicy";
 
 import { Providers } from "app/providers";
-import { themeInitScript } from "app/themeInit";
+import { ThemeInitScript } from "app/ThemeInitScript";
 
 const ICON_PATH = "/favicon.svg";
 
@@ -23,8 +23,7 @@ interface LocaleParams {
     params: Promise<{ locale: string }>;
 }
 
-// canonical and og:url are per-route facts and are set by each route: inherited here they
-// would tell search engines every page is the same one
+// no canonical or og:url here: inherited, they would tell search engines every page is the same
 export const generateMetadata = async ({
     params,
 }: LocaleParams): Promise<Metadata> => {
@@ -57,15 +56,23 @@ export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
     colorScheme: "dark light",
-    themeColor: process.env.THEME_COLOR_DARK,
+    // follows the OS until the pre-paint script applies a stored choice to both
+    themeColor: [
+        {
+            media: "(prefers-color-scheme: dark)",
+            color: process.env.THEME_COLOR_DARK,
+        },
+        {
+            media: "(prefers-color-scheme: light)",
+            color: process.env.THEME_COLOR_LIGHT,
+        },
+    ],
 };
 
 interface RootLayoutProps extends LocaleParams {
     children: ReactNode;
 }
 
-// without a session cookie the visitor is a guest from the first byte, so the server renders the guest
-// navigation instead of the signed-in one collapsing after hydration; with one, /me still decides
 // suppressHydrationWarning: the pre-paint script sets data-theme before React hydrates
 const RootLayout = async ({ children, params }: RootLayoutProps) => {
     const { locale } = await params;
@@ -74,16 +81,14 @@ const RootLayout = async ({ children, params }: RootLayoutProps) => {
         notFound();
     }
 
+    // no session cookie means a guest from the first byte; with one, /me still decides
     const hasSessionCookie = (await cookies()).has(AUTH_COOKIE_NAME);
     const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
 
     return (
         <html lang={locale} suppressHydrationWarning>
             <head>
-                <script
-                    nonce={nonce}
-                    dangerouslySetInnerHTML={{ __html: themeInitScript }}
-                />
+                <ThemeInitScript nonce={nonce} />
             </head>
             <body>
                 <Providers

@@ -3,6 +3,8 @@ import React from "react";
 
 import type { FavouriteToggle } from "hooks/useFavouriteToggle";
 
+import { cx } from "utils/cx";
+
 import styles from "./FavouriteButton.module.scss";
 
 interface FavouriteButtonProps {
@@ -29,12 +31,10 @@ export const FavouriteButton: React.FC<FavouriteButtonProps> = ({
         disabled={favourite.isDisabled}
         aria-pressed={favourite.isFavourite}
         aria-label={label}
-        className={[
+        className={cx(
             className,
             favourite.isFavourite && styles["favourite-button--active"],
-        ]
-            .filter(Boolean)
-            .join(" ")}
+        )}
     >
         <Heart size={iconSize} aria-hidden="true" />
         {children}

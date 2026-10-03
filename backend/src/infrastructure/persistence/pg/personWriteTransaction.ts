@@ -6,12 +6,11 @@ import {
     withTransaction,
 } from "./transaction";
 
-// the person row lock serializes one user's writes, so a per-user limit and the next position can't race;
-// NO KEY UPDATE leaves foreign-key inserts into other person-owned tables unblocked
+// serializes a user's writes so limits can't race; NO KEY UPDATE leaves FK inserts unblocked
 export function inPersonWriteTransaction<T>(
     pool: Pool,
     personId: number,
-    // returned when the person no longer exists, instead of letting an insert fail on the foreign key
+    // returned instead of letting an insert fail on the foreign key
     missingPerson: T,
     work: (client: PoolClient) => Promise<TransactionOutcome<T>>,
 ): Promise<T> {

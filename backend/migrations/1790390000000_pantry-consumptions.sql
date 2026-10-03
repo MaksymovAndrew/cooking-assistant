@@ -1,6 +1,6 @@
 -- Up Migration
 
--- one row per "Cooked it"; title is a snapshot, so the sources go NULL instead of taking the history with them
+-- the title is a snapshot, so a deleted recipe or menu goes NULL instead of erasing the history
 CREATE TABLE pantry_consumptions (
     id SERIAL PRIMARY KEY,
     person_id INTEGER NOT NULL REFERENCES person (id) ON DELETE CASCADE,
@@ -18,8 +18,7 @@ CREATE INDEX idx_pantry_consumptions_recipe ON pantry_consumptions (recipe_id);
 CREATE INDEX idx_pantry_consumptions_menu ON pantry_consumptions (menu_id);
 CREATE INDEX idx_pantry_consumptions_calorie_intake ON pantry_consumptions (calorie_intake_id);
 
--- what each cooking took from which lot; purchase_id is deliberately not a foreign key: a lot used up
--- is deleted, and undo recreates it under the same id and purchase date
+-- purchase_id is not a foreign key: undo recreates a used-up lot under the same id and date
 CREATE TABLE pantry_consumption_lots (
     consumption_id INTEGER NOT NULL REFERENCES pantry_consumptions (id) ON DELETE CASCADE,
     ingredient_id INTEGER NOT NULL REFERENCES ingredients (id) ON DELETE CASCADE,

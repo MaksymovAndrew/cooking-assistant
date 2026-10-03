@@ -59,7 +59,6 @@ function createIngredientRepository(): jest.Mocked<IngredientRepository> {
 function createRecipeRepository(): jest.Mocked<RecipeRepository> {
     return {
         create: jest.fn(),
-        findAllWithIngredients: jest.fn(),
         findByIdWithIngredients: jest.fn(),
         update: jest.fn(),
         deleteById: jest.fn(),
@@ -73,7 +72,7 @@ function createRecipeRepository(): jest.Mocked<RecipeRepository> {
 function createMenuRepository(): jest.Mocked<MenuRepository> {
     return {
         findAll: jest.fn(),
-        findAllUnpaginated: jest.fn(),
+        getStats: jest.fn(),
         create: jest.fn(),
         findByIdWithRecipes: jest.fn(),
         update: jest.fn(),

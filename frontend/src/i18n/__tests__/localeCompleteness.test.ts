@@ -42,7 +42,6 @@ const hasWordsToTranslate = (text: string): boolean =>
         text.replace(TITLE_SLOT, "").replace(PLACEHOLDER, "").match(WORD) ?? []
     ).some((word) => !SHARED_WORDS.has(word));
 
-// namespace files nest objects of strings; anything else is skipped rather than trusted
 const flatten = (tree: object, prefix = ""): Map<string, string> => {
     const entries = new Map<string, string>();
 

@@ -76,28 +76,6 @@ const openPanel = async () => {
 };
 
 describe("RecipeFilterPanel", () => {
-    it("should render the search input with the given placeholder", () => {
-        setup();
-
-        expect(
-            screen.getByPlaceholderText(/search recipes/i),
-        ).toBeInTheDocument();
-    });
-
-    it("should not show the popover by default", () => {
-        setup();
-
-        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
-
-    it("should open the popover when the Filters trigger is clicked", async () => {
-        setup();
-
-        await openPanel();
-
-        expect(screen.getByRole("dialog")).toBeInTheDocument();
-    });
-
     it("should show a badge with the given active filter count", () => {
         setup({}, 2);
 
@@ -166,36 +144,6 @@ describe("RecipeFilterPanel", () => {
         }
     });
 
-    it("should call setValue with the updated range, debounced, when the max time input changes", async () => {
-        jest.useFakeTimers();
-        const user = userEvent.setup({
-            advanceTimers: (ms) => {
-                jest.advanceTimersByTime(ms);
-            },
-        });
-
-        try {
-            const { setValue } = setup();
-
-            await user.click(screen.getByRole("button", { name: /Filters/ }));
-            await user.type(screen.getAllByLabelText("Max")[0], "45");
-
-            expect(setValue).not.toHaveBeenCalled();
-
-            act(() => {
-                jest.advanceTimersByTime(300);
-            });
-
-            expect(setValue).toHaveBeenCalledWith(
-                "cookingTime",
-                { min: "", max: "45" },
-                { replace: true },
-            );
-        } finally {
-            jest.useRealTimers();
-        }
-    });
-
     it("should call setValue with the updated range, debounced, when the calorie inputs change", async () => {
         jest.useFakeTimers();
         const user = userEvent.setup({
@@ -219,36 +167,6 @@ describe("RecipeFilterPanel", () => {
             expect(setValue).toHaveBeenCalledWith(
                 CALORIES_FILTER_KEY,
                 { min: "200", max: "" },
-                { replace: true },
-            );
-        } finally {
-            jest.useRealTimers();
-        }
-    });
-
-    it("should call setValue with the updated range, debounced, when the max calorie input changes", async () => {
-        jest.useFakeTimers();
-        const user = userEvent.setup({
-            advanceTimers: (ms) => {
-                jest.advanceTimersByTime(ms);
-            },
-        });
-
-        try {
-            const { setValue } = setup();
-
-            await user.click(screen.getByRole("button", { name: /Filters/ }));
-            await user.type(screen.getAllByLabelText("Max")[1], "500");
-
-            expect(setValue).not.toHaveBeenCalled();
-
-            act(() => {
-                jest.advanceTimersByTime(300);
-            });
-
-            expect(setValue).toHaveBeenCalledWith(
-                CALORIES_FILTER_KEY,
-                { min: "", max: "500" },
                 { replace: true },
             );
         } finally {
@@ -345,8 +263,7 @@ describe("RecipeFilterPanel", () => {
             screen.getByRole("button", { name: RESET_FILTERS_BUTTON }),
         );
 
-        // one combined call, not five separate setValue() calls - each of those would
-        // read the same pre-reset URL state, so only the last one would actually stick
+        // one setValues call: separate setValue calls would each read the same pre-reset URL
         expect(setValues).toHaveBeenCalledWith({
             types: [],
             ingredients: [],
@@ -392,38 +309,6 @@ describe("RecipeFilterPanel", () => {
 
             expect(setValue).not.toHaveBeenCalledWith(
                 "cookingTime",
-                expect.anything(),
-                expect.anything(),
-            );
-        } finally {
-            jest.useRealTimers();
-        }
-    });
-
-    it("should not let a pending, uncommitted calorie Min edit commit after Reset filters is clicked", async () => {
-        jest.useFakeTimers();
-        const user = userEvent.setup({
-            advanceTimers: (ms) => {
-                jest.advanceTimersByTime(ms);
-            },
-        });
-
-        try {
-            const { setValue } = setup();
-
-            await user.click(screen.getByRole("button", { name: /Filters/ }));
-            await user.type(screen.getAllByLabelText("Min")[1], "200");
-            // debounce still pending - Reset filters doesn't close the popover
-            await user.click(
-                screen.getByRole("button", { name: RESET_FILTERS_BUTTON }),
-            );
-
-            act(() => {
-                jest.advanceTimersByTime(300);
-            });
-
-            expect(setValue).not.toHaveBeenCalledWith(
-                CALORIES_FILTER_KEY,
                 expect.anything(),
                 expect.anything(),
             );

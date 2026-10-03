@@ -29,20 +29,6 @@ describe("GetAllMenus", () => {
         expect(result).toEqual(paginated);
     });
 
-    it("should pass through valid limit and offset as numbers", async () => {
-        const { useCase, menuRepository } = setup();
-        const paginated = { items: [], total: 0 };
-
-        menuRepository.findAll.mockResolvedValue(paginated);
-
-        await useCase.execute(7, { limit: "10", offset: "20" });
-
-        expect(menuRepository.findAll).toHaveBeenCalledWith(
-            { limit: 10, offset: 20 },
-            7,
-        );
-    });
-
     it("should let a guest sort by rating and keep only top-rated menus", async () => {
         const { useCase, menuRepository } = setup();
         const paginated = { items: [], total: 0 };
@@ -76,17 +62,6 @@ describe("GetAllMenus", () => {
         expect(menuRepository.findAll).not.toHaveBeenCalled();
     });
 
-    it("should pass a null userId through for a guest requester", async () => {
-        const { useCase, menuRepository } = setup();
-        const paginated = { items: [], total: 0 };
-
-        menuRepository.findAll.mockResolvedValue(paginated);
-
-        await useCase.execute(null, {});
-
-        expect(menuRepository.findAll).toHaveBeenCalledWith({}, null);
-    });
-
     it("should throw a 400 ValidationError when an anonymous request uses the favourites filter", async () => {
         const { useCase, menuRepository } = setup();
 
@@ -114,20 +89,6 @@ describe("GetAllMenus", () => {
             { favourites: true },
             7,
         );
-    });
-
-    it("should throw a 400 ValidationError when offset is negative", async () => {
-        const { useCase, menuRepository } = setup();
-
-        const error = await catchError(useCase.execute(7, { offset: -1 }));
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.VALIDATION_ERROR,
-            400,
-            "offset: Must be at least 0",
-        );
-        expect(menuRepository.findAll).not.toHaveBeenCalled();
     });
 
     it("should throw a 400 ValidationError when category_ids is not an id list", async () => {

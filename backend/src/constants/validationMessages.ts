@@ -1,5 +1,4 @@
-// keys of a request-validation message; the text lives in i18n/locales/<locale>/validation.json, and the
-// issue's path names the field, so a message never repeats it
+// keys into i18n/locales/<locale>/validation.json; the path names the field, so text never does
 export const VALIDATION_MESSAGES = {
     REQUIRED: "required",
     EXPECTED_STRING: "expectedString",

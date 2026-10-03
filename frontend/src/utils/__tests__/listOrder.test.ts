@@ -1,4 +1,4 @@
-import { moveBefore, toggleValue } from "utils/listOrder";
+import { moveBefore, stepMovePair, toggleValue } from "utils/listOrder";
 
 describe("moveBefore", () => {
     it("should move an item forward to just before the drop target", () => {
@@ -39,5 +39,35 @@ describe("toggleValue", () => {
 
     it("should remove a value the list holds", () => {
         expect(toggleValue([1, 2, 3], 2)).toEqual([1, 3]);
+    });
+});
+
+describe("stepMovePair", () => {
+    it("should land the item before its upper neighbour when moving up", () => {
+        expect(stepMovePair(["a", "b", "c"], "b", -1)).toEqual(["b", "a"]);
+    });
+
+    it("should land the lower neighbour before the item when moving down", () => {
+        expect(stepMovePair(["a", "b", "c"], "b", 1)).toEqual(["c", "b"]);
+    });
+
+    it("should swap the item with its neighbour once applied through moveBefore", () => {
+        const list = ["a", "b", "c"];
+        const [from, to] = stepMovePair(list, "a", 1) ?? ["", ""];
+
+        expect(moveBefore(list, list.indexOf(from), list.indexOf(to))).toEqual([
+            "b",
+            "a",
+            "c",
+        ]);
+    });
+
+    it("should return null past either end of the list", () => {
+        expect(stepMovePair(["a", "b"], "a", -1)).toBeNull();
+        expect(stepMovePair(["a", "b"], "b", 1)).toBeNull();
+    });
+
+    it("should return null for an item the list lacks", () => {
+        expect(stepMovePair(["a", "b"], "z", 1)).toBeNull();
     });
 });

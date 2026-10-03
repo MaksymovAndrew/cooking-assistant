@@ -1,6 +1,6 @@
 import { DEFAULT_LOCALE, type Locale } from "constants/locales";
 
-// the frontend serves the default language without a prefix and every other one under /<locale>
+// mirrors the frontend's URLs: the default language carries no prefix
 export function emailLink(
     frontendOrigin: string,
     path: string,

@@ -11,7 +11,6 @@ import {
 
 const { MAX_NAME_LENGTH, MAX_TAGS_PER_RECIPE } = TAG_LIMITS;
 
-// creating and renaming a tag take the same body
 export const tagSchema = z.object({
     name: trimmedStringSchema(MAX_NAME_LENGTH),
 });

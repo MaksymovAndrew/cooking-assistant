@@ -26,7 +26,7 @@ export async function insertConsumption(
     return result.rows[0].id;
 }
 
-// copies each lot's own purchase date straight from the row, before the lot can be deleted below
+// reads each lot's purchase date before applyDeductions can delete the lot
 export async function recordLots(
     client: PoolClient,
     consumptionId: number,
@@ -45,7 +45,7 @@ export async function recordLots(
     );
 }
 
-// the same arithmetic as deleting purchases: lots shrink or go, and the stock drops by what was taken
+// the same arithmetic as deleting purchases
 export async function applyDeductions(
     client: PoolClient,
     personId: number,

@@ -18,10 +18,8 @@ export interface AvatarProps {
 
 const DEFAULT_SIZE = 40;
 const ICON_SCALE = 0.5;
-// initials scale with the avatar (12px at the default 40px header size)
 const INITIALS_SCALE = 0.3;
-// presets are drawn on 128px art with their own internal padding - a touch of
-// breathing room against the round tile matches the other fallback glyphs
+// presets carry their own padding, so a slight shrink matches the other fallback glyphs
 const PRESET_SCALE = 0.82;
 
 export const Avatar: React.FC<AvatarProps> = ({

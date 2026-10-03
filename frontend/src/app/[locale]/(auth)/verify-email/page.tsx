@@ -34,6 +34,7 @@ const VerifyEmailPage: React.FC = () => {
             {status === "success" && (
                 <EmptyState
                     icon={MailCheck}
+                    titleAs="h1"
                     title={t("verifyEmailPage.successHeading")}
                     description={t("verifyEmailPage.successMessage")}
                     action={
@@ -50,11 +51,16 @@ const VerifyEmailPage: React.FC = () => {
             {status === "invalid" && (
                 <EmptyState
                     icon={AlertTriangle}
+                    titleAs="h1"
                     title={t("verifyEmailPage.invalidHeading")}
                     description={t("verifyEmailPage.invalidMessage")}
                     action={
-                        <LinkButton href={ROUTES.settings}>
-                            {t("verifyEmailPage.goToSettings")}
+                        <LinkButton
+                            href={isAuthed ? ROUTES.settings : ROUTES.login}
+                        >
+                            {isAuthed
+                                ? t("verifyEmailPage.goToSettings")
+                                : t("verifyEmailPage.backToLogin")}
                         </LinkButton>
                     }
                 />

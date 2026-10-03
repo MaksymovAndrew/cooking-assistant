@@ -20,7 +20,8 @@
         "loading": "Зберігаємо…"
     },
     "chip": {
-        "remove": "Прибрати"
+        "remove": "Прибрати «{{name}}»",
+        "quantity": "Кількість: {{name}}"
     },
     "passwordInput": {
         "show": "Показати пароль",
@@ -67,7 +68,10 @@
         "logout": "Вийти",
         "login": "Увійти",
         "register": "Реєстрація",
-        "scrollToTop": "Нагору"
+        "scrollToTop": "Нагору",
+        "skipToContent": "Перейти до вмісту",
+        "mainLabel": "Основна",
+        "tabBarLabel": "Панель вкладок"
     },
     "theme": {
         "toggleLabel": "Змінити тему"
@@ -82,6 +86,7 @@
         "backToRecipes": "До рецептів",
         "recipes": "Рецепти",
         "pantry": "Продукти",
+        "home": "Головна",
         "menus": "Меню"
     },
     "errors": {
@@ -105,9 +110,7 @@
         "auth/new_password_same_as_current": "Новий пароль має відрізнятися від поточного.",
         "recipe/not_found": "Такого рецепта немає або його видалили.",
         "recipe/ingredients_empty": "Додайте хоча б один інгредієнт.",
-        "recipe/ingredients_missing_id": "Виберіть кожен інгредієнт зі списку.",
         "recipe/ingredients_not_exist": "Одного чи кількох інгредієнтів більше немає.",
-        "recipe/title_content_empty": "Додайте назву й опис.",
         "recipe/in_pantry_requires_login": "Увійдіть, щоб добирати рецепти за своїми продуктами.",
         "recipe/type_not_exist": "Такого типу рецепта більше немає. Виберіть інший.",
         "menu/not_found": "Такого меню немає або його видалили.",
@@ -140,6 +143,7 @@
     },
     "errorState": {
         "title": "Щось пішло не так",
+        "loadFailed": "Не вдалося завантажити. Перевірте з’єднання і спробуйте ще раз.",
         "retry": "Спробувати знову"
     },
     "notifications": {
@@ -321,5 +325,12 @@
         "filterChip_few": "{{count}} мови",
         "filterChip_many": "{{count}} мов",
         "filterChip_other": "{{count}} мови"
+    },
+    "contentSkeleton": {
+        "loading": "Завантаження…"
+    },
+    "moveButtons": {
+        "up": "Підняти «{{name}}» вище",
+        "down": "Опустити «{{name}}» нижче"
     }
 }

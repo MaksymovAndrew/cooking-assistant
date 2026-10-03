@@ -15,8 +15,6 @@ import {
     sumIngredientCalories,
 } from "utils/calories";
 
-import styles from "./RecipeForm.module.scss";
-
 interface RecipeFormCaloriesCardProps {
     id: string;
     value: string;
@@ -32,17 +30,25 @@ export const RecipeFormCaloriesCard: React.FC<RecipeFormCaloriesCardProps> = ({
 }) => {
     const { t } = useTranslation("recipes");
     const locale = useLocale();
-    // so the field's hint matches what an empty override would actually compute to server-side
+    // mirrors the server's sum, so the hint shows what an empty override computes to
     const autoCalories = useMemo(
         () => sumIngredientCalories(ingredients),
         [ingredients],
     );
+
+    const hint =
+        ingredients.length > 0
+            ? t("recipeForm.caloriesAutoHint", {
+                  count: formatKcal(roundCalories(autoCalories), locale),
+              })
+            : t("recipeForm.caloriesAutoHintEmpty");
 
     return (
         <FormCard>
             <FormField
                 htmlFor={id}
                 label={t("recipeForm.caloriesOverrideLabel")}
+                hint={hint}
             >
                 <NumberInput
                     id={id}
@@ -52,16 +58,6 @@ export const RecipeFormCaloriesCard: React.FC<RecipeFormCaloriesCardProps> = ({
                         onChange(e.target.value);
                     }}
                 />
-                <p className={styles["recipe-form__calories-hint"]}>
-                    {ingredients.length > 0
-                        ? t("recipeForm.caloriesAutoHint", {
-                              count: formatKcal(
-                                  roundCalories(autoCalories),
-                                  locale,
-                              ),
-                          })
-                        : t("recipeForm.caloriesAutoHintEmpty")}
-                </p>
             </FormField>
         </FormCard>
     );

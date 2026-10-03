@@ -58,6 +58,7 @@
         "noHistory": "Покупок пока нет.",
         "closeButton": "Закрыть",
         "editButton": "Изменить количество",
+        "quantityLabel": "Количество: {{name}}, куплено {{date}}",
         "deleteButton": "Удалить покупку"
     },
     "restockModal": {

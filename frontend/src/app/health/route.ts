@@ -1,5 +1,4 @@
-// container liveness only - the one route handler in the app, deliberately outside the
-// "all HTTP goes through the api layer" rule, which is about the product's own API
+// container liveness only: the one route handler, outside the api-layer rule on purpose
 export const dynamic = "force-dynamic";
 
 // answering from the route cache would prove the file exists, not that the runtime still renders

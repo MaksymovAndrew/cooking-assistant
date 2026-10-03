@@ -1,6 +1,4 @@
-// next/headers reads the incoming request, which exists only during a server render. This
-// stands in for it with real, writable state, so the forwarding logic in api/server is
-// exercised rather than stubbed (same approach as nextNavigationMock).
+// real, writable request state, so the forwarding in api/server is exercised rather than stubbed
 let requestCookies = new Map<string, string>();
 let requestHeaders = new Headers();
 

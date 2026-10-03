@@ -19,7 +19,7 @@ const catalogDataEntrySchema = z.object({
     caloriesPerUnit: z.number().min(0).nullable(),
 });
 
-// catalogData.json is generated but still committed and read straight into the seed on every deploy, so a shape drift must fail loudly here rather than insert a malformed ingredient row
+// the seed reads this on every deploy, so a shape drift must fail here, not insert a bad row
 export function parseCatalogData(raw: unknown): CatalogDataEntry[] {
     const entries = z.array(catalogDataEntrySchema).parse(raw);
     const seenSlugs = new Set<string>();

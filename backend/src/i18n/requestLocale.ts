@@ -7,7 +7,7 @@ import {
     LOCALES,
 } from "constants/locales";
 
-// the app sends the language it is showing (the account's choice once signed in) as Accept-Language
+// the frontend sends the language it shows as Accept-Language
 export function requestLocale(req: Pick<Request, "acceptsLanguages">): Locale {
     const match = req.acceptsLanguages(...LOCALES);
 

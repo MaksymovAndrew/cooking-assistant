@@ -4,7 +4,7 @@ import type { UndoCookingResult } from "domain/repositories/PantryConsumptionRep
 
 import { inPersonWriteTransaction } from "./personWriteTransaction";
 
-// a lot used up since was deleted: it comes back under its own id and purchase date, so its expiry is unchanged
+// a used-up lot returns under its own id and purchase date, so its expiry is unchanged
 async function restoreLots(
     client: PoolClient,
     personId: number,

@@ -33,8 +33,10 @@ const makeError = (
         },
     });
 
+const onDeleted = jest.fn();
+
 const renderDeleteAccountForm = () =>
-    renderHookWithStore(() => useDeleteAccountForm(LOGIN));
+    renderHookWithStore(() => useDeleteAccountForm(LOGIN, onDeleted));
 
 describe("useDeleteAccountForm", () => {
     it("should delete the account and navigate to login on success", async () => {
@@ -53,6 +55,7 @@ describe("useDeleteAccountForm", () => {
             data: { password: PASSWORD },
             params: undefined,
         });
+        expect(onDeleted).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith(ROUTES.login);
     });
 

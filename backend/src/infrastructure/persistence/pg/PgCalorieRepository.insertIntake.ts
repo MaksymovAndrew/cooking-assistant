@@ -5,7 +5,7 @@ import type {
     CalorieIntakeRow,
 } from "domain/repositories/CalorieRepository";
 
-// takes a transaction's client too, so cooking can log calories in the same commit as the pantry write
+// takes a transaction's client so cooking logs calories in the pantry write's commit
 export async function insertIntake(
     executor: Pool | PoolClient,
     personId: number,

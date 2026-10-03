@@ -1,6 +1,9 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppDispatch } from "redux/hooks";
+import { closeModal } from "redux/slices/uiSlice";
+
 import { useChangePasswordForm } from "hooks/useChangePasswordForm";
 
 import { BaseModal } from "components/modals/BaseModal";
@@ -12,7 +15,7 @@ import { PasswordInput } from "components/ui/PasswordInput";
 import styles from "./ChangePasswordModal.module.scss";
 
 interface ChangePasswordModalProps {
-    onClose: () => void;
+    modalId: string;
 }
 
 const CURRENT_PW_FIELD_ID = "settings-current-password";
@@ -21,11 +24,13 @@ const CONFIRM_PW_FIELD_ID = "settings-confirm-password";
 const FORM_ID = "change-password-form";
 
 export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
-    onClose,
+    modalId,
 }) => {
     const { t } = useTranslation("settings");
+    const dispatch = useAppDispatch();
+    const onClose = () => dispatch(closeModal(modalId));
     const form = useChangePasswordForm(onClose);
-    // erases the promise (matches LoginForm/RegisterForm) so a fire-and-forget submit needs no void/catch
+    // typed unknown to erase the promise, so the submit needs no void or catch
     const submitForm = (): unknown => form.handleSubmit();
 
     return (

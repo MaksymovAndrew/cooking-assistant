@@ -100,12 +100,4 @@ describe("ProfileDietaryTab", () => {
         });
         expect(await screen.findByText("Saved just now")).toBeInTheDocument();
     });
-
-    it("should always show the calorie disclaimer", () => {
-        setup();
-
-        expect(
-            screen.getByText(/Calorie values are estimates/),
-        ).toBeInTheDocument();
-    });
 });

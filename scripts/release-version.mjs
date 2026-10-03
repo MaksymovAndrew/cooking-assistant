@@ -14,8 +14,6 @@ function fail(message) {
     process.exit(1);
 }
 
-// release/X.Y branches bump to the branch's own X.Y (patch guessed/overridden via targetVersion);
-// hotfix/X.Y.Z branches carry the exact target version already, nothing to guess
 function releaseBranchVersion() {
     const branch = git("rev-parse", "--abbrev-ref", "HEAD");
     const release = branch.match(/^release\/(\d+\.\d+)$/);
@@ -36,8 +34,7 @@ function changedSides() {
     );
 }
 
-// keeps each file's own indentation - rewriting a 4-space file with 2 spaces turns a one-line
-// version bump into a whole-file diff of every package.json and lockfile
+// keeps each file's own indent - re-indenting turns a version bump into a whole-file diff
 function readJson(file) {
     const text = readFileSync(file, "utf8");
     const indent = text.match(/^[ \t]+(?=")/m)?.[0] ?? "  ";
@@ -53,7 +50,6 @@ function readPackage(dir) {
     return { file, ...readJson(file) };
 }
 
-// returns the files it rewrote (empty when the version already matches)
 function setVersion(dir, version) {
     const { file, json, indent } = readPackage(dir);
     if (json.version === version) return [];
@@ -71,8 +67,7 @@ function setVersion(dir, version) {
     return written;
 }
 
-// a mid-release manual patch (e.g. 3.3.1) must win over the branch default 3.3.0;
-// a hotfix/X.Y.Z branch name already IS the exact target version
+// a manual mid-release patch (e.g. 3.3.1) wins over the branch default 3.3.0
 function targetVersion(branchInfo) {
     if (branchInfo.kind === "hotfix") return branchInfo.value;
     const rootVersion = readPackage(".").json.version;

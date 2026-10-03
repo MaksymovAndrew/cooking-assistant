@@ -34,7 +34,6 @@ const parseEntry = (entry: string): WeightedLanguage => {
     };
 };
 
-// the most preferred language the app has, by the browser's own ranking
 export const negotiateLocale = (acceptLanguage: string | null): Locale | null =>
     (acceptLanguage ?? "")
         .split(",")
@@ -48,7 +47,7 @@ export const negotiateLocale = (acceptLanguage: string | null): Locale | null =>
 const isMetadataImage = (path: string): boolean =>
     path.split("/").some((segment) => segment.startsWith("opengraph-image"));
 
-// a crawler always gets the address it asked for: redirecting by its headers would hide the other languages
+// a crawler gets the address it asked for: redirecting it would hide the other languages
 const preferredLocale = ({
     cookieLocale,
     acceptLanguage,

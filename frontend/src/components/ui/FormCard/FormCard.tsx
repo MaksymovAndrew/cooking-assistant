@@ -1,5 +1,7 @@
 import React from "react";
 
+import { cx } from "utils/cx";
+
 import styles from "./FormCard.module.scss";
 
 interface FormCardProps {
@@ -8,7 +10,5 @@ interface FormCardProps {
 }
 
 export const FormCard: React.FC<FormCardProps> = ({ children, className }) => (
-    <div className={[styles["form-card"], className].filter(Boolean).join(" ")}>
-        {children}
-    </div>
+    <div className={cx(styles["form-card"], className)}>{children}</div>
 );

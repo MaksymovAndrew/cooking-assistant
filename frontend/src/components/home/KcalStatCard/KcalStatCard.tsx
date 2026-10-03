@@ -12,15 +12,14 @@ import {
     calorieToneFor,
     computeCalorieSummary,
 } from "utils/computeCalorieSummary";
+import { cx } from "utils/cx";
 
 import styles from "./KcalStatCard.module.scss";
 
 interface KcalStatCardProps {
     consumed: number;
     goal: number | null;
-    // "consumed" (default) reads today's total against tone-specific messaging; "remaining"
-    // reads what's left of the goal instead, with a fixed label - the ring and tone/colour stay
-    // the same either way since both frame the same underlying progress
+    // "remaining" shows what is left of the goal under a fixed label; the ring and tone stay the same
     variant?: "consumed" | "remaining";
 }
 
@@ -69,15 +68,13 @@ export const KcalStatCard: React.FC<KcalStatCardProps> = ({
             ? t("homeTile.remainingLabel")
             : LABEL_BY_TONE[tone];
 
-    const cardClass = [
+    const cardClass = cx(
         styles["kcal-stat-card"],
         tone !== "normal" && styles[`kcal-stat-card--${tone}`],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
-        <div data-testid="kcal-stat-card" className={cardClass}>
+        <div className={cardClass}>
             <span className={styles["kcal-stat-card__ring"]} aria-hidden="true">
                 <svg viewBox="0 0 34 34">
                     <circle

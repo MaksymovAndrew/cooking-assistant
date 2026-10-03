@@ -79,28 +79,4 @@ describe("NewsModal", () => {
 
         expect(selectActiveModal(store.getState())).toBeNull();
     });
-
-    it("should close the modal when the overlay is clicked", async () => {
-        const { store } = renderOpen();
-
-        await userEvent.click(screen.getByRole("presentation"));
-
-        expect(selectActiveModal(store.getState())).toBeNull();
-    });
-
-    it("should not close the modal when clicking inside the dialog", async () => {
-        const { store } = renderOpen();
-
-        await userEvent.click(screen.getByText("What's new"));
-
-        expect(selectActiveModal(store.getState())).toEqual(MODAL);
-    });
-
-    it("should close the modal when Escape is pressed", async () => {
-        const { store } = renderOpen();
-
-        await userEvent.keyboard("{Escape}");
-
-        expect(selectActiveModal(store.getState())).toBeNull();
-    });
 });

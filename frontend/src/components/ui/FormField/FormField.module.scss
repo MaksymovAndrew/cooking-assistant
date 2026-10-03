@@ -19,6 +19,14 @@
             sans-serif;
     }
 
+    &__hint {
+        margin: 0;
+        color: var(--text-muted);
+        font:
+            400 12px Inter,
+            sans-serif;
+    }
+
     &__error {
         display: flex;
         align-items: center;

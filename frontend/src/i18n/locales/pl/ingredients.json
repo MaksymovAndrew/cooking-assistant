@@ -58,6 +58,7 @@
         "noHistory": "Brak historii zakupów.",
         "closeButton": "Zamknij",
         "editButton": "Zmień ilość",
+        "quantityLabel": "Ilość: {{name}}, kupione {{date}}",
         "deleteButton": "Usuń zakup"
     },
     "restockModal": {

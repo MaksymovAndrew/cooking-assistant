@@ -1,8 +1,7 @@
 import type { ErrorCode } from "constants/errorCodes";
 import type { ValidationMessage } from "constants/validationMessages";
 
-// carries a code, never display text: errorHandler resolves the copy from the i18n catalog at the HTTP edge, the one
-// place a request's locale can be known
+// a code, never display text: only the HTTP edge knows the request's locale
 export class AppError extends Error {
     status: number;
     code: ErrorCode;
@@ -15,7 +14,6 @@ export class AppError extends Error {
     }
 }
 
-// one rejected request field: path is the field's own name, so the localized message never repeats it
 export interface ValidationIssue {
     path: string;
     message: ValidationMessage;

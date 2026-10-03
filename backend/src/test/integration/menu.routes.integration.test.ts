@@ -5,7 +5,7 @@ import { DEFAULT_LOCALE } from "constants/locales";
 import { translateMessage } from "i18n/translate";
 
 import { errorBody } from "test/helpers/errorBody";
-import { menuDetail, menuStatsRow } from "test/helpers/repositoryRows";
+import { menuDetail, menuStatistics } from "test/helpers/repositoryRows";
 import { authCookie, buildTestApp } from "test/helpers/testApp";
 
 const MENU_TITLE = "Weekly menu";
@@ -60,7 +60,7 @@ describe("menu routes", () => {
     });
 
     it.each([
-        ["get", "/api/menus"],
+        ["get", "/api/menus-stats"],
         ["post", CREATE_MENU_PATH],
         ["put", MENU_9_PATH],
         ["delete", MENU_9_PATH],
@@ -75,24 +75,6 @@ describe("menu routes", () => {
             expect(res.status).toBe(401);
         },
     );
-
-    it("should return menus", async () => {
-        const { app, deps } = buildTestApp();
-        const paginated = {
-            items: [{ id: 9, title: MENU_TITLE, ...MENU_ROW_EXTRAS }],
-            total: 1,
-        };
-
-        deps.menuRepository.findAll.mockResolvedValue(paginated);
-
-        const res = await request(app)
-            .get("/api/menu?menu_name=Weekly")
-            .set("Cookie", authCookie());
-
-        expect(res.status).toBe(200);
-        // creation_date round-trips through res.json() as an ISO string, not a Date instance
-        expect(res.body).toEqual(JSON.parse(JSON.stringify(paginated)));
-    });
 
     it("should pass limit and offset through to the repository", async () => {
         const { app, deps } = buildTestApp();
@@ -125,21 +107,18 @@ describe("menu routes", () => {
         expect(deps.menuRepository.findAll).not.toHaveBeenCalled();
     });
 
-    it("should return every menu unpaginated", async () => {
+    it("should return the menu statistics", async () => {
         const { app, deps } = buildTestApp();
-        const menus = [
-            menuStatsRow({ title: MENU_TITLE }),
-            menuStatsRow({ id: 10, title: "Holiday menu" }),
-        ];
+        const stats = menuStatistics({ menusCount: 2, averageTotalTime: 40 });
 
-        deps.menuRepository.findAllUnpaginated.mockResolvedValue(menus);
+        deps.menuRepository.getStats.mockResolvedValue(stats);
 
         const res = await request(app)
-            .get("/api/menus")
+            .get("/api/menus-stats")
             .set("Cookie", authCookie());
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(menus);
+        expect(res.body).toEqual(stats);
     });
 
     it("should create a menu, including public recipes of other users", async () => {
@@ -184,9 +163,8 @@ describe("menu routes", () => {
 
     it("should return menu details scoped to the authenticated user", async () => {
         const { app, deps } = buildTestApp();
-        const menu = menuDetail({ isOwner: true });
 
-        deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
+        deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menuDetail());
 
         const res = await request(app)
             .get(MENU_9_PATH)
@@ -194,50 +172,26 @@ describe("menu routes", () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toMatchObject({
-            menu: { id: 9, isOwner: true },
+            menu: { id: 9 },
             recipes: [],
             allergens: [],
         });
-        expect((res.body as { menu: { isOwner: boolean } }).menu.isOwner).toBe(
-            true,
-        );
         expect(deps.menuRepository.findByIdWithRecipes).toHaveBeenCalledWith(
             9,
             7,
         );
     });
 
-    it("should return menu details with isOwner:false when reading a menu of another user", async () => {
+    it("should read menu details without a viewer for an anonymous request", async () => {
         const { app, deps } = buildTestApp();
-        const menu = menuDetail();
 
-        deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
-
-        const res = await request(app)
-            .get(MENU_9_PATH)
-            .set("Cookie", authCookie(7));
-
-        expect(res.status).toBe(200);
-        expect((res.body as { menu: { isOwner: boolean } }).menu.isOwner).toBe(
-            false,
-        );
-        expect(deps.menuRepository.findByIdWithRecipes).toHaveBeenCalledWith(
-            9,
-            7,
-        );
-    });
-
-    it("should return menu details with isOwner:false and no missing-ingredients query for an anonymous request", async () => {
-        const { app, deps } = buildTestApp();
-        const menu = menuDetail();
-
-        deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menu);
+        deps.menuRepository.findByIdWithRecipes.mockResolvedValue(menuDetail());
 
         const res = await request(app).get(MENU_9_PATH);
 
         expect(res.status).toBe(200);
         expect(res.body).toMatchObject({
-            menu: { id: 9, isOwner: false },
+            menu: { id: 9 },
             recipes: [],
             allergens: [],
         });

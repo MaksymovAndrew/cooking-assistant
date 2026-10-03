@@ -1,10 +1,10 @@
 import type { BrowserContext, Locator, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { clearDietPreferences, deleteRecipe } from "./api";
 import { createRecipeViaForm } from "./forms";
 import { PRIMARY_STORAGE_STATE, VIEWER_STORAGE_STATE } from "./sharedAccounts";
 
-// the avoid list: picked in the profile, then marked on the recipe card and page and hideable with one filter
 test.describe.configure({ mode: "serial" });
 
 let ownerContext: BrowserContext;
@@ -15,7 +15,6 @@ let recipeTitle: string;
 
 test.beforeAll(async ({ browser }) => {
     recipeTitle = `Avoided recipe ${Date.now().toString(36)}`;
-    // reuses the shared primary/viewer accounts (registered once in global-setup) instead of registering fresh ones here - keeps the suite's total auth calls low
     ownerContext = await browser.newContext({
         storageState: PRIMARY_STORAGE_STATE,
     });
@@ -34,18 +33,13 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test.afterAll(async () => {
-    const ownerPage = await ownerContext.newPage();
-
-    await ownerPage.goto(`/recipe/${recipeId}`);
-    await ownerPage.getByRole("button", { name: "Delete recipe" }).click();
-    await ownerPage
-        .getByRole("dialog")
-        .getByRole("button", { name: "Delete recipe" })
-        .click();
-    await expect(ownerPage).toHaveURL(/\/all-recipes$/);
-
-    await ownerContext.close();
-    await viewerContext.close();
+    try {
+        await clearDietPreferences(viewerContext.request);
+        await deleteRecipe(ownerContext.request, recipeId);
+    } finally {
+        await ownerContext.close();
+        await viewerContext.close();
+    }
 });
 
 async function openFoodPreferences(): Promise<void> {
@@ -100,7 +94,12 @@ test("should mark the recipe and hide it with the filter", async () => {
     await expect(card.getByText("Avoid", { exact: true })).toBeVisible();
 
     await viewerPage.goto(`/recipe/${recipeId}`);
-    await expect(viewerPage.getByText("You avoid this").first()).toBeAttached();
+    await expect(
+        viewerPage
+            .getByRole("listitem")
+            .filter({ hasText: "Milk" })
+            .getByText("You avoid this"),
+    ).toBeVisible();
 
     await viewerPage.goto(`/all-recipes?q=${query}&avoid=1`);
     await expect(
@@ -126,11 +125,4 @@ test("should avoid an ingredient from the catalog search and take it back off", 
     await expect(remove).toBeVisible();
     await pressAndSave(remove, "/avoid", "DELETE");
     await expect(remove).toBeHidden();
-
-    // cleanup: leave the shared viewer account avoiding nothing
-    await pressAndSave(
-        viewerPage.getByRole("checkbox", { name: "Milk" }),
-        "/diet-preferences/allergens/milk",
-        "DELETE",
-    );
 });

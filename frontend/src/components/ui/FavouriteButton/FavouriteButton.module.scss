@@ -1,5 +1,5 @@
-// the heart itself fills in the brand colour; targeting the svg keeps the label's own colour untouched
+// targets the svg so only the heart fills, never the label
 .favourite-button--active svg {
-    color: var(--brand);
+    color: var(--brand-text);
     fill: currentcolor;
 }

@@ -3,7 +3,7 @@ import { logger } from "config/logger";
 import { runMigrations } from "./runMigrations";
 import { runSeed } from "./runSeed";
 
-// the one entry the compose migrate service runs on every deploy: pending migrations, then the idempotent seed
+// the compose migrate service runs this on every deploy
 async function main(): Promise<void> {
     await runMigrations(["up"]);
     await runSeed();

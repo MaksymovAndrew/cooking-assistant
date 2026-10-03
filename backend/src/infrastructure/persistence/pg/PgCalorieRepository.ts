@@ -57,8 +57,7 @@ export default class PgCalorieRepository implements CalorieRepository {
         return result.rows[0] ?? null;
     }
 
-    // LEFT JOINs so a menu with zero recipes still returns one row (calories: null), not zero rows -
-    // that's what tells LogIntake "menu exists but has no calorie info" apart from "menu doesn't exist"
+    // LEFT JOINs: a menu without recipes still yields a row, telling "no calories" from "no menu"
     async findMenuCalories(menuId: number): Promise<CalorieSourceInfo | null> {
         const result = await this.pool.query<CalorieSourceInfo>(
             `SELECT m.menu_title AS title,

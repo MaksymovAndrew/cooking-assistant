@@ -32,9 +32,7 @@ interface MenuDetailsSecondaryProps {
     onCook?: () => void;
 }
 
-// ingredients -> actions -> recipes, in that DOM order everywhere - the reading order the page
-// commits to. Desktop keeps ingredients as a right-side aside via grid-template-areas, which
-// repositions items visually without changing this source order (see MenuDetailsView.module.scss)
+// DOM order is ingredients, actions, recipes everywhere; desktop only moves them via grid areas
 export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     menuId,
     title,
@@ -58,9 +56,9 @@ export const MenuDetailsSecondary: React.FC<MenuDetailsSecondaryProps> = ({
     const visitorFavourite = isFavourite === null ? null : favourite;
     const menuIngredients = aggregateMenuIngredients(recipes);
     const menuAllergens = filterAllergens(allergens);
-    // the aside is empty for a guest with an allergen-free menu - see MenuMissingIngredientsPanel's
-    // own early return - so neither the grid column nor an empty row gap is reserved for it
-    const showIngredientsAside = canUsePantry || menuAllergens.length > 0;
+    // a guest's allergen-free menu or an emptied menu has an empty aside, so no column is reserved
+    const hasAsideContent = canUsePantry || menuAllergens.length > 0;
+    const showIngredientsAside = recipes.length > 0 && hasAsideContent;
     const gridClassName = showIngredientsAside
         ? `${styles["menu-details-page__grid"]} ${styles["menu-details-page__grid--with-aside"]}`
         : styles["menu-details-page__grid"];

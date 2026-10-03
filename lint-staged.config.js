@@ -1,6 +1,4 @@
-// backend/frontend files are linted from their own directory (ESLint flat config is resolved by
-// cwd) through scripts/run-tool.mjs, which spawns the tool without a shell - so bracketed and
-// parenthesised route folders survive on every OS. lint-staged itself splits the quoted paths.
+// ESLint finds its config by cwd, so each side lints in its own dir; lint-staged splits the quoted paths
 const path = require("path");
 
 // Windows caps a command line at ~8k characters, so a large commit runs in batches
@@ -23,10 +21,12 @@ const inBatches = (files) => {
     return batches;
 };
 
-const prettierCommands = (files) =>
+const rootCommands = (command) => (files) =>
     inBatches(files.map((file) => path.relative(__dirname, file))).map(
-        (batch) => `prettier --write ${batch}`,
+        (batch) => `${command} ${batch}`,
     );
+
+const prettierCommands = rootCommands("prettier --write");
 
 // absolute paths, since the tool runs inside its package directory
 const toolCommands = (dir, tool, files) =>

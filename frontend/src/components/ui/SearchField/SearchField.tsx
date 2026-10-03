@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { useDebouncedValue } from "hooks/useDebouncedValue";
 
+import { cx } from "utils/cx";
+
 import styles from "./SearchField.module.scss";
 
 interface SearchFieldProps {
@@ -20,11 +22,6 @@ const DEFAULT_DEBOUNCE_MS = 300;
 const SEARCH_ICON_SIZE = 17;
 const CLEAR_ICON_SIZE = 13;
 
-// single search input for every list/picker surface: instant typing feedback, but the
-// committed value only fires debounceMs after the user stops - so a URL-backed caller
-// (RecipeFilterPanel) doesn't spam history, and a client-filtered caller (RecipePicker)
-// doesn't re-filter on every keystroke. Forwards its ref so a caller can refocus the
-// input after handling a selection (e.g. picking a picker result)
 export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
     (
         {
@@ -54,15 +51,13 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
             }
         };
 
-        // resyncs local state when the committed value changes from outside (a chip or a reset clearing it) - adjusted during render, not via an effect
+        // an outside change (a chip or a reset) resyncs the input during render, not in an effect
         if (value !== syncedValue) {
             setSyncedValue(value);
             setInputValue(value);
         }
 
-        // only fires once the debounce has actually settled on the current input -
-        // comparing against inputValue (not just value) means a mid-debounce external
-        // reset can't leak a stale onChange call once its own pending timer catches up
+        // checking inputValue too stops a stale debounce from firing after a mid-debounce reset
         useEffect(() => {
             if (debouncedValue === inputValue && debouncedValue !== value) {
                 onChange(debouncedValue);
@@ -76,11 +71,7 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
         };
 
         return (
-            <div
-                className={[styles["search-field"], className]
-                    .filter(Boolean)
-                    .join(" ")}
-            >
+            <div className={cx(styles["search-field"], className)}>
                 <Search
                     size={SEARCH_ICON_SIZE}
                     aria-hidden="true"

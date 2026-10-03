@@ -7,6 +7,8 @@ import { useAppDispatch } from "redux/hooks";
 import type { Notification } from "redux/slices/notificationsSlice";
 import { removeNotification } from "redux/slices/notificationsSlice";
 
+import { cx } from "utils/cx";
+
 import styles from "./Toast.module.scss";
 import { ToastBody } from "./ToastBody";
 
@@ -67,14 +69,12 @@ export const Toast = ({ notification }: { notification: Notification }) => {
         };
     }, [isLeaving, dispatch, notification.id]);
 
-    const classNames = [
+    const classNames = cx(
         styles.toast,
         TYPE_CLASS[notification.type],
         hasAction && styles["toast--lingering"],
         isLeaving && styles["toast--leaving"],
-    ]
-        .filter(Boolean)
-        .join(" ");
+    );
 
     return (
         <div role="status" className={classNames}>

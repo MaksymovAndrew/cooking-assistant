@@ -2,8 +2,7 @@ import type { FavouriteTarget } from "domain/repositories/FavouriteRepository";
 
 import { FAVOURITE_TABLES } from "./favouriteTables";
 
-// null for an anonymous requester - unknown rather than false - so a server-rendered page can tell a guest
-// from a signed-in visitor straight from the record, without waiting on a client-side session check
+// null for a guest, so a server-rendered page tells guests apart without a session check
 export function isFavouriteColumn(
     target: FavouriteTarget,
     targetIdExpression: string,

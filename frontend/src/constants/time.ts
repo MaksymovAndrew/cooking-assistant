@@ -1,4 +1,3 @@
-// time-unit building blocks for date/duration math across the app
 export const MS_PER_SECOND = 1000;
 export const SECONDS_PER_MINUTE = 60;
 export const MINUTES_PER_HOUR = 60;

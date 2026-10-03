@@ -12,7 +12,6 @@ import { localizePath } from "utils/localePath";
 import { mediaUrl } from "utils/mediaUrl";
 import { quantityWithUnit, recipeTypeLabel } from "utils/referenceLabels";
 
-// the method is free text; each non-empty line reads as one step
 const instructionSteps = (content: string) =>
     content
         .split("\n")
@@ -30,8 +29,7 @@ const recipeImages = (photoKey: string | null) => {
         : undefined;
 };
 
-// schema.org/Recipe for search engines; a field the recipe does not have is left out, never faked
-// the recipe arrives with its ingredient names already in the page language (loadRecipe)
+// a field the recipe lacks is left out, never faked; ingredient names arrive localised (loadRecipe)
 export const recipeJsonLd = (
     recipe: RecipeDetails,
     description: string,
@@ -73,7 +71,7 @@ export const recipeJsonLd = (
             ? undefined
             : {
                   "@type": "AggregateRating",
-                  // structured data is read by machines, which expect a dot decimal whatever the page's language
+                  // machines expect a dot decimal whatever the page's language
                   ratingValue: formatRatingAverage(
                       recipe.ratingAverage,
                       DEFAULT_LOCALE,

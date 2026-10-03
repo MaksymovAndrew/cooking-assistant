@@ -8,7 +8,6 @@ interface FavouritesFilter {
     favourites?: boolean;
 }
 
-// shared by the recipe and menu registries - the clause differs only in which table and id it joins
 export function favouritesFilterClause(
     target: FavouriteTarget,
     targetIdExpression: string,

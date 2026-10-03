@@ -13,7 +13,7 @@ const msUntilNextLocalMidnight = (): number => {
     return nextMidnight.getTime() - now.getTime();
 };
 
-// shared "what day is it" signal for every day-boundary feature (calorie budget, history chart, limit notice) - a stable key that only changes at local midnight, so a tab left open overnight recomputes instead of freezing on the day it mounted. Re-checks on tab focus too, since background tabs throttle setTimeout and may miss the exact tick.
+// also re-checks on tab focus: background tabs throttle setTimeout and may miss midnight
 export const useTodayDateKey = (): string => {
     const [key, setKey] = useState(todayKey);
 

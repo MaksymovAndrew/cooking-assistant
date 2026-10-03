@@ -1,6 +1,5 @@
 @use "styles/abstracts" as *;
 
-// mobile-first: a compact row (thumbnail + text); tablet+ switches to a stacked card (image on top, text below)
 .recent-recipe-card {
     display: flex;
     align-items: center;
@@ -28,7 +27,6 @@
         background: var(--surface-2);
     }
 
-    // a rotated phone reverts to the compact row - the tablet stacked card doesn't fit the landscape split's narrow right column
     @include respond-to-short-landscape {
         display: flex;
         padding: 8px 12px 8px 8px;
@@ -46,9 +44,9 @@
         height: 48px;
         border-radius: var(--r-sm);
         background: var(--surface-2);
-        color: var(--brand);
+        color: var(--brand-text);
 
-        // tablet+ uses the wide 21:9 thumbnail; keeping it on desktop too lets the 3x3 grid fit a laptop viewport without scrolling
+        // a wide 21:9 thumbnail lets the 3x3 grid fit a laptop screen without scrolling
         @include respond-to(tablet) {
             width: auto;
             height: auto;

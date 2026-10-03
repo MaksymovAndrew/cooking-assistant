@@ -1,15 +1,15 @@
 import type { TFunction } from "i18next";
 
-import type { Ingredient } from "types/ingredient";
+import {
+    type ResolvableIngredient,
+    resolveIngredientName,
+} from "utils/ingredientName";
 
-import { resolveIngredientName } from "utils/ingredientName";
-
-// sorts by the resolved display name, in the page's language
-export const sortIngredientsByName = (
-    ingredients: Ingredient[],
+export const sortIngredientsByName = <T extends ResolvableIngredient>(
+    ingredients: readonly T[],
     t: TFunction,
     locale: string,
-): Ingredient[] =>
+): T[] =>
     [...ingredients].sort((a, b) =>
         resolveIngredientName(t, a).localeCompare(
             resolveIngredientName(t, b),

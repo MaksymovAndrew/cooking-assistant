@@ -6,9 +6,7 @@ interface MissingIngredientRow extends MissingIngredient {
     recipe_id: number;
 }
 
-// one query for every recipe of the menu, then grouped in memory - skipped for a guest
-// (personId null): joining pi.person_id = NULL would match no pantry rows, so every ingredient
-// would come back as fully missing instead of "unknown, show nothing"
+// skipped for a guest: pi.person_id = NULL matches nothing, so all would read as missing
 export async function loadMissingIngredients(
     pool: Pool,
     recipeIds: number[],

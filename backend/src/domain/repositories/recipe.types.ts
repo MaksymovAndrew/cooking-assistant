@@ -2,7 +2,6 @@ import type { Locale } from "constants/locales";
 
 import type { RecordAuthor, RecordRating } from "./recordAuthor";
 
-// the recipe row as written, handed back by create and update
 export interface RecipeRow {
     id: number;
     title: string;
@@ -15,16 +14,6 @@ export interface RecipeRow {
     calories_override: number | null;
     calories_computed: number | null;
     photo_key: string | null;
-}
-
-export interface RecipeListRow {
-    id: number;
-    title: string;
-    type_id: number | null;
-    creation_date: Date;
-    cooking_time: number | null;
-    type_name: string | null;
-    ingredients: string[];
 }
 
 export interface RecipeTag {

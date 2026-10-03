@@ -7,7 +7,7 @@ const REQUIREMENT_COLUMNS = `ri.ingredient_id, i.slug, i.name, um.unit_name`;
 const REQUIREMENT_JOINS = `JOIN ingredients i ON i.id = ri.ingredient_id
          JOIN unit_measurement um ON um.id = i.id_unit_measurement`;
 
-// a menu holds each recipe once (a unique key), so summing its recipes gives one cooking of the menu
+// a menu holds each recipe once (a unique key), so the sum is one cooking of the menu
 export async function findCookRequirements(
     pool: Pool,
     source: RecordSource,

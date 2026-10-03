@@ -21,7 +21,6 @@ interface RecipeChipFiltersProps {
     types: RecipeTypeSummary[];
 }
 
-// the pick-any-of filters: recipe type, the language it is written in, allergens to leave out
 export const RecipeChipFilters: React.FC<RecipeChipFiltersProps> = ({
     filters,
     setValue,

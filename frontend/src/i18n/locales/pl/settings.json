@@ -46,6 +46,7 @@
             "allFieldsRequired": "Wypełnij wszystkie pola.",
             "currentPasswordIncorrect": "Obecne hasło jest nieprawidłowe.",
             "passwordInvalid": "Hasło musi mieć co najmniej 8 znaków, w tym literę, cyfrę i znak specjalny.",
+            "passwordTooLong": "Hasło jest za długie. Użyj najwyżej 72 liter łacińskich albo 36 cyrylickich.",
             "passwordsDoNotMatch": "Nowe hasła się nie zgadzają.",
             "newPasswordSameAsCurrent": "Nowe hasło musi się różnić od obecnego.",
             "genericError": "Coś poszło nie tak. Spróbuj ponownie."

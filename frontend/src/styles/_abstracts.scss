@@ -1,5 +1,4 @@
-// no CSS output of its own; components do `@use "styles/abstracts" as *;`
-// partials are pulled in through the same alias, not relative paths: a stylesheet the
-// bundler resolved through a load path cannot resolve its own neighbours relatively
+// by alias: a stylesheet reached through a load path cannot resolve its neighbours relatively
 @forward "styles/breakpoints";
 @forward "styles/mixins";
+@forward "styles/keyframes";

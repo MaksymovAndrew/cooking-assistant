@@ -1,7 +1,6 @@
 import { lazy } from "react";
 
-// ModalRoot sits in the root layout, so a static import would put every modal -
-// and every API service they use - in the bundle every visitor downloads
+// lazy: ModalRoot is in the root layout, so static imports would ship every modal to every visitor
 export const OfflineModal = lazy(() =>
     import("components/connectivity/OfflineModal").then((m) => ({
         default: m.OfflineModal,

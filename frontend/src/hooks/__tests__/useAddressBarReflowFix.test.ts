@@ -14,70 +14,44 @@ const setup = (element: HTMLElement) => {
 };
 
 describe("useAddressBarReflowFix", () => {
-    it("should not throw when window.visualViewport is unavailable", () => {
-        expect(() => setup(document.createElement("nav"))).not.toThrow();
+    // jsdom has no VisualViewport, so a plain event target stands in for its resize events
+    const viewport = new EventTarget();
+
+    beforeEach(() => {
+        Object.defineProperty(window, "visualViewport", {
+            configurable: true,
+            value: viewport,
+        });
     });
 
-    it("should subscribe to the visualViewport resize event when available", () => {
-        const addEventListener = jest.fn();
-        const removeEventListener = jest.fn();
-
-        // a minimal stub - jsdom has no real VisualViewport implementation to test against
-        window.visualViewport = {
-            addEventListener,
-            removeEventListener,
-        } as unknown as VisualViewport;
-
-        const { unmount } = setup(document.createElement("nav"));
-
-        expect(addEventListener).toHaveBeenCalledWith(
-            "resize",
-            expect.any(Function),
-        );
-
-        unmount();
-
-        expect(removeEventListener).toHaveBeenCalledWith(
-            "resize",
-            expect.any(Function),
-        );
-
-        // @ts-expect-error - cleaning up the test-only stub
-        delete window.visualViewport;
+    afterEach(() => {
+        Object.defineProperty(window, "visualViewport", {
+            configurable: true,
+            value: null,
+        });
     });
 
-    it("should briefly hide and restore the element to force a repaint on resize", () => {
-        const addEventListener = jest.fn();
-
-        window.visualViewport = {
-            addEventListener,
-            removeEventListener: jest.fn(),
-        } as unknown as VisualViewport;
-
+    it("should briefly hide and restore the element to force a repaint on each resize until unmounted", () => {
         const element = document.createElement("nav");
+        const displaysWhenLayoutIsRead: string[] = [];
 
         element.style.display = "flex";
-
-        setup(element);
-
-        const [, handleResize] = addEventListener.mock.calls[0] as [
-            string,
-            () => void,
-        ];
-        let displayWhenLayoutIsRead: string | undefined;
-
         jest.spyOn(element, "getBoundingClientRect").mockImplementation(() => {
-            displayWhenLayoutIsRead = element.style.display;
+            displaysWhenLayoutIsRead.push(element.style.display);
 
-            return {} as DOMRect;
+            return new DOMRect();
         });
 
-        handleResize();
+        const { unmount } = setup(element);
 
-        expect(displayWhenLayoutIsRead).toBe("none");
+        viewport.dispatchEvent(new Event("resize"));
+
+        expect(displaysWhenLayoutIsRead).toEqual(["none"]);
         expect(element.style.display).toBe("flex");
 
-        // @ts-expect-error - cleaning up the test-only stub
-        delete window.visualViewport;
+        unmount();
+        viewport.dispatchEvent(new Event("resize"));
+
+        expect(displaysWhenLayoutIsRead).toEqual(["none"]);
     });
 });

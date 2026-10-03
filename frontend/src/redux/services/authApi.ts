@@ -11,9 +11,7 @@ import { API_ROUTES } from "api/endpoints";
 
 import { baseApi } from "./baseApi";
 
-// getMe provides the Me tag; login/logout invalidate it so the session check (sessionSlice listens to these endpoints) re-runs after auth changes
-// an anonymous requester gets 200 with a null body, not a 401 - a session check is a normal
-// query, not an authorization failure, so a guest browsing public pages never sees a failed request
+// a guest gets 200 with a null body, not a 401, so browsing public pages never fails a request
 export const authApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getMe: build.query<CurrentUser | null, null>({
@@ -46,8 +44,9 @@ export const authApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 data,
             }),
-            // a static tag array invalidates on error too, which would refetch getMe and (via PrivateRoute's isChecking) unmount this modal mid-error
-            invalidatesTags: (_result, error) => (error ? [] : ["Me"]),
+            // skipped on error, or a refetched getMe unmounts this modal; Recipe/Menu cards show the author
+            invalidatesTags: (_result, error) =>
+                error ? [] : ["Me", "Recipe", "Menu"],
         }),
         // the page is reloaded in the new language right after, so nothing cached needs refreshing
         setLocale: build.mutation<null, Locale>({

@@ -43,8 +43,7 @@ export const LogIntakeModal = ({
 
     const total = scaleCaloriesForPortions(caloriesPerPortion, portions);
     const goal = budget.goal;
-    // raw (unclamped) remaining - a negative value here means already over today, which
-    // this entry's total only adds to, so the same "> remaining" check covers both cases
+    // unclamped: once over, any total exceeds the negative remainder, so one check covers both
     const remaining = budget.remaining;
     const projectedOver =
         remaining !== null && total > remaining ? total - remaining : null;

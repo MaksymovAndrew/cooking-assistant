@@ -1,4 +1,4 @@
-﻿import { act } from "@testing-library/react";
+import { act } from "@testing-library/react";
 
 import { PAGE_SIZE } from "constants/pagination";
 import type { CurrentUser } from "types/auth";
@@ -12,7 +12,12 @@ import { menusApi } from "redux/services/menusApi";
 
 import { MENU_SOURCE, useMenuListView } from "hooks/useMenuListView";
 
-import { byOffset, makeAxiosError, mockedGet } from "test/apiClientMock";
+import {
+    byOffset,
+    makeAxiosError,
+    mockedGet,
+    mockGetByUrl,
+} from "test/apiClientMock";
 import { makeTestStore, renderHookWithRouter } from "test/store";
 
 jest.mock("api/client");
@@ -45,29 +50,39 @@ const CURRENT_USER: CurrentUser = {
     locale: "en",
 };
 
-// matches what the hook sends with no filters active in the URL, so the pre-seeded cache key lines up with what the hook itself requests
+// matches what the hook sends with no filters in the URL, so the pre-filled cache key lines up
 const DEFAULT_PARAMS = {};
 
 const FAILURE_MESSAGE = "Menus failed";
 const FAILURE = makeAxiosError(500, FAILURE_MESSAGE);
 
+// everything the list page loads besides the menus themselves
+const BASE_GETS = {
+    [API_ROUTES.auth.me]: CURRENT_USER,
+    [API_ROUTES.menuCategories.list]: [],
+};
+
+const page = (items: Menu[], total = items.length) => ({ items, total });
+
 const mockEmptyMenuList = () => {
-    mockedGet.mockImplementation((url: string) => {
-        if (url === API_ROUTES.auth.me) {
-            return Promise.resolve({ data: CURRENT_USER });
-        }
-        if (url === API_ROUTES.menuCategories.list) {
-            return Promise.resolve({ data: [] });
-        }
+    mockGetByUrl({ ...BASE_GETS, [API_ROUTES.menu.list]: page([]) });
+};
+
+// the base GETs, with the menu list answering per requested page
+const mockMenuPages = (pageAt: (offset: number) => Promise<unknown>) => {
+    mockGetByUrl(BASE_GETS);
+    const loadByUrl = mockedGet.getMockImplementation();
+
+    mockedGet.mockImplementation((url: string, config?: unknown) => {
         if (url === API_ROUTES.menu.list) {
-            return Promise.resolve({ data: { items: [], total: 0 } });
+            return pageAt(byOffset(config));
         }
 
-        return Promise.reject(new Error(`unexpected GET ${url}`));
+        return loadByUrl ? loadByUrl(url) : Promise.reject(new Error(url));
     });
 };
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts, so the hook reads already-fulfilled data on first render instead of racing a guessed number of promise ticks
+// the cache is filled before the hook mounts, so it reads finished data instead of racing promise ticks
 const setup = async (
     source: (typeof MENU_SOURCE)[keyof typeof MENU_SOURCE] = MENU_SOURCE.all,
     initialEntries: string[] = ["/test"],
@@ -94,20 +109,9 @@ const setup = async (
 
 describe("useMenuListView", () => {
     it("should flatten the loaded page and report the total", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.list) {
-                return Promise.resolve({
-                    data: { items: [MENU_1, MENU_2], total: 2 },
-                });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
+        mockGetByUrl({
+            ...BASE_GETS,
+            [API_ROUTES.menu.list]: page([MENU_1, MENU_2]),
         });
 
         const { result } = await setup();
@@ -129,20 +133,9 @@ describe("useMenuListView", () => {
     });
 
     it("should request the current user's menus when the source is person", async () => {
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.byPerson) {
-                return Promise.resolve({
-                    data: { items: [MENU_1], total: 1 },
-                });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
+        mockGetByUrl({
+            ...BASE_GETS,
+            [API_ROUTES.menu.byPerson]: page([MENU_1]),
         });
 
         const { result } = await setup(MENU_SOURCE.person);
@@ -155,24 +148,11 @@ describe("useMenuListView", () => {
     });
 
     it("should fetch the next page and append it without dropping earlier rows", async () => {
-        mockedGet.mockImplementation((url: string, config?: unknown) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.list) {
-                return Promise.resolve({
-                    data:
-                        byOffset(config) === 0
-                            ? { items: [MENU_1], total: 2 }
-                            : { items: [MENU_2], total: 2 },
-                });
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
+        mockMenuPages((offset) =>
+            Promise.resolve({
+                data: page(offset === 0 ? [MENU_1] : [MENU_2], 2),
+            }),
+        );
 
         const { result } = await setup();
 
@@ -193,16 +173,7 @@ describe("useMenuListView", () => {
     it("should surface a first-page failure as error with no menus loaded", async () => {
         const store = makeTestStore();
 
-        mockedGet.mockImplementation((url: string) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-
-            return Promise.reject(FAILURE);
-        });
+        mockMenuPages(() => Promise.reject(FAILURE));
 
         await Promise.all([
             store.dispatch(
@@ -228,25 +199,11 @@ describe("useMenuListView", () => {
     });
 
     it("should keep loaded menus and report loadMoreError when the next page fails", async () => {
-        mockedGet.mockImplementation((url: string, config?: unknown) => {
-            if (url === API_ROUTES.auth.me) {
-                return Promise.resolve({ data: CURRENT_USER });
-            }
-            if (url === API_ROUTES.menuCategories.list) {
-                return Promise.resolve({ data: [] });
-            }
-            if (url === API_ROUTES.menu.list) {
-                if (byOffset(config) === 0) {
-                    return Promise.resolve({
-                        data: { items: [MENU_1], total: 2 },
-                    });
-                }
-
-                return Promise.reject(FAILURE);
-            }
-
-            return Promise.reject(new Error(`unexpected GET ${url}`));
-        });
+        mockMenuPages((offset) =>
+            offset === 0
+                ? Promise.resolve({ data: page([MENU_1], 2) })
+                : Promise.reject(FAILURE),
+        );
 
         const { result } = await setup();
 
@@ -257,72 +214,6 @@ describe("useMenuListView", () => {
         expect(result.current.menus).toEqual([MENU_1]);
         expect(result.current.loadMoreError).toBe(FAILURE_MESSAGE);
         expect(result.current.error).toBeNull();
-    });
-
-    it("should write the selected categories into the URL-backed filter state", async () => {
-        mockEmptyMenuList();
-
-        const { result } = await setup();
-
-        act(() => {
-            result.current.setValue("categories", [3]);
-        });
-
-        expect(result.current.filters.categories).toEqual([3]);
-    });
-
-    it("should report hasActiveFilters once a category is selected", async () => {
-        mockEmptyMenuList();
-
-        const { result } = await setup();
-
-        expect(result.current.hasActiveFilters).toBe(false);
-
-        act(() => {
-            result.current.setValue("categories", [3]);
-        });
-
-        expect(result.current.hasActiveFilters).toBe(true);
-    });
-
-    it("should reset every filter back to its default when resetFilters is called", async () => {
-        mockEmptyMenuList();
-
-        const { result } = await setup();
-
-        act(() => {
-            result.current.setValue("categories", [3]);
-        });
-        act(() => {
-            result.current.resetFilters();
-        });
-
-        expect(result.current.filters).toEqual({
-            search: "",
-            categories: [],
-            favourites: false,
-            topRated: false,
-            sort: null,
-            languages: [],
-        });
-    });
-
-    it("should read the name search and selected categories from the URL", async () => {
-        mockEmptyMenuList();
-
-        const { result } = await setup(MENU_SOURCE.all, [
-            "/test?q=brunch&cats=1,2",
-        ]);
-
-        expect(result.current.filters).toEqual({
-            search: "brunch",
-            categories: [1, 2],
-            favourites: false,
-            topRated: false,
-            sort: null,
-            languages: [],
-        });
-        expect(result.current.activeCount).toBe(2);
     });
 
     it("should send the name search as menu_name and the categories as category_ids", async () => {

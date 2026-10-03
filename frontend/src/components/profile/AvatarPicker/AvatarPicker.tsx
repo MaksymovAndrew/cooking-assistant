@@ -5,6 +5,8 @@ import { AVATAR_KEYS } from "constants/avatars";
 
 import { Avatar } from "components/ui/Avatar";
 
+import { cx } from "utils/cx";
+
 import styles from "./AvatarPicker.module.scss";
 
 interface AvatarPickerProps {
@@ -32,12 +34,10 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({
                 onClick={() => {
                     onChange(null);
                 }}
-                className={[
+                className={cx(
                     styles["avatar-picker__option"],
                     value === null && styles["avatar-picker__option--selected"],
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
+                )}
             >
                 <Avatar initials={initials} size={OPTION_AVATAR_SIZE} />
             </button>
@@ -51,13 +51,11 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({
                     onClick={() => {
                         onChange(key);
                     }}
-                    className={[
+                    className={cx(
                         styles["avatar-picker__option"],
                         value === key &&
                             styles["avatar-picker__option--selected"],
-                    ]
-                        .filter(Boolean)
-                        .join(" ")}
+                    )}
                 >
                     <Avatar avatarKey={key} size={OPTION_AVATAR_SIZE} />
                 </button>

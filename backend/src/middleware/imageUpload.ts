@@ -29,8 +29,7 @@ const translateOversizedUpload: ErrorRequestHandler = (
     );
 };
 
-// the request body is the image itself, whatever type it claims - the use case reads the bytes
-// to decide what it is, so the declared Content-Type is deliberately not trusted here
+// any Content-Type is read: the use case sniffs the bytes, never trusting the declared type
 export const readImageBody = [
     express.raw({ type: () => true, limit: IMAGE_UPLOAD_LIMIT }),
     translateOversizedUpload,

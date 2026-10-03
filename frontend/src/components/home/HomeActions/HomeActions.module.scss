@@ -8,7 +8,6 @@
         display: none;
     }
 
-    // Button/LinkButton already supply border/background/color/font - only layout is added here
     &__news {
         position: relative;
         flex: none;
@@ -35,8 +34,6 @@
     &__menu,
     &__recipe {
         flex: 1;
-
-        // no side padding and a smaller font so both buttons fit on narrow phones
         min-width: 0;
         height: 46px;
         padding: 0;

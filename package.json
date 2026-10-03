@@ -3,6 +3,10 @@
     "version": "5.0.0",
     "private": true,
     "license": "AGPL-3.0-or-later",
+    "contributors": [
+        "Andrew Maksymov",
+        "Milana Pershyna"
+    ],
     "engines": {
         "node": ">=24"
     },

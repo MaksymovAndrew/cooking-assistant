@@ -1,5 +1,9 @@
 import { ERROR_CODES } from "constants/errorCodes";
-import { NotFoundError, UnauthorizedError } from "domain/errors/AppError";
+import {
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError,
+} from "domain/errors/AppError";
 
 import PhotoCleanup from "application/media/PhotoCleanup";
 import DeleteAccount from "application/use-cases/users/DeleteAccount";
@@ -106,13 +110,20 @@ describe("DeleteAccount", () => {
         expect(deps.mediaStorage.remove).toHaveBeenCalledWith("avatar-key");
     });
 
-    it("should throw a validation error for an empty password", async () => {
+    it("should throw a 400 ValidationError for an empty password", async () => {
         const deps = makeDeps();
         const useCase = makeUseCase(deps);
 
-        await expect(
+        const error = await catchError(
             useCase.execute(USER_ID, { password: "" }),
-        ).rejects.toThrow();
+        );
+
+        expect(error).toBeAppError(
+            ValidationError,
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            "password: Cannot be empty",
+        );
         expect(deps.userRepository.findCredentialsById).not.toHaveBeenCalled();
     });
 });

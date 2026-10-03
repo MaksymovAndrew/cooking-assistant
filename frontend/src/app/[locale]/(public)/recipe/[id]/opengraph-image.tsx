@@ -20,8 +20,7 @@ interface RecipeImageProps {
     params: Promise<{ locale: string; id: string }>;
 }
 
-// declared for every recipe: it runs without a request (as static params), so it cannot load
-// one. A recipe with a photo still previews as that photo - the page's own images take precedence
+// runs without a request (as static params), so it loads nothing; a page photo still takes precedence
 export const generateImageMetadata = async ({
     params,
 }: {

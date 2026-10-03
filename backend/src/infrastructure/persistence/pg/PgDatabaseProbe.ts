@@ -4,7 +4,7 @@ import { logger } from "config/logger";
 
 import type { DatabaseProbe } from "application/ports/DatabaseProbe";
 
-// well under the 5s the container health check waits, so a stalled database answers 503 instead of a timeout
+// under the container health check's 5s, so a stalled database answers 503, not a timeout
 const PROBE_TIMEOUT_MS = 2000;
 
 export default class PgDatabaseProbe implements DatabaseProbe {

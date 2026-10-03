@@ -7,7 +7,6 @@ interface ContentLanguageParams {
     languages?: string;
 }
 
-// shared by the recipe and menu lists; one language reads as a phrase, several as a count
 export const contentLanguageFilter = <
     TParams extends ContentLanguageParams,
 >(): FilterDef<Locale[], TParams> =>

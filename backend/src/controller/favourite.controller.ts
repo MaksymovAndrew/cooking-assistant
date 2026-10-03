@@ -12,7 +12,6 @@ interface FavouriteControllerDependencies {
     removeMenuFavourite: RemoveFavourite;
 }
 
-// PUT and DELETE are idempotent toggles with nothing to return, so every handler answers 204
 export default class FavouriteController {
     private addRecipeFavouriteUseCase: AddFavourite;
     private removeRecipeFavouriteUseCase: RemoveFavourite;

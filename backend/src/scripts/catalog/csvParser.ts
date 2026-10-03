@@ -1,4 +1,4 @@
-// minimal RFC4180 parser: handles quoted fields, commas inside quotes, and "" escaped quotes
+// minimal RFC 4180: quoted fields and "" escapes, but no line breaks inside a field
 export type CsvRow = Record<string, string>;
 
 export function parseCsv(text: string): CsvRow[] {

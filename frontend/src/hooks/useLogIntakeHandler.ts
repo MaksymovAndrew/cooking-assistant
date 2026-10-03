@@ -9,7 +9,7 @@ interface LogIntakeTarget {
     initialPortions?: number;
 }
 
-// shared by the recipe and menu detail pages - a null caloriesPerPortion hides the trigger button
+// no handler, no button: a record without calories per portion has nothing to log
 export const useLogIntakeHandler = (
     target: LogIntakeTarget,
 ): (() => void) | undefined => {

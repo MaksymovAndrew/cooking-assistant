@@ -44,7 +44,7 @@ export const config = {
             ? { rejectUnauthorized: env.DB_SSL_REJECT_UNAUTHORIZED }
             : false,
     },
-    // the app pool only: migrations and the seed connect through config.db without a statement deadline
+    // app pool only: migrations and the seed use config.db, free of the statement deadline
     dbPool: {
         max: env.DB_POOL_MAX,
         connectionTimeoutMillis: env.DB_CONNECTION_TIMEOUT_MS,
@@ -57,7 +57,7 @@ export const config = {
     emailFrom: env.EMAIL_FROM,
     mediaDir: path.resolve(env.MEDIA_DIR),
     logLevel: env.LOG_LEVEL ?? "info",
-    // default to no trusted proxy in dev so a spoofed X-Forwarded-For cannot re-key the rate limiter; one hop in production (configurable per topology)
+    // no trusted proxy in dev, so a spoofed X-Forwarded-For cannot re-key the rate limiter
     trustProxyHops: env.TRUST_PROXY_HOPS ?? (isProduction ? 1 : 0),
     rateLimitMax: env.RATE_LIMIT_MAX,
     rateLimitWindowMs: env.RATE_LIMIT_WINDOW_MS,
@@ -73,7 +73,7 @@ export function requireJwtSecret(): string {
     return secret;
 }
 
-// run at config load so every consumer of config.db (the app, the migrate runner, and the seed script) is guarded, not just the HTTP entry point
+// at config load, so the migrate and seed scripts are guarded too, not just the app
 assertSecureProductionDb(config);
 assertConsistentEmailConfig(config);
 assertProductionSecrets({ isProduction, jwtSecret: env.JWT_SECRET_KEY });

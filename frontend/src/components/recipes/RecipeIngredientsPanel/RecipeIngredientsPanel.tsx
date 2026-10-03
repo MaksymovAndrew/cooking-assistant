@@ -8,7 +8,7 @@ import { useAvoidedIngredients } from "hooks/useAvoidedIngredients";
 import type { IngredientAvailability } from "hooks/useIngredientAvailability";
 import { useLocale } from "hooks/useLocale";
 
-import { resolveIngredientName } from "utils/ingredientName";
+import { sortIngredientsByName } from "utils/sortIngredientsByName";
 
 import { RecipeIngredientRow } from "./RecipeIngredientRow";
 import { RecipeIngredientsBanner } from "./RecipeIngredientsBanner";
@@ -40,12 +40,7 @@ export const RecipeIngredientsPanel: React.FC<RecipeIngredientsPanelProps> = ({
     const locale = useLocale();
     const { canUsePantry } = useAppSelector(selectViewerCapabilities);
     const { isIngredientAvoided } = useAvoidedIngredients();
-    const sorted = [...availability].sort((a, b) =>
-        resolveIngredientName(t, a).localeCompare(
-            resolveIngredientName(t, b),
-            locale,
-        ),
-    );
+    const sorted = sortIngredientsByName(availability, t, locale);
 
     return (
         <div className={styles["recipe-ingredients-panel"]}>

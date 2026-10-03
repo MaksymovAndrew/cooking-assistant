@@ -6,6 +6,7 @@ import type { Ingredient } from "types/ingredient";
 
 import { HighlightedMatch } from "components/ui/HighlightedMatch";
 
+import { cx } from "utils/cx";
 import { resolveIngredientName } from "utils/ingredientName";
 
 import styles from "./FoodPreferences.module.scss";
@@ -58,13 +59,11 @@ export const AvoidIngredientResults: React.FC<AvoidIngredientResultsProps> = ({
                             onClick={() => {
                                 onSelect(ingredient);
                             }}
-                            className={[
+                            className={cx(
                                 styles["food-preferences__result"],
                                 isAvoided &&
                                     styles["food-preferences__result--avoided"],
-                            ]
-                                .filter(Boolean)
-                                .join(" ")}
+                            )}
                         >
                             {isAvoided ? (
                                 <Check

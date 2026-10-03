@@ -21,7 +21,6 @@ import { buildUserControllers } from "./composition-root.user";
 
 export type { Controllers, RepositoryDeps };
 
-// each builder takes what it needs from deps, so a new dependency is wired in one place
 export function buildControllers(deps: RepositoryDeps): Controllers {
     const photoCleanup = new PhotoCleanup(deps.mediaStorage);
 

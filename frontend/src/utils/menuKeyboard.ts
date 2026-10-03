@@ -7,7 +7,6 @@ const KEY_TARGETS = new Map<string, KeyTarget>([
     ["End", (_index, count) => count - 1],
 ]);
 
-// the item a menu key moves focus to, wrapping at both ends; null for a key the menu leaves alone
 export const menuKeyTarget = (
     key: string,
     index: number,
@@ -17,3 +16,7 @@ export const menuKeyTarget = (
 
     return target === null ? null : target(index, count);
 };
+
+// which way to keep looking when the item a key aims at can't take focus (hidden at this width)
+export const menuKeyStep = (key: string): 1 | -1 =>
+    key === "ArrowUp" || key === "End" ? -1 : 1;

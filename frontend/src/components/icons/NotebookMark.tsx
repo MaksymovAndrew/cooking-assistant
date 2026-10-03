@@ -4,7 +4,6 @@ import type { IconProps } from "./Icon.types";
 
 const DEFAULT_SIZE = 24;
 
-// menu-card placeholder glyph - not a stock lucide icon
 export const NotebookMark: React.FC<IconProps> = ({
     size = DEFAULT_SIZE,
     className,

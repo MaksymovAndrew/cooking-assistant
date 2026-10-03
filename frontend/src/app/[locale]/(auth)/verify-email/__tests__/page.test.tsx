@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 
+import { ROUTES } from "constants/routes";
 import type { CurrentUser } from "types/auth";
 
 import { API_ROUTES } from "api/endpoints";
@@ -27,18 +28,30 @@ const CURRENT_USER: CurrentUser = {
 
 describe("VerifyEmailPage", () => {
     it("should show the invalid-link state when there is no token in the URL", () => {
-        renderWithRouter(<VerifyEmailPage />, ["/verify-email"]);
+        renderWithRouter(<VerifyEmailPage />, [ROUTES.verifyEmail]);
 
-        expect(screen.getByText("Link invalid or expired")).toBeInTheDocument();
+        expect(
+            screen.getByRole("heading", {
+                name: "Link invalid or expired",
+                level: 1,
+            }),
+        ).toBeInTheDocument();
     });
 
     it("should confirm the email and show the success state for a valid token", async () => {
         mockGetByUrl({ [API_ROUTES.auth.me]: null });
         mockedPost.mockResolvedValue({ data: null });
 
-        renderWithRouter(<VerifyEmailPage />, [`/verify-email?token=${TOKEN}`]);
+        renderWithRouter(<VerifyEmailPage />, [
+            `${ROUTES.verifyEmail}?token=${TOKEN}`,
+        ]);
 
-        expect(await screen.findByText("Email verified")).toBeInTheDocument();
+        expect(
+            await screen.findByRole("heading", {
+                name: "Email verified",
+                level: 1,
+            }),
+        ).toBeInTheDocument();
         expect(mockedPost).toHaveBeenCalledWith(API_ROUTES.auth.confirmEmail, {
             token: TOKEN,
         });
@@ -51,7 +64,9 @@ describe("VerifyEmailPage", () => {
         mockGetByUrl({ [API_ROUTES.auth.me]: CURRENT_USER });
         mockedPost.mockResolvedValue({ data: null });
 
-        renderWithRouter(<VerifyEmailPage />, [`/verify-email?token=${TOKEN}`]);
+        renderWithRouter(<VerifyEmailPage />, [
+            `${ROUTES.verifyEmail}?token=${TOKEN}`,
+        ]);
 
         expect(await screen.findByText("Email verified")).toBeInTheDocument();
         expect(
@@ -69,10 +84,35 @@ describe("VerifyEmailPage", () => {
             message: "Request failed",
         });
 
-        renderWithRouter(<VerifyEmailPage />, [`/verify-email?token=${TOKEN}`]);
+        renderWithRouter(<VerifyEmailPage />, [
+            `${ROUTES.verifyEmail}?token=${TOKEN}`,
+        ]);
 
         expect(
             await screen.findByText("Link invalid or expired"),
         ).toBeInTheDocument();
+    });
+
+    it("should send a guest with an invalid link to log in", async () => {
+        mockGetByUrl({ [API_ROUTES.auth.me]: null });
+
+        renderWithRouter(<VerifyEmailPage />, [ROUTES.verifyEmail]);
+
+        expect(
+            await screen.findByRole("link", { name: "Back to log in" }),
+        ).toHaveAttribute("href", "/login");
+        expect(
+            screen.queryByRole("link", { name: "Go to settings" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should send a signed-in viewer with an invalid link to settings", async () => {
+        mockGetByUrl({ [API_ROUTES.auth.me]: CURRENT_USER });
+
+        renderWithRouter(<VerifyEmailPage />, [ROUTES.verifyEmail]);
+
+        expect(
+            await screen.findByRole("link", { name: "Go to settings" }),
+        ).toHaveAttribute("href", "/settings");
     });
 });

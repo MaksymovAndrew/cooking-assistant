@@ -113,16 +113,18 @@ describe("UpdateMenu", () => {
         expect(menuRepository.update).not.toHaveBeenCalled();
     });
 
-    it("should throw a 400 ValidationError and not update when input is invalid", async () => {
+    it("should throw a 400 ValidationError and not update when the menu title is blank", async () => {
         const { useCase, menuRepository } = setup();
 
-        const error = await catchError(useCase.execute(null, 7, makeInput()));
+        const error = await catchError(
+            useCase.execute(9, 7, { ...makeInput(), menuTitle: "   " }),
+        );
 
         expect(error).toBeAppError(
             ValidationError,
             ERROR_CODES.VALIDATION_ERROR,
             400,
-            "Required",
+            "menuTitle: Cannot be empty",
         );
         expect(menuRepository.update).not.toHaveBeenCalled();
     });

@@ -86,6 +86,30 @@ describe("useChangePasswordForm", () => {
         );
     });
 
+    it("should reject a new password over 72 bytes without submitting", async () => {
+        const { result } = renderChangePasswordForm(jest.fn());
+        const tooLong = `${"ж".repeat(37)}1!`;
+
+        act(() => {
+            result.current.setCurrentPassword(CURRENT_PASSWORD);
+        });
+        act(() => {
+            result.current.setNewPassword(tooLong);
+        });
+        act(() => {
+            result.current.setConfirmPassword(tooLong);
+        });
+
+        await act(async () => {
+            await result.current.handleSubmit();
+        });
+
+        expect(mockedPost).not.toHaveBeenCalled();
+        expect(result.current.error).toBe(
+            "Password is too long. Use at most 72 Latin letters, or 36 Cyrillic ones.",
+        );
+    });
+
     it("should reject mismatched new passwords without submitting", async () => {
         const { result } = renderChangePasswordForm(jest.fn());
 

@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-// every page renders "Cooking Assistant" as a static <title> otherwise - with public pages
-// now reachable, that's what a crawler or a shared link shows for every single route
+// a client page exports no metadata, so without this its <title> is only the app name
 export const usePageTitle = (title?: string | null): void => {
     const { t } = useTranslation();
     const appName = t("appName");

@@ -24,17 +24,17 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
 
     return (
         <section className={styles["menu-stats-section"]}>
-            <h1 className={styles["menu-stats-section__heading"]}>
+            <h2 className={styles["menu-stats-section__heading"]}>
                 {t("statsPage.menuSectionHeading")}
-            </h1>
+            </h2>
 
             <MenuStatsTiles stats={stats} formatTime={formatCompactTime} />
 
             <div className={styles["menu-stats-section__grid"]}>
                 <StatCard>
-                    <h2 className={styles["menu-stats-section__card-title"]}>
+                    <h3 className={styles["menu-stats-section__card-title"]}>
                         {t("statsPage.menuCategoriesHeading")}
-                    </h2>
+                    </h3>
                     <p className={styles["menu-stats-section__card-subtitle"]}>
                         {t("statsPage.menuCategoriesSubtitle", {
                             count: stats.menusCount,
@@ -43,9 +43,9 @@ export const MenuStatsSection: React.FC<{ stats: MenuStatistics }> = ({
                     <MenuCategoryChart categories={stats.menuCountByCategory} />
                 </StatCard>
                 <StatCard>
-                    <h2 className={styles["menu-stats-section__card-title"]}>
+                    <h3 className={styles["menu-stats-section__card-title"]}>
                         {t("statsPage.avgTimeByCategoryHeading")}
-                    </h2>
+                    </h3>
                     <p className={styles["menu-stats-section__card-subtitle"]}>
                         {t("statsPage.avgTimeByCategorySubtitle")}
                     </p>

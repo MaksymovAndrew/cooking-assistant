@@ -1,5 +1,5 @@
 import { ERROR_CODES } from "constants/errorCodes";
-import { NotFoundError, ValidationError } from "domain/errors/AppError";
+import { NotFoundError } from "domain/errors/AppError";
 
 import PhotoCleanup from "application/media/PhotoCleanup";
 import DeleteMenu from "application/use-cases/menus/DeleteMenu";
@@ -18,20 +18,6 @@ function setup() {
 }
 
 describe("DeleteMenu", () => {
-    it("should throw a 400 ValidationError when the menu id is missing", async () => {
-        const { useCase, menuRepository } = setup();
-
-        const error = await catchError(useCase.execute(null, 7));
-
-        expect(error).toBeAppError(
-            ValidationError,
-            ERROR_CODES.VALIDATION_ERROR,
-            400,
-            "Required",
-        );
-        expect(menuRepository.deleteById).not.toHaveBeenCalled();
-    });
-
     it("should throw a 404 NotFoundError when the menu does not belong to the user", async () => {
         const { useCase, menuRepository } = setup();
 

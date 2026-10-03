@@ -2,12 +2,16 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { MenuDetails } from "types/menu";
-import type { RecipeWithIngredientNames } from "types/recipe";
 
 import { API_ROUTES } from "api/endpoints";
 
 import ChangeMenuPage from "app/[locale]/(private)/change-menu/[id]/page";
-import { mockedPut, mockGetByUrl } from "test/apiClientMock";
+import {
+    makeAxiosError,
+    mockedGet,
+    mockedPut,
+    mockGetByUrl,
+} from "test/apiClientMock";
 import {
     ERROR_RECIPES_REQUIRED,
     ROUTE_ALL_MENUS,
@@ -20,16 +24,9 @@ import { mockNavigate, renderWithProviders } from "test/router";
 jest.mock("api/client");
 
 const TITLE = "Weekday menu";
+const NEW_TITLE = "Weekend menu";
 const UPDATE_MENU = "Save changes";
 const CATEGORY_ID = 2;
-const RECIPE: RecipeWithIngredientNames = {
-    id: 10,
-    title: "Borscht",
-    type_name: "Soup",
-    cooking_time: 60,
-    creation_date: "2024-01-01",
-    ingredients: [],
-};
 const MENU_RECIPE = {
     id: 10,
     recipe_id: 10,
@@ -73,7 +70,6 @@ const setup = (sample: MenuDetails = SAMPLE) => {
     mockGetByUrl({
         [API_ROUTES.menu.byId("1")]: sample,
         [API_ROUTES.menuCategories.list]: CATEGORIES,
-        [API_ROUTES.recipes.list]: [RECIPE],
     });
 
     setTestParams({ id: "1" });
@@ -83,18 +79,14 @@ const setup = (sample: MenuDetails = SAMPLE) => {
 };
 
 describe("ChangeMenuPage", () => {
-    it("should load the menu into the edit form", async () => {
-        setup();
-
-        expect(await screen.findByDisplayValue(TITLE)).toBeInTheDocument();
-    });
-
-    it("should update the menu with the changed values on valid submit", async () => {
+    it("should save the changed menu and go back to the menu list", async () => {
         mockedPut.mockResolvedValue({ data: null });
         setup(SAMPLE_WITH_RECIPE);
 
-        await screen.findByDisplayValue(TITLE);
+        const titleInput = await screen.findByDisplayValue(TITLE);
 
+        await userEvent.clear(titleInput);
+        await userEvent.type(titleInput, NEW_TITLE);
         await userEvent.click(
             screen.getByRole("button", { name: UPDATE_MENU }),
         );
@@ -102,23 +94,11 @@ describe("ChangeMenuPage", () => {
         expect(mockedPut).toHaveBeenCalledWith(
             API_ROUTES.menu.byId("1"),
             expect.objectContaining({
-                menuTitle: TITLE,
+                menuTitle: NEW_TITLE,
                 categoryId: CATEGORY_ID,
                 recipeIds: [MENU_RECIPE.id],
             }),
         );
-    });
-
-    it("should navigate to /menu after successful update", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-        setup(SAMPLE_WITH_RECIPE);
-
-        await screen.findByDisplayValue(TITLE);
-
-        await userEvent.click(
-            screen.getByRole("button", { name: UPDATE_MENU }),
-        );
-
         expect(mockNavigate).toHaveBeenCalledWith(ROUTE_ALL_MENUS);
     });
 
@@ -132,5 +112,66 @@ describe("ChangeMenuPage", () => {
         );
 
         expect(screen.getByText(ERROR_RECIPES_REQUIRED)).toBeInTheDocument();
+    });
+
+    it("should show a skeleton, not an empty form, while the menu loads", async () => {
+        setup();
+
+        expect(screen.getByRole("status", { name: "Loading…" })).toBeVisible();
+        expect(
+            screen.queryByRole("button", { name: UPDATE_MENU }),
+        ).not.toBeInTheDocument();
+        expect(await screen.findByDisplayValue(TITLE)).toBeInTheDocument();
+    });
+
+    it("should say the menu cannot be edited when it does not exist", async () => {
+        mockedGet.mockRejectedValue(makeAxiosError(404, "Not found"));
+        setTestParams({ id: "1" });
+        renderWithProviders(<ChangeMenuPage />);
+
+        expect(
+            await screen.findByText("This menu can't be edited"),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", { name: "Back to menus" }),
+        ).toHaveAttribute("href", ROUTE_ALL_MENUS);
+    });
+
+    it("should say the menu cannot be edited when it belongs to someone else", async () => {
+        setup({ ...SAMPLE, menu: { ...SAMPLE.menu, isOwner: false } });
+
+        expect(
+            await screen.findByText("This menu can't be edited"),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole("button", { name: UPDATE_MENU }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should offer a retry when the menu fails to load", async () => {
+        mockGetByUrl({
+            [API_ROUTES.menu.byId("1")]: SAMPLE,
+            [API_ROUTES.menuCategories.list]: CATEGORIES,
+        });
+        const loadByUrl = mockedGet.getMockImplementation();
+        let failures = 1;
+
+        mockedGet.mockImplementation((url: string) => {
+            if (url === API_ROUTES.menu.byId("1") && failures > 0) {
+                failures -= 1;
+
+                return Promise.reject(makeAxiosError(500, "Boom"));
+            }
+
+            return loadByUrl ? loadByUrl(url) : Promise.reject(new Error(url));
+        });
+        setTestParams({ id: "1" });
+        renderWithProviders(<ChangeMenuPage />);
+
+        await userEvent.click(
+            await screen.findByRole("button", { name: "Try again" }),
+        );
+
+        expect(await screen.findByDisplayValue(TITLE)).toBeInTheDocument();
     });
 });

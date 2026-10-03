@@ -2,7 +2,7 @@ import type { TFunction } from "i18next";
 
 import { formatDate } from "utils/intlFormat";
 
-// a DB date-only value parses as UTC midnight, so UTC keeps the calendar day stable regardless of the viewer's timezone
+// a DB date parses as UTC midnight, so UTC keeps the calendar day in every timezone
 const SHORT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
     month: "short",
     day: "numeric",
@@ -16,11 +16,9 @@ const FULL_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
     timeZone: "UTC",
 };
 
-// e.g. "Mar 12" - card and list dates
 export const formatShortDate = (date: Date | string, locale: string): string =>
     formatDate(date, locale, SHORT_DATE_OPTIONS);
 
-// e.g. "Mar 12, 2026" - detail-page dates
 export const formatFullDate = (date: Date | string, locale: string): string =>
     formatDate(date, locale, FULL_DATE_OPTIONS);
 
@@ -30,7 +28,6 @@ const JOINED_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
     timeZone: "UTC",
 };
 
-// e.g. "Jun 2025" - profile header "Joined ..." line
 export const formatJoinedDate = (date: Date | string, locale: string): string =>
     formatDate(date, locale, JOINED_DATE_OPTIONS);
 
@@ -39,8 +36,7 @@ const SECONDS_PER_MINUTE = 60;
 const MINUTES_PER_HOUR = 60;
 const HOURS_PER_DAY = 24;
 
-// a single translated string ("7 h ago"), never split across separate elements - a shared gap/flex
-// wrapper around individually-rendered words is what produces uneven spacing between them
+// one translated string, never words in separate elements, which a flex gap spaces unevenly
 export const formatRelativeTime = (
     t: TFunction,
     date: Date | string,

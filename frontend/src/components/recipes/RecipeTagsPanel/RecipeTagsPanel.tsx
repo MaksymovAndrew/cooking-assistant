@@ -19,8 +19,6 @@ interface RecipeTagsPanelProps {
 
 const TITLE_ICON_SIZE = 14;
 
-// the viewer's private tags on this recipe; rendered only for a signed-in viewer, since the
-// server sends null tags to a guest
 export const RecipeTagsPanel: React.FC<RecipeTagsPanelProps> = ({
     recipeId,
     tags,
@@ -40,9 +38,9 @@ export const RecipeTagsPanel: React.FC<RecipeTagsPanelProps> = ({
         <div className={styles["recipe-tags-panel"]}>
             <div className={styles["recipe-tags-panel__head"]}>
                 <TagIcon size={TITLE_ICON_SIZE} aria-hidden="true" />
-                <span className={styles["recipe-tags-panel__label"]}>
+                <h2 className={styles["recipe-tags-panel__label"]}>
                     {t("panel.title")}
-                </span>
+                </h2>
                 <button
                     type="button"
                     className={styles["recipe-tags-panel__edit"]}

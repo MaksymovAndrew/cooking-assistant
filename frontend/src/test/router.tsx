@@ -12,13 +12,11 @@ import { makeTestStore } from "test/store";
 export { mockNavigate, setTestParams } from "test/nextNavigationMock";
 
 interface RenderOptions {
-    // neutral non-root default: avoids coupling tests to whatever page currently lives at "/"
     initialEntries?: string[];
     store?: AppStore;
 }
 
-// use when a test needs the store (seed preloadedState / assert dispatched effects); the
-// navigation blocker is part of the app-wide providers, so guarded links and forms behave here too
+// the navigation blocker is app-wide, so guarded links and forms behave here too
 export const renderWithProviders = (
     ui: ReactElement,
     { initialEntries = ["/test"], store = makeTestStore() }: RenderOptions = {},
@@ -34,7 +32,6 @@ export const renderWithProviders = (
     return { store, ...view };
 };
 
-// accepts either (ui) or (ui, initialEntries)
 export const renderWithRouter = (
     ui: ReactElement,
     initialEntries: string[] = ["/test"],

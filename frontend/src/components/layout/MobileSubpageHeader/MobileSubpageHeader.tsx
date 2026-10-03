@@ -12,8 +12,6 @@ import styles from "./MobileSubpageHeader.module.scss";
 
 interface MobileSubpageHeaderProps {
     backTo: string;
-    // when set, shows the page's own title instead of the app wordmark, and an edit-pencil link on the right instead of an empty spacer
-    title?: string;
     editTo?: string;
 }
 
@@ -23,7 +21,6 @@ const LOGO_SIZE = 20;
 
 export const MobileSubpageHeader: React.FC<MobileSubpageHeaderProps> = ({
     backTo,
-    title,
     editTo,
 }) => {
     const { t } = useTranslation();
@@ -37,19 +34,9 @@ export const MobileSubpageHeader: React.FC<MobileSubpageHeaderProps> = ({
             >
                 <ChevronLeft size={BACK_ICON_SIZE} aria-hidden="true" />
             </Link>
-            {title ? (
-                <span className={styles["mobile-subpage-header__title"]}>
-                    {title}
-                </span>
-            ) : (
-                <div className={styles["mobile-subpage-header__wordmark"]}>
-                    <Logo
-                        href={ROUTES.home}
-                        size={LOGO_SIZE}
-                        variant="detailed"
-                    />
-                </div>
-            )}
+            <div className={styles["mobile-subpage-header__wordmark"]}>
+                <Logo href={ROUTES.home} size={LOGO_SIZE} />
+            </div>
             {editTo ? (
                 <Link
                     href={editTo}

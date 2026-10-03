@@ -2,7 +2,7 @@ import { ERROR_CODES } from "constants/errorCodes";
 import type { Locale } from "constants/locales";
 import { ValidationError } from "domain/errors/AppError";
 
-// raw request shape; validation unifies both quantity field names into quantity_recipe_ingredients
+// raw request shape: validation unifies both quantity names
 export interface RecipeIngredientInput {
     id: number;
     quantity?: number;
@@ -22,7 +22,7 @@ export interface RecipeCreationInput {
     ingredients: RecipeIngredientInput[];
     type_id?: number;
     cooking_time?: number;
-    // manual per-portion calorie value; undefined/null means "compute it from the ingredients"
+    // per portion; null or undefined means computed from the ingredients
     calories_override?: number | null;
 }
 
@@ -32,15 +32,10 @@ export type RecipeCreationData = Omit<RecipeCreationInput, "ingredients"> & {
 
 export type RecipeUpdateData = Omit<RecipeCreationData, "person_id">;
 
-function validateIngredients(ingredients: RecipeIngredient[]): void {
-    if (!Array.isArray(ingredients) || ingredients.length === 0) {
+// the one rule the request schema leaves to the domain
+function assertHasIngredients(ingredients: RecipeIngredient[]): void {
+    if (ingredients.length === 0) {
         throw new ValidationError(ERROR_CODES.RECIPE_INGREDIENTS_EMPTY);
-    }
-
-    for (const ingredient of ingredients) {
-        if (!ingredient.id) {
-            throw new ValidationError(ERROR_CODES.RECIPE_INGREDIENTS_NO_ID);
-        }
     }
 }
 
@@ -64,7 +59,7 @@ export class Recipe {
         cooking_time,
         calories_override,
     }: RecipeCreationData): Recipe {
-        validateIngredients(ingredients);
+        assertHasIngredients(ingredients);
 
         return new Recipe({
             title,
@@ -87,11 +82,7 @@ export class Recipe {
         cooking_time,
         calories_override,
     }: RecipeUpdateData): Recipe {
-        if (!title || !content) {
-            throw new ValidationError(ERROR_CODES.RECIPE_TITLE_CONTENT_EMPTY);
-        }
-
-        validateIngredients(ingredients);
+        assertHasIngredients(ingredients);
 
         return new Recipe({
             title,

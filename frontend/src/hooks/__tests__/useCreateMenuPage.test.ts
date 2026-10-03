@@ -1,9 +1,10 @@
 import { act } from "@testing-library/react";
 
+import type { RecipeListItem } from "types/recipe";
+
 import { API_ROUTES } from "api/endpoints";
 
 import { menuCategoriesApi } from "redux/services/menuCategoriesApi";
-import { recipesApi } from "redux/services/recipesApi";
 
 import { useCreateMenuPage } from "hooks/useCreateMenuPage";
 
@@ -19,32 +20,27 @@ const RECIPE_ID = 5;
 const MENU_TITLE = "Weekday menu";
 const MENU_DESCRIPTION = "Quick lunches";
 const CATEGORIES = [{ menu_category_id: CATEGORY_ID, category_name: "Lunch" }];
-const RECIPES = [
+const RECIPES: RecipeListItem[] = [
     {
         id: RECIPE_ID,
         title: "Borscht",
         type_name: "Soup",
         creation_date: "2024-01-01",
         cooking_time: 60,
-        ingredients: [],
     },
 ];
 
-// pre-seed the cache by awaiting the real query thunks before the hook mounts, so the reference-data queries read already-fulfilled data on first render
+// the cache is filled before the hook mounts, so its queries read finished data on first render
 const setup = async () => {
     mockGetByUrl({
         [API_ROUTES.menuCategories.list]: CATEGORIES,
-        [API_ROUTES.recipes.list]: RECIPES,
     });
 
     const store = makeTestStore();
 
-    await Promise.all([
-        store.dispatch(
-            menuCategoriesApi.endpoints.getMenuCategories.initiate(null),
-        ),
-        store.dispatch(recipesApi.endpoints.getAllRecipes.initiate(null)),
-    ]);
+    await store.dispatch(
+        menuCategoriesApi.endpoints.getMenuCategories.initiate(null),
+    );
 
     return renderHookWithStore(() => useCreateMenuPage(), store);
 };
@@ -60,7 +56,7 @@ describe("useCreateMenuPage", () => {
             result.current.form.setMenuTitle(MENU_TITLE);
             result.current.form.setMenuDescription(MENU_DESCRIPTION);
             result.current.form.setSelectedCategory(CATEGORY_ID);
-            result.current.form.toggleRecipeSelection(RECIPE_ID);
+            result.current.form.toggleRecipeSelection(RECIPES[0]);
         });
 
         await act(async () => {
@@ -100,7 +96,7 @@ describe("useCreateMenuPage", () => {
             result.current.form.setMenuTitle(MENU_TITLE);
             result.current.form.setMenuDescription(MENU_DESCRIPTION);
             result.current.form.setSelectedCategory(CATEGORY_ID);
-            result.current.form.toggleRecipeSelection(RECIPE_ID);
+            result.current.form.toggleRecipeSelection(RECIPES[0]);
         });
 
         await act(async () => {

@@ -10,7 +10,7 @@ import { userIngredientsApi } from "redux/services/userIngredientsApi";
 
 import { useIngredientCatalog } from "hooks/useIngredientCatalog";
 
-import { mockedPut, mockGetByUrl } from "test/apiClientMock";
+import { mockedGet, mockGetByUrl } from "test/apiClientMock";
 import { makeTestStore, renderHookWithStore } from "test/store";
 
 jest.mock("api/client");
@@ -75,116 +75,37 @@ describe("useIngredientCatalog", () => {
             "Onion",
         ]);
         expect(result.current.personIngredients[0].id).toBe(1);
+        expect(result.current.isLoading).toBe(false);
+        expect(result.current.isError).toBe(false);
     });
 
-    it("should toggle a catalog ingredient's selected state", async () => {
-        const { result } = await setup();
+    it("should report a failed pantry request and refetch it on retry", async () => {
+        mockedGet.mockRejectedValue(new Error("offline"));
 
-        act(() => {
-            result.current.toggleIngredientSelection(2);
-        });
-
-        expect(result.current.selectedIngredients).toContain(2);
-
-        act(() => {
-            result.current.toggleIngredientSelection(2);
-        });
-
-        expect(result.current.selectedIngredients).not.toContain(2);
-    });
-
-    it("should open the add-ingredient flow with an empty selection", async () => {
-        const { result } = await setup();
-
-        act(() => {
-            result.current.toggleIngredientSelection(2);
-        });
-        act(() => {
-            result.current.handleOpenAddModal();
-        });
-
-        expect(result.current.isAdding).toBe(true);
-        expect(result.current.selectedIngredients).toEqual([]);
-    });
-
-    it("should save each newly selected ingredient with its own real quantity, not a hardcoded default", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-
-        const { result } = await setup();
-
-        act(() => {
-            result.current.handleOpenAddModal();
-        });
-        act(() => {
-            result.current.toggleIngredientSelection(2);
-        });
+        const store = makeTestStore();
+        const { result } = renderHookWithStore(
+            () => useIngredientCatalog(),
+            store,
+        );
 
         await act(async () => {
-            await result.current.handleConfirmAddIngredients({ 2: 7 });
+            await Promise.resolve();
         });
 
-        expect(mockedPut).toHaveBeenCalledWith(
-            API_ROUTES.userIngredients.list,
-            {
-                ingredients: [
-                    {
-                        id: 2,
-                        ingredient_name: "Onion",
-                        quantity_person_ingradient: 7,
-                    },
-                ],
-            },
-        );
-        expect(result.current.isAdding).toBe(false);
-    });
+        expect(result.current.isError).toBe(true);
 
-    it("should default to a quantity of 1 for a selected ingredient missing from the quantities map", async () => {
-        mockedPut.mockResolvedValue({ data: null });
-
-        const { result } = await setup();
-
-        act(() => {
-            result.current.handleOpenAddModal();
-        });
-        act(() => {
-            result.current.toggleIngredientSelection(2);
+        mockGetByUrl({
+            [API_ROUTES.ingredients.list]: CATALOG,
+            [API_ROUTES.userIngredients.list]: [OWNED],
         });
 
+        // the store tells its subscribers about a fulfilled query on the next animation frame
         await act(async () => {
-            await result.current.handleConfirmAddIngredients({});
+            result.current.retry();
+            await new Promise((resolve) => requestAnimationFrame(resolve));
         });
 
-        expect(mockedPut).toHaveBeenCalledWith(
-            API_ROUTES.userIngredients.list,
-            {
-                ingredients: [
-                    {
-                        id: 2,
-                        ingredient_name: "Onion",
-                        quantity_person_ingradient: 1,
-                    },
-                ],
-            },
-        );
-    });
-
-    it("should reset the selection and leave the add flow without saving when cancelled", async () => {
-        const { result } = await setup();
-
-        act(() => {
-            result.current.handleOpenAddModal();
-        });
-        act(() => {
-            result.current.toggleIngredientSelection(2);
-        });
-
-        expect(result.current.selectedIngredients).toContain(2);
-
-        act(() => {
-            result.current.handleCancelAdd();
-        });
-
-        expect(result.current.isAdding).toBe(false);
-        expect(result.current.selectedIngredients).toEqual([]);
+        expect(result.current.isError).toBe(false);
+        expect(result.current.personIngredients).toHaveLength(1);
     });
 });

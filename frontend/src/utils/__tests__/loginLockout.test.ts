@@ -44,30 +44,15 @@ describe("registerFailure", () => {
         expect(state.failures).toBe(4);
     });
 
-    it("should lock for the first ladder step on the 5th failure", () => {
-        const state = registerFailures(5);
-
-        expect(state.lockedUntil).toBe(
-            NOW + LOCKOUT_LADDER_MINUTES[0] * MINUTE_MS,
-        );
-    });
-
     it.each([
-        [5, 0],
-        [10, 1],
-        [15, 1],
-        [20, 1],
-        [25, 1],
-    ])(
-        "should escalate to ladder step %i minutes after %i failures",
-        (failureCount, stageIndex) => {
-            const state = registerFailures(failureCount);
+        [5, 1],
+        [10, 5],
+        [15, 5],
+    ])("should lock after %i failures for %i min", (failureCount, minutes) => {
+        const state = registerFailures(failureCount);
 
-            expect(state.lockedUntil).toBe(
-                NOW + LOCKOUT_LADDER_MINUTES[stageIndex] * MINUTE_MS,
-            );
-        },
-    );
+        expect(state.lockedUntil).toBe(NOW + minutes * MINUTE_MS);
+    });
 
     it("should hold the last ladder step beyond the top of the ladder", () => {
         const state = registerFailures(30);

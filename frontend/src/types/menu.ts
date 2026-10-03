@@ -7,31 +7,18 @@ export interface Menu {
     title: string;
     categoryName: string;
     menuContent: string;
-    // the language the author wrote it in; absent from the unpaginated stats-only query
+    // the language the author wrote it in
     language?: Locale;
     recipe_count: number;
-    // computed by the backend (m.person_id = current viewer) - present on the browse/person list
-    // endpoints, absent from the unpaginated stats-only query, optional so it stays honest about
-    // which callers have it. The raw person_id itself never leaves the server.
+    // computed per viewer; the raw person_id never leaves the server
     isOwner?: boolean;
     // per viewer, like isOwner - null when the request carried no session
     isFavourite?: boolean | null;
-    // present on the browse/person lists only, like isOwner
     photo_key?: string | null;
     author?: RecordAuthor;
-    // present on the browse/person lists only, like isOwner
     ratingAverage?: number | null;
     ratingCount?: number;
     myRating?: number | null;
-}
-
-// shape returned by GET /api/menus (unpaginated) - the plain menu list plus each menu's recipe
-// count/total cooking time/total calories, used for stats-page averages. total_calories is null
-// (not a silently undercounted number) once any of the menu's recipes lacks calorie data - same
-// rule PgCalorieRepository.findMenuCalories already uses for a single menu
-export interface MenuWithStats extends Menu {
-    total_cooking_time: number;
-    total_calories: number | null;
 }
 
 export interface MenuCategory {
@@ -65,7 +52,6 @@ export interface MenuDetails {
     menu: RecordRating & {
         id: number;
         title: string;
-        // a menu row may carry no category: the column is nullable
         categoryName: string | null;
         menuContent: string;
         language: Locale;
@@ -77,7 +63,6 @@ export interface MenuDetails {
         author: RecordAuthor;
     };
     recipes: MenuDetailRecipe[];
-    // distinct allergen slugs across every recipe of the menu
     allergens: string[];
 }
 

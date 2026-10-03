@@ -14,8 +14,7 @@ interface CookedItTarget {
     isSignedIn: boolean;
 }
 
-// shared by the recipe and menu detail pages; no handler means no button - a guest has no
-// pantry, and a record without ingredients has nothing to take from it
+// no handler, no button: a guest has no pantry, and a record without ingredients takes nothing
 export const useCookedItHandler = ({
     isSignedIn,
     ...target

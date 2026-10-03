@@ -22,9 +22,9 @@ export const RecipeIngredientsHeader: React.FC<
     return (
         <div className={styles["recipe-ingredients-panel__header"]}>
             <div>
-                <div className={styles["recipe-ingredients-panel__title"]}>
+                <h2 className={styles["recipe-ingredients-panel__title"]}>
                     {t("recipeDetailsPage.ingredients")}
-                </div>
+                </h2>
                 <div className={styles["recipe-ingredients-panel__caption"]}>
                     {t("recipeDetailsPage.ingredientsCaption", {
                         count: ingredientCount,

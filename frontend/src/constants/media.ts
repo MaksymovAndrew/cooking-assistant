@@ -1,5 +1,4 @@
-// mirrors what the server accepts; checked here only to answer at once instead of after an upload -
-// the server reads the bytes themselves and stays the authority
+// only to answer before an upload: the server reads the bytes themselves and stays the authority
 export const ACCEPTED_IMAGE_TYPES = [
     "image/jpeg",
     "image/png",

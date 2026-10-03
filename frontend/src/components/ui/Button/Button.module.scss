@@ -1,10 +1,5 @@
 @use "styles/abstracts" as *;
-
-@keyframes button-spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
+@include spin-keyframes;
 
 .button {
     display: inline-flex;
@@ -37,8 +32,7 @@
     }
 }
 
-// inert only until React takes over, which is not the same as unavailable: without this the
-// primary action on a server-rendered form paints grey and then snaps to the brand colour
+// awaiting hydration is not unavailable: without this a primary button flashes grey on load
 .button--awaiting-hydration:disabled {
     opacity: 1;
     cursor: default;
@@ -88,7 +82,7 @@
 }
 
 .button--danger {
-    background: var(--danger);
+    background: var(--danger-fill);
     color: var(--on-brand);
 
     @include on-hover {
@@ -98,7 +92,7 @@
 
 .button--link {
     background: transparent;
-    color: var(--brand);
+    color: var(--brand-text);
     padding: 0 var(--s-2);
     height: auto;
 
@@ -146,5 +140,5 @@
     border: 2.6px solid rgb(255 255 255 / 35%);
     border-top-color: var(--on-brand);
     border-radius: var(--r-pill);
-    animation: button-spin 0.7s linear infinite;
+    animation: spin 0.7s linear infinite;
 }

@@ -20,7 +20,8 @@
         "loading": "Сохраняем…"
     },
     "chip": {
-        "remove": "Убрать"
+        "remove": "Убрать «{{name}}»",
+        "quantity": "Количество: {{name}}"
     },
     "passwordInput": {
         "show": "Показать пароль",
@@ -67,7 +68,10 @@
         "logout": "Выйти",
         "login": "Войти",
         "register": "Регистрация",
-        "scrollToTop": "Наверх"
+        "scrollToTop": "Наверх",
+        "skipToContent": "Перейти к содержимому",
+        "mainLabel": "Основная",
+        "tabBarLabel": "Панель вкладок"
     },
     "theme": {
         "toggleLabel": "Сменить тему"
@@ -82,6 +86,7 @@
         "backToRecipes": "К рецептам",
         "recipes": "Рецепты",
         "pantry": "Продукты",
+        "home": "Главная",
         "menus": "Меню"
     },
     "errors": {
@@ -105,9 +110,7 @@
         "auth/new_password_same_as_current": "Новый пароль должен отличаться от текущего.",
         "recipe/not_found": "Такого рецепта нет или его удалили.",
         "recipe/ingredients_empty": "Добавьте хотя бы один ингредиент.",
-        "recipe/ingredients_missing_id": "Выберите каждый ингредиент из списка.",
         "recipe/ingredients_not_exist": "Одного или нескольких ингредиентов больше нет.",
-        "recipe/title_content_empty": "Добавьте название и описание.",
         "recipe/in_pantry_requires_login": "Войдите, чтобы подбирать рецепты по своим продуктам.",
         "recipe/type_not_exist": "Такого типа рецепта больше нет. Выберите другой.",
         "menu/not_found": "Такого меню нет или его удалили.",
@@ -140,6 +143,7 @@
     },
     "errorState": {
         "title": "Что-то пошло не так",
+        "loadFailed": "Не удалось загрузить. Проверьте подключение и попробуйте ещё раз.",
         "retry": "Попробовать снова"
     },
     "notifications": {
@@ -321,5 +325,12 @@
         "filterChip_few": "{{count}} языка",
         "filterChip_many": "{{count}} языков",
         "filterChip_other": "{{count}} языка"
+    },
+    "contentSkeleton": {
+        "loading": "Загрузка…"
+    },
+    "moveButtons": {
+        "up": "Поднять «{{name}}» выше",
+        "down": "Опустить «{{name}}» ниже"
     }
 }

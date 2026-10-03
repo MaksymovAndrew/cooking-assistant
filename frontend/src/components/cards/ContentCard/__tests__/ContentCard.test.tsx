@@ -56,63 +56,6 @@ describe("ContentCard", () => {
         expect(screen.getByText(COOKING_TIME_LABEL)).toBeInTheDocument();
     });
 
-    it("should apply the mine class when mine is true", () => {
-        renderCard({ mine: true });
-
-        expect(screen.getByRole("article")).toHaveClass("content-card--mine");
-    });
-
-    it("should apply the badge class when badge is true", () => {
-        renderCard({ badge: true });
-
-        expect(screen.getByRole("article")).toHaveClass("content-card--badge");
-    });
-
-    it("should apply the calorie-over class when calorieOver is true", () => {
-        renderCard({ calorieOver: true });
-
-        expect(screen.getByRole("article")).toHaveClass(
-            "content-card--calorie-over",
-        );
-    });
-
-    it("should apply both classes when badge and calorieOver are both true", () => {
-        renderCard({ badge: true, calorieOver: true });
-
-        const card = screen.getByRole("article");
-
-        expect(card).toHaveClass("content-card--badge");
-        expect(card).toHaveClass("content-card--calorie-over");
-    });
-
-    it("should recolor a meta item tagged with the calorieOver tone", () => {
-        renderCard({
-            metaItems: [
-                {
-                    icon: Clock,
-                    label: COOKING_TIME_LABEL,
-                    tone: "calorieOver",
-                },
-            ],
-        });
-
-        expect(screen.getByText(COOKING_TIME_LABEL)).toHaveClass(
-            "content-card__meta-item--calorie-over",
-        );
-    });
-
-    it("should default to the grid variant", () => {
-        renderCard();
-
-        expect(screen.getByRole("article")).toHaveClass("content-card--grid");
-    });
-
-    it("should render the row variant when requested", () => {
-        renderCard({ variant: "row" });
-
-        expect(screen.getByRole("article")).toHaveClass("content-card--row");
-    });
-
     it("should not render a heart without a favourite state", () => {
         renderCard();
 

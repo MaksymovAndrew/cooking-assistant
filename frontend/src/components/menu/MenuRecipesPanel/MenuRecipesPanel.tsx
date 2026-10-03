@@ -39,12 +39,17 @@ export const MenuRecipesPanel: React.FC<MenuRecipesPanelProps> = ({
         [recipes, trimmedQuery],
     );
 
+    // a menu is created with at least one recipe, so an empty one lost them to their authors
     if (recipes.length === 0) {
         return (
             <EmptyState
                 icon={UtensilsMarkSimple}
-                title={t("menuDetailsPage.noRecipesYet")}
-                description={t("menuDetailsPage.noRecipesYetDescription")}
+                title={t("menuDetailsPage.recipesRemoved")}
+                description={
+                    isOwner
+                        ? t("menuDetailsPage.recipesRemovedOwnerHint")
+                        : t("menuDetailsPage.recipesRemovedVisitorHint")
+                }
                 action={
                     isOwner && (
                         <LinkButton href={addRecipesTo} size="lg">

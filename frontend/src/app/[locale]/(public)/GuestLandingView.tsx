@@ -2,11 +2,19 @@
 
 import React from "react";
 
+import type { GuestLandingContent } from "types/guestLanding";
+
 import { GuestLanding } from "components/home/GuestLanding";
 import { AppShell } from "components/layout/AppShell";
 
-export const GuestLandingView: React.FC = () => (
+interface GuestLandingViewProps {
+    content: GuestLandingContent;
+}
+
+export const GuestLandingView: React.FC<GuestLandingViewProps> = ({
+    content,
+}) => (
     <AppShell>
-        <GuestLanding />
+        <GuestLanding content={content} />
     </AppShell>
 );

@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 
 import { API_ROUTES } from "api/endpoints";
 
@@ -10,21 +10,9 @@ import { makeTestStore } from "test/store";
 
 jest.mock("api/client");
 
+const AVOIDED_NOTE = "You avoid this";
+
 describe("RecipeDescriptionPanel", () => {
-    it("should render the description text", () => {
-        renderWithRouter(
-            <RecipeDescriptionPanel
-                content="A deeply savoury slow-cooked ragù."
-                language="en"
-                allergens={[]}
-            />,
-        );
-
-        expect(
-            screen.getByText("A deeply savoury slow-cooked ragù."),
-        ).toBeInTheDocument();
-    });
-
     it("should not show the allergens section when there are none", () => {
         renderWithRouter(
             <RecipeDescriptionPanel
@@ -68,12 +56,12 @@ describe("RecipeDescriptionPanel", () => {
             { store: makeTestStore({ session: { status: "authed" } }) },
         );
 
-        expect(await screen.findByText("You avoid this")).toBeInTheDocument();
-        expect(screen.getByText("Milk")).toHaveClass(
-            "recipe-description-panel__allergen--avoided",
-        );
-        expect(screen.getByText("Gluten")).not.toHaveClass(
-            "recipe-description-panel__allergen--avoided",
-        );
+        expect(await screen.findByText(AVOIDED_NOTE)).toBeInTheDocument();
+        expect(
+            within(screen.getByText("Milk")).getByText(AVOIDED_NOTE),
+        ).toBeInTheDocument();
+        expect(
+            within(screen.getByText("Gluten")).queryByText(AVOIDED_NOTE),
+        ).not.toBeInTheDocument();
     });
 });

@@ -5,34 +5,54 @@ import { RecipeTypeChart } from "components/stats/RecipeTypeChart";
 
 jest.mock("components/stats/PieChartCard/PieChartCard", () => ({
     __esModule: true,
-    default: ({ data }: { data: { name: string; value: number }[] }) => (
-        <div data-testid="donut-chart">
+    default: ({
+        data,
+        centerLabel,
+    }: {
+        data: { name: string; value: number }[];
+        centerLabel: string;
+    }) => (
+        <div>
             {data.map((d) => (
                 <span key={d.name}>{d.name}</span>
             ))}
+            <span>{centerLabel}</span>
         </div>
     ),
 }));
 
 describe("RecipeTypeChart", () => {
-    it("should render the chart and pass stats to the donut", async () => {
+    it("should name each type and count the recipes across all of them in the centre label", async () => {
         render(
             <Suspense fallback={null}>
-                <RecipeTypeChart stats={[{ typeName: "Soup", count: 3 }]} />
+                <RecipeTypeChart
+                    stats={[
+                        { typeName: "Main course", count: 1 },
+                        { typeName: "Dessert", count: 1 },
+                    ]}
+                />
             </Suspense>,
         );
 
-        expect(await screen.findByTestId("donut-chart")).toBeInTheDocument();
-        expect(screen.getByText("Soup")).toBeInTheDocument();
+        // one recipe per type, so only the summed total makes the label plural
+        expect(await screen.findByText("recipes")).toBeInTheDocument();
+        expect(screen.getByText("Main course")).toBeInTheDocument();
+        expect(screen.getByText("Dessert")).toBeInTheDocument();
     });
 
-    it("should render with empty stats without errors", async () => {
+    it("should give the recipes without a type a slice of their own and count them in the total", async () => {
         render(
             <Suspense fallback={null}>
-                <RecipeTypeChart stats={[]} />
+                <RecipeTypeChart
+                    stats={[
+                        { typeName: "Dessert", count: 1 },
+                        { typeName: null, count: 1 },
+                    ]}
+                />
             </Suspense>,
         );
 
-        expect(await screen.findByTestId("donut-chart")).toBeInTheDocument();
+        expect(await screen.findByText("recipes")).toBeInTheDocument();
+        expect(screen.getByText("No type")).toBeInTheDocument();
     });
 });

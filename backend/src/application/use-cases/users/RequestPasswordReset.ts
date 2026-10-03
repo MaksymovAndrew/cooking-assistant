@@ -25,7 +25,7 @@ export default class RequestPasswordReset {
         const candidate =
             await this.userRepository.findPasswordResetCandidateByEmail(email);
 
-        // silently no-ops for "no such email" and "unverified email" alike - same response either way (anti-enumeration)
+        // no such email and an unverified one answer alike (anti-enumeration)
         if (!candidate?.email_verified_at) {
             return;
         }
@@ -44,7 +44,7 @@ export default class RequestPasswordReset {
             candidate.locale,
         );
 
-        // not awaited: waiting on the mail provider would make a real, verified address answer slower than any other
+        // not awaited: the mail provider's latency would reveal a real, verified address
         this.emailSender
             .sendPasswordResetEmail(email, link, candidate.locale)
             .catch((err: unknown) => {

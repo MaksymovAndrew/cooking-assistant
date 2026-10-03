@@ -19,11 +19,7 @@
         color: var(--text-muted);
     }
 
-    &:focus {
-        outline: none;
-        border-color: var(--brand);
-        box-shadow: 0 0 0 3px var(--brand-subtle);
-    }
+    @include input-focus-ring;
 
     &:disabled {
         cursor: not-allowed;
@@ -34,8 +30,5 @@
 .text-input--error {
     border-color: var(--danger);
 
-    &:focus {
-        border-color: var(--danger);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 14%, transparent);
-    }
+    @include input-focus-ring-invalid;
 }

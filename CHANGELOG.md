@@ -20,6 +20,16 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 5.0.1 - 2026-10-03
+
+### Backend
+
+- Changed: the server's request log lines are several times shorter - each keeps what identifies a request and its outcome instead of every header.
+
+### Frontend
+
+- Security: the site now tells browsers to use HTTPS only (HSTS), the same policy the API already sends.
+
 ## 5.0 - 2026-10-03
 
 ### Frontend

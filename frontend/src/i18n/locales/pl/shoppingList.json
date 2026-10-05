@@ -39,7 +39,7 @@
         "allBoughtHint": "Świetnie. Dodawaj nowe rzeczy, kiedy zechcesz."
     },
     "addFromElsewhere": {
-        "addMissing": "Dodaj brakujące do listy zakupów",
+        "addMissing": "Dodaj brakujące do zakupów",
         "added": "Dodano do listy zakupów.",
         "openList": "Otwórz listę"
     }

@@ -1,5 +1,7 @@
 import React from "react";
 
+import { cx } from "utils/cx";
+
 import styles from "./StatTile.module.scss";
 
 interface StatTileProps {
@@ -18,10 +20,10 @@ export const StatTile: React.FC<StatTileProps> = ({
     <div className={styles["stat-tile"]}>
         <span className={styles["stat-tile__label"]}>{label}</span>
         <span
-            className={[
+            className={cx(
                 styles["stat-tile__value"],
                 styles[`stat-tile__value--${valueVariant}`],
-            ].join(" ")}
+            )}
         >
             {value}
         </span>

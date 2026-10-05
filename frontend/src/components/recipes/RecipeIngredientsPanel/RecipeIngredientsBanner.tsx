@@ -43,7 +43,7 @@ export const RecipeIngredientsBanner: React.FC<
                 className={styles["recipe-ingredients-panel__banner-dot"]}
                 aria-hidden="true"
             />
-            <div>
+            <div className={styles["recipe-ingredients-panel__banner-body"]}>
                 <div
                     className={styles["recipe-ingredients-panel__banner-title"]}
                 >
@@ -71,18 +71,18 @@ export const RecipeIngredientsBanner: React.FC<
                         {t("recipeDetailsPage.checkPantry")}
                     </Link>
                 </div>
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    loading={isAdding}
-                    className={styles["recipe-ingredients-panel__banner-add"]}
-                    onClick={() => {
-                        add(missingItems);
-                    }}
-                >
-                    {tShoppingList("addFromElsewhere.addMissing")}
-                </Button>
             </div>
+            <Button
+                variant="secondary"
+                size="sm"
+                loading={isAdding}
+                className={styles["recipe-ingredients-panel__banner-add"]}
+                onClick={() => {
+                    add(missingItems);
+                }}
+            >
+                {tShoppingList("addFromElsewhere.addMissing")}
+            </Button>
         </div>
     );
 };

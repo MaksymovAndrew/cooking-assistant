@@ -32,7 +32,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             <span className={styles["stat-card__icon"]}>
                 <Icon size={ICON_SIZE} aria-hidden="true" />
             </span>
-            <span>
+            <span className={styles["stat-card__text"]}>
                 <span className={styles["stat-card__value"]}>{value}</span>
                 <span className={styles["stat-card__label--desktop"]}>
                     {label}

@@ -154,10 +154,13 @@
             serif;
     }
 
+    // each item stays whole; a narrow card moves the next one to a second line
     &__rating {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 6px;
+        white-space: nowrap;
         color: var(--text);
         font:
             600 13px "Geist Mono",
@@ -172,9 +175,11 @@
 
     &__meta {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: var(--s-4);
+        gap: var(--s-1) var(--s-4);
         margin-top: auto;
+        white-space: nowrap;
     }
 
     &__meta-item {

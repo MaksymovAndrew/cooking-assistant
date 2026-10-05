@@ -1,47 +1,82 @@
 @use "styles/abstracts" as *;
 
+// a phone lists the tiles as rows: label and caption on the left, the value on the right
 .stat-tile {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: var(--s-5);
+    display: grid;
+    grid-template-areas:
+        "label value"
+        "caption value";
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2px var(--s-4);
+    min-width: 0;
+    padding: var(--s-4);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
     background: var(--surface);
+    container-type: inline-size;
 
+    @include respond-to(tablet) {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: var(--s-5);
+    }
+
+    // a phone gives a long label a second line rather than cutting it beside the value
     &__label {
+        @include line-clamp(2);
+
+        grid-area: label;
         color: var(--text-muted);
         letter-spacing: 0.08em;
         text-transform: uppercase;
         font:
             500 11px "Geist Mono",
             monospace;
+
+        @include respond-to(tablet) {
+            @include truncate;
+
+            display: block;
+        }
     }
 
     &__value {
+        grid-area: value;
         color: var(--text);
+        white-space: nowrap;
     }
 
+    // sized by the tile's width, so "1 280 kcal" or "2 h 26 min" fits whatever the language
     &__value--number {
-        // never wrap a time like "1h 50m"; smaller on phones so it fits the 2x2 tiles
-        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         font:
-            700 30px "Geist Mono",
+            700 22px "Geist Mono",
             monospace;
 
         @include respond-to(tablet) {
-            font-size: 38px;
+            font-size: clamp(20px, 15cqi, 38px);
         }
     }
 
     &__value--text {
-        margin-top: var(--s-1);
         font:
-            700 24px Fraunces,
+            700 18px Fraunces,
             serif;
+
+        @include respond-to(tablet) {
+            margin-top: var(--s-1);
+            font-size: clamp(18px, 11cqi, 24px);
+            white-space: normal;
+        }
     }
 
     &__caption {
+        @include truncate;
+
+        grid-area: caption;
         color: var(--text-muted);
         font:
             400 12px Inter,

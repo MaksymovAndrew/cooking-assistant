@@ -89,12 +89,15 @@
             serif;
     }
 
+    // each item stays whole; a narrow card moves the last ones to a second line
     &__meta {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 5px;
+        gap: 2px 5px;
         margin-top: 3px;
         color: var(--text-muted);
+        white-space: nowrap;
         font:
             500 11px "Geist Mono",
             monospace;

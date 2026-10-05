@@ -2,6 +2,11 @@
     "title": "What's new",
     "newCount": "{{total}} new",
     "items": {
+        "tidierLayout": {
+            "date": "2026-10-05",
+            "title": "Tidier pages in every language",
+            "description": "Stats, recipe pages and dialogs now fit every screen in all four languages: no more numbers spilling out of their boxes or buttons bumping into each other. Adding food to your pantry is clearer too."
+        },
         "cookedIt": {
             "date": "2026-10-03",
             "title": "Cooked it? Your pantry keeps count",

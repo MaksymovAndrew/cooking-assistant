@@ -1,7 +1,10 @@
 import i18next from "i18next";
 
+import { MENU_DURATION_COPY } from "constants/durationCopy";
+
 import {
     formatCompactDuration,
+    formatDuration,
     formatRecipeDuration,
     isoDuration,
     splitCookingTime,
@@ -35,6 +38,10 @@ describe("formatRecipeDuration", () => {
     it("should name only the minutes under an hour", () => {
         expect(formatRecipeDuration(t, 59)).toBe("59 min");
     });
+
+    it("should name only the hours on a whole hour", () => {
+        expect(formatRecipeDuration(t, 120)).toBe("2 hr");
+    });
 });
 
 describe("formatCompactDuration", () => {
@@ -46,6 +53,20 @@ describe("formatCompactDuration", () => {
 
     it("should show only minutes under an hour", () => {
         expect(formatCompactDuration(t, 45)).toBe("45 min");
+    });
+
+    it("should show only hours on a whole hour", () => {
+        expect(formatCompactDuration(t, 420)).toBe("7h");
+    });
+});
+
+describe("formatDuration", () => {
+    const t = i18next.getFixedT(null, "menu");
+
+    it("should read the copy keys it is given", () => {
+        expect(formatDuration(t, 90, MENU_DURATION_COPY)).toBe("1h 30m");
+        expect(formatDuration(t, 60, MENU_DURATION_COPY)).toBe("1h");
+        expect(formatDuration(t, 25, MENU_DURATION_COPY)).toBe("25 min");
     });
 });
 

@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { REDUCED_MOTION_QUERY } from "constants/motion";
+import { SCROLL_TO_TOP_REVEAL_OFFSET_PX } from "constants/scrollToTop";
 
 import { cx } from "utils/cx";
 
 import styles from "./ScrollToTopButton.module.scss";
 
 const ICON_SIZE = 20;
-const REVEAL_SCROLL_OFFSET_PX = 240;
 
 const prefersReducedMotion = (): boolean =>
     window.matchMedia(REDUCED_MOTION_QUERY).matches;
@@ -20,7 +20,7 @@ export const ScrollToTopButton = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsVisible(window.scrollY > REVEAL_SCROLL_OFFSET_PX);
+            setIsVisible(window.scrollY > SCROLL_TO_TOP_REVEAL_OFFSET_PX);
         };
 
         window.addEventListener("scroll", handleScroll, { passive: true });

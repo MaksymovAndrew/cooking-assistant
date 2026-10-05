@@ -5,6 +5,7 @@
     "server_error": "Server error",
     "validation_error": "Invalid request data",
     "rate_limited": "Too many requests, please try again later",
+    "cross_origin_request": "Requests from other sites are not accepted",
 
     "auth/session_expired": "Session expired, please log in again",
     "auth/user_not_found": "User not found",

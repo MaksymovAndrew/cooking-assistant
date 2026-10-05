@@ -8,8 +8,22 @@
 
     @include card-surface;
 
+    // the label gets the card's full width under the icon and number
     @include respond-to(desktop) {
+        display: grid;
+        grid-template-areas:
+            "icon value"
+            "label label";
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: var(--s-2) var(--s-3);
         padding: var(--s-4) var(--s-5);
+    }
+
+    &__text {
+        @include respond-to(desktop) {
+            display: contents;
+        }
     }
 
     &__ring {
@@ -20,6 +34,7 @@
             flex: none;
             align-items: center;
             justify-content: center;
+            grid-area: icon;
             width: 44px;
             height: 44px;
 
@@ -53,6 +68,7 @@
         }
 
         @include respond-to(desktop) {
+            grid-area: value;
             font-size: 30px;
         }
     }
@@ -64,6 +80,14 @@
         font:
             400 12px Inter,
             sans-serif;
+
+        @include respond-to(desktop) {
+            grid-area: label;
+            margin-top: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     }
 }
 
@@ -89,35 +113,4 @@
     .kcal-stat-card__value {
         color: var(--danger);
     }
-}
-
-.kcal-stat-card--empty {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 2px;
-    padding: 13px var(--s-4);
-    border: 1px dashed var(--border);
-    border-radius: var(--r-md);
-    background: transparent;
-    text-decoration: none;
-
-    @include respond-to(desktop) {
-        padding: var(--s-4) var(--s-5);
-    }
-}
-
-.kcal-stat-card__empty-label {
-    color: var(--text-muted);
-    font:
-        400 12px Inter,
-        sans-serif;
-}
-
-.kcal-stat-card__empty-cta {
-    color: var(--brand-text);
-    font:
-        600 13px Inter,
-        sans-serif;
 }

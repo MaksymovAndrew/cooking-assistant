@@ -16,6 +16,7 @@ import { API_PREFIX } from "constants/routes";
 import { NotFoundError } from "domain/errors/AppError";
 
 import errorHandler from "middleware/errorHandler";
+import { createOriginGuard } from "middleware/originGuard";
 import { createGlobalLimiter } from "middleware/rateLimit";
 import { createRequestLogger } from "middleware/requestLogger";
 import { createDomainRouters } from "routes/domainRouters";
@@ -38,6 +39,7 @@ export function createApp(controllers: Controllers): Express {
             credentials: true,
         }),
     );
+    app.use(createOriginGuard(config.corsOrigin));
     app.use(express.json({ limit: JSON_BODY_LIMIT }));
     app.use(cookieParser());
 

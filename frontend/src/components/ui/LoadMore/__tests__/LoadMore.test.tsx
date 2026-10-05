@@ -56,4 +56,12 @@ describe("LoadMore", () => {
             screen.getByRole("button", { name: "Load more" }),
         ).toBeInTheDocument();
     });
+
+    it("should render nothing when there is nothing more to load or say", () => {
+        const { container } = render(
+            <LoadMore {...baseProps} hasMore={false} />,
+        );
+
+        expect(container).toBeEmptyDOMElement();
+    });
 });

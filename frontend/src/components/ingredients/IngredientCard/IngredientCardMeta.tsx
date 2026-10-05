@@ -37,7 +37,7 @@ export const IngredientCardMeta: React.FC<IngredientCardMetaProps> = ({
                 <dd>
                     {typeof ingredient.days_to_expire === "number"
                         ? t("page.shelfLifeDays", {
-                              days: ingredient.days_to_expire,
+                              count: ingredient.days_to_expire,
                           })
                         : t("page.noExpiration")}
                 </dd>

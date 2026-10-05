@@ -99,6 +99,7 @@
         "server_error": "Something went wrong on our side. Please try again later.",
         "validation_error": "Some of the details you entered aren't valid.",
         "rate_limited": "Too many requests. Please wait a moment and try again.",
+        "cross_origin_request": "This request came from another site and was refused.",
         "auth/session_expired": "Your session has expired. Please log in again.",
         "auth/user_not_found": "We couldn't find your account.",
         "auth/login_already_taken": "This login is already taken.",

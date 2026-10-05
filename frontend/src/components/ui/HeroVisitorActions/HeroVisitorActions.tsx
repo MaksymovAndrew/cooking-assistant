@@ -10,6 +10,7 @@ import { FavouriteButton } from "components/ui/FavouriteButton";
 import { LinkButton } from "components/ui/LinkButton";
 import { ShareButton } from "components/ui/ShareButton";
 
+import { cx } from "utils/cx";
 import { rememberLoginRedirect } from "utils/loginRedirect";
 
 import styles from "./HeroVisitorActions.module.scss";
@@ -45,7 +46,10 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
                     href={ROUTES.login}
                     onClick={rememberLoginRedirect}
                     variant="secondary"
-                    className={styles["hero-visitor-actions__wide"]}
+                    className={cx(
+                        styles["hero-visitor-actions__wide"],
+                        styles["hero-visitor-actions__wide--shared"],
+                    )}
                 >
                     <Sparkles size={ICON_SIZE} aria-hidden="true" />
                     {guestCtaLabel}
@@ -57,14 +61,6 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
 
     return (
         <div className={styles["hero-visitor-actions"]}>
-            <FavouriteButton
-                favourite={favourite}
-                label={favouriteLabel}
-                iconSize={ICON_SIZE}
-                className={styles["hero-visitor-actions__favourite"]}
-            >
-                {favouriteLabel}
-            </FavouriteButton>
             {onCook && (
                 <Button
                     variant="secondary"
@@ -85,6 +81,14 @@ export const HeroVisitorActions: React.FC<HeroVisitorActionsProps> = ({
                     {logIntakeLabel}
                 </Button>
             )}
+            <FavouriteButton
+                favourite={favourite}
+                label={favouriteLabel}
+                iconSize={ICON_SIZE}
+                className={styles["hero-visitor-actions__favourite"]}
+            >
+                {favouriteLabel}
+            </FavouriteButton>
             <ShareButton title={shareTitle} iconSize={ICON_SIZE} />
         </div>
     );

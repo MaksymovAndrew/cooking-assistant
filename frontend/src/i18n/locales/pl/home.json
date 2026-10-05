@@ -22,7 +22,8 @@
         "emptyTitle": "Nie ma jeszcze przepisów",
         "emptyDescription": "Dodaj pierwszy przepis, a pojawi się tutaj.",
         "emptyAction": "Dodaj przepis",
-        "cookingTimeHoursMinutes": "{{hours}} godz. {{minutes}} min",
+        "cookingTimeHoursMinutes": "{{hours}} h {{minutes}} min",
+        "cookingTimeHours": "{{hours}} h",
         "cookingTimeMinutesOnly": "{{minutes}} min",
         "caloriesValue": "{{count}} kcal"
     },

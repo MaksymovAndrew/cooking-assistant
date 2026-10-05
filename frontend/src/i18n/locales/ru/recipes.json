@@ -20,10 +20,10 @@
         "itemsAdded_other": "Добавлено {{count}} ингредиента",
         "perPortionHint": "Количество — на одну порцию, остальное посчитается само.",
         "reorderHint": "Перетаскивайте за ручку или нажимайте стрелки, чтобы поменять порядок · единица подставляется из каталога",
-        "summary_one": "{{count}} ингредиент · {{hours}} ч {{minutes}} мин",
-        "summary_few": "{{count}} ингредиента · {{hours}} ч {{minutes}} мин",
-        "summary_many": "{{count}} ингредиентов · {{hours}} ч {{minutes}} мин",
-        "summary_other": "{{count}} ингредиента · {{hours}} ч {{minutes}} мин",
+        "summary_one": "{{count}} ингредиент · {{duration}}",
+        "summary_few": "{{count}} ингредиента · {{duration}}",
+        "summary_many": "{{count}} ингредиентов · {{duration}}",
+        "summary_other": "{{count}} ингредиента · {{duration}}",
         "caloriesOverrideLabel": "Калорий на порцию",
         "caloriesAutoHint": "Оставьте пустым, чтобы взять расчётное значение: {{count}} ккал",
         "caloriesAutoHintEmpty": "Оставьте пустым — посчитаем по ингредиентам.",
@@ -39,7 +39,6 @@
         "noMatches": "Ингредиентов не нашлось"
     },
     "recipeCard": {
-        "cookingTimeValue": "{{hours}} ч {{minutes}} мин",
         "caloriesValue": "{{count}} ккал"
     },
     "filterPanel": {
@@ -193,6 +192,7 @@
         "deleteTitle": "Удалить рецепт?",
         "deleteMessage": "Удалить «{{title}}»? Рецепт пропадёт и из всех меню, где он есть. Отменить это будет нельзя.",
         "cookingTimeHoursMinutes": "{{hours}} ч {{minutes}} мин",
+        "cookingTimeHours": "{{hours}} ч",
         "cookingTimeMinutes": "{{minutes}} мин",
         "rating": "Оценка",
         "allergens": "Аллергены",

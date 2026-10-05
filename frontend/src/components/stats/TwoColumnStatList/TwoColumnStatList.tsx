@@ -2,6 +2,8 @@ import React from "react";
 
 import { Link } from "components/ui/Link";
 
+import { cx } from "utils/cx";
+
 import styles from "./TwoColumnStatList.module.scss";
 
 export type StatListTone = "success" | "warning" | "brand" | "muted";
@@ -29,14 +31,17 @@ const StatListRowContent: React.FC<{
     tone: StatListTone;
 }> = ({ item, tone }) => (
     <>
-        <span className={styles["two-column-stat-list__name"]}>
+        <span
+            className={styles["two-column-stat-list__name"]}
+            title={item.name}
+        >
             {item.name}
         </span>
         <span
-            className={[
+            className={cx(
                 styles["two-column-stat-list__chip"],
                 styles[`two-column-stat-list__chip--${tone}`],
-            ].join(" ")}
+            )}
         >
             {item.value}
         </span>
@@ -48,10 +53,10 @@ const StatListColumnView: React.FC<{ column: StatListColumn }> = ({
 }) => (
     <div className={styles["two-column-stat-list__column"]}>
         <div
-            className={[
+            className={cx(
                 styles["two-column-stat-list__column-label"],
                 styles[`two-column-stat-list__column-label--${column.tone}`],
-            ].join(" ")}
+            )}
         >
             {column.label}
         </div>
@@ -87,7 +92,9 @@ export const TwoColumnStatList: React.FC<TwoColumnStatListProps> = ({
     right,
 }) => (
     <div className={styles["two-column-stat-list"]}>
-        <StatListColumnView column={left} />
-        <StatListColumnView column={right} />
+        <div className={styles["two-column-stat-list__columns"]}>
+            <StatListColumnView column={left} />
+            <StatListColumnView column={right} />
+        </div>
     </div>
 );

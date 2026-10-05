@@ -5,6 +5,7 @@
     "server_error": "Błąd serwera",
     "validation_error": "Nieprawidłowe dane w żądaniu",
     "rate_limited": "Zbyt wiele żądań, spróbuj ponownie później",
+    "cross_origin_request": "Żądania z innych stron nie są przyjmowane",
 
     "auth/session_expired": "Sesja wygasła, zaloguj się ponownie",
     "auth/user_not_found": "Nie znaleziono użytkownika",

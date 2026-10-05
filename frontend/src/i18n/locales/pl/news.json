@@ -2,6 +2,11 @@
     "title": "Co nowego",
     "newCount": "Nowe: {{total}}",
     "items": {
+        "tidierLayout": {
+            "date": "2026-10-05",
+            "title": "Schludniejsze strony w każdym języku",
+            "description": "Statystyki, strony przepisów i okna dialogowe mieszczą się teraz na każdym ekranie we wszystkich czterech językach: liczby nie wychodzą poza ramki, a przyciski nie nachodzą na siebie. Dodawanie produktów do spiżarni jest też czytelniejsze."
+        },
         "cookedIt": {
             "date": "2026-10-03",
             "title": "Ugotowane? Spiżarnia sama to policzy",

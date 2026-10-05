@@ -20,6 +20,21 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 5.0.2 - 2026-10-05
+
+### Backend
+
+- Security: the server refuses any change to your account or data that another website tries to send on your behalf.
+
+### Frontend
+
+- Fixed: the stats page keeps every number inside its tile and every row on one line, in all four languages and on every screen size.
+- Fixed: the action buttons on recipe and menu pages no longer run into each other on a phone.
+- Fixed: the ingredients panel on a recipe page no longer slides over the note below it while you scroll.
+- Fixed: pages no longer scroll on into empty space below their content.
+- Changed: adding food to the pantry shows the product, its category and shelf life, with one clear amount field that a screen reader announces with the product and its unit; buying more uses the same field.
+- Fixed: buttons at the bottom of every dialog line up in every language, cooking times read "20 min" or "2 hr" instead of "0 hr : 20 min", a product that keeps for one day no longer says "1 days", and a few labels that were cut off or overflowing now fit.
+
 ## 5.0.1 - 2026-10-03
 
 ### Backend

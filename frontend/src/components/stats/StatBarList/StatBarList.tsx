@@ -20,7 +20,10 @@ export const StatBarList: React.FC<StatBarListProps> = ({ items }) => {
         <ul className={styles["stat-bar-list"]}>
             {items.map((item) => (
                 <li key={item.label} className={styles["stat-bar-list__row"]}>
-                    <span className={styles["stat-bar-list__label"]}>
+                    <span
+                        className={styles["stat-bar-list__label"]}
+                        title={item.label}
+                    >
                         {item.label}
                     </span>
                     <span className={styles["stat-bar-list__track"]}>

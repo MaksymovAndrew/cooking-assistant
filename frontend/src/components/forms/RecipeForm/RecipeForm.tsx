@@ -13,7 +13,7 @@ import { ConfirmModal } from "components/modals/ConfirmModal";
 import { Button } from "components/ui/Button";
 import { Link } from "components/ui/Link";
 
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatRecipeDuration } from "utils/cookingTimeUtils";
 
 import styles from "./RecipeForm.module.scss";
 import { RecipeFormFields } from "./RecipeFormFields";
@@ -47,8 +47,7 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
     const totalMinutes =
         (Number(form.cookingHours) || 0) * MINUTES_PER_HOUR +
         (Number(form.cookingMinutes) || 0);
-    const { hours: summaryHours, minutes: summaryMinutes } =
-        splitCookingTime(totalMinutes);
+    const summaryDuration = formatRecipeDuration(t, totalMinutes);
 
     return (
         <form ref={attachForm} className={styles["recipe-form"]}>
@@ -75,8 +74,7 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
                 <span className={styles["recipe-form__summary-text"]}>
                     {t("recipeForm.summary", {
                         count: form.selectedIngredients.length,
-                        hours: summaryHours,
-                        minutes: summaryMinutes,
+                        duration: summaryDuration,
                     })}
                 </span>
                 <div className={styles["recipe-form__summary-actions"]}>

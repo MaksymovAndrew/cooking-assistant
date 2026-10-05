@@ -112,6 +112,7 @@
         "breadcrumbMenus": "Menus",
         "totalTime": "Total time",
         "totalTimeHoursMinutes": "{{hours}}h {{minutes}}m",
+        "totalTimeHours": "{{hours}}h",
         "totalTimeMinutes": "{{minutes}} min",
         "caloriesValue": "{{count}} kcal",
         "calories": "Calories",

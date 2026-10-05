@@ -99,6 +99,7 @@
         "server_error": "Coś się u nas zepsuło. Spróbuj trochę później.",
         "validation_error": "Część danych jest nieprawidłowa.",
         "rate_limited": "Zbyt wiele żądań. Odczekaj chwilę i spróbuj ponownie.",
+        "cross_origin_request": "To żądanie przyszło z innej strony i zostało odrzucone.",
         "auth/session_expired": "Sesja wygasła. Zaloguj się ponownie.",
         "auth/user_not_found": "Nie znaleźliśmy twojego konta.",
         "auth/login_already_taken": "Ten login jest już zajęty.",

@@ -8,6 +8,7 @@ import { AddIngredientModal } from "components/ingredients/AddIngredientModal";
 
 const SEARCH_PLACEHOLDER = "Search ingredients…";
 const DEBOUNCE_MS = 300;
+const QUANTITY_LABEL = "How much to add";
 
 const setupUser = () =>
     userEvent.setup({
@@ -187,14 +188,19 @@ describe("AddIngredientModal", () => {
         expect(screen.getByText("Potato")).toBeInTheDocument();
 
         const quantityInput = screen.getByRole("spinbutton", {
-            name: "Quantity of Potato",
+            name: QUANTITY_LABEL,
         });
+
+        expect(quantityInput).toHaveFocus();
 
         await userEvent.clear(quantityInput);
         await userEvent.type(quantityInput, "5");
         await userEvent.click(screen.getByRole("button", { name: "Next" }));
 
         expect(screen.getByText("2 of 2")).toBeInTheDocument();
+        expect(
+            screen.getByRole("spinbutton", { name: QUANTITY_LABEL }),
+        ).toHaveFocus();
         // resolveIngredientName prefers the real catalog translation for a known slug over the fixture's raw name
         expect(screen.getByText("Salmon fillet")).toBeInTheDocument();
 
@@ -334,5 +340,55 @@ describe("AddIngredientModal", () => {
         expect(
             screen.getByRole("button", { name: /^Vegetables/ }),
         ).toBeInTheDocument();
+    });
+
+    it("should not count steps when only one ingredient is being added", async () => {
+        render(
+            <AddIngredientModal
+                allIngredients={ALL_INGREDIENTS}
+                personIngredients={OWNED}
+                selectedIngredients={[1]}
+                onToggle={jest.fn()}
+                onConfirm={jest.fn()}
+                onClose={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+
+        expect(screen.queryByText("1 of 1")).not.toBeInTheDocument();
+        expect(
+            screen.getByText("Vegetables · Shelf life: 30 days"),
+        ).toBeInTheDocument();
+    });
+
+    it("should tell a screen reader which product and step the amount is for", async () => {
+        render(
+            <AddIngredientModal
+                allIngredients={ALL_INGREDIENTS}
+                personIngredients={OWNED}
+                selectedIngredients={[1, 3]}
+                onToggle={jest.fn()}
+                onConfirm={jest.fn()}
+                onClose={jest.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+
+        expect(
+            screen.getByRole("spinbutton", { name: QUANTITY_LABEL }),
+        ).toHaveAttribute(
+            "aria-describedby",
+            "add-ingredient-quantity-step add-ingredient-quantity-product add-ingredient-quantity-unit",
+        );
+        expect(screen.getByText("1 of 2")).toHaveAttribute(
+            "id",
+            "add-ingredient-quantity-step",
+        );
+        expect(screen.getByText("Potato")).toHaveAttribute(
+            "id",
+            "add-ingredient-quantity-product",
+        );
     });
 });

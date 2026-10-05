@@ -6,6 +6,7 @@ export const ERROR_CODES = {
     SERVER_ERROR: "server_error",
     VALIDATION_ERROR: "validation_error",
     RATE_LIMITED: "rate_limited",
+    CROSS_ORIGIN_REQUEST: "cross_origin_request",
 
     SESSION_EXPIRED: "auth/session_expired",
     USER_NOT_FOUND: "auth/user_not_found",

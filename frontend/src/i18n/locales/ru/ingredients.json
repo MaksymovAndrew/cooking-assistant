@@ -16,7 +16,10 @@
         "expiringSoonFilter_other": "Скоро испортятся ({{count}})",
         "allergens": "Аллергены:",
         "shelfLife": "Срок хранения:",
-        "shelfLifeDays": "{{days}} дн.",
+        "shelfLifeDays_one": "{{count}} дн.",
+        "shelfLifeDays_few": "{{count}} дн.",
+        "shelfLifeDays_many": "{{count}} дн.",
+        "shelfLifeDays_other": "{{count}} дн.",
         "noExpiration": "Без срока годности.",
         "purchaseDate": "Куплено:",
         "purchaseDateUnknown": "Неизвестно",
@@ -50,7 +53,8 @@
         "backButton": "Назад",
         "nextButton": "Следующий",
         "saveButton": "Добавить в продукты",
-        "stepCount": "{{current}} из {{total}}"
+        "stepCount": "{{current}} из {{total}}",
+        "quantityLabel": "Сколько добавить"
     },
     "purchaseModal": {
         "title": "История покупок: {{name}}",
@@ -63,7 +67,7 @@
     },
     "restockModal": {
         "title": "Докупить: {{name}}",
-        "current": "Сейчас у вас {{quantity}} {{unit}}.",
+        "current": "В запасах: {{quantity}} {{unit}}",
         "confirmButton": "Добавить в продукты"
     },
     "expiredNoticeModal": {

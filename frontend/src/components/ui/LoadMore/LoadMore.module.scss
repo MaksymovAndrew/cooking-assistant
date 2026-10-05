@@ -1,8 +1,9 @@
 @use "styles/abstracts" as *;
 @include spin-keyframes;
 
+// the last thing on a list page: the page's own bottom padding is the space under it
 .load-more {
-    margin: var(--s-5) 0 var(--s-7);
+    margin: var(--s-5) 0 0;
     text-align: center;
 
     &__row {

@@ -9,11 +9,6 @@
     background: var(--surface);
     box-shadow: var(--e-1);
 
-    @include respond-to(desktop) {
-        position: sticky;
-        top: var(--s-5);
-    }
-
     // a phone puts the portions stepper on its own line, under the title
     &__header {
         display: flex;
@@ -197,15 +192,21 @@
             sans-serif;
     }
 
+    // the add button sits under the text; a phone stretches it under the dot too, so the label fits
     &__banner {
-        display: flex;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
         align-items: center;
-        gap: var(--s-3);
+        gap: var(--s-2) var(--s-3);
         margin-top: var(--s-4);
         padding: var(--s-3) var(--s-4);
         border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
         border-radius: var(--r-md);
         background: color-mix(in srgb, var(--warning) 9%, var(--surface));
+    }
+
+    &__banner-body {
+        min-width: 0;
     }
 
     &__banner-dot {
@@ -231,8 +232,19 @@
             sans-serif;
     }
 
-    &__banner-add {
-        margin-top: var(--s-2);
+    // outranks the button's own padding and nowrap: a label too long even for the full width wraps
+    & &__banner-add {
+        grid-column: 1 / -1;
+        height: auto;
+        min-height: 34px;
+        padding: var(--s-1) var(--s-2);
+        white-space: normal;
+
+        @include respond-to(tablet) {
+            grid-column: 2;
+            justify-self: start;
+            padding-inline: var(--s-4);
+        }
     }
 
     &__banner-link {

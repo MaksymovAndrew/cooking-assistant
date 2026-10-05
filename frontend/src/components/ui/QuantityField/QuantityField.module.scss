@@ -1,0 +1,47 @@
+@use "styles/abstracts" as *;
+
+// one control: the amount and its unit read as a single value
+.quantity-field {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    transition:
+        border-color var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-fast) var(--ease-out);
+
+    &:focus-within {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px var(--brand-subtle);
+    }
+
+    // two classes, so these win over the number input's own rules whatever the stylesheet order
+    .quantity-field__input {
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+        padding: 0 var(--s-4);
+        border: none;
+        background: transparent;
+        text-align: left;
+        font:
+            600 22px "Geist Mono",
+            monospace;
+
+        &:focus {
+            border: none;
+            box-shadow: none;
+        }
+    }
+
+    &__unit {
+        flex: none;
+        padding-right: var(--s-4);
+        color: var(--text-2);
+        font:
+            500 15px Inter,
+            sans-serif;
+    }
+}

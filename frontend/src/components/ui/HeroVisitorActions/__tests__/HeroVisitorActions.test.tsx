@@ -5,6 +5,7 @@ import { HeroVisitorActions } from "components/ui/HeroVisitorActions";
 
 import { renderWithRouter } from "test/router";
 
+const LOG_INTAKE_LABEL = "Log intake";
 const FAVOURITE = {
     isFavourite: false,
     isDisabled: false,
@@ -19,7 +20,7 @@ describe("HeroVisitorActions", () => {
                 favouriteLabel="Favourite"
                 shareTitle="Borscht"
                 guestCtaLabel="Log in for the full experience"
-                logIntakeLabel="Log intake"
+                logIntakeLabel={LOG_INTAKE_LABEL}
             />,
         );
 
@@ -41,7 +42,7 @@ describe("HeroVisitorActions", () => {
                 favouriteLabel="Favourite"
                 shareTitle="Borscht"
                 guestCtaLabel="Log in for the full experience"
-                logIntakeLabel="Log intake"
+                logIntakeLabel={LOG_INTAKE_LABEL}
             />,
         );
 
@@ -49,7 +50,7 @@ describe("HeroVisitorActions", () => {
             screen.getByRole("button", { name: "Favourite" }),
         ).toHaveAttribute("aria-pressed", "false");
         expect(
-            screen.queryByRole("button", { name: "Log intake" }),
+            screen.queryByRole("button", { name: LOG_INTAKE_LABEL }),
         ).not.toBeInTheDocument();
     });
 
@@ -62,13 +63,13 @@ describe("HeroVisitorActions", () => {
                 favouriteLabel="Favourite"
                 shareTitle="Borscht"
                 guestCtaLabel="Log in for the full experience"
-                logIntakeLabel="Log intake"
+                logIntakeLabel={LOG_INTAKE_LABEL}
                 onLogIntake={onLogIntake}
             />,
         );
 
         await userEvent.click(
-            screen.getByRole("button", { name: "Log intake" }),
+            screen.getByRole("button", { name: LOG_INTAKE_LABEL }),
         );
 
         expect(onLogIntake).toHaveBeenCalledTimes(1);
@@ -83,7 +84,7 @@ describe("HeroVisitorActions", () => {
                 favouriteLabel="Favourite"
                 shareTitle="Borscht"
                 guestCtaLabel="Log in for the full experience"
-                logIntakeLabel="Log intake"
+                logIntakeLabel={LOG_INTAKE_LABEL}
                 cookLabel="Cooked it"
                 onCook={onCook}
             />,
@@ -94,5 +95,24 @@ describe("HeroVisitorActions", () => {
         );
 
         expect(onCook).toHaveBeenCalledTimes(1);
+    });
+
+    it("should put the cooking actions first, so focus follows what the eye reads", () => {
+        renderWithRouter(
+            <HeroVisitorActions
+                favourite={FAVOURITE}
+                favouriteLabel="Favourite"
+                shareTitle="Borscht"
+                guestCtaLabel="Log in for the full experience"
+                logIntakeLabel={LOG_INTAKE_LABEL}
+                onLogIntake={jest.fn()}
+                cookLabel="Cooked it"
+                onCook={jest.fn()}
+            />,
+        );
+
+        expect(
+            screen.getAllByRole("button").map((button) => button.textContent),
+        ).toEqual(["Cooked it", LOG_INTAKE_LABEL, "Favourite", "Share"]);
     });
 });

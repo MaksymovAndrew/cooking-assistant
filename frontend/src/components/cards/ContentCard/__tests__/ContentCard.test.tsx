@@ -7,7 +7,7 @@ import { ContentCard } from "components/cards/ContentCard";
 
 import { renderWithRouter } from "test/router";
 
-const COOKING_TIME_LABEL = "1 hr : 25 min";
+const COOKING_TIME_LABEL = "1 hr 25 min";
 
 const renderCard = (
     props: Partial<React.ComponentProps<typeof ContentCard>> = {},

@@ -10,15 +10,20 @@
             serif;
     }
 
-    // an odd last tile spans the 2-column row; from desktop, auto-fit reflows any count
+    // phones: one column of rows; tablets: two columns, an odd last tile spanning; desktop: one row
     &__tiles {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--s-4);
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--s-2);
         margin-bottom: var(--s-6);
 
-        > :nth-child(odd):last-child {
-            grid-column: 1 / -1;
+        @include respond-to(tablet) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--s-4);
+
+            > :nth-child(odd):last-child {
+                grid-column: 1 / -1;
+            }
         }
 
         @include respond-to(desktop) {

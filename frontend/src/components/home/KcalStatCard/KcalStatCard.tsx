@@ -15,6 +15,7 @@ import {
 import { cx } from "utils/cx";
 
 import styles from "./KcalStatCard.module.scss";
+import emptyStyles from "./KcalStatCardEmpty.module.scss";
 
 interface KcalStatCardProps {
     consumed: number;
@@ -39,12 +40,12 @@ export const KcalStatCard: React.FC<KcalStatCardProps> = ({
         return (
             <Link
                 href={profileDietaryPath()}
-                className={styles["kcal-stat-card--empty"]}
+                className={emptyStyles["kcal-stat-card--empty"]}
             >
-                <span className={styles["kcal-stat-card__empty-label"]}>
+                <span className={emptyStyles["kcal-stat-card__empty-label"]}>
                     {t("homeTile.emptyLabel")}
                 </span>
-                <span className={styles["kcal-stat-card__empty-cta"]}>
+                <span className={emptyStyles["kcal-stat-card__empty-cta"]}>
                     {t("homeTile.emptyCta")}
                 </span>
             </Link>
@@ -95,7 +96,7 @@ export const KcalStatCard: React.FC<KcalStatCardProps> = ({
                     />
                 </svg>
             </span>
-            <span>
+            <span className={styles["kcal-stat-card__text"]}>
                 <span className={styles["kcal-stat-card__value"]}>
                     {formatKcal(value, locale)}
                 </span>

@@ -18,8 +18,8 @@
         "itemsAdded_other": "{{count}} items added",
         "perPortionHint": "Amounts are per portion — they scale automatically.",
         "reorderHint": "Drag the handle or use the arrows to reorder · unit auto-filled from catalog",
-        "summary_one": "{{count}} ingredient · {{hours}} hr : {{minutes}} min",
-        "summary_other": "{{count}} ingredients · {{hours}} hr : {{minutes}} min",
+        "summary_one": "{{count}} ingredient · {{duration}}",
+        "summary_other": "{{count}} ingredients · {{duration}}",
         "caloriesOverrideLabel": "Calories per portion",
         "caloriesAutoHint": "Leave empty to use the calculated total: {{count}} kcal",
         "caloriesAutoHintEmpty": "Leave empty to calculate automatically from the ingredients.",
@@ -35,7 +35,6 @@
         "noMatches": "No ingredients found"
     },
     "recipeCard": {
-        "cookingTimeValue": "{{hours}} hr : {{minutes}} min",
         "caloriesValue": "{{count}} kcal"
     },
     "filterPanel": {
@@ -171,6 +170,7 @@
         "deleteTitle": "Delete recipe?",
         "deleteMessage": "Are you sure you want to delete \"{{title}}\"? It will be removed from any menus that include it. This action can't be undone.",
         "cookingTimeHoursMinutes": "{{hours}} hr {{minutes}} min",
+        "cookingTimeHours": "{{hours}} hr",
         "cookingTimeMinutes": "{{minutes}} min",
         "rating": "Rating",
         "allergens": "Allergens",

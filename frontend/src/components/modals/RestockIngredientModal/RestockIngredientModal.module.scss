@@ -8,18 +8,4 @@
             400 14px Inter,
             sans-serif;
     }
-
-    &__input {
-        display: flex;
-        align-items: center;
-        gap: var(--s-3);
-        color: var(--text-2);
-        font:
-            500 14px Inter,
-            sans-serif;
-
-        input {
-            max-width: 100px;
-        }
-    }
 }

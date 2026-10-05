@@ -1,0 +1,33 @@
+@use "styles/abstracts" as *;
+
+// the card before a daily goal is set: a dashed link to set one
+.kcal-stat-card--empty {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    padding: 13px var(--s-4);
+    border: 1px dashed var(--border);
+    border-radius: var(--r-md);
+    background: transparent;
+    text-decoration: none;
+
+    @include respond-to(desktop) {
+        padding: var(--s-4) var(--s-5);
+    }
+}
+
+.kcal-stat-card__empty-label {
+    color: var(--text-muted);
+    font:
+        400 12px Inter,
+        sans-serif;
+}
+
+.kcal-stat-card__empty-cta {
+    color: var(--brand-text);
+    font:
+        600 13px Inter,
+        sans-serif;
+}

@@ -16,7 +16,10 @@
         "expiringSoonFilter_other": "Wkrótce się zepsują ({{count}})",
         "allergens": "Alergeny:",
         "shelfLife": "Termin przydatności:",
-        "shelfLifeDays": "{{days}} dni",
+        "shelfLifeDays_one": "{{count}} dzień",
+        "shelfLifeDays_few": "{{count}} dni",
+        "shelfLifeDays_many": "{{count}} dni",
+        "shelfLifeDays_other": "{{count}} dnia",
         "noExpiration": "Bez terminu przydatności.",
         "purchaseDate": "Kupiono:",
         "purchaseDateUnknown": "Nieznana",
@@ -50,7 +53,8 @@
         "backButton": "Wstecz",
         "nextButton": "Następny",
         "saveButton": "Dodaj do spiżarni",
-        "stepCount": "{{current}} z {{total}}"
+        "stepCount": "{{current}} z {{total}}",
+        "quantityLabel": "Ile dodać"
     },
     "purchaseModal": {
         "title": "Historia zakupów: {{name}}",
@@ -63,7 +67,7 @@
     },
     "restockModal": {
         "title": "Dokup: {{name}}",
-        "current": "Masz teraz {{quantity}} {{unit}}.",
+        "current": "W spiżarni: {{quantity}} {{unit}}",
         "confirmButton": "Dodaj do spiżarni"
     },
     "expiredNoticeModal": {

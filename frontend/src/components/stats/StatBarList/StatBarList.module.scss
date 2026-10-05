@@ -13,7 +13,7 @@
 
     &__row {
         display: grid;
-        grid-template-columns: 90px 1fr 56px;
+        grid-template-columns: minmax(96px, 34%) minmax(0, 1fr) auto;
         align-items: center;
         gap: var(--s-3);
     }
@@ -45,6 +45,7 @@
     }
 
     &__value {
+        white-space: nowrap;
         text-align: right;
         color: var(--text-muted);
         font:

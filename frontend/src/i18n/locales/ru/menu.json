@@ -128,6 +128,7 @@
         "breadcrumbMenus": "Меню",
         "totalTime": "Общее время",
         "totalTimeHoursMinutes": "{{hours}} ч {{minutes}} мин",
+        "totalTimeHours": "{{hours}} ч",
         "totalTimeMinutes": "{{minutes}} мин",
         "caloriesValue": "{{count}} ккал",
         "calories": "Калории",

@@ -2,6 +2,7 @@ import { Flame } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { HOME_DURATION_COPY } from "constants/durationCopy";
 import { recipeDetailsPath } from "constants/routes";
 import type { RecipeSearchResultItem } from "types/recipe";
 
@@ -13,7 +14,7 @@ import { RatingSummary } from "components/ui/RatingSummary";
 import { RecordPhoto } from "components/ui/RecordPhoto";
 
 import { formatKcal, roundCalories } from "utils/calories";
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatDuration } from "utils/cookingTimeUtils";
 import { cx } from "utils/cx";
 import { mediaUrl } from "utils/mediaUrl";
 
@@ -33,11 +34,11 @@ export const RecentRecipeCard: React.FC<RecentRecipeCardProps> = ({
 }) => {
     const { t } = useTranslation("home");
     const locale = useLocale();
-    const { hours, minutes } = splitCookingTime(recipe.cooking_time);
-    const timeLabel =
-        hours > 0
-            ? t("recentRecipes.cookingTimeHoursMinutes", { hours, minutes })
-            : t("recentRecipes.cookingTimeMinutesOnly", { minutes });
+    const timeLabel = formatDuration(
+        t,
+        recipe.cooking_time,
+        HOME_DURATION_COPY,
+    );
     const caloriesClassName = cx(
         styles["recent-recipe-card__calories"],
         exceedsBudget && styles["recent-recipe-card__calories--over"],

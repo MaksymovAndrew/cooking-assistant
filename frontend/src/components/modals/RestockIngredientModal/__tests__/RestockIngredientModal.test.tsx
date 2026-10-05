@@ -49,22 +49,24 @@ describe("RestockIngredientModal", () => {
         renderOpen();
 
         expect(screen.getByText("Buy more Salt")).toBeInTheDocument();
-        expect(
-            screen.getByText("You currently have 100 g."),
-        ).toBeInTheDocument();
+        expect(screen.getByText("In your pantry: 100 g")).toBeInTheDocument();
     });
 
     it("should default the quantity input to 1", () => {
         renderOpen();
 
-        expect(screen.getByRole("spinbutton")).toHaveValue(1);
+        expect(
+            screen.getByRole("spinbutton", { name: "How much to add" }),
+        ).toHaveValue(1);
     });
 
     it("should add the entered quantity on top of the existing stock and close on confirm", async () => {
         mockedPut.mockResolvedValue({ data: null });
         const { store } = renderOpen();
 
-        const quantityInput = screen.getByRole("spinbutton");
+        const quantityInput = screen.getByRole("spinbutton", {
+            name: "How much to add",
+        });
 
         await userEvent.clear(quantityInput);
         await userEvent.type(quantityInput, "5");

@@ -12,7 +12,8 @@
         "expiringSoonFilter_other": "Expiring soon ({{count}})",
         "allergens": "Allergens:",
         "shelfLife": "Shelf life:",
-        "shelfLifeDays": "{{days}} days",
+        "shelfLifeDays_one": "{{count}} day",
+        "shelfLifeDays_other": "{{count}} days",
         "noExpiration": "No expiration.",
         "purchaseDate": "Purchased:",
         "purchaseDateUnknown": "Unknown",
@@ -44,7 +45,8 @@
         "backButton": "Back",
         "nextButton": "Next",
         "saveButton": "Add to pantry",
-        "stepCount": "{{current}} of {{total}}"
+        "stepCount": "{{current}} of {{total}}",
+        "quantityLabel": "How much to add"
     },
     "purchaseModal": {
         "title": "Purchase history: {{name}}",
@@ -57,7 +59,7 @@
     },
     "restockModal": {
         "title": "Buy more {{name}}",
-        "current": "You currently have {{quantity}} {{unit}}.",
+        "current": "In your pantry: {{quantity}} {{unit}}",
         "confirmButton": "Add to pantry"
     },
     "expiredNoticeModal": {

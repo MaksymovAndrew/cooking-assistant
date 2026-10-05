@@ -50,7 +50,7 @@ describe("RecipeCard", () => {
     it("should format the cooking time as hours and minutes", () => {
         renderWithRouter(<RecipeCard recipe={RECIPE} />);
 
-        expect(screen.getByText("1 hr : 25 min")).toBeInTheDocument();
+        expect(screen.getByText("1 hr 25 min")).toBeInTheDocument();
     });
 
     it("should show the calorie meta item when the recipe has a calorie total", () => {

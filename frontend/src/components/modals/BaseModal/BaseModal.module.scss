@@ -132,27 +132,21 @@
         }
     }
 
+    // every screen: the buttons share the row; a label too long to share takes a full row, the primary on top
     &__footer {
         display: flex;
         flex: none;
-        justify-content: flex-end;
+        flex-wrap: wrap-reverse;
         gap: var(--s-3);
         padding: var(--s-4) 0 calc(var(--s-4) + env(safe-area-inset-bottom));
 
-        // a long label wraps the buttons one per row, primary on top, never off the right edge
-        flex-wrap: wrap-reverse;
-
+        // equal shares; a nowrap label never shrinks below its own width, so one too long still wraps the row
         > * {
-            flex: 1 1 auto;
+            flex: 1 1 0;
         }
 
         @include respond-to(tablet) {
-            flex-wrap: wrap;
             padding-bottom: var(--s-4);
-
-            > * {
-                flex: 0 1 auto;
-            }
         }
     }
 }

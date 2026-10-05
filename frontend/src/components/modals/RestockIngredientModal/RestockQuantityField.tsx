@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { PantryIngredient } from "types/userIngredient";
@@ -5,7 +6,8 @@ import type { PantryIngredient } from "types/userIngredient";
 import type { useEditableQuantity } from "hooks/useEditableQuantity";
 import { useLocale } from "hooks/useLocale";
 
-import { NumberInput } from "components/ui/NumberInput";
+import { FormField } from "components/ui/FormField";
+import { QuantityField } from "components/ui/QuantityField";
 
 import { unitName } from "utils/referenceLabels";
 import { formatQuantity } from "utils/roundQuantity";
@@ -25,6 +27,7 @@ export const RestockQuantityField = ({
 }: RestockQuantityFieldProps) => {
     const { t } = useTranslation("ingredients");
     const locale = useLocale();
+    const inputId = useId();
 
     return (
         <>
@@ -41,17 +44,23 @@ export const RestockQuantityField = ({
                     ),
                 })}
             </p>
-            <div className={styles["restock-modal__input"]}>
-                <NumberInput
+            <FormField
+                label={t("addIngredientModal.quantityLabel")}
+                htmlFor={inputId}
+            >
+                <QuantityField
+                    id={inputId}
                     min={min}
+                    unit={unitName(
+                        t,
+                        ingredient.unit_name,
+                        Number(quantity.text),
+                    )}
                     value={quantity.text}
                     onChange={quantity.onChange}
                     onBlur={quantity.onBlur}
                 />
-                <span>
-                    {unitName(t, ingredient.unit_name, Number(quantity.text))}
-                </span>
-            </div>
+            </FormField>
         </>
     );
 };

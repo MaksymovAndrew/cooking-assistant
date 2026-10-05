@@ -20,34 +20,45 @@ export const LoadMore: React.FC<LoadMoreProps> = ({
     loadingLabel,
     countLabel,
     errorMessage,
-}) => (
-    <div className={styles["load-more"]}>
-        <div className={styles["load-more__row"]}>
-            {countLabel && (
-                <p aria-live="polite" className={styles["load-more__count"]}>
-                    {countLabel}
-                </p>
-            )}
-            {hasMore && (
-                <button
-                    type="button"
-                    onClick={onLoadMore}
-                    disabled={isLoading}
-                    className={styles["load-more__button"]}
-                >
-                    {isLoading && (
-                        <span
-                            role="status"
-                            aria-label={loadingLabel}
-                            className={styles["load-more__spinner"]}
-                        />
-                    )}
-                    {loadMoreLabel}
-                </button>
+}) => {
+    const isEmpty = !hasMore && !countLabel && !errorMessage;
+
+    if (isEmpty) {
+        return null;
+    }
+
+    return (
+        <div className={styles["load-more"]}>
+            <div className={styles["load-more__row"]}>
+                {countLabel && (
+                    <p
+                        aria-live="polite"
+                        className={styles["load-more__count"]}
+                    >
+                        {countLabel}
+                    </p>
+                )}
+                {hasMore && (
+                    <button
+                        type="button"
+                        onClick={onLoadMore}
+                        disabled={isLoading}
+                        className={styles["load-more__button"]}
+                    >
+                        {isLoading && (
+                            <span
+                                role="status"
+                                aria-label={loadingLabel}
+                                className={styles["load-more__spinner"]}
+                            />
+                        )}
+                        {loadMoreLabel}
+                    </button>
+                )}
+            </div>
+            {errorMessage && (
+                <div className={styles["load-more__error"]}>{errorMessage}</div>
             )}
         </div>
-        {errorMessage && (
-            <div className={styles["load-more__error"]}>{errorMessage}</div>
-        )}
-    </div>
-);
+    );
+};

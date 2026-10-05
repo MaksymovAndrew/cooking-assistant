@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { MENU_DURATION_COPY } from "constants/durationCopy";
 import { RATING_TARGET } from "constants/ratings";
 import type { MenuDetails } from "types/menu";
 
@@ -15,7 +16,7 @@ import { RatingSummary } from "components/ui/RatingSummary";
 import { StarRatingInput } from "components/ui/StarRatingInput";
 
 import { formatKcal } from "utils/calories";
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatDuration } from "utils/cookingTimeUtils";
 import { formatFullDate } from "utils/dateUtils";
 import { mediaSrcSet, mediaUrl } from "utils/mediaUrl";
 import { menuCategoryName } from "utils/referenceLabels";
@@ -45,11 +46,11 @@ export const MenuHero: React.FC<MenuHeroProps> = ({
 }) => {
     const { t } = useTranslation("menu");
     const locale = useLocale();
-    const { hours, minutes } = splitCookingTime(totalCookingTime);
-    const formattedTotalTime =
-        hours > 0
-            ? t("menuDetailsPage.totalTimeHoursMinutes", { hours, minutes })
-            : t("menuDetailsPage.totalTimeMinutes", { minutes });
+    const formattedTotalTime = formatDuration(
+        t,
+        totalCookingTime,
+        MENU_DURATION_COPY,
+    );
     const formattedCalories =
         caloriesPerPortion === null
             ? null

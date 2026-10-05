@@ -20,10 +20,10 @@
         "itemsAdded_other": "Dodano {{count}} składnika",
         "perPortionHint": "Ilości podajesz na porcję — reszta przeliczy się sama.",
         "reorderHint": "Przeciągnij za uchwyt albo użyj strzałek, żeby zmienić kolejność · jednostka pochodzi z katalogu",
-        "summary_one": "{{count}} składnik · {{hours}} godz. {{minutes}} min",
-        "summary_few": "{{count}} składniki · {{hours}} godz. {{minutes}} min",
-        "summary_many": "{{count}} składników · {{hours}} godz. {{minutes}} min",
-        "summary_other": "{{count}} składnika · {{hours}} godz. {{minutes}} min",
+        "summary_one": "{{count}} składnik · {{duration}}",
+        "summary_few": "{{count}} składniki · {{duration}}",
+        "summary_many": "{{count}} składników · {{duration}}",
+        "summary_other": "{{count}} składnika · {{duration}}",
         "caloriesOverrideLabel": "Kalorie na porcję",
         "caloriesAutoHint": "Zostaw puste, żeby użyć wyliczonej wartości: {{count}} kcal",
         "caloriesAutoHintEmpty": "Zostaw puste — policzymy na podstawie składników.",
@@ -39,7 +39,6 @@
         "noMatches": "Nie znaleziono składników"
     },
     "recipeCard": {
-        "cookingTimeValue": "{{hours}} godz. {{minutes}} min",
         "caloriesValue": "{{count}} kcal"
     },
     "filterPanel": {
@@ -193,6 +192,7 @@
         "deleteTitle": "Usunąć przepis?",
         "deleteMessage": "Usunąć „{{title}}”? Przepis zniknie też ze wszystkich jadłospisów, w których jest. Tego nie da się cofnąć.",
         "cookingTimeHoursMinutes": "{{hours}} godz. {{minutes}} min",
+        "cookingTimeHours": "{{hours}} godz.",
         "cookingTimeMinutes": "{{minutes}} min",
         "rating": "Ocena",
         "allergens": "Alergeny",

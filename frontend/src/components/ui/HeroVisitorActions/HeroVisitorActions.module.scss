@@ -1,5 +1,6 @@
 @use "styles/abstracts" as *;
 
+// a phone fills each row; an action whose label can't share a row takes one of its own
 .hero-visitor-actions {
     display: flex;
     flex-wrap: wrap;
@@ -8,8 +9,9 @@
 
     &__favourite {
         display: inline-flex;
-        flex: none;
+        flex: 1 1 auto;
         align-items: center;
+        justify-content: center;
         gap: var(--s-2);
         height: 46px;
         padding: 0 var(--s-4);
@@ -17,15 +19,20 @@
         border-radius: 10px;
         background: var(--surface);
         color: var(--text);
+        white-space: nowrap;
         font:
             600 14px Inter,
             sans-serif;
         cursor: pointer;
+
+        @include respond-to(tablet) {
+            flex: none;
+        }
     }
 
-    // a long translated label wraps inside the button instead of pushing it off a phone screen
-    &__wide {
-        flex: 1;
+    // only a label wider than a whole row wraps inside; outranks the button's own nowrap
+    & &__wide {
+        flex: 1 1 auto;
         min-width: 0;
         height: auto;
         min-height: 46px;
@@ -39,6 +46,15 @@
 
         @include respond-to(tablet) {
             flex: none;
+        }
+    }
+
+    // the guest's long invitation keeps Share beside it and wraps inside instead
+    & &__wide--shared {
+        flex-basis: 0;
+
+        @include respond-to(tablet) {
+            flex-basis: auto;
         }
     }
 }

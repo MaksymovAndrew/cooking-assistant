@@ -18,7 +18,7 @@ import {
 import { UtensilsMark } from "components/icons";
 
 import { formatKcal, roundCalories } from "utils/calories";
-import { splitCookingTime } from "utils/cookingTimeUtils";
+import { formatRecipeDuration } from "utils/cookingTimeUtils";
 import { mediaUrl } from "utils/mediaUrl";
 import { filterAllergens } from "utils/recipeAllergens";
 import { recipeTypeLabel } from "utils/referenceLabels";
@@ -57,7 +57,6 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
 }) => {
     const { t } = useTranslation("recipes");
     const locale = useLocale();
-    const { hours, minutes } = splitCookingTime(recipe.cooking_time);
     const hasAllergens =
         filterAllergens((recipe.ingredients ?? []).flatMap((i) => i.allergens))
             .length > 0;
@@ -80,7 +79,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             metaItems={[
                 {
                     icon: Clock,
-                    label: t("recipeCard.cookingTimeValue", { hours, minutes }),
+                    label: formatRecipeDuration(t, recipe.cooking_time),
                 },
                 ...(recipe.calories_per_portion === null
                     ? []

@@ -196,6 +196,12 @@ frontend's URL for non-local deploys; no code change needed. CORS runs with `cre
 mounts `cookie-parser`, so the browser can send the httpOnly auth cookie cross-origin (see
 [Auth flow](#auth-flow)).
 
+The same origin is the only one allowed to write. [src/middleware/originGuard.ts](src/middleware/originGuard.ts)
+answers `403 cross_origin_request` to any request other than `GET`/`HEAD`/`OPTIONS` whose `Origin` header is
+not `CORS_ORIGIN`. A request with no `Origin` passes: every browser sends one on a write, so only non-browser
+clients (scripts, `curl`) arrive without it, and those carry nobody else's cookie. This is the second layer
+behind the cookie's `SameSite=Lax`, which alone would not stop a page on a sibling subdomain.
+
 ## Structure
 
 ```
@@ -267,7 +273,7 @@ Dependencies point inward (Dependency Rule). The real graph is built in
 [src/composition-root.ts](src/composition-root.ts) (split into one `composition-root.<area>.ts` companion per
 domain, with the shared types in `composition-root.types.ts`) and consumed by [src/index.ts](src/index.ts). Tests can reuse
 `buildControllers(deps)` with fakes and pass the result to [src/app.ts](src/app.ts). The app factory mounts
-`helmet`, pino request logging, CORS (with credentials), `cookie-parser`, the 100kb JSON body parser, the
+`helmet`, pino request logging, CORS (with credentials), the origin guard for writes, the 100kb JSON body parser, `cookie-parser`, the
 public health check, the media route, a global rate limiter, then the domain routers in the order
 [src/routes/domainRouters.ts](src/routes/domainRouters.ts) lists them, and finally the error handler.
 Every request gets an id (the caller's `X-Request-Id` when it is a plain token, else a fresh UUID),

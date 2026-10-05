@@ -23,6 +23,7 @@
         "emptyDescription": "Add your first recipe to see it here.",
         "emptyAction": "Add a recipe",
         "cookingTimeHoursMinutes": "{{hours}}h {{minutes}}m",
+        "cookingTimeHours": "{{hours}}h",
         "cookingTimeMinutesOnly": "{{minutes}}m",
         "caloriesValue": "{{count}} kcal"
     },

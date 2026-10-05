@@ -39,6 +39,7 @@
         "menusLabel_one": "menu",
         "menusLabel_other": "menus",
         "timeCompactHoursMinutes": "{{hours}}h {{minutes}}m",
+        "timeCompactHours": "{{hours}}h",
         "timeMinutesOnly": "{{minutes}} min",
         "caloriesValue": "{{count}} kcal",
         "loading": "Loading statistics…",

@@ -23,6 +23,7 @@
         "emptyDescription": "Добавьте первый рецепт — и он появится здесь.",
         "emptyAction": "Добавить рецепт",
         "cookingTimeHoursMinutes": "{{hours}} ч {{minutes}} мин",
+        "cookingTimeHours": "{{hours}} ч",
         "cookingTimeMinutesOnly": "{{minutes}} мин",
         "caloriesValue": "{{count}} ккал"
     },

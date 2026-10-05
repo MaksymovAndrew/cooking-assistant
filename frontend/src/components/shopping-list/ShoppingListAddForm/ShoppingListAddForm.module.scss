@@ -6,7 +6,7 @@
         grid-template-areas:
             "name name"
             "note submit";
-        grid-template-columns: minmax(0, 1fr) 92px;
+        grid-template-columns: minmax(0, 1fr) auto;
         gap: 10px;
 
         @include respond-to(tablet) {
@@ -23,7 +23,7 @@
             grid-template-areas:
                 "name name"
                 "note submit";
-            grid-template-columns: minmax(0, 1fr) 64px;
+            grid-template-columns: minmax(0, 1fr) auto;
             gap: var(--s-2);
         }
     }

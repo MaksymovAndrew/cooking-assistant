@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MAIN_CONTENT_ID } from "constants/landmarks";
 
 import { useCalorieLimitNotice } from "hooks/useCalorieLimitNotice";
 import { useExpiredIngredientsNotice } from "hooks/useExpiredIngredientsNotice";
+import { useScrollToTopClearance } from "hooks/useScrollToTopClearance";
 
 import { AppHeader } from "components/layout/AppHeader";
 import { BottomNav } from "components/layout/BottomNav";
@@ -30,6 +31,8 @@ export const AppShell: React.FC<AppShellProps> = ({
     skipNotices = false,
 }) => {
     const { i18n } = useTranslation();
+    const clearanceRef = useRef<HTMLDivElement>(null);
+    const needsScrollClearance = useScrollToTopClearance(clearanceRef);
 
     // every page with ingredient names renders inside the shell; a failed load keeps the stored names
     useEffect(() => {
@@ -64,6 +67,13 @@ export const AppShell: React.FC<AppShellProps> = ({
             >
                 {children}
             </main>
+            {needsScrollClearance && (
+                <div
+                    ref={clearanceRef}
+                    aria-hidden="true"
+                    className={styles["app-shell__scroll-clearance"]}
+                />
+            )}
             <ScrollToTopButton />
             <BottomNav />
         </div>

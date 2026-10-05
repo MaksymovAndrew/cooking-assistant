@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 
 import { StatBarList } from "components/stats/StatBarList";
 
+const LONG_LABEL = "Основное блюдо";
+
 describe("StatBarList", () => {
     it("should render a row per item with its label and display value", () => {
         render(
@@ -45,5 +47,24 @@ describe("StatBarList", () => {
         expect(screen.getByTestId("stat-bar-fill")).toHaveStyle({
             width: "0%",
         });
+    });
+
+    it("should keep a cut-off label readable in full on hover", () => {
+        render(
+            <StatBarList
+                items={[
+                    {
+                        label: LONG_LABEL,
+                        value: 62,
+                        displayValue: "1 ч 2 мин",
+                    },
+                ]}
+            />,
+        );
+
+        expect(screen.getByText(LONG_LABEL)).toHaveAttribute(
+            "title",
+            LONG_LABEL,
+        );
     });
 });

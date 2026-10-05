@@ -43,6 +43,7 @@
         "menusLabel_many": "меню",
         "menusLabel_other": "меню",
         "timeCompactHoursMinutes": "{{hours}} ч {{minutes}} мин",
+        "timeCompactHours": "{{hours}} ч",
         "timeMinutesOnly": "{{minutes}} мин",
         "caloriesValue": "{{count}} ккал",
         "loading": "Загружаем статистику…",

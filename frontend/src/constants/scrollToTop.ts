@@ -1,0 +1,1 @@
+export const SCROLL_TO_TOP_REVEAL_OFFSET_PX = 240;

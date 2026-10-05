@@ -20,10 +20,10 @@
         "itemsAdded_other": "Додано {{count}} інгредієнта",
         "perPortionHint": "Кількість — на одну порцію, решту буде пораховано автоматично.",
         "reorderHint": "Перетягуйте за ручку або натискайте стрілки, щоб змінити порядок · одиницю підставлено з каталогу",
-        "summary_one": "{{count}} інгредієнт · {{hours}} год {{minutes}} хв",
-        "summary_few": "{{count}} інгредієнти · {{hours}} год {{minutes}} хв",
-        "summary_many": "{{count}} інгредієнтів · {{hours}} год {{minutes}} хв",
-        "summary_other": "{{count}} інгредієнта · {{hours}} год {{minutes}} хв",
+        "summary_one": "{{count}} інгредієнт · {{duration}}",
+        "summary_few": "{{count}} інгредієнти · {{duration}}",
+        "summary_many": "{{count}} інгредієнтів · {{duration}}",
+        "summary_other": "{{count}} інгредієнта · {{duration}}",
         "caloriesOverrideLabel": "Калорій на порцію",
         "caloriesAutoHint": "Залиште порожнім, щоб узяти розрахункове значення: {{count}} ккал",
         "caloriesAutoHintEmpty": "Залиште порожнім — порахуємо за інгредієнтами.",
@@ -39,7 +39,6 @@
         "noMatches": "Інгредієнтів не знайшлося"
     },
     "recipeCard": {
-        "cookingTimeValue": "{{hours}} год {{minutes}} хв",
         "caloriesValue": "{{count}} ккал"
     },
     "filterPanel": {
@@ -193,6 +192,7 @@
         "deleteTitle": "Видалити рецепт?",
         "deleteMessage": "Видалити «{{title}}»? Рецепт зникне й з усіх меню, де він є. Скасувати це буде неможливо.",
         "cookingTimeHoursMinutes": "{{hours}} год {{minutes}} хв",
+        "cookingTimeHours": "{{hours}} год",
         "cookingTimeMinutes": "{{minutes}} хв",
         "rating": "Оцінка",
         "allergens": "Алергени",

@@ -11,19 +11,16 @@
     background: color-mix(in srgb, var(--warning) 10%, var(--surface));
     color: var(--warning);
 
+    // a phone wraps the message over as many lines as it needs; the actions take the row below
     &__message {
-        @include truncate;
-
-        // an explicit basis: with auto, nowrap would base the wrap on the full text width
-        flex: 1 1 140px;
-        min-width: 140px;
+        flex: 1 1 0;
+        min-width: 0;
         margin: 0;
         font:
             500 13px Inter,
             sans-serif;
 
         @include respond-to(tablet) {
-            white-space: normal;
             flex: 1 1 auto;
             min-width: 200px;
         }

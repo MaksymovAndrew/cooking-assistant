@@ -8,8 +8,22 @@
 
     @include card-surface;
 
+    // the label gets the card's full width under the icon and number
     @include respond-to(desktop) {
+        display: grid;
+        grid-template-areas:
+            "icon value"
+            "label label";
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: var(--s-2) var(--s-3);
         padding: var(--s-4) var(--s-5);
+    }
+
+    &__text {
+        @include respond-to(desktop) {
+            display: contents;
+        }
     }
 
     &__icon {
@@ -23,6 +37,7 @@
             width: 44px;
             height: 44px;
             border-radius: var(--r-md);
+            grid-area: icon;
             background: var(--brand-subtle);
             color: var(--brand-text);
         }
@@ -40,6 +55,7 @@
         }
 
         @include respond-to(desktop) {
+            grid-area: value;
             font-size: 30px;
         }
     }
@@ -59,6 +75,11 @@
 
         @include respond-to(desktop) {
             display: block;
+            grid-area: label;
+            margin-top: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 

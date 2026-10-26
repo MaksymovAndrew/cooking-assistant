@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 
 import { BaseModal } from "components/modals/BaseModal";
 
+import { stubMatchMedia } from "test/matchMediaMock";
+
 const MESSAGE = "Modal content";
 
 describe("BaseModal", () => {
@@ -155,16 +157,7 @@ describe("BaseModal", () => {
         const originalMatchMedia = window.matchMedia;
 
         beforeEach(() => {
-            window.matchMedia = (query: string): MediaQueryList => ({
-                matches: true,
-                media: query,
-                onchange: null,
-                addListener: jest.fn(),
-                removeListener: jest.fn(),
-                addEventListener: jest.fn(),
-                removeEventListener: jest.fn(),
-                dispatchEvent: jest.fn(),
-            });
+            stubMatchMedia(true);
         });
 
         afterEach(() => {

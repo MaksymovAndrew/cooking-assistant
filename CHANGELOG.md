@@ -20,6 +20,10 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+### Project
+
+- Changed: all dependencies brought up to their latest minor and patch releases (Next.js 16.4, React 19.3.1, Express 5.3, Playwright 1.64 and the tooling around them) and the backend bundler to tsup 9; TypeScript 7 and ESLint 10 stay on hold until the lint plugins support them.
+
 ## 5.0.2 - 2026-10-05
 
 ### Backend

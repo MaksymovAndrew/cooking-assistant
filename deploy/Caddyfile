@@ -12,6 +12,9 @@
 		format filter {
 			request>remote_ip ip_mask 24 48
 			request>client_ip ip_mask 24 48
+			request>headers>X-Forwarded-For delete
+			request>headers>X-Real-Ip delete
+			request>headers>Forwarded delete
 			wrap json
 		}
 	}

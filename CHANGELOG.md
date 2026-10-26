@@ -20,6 +20,14 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 5.1.1 - 2026-10-26
+
+### Project
+
+- Security: the site access log no longer keeps the headers a proxy on the visitor's side can fill with their full address (`X-Forwarded-For`, `X-Real-Ip`, `Forwarded`), so no visitor address reaches it unshortened.
+- Security: the server no longer stalls on a crafted compressed request body or a crafted IPv6 address (body-parser 2.4, ip-address 10.7.5), and the build tools pick up fixed handlebars and fast-uri releases.
+- Changed: Next.js 16.4.3 and the other minor and patch updates released since 5.1.
+
 ## 5.1 - 2026-10-26
 
 ### Project

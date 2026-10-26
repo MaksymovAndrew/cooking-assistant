@@ -1,7 +1,7 @@
 {
     "name": "cooking-assistant-backend",
     "private": true,
-    "version": "5.1.0",
+    "version": "5.1.1",
     "engines": {
         "node": ">=24"
     },
@@ -67,8 +67,8 @@
         "eslint": "^9.39.5",
         "eslint-config-prettier": "^10.1.8",
         "eslint-import-resolver-typescript": "^4.4.5",
-        "eslint-plugin-boundaries": "^7.1.0",
-        "eslint-plugin-de-morgan": "^2.2.1",
+        "eslint-plugin-boundaries": "^7.3.0",
+        "eslint-plugin-de-morgan": "^2.3.0",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-jest": "^29.17.0",
         "eslint-plugin-promise": "^7.3.0",

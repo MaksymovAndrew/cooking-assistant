@@ -2,21 +2,10 @@ import { THEME_STORAGE_KEY } from "constants/theme";
 
 import { getInitialThemeMode, storeThemeChoice } from "redux/slices/themeSlice";
 
+import { stubMatchMedia } from "test/matchMediaMock";
+
 // undefined under jsdom, so restoring it brings back a browser without matchMedia
 const originalMatchMedia = window.matchMedia;
-
-const stubMatchMedia = (matches: boolean): void => {
-    window.matchMedia = (query: string): MediaQueryList => ({
-        matches,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    });
-};
 
 afterEach(() => {
     window.matchMedia = originalMatchMedia;

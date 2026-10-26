@@ -20,6 +20,13 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 5.1 - 2026-10-26
+
+### Project
+
+- Changed: all dependencies brought up to their latest minor and patch releases (Next.js 16.4, React 19.3.1, Express 5.3, Playwright 1.64 and the tooling around them) and the backend bundler to tsup 9; TypeScript 7 and ESLint 10 stay on hold until the lint plugins support them.
+- Added: the site keeps an access log for visit counts. Visitor addresses are shortened before they are written (the last part of an IPv4 address, everything past the first three groups of an IPv6 one), and the log rolls over at 10 MB, keeps ten files and drops anything older than 90 days.
+
 ## 5.0.2 - 2026-10-05
 
 ### Backend

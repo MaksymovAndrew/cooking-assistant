@@ -3,22 +3,10 @@ import userEvent from "@testing-library/user-event";
 
 import { ScrollToTopButton } from "components/layout/ScrollToTopButton";
 
+import { stubMatchMedia } from "test/matchMediaMock";
 import { renderWithProviders } from "test/router";
 
 const BUTTON_NAME = "Scroll to top";
-
-const stubMatchMedia = (matches: boolean): void => {
-    window.matchMedia = (query: string): MediaQueryList => ({
-        matches,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    });
-};
 
 const scrollTo = (value: number) => {
     Object.defineProperty(window, "scrollY", {

@@ -3,6 +3,18 @@
 # shared file. Domains come from the proxy's environment so no real hostname lives in the repo.
 
 {$APP_DOMAIN} {
+	log {
+		output file /var/log/caddy/cooking-assistant.log {
+			roll_size 10MiB
+			roll_keep 10
+			roll_keep_for 2160h
+		}
+		format filter {
+			request>remote_ip ip_mask 24 48
+			request>client_ip ip_mask 24 48
+			wrap json
+		}
+	}
 	encode zstd gzip
 	# 8080, not 80: the frontend runs as an unprivileged user and cannot bind a low port
 	reverse_proxy cooking-frontend:8080

@@ -20,6 +20,13 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 5.2 - 2026-11-17
+
+### Project
+
+- Security: Next.js 16.4.6, which fixes cached data leaking between language versions of a page (the app does not use the affected caching API, so it was never exposed).
+- Changed: the other minor and patch updates released since 5.1.1 (axios 1.21, Redux Toolkit 2.14, express-rate-limit 8.7.4, Playwright 1.65 and the tooling around them) and the registry login step of the deploy pipeline.
+
 ## 5.1.1 - 2026-10-26
 
 ### Project

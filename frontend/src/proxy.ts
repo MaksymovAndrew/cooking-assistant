@@ -25,7 +25,7 @@ const IS_DEVELOPMENT = process.env.NODE_ENV === "development";
 // Next reads the nonce off the request's policy and stamps it on every script it renders
 const renderWithNonce = (
     request: NextRequest,
-    rewriteTo: URL | null,
+    rewriteTo: NextRequest["nextUrl"] | null,
 ): NextResponse => {
     const nonce = createNonce();
     const policy = buildContentSecurityPolicy({

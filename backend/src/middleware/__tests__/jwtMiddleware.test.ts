@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { type Request, response } from "express";
 import jwt from "jsonwebtoken";
 
 import { SESSION_TOKEN_TYPE } from "config/security";
@@ -42,7 +42,7 @@ function makeAuth(currentVersion: number | null = SESSION_VERSION) {
 describe("jwtMiddleware", () => {
     const testSecret = process.env.JWT_SECRET_KEY ?? "";
     const originalSecret = process.env.JWT_SECRET_KEY;
-    const res = {} as Response;
+    const res = response;
     const sessionToken = (payload: object = {}) =>
         jwt.sign(
             { id: 7, typ: SESSION_TOKEN_TYPE, sv: SESSION_VERSION, ...payload },

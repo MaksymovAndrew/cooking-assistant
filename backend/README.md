@@ -279,7 +279,9 @@ public health check, the media route, a global rate limiter, then the domain rou
 Every request gets an id (the caller's `X-Request-Id` when it is a plain token, else a fresh UUID),
 answered in the same header and attached to its log lines. A request line is kept short
 ([src/middleware/requestLogger.ts](src/middleware/requestLogger.ts)): the id, method, URL, `User-Agent`,
-`X-Forwarded-For`, status and response time - no other header of the request or the response.
+the client network, status and response time - no other header of the request or the response. The
+client is `req.ip` masked to /24 (IPv6 /48), as in the site access log, so no log keeps a whole
+visitor address; `X-Forwarded-For` itself is never logged.
 
 - **routes/** - factory functions `(controller) => router`; map `METHOD /path` directly to a
   controller handler, guard with `authenticateToken` (the public routes are `/health`, `/register`,

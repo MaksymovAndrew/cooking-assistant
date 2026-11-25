@@ -6,6 +6,8 @@ import pinoHttp from "pino-http";
 import { logger } from "config/logger";
 import { HEALTH_PATH, MEDIA_PATH_PREFIX } from "constants/routes";
 
+import { maskClientAddress } from "./clientAddress";
+
 // req.url is raw: a cache-buster query or trailing slash still reaches the same route
 const isQuietRequest = (req: { url?: string }): boolean => {
     const [pathname = ""] = (req.url ?? "").split("?");
@@ -38,19 +40,22 @@ interface StandardRequestLog {
     method: string;
     url: string;
     headers: Record<string, string>;
+    raw: { ip?: string };
 }
 
 interface StandardResponseLog {
     statusCode: number;
 }
 
-const LOGGED_REQUEST_HEADERS = ["user-agent", "x-forwarded-for"];
+// x-forwarded-for carries the whole address; the client field keeps only its network
+const LOGGED_REQUEST_HEADERS = ["user-agent"];
 
 // the full header sets made every line ~2 KB, most of it the same static response headers
 export const serializeRequest = (req: StandardRequestLog) => ({
     id: req.id,
     method: req.method,
     url: req.url,
+    client: maskClientAddress(req.raw.ip),
     headers: Object.fromEntries(
         LOGGED_REQUEST_HEADERS.filter((name) => name in req.headers).map(
             (name) => [name, req.headers[name]],

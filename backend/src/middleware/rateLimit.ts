@@ -22,13 +22,13 @@ const rejectRateLimited: RateLimitOptions["handler"] = (_req, _res, next) => {
 };
 
 // IPv6 collapses to its /56 so rotating within a subnet can't dodge it (express-rate-limit v8)
-function normalizedIp(req: Request): string {
+function normalizedIp(req: Pick<Request, "ip">): string {
     return req.ip ? ipKeyGenerator(req.ip) : "";
 }
 
 // IP plus the account field, so people sharing a network never share a quota
 function bodyFieldLimiterKey(field: string) {
-    return (req: Request): string => {
+    return (req: Pick<Request, "ip" | "body">): string => {
         const value = (req.body as Record<string, unknown> | undefined)?.[
             field
         ];
@@ -41,11 +41,11 @@ export const authLimiterKey = bodyFieldLimiterKey("login");
 export const emailLimiterKey = bodyFieldLimiterKey("email");
 
 // by user, not IP: the threat is a stolen session cookie, not a shared network
-export function userIdLimiterKey(req: Request): string {
+export function userIdLimiterKey(req: Pick<Request, "ip" | "user">): string {
     return req.user ? String(req.user.id) : normalizedIp(req);
 }
 
-export function ipLimiterKey(req: Request): string {
+export function ipLimiterKey(req: Pick<Request, "ip">): string {
     return normalizedIp(req);
 }
 

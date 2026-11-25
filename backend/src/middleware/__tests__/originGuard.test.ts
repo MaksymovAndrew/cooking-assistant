@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { type Request, response } from "express";
 
 import { ERROR_CODES } from "constants/errorCodes";
 import { ForbiddenError } from "domain/errors/AppError";
@@ -22,7 +22,7 @@ function passedError(next: ReturnType<typeof makeNext>): unknown {
 }
 
 describe("originGuard", () => {
-    const res = {} as Response;
+    const res = response;
     const guard = createOriginGuard(TEST_FRONTEND_ORIGIN);
 
     it.each([

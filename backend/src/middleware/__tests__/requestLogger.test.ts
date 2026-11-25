@@ -1,29 +1,38 @@
 import { serializeRequest, serializeResponse } from "middleware/requestLogger";
 
+const CLIENT_IP = "203.0.113.77";
+const CLIENT_NETWORK = "203.0.113.0";
+
 const REQUEST = {
     id: "edge-42",
     method: "GET",
     url: "/api/me",
     headers: {
         "user-agent": "jest",
-        "x-forwarded-for": "203.0.113.5",
+        "x-forwarded-for": CLIENT_IP,
         cookie: "authToken=secret",
         authorization: "Bearer secret",
         accept: "application/json",
     },
+    raw: { ip: CLIENT_IP },
 };
 
 describe("request log serializers", () => {
-    it("should keep the id, method, url, user agent and forwarded address of a request", () => {
+    it("should keep the id, method, url, user agent and masked client network of a request", () => {
         expect(serializeRequest(REQUEST)).toEqual({
             id: "edge-42",
             method: "GET",
             url: "/api/me",
-            headers: {
-                "user-agent": "jest",
-                "x-forwarded-for": "203.0.113.5",
-            },
+            client: CLIENT_NETWORK,
+            headers: { "user-agent": "jest" },
         });
+    });
+
+    it("should never log the whole client address", () => {
+        const line = JSON.stringify(serializeRequest(REQUEST));
+
+        expect(line).not.toContain(CLIENT_IP);
+        expect(line).toContain(CLIENT_NETWORK);
     });
 
     it("should never log the session cookie or an authorization header", () => {

@@ -1,4 +1,4 @@
-import type { ErrorRequestHandler } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 import { logger } from "config/logger";
 import { ERROR_CODES, type ErrorCode } from "constants/errorCodes";
@@ -57,7 +57,12 @@ function toErrorBody(err: unknown, status: number, locale: Locale): ErrorBody {
     return { error: translateError(code, locale), code };
 }
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+function errorHandler(
+    err: unknown,
+    req: Pick<Request, "acceptsLanguages">,
+    res: Response,
+    next: NextFunction,
+): void {
     const status = getErrorStatus(err);
     const body = toErrorBody(err, status, requestLocale(req));
 
@@ -75,6 +80,6 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     }
 
     res.status(status).json(body);
-};
+}
 
 export default errorHandler;

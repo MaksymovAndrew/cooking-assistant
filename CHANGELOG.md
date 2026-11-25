@@ -20,6 +20,16 @@ changelogs and the tags and now track everything here against one shared version
 
 ## Unreleased
 
+## 5.3 - 2026-11-25
+
+### Backend
+
+- Security: the API's request log no longer keeps a visitor's whole address. It used to write the forwarded address header in full; it now records only the network (the address with its last part zeroed - /24, or /48 for IPv6), the same as the site access log.
+
+### Project
+
+- Changed: the minor and patch updates released since 5.2 (typescript-eslint 8.73, Playwright 1.65.1, Prettier 3.10.1, lucide-react 1.73, sass 1.108.2 and the lint tooling around them). typescript-eslint's new check against passing plain objects where a class instance is expected found a handful of places whose parameter types claimed more than they used; they now ask for exactly the fields they read.
+
 ## 5.2 - 2026-11-17
 
 ### Project

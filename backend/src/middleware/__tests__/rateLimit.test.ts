@@ -1,4 +1,4 @@
-import express, { type Request, type RequestHandler } from "express";
+import express, { type RequestHandler } from "express";
 import type { Options as RateLimitOptions } from "express-rate-limit";
 import request from "supertest";
 
@@ -121,20 +121,20 @@ describe("rate limit policies", () => {
 
 describe("authLimiterKey", () => {
     it("should combine the client IP with the attempted login", () => {
-        const req = { ip: SHARED_IP, body: { login: "alice" } } as Request;
+        const req = { ip: SHARED_IP, body: { login: "alice" } };
 
         expect(authLimiterKey(req)).toBe(`${SHARED_IP}:alice`);
     });
 
     it("should give different accounts on the same IP separate keys", () => {
-        const alice = { ip: SHARED_IP, body: { login: "alice" } } as Request;
-        const bob = { ip: SHARED_IP, body: { login: "bob" } } as Request;
+        const alice = { ip: SHARED_IP, body: { login: "alice" } };
+        const bob = { ip: SHARED_IP, body: { login: "bob" } };
 
         expect(authLimiterKey(alice)).not.toBe(authLimiterKey(bob));
     });
 
     it("should fall back to an empty login when the body has none", () => {
-        const req = { ip: SHARED_IP, body: {} } as Request;
+        const req = { ip: SHARED_IP, body: {} };
 
         expect(authLimiterKey(req)).toBe(`${SHARED_IP}:`);
     });
@@ -145,13 +145,13 @@ describe("emailLimiterKey", () => {
         const req = {
             ip: SHARED_IP,
             body: { email: "alice@example.com" },
-        } as Request;
+        };
 
         expect(emailLimiterKey(req)).toBe(`${SHARED_IP}:alice@example.com`);
     });
 
     it("should fall back to an empty email when the body has none", () => {
-        const req = { ip: SHARED_IP, body: {} } as Request;
+        const req = { ip: SHARED_IP, body: {} };
 
         expect(emailLimiterKey(req)).toBe(`${SHARED_IP}:`);
     });
@@ -159,7 +159,7 @@ describe("emailLimiterKey", () => {
 
 describe("userIdLimiterKey", () => {
     it("should key by the authenticated user id, not the IP", () => {
-        const req = { ip: SHARED_IP, user: { id: 7 } } as Request;
+        const req = { ip: SHARED_IP, user: { id: 7 } };
 
         expect(userIdLimiterKey(req)).toBe("7");
     });
@@ -168,17 +168,17 @@ describe("userIdLimiterKey", () => {
         const fromIpOne = {
             ip: "203.0.113.5",
             user: { id: 7 },
-        } as Request;
+        };
         const fromIpTwo = {
             ip: "198.51.100.9",
             user: { id: 7 },
-        } as Request;
+        };
 
         expect(userIdLimiterKey(fromIpOne)).toBe(userIdLimiterKey(fromIpTwo));
     });
 
     it("should fall back to the IP when there is no authenticated user", () => {
-        const req = { ip: SHARED_IP } as Request;
+        const req = { ip: SHARED_IP };
 
         expect(userIdLimiterKey(req)).toBe(SHARED_IP);
     });
@@ -189,13 +189,13 @@ describe("ipLimiterKey", () => {
         const req = {
             ip: SHARED_IP,
             body: { login: "alice" },
-        } as Request;
+        };
 
         expect(ipLimiterKey(req)).toBe(SHARED_IP);
     });
 
     it("should fall back to an empty string when there is no IP", () => {
-        const req = {} as Request;
+        const req = { ip: undefined };
 
         expect(ipLimiterKey(req)).toBe("");
     });

@@ -2,8 +2,8 @@ import type { Request } from "express";
 
 import { requestBody } from "controller/requestBody";
 
-function withBody(body: unknown): Request {
-    return Object.assign({} as Request, { body });
+function withBody(body: unknown): Pick<Request, "body"> {
+    return { body };
 }
 
 describe("requestBody", () => {

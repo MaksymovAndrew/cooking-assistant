@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 
 import { logger } from "config/logger";
 import { ERROR_CODES } from "constants/errorCodes";
@@ -14,9 +14,7 @@ import { errorBody } from "test/helpers/errorBody";
 
 // no Accept-Language match - the default language
 function makeRequest(language: string | false = false) {
-    return Object.assign({} as Request, {
-        acceptsLanguages: jest.fn().mockReturnValue(language),
-    });
+    return { acceptsLanguages: jest.fn().mockReturnValue(language) };
 }
 
 const LIMIT_TOO_BIG = new ValidationError(ERROR_CODES.VALIDATION_ERROR, [

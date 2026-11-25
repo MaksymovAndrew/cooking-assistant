@@ -1,6 +1,6 @@
 import type { Request } from "express";
 
-export function getUserId(req: Request): number {
+export function getUserId(req: Pick<Request, "user">): number {
     if (!req.user) {
         throw new Error("Authenticated user is missing");
     }
@@ -8,6 +8,6 @@ export function getUserId(req: Request): number {
     return req.user.id;
 }
 
-export function getOptionalUserId(req: Request): number | null {
+export function getOptionalUserId(req: Pick<Request, "user">): number | null {
     return req.user?.id ?? null;
 }

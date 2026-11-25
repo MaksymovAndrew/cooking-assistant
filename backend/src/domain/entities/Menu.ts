@@ -58,7 +58,7 @@ export class Menu {
         return new Menu({ menuTitle, menuContent, language, categoryId });
     }
 
-    private constructor(data: Menu) {
+    private constructor(data: Pick<Menu, keyof Menu>) {
         Object.assign(this, data);
     }
 }
